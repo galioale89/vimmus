@@ -159,10 +159,10 @@ router.post('/addregime', ehAdmin, (req, res) => {
 
         new Regime(regime).save().then(() => {
             req.flash('success_msg', 'Configurações de tributos salvas com sucesso')
-            res.redirect('/configuracao')
+            res.redirect('/projeto/menu')
         }).catch((err) => {
             req.flash('error_msg', 'Houve um erro ao salvar as configurações de impostos.')
-            res.redirect('/configuracao')
+            res.redirect('/configuracao/menu')
         })
 
     }
@@ -189,10 +189,10 @@ router.post('/novo', ehAdmin, (req, res) => {
 
     new Configuracao(configuracao).save().then(() => {
         req.flash('success_msg', 'Configurações salvas com sucesso')
-        res.redirect('/')
+        res.redirect('/projeto/menu')
     }).catch((err) => {
         req.flash('error_msg', 'Houve um erro ao salvar as configurações.')
-        res.redirect('/configuracao')
+        res.redirect('/configuracao/consulta')
     })
 })
 

@@ -418,7 +418,7 @@ router.post('/novo', uploadfoto.single('foto'), ehAdmin, (req, res) => {
             var sucesso = []
             sucesso.push({ texto: 'Pessoa adicionada com sucesso' })
             Pessoa.findOne().sort({ field: 'asc', _id: -1 }).lean().then((pessoa) => {
-                res.render('mdo/editpessoas', { sucesso: sucesso, pessoa: pessoa })
+                res.render('projeto/menu', { sucesso: sucesso, pessoa: pessoa })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar a pessoa')
                 res.redirect('/pessoa/novo')

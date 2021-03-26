@@ -2479,7 +2479,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                     }                    
                     //----------------------------
                     
-                    if (rp.regime == 'Lucro Real' || ap.regime == 'Luro Presumido') {
+                    if (rp.regime == 'Lucro Real' || rp.regime == 'Luro Presumido') {
                          totalImposto = parseFloat(impIRPJ) + parseFloat(impIRPJAdd) + parseFloat(impCSLL) + parseFloat(impPIS) + parseFloat(impCOFINS)
                          totalImpGrafico = totalImposto.toFixed(2)
                          impSimples = 0
