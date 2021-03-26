@@ -22,7 +22,7 @@ router.get('/editar/:id', ehAdmin, (req, res) => {
     })
 })
 
-router.get('/registro', ehAdmin, (req, res) => {
+router.get('/registro', (req, res) => {
     res.render('usuario/registro')
 })
 
@@ -116,7 +116,7 @@ router.post("/login", (req, res, next) => {
     })(req, res, next)
 })
 
-router.post("/editregistro", (req, res) => {
+router.post("/editregistro", ehAdmin, (req, res) => {
     var erros = []
     var sucesso = []
 
