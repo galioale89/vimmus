@@ -1123,7 +1123,7 @@ router.post('/direto', ehAdmin, (req, res) => {
                          res.redirect('/pressoa/consulta')
                     })
                }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possvíel encontrar os detalhes do projeto')
+                    req.flash('error_msg', 'Não foi possíel encontrar os detalhes do projeto')
                     res.redirect('/projeto/consulta')
                })
 
@@ -1139,16 +1139,6 @@ router.post('/direto', ehAdmin, (req, res) => {
                Regime.findOne({ _id: projeto.regime }).lean().then((rp) => {
 
                     projeto_id = projeto._id
-
-                    var vlrcom = 0
-                    var lbaimp = 0
-                    var impostoICMS = 0
-                    var totalImposto = 0
-                    var fatadd = 0
-                    var fataju = 0
-                    var prjLR = rp.prjLR
-                    var prjLP = rp.prjLP
-                    var prjFat = rp.prjFat
 
                     if (req.body.diastr == '' || req.body.diastr == 0) {
                          if (req.body.equipe != '' && req.body.equipe > 0) {
@@ -1251,7 +1241,8 @@ router.post('/direto', ehAdmin, (req, res) => {
                     projeto.totpro = totpro
                     projeto.totges = totges
                     projeto.totdes = totdes
-
+                    
+                    var vlrcom = 0
                     //Validando a comissão
                     if (projeto.percom != null) {
                          vlrcom = parseFloat(projeto.valor) * (parseFloat(projeto.percom) / 100)
@@ -1286,24 +1277,39 @@ router.post('/direto', ehAdmin, (req, res) => {
                     projeto.impNFS = impNFS.toFixed(2)
 
                     //Validar ICMS
-
+                    var impostoICMS
                     if (rp.alqICMS != null) {
                          impostoICMS = parseFloat(projeto.vlrequ) * (parseFloat(rp.alqICMS) / 100)
                          projeto.impostoICMS = impostoICMS.toFixed(2)
                     }
 
                     //Deduzindo as comissões do Lucro Antes dos Impostos
+                    var lbaimp = 0               
                     if (vlrcom == 0 || vlrcom == null) {
                          lbaimp = parseFloat(lucroBruto)
                     } else {
                          lbaimp = parseFloat(lucroBruto) - parseFloat(vlrcom)
                     }
-                    projeto.lbaimp = parseFloat(lbaimp).toFixed(2)
+                    projeto.lbaimp = lbaimp.toFixed(2)
 
+                    var totalSimples
+                    var impostoIRPJ
+                    var impostoIRPJAdd
+                    var impostoCSLL
+                    var impostoPIS
+                    var impostoCOFINS
+                    var totalImpGrafico
+                    var totalImposto
+
+                    var fatadd
+                    var fataju
+                    var prjLR = rp.prjLR
+                    var prjLP = rp.prjLP
+                    var prjFat = rp.prjFat     
 
                     if (rp.regime == 'Simples') {
                          var alqEfe = ((parseFloat(prjFat) * (parseFloat(rp.alqDAS) / 100)) - (parseFloat(rp.vlrred))) / parseFloat(prjFat)
-                         var totalSimples = parseFloat(vlrNFS) * (parseFloat(alqEfe))
+                         totalSimples = parseFloat(vlrNFS) * (parseFloat(alqEfe))
                          totalImpGrafico = totalSimples.toFixed(2)
                          projeto.impostoSimples = totalImpGrafico.toFixed(2)
                     }
@@ -1500,7 +1506,6 @@ router.post('/direto', ehAdmin, (req, res) => {
                     req.flash('error_msg', 'Não foi possível encontrar o regime')
                     res.redirect('/configuracao/consultaregime')
                })
-
           }).catch(() => {
                req.flash('error_msg', 'Houve um erro ao encontrar o projeto')
                res.redirect('/')
@@ -2334,6 +2339,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               vlrPrjNFS = 0
                          }
                     }
+                    
                     var prjLucroBruto = parseFloat(vlrPrjNFS) - parseFloat(totalPlano)
                     prjLucroBruto = prjLucroBruto.toFixed(2)
 
@@ -2359,7 +2365,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                     var impPIS
                     var impCOFINS
                     var totalImpGrafico
-
+                    
                     if (req.body.impmanual != null) {
                          //LANÇAMENTO DIRETO/MANUAL DE IMPOSTOS
                          impmanual = 'checked'
@@ -2423,28 +2429,24 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               impISS = impISSNfs.toFixed(2)
                          }
 
-                         if (!rp.alqICMS) {
+                         if (rp.alqICMS == '') {
                               impICMS = 0
                          } else {
-                              impostoICMS = parseFloat(req.body.vlrequ) * (parseFloat(rp.alqICMS) / 100)
+                              impostoICMS = parseFloat(vlrequ) * (parseFloat(rp.alqICMS) / 100)
                               impICMS = impostoICMS.toFixed(2)
                          }
 
-                         var totalImposto
                          var fatadd
                          var fataju
                          var prjLR = rp.prjLR
                          var prjLP = rp.prjLP
                          var prjFat = rp.prjFat
-
+                         
                          if (rp.regime == 'Simples') {
 
                               var alqEfe = ((parseFloat(prjFat) * (parseFloat(rp.alqDAS) / 100)) - (parseFloat(rp.vlrred))) / parseFloat(prjFat)
                               impSimples = parseFloat(vlrPrjNFS) * (parseFloat(alqEfe))
                               totalImpGrafico = impSimples.toFixed(2)
-                              console.log('vlrPrjNFS=>' + vlrPrjNFS)
-                              console.log('alqEfe=>' + alqEfe)
-                              console.log('totalImpGrafico=>' + totalImpGrafico)
                               impIRPJ = 0
                               impIRPJAdd = 0
                               impCSLL = 0
@@ -2472,43 +2474,40 @@ router.post('/realizar', ehAdmin, (req, res) => {
 
                               } else {
                                    //Imposto adicional de IRPJ
-                                   console.log('Lucro Presumido')
                                    if (((parseFloat(prjLP) * 0.32) / 3) > 20000) {
                                         fatadd = ((parseFloat(prjLP) * 0.32) / 3) - 20000
                                         fataju = parseFloat(fatadd) / 20000
                                         impIRPJAdd = (parseFloat(vlrPrjNFS) * 0.32) * parseFloat(fataju).toFixed(2) * (parseFloat(rp.alqIRPJAdd) / 100)
                                         impIRPJAdd = impIRPJAdd.toFixed(2)
                                    }
+
                                    impIRPJ = parseFloat(vlrPrjNFS) * 0.32 * (parseFloat(rp.alqIRPJ) / 100)
                                    impIRPJ = impIRPJ.toFixed(2)
                                    impCSLL = parseFloat(vlrPrjNFS) * 0.32 * (parseFloat(rp.alqCSLL) / 100)
                                    impCSLL = impCSLL.toFixed(2)
-                                   impCOFINS = parseFloat(vlrNFS) * (parseFloat(rp.alqCOFINS) / 100)
+
+                                   impCOFINS = parseFloat(vlrPrjNFS) * (parseFloat(rp.alqCOFINS) / 100)
                                    impCOFINS = impCOFINS.toFixed(2)
+
                                    impPIS = parseFloat(vlrPrjNFS) * (parseFloat(rp.alqPIS) / 100)
                                    impPIS = impPIS.toFixed(2)
                               }
                          }
                     }
                     //----------------------------
-                    console.log('prjLR =>' + prjLR)
-                    console.log('prjLP =>' + prjLP)
-                    console.log('prjFat =>' + prjFat)
-                    console.log('impSimples =>' + impSimples)
-                    console.log('totalImpGrafico =>' + totalImpGrafico)
-                    console.log('impIRPJ =>' + impIRPJ)
-                    console.log('impIRPJAdd =>' + impIRPJAdd)
-                    console.log('impCSLL =>' + impCSLL)
-                    console.log('impPIS =>' + impPIS)
-                    console.log('impCOFINS =>' + impCOFINS)
-                    console.log('totalImpGrafico =>' + totalImpGrafico)
-
-                    if (rp.regime == 'Lucro Real' || rp.regime == 'Luro Presumido') {
-                         totalImposto = parseFloat(impIRPJ) + parseFloat(impIRPJAdd) + parseFloat(impCSLL) + parseFloat(impPIS) + parseFloat(impCOFINS)
+                    
+                    var totalImposto
+                    if (rp.regime == 'Lucro Real' || rp.regime == 'Lucro Presumido') {
+                         if (parseFloat(impIRPJAdd) > 0 ){
+                              totalImposto = parseFloat(impIRPJ) + parseFloat(impIRPJAdd) + parseFloat(impCSLL) + parseFloat(impPIS) + parseFloat(impCOFINS)
+                         }else{
+                              totalImposto = parseFloat(impIRPJ) + parseFloat(impCSLL) + parseFloat(impPIS) + parseFloat(impCOFINS)
+                              impIRPJAdd = 0
+                         }
                          totalImpGrafico = totalImposto.toFixed(2)
                          impSimples = 0
                     }
-
+                    
                     if (impICMS > 0) {
                          totalImposto = parseFloat(totalImpGrafico) + parseFloat(impISS) + parseFloat(impICMS)
                     } else {
@@ -2518,9 +2517,22 @@ router.post('/realizar', ehAdmin, (req, res) => {
 
                     var lucroLiquido = (parseFloat(lbaimp) - parseFloat(totalImposto))
                     lucroLiquido = lucroLiquido.toFixed(2)
+ 
+                    console.log('impISS =>' + impISS)
+                    console.log('impICMS =>' + impICMS)                                                        
+                    console.log('impSimples =>' + impSimples)
+                    console.log('impmanual=>' + impmanual)
+                    console.log('impIRPJAdd =>' + impIRPJAdd)
+                    console.log('impIRPJ =>' + impIRPJ)                                   
+                    console.log('impCSLL =>' + impCSLL)                                   
+                    console.log('impCOFINS =>' + impCOFINS)                                   
+                    console.log('impPIS =>' + impPIS)
+                    console.log('totalImposto =>' + totalImposto)
+                    console.log('lucroLiquido =>' + lucroLiquido)
+                    
 
                     //CÁLCULO DAS VARIAÇÕES
-
+                    
                     var varCusto = - (((parseFloat(prjCusto) - parseFloat(totalPlano)) / parseFloat(prjCusto)) * 100)
                     varCusto = varCusto.toFixed(2)
                     var varLB = -(((parseFloat(projeto_lucroBruto) - parseFloat(prjLucroBruto)) / parseFloat(projeto_lucroBruto)) * 100)
@@ -2618,7 +2630,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                     } else {
                          varLucRlz = false
                     }
-
+                    
 
                     //Define data atual
                     var data = new Date()
@@ -2645,7 +2657,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          lucroBruto: prjLucroBruto,
                          vlrcom: vlrcom,
                          lbaimp: lbaimp,
-
+                         
                          impmanual: impmanual,
                          impISS: impISS,
                          impICMS: impICMS,
@@ -2655,15 +2667,15 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          impCSLL: impCSLL,
                          impPIS: impPIS,
                          impCOFINS: impCOFINS,
-
+                         
                          totalImposto: totalImposto,
                          lucroLiquido: lucroLiquido,
-
+                         
                          varCusto: varCusto,
                          varLB: varLB,
                          varLAI: varLAI,
                          varLL: varLL,
-
+                         
                          parLiqVlr: parLiqVlr,
                          parIntVlr: parIntVlr,
                          parGesVlr: parGesVlr,
@@ -2676,7 +2688,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          parISSVlr: parISSVlr,
                          parImpVlr: parImpVlr,
                          parComVlr: parComVlr,
-
+                         
                          parLiqNfs: parLiqNfs,
                          parIntNfs: parIntNfs,
                          parGesNfs: parGesNfs,
@@ -2692,7 +2704,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          parNfsRlz: parNfsRlz,
                          parVlrRlz: parVlrRlz,
                          varLucRlz: varLucRlz,
-
+                         
                     }
 
                     new Realizado(realizado).save().then(() => {
