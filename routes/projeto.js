@@ -2338,17 +2338,17 @@ router.post('/realizar', ehAdmin, (req, res) => {
                     lbaimp = lbaimp.toFixed(2)
                     //-------------------------------------
 
-                    var impmanual = ''
-                    var impISS = 0
-                    var impSimples = 0
-                    var impIRPJ = 0
-                    var impIRPJAdd = 0
-                    var impCSLL = 0
-                    var impPIS = 0
-                    var impCOFINS = 0
-                    var impostoICMS = 0
-                    var impICMS = 0
-                    var totalImpGrafico = 0
+                    var impmanual
+                    var impISS
+                    var impostoICMS
+                    var impICMS                    
+                    var impSimples
+                    var impIRPJ
+                    var impIRPJAdd
+                    var impCSLL
+                    var impPIS
+                    var impCOFINS
+                    var totalImpGrafico
 
                     if (req.body.impmanual != null) {
                          //LANÇAMENTO DIRETO/MANUAL DE IMPOSTOS
@@ -2412,7 +2412,6 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          } else {
                               impISS = impISSNfs.toFixed(2)
                          }
-                         console.log(impISS)
 
                          if (!rp.alqICMS) {
                               impICMS = 0

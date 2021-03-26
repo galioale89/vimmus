@@ -106,7 +106,6 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
         Equipe.findOne({ projeto: projeto._id }).then((equipe_existe) => {
             if (equipe_existe != null) {
                 equipe_existe.remove()
-                console.log('removido')
             }
         }).catch((err) => {
             req.flash('error_msg', 'Houve uma falha ao encontrar a equipe')
@@ -121,7 +120,6 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
             ins2: req.body.ins2
         }
 
-        console.log(req.body.ins0, req.body.ins1, req.body.ins2)
         new Equipe(equipe_nova).save().then(() => {
             sucesso.push({ texto: 'Equipe registrada com suceso' })
         }).catch((err) => {
@@ -134,7 +132,6 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
             const { ins0 } = equipe_nova
             const { ins1 } = equipe_nova
             const { ins2 } = equipe_nova
-            console.log(ins0, ins1, ins2)
 
             for (var i = 0; i < instaladores.length; i++) {
                 const { nome } = instaladores[i]
@@ -152,7 +149,6 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
                     }
                 }
             }
-            console.log(ins0, ins1, ins2)
             var qtdins
             switch (ins_dentro.length) {
                 case 1: qtdins = 'Um instalador'
@@ -166,7 +162,6 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
                 projeto_salva.equipe = ins_dentro.length
                 projeto_salva.save().then(() => {
                     var texto = qtdins + ' registrados no projeto.'
-                    console.log(qtdins)
                     sucesso.push({ texto: texto })
                     res.render('mdo/editformaequipe_first', { sucesso: sucesso, projeto: projeto, fora: ins_fora, dentro: ins_dentro })
                 }).catch((err) => {
