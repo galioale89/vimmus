@@ -1,0 +1,114 @@
+<style type='text/css'>
+    .tamanhodiv {
+        width: 700px;
+    }
+</style>
+
+<div class="container mt-4 card tamanhodiv">
+    <label for="minutos" class='fw-bold mt-2'> <i class="bi bi-wrench"></i> Configurações básicas</label>
+    <br>
+    <form acion='/configuracao/novo' class='row g-3' method='post'>
+        <div class="container-sm">
+            <div class="row mb-2">
+                <label for='slug' class='fw-bold col-sm-2 col-form-label col-form-label-sm'> Apelido: </label>
+                <div class="col-sm-5">
+                    <input id='slug' name='slug' value='{{configuracoes.slug}}' class='form-control form-control-sm'>
+                </div>
+            </div>
+
+            <div class="row">
+                <label for='potencia' class='fw-bold col-sm-2 col-form-label col-form-label-sm'> Potência: </label>
+                <div class="col-sm-5">
+                    <input id='potenia' name='potencia' value='{{configuracoes.slug}}'
+                        class='form-control form-control-sm'>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class=" container col card">
+                <label class='fw-bold col-form-label col-form-label-sm'>Instalação (por minutos)</label>
+                <hr>
+                <div class='row mb-2'>
+                    <label class='fw-bold col-sm-6 col-form-label col-form-label-sm'> Estrutura: </label>
+                    <div class="col-sm-4">
+                        <input id='minest' name='minest' value='{{configuracoes.minest}}'
+                            class='form-control form-control-sm'>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <label class='fw-bold col-sm-6 col-form-label col-form-label-sm'> Módulos: </label>
+                    <div class="col-sm-4">
+                        <input id='minmod' name='minmod' value='{{configuracoes.minmod}}'
+                            class='form-control form-control-sm'>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class='fw-bold col-sm-6 col-form-label col-form-label-sm'> Inversores: </label>
+                    <div class="col-sm-4">
+                        <input id='mininv' name='mininv' value='{{configuracoes.mininv}}'
+                            class='form-control form-control-sm mb-2'>
+                    </div>
+                </div>
+            </div>
+            <div class="container col card mt-2">
+                <div class="row">
+                    <label class='fw-bold col-sm-7 col-form-label col-form-label-sm mt-2'> Média veículo litros/km: </label>
+                    <div class="col-sm-4">
+                        <input type='number' id='medkmh' name='medkmh' value='{{configuracoes.medkmh}}'
+                            class='form-control form-control-sm mt-2 mb-2'>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container col card">
+            <label class='fw-bold col-form-label col-form-label-sm'>Projetista (por minutos)</label>
+            <hr>
+            <div class="row mb-2">
+                <label class='fw-bold col-sm-8 col-form-label col-form-label-sm'> Art: </label>
+                <div class="col-sm-4">
+                    <input id='minart' name='minart' value='{{configuracoes.minart}}'
+                        class='form-control form-control-sm'>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <label class='fw-bold col-sm-8 col-form-label col-form-label-sm'> Memorial Descritivo: </label>
+                <div class="col-sm-4">
+                    <input id='minmem' name='minmem' value='{{configuracoes.minmem}}'
+                        class='form-control form-control-sm'>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <label class='fw-bold col-sm-8 col-form-label col-form-label-sm'> Diagram de Situação: </label>
+                <div class="col-sm-4">
+                    <input id='minsit' name='minsit' value='{{configuracoes.minsit}}'
+                        class='form-control form-control-sm'>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <label class='fw-bold col-sm-8 col-form-label col-form-label-sm'> Diagrama Unifilar: </label>
+                <div class="col-sm-4">
+                    <input id='minuni' name='minuni' value='{{configuracoes.minuni}}'
+                        class='form-control form-control-sm'>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <label class='fw-bold col-sm-8 col-form-label col-form-label-sm'> Diagrama de Aterramento: </label>
+                <div class="col-sm-4">
+                    <input id='minate' name='minate' value='{{configuracoes.minate}}'
+                        class='form-control form-control-sm'>
+                </div>
+            </div>
+            <div class="row">
+                <label class='fw-bold col-sm-8 col-form-label col-form-label-sm'> Diagrama de Distribuição: </label>
+                <div class="col-sm-4 mb-2">
+                    <input id='mindis' name='mindis' value='{{configuracoes.mindis}}' class='form-control'>
+                </div>
+            </div>
+        </div>
+
+        <button type='submit' class='btn btn-success tamanhodiv'> Aplicar </button>
+
+    </form>
+</div>

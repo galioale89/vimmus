@@ -1,0 +1,176 @@
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Segoe UI;
+  }
+
+  .body {
+    background-color: #001263e5;
+    font-family: 'Roboto', Helvetica, sans-serif;
+  }
+
+  .lists {
+    display: flex;
+    flex: 1;
+    width: 100%;
+  }
+
+  .lists .list {
+    display: flex;
+    flex-flow: column;
+    flex: 1;
+
+    width: 100%;
+    border-radius: 20px;
+    min-width: 250px;
+    max-width: 350px;
+    height: 100%;
+    min-height: 300px;
+
+    background-color: #001263e5;
+    margin: 0 15px;
+    padding: 8px;
+    transition: all 0.2s linear;
+  }
+
+  .lists .list .list-item {
+    background-color: #F3F3F3;
+    border-radius: 8px;
+    text-align: center;
+    margin: 4px 0px;
+    cursor: pointer;
+  }
+
+  .lists .list .item {
+    background-color: #F3F3F3;
+    border-radius: 8px;
+    text-align: center;
+    margin: 4px 0px;
+    cursor: pointer;
+  }
+</style>
+<form method='post' action='/pessoa/criarequipe'>
+  <div class="body">
+    <input type='hidden' name='id' value='{{projeto._id}}'/>
+    <div class='row' style="background-color: white;">
+      .
+    </div>
+    <div class="card-body" style="color: white">
+      <div class="row" style="margin-top: 20px;">
+        <div class="col-md-5">
+          <div class="row">
+            <div class="row text-center mb-4" style="margin-left: 50px; margin-top: 50px">
+              <h2><i class="bi bi-people"></i> Criação de Equipes</h2><br>
+              <p style="color: white;">Aqui serão ser criadas as equipes que poderão ser vinculadas aos projetos </p>
+            </div>
+            <!--
+            <div class="row" style="margin-left: 50px;">
+              <div class="col-md-3">
+                <label class="col-form-label col-form-label-sm fw-bold" style="color: white;">Nome Equipe:</label>
+              </div>
+              <div class="col-md-8">
+                <input type='text' name='nome' class="form-control" value='{{equipe.nome}}'>
+              </div>
+            </div>
+            -->
+          </div>
+          <div class="row" style="margin-left: 100px;">
+            <button type='submit' class="col-6 btn btn-sm btn-success btn-lg" style="margin-left: 100px;"
+              onclick="getItemValue()">Criar Equipe</button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="lists">
+            <div class="list">
+              <label class="col-form-label col-form-label-md fw-bold text-center">Profissionais Disponíveis</label>
+              {{#each instaladores}}
+              <div class="list-item" style='color: black;' draggable="true" name='{{_id}}'>{{nome}}</div>
+              {{else}}
+              {{/each}}
+            </div>
+            <div class="list">
+              <label class="col-form-label col-form-label-md fw-bold text-center">Profissionais Alocados</label>
+            </div>
+          </div>
+        </div>
+        <input type='hidden' class='ins0' name='ins0' id='ins0' value=''>
+        <input type='hidden' class='ins1' name='ins1' id='ins1' value=''>
+        <input type='hidden' class='ins2' name='ins2' id='ins2' value=''>
+      </div>
+    </div>
+  </div>
+</form>
+
+<script>
+  const list_items = document.querySelectorAll('.list-item');
+  const lists = document.querySelectorAll('.list');
+
+  let draggedItem = null;
+
+  for (let i = 0; i < list_items.length; i++) {
+    const item = list_items[i];
+
+    item.addEventListener('dragstart', function () {
+      draggedItem = item;
+      setTimeout(function () {
+        item.style.display = 'none';
+      }, 0)
+    });
+
+    item.addEventListener('dragend', function () {
+      this.className = 'item';
+      setTimeout(function () {
+        draggedItem.style.display = 'block';
+        draggedItem = null;
+      }, 0);
+    })
+
+    for (let j = 0; j < lists.length; j++) {
+      const list = lists[j];
+
+      list.addEventListener('dragover', function (e) {
+        e.preventDefault();
+      });
+
+      list.addEventListener('dragenter', function (e) {
+        e.preventDefault();
+        this.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
+      });
+
+      list.addEventListener('dragleave', function (e) {
+        this.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+      });
+
+      list.addEventListener('drop', function (e) {
+
+        console.log('drop');
+        this.append(draggedItem);
+        this.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+      });
+    }
+  }
+
+  function getItemValue() {
+    const item = document.querySelectorAll('.item');
+    for (i = 0; i < item.length; i++) {
+      const insitem = document.getElementsByClassName(item[i].getAttribute('class'));
+      var element = insitem[i].innerText;
+      switch (i) {
+        case 0:
+          var insdes = document.getElementById('ins0');
+          insdes.value = element;
+          break;
+        case 1:
+          var insdes = document.getElementById('ins1');
+          insdes.value = element
+          break;
+        case 2:
+          var insdes = document.getElementById('ins2');
+          insdes.value = element
+          break;          
+      }
+    }
+  }
+</script>

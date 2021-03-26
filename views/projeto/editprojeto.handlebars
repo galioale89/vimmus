@@ -1,0 +1,368 @@
+<script>
+    function mascara_dataprev() {
+        var data = document.getElementById('dataprev')
+        var currenTime = new Date()
+        var year = currenTime.getFullYear()
+        var month = currenTime.getMonth()
+        var day = currenTime.getDate()
+        var ano = data.value
+        ano1 = ano.substring(6, 10)
+        dia1 = ano.substring(0, 2)
+        mes1 = ano.substring(3, 5)
+
+        if (data.value.length == 2 || data.value.length == 5) {
+            data.value += "/"
+        }
+        if (data.value.length == 10) {
+            if (parseFloat(ano1) < parseFloat(year) || parseFloat(mes1) < parseFloat(month) + 1) {
+                data.value = ''
+            } else {
+                if (parseFloat(ano1) == parseFloat(year) && parseFloat(mes1) == parseFloat(month) + 1 && parseFloat(dia1) < parseFloat(day))
+                    data.value = ''
+            }
+        }
+    }
+</script>
+<div class="container card mt-2">
+    <div class="row">
+        <h4 class="shadow p-3 mb-2 bg-body rounded"
+            style="color:white;background: linear-gradient(200deg, rgb(73, 91, 182), rgb(43, 57, 128), rgb(16, 32, 110));">
+            Projeto: {{projeto.nome}} </h4>
+    </div>
+
+    <form action='/projeto/edicao' method='post'>
+
+        <!-- Modal -->
+        <div class="modal fade" id="custosModal" tabindex="1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Laçar custos detalhados do projeto</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4 text-end">
+                                <label class='col-form-label col-form-label-sm fw-bold'>Descrição</label><br>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Kit Gerador:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Estrutura:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Cerca:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Postes de Condução de
+                                        Fios:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Disjuntores:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>DPS:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Cabos:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Outros Componentes:
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <label class='col-form-label col-form-label-sm fw-bold'>UN</label><br>
+                                <input type='number' value='{{detalhe.unidadeEqu}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeEqu'>
+                                <input type='number' value='{{detalhe.unidadeEst}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeEst'>
+                                <input type='number' value='{{detalhe.unidadeCer}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeCer'>
+                                <input type='number' value='{{detalhe.unidadePos}}'
+                                    class='form-control form-control-sm mb-1' name='unidadePos'>
+                                <input type='number' value='{{detalhe.unidadeDis}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeDis'>
+                                <input type='number' value='{{detalhe.unidadeDPS}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeDPS'>
+                                <input type='number' value='{{detalhe.unidadeCab}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeCab'>
+                                <input type='number' value='{{detalhe.unidadeOcp}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeOcp'>
+                            </div>
+                            <div class="col-md-3">
+                                <label type='number' class='col-form-label col-form-label-sm fw-bold'>R$
+                                    Unitário</label><br>
+                                <input type='number' value='{{detalhe.vlrUniEqu}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniEqu'>
+                                <input type='number' value='{{detalhe.vlrUniEst}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniEst'>
+                                <input type='number' value='{{detalhe.vlrUniCer}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCer'>
+                                <input type='number' value='{{detalhe.vlrUniPos}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniPos'>
+                                <input type='number' value='{{detalhe.vlrUniDis}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDis'>
+                                <input type='number' value='{{detalhe.vlrUniDPS}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDPS'>
+                                <input type='number' value='{{detalhe.vlrUniCab}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCab'>
+                                <input type='number' value='{{detalhe.vlrUniOcp}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniOcp'>
+                            </div>
+                            <div class="col-md-4">
+                                <label class='col-form-label col-form-label-sm fw-bold'>R$ Total</label><br>
+                                <input type='number' value='{{detalhe.valorEqu}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorEqu'>
+                                <input type='number' value='{{detalhe.valorEst}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorEst'>
+                                <input type='number' value='{{detalhe.valorCer}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorCer'>
+                                <input type='number' value='{{detalhe.valorPos}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorPos'>
+                                <input type='number' value='{{detalhe.valorDis}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorDis'>
+                                <input type='number' value='{{detalhe.valorDPS}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorDPS'>
+                                <input type='number' value='{{detalhe.valorCab}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorCab'>
+                                <input type='number' value='{{detalhe.valorOcp}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorOcp'>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type='hidden' name='id' value='{{projeto._id}}'>
+
+        <div class="row">
+            <div class='btn-group col-12 mx-auto'>
+                <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-primary mb-1 active'> <i
+                        class="bi bi-house"></i> Principal</a>
+                <a href='/customdo/editar/instalacao/{{projeto._id}}/' class='btn btn-primary mb-1'> <i
+                        class="bi bi-tools"></i> Instalação</a>
+                <a href='/customdo/editar/projetista/{{projeto._id}}/' class='btn btn-primary mb-1'> <i
+                        class="bi bi-pencil"></i> Projetista</a>
+                <a href='/customdo/editar/gestao/{{projeto._id}}/' class='btn btn-primary mb-1'> <i
+                        class="bi bi-puzzle"></i> Gestão</a>
+                <a href='/gerenciamento/editar/gerenciamento/{{projeto._id}}/' class='btn btn-primary mb-1'><i
+                        class="bi bi-cursor"></i> Gerenciamento </a>
+                <a href='/gerenciamento/editar/tributos/{{projeto._id}}/' class='btn btn-primary mb-1'> <i
+                        class="bi bi-calculator"></i> Tributos </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="card col-md-6">
+                    <div class="row mt-2">
+                        <div class="col-md-5">
+                            <label for="nome" class=" fw-bold col-form-label col-form-label-sm"> Nome do Projeto:
+                            </label>
+                        </div>
+                        <div class="col-md-7">
+                            <input type="text" name="nome" id="nome" value='{{projeto.nome}}'
+                                class="form-control form-control-sm mb-2">
+                        </div>
+                        <div class="col-md-5">
+                            <label for="cliente" class="fw-bold col-form-label col-form-label-sm"> Cliente: </label>
+                        </div>
+                        <div class="col-md-7">
+                            <input type="text" name="cliente" id="cliente" value='{{projeto.cliente}}'
+                                class="form-control form-control-sm mb-2">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label for="vlrorc" class="fw-bold  col-form-label col-form-label-sm"> Valor Orçado do
+                                Projeto:
+                            </label>
+                        </div>
+                        <div class="col-md-7">
+                            <input type="number" name="valor" id="valor" value='{{projeto.valor}}'
+                                class="form-control form-control-sm mb-2" placeholder="R$" aria-placeholder="R$">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label for="vlreqi" class=" fw-bold col-form-label col-form-label-sm"> Valor Kit Gerador:
+                            </label>
+                        </div>
+                        <div class="col-md-7">
+                            <input type="number" name="equipamento" id="equipamento" value='{{projeto.vlrequ}}'
+                                class="form-control form-control-sm mb-2" placeholder="R$" aria-placeholder="R$">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label for="ptnprj" class=" fw-bold col-form-label col-form-label-sm"> Potência do
+                                Projeto:</label>
+                        </div>
+                        <div class="col-md-7">
+                            <input type="number" name="potencia" id="potencia" value='{{projeto.potencia}}'
+                                class="form-control form-control-sm mb-2" placeholder="kWp" aria-placeholder="R$">
+                        </div>
+                    </div>
+                    <!-- Provisório -->
+                    <div class="row">
+                        <label for="percom" class=" fw-bold col-form-label col-form-label-sm col-md-5"> Comissão:
+                        </label>
+                        <div class="col-md-7">
+                            <input type="number" name="comissao" id="comissao" value='{{projeto.percom}}'
+                                class="form-control form-control-sm mb-2" placeholder="%">
+                        </div>
+                    </div>
+                    <!-- -->
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input name='estsolo' class="form-check-input" type="checkbox" {{projeto.temEstSolo}}>
+                                <label class="form-check-label col-form-label col-form-label-sm"> Estrutura de Solo
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input name='cercamento' class="form-check-input" type="checkbox"
+                                    {{projeto.temCercamento}}>
+                                <label class="form-check-label col-form-label col-form-label-sm"> Cercamento </label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input name='poste' class="form-check-input" type="checkbox" {{projeto.temPosteCond}}>
+                                <label class="form-check-label col-form-label col-form-label-sm">Postes de Condução
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <!--
+                    <div class="row mt-4">
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="inputGroupFile01">Orçamento</label>
+                            <input type="file" class="form-control" id="inputGroupFile01">
+                        </div>
+                    </div>
+                    -->
+                </div>
+
+                <div class="col-md-6 card">
+                    <!--
+                    <div class="row mt-2">
+                        <label for="percom" class=" fw-bold col-form-label col-form-label-sm col-md-4"> Comissão:
+                        </label>
+                        <div class="col-md-6">
+                            <input type="number" name="comissao" id="comissao" value='{{projeto.percom}}'
+                                class="form-control form-control-sm mb-2" placeholder="%">
+                        </div>
+                    </div>
+                    -->
+                    <div class="row mt-2">
+                        <label class='fw-bold col-form-label col-form-label-sm col-md-4'>Responsável: </label>
+                        <div class="col-md-8">
+                            <input type='hidden' name='prnome' value='{{pr.nome}}'>
+                            <label class='col-form-label col-form-label-sm'>{{pr.nome}}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class='fw-bold col-form-label col-form-label-sm col-md-4 mt-1'>Alterar Responsável:
+                        </label>
+                        <div class="col-md-6">
+                            <select name='funres' class='form-select form-select-sm mb-3'>
+                                {{#each responsavel}}
+                                <option value='{{_id}}'>{{nome}}</option>
+                                {{else}}
+                                <option value=''>Nenhuma pessoa foi encontrada</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <div class='form-check'>
+                                <input class='form-check-input' type='checkbox' name='checkRes'>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class='fw-bold col-form-label col-form-label-sm col-md-4'>Regime Tributário: </label>
+                        <div class="col-md-8">
+                            <label class='col-form-label col-form-label-sm'>{{rp.regime}}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class='fw-bold col-form-label col-form-label-sm col-md-4 mt-1'>Alterar Regime: </label>
+                        <div class="col-md-6 mt-1">
+                            <select name='regime' class="form-select form-select-sm mb-3">
+                                {{#each regime}}
+                                <option value="{{_id}}">{{nome}}</option>
+                                {{else}}
+                                <option value=''>Nenhuma configuração encontrada</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <div class='form-check'>
+                                <input class='form-check-input' type='checkbox' name='checkRegime'>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-2">
+                        <div class="row mb-1" style="margin-left: 5px;">
+                            <div class="col-md-3 mt-1">
+                                <label class='col-form-label col-form-label-sm fw-bold'>Data Inicio:</label>
+                            </div>
+                            <div class="col-md-2 mt-1">
+                                <label class='col-form-label col-form-label-sm'>{{projeto.dataini}}</label>
+                            </div>
+                            <div class="col-md-4 mt-1">
+                                <label class="fw-bold col-form-label col-form-label-sm"> Previsão de Entrega:
+                                </label>
+                            </div>
+                            <div class="col-md-3 mt-1">
+                                <div class="col-md-10">
+                                    <input class='form-control form-control-sm' type='text' name='dataprev'
+                                        id='dataprev' placeholder='__/__/____' autocomplete="off" maxlength="10"
+                                        value='{{projeto.dataprev}}' onkeyup="mascara_dataprev()">
+                                </div>
+                            </div>
+                            <div class="row mt-1">
+                                <div class="col-md-2">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Motivo:</label>
+                                    <div class='form-check'>
+                                        <input class='mt-2 form-check-input' type='checkbox' name='checkDatPrev'>
+                                        <label class='form-check-label col-form-label col-form-label-sm'>Alterar</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <textarea name='motivo' class='form-control' rows='2'
+                                        placeholder="Observação">{{projeto.motivo}}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row mt-2">
+                        <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#custosModal"> <i
+                                class="bi bi-list-ul"></i> Lançar Custos
+                            Detalhados do Orçamento
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row mt-2">
+                        <div class="col-md-6 d-grid gap-2 col-12">
+                            <a href='/gerenciamento/dashboard/{{projeto._id}}' class='btn btn-sm btn-primary'><i
+                                    class="bi bi-bar-chart"></i> Dashboard</a>
+                        </div>
+                        <div class="col-md-6 d-grid gap-2 col-12">
+                            <button type="submit" class="btn btn-sm btn-success" name="aplicar"> <i
+                                    class="bi bi-check-circle"></i> Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

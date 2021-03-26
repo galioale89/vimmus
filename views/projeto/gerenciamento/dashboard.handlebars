@@ -1,0 +1,320 @@
+<div class="mt-2" style="width: 1300px; margin-left: 30px;">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="row text-center"
+                style="width: 220px; height: 300px; border-radius: 15px; border:solid 1px; border-color: rgba(220,220,220,1);">
+                <font face='Trebuchet MS'>
+                    <h5 class='fw-bold mt-2'>Lucro Líquido</h5>
+                        <div class="card text-white" style="background-color: rgb(71, 114, 207); width: 175px; margin-left: 10px;">
+                            <h4 class='text-center mt-2'>R$ {{projeto.lucroLiquido}}</h4>
+                        </div>                    
+                </font>
+                <a href='/gerenciamento/dashboard/{{projeto._id}}' style='text-decoration: none;'>
+                    <div class="row text-center" style="margin-left: 10px; margin-right: 10px;">
+                        <div class="card text-white" style="background-color: rgba(71, 135, 207, 1);">
+                            <div class="fw-bold card-header  text-center">Valor Total</div>
+                            <h2 class="text-center card-title">{{projeto.parLiqVlr}} %</h2>
+                        </div>
+                    </div>
+                </a>
+                <a href='/gerenciamento/dashboardliquido/{{projeto._id}}' style='text-decoration: none;'>
+                    <div class="row text-center mb-2" style="margin-left:10px ;margin-right: 10px;">
+                        <div class="card text-white" style="background-color: rgba(41, 8, 159);">
+                            <div class="fw-bold card-header">Total Faturado</div>
+                            <h2 class="text-center card-title">{{projeto.parLiqNfs}} %</h2>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class='row mt-2'>
+                <div
+                    style="width: 220px; height: 140px; border-radius: 15px; border:solid 1px; border-color: rgba(220,220,220,1);">
+                    <div class="row mt-1">
+                        <div class="col-md-6">
+                            <label class='fw-bold col-form-label col-form-label-sm'>NFS: </label>
+                        </div>
+                        <div class="col-md-5">
+                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrNFS}}<label>
+                        </div>
+                    </div>        
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class='fw-bold col-form-label col-form-label-sm'>Total: </label>
+                        </div>
+                        <div class="col-md-5">
+                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.valor}}<label>
+                        </div>
+                    </div>                                      
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class='fw-bold col-form-label col-form-label-sm'>Preço/kWp: </label>
+                        </div>
+                        <div class="col-md-5">
+                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.vrskwp}}<label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class='fw-bold col-form-label col-form-label-sm'>kWp: </label>
+                        </div>
+                        <div class="col-md-5">
+                            <label class='col-form-label col-form-label-sm'>{{projeto.potencia}}<label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div style="width: 220px; height: 60px">
+                    <div class="row">
+                        <a href='/projeto/edicao/{{projeto._id}}' class='btn btn-primary mb-1 btn-sm'> Editar </a>
+                        <a href='/projeto/vermais/{{projeto._id}}' class='btn btn-primary btn-sm'> Ver Mais </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-5 card">
+            <font face='Trebuchet MS' style="font-size: 5px;">
+                <h5 class='fw-bold mt-2'>Participação sobre o Total do Projeto</h5>
+            </font>
+            <div style="height: 500px;">
+            <canvas id='chartLL' class='mb-4' style="width: 100px; height: 100px;"></canvas>
+            </div>
+            <input id='parLiqVlr' name='parLiqVlr' type="hidden" value={{projeto.parLiqVlr}}>
+            <input id='parEquVlr' name='parEquVlr' type="hidden" value={{projeto.parEquVlr}}>
+            <input id='parDedVlr' name='parDedVlr' type="hidden" value={{projeto.parDedVlr}}>
+            <input id='parImpVlr' name='parImpVlr' type="hidden" value={{projeto.parImpVlr}}>
+            <input id='parISSVlr' name='parISSVlr' type="hidden" value={{projeto.parISSVlr}}>
+            <input id='parComVlr' name='parComVlr' type="hidden" value={{projeto.parComVlr}}>
+
+            <div class="container text-center mt-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card text-white mb-3"
+                            style="max-width: 22rem; background-color:  rgba(249, 240, 71, 1);">
+                            <div class="fw-bold card-header">Equipamento</div>
+                            <h4>R$ {{projeto.vlrequ}}</h4>
+                        </div>
+                        <div class='card text-white mb-3'
+                            style=" background-color: rgba(194, 189, 188, 1); max-width: 22rem;">
+                            <div class="fw-bold card-header">Deduções</div>
+                            <h4>R$ {{projeto.totcop}}</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card text-white mb-3"
+                            style="max-width: 22rem; background-color: rgba(255, 49, 53, 1);">
+                            <div class="fw-bold card-header">Tributos</div>
+                            <h4>R$ {{projeto.totalImposto}}</h4>
+
+                        </div>
+                        <div class="card text-white mb-3"
+                            style="max-width: 22rem; background-color: rgba(255, 49, 53, 1);">
+                            <div class="fw-bold card-header">ISS</div>
+                            <h4>R$ {{projeto.impNFS}}</h4>
+
+                        </div>
+                    </div>
+                    <div class="row text-center col-6 mx-auto">
+                        <div class="card text-white mb-3"
+                            style="background-color:rgba(255, 161, 8, 1); max-width: 22rem;">
+                            <div class="fw-bold card-header">Comissão</div>
+                            <h4>R$ {{projeto.vlrcom}}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5 card">
+            <font face='Trebuchet MS'>
+                <h5 class='fw-bold mt-2'>Participação das Deduções sobre o Total do Projeto</h5>
+            </font>
+            <div style="height: 500px;">
+            <canvas id='chartDes' style="width: 200px; height: 200px;"></canvas>
+            </div>
+            <input type='hidden' id='parIntVlr' value='{{projeto.parIntVlr}}'>
+            <input type='hidden' id='parGesVlr' value='{{projeto.parGesVlr}}'>
+            <input type='hidden' id='parProVlr' value='{{projeto.parProVlr}}'>
+            <input type='hidden' id='parDesVlr' value='{{projeto.parDesVlr}}'>
+            <input type='hidden' id='parEstVlr' value='{{projeto.parEstVlr}}'>
+            <input type='hidden' id='parAliVlr' value='{{projeto.parAliVlr}}'>
+            <input type='hidden' id='parResVlr' value='{{projeto.parResVlr}}'>
+
+            <div class="container text-center mt-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card text-white mb-3"
+                            style="max-width: 22rem; background-color: rgba(70, 70, 70, 1);">
+                            <div class="fw-bold card-header">Instalação</div>
+                            <h4>R$ {{projeto.totint}}</h4>
+                        </div>
+                        <div class="card text-white mb-3"
+                            style="max-width: 22rem; background-color: rgba(130, 130, 130, 1);">
+                            <div class="fw-bold card-header">Projetista</div>
+                            <h4>R$ {{projeto.totpro}}</h4>
+                        </div>
+                        {{#if projeto.parAliVlr}}
+                        <div class="card text-white mb-3"
+                            style="max-width: 22rem; background-color: rgba(220, 220, 220, 1);">
+                            <div class="fw-bold card-header">Alimentação</div>
+                            <h4>R$ {{projeto.totali}}</h4>
+                        </div>
+                        {{else}}
+                        {{/if}}
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card text-white mb-3"
+                            style="max-width: 22rem; background-color: rgba(100, 100, 100, 1);">
+                            <div class="fw-bold card-header">Gestão</div>
+                            <h4>R$ {{projeto.totges}}</h4>
+                        </div>
+                        {{#if projeto.parDesVlr}}
+                        <div class="card text-white mb-3"
+                            style="max-width: 22rem; background-color: rgba(160, 160, 160, 1);">
+                            <div class="fw-bold card-header">Deslocamento</div>
+                            <h4>R$ {{projeto.totdes}}</h4>
+                        </div>
+                        {{else}}
+                        {{/if}}
+                        {{#if projeto.parEstVlr}}
+                        <div class="card text-white mb-3"
+                            style="max-width: 22rem; background-color: rgba(160, 160, 160, 1);">
+                            <div class="fw-bold card-header">Estadia</div>
+                            <h4>R$ {{projeto.tothtl}}</h4>
+                        </div>
+                        {{else}}
+                        {{/if}}                                                
+                        <div class="card text-white mb-3"
+                            style="max-width: 22rem; background-color: rgba(190, 190, 190, 1);">
+                            <div class="fw-bold card-header">Reserva</div>
+                            <h4>R$ {{projeto.reserva}}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type='text/javascript'>
+        //Gráfico Pariticpação Lucro Liquido
+        const parLiqVlr = document.getElementById('parLiqVlr')
+        const parEquVlr = document.getElementById('parEquVlr')
+        const parDedVlr = document.getElementById('parDedVlr')
+        const parImpVlr = document.getElementById('parImpVlr')
+        const parISSVlr = document.getElementById('parISSVlr')
+        const parComVlr = document.getElementById('parComVlr')
+
+        const perLL = [parLiqVlr.value,
+        parEquVlr.value,
+        parDedVlr.value,
+        parImpVlr.value,
+        parISSVlr.value,
+        parComVlr.value]
+       
+        //Gráfico Participação Despesas
+        const parIntVlr = document.getElementById('parIntVlr')
+        const parGesVlr = document.getElementById('parGesVlr')
+        const parProVlr = document.getElementById('parProVlr')
+        const parDesVlr = document.getElementById('parDesVlr')
+        const parEstVlr = document.getElementById('parResVlr')
+        const parAliVlr = document.getElementById('parAliVlr')
+        const parResVlr = document.getElementById('parResVlr')
+
+        const perDes = [parIntVlr.value,
+        parGesVlr.value,
+        parProVlr.value,
+        parDesVlr.value,
+        parEstVlr.value,
+        parAliVlr.value,
+        parResVlr.value]
+
+        var ctxLL = document.getElementById('chartLL').getContext('2d');
+        var ctxDes = document.getElementById('chartDes').getContext('2d');
+
+        var chartLL = new Chart(ctxLL, {
+            type: 'doughnut',
+            data: {
+                labels: ['Lucro Líquido', 'Kit Gerador', 'Deduções', 'Tributos', 'ISS', 'Comissão'],
+                datasets: [{
+                    data: [perLL[0],
+                    perLL[1],
+                    perLL[2],
+                    perLL[3],
+                    perLL[4],
+                    perLL[5]],
+
+                    backgroundColor: [
+                        'rgba(71, 135, 207, 0.2)',
+                        'rgba(249, 240, 71, 0.2)',
+                        'rgba(194, 189, 188, 0.2)',
+                        'rgba(255, 49, 53, 0.2)',
+                        'rgba(255, 49, 53, 0.2)',
+                        'rgba(255, 161, 8, 0.2)'
+                    ],
+
+                    borderColor: [
+                        'rgba(71, 135, 207, 1)',
+                        'rgba(249, 240, 71, 1)',
+                        'rgba(194, 189, 188, 1)',
+                        'rgba(255, 49, 53, 1)',
+                        'rgba(255, 49, 53, 1)',
+                        'rgba(255, 161, 8, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+            responsive: true,
+            maintainAspectRatio: false,                
+                animation: {
+                    animateScale: true
+                }
+
+            }
+        });
+        
+        var chartDes = new Chart(ctxDes, {
+            type: 'doughnut',
+            data: {
+                labels: ['Instalação', 'Gestão', 'Projetista', 'Deslocamento','Alimentação','Estadia','Reserva'],
+                datasets: [{
+                    data: [perDes[0],
+                    perDes[1],
+                    perDes[2],
+                    perDes[3],
+                    perDes[4],
+                    perDes[5],
+                    perDes[6]],
+
+                    backgroundColor: [
+                        'rgba(70, 70, 70, 0.2)',
+                        'rgba(90, 90, 90, 0.2)',
+                        'rgba(110, 110, 110, 0.2)',
+                        'rgba(130, 130, 130, 0.2)',
+                        'rgba(150, 150, 150, 0.2)',
+                        'rgba(180, 180, 180, 0.2)',
+                        'rgba(210, 210, 210, 0.2)'
+                    ],
+
+                    borderColor: [
+                        'rgba(70, 70, 70, 1)',
+                        'rgba(90, 90, 90, 1)',
+                        'rgba(110, 110, 110, 1)',
+                        'rgba(130, 130, 130, 1)',
+                        'rgba(150, 150, 150, 1)',
+                        'rgba(180, 180, 180, 1)',
+                        'rgba(210, 210, 210, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    animateScale: true
+                }
+            }
+        });
+    </script>

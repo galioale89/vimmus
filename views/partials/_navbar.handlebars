@@ -1,0 +1,20 @@
+<nav class="navbar navbar-dark" style="width: fit-content%; background-color: rgb(20, 18, 163)">
+  <div class="container-fluid">
+
+    <a href="/" class="navbar-brand fw-bold " style="margin-left: 10px;"> {{#each user}} {{fantasia}} {{else}}Gestão de Custos para Instaladores{{/each}}
+    </a>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+      {{#if user}}
+      <a href='/projeto/novo'><button class=' btn btn-outline-light' type='button'><i class="bi bi-wallet2"></i> Novo
+          Projeto</button></a>
+      <a href='/projeto/consulta'><button class=' btn btn-outline-light' type='button'><i class="bi bi-search"></i>
+          Busca Projeto</button></a>
+      <a href='/projeto/menu'><button class=' btn btn-outline-light' type='button'><i
+            class="bi bi-house-fill"></i></button></a>      
+      {{else}}
+      <a href="/usuario/login/" class="btn btn-outline-light">Login</a>
+      <a href="/usuario/registro/" class="btn btn-outline-light">Registro</a>
+      {{/if}}
+    </div>
+  </div>
+</nav>

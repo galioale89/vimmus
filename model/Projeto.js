@@ -1,0 +1,565 @@
+const { ObjectId } = require('bson')
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+
+const Projeto = new Schema({
+    nome: {
+        type: String,
+        require: true
+    },
+    cliente:{
+        type: String,
+        require: false
+    },
+    valor: {
+         type: Number,
+         require: true
+    },
+    vlrequ: {
+        type: Number,
+        require: true
+    },
+    potencia: {
+        type: Number,
+        require: false
+    },
+    vrskwp: {
+        type: Number,
+        require: false
+    },
+    equipe:{
+        type: Number,
+        require: false
+    },
+    tothrs:{
+        type: Number,
+        require: false
+    },
+    diastr: {
+        type: Number,
+        require: false
+    },
+    uniest: {
+        type: Number,
+        require: false
+    },    
+    trbest: {
+        type: Number,
+        require: false
+    }, 
+    totest: {
+         type: Number,
+         require: false
+     },
+    unimod: {
+        type: Number,
+        require: false
+    },    
+    trbmod: {
+        type: Number,
+        require: false
+    }, 
+    totmod: {
+        type: Number,
+        require: false
+    },
+    uniinv: {
+        type: Number,
+        require: false
+    },    
+    trbinv: {
+        type: Number,
+        require: false
+    }, 
+    totinv: {
+        type: Number,
+        require: false
+    },
+    vlrhri: {
+        type: Number,
+        require: false
+    }, 
+    trbint: {
+      type: Number,
+      require: false  
+    },
+    totint: {
+        type: Number,
+        require: false
+    },
+    unisit: {
+        type: Number,
+        require: false
+    },
+    trbsit: {
+        type: Number,
+        require: false
+    },
+    totsit: {
+        type: Number,
+        require: false
+    },
+    uniuni: {
+        type: Number,
+        require: false
+    },
+    trbuni: {
+        type: Number,
+        require: false
+    },
+    totuni: {
+        type: Number,
+        require: false
+    },
+    unidis: {
+        type: Number,
+        require: false
+    },
+    trbdis: {
+        type: Number,
+        require: false
+    },
+    totdis: {
+        type: Number,
+        require: false
+    },
+    uniate: {
+        type: Number,
+        require: false
+    },
+    trbate: {
+        type: Number,
+        require: false
+    },
+    totate: {
+        type: Number,
+        require: false
+    },
+    unimem: {
+        type: Number,
+        require: false
+    },
+    trbmem: {
+        type: Number,
+        require: false
+    },
+    totmem: {
+        type: Number,
+        require: false
+    },
+    uniart: {
+        type: Number,
+        require: false
+    },
+    trbart: {
+        type: Number,
+        require: false
+    },
+    totart: {
+        type: Number,
+        require: false
+    },
+    vlrhrp: {
+        type: Number,
+        require: false
+    },
+    trbpro: {
+        type: Number,
+        require: false  
+      },
+    totpro: {
+        type: Number,
+        require: false
+    },
+    trbesc:{
+        type: Number,
+        require: false
+    },
+    totesc:{
+        type: Number,
+        require: false
+    },
+    trbvis: {
+        type: Number,
+        require: false
+    },
+    totvis: {
+        type: Number,
+        require: false
+    },
+    trbcom: {
+        type: Number,
+        require: false
+    },
+    totcom: {
+        type: Number,
+        require: false
+    },
+    trbcro: {
+        type: Number,
+        require: false
+    },
+    totcro: {
+        type: Number,
+        require: false
+    },
+    trbaqi: {
+        type: Number,
+        require: false
+    },
+    totaqi: {
+        type: Number,
+        require: false
+    },
+    trbrec: {
+        type: Number,
+        require: false
+    },
+    totrec: {
+        type: Number,
+        require: false
+    },
+    vlrhrg: {
+        type: Number,
+        require: false
+    }, 
+    trbges: {
+        type: Number,
+        require: false  
+      },
+    totges: {
+        type: Number,
+        require: false
+    },
+    vlrdia:{
+        type: Number,
+        require: false
+    },
+    tothtl:{
+        type: Number,
+        require: false
+    },
+    discmb:{
+        type: Number,
+        require: false     
+    },
+    ltocmb:{
+        type: Number,
+        require: false     
+    },
+    totcmb:{
+        type: Number,
+        require: false     
+    },
+    vlrali: {
+        type: Number,
+        require: false
+    },
+    totali:{
+        type: Number,
+        require: false
+    },
+    totdes: {
+        type: Number,
+        require: false
+    },
+    totcop: {
+        type: Number,
+        require: false  
+    },
+    reserva: {
+        type: Number,
+        require: false
+    },
+    rescon: {
+        type: Number,
+        require: false
+    },
+    resger:{
+        type: Number,
+        require: false
+    },    
+    conadd: {
+        type: Number,
+        require: false
+    },
+    outcer:{
+        type: Number,
+        require: false
+    },
+    outpos:{
+        type: Number,
+        require: false
+    },
+    impele:{
+        type: Number,
+        require: false
+    },
+    seguro:{
+        type: Number,
+        require: false
+    },
+    percom:{
+        type: Number,
+        require: false
+    },
+    vlrcom:{
+        type: Number,
+        require: false
+    },
+    impostoSimples: {
+        type: Number,
+        require: false
+    },
+    impostoIRPJ: {
+        type: Number,
+        require: false
+    },
+    impostoAdd: {
+        type: Number,
+        require: false
+    },
+    impostoCSLL: {
+        type: Number,
+        require: false
+    },
+    impostoICMS: {
+        type: Number,
+        require: false
+    },
+    impostoPIS: {
+        type: Number,
+        require: false
+    },
+    impostoCOFINS: {
+        type: Number,
+        require: false
+    },
+    totalImposto:{
+        type: Number,
+        require: false
+    },
+    custoPlano:{
+        type: Number,
+        require: false
+    },
+    custoTotal:{
+        type: Number,
+        require: false
+    },
+    lbaimp:{
+        type: Number,
+        require: false
+    },
+    impNFS:{
+        type: Number,
+        require: false
+    },
+    vlrNFS:{
+        type: Number,
+        require: false
+    },
+    lucroBruto: {
+        type: Number,
+        require: false
+    },
+    lucroLiquido: {
+        type: Number,
+        require: false
+    },
+    parLiqVlr:{
+        type: Number,
+        require: false
+    },
+    parEquVlr:{
+        type: Number,
+        require: false
+    },
+    parIntVlr:{
+        type: Number,
+        require: false
+    },
+    parGesVlr:{
+        type: Number,
+        require: false
+    },
+    parProVlr:{
+        type: Number,
+        require: false
+    },
+    parDesVlr:{
+        type: Number,
+        require: false
+    },
+    parCmbVlr:{
+        type: Number,
+        require: false
+    },
+    parAliVlr:{
+        type: Number,
+        require: false
+    },
+    parEstVlr:{
+        type: Number,
+        require: false
+    },     
+    parISSVlr:{
+        type: Number,
+        require: false
+    },
+    parImpVlr:{
+        type: Number,
+        require: false
+    },   
+    parResVlr:{
+        type: Number,
+        require: false
+    },
+    parDedVlr:{
+        type: Number,
+        require: false
+    },
+    parComVlr:{
+        type: Number,
+        require: false
+    },
+    parLiqNfs:{
+        type: Number,
+        require: false
+    },    
+    parIntNfs:{
+        type: Number,
+        require: false
+    },
+    parGesNfs:{
+        type: Number,
+        require: false
+    },
+    parProNfs:{
+        type: Number,
+        require: false
+    },
+    parDesNfs:{
+        type: Number,
+        require: false
+    },
+    parCmbNfs:{
+        type: Number,
+        require: false
+    },
+    parAliNfs:{
+        type: Number,
+        require: false
+    },
+    parEstNfs:{
+        type: Number,
+        require: false
+    },       
+    parISSNfs:{
+        type: Number,
+        require: false
+    },
+    parImpNfs:{
+        type: Number,
+        require: false
+    }, 
+    parResNfs:{
+        type: Number,
+        require: false
+    },
+    parDedNfs:{
+        type: Number,
+        require: false
+    },
+    parComNfs:{
+        type: Number,
+        require: false
+    },
+    configuracao:{
+        type: Schema.Types.ObjectId,
+        ref: 'configuracao',
+        require: false
+    },
+    regime:{
+        type: Schema.Types.ObjectId,
+        ref: 'regime',
+        require: false
+    },
+    obstxt: {
+        type: String,
+        require: false
+    },    
+    funres:{ 
+        type: Schema.Types.ObjectId,
+        ref: 'pessoa',
+        require: false
+    },
+    funpro:{
+         type: Schema.Types.ObjectId,
+         ref: 'pessoa',
+         require: false 
+    },
+    funins:{
+        type: Schema.Types.ObjectId,
+        ref: 'pessoa',
+        require: false 
+   },
+    ehDireto:{
+        type: Boolean,
+        require: true
+    },
+    temCercamento:{
+        type: String,
+        require: false
+    },
+    temEstSolo:{
+        type: String,
+        require: false
+    },
+    temPosteCond:{
+        type: String,
+        require: false
+    },    
+    foiRealizado:{
+        type: Boolean,
+        require: true
+    },
+    dataini: {
+        type: String,
+        require: true
+    },
+    dataprev: {
+        type: String,
+        require: true
+    },
+    dataord: {
+        type: String,
+        require: true
+    },    
+    ultdata: {
+        type: String,
+        require: false
+    },
+    motivo: {
+        type: String,
+        require: false
+    },          
+    atrasado:{
+        type: Boolean,
+        require: false
+    }, 
+    datafim:{
+        type: String,
+        require: false
+    },
+    data: {
+       type: String,
+       require: false
+    },
+    datareg: {
+       type: Date,
+       default: Date.now()
+    }
+})
+
+mongoose.model('projeto', Projeto)

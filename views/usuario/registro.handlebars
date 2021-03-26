@@ -1,0 +1,108 @@
+<script>
+    function valida_cnpj() {
+        var doc = document.getElementById('cnpj')
+
+        if (doc.value.length == 2 || doc.value.length == 6) {
+            doc.value += '.'
+        }
+        if (doc.value.length == 10) {
+            doc.value += '/'
+        }
+        if (doc.value.length == 15) {
+            doc.value += '-'
+        }
+        if (doc.value.length == 18) {
+
+            var d1 = cnpj.value
+            var p1 = d1.substring(0, 2)
+            var p2 = d1.substring(3, 6)
+            var p3 = d1.substring(7, 10)
+            var p4 = d1.substring(11, 15)
+            var p5 = d1.substring(16, 18)
+            var numdoc = p1 + p2 + p3 + p4 + p5
+
+            if (numdoc == "00000000000000" ||
+                numdoc == "11111111111111" ||
+                numdoc == "22222222222222" ||
+                numdoc == "33333333333333" ||
+                numdoc == "44444444444444" ||
+                numdoc == "55555555555555" ||
+                numdoc == "66666666666666" ||
+                numdoc == "77777777777777" ||
+                numdoc == "88888888888888" ||
+                numdoc == "99999999999999") {
+                cnpj.value = ''
+            }
+            cnpj.value = numdoc
+            // Valida DVs
+            var tamanho = numdoc.length - 2
+            var numeros = numdoc.substring(0, tamanho)
+            var digitos = numdoc.substring(tamanho)
+            var soma = 0
+            var pos = tamanho - 7;
+            for (i = tamanho; i >= 1; i--) {
+                soma += numeros.charAt(tamanho - i) * pos--;
+                if (pos < 2)
+                    pos = 9;
+            }
+            var resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+            if (resultado != digitos.charAt(0)) {
+                cnpj.value = ''
+            }
+
+            tamanho = tamanho + 1;
+            numeros = numdoc.substring(0, tamanho);
+            soma = 0;
+            pos = tamanho - 7;
+            for (i = tamanho; i >= 1; i--) {
+                soma += numeros.charAt(tamanho - i) * pos--;
+                if (pos < 2)
+                    pos = 9;
+            }
+            resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+            if (resultado != digitos.charAt(1)) {
+                cnpj.value = ''
+            }
+        }
+
+    }
+</script>
+<div style="width: 700px; height: 100px; margin-left: 350px;margin-top: 10px;">
+    <div class="card">
+        <div class="card-body">
+            <img src="vimmus.png" width="80px" style="margin-top: 10px;"/>
+            <h6 class="text-center mt-1 mb-4">Registrar Novo Usuário</h6>
+            <form action="/usuario/registro" method="post">
+                <div class="row">
+                    <div class="col-md-4 text-end">
+                        <label class='col-form-label col-form-label-sm' for="razao">Razão Social: </label><br>
+                        <label class='col-form-label col-form-label-sm mt-1' for="fantasia">Nome Fantasia: </label><br>
+                        <label class='col-form-label col-form-label-sm mt-1' for="cnpj">CNPJ: </label><br>
+                        <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Endereço Empresa: </label><br>
+                        <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Cidade: </label><br>
+                        <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Estado: </label><br>
+                        <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Telefone: </label><br>
+                        <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Nome de Usuário: </label><br>
+                        <label class='col-form-label col-form-label-sm mt-1' for="email">E-mail: </label><br>
+                        <label class='col-form-label col-form-label-sm mt-1' for="senha">Senha: </label><br>
+                        <label class='col-form-label col-form-label-sm mt-1' for="senha">Repita sua senha: </label><br>
+                    </div>
+                    <div class="col-md-7">
+                        <input name="razao" id="razao" class="form-control form-control-sm">
+                        <input name="fantasia" id="fantasia" class="form-control form-control-sm mt-1">
+                        <input type='text' class='form-control form-control-sm mt-1' maxlength="18" autocomplete="off"
+                            id='cnpj' name='cnpj' onkeyup="valida_cnpj()">
+                        <input name="endereco" id="endereo" class="form-control form-control-sm mt-1">
+                        <input name="cidade" id="cidade" class="form-control form-control-sm mt-1">
+                        <input name="uf" id="uf" class="form-control form-control-sm mt-1">
+                        <input name="telefone" id="telefone" class="form-control form-control-sm mt-1">
+                        <input name="usuario" id="usuario" class="form-control form-control-sm mt-1">
+                        <input name="email" type="email" class="form-control form-control-sm mt-1">
+                        <input name="senha" type="password" class="form-control form-control-sm mt-1">
+                        <input name="senharep" type="password" class="form-control form-control-sm mt-1">
+                    </div>
+                    <br><button type="submit" class="btn btn-sm btn-success mt-4">Registrar</button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,325 @@
+<style type="text/css">
+  .fundo {
+    position: relative;
+    background: linear-gradient(135deg, rgba(112, 152, 199, 0.63), rgba(19, 67, 121, 0.63));
+    background-image: url(fundosite.png);
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+  }
+
+  .percentuais {
+    position: relative;
+    height: 100%;
+    margin-left: 100px;
+  }
+
+  .sessao {
+    background: linear-gradient(135deg, rgb(75, 121, 219), rgb(34, 57, 161), rgb(17, 15, 133));
+    border: solid 8px;
+    border-color: cadetblue;
+    border-radius: 100px;
+    width: 100px;
+    height: 100px;
+    font-size: 15px;
+    margin-left: 70px;
+    position: relative;
+  }
+
+  .textoper {
+    text-align: center;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: 500;
+    color: white;
+  }
+
+  .margem {
+    width: fit-content;
+    height: fit-content;
+    border: solid 1px;
+    border-color: rgb(155, 155, 155, 0.5);
+    margin-left: 15px;
+    padding: 5px;
+    border-radius: 10px;
+    background: white;
+  }
+
+  .quadro {
+    background: white;
+    border: solid 1px;
+    border-color: rgba(153, 151, 151, 0.384);
+    border-radius: 10px;
+    width: fit-content;
+    height: fit-content;
+    margin-left: 15px;
+    padding: 4px;
+  }
+
+  .botaomenu {
+    height: 30px;
+    width: 100%;
+    text-decoration: none;
+    border-radius: 10px;
+    color: rgb(11, 19, 58, 1);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .botaomenu:hover {
+    height: 30px;
+    width: 100px;
+    margin-left: 28px;
+    background: linear-gradient(10deg, rgb(57, 65, 110), rgb(28, 51, 167), rgb(0, 42, 255));
+    color: white;
+    border: solid 1px;
+    border-color: rgb(155, 155, 155);
+    border-radius: 10px;
+    text-decoration: none;
+  }
+
+  .botao {
+    text-shadow: 1px 1px 10px rgb(238, 237, 245);
+    border-radius: 30px;
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+    position: relative;
+  }
+
+  .botao:hover {
+    background: rgba(14, 12, 151, 0.9);
+  }
+
+  .btnAcesso{
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(5, 15, 58)
+  }
+
+  .btnAcesso:hover{
+    font-weight: 700;
+    color: rgb(7, 19, 73)
+  }
+  
+  .icone {
+    margin-left: 7px;
+    color: white;
+  }
+
+  .ativado {
+    background: linear-gradient(135deg, rgb(116, 114, 238), rgb(70, 68, 161), rgb(7, 6, 112));
+    background-color: rgba(31, 27, 255, 0.9);
+  }
+
+  .desativado {
+    background-color: rgba(31, 27, 255, 0.185);
+    text-shadow: 1px 1px 10px rgb(238, 237, 245);
+    border-radius: 50px;
+    width: 50px;
+    height: 50px;
+    border: solid 4px;
+    font-size: 22px;
+    border-color: rgba(31, 27, 255, 0.185);
+  }
+
+  .entrada {
+    text-align: center;
+    margin-left: 10px;
+    width: fit-content;
+    height: 100%;
+    border-radius: 5px;
+    background-color: rgb(255, 255, 255);
+    position: static;
+    box-shadow: 1px -4px 10px rgba(139, 136, 136, 0.77);
+  }
+
+  .titulo {
+    height: 100%;
+    margin-left: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: 'Segoe UI';
+    color: white;
+  }
+
+  .contorno {
+    width: 150px;
+    border-radius: 10px;
+    border: solid 1px;
+    background: linear-gradient(200deg, rgb(62, 81, 177), rgb(11, 19, 58, 1), rgb(11, 19, 58, 1));
+  }
+
+  .contorno-titulo{
+    font-size: 15px;
+    text-align: center;
+    color:white;
+    border-radius: 10px;
+    border: solid 1px; 
+    background: linear-gradient(250deg, rgb(62, 81, 177), rgb(11, 19, 58, 1)90%, rgb(11, 19, 58, 1));
+    font-weight: 500;
+  }
+
+  table,
+  tr,
+  td {
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 500;
+  }
+</style>
+
+<div class='fundo'>
+  <div class='row' style="width: 100%;">
+    <div class='col-md-1'>
+      <div class="entrada">
+        <img src="vimmus.png" width="100" style="margin-top: 10px;border-radius: 100px;" />
+        <div class="row mt-1">
+          <div class='row' style="width: fit-content;">
+            <label class='col-form-label titulo contorno' for="">Projetos</label>
+          </div>
+            <a href="/projeto/novo/" class="botaomenu"> <i class='bi bi-file-arrow-up'></i> Novo</a>
+            <a href="/projeto/consulta/" class="botaomenu"> <i class='bi bi-search'></i> Buscar</a>
+        </div>
+
+        <div class="row">
+          <div class="row" style="width: fit-content;">
+            <label class='col-form-label titulo contorno'>Pessoas</label>
+          </div>
+            <a href='/pessoa/novo/' class="botaomenu menu"><i class='bi bi-person-circle'></i> Novo</a>
+            <a href='/pessoa/consulta/' class="botaomenu"><i class='bi bi-search'></i> Buscar</a>
+        </div>
+
+        <div class="row">
+          <div class="row" style="width: fit-content;">
+            <label class='col-form-label titulo contorno'>Configuracações</label>
+          </div>
+            <a href='/configuracao/novo/' class="botaomenu"><i class='bi bi-wrench'></i> Novo</a>
+            <a href='/configuracao/consulta/' class="botaomenu"><i class='bi bi-search'></i> Buscar</a>
+        </div>
+        <div class="row">
+          <div class="row">
+            <label class='col-form-label col-form-label-sm titulo contorno'>Regime</label>
+          </div>
+            <a href='/configuracao/addregime/' class="botaomenu"><i class='bi bi-calculator'></i> Novo</a>
+            <a href='/configuracao/consultaregime/' class="botaomenu"><i class='bi bi-search'></i> Buscar</a>          
+        </div>
+          <a href='/usuario/editar/{{id}}' class='btnAcesso'>Minha Conta</a><br>
+          <a href='/logout' class='btnAcesso'>Sair</a>
+        
+      </div>
+    </div>
+    <div class='col-md-5' style="margin-left: 50px;">
+      <div class="row margem mt-2 mb-2" style="width: 100%;">
+        <label class='col-form-label col-form-label-sm contorno-titulo'>Lucro Liquido Médio Realizado</label>
+        <div class="col-md-6">
+          <label class='col-form-label col-form-label-sm' style="width: 100%; text-align: center;font-weight: 500;">Sobre o Total
+            Orçado</label>
+          <div class='sessao'>
+            <div class='textoper'>{{perVlrMed}}%</div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label class='col-form-label col-form-label-sm' style="width: 100%; text-align: center;font-weight: 500">Sobre o
+            Faturado</label>
+          <div class='sessao'>
+            <div class='textoper'>{{perNfsMed}}%</div>
+          </div>
+        </div>
+      </div>
+      <div class='quadro' style="width: 100%; height: fit-content;">
+        <div class='row text-center'>
+          <div class="contorno-titulo" style=" padding: 10px;">
+            <table>
+              <td><div style="margin-left: 60px;border: solid 3px;padding: 5px;border-radius: 10px;border-color: cadetblue;">Projetos Realizados: {{perRealizado}}%</div></td>
+              <td><label class='col-form-label' style="margin-left: 50px;margin-left: 60px;border: solid 3px;padding: 5px;border-radius: 10px;border-color: cadetblue;">Total de Projetos: {{numprj}}</label></td>
+            </table>
+          </div>
+        </div>
+        <input type='hidden' id='numprj' value='{{numprj}}'>
+        <input type='hidden' id='numprjrlz' value='{{numprjrlz}}'>
+        <input type='hidden' id='numprjnrl' value='{{numprjnrl}}'>
+        <div style="height: 300px; width: 100%; padding: 5px;">
+          <canvas id='chartPrj' class='mb-1'></canvas>
+        </div>
+      </div>
+    </div>
+    <div class='col-md-4 mt-2'>
+      <div class='quadro' style="border: solid 1px; border-color: rgba(153, 151, 151, 0.13);margin-inline-start: 5px;">
+        <table style="width: 600px;">
+          <tr class='contorno-titulo'>
+            <th>Projetos Abertos</th>
+            <th>Data Cadastro</th>
+            <th>Data Previsão</th>
+            <th></th>
+          </tr>
+          {{#each dataord}}
+          <tr>
+            <td>{{nome}}</td>
+            <td>{{dataini}}</td>
+            <td>{{dataprev}}</td>
+            <td style="padding-top: 3px; padding-bottom: 3px;">
+              <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
+                <a href='/projeto/vermais/{{_id}}' class='botao ativado'><i class="bi bi-eye icone"></i></a>
+                <a href='/projeto/edicao/{{_id}}' class='botao ativado'><i class="bi bi-pen icone"></i></a>
+                <a href='/projeto/realizar/{{_id}}' class='botao ativado'> <i class="bi bi-check2-circle icone"></i>
+                </a>
+                <a href='/projeto/confirmaexclusao/{{_id}}' class="botao ativado"><i class="bi bi-trash icone"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {{else}}
+          {{/each}}
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script type='text/javascript'>
+    var numprj = document.getElementById('numprj')
+    var numprjrlz = document.getElementById('numprjrlz')
+    var numprjnrl = document.getElementById('numprjnrl')
+    var ctxPrj = document.getElementById('chartPrj').getContext('2d');
+    var chartPrj = new Chart(ctxPrj, {
+      type: 'bar',
+      data: {
+        labels: ['Realizado', 'Aberto'],
+        datasets: [{
+          data: [numprjrlz.value, numprjnrl.value],
+
+          backgroundColor: [
+            'rgba(37, 139, 33, 0.2)',
+            'rgba(50, 140, 230, 0.2)',
+          ],
+
+          borderColor: [
+            'rgba(37, 139, 33, 1)',
+            'rgba(50, 140, 230, 1)',
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        responsive: true,
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true,
+            }
+          }]
+        },
+        legend: {
+          labels: {
+            usePointStyle: true,
+            boxWidth: 0
+          },
+          display: false,
+        },
+      }
+    });
+  </script>

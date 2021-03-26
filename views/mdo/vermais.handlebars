@@ -1,0 +1,135 @@
+<style>
+    .header {
+        padding: 10px;
+        border: solid 1px;
+        border-color: grey;
+        border-radius: 5px;
+        background-color: rgb(75, 73, 204);
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .contorno {
+        color: white;
+        width: 100%;
+        border-radius: 10px;
+        border: solid 1px;
+        background: linear-gradient(135deg, rgb(62, 81, 177), rgb(11, 19, 58, 1), rgb(11, 19, 58, 1));
+        padding: 10px;
+        text-align: center;
+    }
+
+    .selecao {
+        text-decoration: none;
+    }
+
+    .selecao:hover {
+        font-weight: bold;
+        position: static;
+        background-color: rgba(40,70,250);
+        color:white;
+        padding: 2px;
+    }
+
+    th {
+        text-align: center;
+        width: 70%;
+        position: sticky;
+    }
+    
+
+    table,
+    tr {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 15px;
+        border: solid 1px;
+        border-color: rgba(235, 225, 225, 0.8);
+        border-left-color: white;
+        border-right-color: white;
+        border-top-color: white;
+    }
+
+    .quadro {
+        background: white;
+        border: solid 1px;
+        border-color: rgba(153, 151, 151, 0.384);
+        border-radius: 10px;
+        width: 100%;
+        height: 100%;
+        padding: 4px;
+    }
+</style>
+
+<div style="position: static;width: 100%;height: 100%;padding: 10px;">
+    <div class="header">Projetos {{pessoa.nome}}</div>
+    <div class="row" style="width: 100%;padding-left: 20px;">
+        <div class="col-md-4" style="padding: 10px;">
+            <h6 class="contorno">Responsável</h6>
+            <div class="quadro">
+                <table>
+                    <tr>
+                        <th >Nome</th>
+                        <th >Data Previsão</th>
+                    </tr>
+                    {{#each prjres}}
+                    <tr>
+                        <td><a href='/projeto/edicao/{{_id}}' class='selecao'>{{nome}}</a></td>
+                        <td style="text-align: right;">{{dataprev}}</td>
+                    </tr>
+                    {{else}}
+                    {{/each}}
+                    <tr>
+                        <td colspan="2" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{qtdres}}</td>
+                    </tr>                    
+                </table>
+            </div>
+        </div>
+        <div class="col-md-4" style="padding: 10px">
+            <h6 class='contorno'>Instalador</h6>
+            <div class="quadro">
+                <table>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Data Previsão</th>
+                    </tr>
+                    {{#each prjins}}
+                    <tr>
+                        <td><a href='/projeto/edicao/{{_id}}' class='selecao'>{{nome}}</a></td>
+                        <td style="text-align: right;">{{dataprev}}</td>
+                    </tr>
+                    {{else}}
+                    {{/each}}
+                    <tr >
+                        <td colspan="2" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{qtdins}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-4" style="padding: 10px">
+            <h6 class="contorno">Projetista</h6>
+            <div class="quadro">
+                <table>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Data Previsão</th>
+                    </tr>
+                    {{#each prjpro}}
+                    <tr>
+                        <td><a href='/projeto/edicao/{{_id}}' class='selecao'>{{nome}}</a></td>
+                        <td style="text-align: right;">{{dataprev}}</td>
+                    </tr>
+                    {{else}}
+                    {{/each}}
+                    <tr>
+                        <td colspan="2" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{qtdpro}}</td>
+                    </tr>                    
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>

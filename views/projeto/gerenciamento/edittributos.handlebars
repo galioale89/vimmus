@@ -1,0 +1,294 @@
+<style>
+    .contorno {
+        color: white;
+        border-radius: 10px;
+        border: solid 1px;
+        background: linear-gradient(135deg, rgb(62, 81, 177), rgb(11, 19, 58, 1), rgb(11, 19, 58, 1));
+    }
+</style>
+
+<div class='container card mt-2' style="width: 1200px; margin-left: 113px;">
+    <div class="row">
+        <h4 class="shadow p-3 bg-body rounded"
+            style="color:white;background: linear-gradient(200deg, rgb(73, 91, 182), rgb(43, 57, 128), rgb(16, 32, 110));">
+            Projeto: {{projeto.nome}} </h4>
+    </div>
+    
+    <form action="/gerenciamento/editar/tributos" method="post">
+
+        <input type='hidden' name='id' value='{{projeto._id}}'></input>
+        <div class="row">
+            <div class='btn-group col-12 mx-auto'>
+                <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-primary mb-1'> <i class="bi bi-house"></i>
+                    Principal</a>
+                <a href='/customdo/editar/instalacao/{{projeto._id}}/' class='btn btn-primary mb-1'> <i
+                        class="bi bi-tools"></i> Instalação</a>
+                <a href='/customdo/editar/projetista/{{projeto._id}}/' class='btn btn-primary mb-1'> <i
+                        class="bi bi-pencil"></i> Projetista</a>
+                <a href='/customdo/editar/gestao/{{projeto._id}}/' class='btn btn-primary mb-1'> <i
+                        class="bi bi-puzzle"></i> Gestão</a>
+                <a href='/gerenciamento/editar/gerenciamento/{{projeto._id}}/' class='btn btn-primary mb-1'><i
+                        class="bi bi-cursor"></i> Gerenciamento </a>
+                <a href='/gerenciamento/editar/tributos/{{projeto._id}}/' class='btn btn-primary mb-1 active'> <i
+                        class="bi bi-calculator"></i> Tributos </a>
+            </div>
+        </div>
+
+        <div class='row mb-2'>
+            <div class="col-md-5 mt-2">
+                <div class="row">
+                    <div class="card">
+                        <div class="row">
+                            <label class="fw-bold col-form-label col-form-label-sm contorno">PARÂMETROS</label>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-7">
+                                <label for="estrutura" class="fw-bold col-form-label col-form-label-sm">Regime
+                                    Tributário:</label>
+                                <label class="fw-bold col-form-label col-form-label-sm" />Projeção Faturamento
+                                ou Lucro:
+                                {{#if ehSimples }}
+                                <label class="fw-bold col-form-label col-form-label-sm">Fator de redução
+                                    Simples:</label>
+                                </label>
+                                {{else}}
+                                {{/if}}
+                            </div>
+                            <div class="col-md-5">
+                                <label class='col-form-label col-form-label-sm'>{{regime.regime}}</label><br>
+                                {{#if ehSimples }}
+                                <label class="col-form-label col-form-label-sm">R$ {{regime.proje}}</label>
+                                <label class="col-form-label col-form-label-sm">R$ {{regime.vlrred}}</label>
+                                {{else}}
+                                {{/if}}
+                                {{#if ehLR}}
+                                <label class="col-form-label col-form-label-sm">R$ {{regime.prjLR}}</label>
+                                {{else}}
+                                {{/if}}
+                                {{#if ehLP}}
+                                <label class="col-form-label col-form-label-sm">R$ {{regime.prjLP}}</label>
+                                {{else}}
+                                {{/if}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="card">
+                        <div class="row">
+                            <label class="fw-bold col-form-label col-form-label-sm contorno">ALÍQUOTAS </label><br>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label class="fw-bold col-form-label col-form-label-sm">DAS: </label><br>
+                                <label class="fw-bold col-form-label col-form-label-sm">NF-s: </label><br>
+                                <label class="fw-bold col-form-label col-form-label-sm">ICMS: </label>
+
+                            </div>
+                            <div class="col-md-2">
+                                <br>
+                                <label class="col-form-label col-form-label-sm">{{regime.alqDAS}} %</label><br>
+                                <label class="col-form-label col-form-label-sm">{{regime.alqNFS}} %</label><br>
+                                <label class="col-form-label col-form-label-sm">{{regime.alqICMS}}%</label>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="fw-bold col-form-label col-form-label-sm">IRPJ: </label><br>
+                                <label class="fw-bold col-form-label col-form-label-sm">IRPJ Adicional: </label><br>
+                                <label class="fw-bold col-form-label col-form-label-sm">PIS: </label><br>
+                                <label class="fw-bold col-form-label col-form-label-sm">COFINS: </label><br>
+                                <label class="fw-bold col-form-label col-form-label-sm">CSLL: </label>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="col-form-label col-form-label-sm">{{regime.alqIRPJ}}%</label><br>
+                                <label class="col-form-label col-form-label-sm">{{regime.alqIRPJAdd}}%</label><br>
+                                <label class="col-form-label col-form-label-sm">{{regime.alqPIS}}%</label><br>
+                                <label class="col-form-label col-form-label-sm">{{regime.alqCOFINS}}%</label><br>
+                                <label class="col-form-label col-form-label-sm">{{regime.alqCSLL}}%</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row col-6 gap-2 mt-2" style="margin-left: 140px;">
+                    <div class="row mt-2">
+                        <button type='submit' class='btn btn-sm btn-success'> <i class="bi bi-check-circle"></i>
+                            Aplicar</button>
+                    </div>
+                    <div class="row">
+                        <a href='/gerenciamento/dashboard/{{projeto._id}}' class='btn btn-sm btn-primary form-control'>
+                            <i class="bi bi-bar-chart"></i> Dashboard</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 card mt-2">
+                <div class="row">
+                    <label class="fw-bold col-form-label col-form-label-sm contorno">VALORES DOS TRIBUTOS (R$): </label>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label class="fw-bold col-form-label col-form-label-sm">DAS: </label>
+                    </div>
+                    <div class="col-md-7">
+                        <label class="col-form-label col-form-label-sm">R$ {{projeto.impostoSimples}}</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label class="fw-bold col-form-label col-form-label-sm">ISS: </label>
+                    </div>
+                    <div class="col-md-7">
+                        <label class="col-form-label col-form-label-sm">R$ {{projeto.impNFS}}</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label class="fw-bold col-form-label col-form-label-sm">IRPJ: </label>
+                    </div>
+                    <div class="col-md-7">
+                        <label class="col-form-label col-form-label-sm">R$ {{projeto.impostoIRPJ}}</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label class="fw-bold col-form-label col-form-label-sm">IRPJ Adicional: </label>
+                    </div>
+                    <div class="col-md-7">
+                        <label class="col-form-label col-form-label-sm">R$ {{projeto.impostoAdd}} </label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5">
+                        <label class="fw-bold col-form-label col-form-label-sm">CSLL: </label>
+                    </div>
+                    <div class="col-md-7">
+                        <label class="col-form-label col-form-label-sm">R$ {{projeto.impostoCSLL}} </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label class="fw-bold col-form-label col-form-label-sm col-md-5">PIS: </label>
+                    </div>
+                    <div class="col-md-7">
+                        <label class="col-form-label col-form-label-sm">R$ {{projeto.impostoPIS}} </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label class="fw-bold col-form-label col-form-label-sm">COFINS: </label>
+                    </div>
+                    <div class="col-md-7">
+                        <label class="col-form-label col-form-label-sm">R$ {{projeto.impostoCOFINS}} </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label class="fw-bold col-form-label col-form-label-sm">ICMS: </label>
+                    </div>
+                    <div class="col-md-7">
+                        <label class="col-form-label col-form-label-sm">R$ {{projeto.impostoICMS}} </label>
+                    </div>
+                </div>
+                <hr>
+                <div class="row mb-3">
+                    <div class="col-md-5">
+                        <label class="fw-bold col-form-label col-form-label-sm">Total: </label>
+                    </div>
+                    <div class="col-md-7">
+                        <label class="col-form-label col-form-label-sm">R$ {{projeto.totalImposto}} </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 card mt-2">
+                <div class="row">
+                    <label class='fw-bold col-form-label col-form-label-sm contorno'>DEMONSTRATIVO</label>
+                </div>
+                <div class="row">
+                    <div class="col-md-7">
+                        <label class="fw-bold col-form-label col-form-label-sm">Valor Faturado:</label>
+                    </div>
+                    <div class="col-md-5">
+                        <label class='fw-bold col-form-label col-form-label-sm'>R$ {{projeto.vlrNFS}}</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <label for="valor" class="fw-bold col-md-7 col-form-label col-form-label-sm">(+)Total do
+                        Projeto:</label>
+                    <div class="col">
+                        <label for="valor" class="fw-bold col-md-7 col-form-label col-form-label-sm"> R$
+                            {{projeto.valor}}</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label for="custoTotal" class="fw-bold col-md-7 col-form-label col-form-label-sm">(-)Custos
+                        Totais: </label>
+                    <div class="col">
+                        <label for="custoTotal" class="fw-bold col-md-7 col-form-label col-form-label-sm"> R$
+                            {{projeto.custoTotal}}</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label for="equipamento" class="col-md-7 col-form-label col-form-label-sm">Custo Equipamento:
+                    </label>
+                    <div class="col">
+                        <label for="custoTotal" class="col-md-7 col-form-label col-form-label-sm">R$
+                            {{projeto.vlrequ}}</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label for="custoplano" class="col-md-7 col-form-label col-form-label-sm">Custo Planejado:
+                    </label>
+                    <div class="col">
+                        <label for="custoTotal" class="col-md-7 col-form-label col-form-label-sm">R$
+                            {{projeto.custoPlano}}</label>
+                    </div>
+                </div>
+                <div class="row ">
+                    <label for="custoplano" class="fw-bold col-md-7 col-form-label col-form-label-sm">(=)Lucro
+                        Bruto:
+                    </label>
+                    <div class="col">
+                        <label for="custoTotal" class="fw-bold col-md-8 col-form-label col-form-label-sm">R$
+                            {{projeto.lucroBruto}}</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class='col-md-7 col-form-label col-form-label-sm'>(-)Comissão ({{projeto.percom}}%):
+                    </label>
+                    <div class="col">
+                        <label class='col-md-7 col-form-label col-form-label-sm'>R$ {{projeto.vlrcom}}</label>
+                    </div>
+                </div>
+                <div class="row ">
+                    <label for="custoplano" class="fw-bold col-md-7 col-form-label col-form-label-sm">(=)Lucro Antes dos
+                        Impostos: </label>
+                    <div class="col">
+                        <label for="custoTotal" class="fw-bold col-md-8 col-form-label col-form-label-sm">R$
+                            {{projeto.lbaimp}}</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label class='col-md-7 col-form-label  col-form-label-sm'>(-)Impostos: </label>
+                    <div class="col">
+                        <label class='col-md-7 col-form-label col-form-label-sm'>R$ {{projeto.totalImposto}}</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label class='fw-bold col-md-7 col-form-label  col-form-label-sm'>(=)Lucro Líquido: </label>
+                    <div class="col">
+                        <label class='col-md-7 fw-bold col-form-label col-form-label-sm'>R$
+                            {{projeto.lucroLiquido}}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,412 @@
+<script>
+
+    window.onload = function imageOption() {
+        var imagem = document.getElementById('carregaFoto')
+        var foto = document.getElementById("foto")
+        
+        foto.src = imagem.value
+
+    }
+
+    function preview_foto() {
+        var imagem = document.querySelector('input[name=foto]').files[0]
+        var preview = document.querySelector('img[name=foto]')
+
+        var reader = new FileReader()
+        reader.onloadend = function () {
+            preview.src = reader.result
+        }
+
+        if (imagem) {
+            reader.readAsDataURL(imagem)
+        } else {
+            preview.src = ''
+        }
+    }
+
+    function preview_fotocert() {
+        var imagem = document.querySelector('input[name=fotocert]').files[0]
+        var preview = document.querySelector('img[name=fotocert]')
+
+        var reader = new FileReader()
+        reader.onloadend = function () {
+            preview.src = reader.result
+        }
+
+        if (imagem) {
+            reader.readAsDataURL(imagem)
+        } else {
+            preview.src = ''
+        }
+    }
+    function mascara_data() {
+        var data = document.getElementById('data')
+        var currenTime = new Date()
+        var year = currenTime.getFullYear()
+        var ano = data.value
+        ano1 = ano.substring(3, 7)
+        mes1 = ano.substring(0, 2)
+
+        if (data.value.length == 2) {
+            data.value += "/"
+        }
+        if (data.value.length == 7) {
+            if (parseFloat(ano1) > parseFloat(year) || parseFloat(ano1) < 1846 || parseFloat(mes1) > 12) {
+                data.value = ''
+            }
+        }
+    }
+
+    function valida_cnpj() {
+        var doc = document.getElementById('cnpj')
+
+        if (doc.value.length == 2 || doc.value.length == 6) {
+            doc.value += '.'
+        }
+        if (doc.value.length == 10) {
+            doc.value += '/'
+        }
+        if (doc.value.length == 15) {
+            doc.value += '-'
+        }
+        if (doc.value.length == 18) {
+
+            var d1 = cnpj.value
+            var p1 = d1.substring(0, 2)
+            var p2 = d1.substring(3, 6)
+            var p3 = d1.substring(7, 10)
+            var p4 = d1.substring(11, 15)
+            var p5 = d1.substring(16, 18)
+            var numdoc = p1 + p2 + p3 + p4 + p5
+
+            if (numdoc == "00000000000000" ||
+                numdoc == "11111111111111" ||
+                numdoc == "22222222222222" ||
+                numdoc == "33333333333333" ||
+                numdoc == "44444444444444" ||
+                numdoc == "55555555555555" ||
+                numdoc == "66666666666666" ||
+                numdoc == "77777777777777" ||
+                numdoc == "88888888888888" ||
+                numdoc == "99999999999999") {
+                cnpj.value = ''
+            }
+            cnpj.value = numdoc
+            // Valida DVs
+            var tamanho = numdoc.length - 2
+            var numeros = numdoc.substring(0, tamanho)
+            var digitos = numdoc.substring(tamanho)
+            var soma = 0
+            var pos = tamanho - 7;
+            for (i = tamanho; i >= 1; i--) {
+                soma += numeros.charAt(tamanho - i) * pos--;
+                if (pos < 2)
+                    pos = 9;
+            }
+            var resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+            if (resultado != digitos.charAt(0)) {
+                cnpj.value = ''
+            }
+
+            tamanho = tamanho + 1;
+            numeros = numdoc.substring(0, tamanho);
+            soma = 0;
+            pos = tamanho - 7;
+            for (i = tamanho; i >= 1; i--) {
+                soma += numeros.charAt(tamanho - i) * pos--;
+                if (pos < 2)
+                    pos = 9;
+            }
+            resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+            if (resultado != digitos.charAt(1)) {
+                cnpj.value = ''
+            }
+        }
+
+    }
+
+    function valida_cpf() {
+        var doc = document.getElementById('cpf')
+        var soma
+        var resto
+
+        soma = 0
+
+        if (doc.value.length == 3 || doc.value.length == 7) {
+            doc.value += '.'
+        }
+        if (doc.value.length == 11) {
+            doc.value += '-'
+        }
+        if (doc.value.length == 14) {
+
+            var d1 = doc.value
+            var p1 = d1.substring(0, 3)
+            var p2 = d1.substring(4, 7)
+            var p3 = d1.substring(8, 11)
+            var p4 = d1.substring(12, 14)
+            var numdoc = p1 + p2 + p3 + p4
+
+            if (numdoc == "00000000000") {
+                doc.value = '';
+            }
+
+            for (i = 1; i <= 9; i++) {
+                soma = soma + parseInt(numdoc.substring(i - 1, i)) * (11 - i);
+            }
+            resto = (soma * 10) % 11;
+
+            if ((resto == 10) || (resto == 11)) {
+                resto = 0;
+            }
+            if (resto != parseInt(numdoc.substring(9, 10))) {
+                doc.value = ''
+            }
+
+            soma = 0;
+            for (i = 1; i <= 10; i++) {
+                soma = soma + parseInt(numdoc.substring(i - 1, i)) * (12 - i)
+            }
+
+            resto = (soma * 10) % 11
+            if ((resto == 10) || (resto == 11)) {
+                resto = 0
+            }
+
+            if (resto != parseInt(numdoc.substring(10, 11))) {
+                doc.value = ''
+            }
+
+        }
+    }
+
+</script>
+<form action='/pessoa/editar' method='post' enctype="multipart/form-data">
+
+    <input type='hidden' name='id' value='{{pessoa._id}}'>
+
+    <div class="cotainer mt-2" style="width: 1000px; margin-left: 150px;">
+        <h5><i class="bi bi-people icone"></i> Pessoas</h5>
+        <div class="row">
+            <div class="col-md-7">
+                <div class="row mb-2">
+                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Nome Completo: </label>
+                    <div class="col-md-8">
+                        <input type='text ' name='nome' class='form-control form-control-sm' value='{{pessoa.nome}}'>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Endereço: </label>
+                    <div class="col-md-8">
+                        <input type='text ' name='endereco' class='form-control form-control-sm'
+                            value='{{pessoa.endereco}}'>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Cidade: </label>
+                    <div class="col-md-8">
+                        <input type='text ' name='cidade' class='form-control form-control-sm'
+                            value='{{pessoa.cidade}}'>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Estado: </label>
+                    <div class="col-md-8">
+                        <input type='text ' name='uf' class='form-control form-control-sm' value='{{pessoa.uf}}'>
+                    </div>
+                </div>
+                {{#if pessoa.cnpj}}
+                <div class="row mb-2">
+                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>CNPJ: </label>
+                    <div class="col-md-8">
+                        <input type='text ' id='cnpj' name='cnpj' class='form-control form-control-sm'
+                            autocomplete='off' maxlength="18" onkeyup="valida_cnpj()" value='{{pessoa.cnpj}}'>
+                    </div>
+                </div>
+                {{else}}
+                {{/if}}
+                {{#if pessoa.cpf}}
+                <div class="row mb-2">
+                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>CPF: </label>
+                    <div class="col-md-8">
+                        <input type='text' class='form-control form-control-sm' maxlength="14" autocomplete="off"
+                            id='cpf' name='cpf' onkeyup="valida_cpf()" value='{{pessoa.cpf}}'>
+                    </div>
+                </div>
+                {{else}}
+                {{/if}}
+                <div class="row mb-2">
+                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Inicio Atividades: </label>
+                    <div class="col-md-8">
+                        <input type='text ' id='data' name='iniati' class='form-control form-control-sm'
+                            autocomplete="off" placeholder='__/____' maxlength="8" onkeyup="mascara_data()"
+                            value='{{pessoa.iniati}}'>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Celular: </label>
+                    <div class="col-md-8">
+                        <input type='text ' name='celular' class='form-control form-control-sm'
+                            value='{{pessoa.celular}}'>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>E-mail: </label>
+                    <div class="col-md-8">
+                        <input type='text ' name='email' class='form-control form-control-sm' value='{{pessoa.email}}'>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class='container card'>
+                    <label class='col-form-label col-form-label-sm fw-bold'>Função:</label>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-check form-switch">
+                                <input name='funges' class="form-check-input" type="checkbox"
+                                    id="flexSwitchCheckDefault" {{pessoa.funges}}>
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Gestor</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check form-switch">
+                                <input name='funpro' class="form-check-input" type="checkbox"
+                                    id="flexSwitchCheckDefault" {{pessoa.funpro}}>
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Projetista</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check form-switch">
+                                <input name='funins' class="form-check-input" type="checkbox"
+                                    id="flexSwitchCheckDefault" {{pessoa.funins}}>
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Instalador</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div name='upload' class="col" style="margin-block-start: 20px; margin-inline-start: 100px;">
+                    <div class=''></div>
+                </div>
+                <div class="mt-4">
+                    <div class="input-group input-group-sm">
+                        <label class="input-group-text">Foto</label>
+                        <input type="file" name='foto' class='form-control' onchange="preview_foto()">
+                        <input type='hidden' name='carregaFoto' id='carregaFoto' value='{{pessoa.foto}}'>
+                    </div>
+                    <div class="row mt-2" style="margin-left: 120px;">
+                        <img id='foto' name='foto' style="width: 190px; height: 220px">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <!-- Oculto para MVP
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Especialidades: </label><br>
+
+                <div class="form-check form-switch">
+                    <input name='maninv' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
+                        {{pessoa.maninv}}>
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Manutenção de Inversores</label>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input name='subcom' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
+                        {{pessoa.subcom}}>
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Substituição de Componentes</label>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input name='repequ' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
+                        {{pessoa.repequ}}>
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Reposicionamento de Equipamento</label>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input name='vistor' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
+                        {{pessoa.vistor}}>
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Vistoria de Conexões e
+                        Instalações</label>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input name='dlaudo' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
+                        {{pessoa.dlaudo}}>
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Diagnóstico e Laudos</label>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input name='limmod' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
+                        {{pessoa.limmod}}>
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Limpeza de Módulos(Painéis)</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class='container'>
+                    <div class='card' style="scroll-margin-block-start: 30px;">
+                        <label class='fw-bold col-form-label col-form-label-sm'>Certificado</label>
+                        <input type="file" class='form-control'>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class='container'>
+                    <div class='card' style="scroll-margin-block-start: 30px;">
+                        <label class='fw-bold col-form-label col-form-label-sm'>Registro CREA</label>
+                        <input type="file" class='form-control'>
+                    </div>
+                </div>
+            </div>
+        </div>
+        -->
+        <div class="row">
+            <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Especialidades: </label><br>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input name='maninv' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Manutenção de
+                            Inversores</label>
+                    </div>
+
+                    <div class="form-check form-switch">
+                        <input name='subcom' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Substituição de
+                            Componentes</label>
+                    </div>
+
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input name='repequ' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Reposicionamento de
+                            Equipamento</label>
+                    </div>
+
+                    <div class="form-check form-switch">
+                        <input name='vistor' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Vistoria de Conexões e
+                            Instalações</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input name='dlaudo' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Diagnóstico e Laudos</label>
+                    </div>
+
+                    <div class="form-check form-switch">
+                        <input name='limmod' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Limpeza de
+                            Módulos(Painéis)</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <button type='submit' value='upload' class='btn btn-success'>Aplicar</button>
+        </div>
+</form>

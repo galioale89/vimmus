@@ -1,0 +1,15 @@
+<div
+    style="margin-left: 300px;margin-top: 100px;width: 800px; height: 300px; border: solid 1px; border-color: rgb(201, 193, 193); border-radius: 60px;">
+    <div class="card-body">
+        <div class="row" style="margin-top: 30px;">
+            <h4 class="text-center mb-4">Você tem certeza que deseja excluir este Projeto</h4>
+                <h2 class="text-center mb-4">{{projeto.nome}}</h2>
+                <div class="row">
+                    <div class='btn-group btn-group-lg gap-2' role='group'>
+                        <a class='btn btn-danger' href='/projeto/remover/{{projeto._id}}'>Sim</a>
+                        <a class='btn btn-primary' href='/projeto/consulta'>Não</a>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>

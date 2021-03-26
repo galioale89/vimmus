@@ -1,0 +1,202 @@
+<style>
+    .header{
+        background-color: rgb(20, 18, 163);
+        color: white;
+        border-width: 4px;
+        border-color: rgb(247, 238, 238);
+        border-radius: 10px;
+          z-index: -1;
+        -webkit-box-shadow: 0px 0px 4px 2px #aaaaaa;
+        -moz-box-shadow: 0px 0px 4px 2px #aaaaaa;
+         box-shadow: 0px 0px 4px 2px #aaaaaa;;
+    }
+    .botao {
+        text-shadow: 1px 1px 10px rgb(238, 237, 245);
+        border-radius: 50px;
+        width: 50px;
+        height: 50px;
+        border: solid 4px;
+        font-size: 22px;
+        border-top-color: rgb(3, 67, 141);
+        border-left-color: rgb(3, 67, 141);
+        border-right-color: rgb(205, 223, 245);
+        border-bottom-color: rgb(205, 223, 245);
+    }
+
+    .ativado {
+        background: linear-gradient(135deg, rgb(116, 114, 238), rgb(79, 77, 189), rgb(11, 9, 161));
+        background-color: rgba(31, 27, 255, 0.9);
+    }
+
+    .desativado {
+        background-color: rgba(31, 27, 255, 0.185);
+        text-shadow: 1px 1px 10px rgb(238, 237, 245);
+        border-radius: 50px;
+        width: 50px;
+        height: 50px;
+        border: solid 4px;
+        font-size: 22px;
+        border-color: rgba(31, 27, 255, 0.185);
+        ;
+    }
+
+    .realizado {
+        background-color: rgb(44, 156, 0);
+        text-shadow: 1px 1px 10px rgb(238, 237, 245);
+        border-radius: 50px;
+        width: 50px;
+        height: 50px;
+        border: solid 4px;
+        font-size: 22px;
+        border-color: rgba(31, 27, 255, 0.185);
+        ;
+    }
+
+    .botao:hover {
+        border-top-color: rgb(205, 223, 245);
+        border-left-color: rgb(205, 223, 245);
+        border-right-color: rgb(3, 67, 141);
+        border-bottom-color: rgb(3, 67, 141);
+    }
+
+    .icone {
+        margin-left: 0px;
+        color: white;
+    }
+</style>
+
+<div
+    style="margin-left: 270px; margin-top: 10px; width: 820px; height: 550px; border: solid 1px;border-width: 1px; border-color: rgba(200,200,200,0.5); border-radius: 10px;">
+    <div style='text-align: center'>
+        <div class='header'>
+            <div class="row">
+                <div class="col-md-6"
+                    style='margin-block-start: 10px; border: solid 1px; border-width: 1px; border-left: grey;border-top: grey;border-bottom: grey;'''>
+                    <h5>{{projeto.nome}}</h5>
+                    <div class="row">
+                        <div class="col-md-6 text-end">
+                            <label class='fw-bold col-form-label col-form-label-sm'>Data Início:</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>Data Entrega:</label>
+                            <label class='fw-bold col-form-label col-form-label-sm'>Data Realizado:</label>
+                        </div>
+                        <div class="col-md-6 text-start">
+                            <label class='col-form-label col-form-label-sm'>{{projeto.dataini}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>{{projeto.dataprev}}</label>
+                            <label class='col-form-label col-form-label-sm'>{{realizado.datareal}}</label>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-3 text-end" style='margin-inline-start: 40px;'>
+                            <label class='fw-bold col-form-label col-form-label-sm'>Gestor(a):</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>Total:</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>Horas:</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>Dias Obra:</label><br>
+                        </div>
+                        <div class="col-md-6 text-start">
+                            <label class='col-form-label col-form-label-sm'>{{responsavel.nome}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.valor}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>{{projeto.tothrs}} h</label><br>
+                            <label class='col-form-label col-form-label-sm'>{{projeto.diastr}} dia(s)</label><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="mt-2" style="margin-left: 20px;">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="row mt-2">
+                            <div class="col-md-3">
+                                <h5 class='text-start' style="font-family: Segoe UI;">Reserva:</h5>
+                            </div>
+                            <div class="col-md-8">
+                                <h5 class='text-start'>R$ {{projeto.reserva}}
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <h5 class='mt-2 text-start'>{{regime.regime}}</h5>
+                    </div>
+                    <div class="col-md-4">
+                        <div class='btn-group btn-group-sm col-12 gap-2 mx-auto mt-1' role='group'>
+                                <a href='/projeto/consulta/' class='botao ativado'><i
+                                    class="bi bi-arrow-left-circle icone"></i></a>                                
+                                {{#if projeto.foiRealizado}}
+                                <a class='desativado'><i class="bi bi-pen icone"></i></a>
+                                {{else}}
+                                <a href='/projeto/edicao/{{projeto._id}}' class='botao ativado'><i
+                                        class="bi bi-pen icone"></i></a>
+                                {{/if}}
+                                {{#if projeto.foiRealizado}}
+                                <a href='/projeto/realizar/{{projeto._id}}' class='botao realizado'> <i
+                                        class="bi bi-check2-circle icone"></i>
+                                </a>
+                                {{else}}
+                                <a href='/projeto/realizar/{{projeto._id}}' class='botao ativado'> <i
+                                        class="bi bi-check2-circle icone"></i>
+                                </a>
+                                {{/if}}
+                                <a href='/projeto/confirmaexclusao/{{projeto._id}}' class="botao ativado"><i
+                                        class="bi bi-trash icone"></i>
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 mt-2 text-end">
+                    <div class="row mt-5">
+                        <label class='fw-bold col-form-label col-form-label-sm'>Equipamento:</label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm'>Custo Operacional:</label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm'>Lucro Bruto:</label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm'>Tributos:</label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm'>Lucro Antes dos Impostos:</label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm'>Lucro Líquido:</label><br>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-bold">Orçado</label>
+                    <hr>
+                    <div class="row">
+                        <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrequ}}</label><br>
+                        <label class='col-form-label col-form-label-sm'>R$ {{projeto.totcop}}</label><br>
+                        <label class='col-form-label col-form-label-sm'>R$ {{projeto.lucroBruto}}</label><br>
+                        <label class='col-form-label col-form-label-sm'>R$ {{projeto.totalImposto}}</label><br>
+                        <label class='col-form-label col-form-label-sm'>R$ {{projeto.lbaimp}}</label><br>
+                        <label class='col-form-label col-form-label-sm'>R$ {{projeto.lucroLiquido}}</label><br>
+                        <div class="row">
+                            <a href='/gerenciamento/dashboard/{{projeto._id}}' class='btn btn-primary btn-sm'>Dashboard
+                                Orçado</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-bold">Realizado</label>
+                    <hr>
+                    <div class="row">
+                        <label class='col-form-label col-form-label-sm'>R$ {{realizado.vlrequ}}</label><br>
+                        <label class='col-form-label col-form-label-sm'>R$ {{realizado.custoPlano}}</label><br>
+                        <label class='col-form-label col-form-label-sm'>R$ {{realizado.lucroBruto}}</label><br>
+                        <label class='col-form-label col-form-label-sm'>R$ {{realizado.totalImposto}}</label><br>
+                        <label class='col-form-label col-form-label-sm'>R$ {{realizado.lbaimp}}</label><br>
+                        <label class='col-form-label col-form-label-sm'>R$ {{realizado.lucroLiquido}}</label><br>
+                        <div class="row">
+                            <a href='/gerenciamento/dashboardreal/{{realizado._id}}'
+                                class='btn btn-primary btn-sm'>Dashboard Realizado</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class='col-form-label col-form-label-sm fw-bold'>Observações</label>
+                    <textarea class='form-control' rows='8'>{{projeto.obstxt}}</textarea>
+                </div>
+            </div>
+        </div>
+    </div>

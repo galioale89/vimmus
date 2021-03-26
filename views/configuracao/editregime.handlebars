@@ -1,0 +1,130 @@
+<style type='text/css'>
+    .tamanhodiv {
+        width: 700px;
+    }
+</style>
+
+<div class="container mt-4 card">
+    <label for="minutos" class='fw-bold mt-2 mb-4 text-center'> Edição de Regime Tributário</label>
+    <form action='/configuracao/editregime' method='post'>
+        <div class="row">
+            <input type='hidden' name='id' value='{{regime._id}}'>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="row mb-2" style="margin-left: 2px;">
+                        <div class="row mt-2">
+                            <label for='slug' class='fw-bold col-sm-2 col-form-label col-form-label-sm'> Nome: </label>
+                            <div class="col-md-4">
+                                <input id='nome' name='nome' value='{{regime.nome}}'
+                                    class='form-control form-control-sm'>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label for='regime' class='fw-bold col-md-4 col-form-label col-form-label-sm'>
+                                        Regime:
+                                    </label>
+                                    <div class="col-md-8">
+                                        <select name='regime' class='form-select form-select-sm'>
+                                            <option style="font-weight: bold;">{{regime.regime}}</option>
+                                            <option>Simples</option>
+                                            <option>Lucro Real</option>
+                                            <option>Lucro Presumido</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label for='tipo' class='fw-bold col-md-3 col-form-label col-form-label-sm mb-2'>
+                                        Tipo:
+                                    </label>
+                                    <div class="col-md-8">
+                                        <select name='tipo' class='form-select form-select-sm'>
+                                            <option style="font-weight: bold;">{{regime.tipo}}</option>
+                                            <option>Nenhum</option>
+                                            <option>Anexo III</option>
+                                            <option>Anexo V</option>
+                                            <option>Não Cumulativo</option>
+                                            <option>Cumulativo</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-1 mb-2">
+                    <label class='fw-bold col-form-label col-form-label-sm text-center'>Alíquotas </label>
+                    <div class="row" style="margin-left: 5px;">
+                        <div class="col-md-2">
+                            <label class='col-form-label col-form-label-sm mb-1'> DAS: </label><br>
+                            <label class='col-form-label col-form-label-sm mb-1'> ISS: </label><br>
+                            <label class='col-form-label col-form-label-sm mb-1'> ICMS: </label>
+                        </div>
+                        <div class="col-md-2">
+                            <input type='number' id='alqDAS' name='alqDAS' value='{{regime.alqDAS}}'
+                                class='form-control form-control-sm mb-1' placeholder="%">
+                            <input type='number' id='alqNFS' name='alqNFS' value='{{regime.alqNFS}}'
+                                class='form-control form-control-sm mb-1 ' placeholder="%">
+                            <input type='number' id='alqICMS' name='alqICMS' value='{{regime.alqICMS}}'
+                                class='form-control form-control-sm mb-1 ' placeholder="%">
+                        </div>
+                        <div class="col-md-3">
+                            <label class='col-form-label col-form-label-sm mb-1'> IRPJ: </label><br>
+                            <label class='col-form-label col-form-label-sm mb-1'> IRPJ Adicional: </label><br>
+                            <label class='col-form-label col-form-label-sm mb-1'> CSLL: </label><br>
+                            <label class='col-form-label col-form-label-sm mb-1'> PIS: </label><br>
+                            <label class='col-form-label col-form-label-sm mb-1'> COFINS: </label>
+                        </div>
+                        <div class="col-md-2">
+                            <input type='number' id='alqIRPJ' name='alqIRPJ' value='{{regime.alqIRPJ}}'
+                                class='form-control form-control-sm mb-1' placeholder="%">
+                            <input type='number' id='alqIRPJAdd' name='alqIRPJAdd' value='{{regime.alqIRPJAdd}}'
+                                class='form-control form-control-sm mb-1' placeholder="%">
+                            <input type='number' id='alqCSLL' name='alqCSLL' value='{{regime.alqCSLL}}'
+                                class='form-control form-control-sm mb-1 ' placeholder="%">
+                            <input type='number' id='alqPIS' name='alqPIS' value='{{regime.alqPIS}}'
+                                class='form-control form-control-sm mb-1 ' placeholder="%">
+                            <input type='number' id='alqCOFINS' name='alqCOFINS' value='{{regime.alqCOFINS}}'
+                                class='form-control form-control-sm mb-1' placeholder="%">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                <div class="container">
+                    <label class='fw-bold col-form-label col-form-label-sm'>Parâmetros </label>
+                    <div class="row">
+                        <div class="col-md-7">
+                            <label class='col-form-label col-form-label-sm mb-1'> Fator de Redução: </label><br>
+                            <label class='col-form-label col-form-label-sm mb-1'> Projeção de Faturamento:</label><br>
+                            <label class='col-form-label col-form-label-sm mb-1'> Projeção de Lucro Real: </label><br>
+                            <label class='col-form-label col-form-label-sm mb-1'> Projeção de Faturamento Lucro Presumido:
+                            </label><br>
+                            <label class='col-form-label col-form-label-sm mb-1'> Valor do DAS para MEI: </label>
+                        </div>
+                        <div class="col-md-5">
+                            <input type='number' id='vlrred' name='vlrred' value='{{regime.vlrred}}'
+                                class='form-control form-control-sm mb-1' placeholder="R$" />
+                            <input type='number' id='prjFat' name='prjFat' value='{{regime.prjFat}}'
+                                class='form-control form-control-sm mb-1' placeholder="R$">
+                            <input type='number' id='prjLR' name='prjLR' value='{{regime.prjLR}}'
+                                class='form-control form-control-sm mb-1' placeholder="R$">
+                            <input type='number' id='prjLP' name='prjLP' value='{{regime.prjLP}}'
+                                class='form-control form-control-sm mb-1' placeholder="R$">
+                            <input type='number' id='vlrDAS' name='vlrDAS' value='{{regime.vlrDAS}}'
+                                class='form-control form-control-sm mb-1' placeholder="R$">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <button type='submit' class='btn btn-sm  btn-success mx-auto col-6 '> Aplicar </button>
+                </div>
+            </div>
+    </form>
+</div>

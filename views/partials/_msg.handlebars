@@ -1,0 +1,37 @@
+{{#if success_msg}}
+<div class='alert alert-success alert-dismissible fade show' role='alert'>
+  <strong>{{success_msg}}</strong>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/if}}
+
+{{#if error_msg}}
+<div class='alert alert-danger alert-dismissible fade show' role='alert'>
+  <strong>{{error_msg}}</strong>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/if}}
+
+{{#each erros}}
+<div class='alert alert-danger alert-dismissible fade show' role='alert'>
+  <strong>{{texto}}</strong>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{else}}
+{{/each}}
+
+{{#each sucesso}}
+<div class='alert alert-success alert-dismissible fade show' role='alert'>
+  <strong>{{texto}}</strong>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{else}}
+{{/each}}
+
+{{#each aviso}}
+<div class='alert alert-warning alert-dismissible fade show' role='alert'>
+  <strong>{{texto}}</strong>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{else}}
+{{/each}}
