@@ -26,7 +26,7 @@ global.projeto_id
 
 router.use(express.static('imagens'))
 
-router.get('/menu', ehAdmin,(req, res) => {
+router.get('/menu', ehAdmin, (req, res) => {
      var cont = 0
      var perVlr = 0
      var perVlrMed = 0
@@ -37,7 +37,7 @@ router.get('/menu', ehAdmin,(req, res) => {
           Realizado.find().then((prj_vlr) => {
                for (i = 0; i < prj_vlr.length; i++) {
                     perVlr = prj_vlr[i]
-                    if (perVlr.parLiqVlr != undefined && perVlr.parLiqNfs != undefined ) {
+                    if (perVlr.parLiqVlr != undefined && perVlr.parLiqNfs != undefined) {
                          perVlrMed = parseFloat(perVlrMed) + parseFloat(perVlr.parLiqVlr)
                          perNfsMed = parseFloat(perNfsMed) + parseFloat(perVlr.parLiqNfs)
                          cont++
@@ -45,25 +45,25 @@ router.get('/menu', ehAdmin,(req, res) => {
                }
                perVlrMed = (parseFloat(perVlrMed) / parseFloat(cont)).toFixed(2)
                perNfsMed = (parseFloat(perNfsMed) / parseFloat(cont)).toFixed(2)
-               const {_id} = req.user
-               const {fantasia} = req.user
-          Projeto.find({ foiRealizado: false }).sort({ dataord: 'desc' }).lean().then((dataord) => {
-               var numprj = projetos.length
-               Projeto.find({ foiRealizado: true }).then((foiRealizado) => {
-                    var numprjrlz = foiRealizado.length
-                    Projeto.find({ foiRealizado: false }).then((naoRealizado) => {
-                         var numprjnrl = naoRealizado.length
-                         perRealizado = ((parseFloat(numprjrlz)/ parseFloat(projetos.length))*100).toFixed(2)
-                         res.render("projeto/menu", { numprjrlz: numprjrlz, numprjnrl: numprjnrl, numprj: numprj, foiRealizado: foiRealizado, naoRealizado: naoRealizado, dataord: dataord, perVlrMed:perVlrMed, perNfsMed: perNfsMed, perRealizado: perRealizado, id:_id})
+               const { _id } = req.user
+               const { fantasia } = req.user
+               Projeto.find({ foiRealizado: false }).sort({ dataord: 'asc' }).lean().then((dataord) => {
+                    var numprj = projetos.length
+                    Projeto.find({ foiRealizado: true }).then((foiRealizado) => {
+                         var numprjrlz = foiRealizado.length
+                         Projeto.find({ foiRealizado: false }).then((naoRealizado) => {
+                              var numprjnrl = naoRealizado.length
+                              perRealizado = ((parseFloat(numprjrlz) / parseFloat(projetos.length)) * 100).toFixed(2)
+                              res.render("projeto/menu", { numprjrlz: numprjrlz, numprjnrl: numprjnrl, numprj: numprj, foiRealizado: foiRealizado, naoRealizado: naoRealizado, dataord: dataord, perVlrMed: perVlrMed, perNfsMed: perNfsMed, perRealizado: perRealizado, id: _id })
+                         })
                     })
                })
           })
      })
-     })
 })
 
 router.get("/consulta", ehAdmin, (req, res) => {
-     Projeto.find().sort({ datareg: 'desc' }).lean().then((projetos) => {
+     Projeto.find().sort({ dataord: 'asc' }).lean().then((projetos) => {
           Pessoa.find({ funges: 'checked' }).lean().then((responsavel) => {
                res.render('projeto/findprojetos', { projetos: projetos, responsavel: responsavel, filDireto: 'Todos', filReal: 'Todos' })
           }).catch((err) => {
@@ -196,7 +196,7 @@ router.get('/direto/', ehAdmin, (req, res) => {
                     res.redirect('/pressoa/consulta')
                })
           }).catch((err) => {
-               req.flash('error_msg', 'Não foi possível encontrar os detlhes do projeto')
+               req.flash('error_msg', 'Não foi possível encontrar os detalhes do projeto')
                res.redirect('/projeto/consulta')
           })
 
@@ -1123,7 +1123,7 @@ router.post('/direto', ehAdmin, (req, res) => {
                          res.redirect('/pressoa/consulta')
                     })
                }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possíel encontrar os detalhes do projeto')
+                    req.flash('error_msg', 'Não foi possvíel encontrar os detalhes do projeto')
                     res.redirect('/projeto/consulta')
                })
 
@@ -1304,8 +1304,8 @@ router.post('/direto', ehAdmin, (req, res) => {
                     if (rp.regime == 'Simples') {
                          var alqEfe = ((parseFloat(prjFat) * (parseFloat(rp.alqDAS) / 100)) - (parseFloat(rp.vlrred))) / parseFloat(prjFat)
                          var totalSimples = parseFloat(vlrNFS) * (parseFloat(alqEfe))
-                         totalImpGrafico = parseFloat(totalSimples).toFixed(2)
-                         projeto.impostoSimples = parseFloat(totalImpGrafico).toFixed(2)
+                         totalImpGrafico = totalSimples.toFixed(2)
+                         projeto.impostoSimples = totalImpGrafico.toFixed(2)
                     }
 
                     else {
@@ -1315,39 +1315,46 @@ router.post('/direto', ehAdmin, (req, res) => {
                                    fatadd = (parseFloat(prjLR) / 12) - 20000
                                    fataju = parseFloat(fatadd) / 20000
                                    impostoIRPJAdd = parseFloat(lbaimp) * parseFloat(fataju).toFixed(2) * (parseFloat(rp.alqIRPJAdd) / 100)
-                                   projeto.impostoAdd = parseFloat(impostoIRPJAdd).toFixed(2)
+                                   projeto.impostoAdd = impostoIRPJAdd.toFixed(2)
                               }
 
                               impostoIRPJ = parseFloat(lbaimp) * (parseFloat(rp.alqIRPJ) / 100)
-                              projeto.impostoIRPJ = parseFloat(impostoIRPJ).toFixed(2)
+                              projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
 
                               impostoCSLL = parseFloat(lbaimp) * (parseFloat(rp.alqCSLL) / 100)
-                              projeto.impostoCSLL = parseFloat(impostoCSLL).toFixed(2)
+                              projeto.impostoCSLL = impostoCSLL.toFixed(2)
                               impostoPIS = parseFloat(vlrNFS) * 0.5 * (parseFloat(rp.alqPIS) / 100)
-                              projeto.impostoPIS = parseFloat(impostoPIS).toFixed(2)
+                              projeto.impostoPIS = impostoPIS.toFixed(2)
                               impostoCOFINS = parseFloat(vlrNFS) * 0.5 * (parseFloat(rp.alqCOFINS) / 100)
-                              projeto.impostoCOFINS = parseFloat(impostoCOFINS).toFixed(2)
-                              totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
-                              totalImpGrafico = parseFloat(totalImposto).toFixed(2)
-
+                              projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
+                              if (parseFloat(impostoIRPJAdd) > 0){
+                                   totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
+                              }else{
+                                   totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
+                              }  
+                              totalImpGrafico = totalImposto.toFixed(2)  
                          } else {
                               //Imposto adicional de IRPJ
                               if (((parseFloat(prjLP) * 0.32) / 3) > 20000) {
                                    fatadd = ((parseFloat(prjLP) * 0.32) / 3) - 20000
                                    fataju = parseFloat(fatadd) / 20000
                                    impostoIRPJAdd = (parseFloat(vlrNFS) * 0.32) * parseFloat(fataju).toFixed(2) * (parseFloat(rp.alqIRPJAdd) / 100)
-                                   projeto.impostoAdd = parseFloat(impostoIRPJAdd).toFixed(2)
+                                   projeto.impostoAdd = impostoIRPJAdd.toFixed(2)
                               }
                               impostoIRPJ = parseFloat(vlrNFS) * 0.32 * (parseFloat(rp.alqIRPJ) / 100)
-                              projeto.impostoIRPJ = parseFloat(impostoIRPJ).toFixed(2)
+                              projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
                               impostoCSLL = parseFloat(vlrNFS) * 0.32 * (parseFloat(rp.alqCSLL) / 100)
-                              projeto.impostoCSLL = parseFloat(impostoCSLL).toFixed(2)
+                              projeto.impostoCSLL = impostoCSLL.toFixed(2)
                               impostoCOFINS = parseFloat(vlrNFS) * (parseFloat(rp.alqCOFINS) / 100)
-                              projeto.impostoCOFINS = parseFloat(impostoCOFINS).toFixed(2)
+                              projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
                               impostoPIS = parseFloat(vlrNFS) * (parseFloat(rp.alqPIS) / 100)
-                              projeto.impostoPIS = parseFloat(impostoPIS).toFixed(2)
-                              totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
-                              totalImpGrafico = parseFloat(totalImposto).toFixed(2)
+                              projeto.impostoPIS = impostoPIS.toFixed(2)
+                              if (parseFloat(impostoIRPJAdd)>0){
+                                   totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
+                              }else{
+                                   totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
+                              }
+                              totalImpGrafico = totalImposto.toFixed(2)
                          }
                     }
 
@@ -1475,23 +1482,23 @@ router.post('/direto', ehAdmin, (req, res) => {
                                         req.flash('error_msg', 'Houve uma falha ao encontrar o responsável')
                                         res.redirect('/pressoa/consulta')
                                    })
-                              }).catch(() => {
-                                   req.flash('error_msg', 'Houve um erro ao encontrar o projeto')
-                                   res.redirect('/')
+                              }).catch((err) => {
+                                   req.flash('error_msg', 'Não foi possível encontrar os detalhes do projeto')
+                                   res.redirect('/projeto/consulta')
                               })
-
                          }).catch(() => {
-                              req.flash('error_msg', 'Houve um erro ao salvar o projeto')
+                              req.flash('error_msg', 'Houve um erro ao encontrar o projeto')
                               res.redirect('/')
                          })
 
-                    }).catch((err) => {
-                         req.flash('error_msg', 'Não foi possível encontrar o regime')
-                         res.redirect('/configuracao/consultaregime')
+                    }).catch(() => {
+                         req.flash('error_msg', 'Houve um erro ao salvar o projeto')
+                         res.redirect('/')
                     })
+
                }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possível encontrar os detalhes do projeto')
-                    res.redirect('/projeto/consulta')
+                    req.flash('error_msg', 'Não foi possível encontrar o regime')
+                    res.redirect('/configuracao/consultaregime')
                })
 
           }).catch(() => {
@@ -1583,7 +1590,7 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
 
                Detalhado.findOne({ projeto: projeto._id }).then((detalhe) => {
 
-                    Regime.findOne({ _id: projeto.regime }).lean().then((rp) => {
+                    Regime.findOne({ _id: projeto.regime }).lean().then((regime_prj) => {
 
                          projeto_id = projeto._id
                          //Editar alterações das informações do cabeçalho do projeto
@@ -1835,15 +1842,6 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                          }
 
                          //Valida informações para o cálculo dos impostos e lucros
-                         var vlrcom = 0
-                         var lbaimp = 0
-                         var impostoICMS = 0
-                         var totalImposto = 0
-                         var fatadd = 0
-                         var fataju = 0
-                         var prjLR = rp.prjLR
-                         var prjLP = rp.prjLP
-                         var prjFat = rp.prjFat
                          //--> cálculo automático dos dias de obra
                          if (req.body.diastr == '' || req.body.diastr == 0) {
                               if (req.body.equipe != '' && req.body.equipe > 0) {
@@ -1948,6 +1946,7 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                          projeto.totdes = totdes
 
                          //Validando a comissão
+                         var vlrcom
                          if (projeto.percom != null) {
                               vlrcom = parseFloat(projeto.valor) * (parseFloat(projeto.percom) / 100)
                               projeto.vlrcom = vlrcom.toFixed(2)
@@ -1977,17 +1976,22 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                          //Definindo o imposto ISS
 
                          var vlrNFS = parseFloat(projeto.valor) - parseFloat(projeto.vlrequ)
-                         var impNFS = parseFloat(vlrNFS) * (parseFloat(rp.alqNFS) / 100)
+                         var impNFS = parseFloat(vlrNFS) * (parseFloat(regime_prj.alqNFS) / 100)
                          projeto.vlrNFS = vlrNFS.toFixed(2)
                          projeto.impNFS = impNFS.toFixed(2)
 
+                         var impostoICMS
                          //Validar ICMS
-
-                         if (rp.alqICMS != null) {
-                              impostoICMS = parseFloat(projeto.vlrequ) * (parseFloat(rp.alqICMS) / 100)
+                         if (regime_prj.alqICMS != null) {
+                              impostoICMS = parseFloat(projeto.vlrequ) * (parseFloat(regime_prj.alqICMS) / 100)
                               projeto.impostoICMS = impostoICMS.toFixed(2)
+                         } else {
+                              impostoICMS = 0
+                              projeto.impostoICMS = 0
                          }
+                         console.log('ICMS=>', impostoICMS)
 
+                         var lbaimp
                          //Deduzindo as comissões do Lucro Antes dos Impostos
                          if (vlrcom == 0 || vlrcom == null) {
                               lbaimp = parseFloat(lucroBruto)
@@ -1996,69 +2000,100 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                          }
                          projeto.lbaimp = parseFloat(lbaimp).toFixed(2)
 
+                         var fatadd
+                         var fataju
+                         var prjLR = regime_prj.prjLR
+                         var prjLP = regime_prj.prjLP
+                         var prjFat = regime_prj.prjFat
 
-                         if (rp.regime == 'Simples') {
-                              var alqEfe = ((parseFloat(prjFat) * (parseFloat(rp.alqDAS) / 100)) - (parseFloat(rp.vlrred))) / parseFloat(prjFat)
-                              var totalSimples = parseFloat(vlrNFS) * (parseFloat(alqEfe))
+                         var totalSimples
+                         var impostoIRPJ
+                         var impostoIRPJAdd
+                         var impostoCSLL
+                         var impostoPIS
+                         var impostoCOFINS
+                         var totalImposto
+                         var totalImpGrafico
+
+                         if (regime_prj.regime == 'Simples') {
+                              var alqEfe = ((parseFloat(prjFat) * (parseFloat(regime_prj.alqDAS) / 100)) - (parseFloat(regime_prj.vlrred))) / parseFloat(prjFat)
+                              totalSimples = parseFloat(vlrNFS) * (parseFloat(alqEfe))
                               totalImpGrafico = parseFloat(totalSimples).toFixed(2)
                               projeto.impostoSimples = parseFloat(totalImpGrafico).toFixed(2)
                          }
 
                          else {
-                              if (rp.regime == 'Lucro Real') {
+                              if (regime_prj.regime == 'Lucro Real') {
                                    //Imposto Adicional de IRPJ
                                    if ((parseFloat(prjLR) / 12) > 20000) {
                                         fatadd = (parseFloat(prjLR) / 12) - 20000
                                         fataju = parseFloat(fatadd) / 20000
-                                        impostoIRPJAdd = parseFloat(lbaimp) * parseFloat(fataju).toFixed(2) * (parseFloat(rp.alqIRPJAdd) / 100)
+                                        impostoIRPJAdd = parseFloat(lbaimp) * parseFloat(fataju).toFixed(2) * (parseFloat(regime_prj.alqIRPJAdd) / 100)
                                         projeto.impostoAdd = parseFloat(impostoIRPJAdd).toFixed(2)
                                    }
 
-                                   impostoIRPJ = parseFloat(lbaimp) * (parseFloat(rp.alqIRPJ) / 100)
-                                   projeto.impostoIRPJ = parseFloat(impostoIRPJ).toFixed(2)
+                                   impostoIRPJ = parseFloat(lbaimp) * (parseFloat(regime_prj.alqIRPJ) / 100)
+                                   projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
 
-                                   impostoCSLL = parseFloat(lbaimp) * (parseFloat(rp.alqCSLL) / 100)
-                                   projeto.impostoCSLL = parseFloat(impostoCSLL).toFixed(2)
-                                   impostoPIS = parseFloat(vlrNFS) * 0.5 * (parseFloat(rp.alqPIS) / 100)
-                                   projeto.impostoPIS = parseFloat(impostoPIS).toFixed(2)
-                                   impostoCOFINS = parseFloat(vlrNFS) * 0.5 * (parseFloat(rp.alqCOFINS) / 100)
-                                   projeto.impostoCOFINS = parseFloat(impostoCOFINS).toFixed(2)
-                                   totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
-                                   totalImpGrafico = parseFloat(totalImposto).toFixed(2)
+                                   impostoCSLL = parseFloat(lbaimp) * (parseFloat(regime_prj.alqCSLL) / 100)
+                                   projeto.impostoCSLL = impostoCSLL.toFixed(2)
+                                   impostoPIS = parseFloat(vlrNFS) * 0.5 * (parseFloat(regime_prj.alqPIS) / 100)
+                                   projeto.impostoPIS = impostoPIS.toFixed(2)
+                                   impostoCOFINS = parseFloat(vlrNFS) * 0.5 * (parseFloat(regime_prj.alqCOFINS) / 100)
+                                   projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
+                                   if (parseFloat(impostoIRPJAdd) > 0) {
+                                        totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
+                                   } else {
+                                        totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
+                                   }
+                                   totalImpGrafico = totalImposto.toFixed(2)
 
                               } else {
                                    //Imposto adicional de IRPJ
                                    if (((parseFloat(prjLP) * 0.32) / 3) > 20000) {
                                         fatadd = ((parseFloat(prjLP) * 0.32) / 3) - 20000
                                         fataju = parseFloat(fatadd) / 20000
-                                        impostoIRPJAdd = (parseFloat(vlrNFS) * 0.32) * parseFloat(fataju).toFixed(2) * (parseFloat(rp.alqIRPJAdd) / 100)
-                                        projeto.impostoAdd = parseFloat(impostoIRPJAdd).toFixed(2)
+                                        impostoIRPJAdd = (parseFloat(vlrNFS) * 0.32) * parseFloat(fataju).toFixed(2) * (parseFloat(regime_prj.alqIRPJAdd) / 100)
+                                        projeto.impostoAdd = impostoIRPJAdd.toFixed(2)
                                    }
-                                   impostoIRPJ = parseFloat(vlrNFS) * 0.32 * (parseFloat(rp.alqIRPJ) / 100)
-                                   projeto.impostoIRPJ = parseFloat(impostoIRPJ).toFixed(2)
-                                   impostoCSLL = parseFloat(vlrNFS) * 0.32 * (parseFloat(rp.alqCSLL) / 100)
-                                   projeto.impostoCSLL = parseFloat(impostoCSLL).toFixed(2)
-                                   impostoCOFINS = parseFloat(vlrNFS) * (parseFloat(rp.alqCOFINS) / 100)
-                                   projeto.impostoCOFINS = parseFloat(impostoCOFINS).toFixed(2)
-                                   impostoPIS = parseFloat(vlrNFS) * (parseFloat(rp.alqPIS) / 100)
-                                   projeto.impostoPIS = parseFloat(impostoPIS).toFixed(2)
-                                   totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
-                                   totalImpGrafico = parseFloat(totalImposto).toFixed(2)
+                                   console.log('Lucro Presumido')
+
+                                   impostoIRPJ = parseFloat(vlrNFS) * 0.32 * (parseFloat(regime_prj.alqIRPJ) / 100)
+                                   projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
+                                   console.log('IRPJ=>' + impostoIRPJ)
+                                   impostoCSLL = parseFloat(vlrNFS) * 0.32 * (parseFloat(regime_prj.alqCSLL) / 100)
+                                   projeto.impostoCSLL = impostoCSLL.toFixed(2)
+                                   console.log('CSLL=>' + impostoCSLL)
+                                   impostoCOFINS = parseFloat(vlrNFS) * (parseFloat(regime_prj.alqCOFINS) / 100)
+                                   projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
+                                   console.log('COFINS=>' + impostoCOFINS)
+                                   impostoPIS = parseFloat(vlrNFS) * (parseFloat(regime_prj.alqPIS) / 100)
+                                   projeto.impostoPIS = impostoPIS.toFixed(2)
+                                   console.log('PIS=>' + impostoPIS)
+                                   if (parseFloat(impostoIRPJAdd) > 0) {
+                                        totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
+                                   } else {
+                                        totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
+                                   }
+
+                                   totalImpGrafico = totalImposto.toFixed(2)
+
                               }
                          }
-
-
                          if (impostoICMS > 0) {
                               totalImposto = parseFloat(totalImpGrafico) + parseFloat(impNFS) + parseFloat(impostoICMS)
                          } else {
                               totalImposto = parseFloat(totalImpGrafico) + parseFloat(impNFS)
                          }
+                         console.log('totalImpGrafico=>' + totalImpGrafico)
+                         console.log('impNFS=>' + impNFS)
+                         console.log('Total Imposto=>' + totalImposto)
 
                          //Lucro Líquido após descontar os impostos
-                         projeto.totalImposto = parseFloat(totalImposto).toFixed(2)
+                         projeto.totalImposto = totalImposto.toFixed(2)
 
                          var lucroLiquido = parseFloat(lbaimp) - parseFloat(totalImposto)
-                         projeto.lucroLiquido = parseFloat(lucroLiquido).toFixed(2)
+                         projeto.lucroLiquido = lucroLiquido.toFixed(2)
 
                          //Dashboard              
                          //Participação sobre o Faturamento  
@@ -2202,30 +2237,6 @@ router.post('/realizar', ehAdmin, (req, res) => {
 
      var erros = []
 
-     /*
-          if (req.body.totint == '' || !req.body.totint || req.body.totint == null || typeof req.body.totint == undefined) {
-               erros.push({ texto: 'Preencher valor de instalação com no mínimo R$ 0' })
-          }
-          if (req.body.totpro == '' || !req.body.totpro || req.body.totpro == null || typeof req.body.totpro == undefined) {
-               erros.push({ texto: 'Preencher valor de projetista com no mínimo R$ 0' })
-          }
-          if (req.body.totges == '' || !req.body.totges || req.body.totges == null || typeof req.body.totges == undefined) {
-               erros.push({ texto: 'Preencher valor de gestão com no mínimo R$ 0' })
-          }
-          if (req.body.totdes == '' || !req.body.totdes || req.body.totdes == null || typeof req.body.totdes == undefined) {
-               erros.push({ texto: 'Preencher valor de deslocamento com no mínimo R$ 0' })
-          }
-          if (req.body.totali == '' || !req.body.totali || req.body.totali == null || typeof req.body.totali == undefined) {
-               erros.push({ texto: 'Preencher valor de alimentação com no mínimo R$ 0' })
-          }
-     
-     if (toString(req.body.ehDireto) == 'false') {
-          if (req.body.tothtl == '' || !req.body.tothtl || req.body.tothtl == null || typeof req.body.tothtl == undefined) {
-               erros.push({ texto: 'Preencher valor de estadia com no mínimo R$ 0' })
-          }
-     }
-     */
-
      if (erros.length > 0) {
 
           Projeto.findOne({ _id: req.body.id }).then((projeto) => {
@@ -2337,11 +2348,10 @@ router.post('/realizar', ehAdmin, (req, res) => {
                     lbaimp = parseFloat(prjLucroBruto) - parseFloat(vlrcom)
                     lbaimp = lbaimp.toFixed(2)
                     //-------------------------------------
-
                     var impmanual
                     var impISS
                     var impostoICMS
-                    var impICMS                    
+                    var impICMS
                     var impSimples
                     var impIRPJ
                     var impIRPJAdd
@@ -2428,10 +2438,13 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          var prjFat = rp.prjFat
 
                          if (rp.regime == 'Simples') {
+
                               var alqEfe = ((parseFloat(prjFat) * (parseFloat(rp.alqDAS) / 100)) - (parseFloat(rp.vlrred))) / parseFloat(prjFat)
                               impSimples = parseFloat(vlrPrjNFS) * (parseFloat(alqEfe))
-                              impSimples = totalImpGrafico.toFixed(2)
                               totalImpGrafico = impSimples.toFixed(2)
+                              console.log('vlrPrjNFS=>' + vlrPrjNFS)
+                              console.log('alqEfe=>' + alqEfe)
+                              console.log('totalImpGrafico=>' + totalImpGrafico)
                               impIRPJ = 0
                               impIRPJAdd = 0
                               impCSLL = 0
@@ -2459,6 +2472,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
 
                               } else {
                                    //Imposto adicional de IRPJ
+                                   console.log('Lucro Presumido')
                                    if (((parseFloat(prjLP) * 0.32) / 3) > 20000) {
                                         fatadd = ((parseFloat(prjLP) * 0.32) / 3) - 20000
                                         fataju = parseFloat(fatadd) / 20000
@@ -2475,16 +2489,26 @@ router.post('/realizar', ehAdmin, (req, res) => {
                                    impPIS = impPIS.toFixed(2)
                               }
                          }
-                    }                    
+                    }
                     //----------------------------
-                    
+                    console.log('prjLR =>' + prjLR)
+                    console.log('prjLP =>' + prjLP)
+                    console.log('prjFat =>' + prjFat)
+                    console.log('impSimples =>' + impSimples)
+                    console.log('totalImpGrafico =>' + totalImpGrafico)
+                    console.log('impIRPJ =>' + impIRPJ)
+                    console.log('impIRPJAdd =>' + impIRPJAdd)
+                    console.log('impCSLL =>' + impCSLL)
+                    console.log('impPIS =>' + impPIS)
+                    console.log('impCOFINS =>' + impCOFINS)
+                    console.log('totalImpGrafico =>' + totalImpGrafico)
+
                     if (rp.regime == 'Lucro Real' || rp.regime == 'Luro Presumido') {
                          totalImposto = parseFloat(impIRPJ) + parseFloat(impIRPJAdd) + parseFloat(impCSLL) + parseFloat(impPIS) + parseFloat(impCOFINS)
                          totalImpGrafico = totalImposto.toFixed(2)
                          impSimples = 0
                     }
-                    
-                    
+
                     if (impICMS > 0) {
                          totalImposto = parseFloat(totalImpGrafico) + parseFloat(impISS) + parseFloat(impICMS)
                     } else {
@@ -2595,6 +2619,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          varLucRlz = false
                     }
 
+
                     //Define data atual
                     var data = new Date()
                     var dia = data.getDate()
@@ -2630,7 +2655,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          impCSLL: impCSLL,
                          impPIS: impPIS,
                          impCOFINS: impCOFINS,
-                         
+
                          totalImposto: totalImposto,
                          lucroLiquido: lucroLiquido,
 
@@ -2667,7 +2692,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          parNfsRlz: parNfsRlz,
                          parVlrRlz: parVlrRlz,
                          varLucRlz: varLucRlz,
-                         
+
                     }
 
                     new Realizado(realizado).save().then(() => {
@@ -2715,7 +2740,6 @@ router.post('/realizar', ehAdmin, (req, res) => {
                res.redirect('/projeto/consulta')
           })
      }
-
 })
 
 router.post('/filtrar', ehAdmin, (req, res) => {
@@ -2792,7 +2816,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                          Pessoa.findOne({ nome: funres }).lean().then((pr) => {
                               Projeto.find({ funres: pr._id }).lean().then((projetos) => {
                                    Pessoa.find({ funges: 'checked' }).lean().then((responsavel) => {
-                                        res.render('projeto/findprojetos', { projetos: projetos, responsavel: responsavel, pr:pr, filDireto: direto, filReal: realizado })
+                                        res.render('projeto/findprojetos', { projetos: projetos, responsavel: responsavel, pr: pr, filDireto: direto, filReal: realizado })
                                    }).catch((err) => {
                                         req.flash('error_msg', 'Nenhum responsável encontrado')
                                         res.redirect('/projeto/consulta')
@@ -2810,7 +2834,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                               Pessoa.findOne({ nome: funres }).lean().then((pr) => {
                                    Projeto.find({ funres: pr._id, ehDireto: ehdireto }).lean().then((projetos) => {
                                         Pessoa.find({ funges: 'checked' }).lean().then((responsavel) => {
-                                             res.render('projeto/findprojetos', { projetos: projetos, responsavel: responsavel, pr:pr, filDireto: direto, filReal: realizado })
+                                             res.render('projeto/findprojetos', { projetos: projetos, responsavel: responsavel, pr: pr, filDireto: direto, filReal: realizado })
                                         }).catch((err) => {
                                              req.flash('error_msg', 'Nenhum responsável encontrado')
                                              res.redirect('/projeto/consulta')
@@ -2827,7 +2851,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                    Pessoa.findOne({ nome: funres }).lean().then((pr) => {
                                         Projeto.find({ funres: pr._id, foiRealizado: foirealizado }).lean().then((projetos) => {
                                              Pessoa.find({ funges: 'checked' }).lean().then((responsavel) => {
-                                                  res.render('projeto/findprojetos', { projetos: projetos, responsavel: responsavel, pr:pr, filDireto: direto, filReal: realizado })
+                                                  res.render('projeto/findprojetos', { projetos: projetos, responsavel: responsavel, pr: pr, filDireto: direto, filReal: realizado })
                                              }).catch((err) => {
                                                   req.flash('error_msg', 'Nenhum responsável encontrado')
                                                   res.redirect('/projeto/consulta')
@@ -2848,7 +2872,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                    Pessoa.findOne({ nome: funres }).lean().then((pr) => {
                                         Projeto.find({ funres: pr._id, ehDireto: ehdireto, foiRealizado: foirealizado }).lean().then((projetos) => {
                                              Pessoa.find({ funges: 'checked' }).lean().then((responsavel) => {
-                                                  res.render('projeto/findprojetos', { projetos: projetos, responsavel: responsavel, pr:pr, filDireto: direto, filReal: realizado })
+                                                  res.render('projeto/findprojetos', { projetos: projetos, responsavel: responsavel, pr: pr, filDireto: direto, filReal: realizado })
                                              }).catch((err) => {
                                                   req.flash('error_msg', 'Nenhum responsável encontrado')
                                                   res.redirect('/projeto/consulta')
