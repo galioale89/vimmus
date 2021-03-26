@@ -59,7 +59,7 @@ app.use(express.static(path.join(__dirname,'imagens')))
 
 //Mongoose DB
 mongoose.Promise = global.Promise
-mongoose.connect('mongodb://localhost/vimmusapp', {
+mongoose.connect('mongodb://alegaliotto:3rdn4x3L4@mongo_vimmus:27017/vimmus', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => {
