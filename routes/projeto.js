@@ -2429,7 +2429,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               impISS = impISSNfs.toFixed(2)
                          }
 
-                         if (rp.alqICMS == '') {
+                         if (rp.alqICMS == '' || rp.alqICMS == null) {
                               impICMS = 0
                          } else {
                               impostoICMS = parseFloat(vlrequ) * (parseFloat(rp.alqICMS) / 100)
