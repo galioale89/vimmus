@@ -162,7 +162,7 @@ router.post('/addregime', ehAdmin, (req, res) => {
             res.redirect('/projeto/menu')
         }).catch((err) => {
             req.flash('error_msg', 'Houve um erro ao salvar as configurações de impostos.')
-            res.redirect('/configuracao/menu')
+            res.redirect('/configuracao/addregime')
         })
 
     }
