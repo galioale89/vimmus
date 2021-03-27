@@ -403,6 +403,9 @@ router.post('/', ehAdmin, (req, res) => {
 router.post('/tributos/', ehAdmin, (req, res) => {
 
     var erros = []
+    var ehSimples = false
+    var ehLP = false
+    var ehLR = false
 
     Projeto.findOne({ _id: projeto_id }).then((projeto) => {
 
@@ -605,13 +608,20 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                     Projeto.findOne({ _id: projeto_id }).lean().then((projeto) => {
 
                         Regime.findOne({ _id: projeto.regime }).lean().then((regime) => {
-
+                                switch (regime.regime){
+                                    case "Simples": ehSimples = true 
+                                    break;
+                                    case "Lucro Presumido": ehLP = true
+                                    break;
+                                    case "Lucro Real": ehLR = true
+                                    break;
+                                }
                             var sucesso = []
 
                             projeto_id = projeto._id
 
                             sucesso.push({ texto: 'Projeto salvo com sucesso' })
-                            res.render('projeto/gerenciamento/tributos', { projeto: projeto, sucesso: sucesso, regime: regime })
+                            res.render('projeto/gerenciamento/tributos', { projeto: projeto, sucesso: sucesso, regime: regime, ehSimples:ehSimples, ehLP:ehLP, ehLR: ehLR })
                         }).catch((err) => {
                             req.flash('error_msg', 'Nenhum regime encontrado')
                             res.redirect('/')
