@@ -2517,7 +2517,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
 
                     var lucroLiquido = (parseFloat(lbaimp) - parseFloat(totalImposto))
                     lucroLiquido = lucroLiquido.toFixed(2)
- 
+                    /*
                     console.log('impISS =>' + impISS)
                     console.log('impICMS =>' + impICMS)                                                        
                     console.log('impSimples =>' + impSimples)
@@ -2529,7 +2529,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                     console.log('impPIS =>' + impPIS)
                     console.log('totalImposto =>' + totalImposto)
                     console.log('lucroLiquido =>' + lucroLiquido)
-                    
+                    */
 
                     //CÁLCULO DAS VARIAÇÕES
                     

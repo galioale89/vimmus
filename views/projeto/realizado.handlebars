@@ -177,7 +177,7 @@
                     <label class='col-form-label col-form-label-sm' for='tothtl'>R$ {{projeto.tothtl}}</label><br>
                     {{/if}}
                     <label class='col-form-label col-form-label-sm'
-                        for='custoPlano'>R${{projeto.custoPlano}}</label><br>
+                        for='totcop'>R${{projeto.totcop}}</label><br>
                     <hr>
                     <label class='col-form-label col-form-label-sm' for='vlrcom'>R$ {{projeto.vlrcom}}</label><br>
                     <hr>
@@ -250,7 +250,7 @@
                     </div>
                     <div class="container" style="height: 100px;">
                         <canvas id='chartCP' class='mb-4 mx-auto'></canvas><br>
-                        <input type='hidden' id='orcCP' value='{{projeto.custoPlano}}'></input>
+                        <input type='hidden' id='orcCP' value='{{projeto.totcop}}'></input>
                         <input type='hidden' id='rlzCP' value='{{realizado.custoPlano}}'></input>
                     </div>
                     <div class="container" style='height: 100px'>
@@ -301,7 +301,7 @@
                                     </div>
                                     <div class="col-md-5">
                                         <label class='col-form-label col-form-label-sm text-center'>R$
-                                            {{projeto.custoPlano}}</label>
+                                            {{projeto.totcop}}</label>
                                     </div>
                                 </div>
                                 <div class="row">
