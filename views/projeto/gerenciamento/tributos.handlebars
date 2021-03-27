@@ -47,39 +47,37 @@
                     </div>
                     <div class="container card">
                         <div class="row">
-                            <div class="card">
-                                <div class="row">
-                                    <label class="fw-bold col-form-label col-form-label-sm contorno">PARÂMETROS</label>
+                            <div class="row">
+                                <label class="fw-bold col-form-label col-form-label-sm contorno">PARÂMETROS</label>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-7">
+                                    <label for="estrutura" class="fw-bold col-form-label col-form-label-sm">Regime
+                                        Tributário:</label>
+                                    <label class="fw-bold col-form-label col-form-label-sm" />Projeção Faturamento
+                                    ou Lucro:
+                                    {{#if ehSimples }}
+                                    <label class="fw-bold col-form-label col-form-label-sm">Fator de redução
+                                        Simples:</label>
+                                    </label>
+                                    {{else}}
+                                    {{/if}}
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-7">
-                                        <label for="estrutura" class="fw-bold col-form-label col-form-label-sm">Regime
-                                            Tributário:</label>
-                                        <label class="fw-bold col-form-label col-form-label-sm" />Projeção Faturamento
-                                        ou Lucro:
-                                        {{#if ehSimples }}
-                                        <label class="fw-bold col-form-label col-form-label-sm">Fator de redução
-                                            Simples:</label>
-                                        </label>
-                                        {{else}}
-                                        {{/if}}
-                                    </div>
-                                    <div class="col-md-5">
-                                        <label class='col-form-label col-form-label-sm'>{{regime.regime}}</label><br>
-                                        {{#if ehSimples }}
-                                        <label class="col-form-label col-form-label-sm">R$ {{regime.proje}}</label>
-                                        <label class="col-form-label col-form-label-sm">R$ {{regime.vlrred}}</label>
-                                        {{else}}
-                                        {{/if}}
-                                        {{#if ehLR}}
-                                        <label class="col-form-label col-form-label-sm">R$ {{regime.prjLR}}</label>
-                                        {{else}}
-                                        {{/if}}
-                                        {{#if ehLP}}
-                                        <label class="col-form-label col-form-label-sm">R$ {{regime.prjLP}}</label>
-                                        {{else}}
-                                        {{/if}}
-                                    </div>
+                                <div class="col-md-5">
+                                    <label class='col-form-label col-form-label-sm'>{{regime.regime}}</label><br>
+                                    {{#if ehSimples }}
+                                    <label class="col-form-label col-form-label-sm">R$ {{regime.proje}}</label>
+                                    <label class="col-form-label col-form-label-sm">R$ {{regime.vlrred}}</label>
+                                    {{else}}
+                                    {{/if}}
+                                    {{#if ehLR}}
+                                    <label class="col-form-label col-form-label-sm">R$ {{regime.prjLR}}</label>
+                                    {{else}}
+                                    {{/if}}
+                                    {{#if ehLP}}
+                                    <label class="col-form-label col-form-label-sm">R$ {{regime.prjLP}}</label>
+                                    {{else}}
+                                    {{/if}}
                                 </div>
                             </div>
                         </div>
@@ -171,7 +169,9 @@
                 </div>
 
                 <div class="col-md-3 card mt-4">
-                    <label class="fw-bold col-form-label col-form-label-sm contorno">VALORES DOS TRIBUTOS (R$): </label>
+                    <div class="row">
+                   <label class="fw-bold col-form-label col-form-label-sm contorno">VALORES DOS TRIBUTOS (R$): </label>
+                    </div>
                     <div class="row">
                         <div class="col-md-5">
                             <label class="fw-bold col-form-label col-form-label-sm">DAS: </label>
