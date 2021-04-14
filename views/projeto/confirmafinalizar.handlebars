@@ -1,0 +1,18 @@
+<div class="caixa-confirma">
+    <div class="card-body">
+        <div class="row" style="margin-top: 30px;">
+            <h4 class="text-center mb-4">Você tem certeza que deseja finalizar este Projeto?</h4>
+            <h2 class="text-center mb-4">{{realizado.nome}}</h2>
+            <h4 class="text-center mb-4">Data de Entrega:</h4>
+            <h2 class="text-center mb-4">{{realizado.datafim}}</h2>
+            <p style="text-align: center;">A partir desse momento o projeto ficará desabilitado para futuras alterações.
+            </p>
+            <div class="row">
+                <div class='btn-group btn-group-lg gap-2' role='group'>
+                    <a class='btn btn-success' href='/projeto/finalizar/{{realizado._id}}'>Sim</a>
+                    <a class='btn btn-primary' href='/projeto/consulta'>Não</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

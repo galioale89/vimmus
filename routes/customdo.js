@@ -1,75 +1,31 @@
-//const { reduce } = require("async")
 const express = require("express")
 const router = express.Router()
 const mongoose = require('mongoose')
-
 
 require('../model/Projeto')
 require('../model/Configuracao')
 require('../model/Regime')
 require('../model/Pessoa')
-require('../model/Objetos')
+require('../model/Cliente')
 
 const Projeto = mongoose.model('projeto')
 const Configuracao = mongoose.model('configuracao')
 const Regime = mongoose.model('regime')
 const Pessoa = mongoose.model('pessoa')
+const Cliente = mongoose.model('cliente')
 
 const { ehAdmin } = require('../helpers/ehAdmin')
-
 
 global.projeto_id
 var rp
 var p
 
 require('../app')
-
-router.get('/projetista/:id', ehAdmin, (req, res) => {
-     var pp
-     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
-          Pessoa.findOne({ _id: projeto.funpro }).lean().then((projeto_pro) => {
-               pp = projeto_pro
-          }).catch((err) => {
-               req.flash('error_msg', 'Houve um erro ao encontrar o instalador.')
-               res.redirect('/consulta')
-          })
-          Pessoa.find({ funpro: 'checked' }).lean().then((projetista) => {
-               //projeto_id = projeto._id
-               res.render('projeto/customdo/projetista', { projeto: projeto, projetista: projetista, pp: pp })
-          }).catch((err) => {
-               req.flash('error_msg', 'Nenhum regime encontrado')
-               res.redirect('/pessoa/consulta')
-          })
-     }).catch((err) => {
-          req.flash('error_msg', 'Nenhum projeto encontrado')
-          res.redirect('/')
-     })
-
-})
-
-router.get('/gestao/:id', ehAdmin, (req, res) => {
-
-     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
-          Pessoa.findOne({ _id: projeto.funres }).lean().then((projeto_res) => {
-               pr = projeto_res
-          }).catch((err) => {
-               req.flash('error_msg', 'Houve um erro ao encontrar o instalador.')
-               res.redirect('/consulta')
-          })
-          Pessoa.findOne({ _id: projeto.funres }).lean().then((responsavel) => {
-               projeto_id = projeto._id
-               res.render('projeto/customdo/gestao', { projeto: projeto, responsavel: responsavel, pr: pr })
-          }).catch((err) => {
-               req.flash('error_msg', 'Nenhum responsável encontrado')
-               res.redirect('/')
-          })
-     }).catch((err) => {
-          req.flash('error_msg', 'Nenhum projeto encontrado')
-          res.redirect('/')
-     })
-})
+//Configurando pasta de imagens 
+router.use(express.static('imagens'))
 
 router.get('/instalacao/:id', ehAdmin, (req, res) => {
+     const { _id } = req.user
      var pi
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
           Pessoa.findOne({ _id: projeto.funins }).lean().then((projeto_ins) => {
@@ -78,9 +34,13 @@ router.get('/instalacao/:id', ehAdmin, (req, res) => {
                req.flash('error_msg', 'Houve um erro ao encontrar o instalador.')
                res.redirect('/consulta')
           })
-          Pessoa.find({ funins: 'checked' }).lean().then((instalador) => {
-               projeto_id = projeto._id
-               res.render('projeto/customdo/instalacao', { projeto: projeto, instalador: instalador, pi: pi })
+          Pessoa.find({ funins: 'checked', user: _id }).lean().then((instalador) => {
+               Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                    res.render('projeto/customdo/instalacao', { projeto: projeto, instalador: instalador, pi: pi, cliente: cliente })
+               }).catch((err) => {
+                    req.flash('error_msg', 'Nenhum cliente encontrado.')
+                    res.redirect('/pessoa/consulta')
+               })
           }).catch((err) => {
                req.flash('error_msg', 'Nenhum regime encontrado')
                res.redirect('/pessoa/consulta')
@@ -91,8 +51,57 @@ router.get('/instalacao/:id', ehAdmin, (req, res) => {
      })
 })
 
-router.get('/editar/gestao/:id', ehAdmin, (req, res) => {
+router.get('/projetista/:id', ehAdmin, (req, res) => {
+     const { _id } = req.user
+     var pp
+     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
+          Pessoa.findOne({ _id: projeto.funpro }).lean().then((projeto_pro) => {
+               pp = projeto_pro
+          }).catch((err) => {
+               req.flash('error_msg', 'Houve um erro ao encontrar o instalador.')
+               res.redirect('/consulta')
+          })
+          Pessoa.find({ funpro: 'checked', user: _id }).lean().then((projetista) => {
+               Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                    res.render('projeto/customdo/projetista', { projeto: projeto, projetista: projetista, pp: pp, cliente: cliente })
+               }).catch((err) => {
+                    req.flash('error_msg', 'Nenhum cliente encontrado.')
+                    res.redirect('/pessoa/consulta')
+               })
+          }).catch((err) => {
+               req.flash('error_msg', 'Nenhum regime encontrado.')
+               res.redirect('/pessoa/consulta')
+          })
+     }).catch((err) => {
+          req.flash('error_msg', 'Nenhum projeto encontrado.')
+          res.redirect('/')
+     })
 
+})
+
+router.get('/gestao/:id', ehAdmin, (req, res) => {
+     const {_id} = req.user
+     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
+          Pessoa.findOne({ _id: projeto.funres }).lean().then((projeto_res) => {
+               pr = projeto_res
+          }).catch((err) => {
+               req.flash('error_msg', 'Houve um erro ao encontrar o instalador.')
+               res.redirect('/consulta')
+          })
+          Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+               res.render('projeto/customdo/gestao', { projeto: projeto, pr: pr, cliente: cliente })
+          }).catch((err) => {
+               req.flash('error_msg', 'Nenhum cliente encontrado.')
+               res.redirect('/pessoa/consulta')
+          })
+     }).catch((err) => {
+          req.flash('error_msg', 'Nenhum projeto encontrado.')
+          res.redirect('/')
+     })
+})
+
+router.get('/editar/gestao/:id', ehAdmin, (req, res) => {
+     const { _id } = req.user
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
           projeto_id = projeto._id
 
@@ -112,10 +121,14 @@ router.get('/editar/gestao/:id', ehAdmin, (req, res) => {
                res.redirect('/configuracao/consulta')
           })
 
-
-          Pessoa.find({ funres: 'checked' }).lean().then((responsavel) => {
-               Regime.find().lean().then((regime) => {
-                    res.render('projeto/customdo/editgestao', { projeto: projeto, regime: regime, rp: rp, responsavel: responsavel, pr: pr })
+          Pessoa.find({ funres: 'checked', user: _id }).lean().then((responsavel) => {
+               Regime.find({ user: _id }).lean().then((regime) => {
+                    Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                         res.render('projeto/customdo/editgestao', { projeto: projeto, regime: regime, rp: rp, responsavel: responsavel, pr: pr, cliente: cliente })
+                    }).catch((err) => {
+                         req.flash('error_msg', 'Nenhum cliente encontrado.')
+                         res.redirect('/pessoa/consulta')
+                    })
                }).catch((err) => {
                     req.flash('error_msg', 'Houve uma falha ao encontrar o regime')
                     res.redirect('/configuracao/consulta')
@@ -133,6 +146,7 @@ router.get('/editar/gestao/:id', ehAdmin, (req, res) => {
 })
 
 router.get('/editar/instalacao/:id', ehAdmin, (req, res) => {
+     const { _id } = req.user
      var pi
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
           projeto_id = projeto._id
@@ -142,8 +156,13 @@ router.get('/editar/instalacao/:id', ehAdmin, (req, res) => {
                req.flash('error_msg', 'Houve uma falha ao encontrar o instalador')
                res.redirect('/pessoa/consulta')
           })
-          Pessoa.find({ funins: 'checked' }).lean().then((instalador) => {
-               res.render('projeto/customdo/editinstalacao', { projeto: projeto, instalador: instalador, pi: pi })
+          Pessoa.find({ funins: 'checked', user: _id }).lean().then((instalador) => {
+               Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                    res.render('projeto/customdo/editinstalacao', { projeto: projeto, instalador: instalador, pi: pi, cliente: cliente })
+               }).catch((err) => {
+                    req.flash('error_msg', 'Nenhum cliente encontrado.')
+                    res.redirect('/pessoa/consulta')
+               })
           }).catch((err) => {
                req.flash('error_msg', 'Houve uma falha ao encontrar um instalador')
                res.redirect('/pessoa/consulta')
@@ -156,7 +175,7 @@ router.get('/editar/instalacao/:id', ehAdmin, (req, res) => {
 })
 
 router.get('/editar/projetista/:id', ehAdmin, (req, res) => {
-
+     const { _id } = req.user
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
 
           projeto_id = projeto._id
@@ -168,8 +187,13 @@ router.get('/editar/projetista/:id', ehAdmin, (req, res) => {
                res.redirect('/pessoa/consulta')
           })
 
-          Pessoa.find({ funpro: 'checked' }).lean().then((projetista) => {
-               res.render('projeto/customdo/editprojetista', { projeto: projeto, projetista: projetista, pp: pp })
+          Pessoa.find({ funpro: 'checked', user: _id }).lean().then((projetista) => {
+               Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                    res.render('projeto/customdo/editprojetista', { projeto: projeto, projetista: projetista, pp: pp, cliente: cliente })
+               }).catch((err) => {
+                    req.flash('error_msg', 'Nenhum cliente encontrado.')
+                    res.redirect('/pessoa/consulta')
+               })
           }).catch((err) => {
                req.flash('error_msg', 'Houve uma falha ao encontrar um projetista')
                res.redirect('/pessoa/consulta')
@@ -180,129 +204,8 @@ router.get('/editar/projetista/:id', ehAdmin, (req, res) => {
      })
 })
 
-router.post('/projetista/', ehAdmin, (req, res) => {
-
-     var erros = []
-
-     if (!req.body.trbsit || req.body.trbsit == null || typeof req.body.trbsit == undefined) {
-          erros.push({ texto: 'Preencer o tempo de elaboração do diagrama de situação' })
-     }
-     if (!req.body.trbuni || req.body.trbuni == null || typeof req.body.trbuni == undefined) {
-          erros.push({ texto: 'Preencer o tempo de elaboração do diagrama unifiliares' })
-     }
-     if (!req.body.trbdis || req.body.trbdis == null || typeof req.body.trbdis == undefined) {
-          erros.push({ texto: 'Preencer o tempo de elaboração do diagrama de distribuição dos módulos' })
-     }
-     if (!req.body.trbate || req.body.trbate == null || typeof req.body.trbate == undefined) {
-          erros.push({ texto: 'Preencer o tempo de elaboração do diagrama de aterramento' })
-     }
-     if (!req.body.trbart || req.body.trbart == null || typeof req.body.trbart == undefined) {
-          erros.push({ texto: 'Preencer o tempo de elaboração do ART' })
-     }
-     if (!req.body.trbmem || req.body.trbmem == null || typeof req.body.trbmem == undefined) {
-          erros.push({ texto: 'Preencer o tempo de elaboração do Memorial descritivo' })
-     }
-     if (!req.body.vlrhrp || req.body.vlrhrp == null) {
-          erros.push({ texto: 'Preencer o valor R$/hora dos projetistas' })
-     }
-
-     if (erros.length > 0) {
-          Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
-               Pessoa.find({ funpro: 'checked' }).lean().then((projetista) => {
-                    res.render('projeto/customdo/projetista', { erros: erros, projeto: projeto, projetista: projetista })
-               }).catch((err) => {
-                    req.flash('error_msg', 'Houve um erro interno.')
-                    res.redirect('projeto/consulta')
-               })
-          }).catch((err) => {
-               req.flash('error_msg', 'Houve um erro interno.')
-               res.redirect('projeto/consulta')
-          })
-     } else {
-
-          Projeto.findOne({ _id: req.body.id }).then((projeto) => {
-
-               var trbsit = req.body.trbsit
-               var trbuni = req.body.trbuni
-               var trbdis = req.body.trbdis
-               var trbate = req.body.trbate
-               var trbart = req.body.trbart
-               var trbmem = req.body.trbmem
-               var totsit = trbsit * req.body.vlrhrp
-               var totuni = trbuni * req.body.vlrhrp
-               var totdis = trbdis * req.body.vlrhrp
-               var totate = trbate * req.body.vlrhrp
-               var totart = trbart * req.body.vlrhrp
-               var totmem = trbmem * req.body.vlrhrp
-
-               var totpro = parseFloat(totsit) + parseFloat(totuni) + parseFloat(totdis) + parseFloat(totate) + parseFloat(totart) + parseFloat(totmem)
-
-               var trbpro = parseFloat(trbsit) + parseFloat(trbuni) + parseFloat(trbdis) + parseFloat(trbate) + parseFloat(trbart) + parseFloat(trbmem)
-
-               var sucesso = []
-
-               projeto_id = projeto._id
-
-               projeto.vlrhrp = req.body.vlrhrp
-               //projeto.unisit = req.body.unisit
-               projeto.trbsit = trbsit
-               //projeto.uniuni = req.body.uniuni
-               projeto.trbuni = trbuni
-               //projeto.unidis = req.body.unidis
-               projeto.trbdis = trbdis
-               //projeto.uniate = req.body.uniate
-               projeto.trbate = trbate
-               //projeto.uniart = req.body.uniart
-               projeto.trbart = trbart
-               //projeto.unimem = req.body.unimem
-               projeto.trbmem = trbmem
-               projeto.totsit = totsit
-               projeto.totuni = totuni
-               projeto.totdis = totdis
-               projeto.totate = totate
-               projeto.totart = totart
-               projeto.totmem = totmem
-               projeto.trbpro = trbpro
-               projeto.totpro = totpro
-               if (req.body.ppnome == null) {
-                    projeto.funpro = req.body.funpro
-               }
-
-               projeto.save().then(() => {
-                    sucesso.push({ texto: 'Custo de projetistas aplicado com sucesso' })
-                    Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
-                         Pessoa.findOne({ _id: projeto.funpro }).lean().then((pessoa_funpro) => {
-                              pp = pessoa_funpro
-                         }).catch((err) => {
-                              req.flash('error_msg', 'Hove uma falha interna')
-                              res.redirect('/pessoa/consulta')
-                         })
-                         Regime.find({ funpro: 'checked' }).lean().then((regime) => {
-                              projeto_id = projeto._id
-                              res.render('projeto/customdo/projetista', { sucesso: sucesso, projeto: projeto, regime: regime, pp: pp })
-                         }).catch((err) => {
-                              req.flash('error_msg', 'Hove uma falha interna')
-                              res.redirect('/configuracao/consultaregime')
-                         })
-                    }).catch((err) => {
-                         req.flash('error_msg', 'Hove uma falha interna')
-                         res.redirect('/projeto/consulta')
-                    })
-               }).catch((err) => {
-                    req.flash('error_msg', 'Falha ao aplicar os custos do projeto')
-                    res.redirect('/projeto/consulta')
-               })
-
-          }).catch((err) => {
-               req.flash('error_msg', 'Falha ao encontrar o projeto')
-               res.redirect('/projeto/consulta')
-          })
-     }
-
-})
-
 router.post('/instalacao/', ehAdmin, (req, res) => {
-
+     const { _id } = req.user
      var erros = []
 
      if (!req.body.uniest || req.body.uniest == "" || typeof req.body.uniest == undefined) {
@@ -321,16 +224,20 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
 
      if (erros.length > 0) {
           Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
-               Pessoa.find({ funins: 'checked' }).lean(); then((instalador) => {
-                    projeto_id = projeto._id
-                    res.render('projeto/customdo/instalacao', { erros: erros, projeto: projeto, instalador: instalador })
+               Pessoa.find({ funins: 'checked', user: _id }).lean(); then((instalador) => {
+                    Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                         res.render('projeto/customdo/instalacao', { erros: erros, projeto: projeto, instalador: instalador, cliente: cliente })
+                    }).catch((err) => {
+                         req.flash('error_msg', 'Nenhum cliente encontrado.')
+                         res.redirect('/pessoa/consulta')
+                    })
                }).catch((err) => {
                     req.flash('error_msg', 'Houve um erro interno.')
                     res.redirect('/projeto/consulta')
                })
           }).catch((err) => {
                req.flash('error_msg', 'Houve um erro interno.')
-               res.redirect('/projeto/onsulta')
+               res.redirect('/projeto/consulta')
           })
      } else {
 
@@ -338,21 +245,19 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
 
                Configuracao.findOne({ _id: projeto.configuracao }).then((config) => {
 
-                    var trbest = req.body.uniest * (config.minest / 60)
-                    var trbmod = req.body.unimod * (config.minmod / 60)
-                    var trbinv = req.body.uniinv * (config.mininv / 60)
+                    var trbest = Math.round(parseFloat(req.body.uniest) * (parseFloat(config.minest) / 60))
+                    var trbmod = Math.round(parseFloat(req.body.unimod) * (parseFloat(config.minmod) / 60))
+                    var trbinv = Math.round(parseFloat(req.body.uniinv) * (parseFloat(config.mininv) / 60))
 
-                    var totest = trbest * req.body.vlrhri
-                    var totmod = trbmod * req.body.vlrhri
-                    var totinv = trbinv * req.body.vlrhri
+                    var totest = Math.round(parseFloat(trbest) * parseFloat(req.body.vlrhri))
+                    var totmod = Math.round(parseFloat(trbmod) * parseFloat(req.body.vlrhri))
+                    var totinv = Math.round(parseFloat(trbinv) * parseFloat(req.body.vlrhri))
 
-                    var totint = parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv)
+                    var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv)).toFixed(2)
 
-                    var trbint = parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv)
+                    var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv))
 
                     var sucesso = []
-
-                    projeto_id = projeto._id
 
                     projeto.vlrhri = req.body.vlrhri
                     projeto.uniest = req.body.uniest
@@ -379,13 +284,13 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                                    req.flash('error_msg', 'Hove uma falha interna')
                                    res.redirect('/pessoa/consulta')
                               })
-                              Regime.find({ funins: 'checked' }).lean().then((regime) => {
-                                   projeto_id = projeto._id
-                                   res.render('projeto/customdo/instalacao', { sucesso: sucesso, projeto: projeto, regime: regime, pi: pi })
-                              }).catch((err) => {
-                                   req.flash('error_msg', 'Hove uma falha interna')
-                                   res.redirect('/projeto/consulta')
-                              })
+                                   Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                                        res.render('projeto/customdo/instalacao', { sucesso: sucesso, projeto: projeto, pi:pi, cliente: cliente })
+                                   }).catch((err) => {
+                                        req.flash('error_msg', 'Nenhum cliente encontrado.')
+                                        res.redirect('/pessoa/consulta')
+                                   })
+
                          }).catch((err) => {
                               req.flash('error_msg', 'Hove uma falha interna')
                               res.redirect('/projeto/consulta')
@@ -408,8 +313,144 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
 
 })
 
-router.post('/gestao/', ehAdmin, (req, res) => {
+router.post('/projetista/', ehAdmin, (req, res) => {
+     const { _id } = req.user
+     var erros = []
 
+     if (!req.body.trbsit || req.body.trbsit == null || typeof req.body.trbsit == undefined) {
+          erros.push({ texto: 'Preencer o tempo de elaboração do diagrama de situação.' })
+     }
+     if (!req.body.trbuni || req.body.trbuni == null || typeof req.body.trbuni == undefined) {
+          erros.push({ texto: 'Preencer o tempo de elaboração do diagrama unifiliares.' })
+     }
+     if (!req.body.trbdis || req.body.trbdis == null || typeof req.body.trbdis == undefined) {
+          erros.push({ texto: 'Preencer o tempo de elaboração do diagrama de distribuição dos módulos.' })
+     }
+     if (!req.body.trbate || req.body.trbate == null || typeof req.body.trbate == undefined) {
+          erros.push({ texto: 'Preencer o tempo de elaboração do diagrama de aterramento.' })
+     }
+     if (!req.body.trbart || req.body.trbart == null || typeof req.body.trbart == undefined) {
+          erros.push({ texto: 'Preencer o tempo de elaboração do ART.' })
+     }
+
+     if (!req.body.vlrart || req.body.vlrart == null) {
+          erros.push({ texto: 'Preencer o valor da ART.' })
+     }
+
+     if (!req.body.trbmem || req.body.trbmem == null || typeof req.body.trbmem == undefined) {
+          erros.push({ texto: 'Preencer o tempo de elaboração do Memorial descritivo.' })
+     }
+     if (!req.body.vlrhrp || req.body.vlrhrp == null) {
+          erros.push({ texto: 'Preencer o valor R$/hora dos projetistas.' })
+     }
+
+     if (erros.length > 0) {
+          Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
+               Pessoa.find({ funpro: 'checked', user: _id }).lean().then((projetista) => {
+                    Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                         res.render('projeto/customdo/projetista', { erros: erros, projeto: projeto, projetista: projetista, cliente: cliente })
+                    }).catch((err) => {
+                         req.flash('error_msg', 'Nenhum cliente encontrado.')
+                         res.redirect('/pessoa/consulta')
+                    })
+               }).catch((err) => {
+                    req.flash('error_msg', 'Houve um erro interno.')
+                    res.redirect('projeto/consulta')
+               })
+          }).catch((err) => {
+               req.flash('error_msg', 'Houve um erro interno.')
+               res.redirect('projeto/consulta')
+          })
+     } else {
+
+          Projeto.findOne({ _id: req.body.id }).then((projeto) => {
+
+               var trbsit = req.body.trbsit
+               var trbuni = req.body.trbuni
+               var trbdis = req.body.trbdis
+               var trbate = req.body.trbate
+               var trbart = req.body.trbart
+               var trbmem = req.body.trbmem
+               var totsit = (parseFloat(trbsit) * parseFloat(req.body.vlrhrp)).toFixed(2)
+               var totuni = (parseFloat(trbuni) * parseFloat(req.body.vlrhrp)).toFixed(2)
+               var totdis = (parseFloat(trbdis) * parseFloat(req.body.vlrhrp)).toFixed(2)
+               var totate = (parseFloat(trbate) * parseFloat(req.body.vlrhrp)).toFixed(2)
+               var totart = (parseFloat(trbart) * parseFloat(req.body.vlrhrp)).toFixed(2)
+               var totmem = (parseFloat(trbmem) * parseFloat(req.body.vlrhrp)).toFixed(2)
+
+               var vlrart = req.body.vlrart
+
+               var totpro = parseFloat(totsit) + parseFloat(totuni) + parseFloat(totdis) + parseFloat(totate) + parseFloat(totart) + parseFloat(totmem) + parseFloat(vlrart)
+
+               var trbpro = Math.round(parseFloat(trbsit) + parseFloat(trbuni) + parseFloat(trbdis) + parseFloat(trbate) + parseFloat(trbart) + parseFloat(trbmem))
+
+               var sucesso = []
+
+               projeto.vlrhrp = req.body.vlrhrp
+               //projeto.unisit = req.body.unisit
+               projeto.trbsit = trbsit
+               //projeto.uniuni = req.body.uniuni
+               projeto.trbuni = trbuni
+               //projeto.unidis = req.body.unidis
+               projeto.trbdis = trbdis
+               //projeto.uniate = req.body.uniate
+               projeto.trbate = trbate
+               //projeto.uniart = req.body.uniart
+               projeto.trbart = trbart
+               //projeto.unimem = req.body.unimem
+               projeto.vlrart = vlrart
+               projeto.trbmem = trbmem
+               projeto.totsit = totsit
+               projeto.totuni = totuni
+               projeto.totdis = totdis
+               projeto.totate = totate
+               projeto.totart = totart
+               projeto.totmem = totmem
+               projeto.trbpro = trbpro
+               projeto.totpro = totpro
+               if (req.body.ppnome == null) {
+                    projeto.funpro = req.body.funpro
+               }
+
+               projeto.save().then(() => {
+                    sucesso.push({ texto: 'Custo de projetistas aplicado com sucesso' })
+                    Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
+                         Pessoa.findOne({ _id: projeto.funpro }).lean().then((pessoa_funpro) => {
+                              pp = pessoa_funpro
+                         }).catch((err) => {
+                              req.flash('error_msg', 'Hove uma falha interna.')
+                              res.redirect('/pessoa/consulta')
+                         })
+                         Regime.find({ user: _id }).lean().then((regime) => {
+                              Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                                   res.render('projeto/customdo/projetista', { sucesso: sucesso, projeto: projeto, regime: regime, pp: pp, cliente: cliente })
+                              }).catch((err) => {
+                                   req.flash('error_msg', 'Nenhum cliente encontrado.')
+                                   res.redirect('/pessoa/consulta')
+                              })
+                         }).catch((err) => {
+                              req.flash('error_msg', 'Hove uma falha interna.')
+                              res.redirect('/configuracao/consultaregime')
+                         })
+                    }).catch((err) => {
+                         req.flash('error_msg', 'Hove uma falha interna.')
+                         res.redirect('/projeto/consulta')
+                    })
+               }).catch((err) => {
+                    req.flash('error_msg', 'Falha ao aplicar os custos do projeto.')
+                    res.redirect('/projeto/consulta')
+               })
+
+          }).catch((err) => {
+               req.flash('error_msg', 'Falha ao encontrar o projeto.')
+               res.redirect('/projeto/consulta')
+          })
+     }
+
+})
+
+router.post('/gestao/', ehAdmin, (req, res) => {
+     const { _id } = req.user
      var erros = []
 
      if (!req.body.trbvis || req.body.trbvis == null || typeof req.body.trbvis == undefined) {
@@ -433,8 +474,12 @@ router.post('/gestao/', ehAdmin, (req, res) => {
 
      if (erros.length > 0) {
           Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
-               projeto_id = projeto._id
-               res.render('projeto/customdo/gestao', { erros: erros, projeto: projeto })
+               Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                    res.render('projeto/customdo/gestao', { erros: erros, projeto: projeto, cliente: cliente })
+               }).catch((err) => {
+                    req.flash('error_msg', 'Nenhum cliente encontrado.')
+                    res.redirect('/pessoa/consulta')
+               })
           }).catch((err) => {
                req.flash('error_msg', 'Houve um erro interno.')
                res.redirect('/projeto/novo')
@@ -443,16 +488,16 @@ router.post('/gestao/', ehAdmin, (req, res) => {
 
           Projeto.findOne({ _id: req.body.id }).then((projeto) => {
 
-               var totesc = req.body.trbesc * req.body.vlrhrg
-               var totvis = req.body.trbvis * req.body.vlrhrg
-               var totcom = req.body.trbcom * req.body.vlrhrg
-               var totcro = req.body.trbcro * req.body.vlrhrg
-               var totaqi = req.body.trbaqi * req.body.vlrhrg
-               var totrec = req.body.trbrec * req.body.vlrhrg
+               var totesc = (parseFloat(req.body.trbesc) * parseFloat(req.body.vlrhrg)).toFixed(2)
+               var totvis = (parseFloat(req.body.trbvis) * parseFloat(req.body.vlrhrg)).toFixed(2)
+               var totcom = (parseFloat(req.body.trbcom) * parseFloat(req.body.vlrhrg)).toFixed(2)
+               var totcro = (parseFloat(req.body.trbcro) * parseFloat(req.body.vlrhrg)).toFixed(2)
+               var totaqi = (parseFloat(req.body.trbaqi) * parseFloat(req.body.vlrhrg)).toFixed(2)
+               var totrec = (parseFloat(req.body.trbrec) * parseFloat(req.body.vlrhrg)).toFixed(2)
 
-               var totges = parseFloat(totvis) + parseFloat(totcom) + parseFloat(totcro) + parseFloat(totaqi) + parseFloat(totrec) + parseFloat(totesc)
+               var totges = (parseFloat(totvis) + parseFloat(totcom) + parseFloat(totcro) + parseFloat(totaqi) + parseFloat(totrec) + parseFloat(totesc)).toFixed(2)
 
-               var trbges = parseFloat(req.body.trbvis) + parseFloat(req.body.trbcom) + parseFloat(req.body.trbcro) + parseFloat(req.body.trbaqi) + parseFloat(req.body.trbrec) + parseFloat(req.body.trbesc)
+               var trbges = Math.round(parseFloat(req.body.trbvis) + parseFloat(req.body.trbcom) + parseFloat(req.body.trbcro) + parseFloat(req.body.trbaqi) + parseFloat(req.body.trbrec) + parseFloat(req.body.trbesc))
 
                var sucesso = []
 
@@ -484,15 +529,18 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                               req.flash('error_msg', 'Hove uma falha interna')
                               res.redirect('/pessoa/consulta')
                          })
-                         Regime.find({ funins: 'checked' }).lean().then((regime) => {
-                              projeto_id = projeto._id
-                              res.render('projeto/customdo/gestao', { sucesso: sucesso, projeto: projeto, regime: regime, responsavel: responsavel })
+                         Regime.find({ user: _id }).lean().then((regime) => {
+                              Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                                   //projeto_id = projeto._id
+                                   res.render('projeto/customdo/gestao', { sucesso: sucesso, projeto: projeto, regime: regime, cliente: cliente })
+                              }).catch((err) => {
+                                   req.flash('error_msg', 'Nenhum cliente encontrado.')
+                                   res.redirect('/pessoa/consulta')
+                              })
                          }).catch((err) => {
                               req.flash('error_msg', 'Hove uma falha interna')
                               res.redirect('/projeto/consulta')
                          })
-
-
                     }).catch((err) => {
                          req.flash('error_msg', 'Hove uma falha interna')
                          res.redirect('/projeto')
@@ -505,150 +553,8 @@ router.post('/gestao/', ehAdmin, (req, res) => {
      }
 })
 
-router.post('/editar/projetista/', ehAdmin, (req, res) => {
-
-     var erros = []
-
-     if (!req.body.trbsit || req.body.trbsit == null || typeof req.body.trbsit == undefined) {
-          erros.push({ texto: 'Preencer o tempo de elaboração do diagrama de situação' })
-     }
-     if (!req.body.trbuni || req.body.trbuni == null || typeof req.body.trbuni == undefined) {
-          erros.push({ texto: 'Preencer o tempo de elaboração do diagrama unifiliares' })
-     }
-     if (!req.body.trbdis || req.body.trbdis == null || typeof req.body.trbdis == undefined) {
-          erros.push({ texto: 'Preencer o tempo de elaboração do diagrama de distribuição dos módulos' })
-     }
-     if (!req.body.trbate || req.body.trbate == null || typeof req.body.trbate == undefined) {
-          erros.push({ texto: 'Preencer o tempo de elaboração do diagrama de aterramento' })
-     }
-     if (!req.body.trbart || req.body.trbart == null || typeof req.body.trbart == undefined) {
-          erros.push({ texto: 'Preencer o tempo de elaboração do ART' })
-     }
-     if (!req.body.trbmem || req.body.trbmem == null || typeof req.body.trbmem == undefined) {
-          erros.push({ texto: 'Preencer o tempo de elaboração do Memorial descritivo' })
-     }
-     if (!req.body.vlrhrp || req.body.vlrhrp == null) {
-          erros.push({ texto: 'Preencer o valor R$/hora dos projetistas' })
-     }
-
-     if (erros.length > 0) {
-          Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
-
-               Pessoa.findOne({ _id: projeto.funpro }).lean().then((pessoa_funpro) => {
-                    pp = pessoa_funpro
-               }).catch((err) => {
-                    req.flash('error_msg', 'Hove uma falha interna')
-                    res.redirect('/pessoa/consulta')
-               })
-
-               Pessoa.find({ funpro: 'checked' }).lean().then((projetista) => {
-                    res.render('projeto/customdo/editprojetista', { erros: erros, projeto: projeto, projetista: projetista, p: p })
-               }).catch((err) => {
-                    req.flash('error_msg', 'Houve um erro interno.')
-                    res.redirect('projeto/consulta')
-               })
-          }).catch((err) => {
-               req.flash('error_msg', 'Houve um erro interno.')
-               res.redirect('projeto/consulta')
-          })
-     } else {
-
-          Projeto.findOne({ _id: req.body.id }).then((projeto) => {
-
-               var sucesso = []
-               var tothrs
-
-               projeto_id = projeto._id
-
-               //Edição dos Custos do Projetista
-               var trbsit = req.body.trbsit
-               var trbuni = req.body.trbuni
-               var trbdis = req.body.trbdis
-               var trbate = req.body.trbate
-               var trbart = req.body.trbart
-               var trbmem = req.body.trbmem
-               var totsit = trbsit * req.body.vlrhrp
-               var totuni = trbuni * req.body.vlrhrp
-               var totdis = trbdis * req.body.vlrhrp
-               var totate = trbate * req.body.vlrhrp
-               var totart = trbart * req.body.vlrhrp
-               var totmem = trbmem * req.body.vlrhrp
-
-               var totpro = parseFloat(totsit) + parseFloat(totuni) + parseFloat(totdis) + parseFloat(totate) + parseFloat(totart) + parseFloat(totmem)
-
-               var trbpro = parseFloat(trbsit) + parseFloat(trbuni) + parseFloat(trbdis) + parseFloat(trbate) + parseFloat(trbart) + parseFloat(trbmem)
-
-               tothrs = parseFloat(trbpro)
-               if (projeto.trbint != null) {
-                    tothrs = tothrs + parseFloat(projeto.trbint)
-               }
-               if (projeto.trbges != null) {
-                    tothrs = tothrs + parseFloat(projeto.trbges)
-               }
-
-               projeto.vlrhrp = req.body.vlrhrp
-               projeto.trbsit = trbsit
-               projeto.trbuni = trbuni
-               projeto.trbdis = trbdis
-               projeto.trbate = trbate
-               projeto.trbart = trbart
-               projeto.trbmem = trbmem
-               projeto.totsit = totsit
-               projeto.totuni = totuni
-               projeto.totdis = totdis
-               projeto.totate = totate
-               projeto.totart = totart
-               projeto.totmem = totmem
-               projeto.trbpro = trbpro
-               projeto.totpro = totpro
-               projeto.tothrs = tothrs
-               if (req.body.checkPro != null) {
-                    projeto.funpro = req.body.funpro
-               }
-
-               projeto.save().then(() => {
-
-                    sucesso.push({ texto: 'Custo de projetistas aplicado com sucesso. Aplicar o gerenciamento e os tributos' })
-
-                    Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
-                         Pessoa.findOne({ _id: projeto.funpro }).lean().then((pessoa_funpro) => {
-                              pp = pessoa_funpro
-                         }).catch((err) => {
-                              req.flash('error_msg', 'Hove uma falha interna')
-                              res.redirect('/pessoa/consulta')
-                         })
-                         Pessoa.find({ funpro: 'checked' }).lean().then((projetista) => {
-
-                              Regime.find().lean().then((regime) => {
-                                   projeto_id = projeto._id
-                                   res.render('projeto/customdo/editprojetista', { sucesso: sucesso, projeto: projeto, projetista: projetista, regime: regime, pp: pp })
-                              }).catch((err) => {
-                                   req.flash('error_msg', 'Hove uma falha interna')
-                                   res.redirect('/projeto/consulta')
-                              })
-                         }).catch((err) => {
-                              req.flash('error_msg', 'Hove uma falha interna')
-                              res.redirect('/pessoa/consulta')
-                         })
-                    }).catch((err) => {
-                         req.flash('error_msg', 'Hove uma falha interna')
-                         res.redirect('/projeto/consulta')
-                    })
-               }).catch((err) => {
-                    req.flash('error_msg', 'Falha ao aplicar os custos do projeto')
-                    res.redirect('/projeto/consulta')
-               })
-
-          }).catch((err) => {
-               req.flash('error_msg', 'Falha ao encontrar o projeto')
-               res.redirect('/projeto/consulta')
-          })
-     }
-
-})
-
 router.post('/editar/instalacao/', ehAdmin, (req, res) => {
-
+     const { _id } = req.user
      var erros = []
      var sucesso = []
 
@@ -675,39 +581,44 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                     res.redirect('/pessoa/consulta')
                })
 
-               Pessoa.find({ funins: 'checked' }).lean().then((instalador) => {
-                    projeto_id = projeto._id
-                    res.render('projeto/customdo/editinstalacao', { erros: erros, projeto: projeto, instalador: instalador, pi: pi })
+               Pessoa.find({ funins: 'checked', user: _id }).lean().then((instalador) => {
+                    Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                         res.render('projeto/customdo/editinstalacao', { erros: erros, projeto: projeto, instalador: instalador, pp: pp, cliente: cliente })
+                    }).catch((err) => {
+                         req.flash('error_msg', 'Nenhum cliente encontrado.')
+                         res.redirect('/pessoa/consulta')
+                    })
                }).catch((err) => {
                     req.flash('error_msg', 'Houve um erro interno.')
                     res.redirect('/projeto/consulta')
                })
           }).catch((err) => {
                req.flash('error_msg', 'Houve um erro interno.')
-               res.redirect('/projeto/onsulta')
+               res.redirect('/projeto/consulta')
           })
      } else {
 
           Projeto.findOne({ _id: req.body.id }).then((projeto) => {
 
                Configuracao.findOne({ _id: projeto.configuracao }).then((config) => {
-                    7
-
+                    
                     var tothrs
 
                     projeto_id = projeto._id
 
                     //Edição dos Custos de Instalação
-                    var trbest = parseFloat(req.body.uniest) * (parseFloat(config.minest) / 60)
-                    var trbmod = parseFloat(req.body.unimod) * (parseFloat(config.minmod) / 60)
-                    var trbinv = parseFloat(req.body.uniinv) * (parseFloat(config.mininv) / 60)
 
-                    var totest = parseFloat(trbest) * parseFloat(req.body.vlrhri)
-                    var totmod = parseFloat(trbmod) * parseFloat(req.body.vlrhri)
-                    var totinv = parseFloat(trbinv) * parseFloat(req.body.vlrhri)
-                    var totint = parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv)
+                    var trbest = Math.round(parseFloat(req.body.uniest) * (parseFloat(config.minest) / 60))
+                    var trbmod = Math.round(parseFloat(req.body.unimod) * (parseFloat(config.minmod) / 60))
+                    var trbinv = Math.round(parseFloat(req.body.uniinv) * (parseFloat(config.mininv) / 60))
 
-                    var trbint = parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv)
+                    var totest = Math.round(parseFloat(trbest) * parseFloat(req.body.vlrhri))
+                    var totmod = Math.round(parseFloat(trbmod) * parseFloat(req.body.vlrhri))
+                    var totinv = Math.round(parseFloat(trbinv) * parseFloat(req.body.vlrhri))
+
+                    var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv)).toFixed(2)
+
+                    var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv))
 
                     tothrs = parseFloat(trbint)
                     if (projeto.trbpro != null) {
@@ -741,7 +652,6 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                          sucesso.push({ texto: 'Custo de instalação aplicado com sucesso. Aplicar o gerenciamento e os tributos' })
                          var pi
                          Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
-                              projeto_id = projeto._id
 
                               Pessoa.findOne({ _id: projeto.funins }).lean().then((pessoa_ins) => {
                                    pi = pessoa_ins
@@ -750,13 +660,15 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                                    res.redirect('/pessoa/consulta')
                               })
 
-                              Pessoa.find({ funins: 'checked' }).lean().then((instalador) => {
-                                   Regime.find().lean().then((regime) => {
-                                        res.render('projeto/customdo/editinstalacao', { sucesso: sucesso, projeto: projeto, regime: regime, instalador: instalador, pi: pi })
+                              Pessoa.find({ funins: 'checked', user: _id }).lean().then((instalador) => {
+                                   
+                                   Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                                        res.render('projeto/customdo/editinstalacao', { sucesso: sucesso, projeto: projeto, pi:pi, instalador:instalador, cliente: cliente })
                                    }).catch((err) => {
-                                        req.flash('error_msg', 'Hove uma falha interna')
-                                        res.redirect('/projeto/consulta')
+                                        req.flash('error_msg', 'Nenhum cliente encontrado.')
+                                        res.redirect('/pessoa/consulta')
                                    })
+
                               }).catch((err) => {
                                    req.flash('error_msg', 'Hove uma falha interna')
                                    res.redirect('/pessoa/consulta')
@@ -781,8 +693,165 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
 
 })
 
-router.post('/editar/gestao/', ehAdmin, (req, res) => {
+router.post('/editar/projetista/', ehAdmin, (req, res) => {
+     const { _id } = req.user
+     var erros = []
 
+     if (!req.body.trbsit || req.body.trbsit == null || typeof req.body.trbsit == undefined) {
+          erros.push({ texto: 'Preencer o tempo de elaboração do diagrama de situação' })
+     }
+     if (!req.body.trbuni || req.body.trbuni == null || typeof req.body.trbuni == undefined) {
+          erros.push({ texto: 'Preencer o tempo de elaboração do diagrama unifiliares' })
+     }
+     if (!req.body.trbdis || req.body.trbdis == null || typeof req.body.trbdis == undefined) {
+          erros.push({ texto: 'Preencer o tempo de elaboração do diagrama de distribuição dos módulos' })
+     }
+     if (!req.body.trbate || req.body.trbate == null || typeof req.body.trbate == undefined) {
+          erros.push({ texto: 'Preencer o tempo de elaboração do diagrama de aterramento' })
+     }
+     if (!req.body.trbart || req.body.trbart == null || typeof req.body.trbart == undefined) {
+          erros.push({ texto: 'Preencer o tempo de elaboração do ART' })
+     }
+     if (!req.body.vlrart || req.body.vlrart == null) {
+          erros.push({ texto: 'Preencer o valor da ART' })
+     }
+     if (!req.body.trbmem || req.body.trbmem == null || typeof req.body.trbmem == undefined) {
+          erros.push({ texto: 'Preencer o tempo de elaboração do Memorial descritivo' })
+     }
+     if (!req.body.vlrhrp || req.body.vlrhrp == null) {
+          erros.push({ texto: 'Preencer o valor R$/hora dos projetistas' })
+     }
+
+     if (erros.length > 0) {
+          Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
+
+               Pessoa.findOne({ _id: projeto.funpro }).lean().then((pessoa_funpro) => {
+                    pp = pessoa_funpro
+               }).catch((err) => {
+                    req.flash('error_msg', 'Hove uma falha interna')
+                    res.redirect('/pessoa/consulta')
+               })
+
+               Pessoa.find({ funpro: 'checked', user: _id }).lean().then((projetista) => {
+                    Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                         res.render('projeto/customdo/editprojetista', { erros: erros, projeto: projeto, projetista: projetista, pp: pp, cliente: cliente })
+                    }).catch((err) => {
+                         req.flash('error_msg', 'Nenhum cliente encontrado.')
+                         res.redirect('/pessoa/consulta')
+                    })
+               }).catch((err) => {
+                    req.flash('error_msg', 'Houve um erro interno.')
+                    res.redirect('projeto/consulta')
+               })
+          }).catch((err) => {
+               req.flash('error_msg', 'Houve um erro interno.')
+               res.redirect('projeto/consulta')
+          })
+     } else {
+
+          Projeto.findOne({ _id: req.body.id }).then((projeto) => {
+
+               var sucesso = []
+               var tothrs
+
+               projeto_id = projeto._id
+
+               //Edição dos Custos do Projetista
+               var trbsit = req.body.trbsit
+               var trbuni = req.body.trbuni
+               var trbdis = req.body.trbdis
+               var trbate = req.body.trbate
+               var trbart = req.body.trbart
+               var trbmem = req.body.trbmem
+               var totsit = (parseFloat(trbsit) * parseFloat(req.body.vlrhrp)).toFixed(2)
+               var totuni = (parseFloat(trbuni) * parseFloat(req.body.vlrhrp)).toFixed(2)
+               var totdis = (parseFloat(trbdis) * parseFloat(req.body.vlrhrp)).toFixed(2)
+               var totate = (parseFloat(trbate) * parseFloat(req.body.vlrhrp)).toFixed(2)
+               var totart = (parseFloat(trbart) * parseFloat(req.body.vlrhrp)).toFixed(2)
+               var totmem = (parseFloat(trbmem) * parseFloat(req.body.vlrhrp)).toFixed(2)
+
+               var vlrart = req.body.vlrart
+
+               var totpro = (parseFloat(totsit) + parseFloat(totuni) + parseFloat(totdis) + parseFloat(totate) + parseFloat(totart) + parseFloat(totmem) + parseFloat(vlrart)).toFixed(2)
+
+               var trbpro = Math.round(parseFloat(trbsit) + parseFloat(trbuni) + parseFloat(trbdis) + parseFloat(trbate) + parseFloat(trbart) + parseFloat(trbmem))
+
+               tothrs = parseFloat(trbpro)
+               if (projeto.trbint != null) {
+                    tothrs = tothrs + parseFloat(projeto.trbint)
+               }
+               if (projeto.trbges != null) {
+                    tothrs = tothrs + parseFloat(projeto.trbges)
+               }
+
+               projeto.vlrhrp = req.body.vlrhrp
+               projeto.trbsit = trbsit
+               projeto.trbuni = trbuni
+               projeto.trbdis = trbdis
+               projeto.trbate = trbate
+               projeto.trbart = trbart
+               projeto.vlrart = vlrart
+               projeto.trbmem = trbmem
+               projeto.totsit = totsit
+               projeto.totuni = totuni
+               projeto.totdis = totdis
+               projeto.totate = totate
+               projeto.totart = totart
+               projeto.totmem = totmem
+               projeto.trbpro = trbpro
+               projeto.totpro = totpro
+               projeto.tothrs = tothrs
+               if (req.body.checkPro != null) {
+                    projeto.funpro = req.body.funpro
+               }
+
+               projeto.save().then(() => {
+
+                    sucesso.push({ texto: 'Custo de projetistas aplicado com sucesso. Aplicar o gerenciamento e os tributos' })
+
+                    Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
+                         Pessoa.findOne({ _id: projeto.funpro }).lean().then((pessoa_funpro) => {
+                              pp = pessoa_funpro
+                         }).catch((err) => {
+                              req.flash('error_msg', 'Hove uma falha interna')
+                              res.redirect('/pessoa/consulta')
+                         })
+                         Pessoa.find({ funpro: 'checked', user: _id }).lean().then((projetista) => {
+
+                              Regime.find({ user: _id }).lean().then((regime) => {
+                                   Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                                        res.render('projeto/customdo/editprojetista', { sucesso: sucesso, projeto: projeto, projetista: projetista, regime: regime, pp: pp, cliente: cliente })
+                                   }).catch((err) => {
+                                        req.flash('error_msg', 'Nenhum cliente encontrado.')
+                                        res.redirect('/pessoa/consulta')
+                                   })
+                              }).catch((err) => {
+                                   req.flash('error_msg', 'Hove uma falha interna')
+                                   res.redirect('/projeto/consulta')
+                              })
+                         }).catch((err) => {
+                              req.flash('error_msg', 'Hove uma falha interna')
+                              res.redirect('/pessoa/consulta')
+                         })
+                    }).catch((err) => {
+                         req.flash('error_msg', 'Hove uma falha interna')
+                         res.redirect('/projeto/consulta')
+                    })
+               }).catch((err) => {
+                    req.flash('error_msg', 'Falha ao aplicar os custos do projeto')
+                    res.redirect('/projeto/consulta')
+               })
+
+          }).catch((err) => {
+               req.flash('error_msg', 'Falha ao encontrar o projeto')
+               res.redirect('/projeto/consulta')
+          })
+     }
+
+})
+
+router.post('/editar/gestao/', ehAdmin, (req, res) => {
+     const { _id } = req.user
      var erros = []
 
      if (!req.body.trbvis || req.body.trbvis == null || typeof req.body.trbvis == undefined) {
@@ -806,17 +875,17 @@ router.post('/editar/gestao/', ehAdmin, (req, res) => {
 
      if (erros.length > 0) {
           Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
-
-               Regime.findOne().lean().then((regime) => {
-
-                    req.flash('error_msg', 'Houve um erro interno.')
-                    res.render('projeto/customdo/editgestao', { erros: erros, projeto: projeto, regime: regime })
-
+               Regime.findOne({ user: _id }).lean().then((regime) => {
+                    Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                         res.render('projeto/customdo/editgestao', { erros: erros, projeto: projeto, regime: regime, rp: rp, responsavel: responsavel, pr: pr, cliente: cliente })
+                    }).catch((err) => {
+                         req.flash('error_msg', 'Nenhum cliente encontrado.')
+                         res.redirect('/pessoa/consulta')
+                    })
                }).catch((err) => {
                     req.flash('error_msg', 'Houve um erro interno.')
                     res.redirect('projeto/consulta', { erros: erros, projeto: projeto })
                })
-
           }).catch((err) => {
                req.flash('error_msg', 'Houve um erro interno.')
                res.redirect('projeto/consulta', { erros: erros, projeto: projeto })
@@ -846,16 +915,16 @@ router.post('/editar/gestao/', ehAdmin, (req, res) => {
                }
 
                //Edição dos Custos de Gestão
-               var totesc = req.body.trbesc * req.body.vlrhrg
-               var totvis = req.body.trbvis * req.body.vlrhrg
-               var totcom = req.body.trbcom * req.body.vlrhrg
-               var totcro = req.body.trbcro * req.body.vlrhrg
-               var totaqi = req.body.trbaqi * req.body.vlrhrg
-               var totrec = req.body.trbrec * req.body.vlrhrg
+               var totesc = (parseFloat(req.body.trbesc) * parseFloat(req.body.vlrhrg)).toFixed(2)
+               var totvis = (parseFloat(req.body.trbvis) * parseFloat(req.body.vlrhrg)).toFixed(2)
+               var totcom = (parseFloat(req.body.trbcom) * parseFloat(req.body.vlrhrg)).toFixed(2)
+               var totcro = (parseFloat(req.body.trbcro) * parseFloat(req.body.vlrhrg)).toFixed(2)
+               var totaqi = (parseFloat(req.body.trbaqi) * parseFloat(req.body.vlrhrg)).toFixed(2)
+               var totrec = (parseFloat(req.body.trbrec) * parseFloat(req.body.vlrhrg)).toFixed(2)
 
-               var totges = parseFloat(totvis) + parseFloat(totcom) + parseFloat(totcro) + parseFloat(totaqi) + parseFloat(totrec) + parseFloat(totesc)
+               var totges = (parseFloat(totvis) + parseFloat(totcom) + parseFloat(totcro) + parseFloat(totaqi) + parseFloat(totrec) + parseFloat(totesc)).toFixed(2)
 
-               var trbges = parseFloat(req.body.trbvis) + parseFloat(req.body.trbcom) + parseFloat(req.body.trbcro) + parseFloat(req.body.trbaqi) + parseFloat(req.body.trbrec) + parseFloat(req.body.trbesc)
+               var trbges = Math.round(parseFloat(req.body.trbvis) + parseFloat(req.body.trbcom) + parseFloat(req.body.trbcro) + parseFloat(req.body.trbaqi) + parseFloat(req.body.trbrec) + parseFloat(req.body.trbesc))
 
                tothrs = parseFloat(trbges)
                if (projeto.trbpro != null) {
@@ -897,20 +966,22 @@ router.post('/editar/gestao/', ehAdmin, (req, res) => {
                               res.redirect('/pessoa/consulta')
                          })
 
-                         Regime.find().lean().then((regime) => {
-
-                              Pessoa.find({ funges: 'checked' }).lean().then((responsavel) => {
-                                   res.render('projeto/customdo/editgestao', { sucesso: sucesso, projeto: projeto, regime: regime, pr: pr, responsavel: responsavel })
+                         Regime.find({ user: _id }).lean().then((regime) => {
+                              Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {
+                                   Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                                        res.render('projeto/customdo/editgestao', { sucesso: sucesso, projeto: projeto, regime: regime, rp: rp, responsavel: responsavel, pr: pr, cliente: cliente })
+                                   }).catch((err) => {
+                                        req.flash('error_msg', 'Nenhum cliente encontrado.')
+                                        res.redirect('/pessoa/consulta')
+                                   })
                               }).catch((err) => {
                                    req.flash('error_msg', 'Hove uma falha interna')
                                    res.redirect('/pessoa/consulta')
                               })
-
                          }).catch((err) => {
                               req.flash('error_msg', 'Hove uma falha interna')
                               res.redirect('/configuracao/consultaregime')
                          })
-
                     }).catch((err) => {
                          req.flash('error_msg', 'Hove uma falha interna')
                          res.redirect('/projeto/consulta')
@@ -919,13 +990,11 @@ router.post('/editar/gestao/', ehAdmin, (req, res) => {
                     req.flash('error_msg', 'Falha ao aplicar os custos do projeto')
                     res.redirect('/projeto/consulta')
                })
-
           }).catch((err) => {
                req.flash('error_msg', 'Falha ao encontrar o projeto')
                res.redirect('/projeto/consulta')
           })
      }
-
 })
 
 

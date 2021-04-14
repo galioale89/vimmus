@@ -1,62 +1,104 @@
 <style>
-    .icone{
-        font-size: 30px; 
-        color: rgb(2, 38, 78);"
+    .icone {
+        font-size: 30px;
+        color: rgb(2, 38, 78);
     }
 </style>
-<div class="container mt-4">
-    <script>
 
-        function mascara_dataini() {
-            var data = document.getElementById('dataini')
-            var dataord = document.getElementById('dataord')
-            var currenTime = new Date()
-            var year = currenTime.getFullYear()
-            var month = currenTime.getMonth()
-            var day = currenTime.getDate()
-            var ano = data.value
-            ano1 = ano.substring(6, 10)
-            dia1 = ano.substring(0, 2)
-            mes1 = ano.substring(3, 5)
+<script>
+    function mascara_dataini() {
+        var data = document.getElementById('valDataIni')
+        var dataini = document.getElementById('dataini')
+        var dataord = document.getElementById('dataord')
 
+        var novadata = data.value
+        novadata = novadata.replace(novadata.substring(4, 5), "")
+        novadata = novadata.replace(novadata.substring(6, 7), "")
 
-            if (data.value.length == 2 || data.value.length == 5) {
-                data.value += "/"
-            }
-            if (data.value.length == 10) {
-                if (parseFloat(ano1) > parseFloat(year) || parseFloat(dia1) > parseFloat(day) || parseFloat(mes1) > parseFloat(month) + 1) {
-                    data.value = ''
-                }else{
-                    dataord.value = ano1+mes1+dia1
-                }
+        var currenTime = new Date()
+        var year = currenTime.getFullYear()
+        var month = currenTime.getMonth()
+        var day = currenTime.getDate()
+        var ano = novadata
+        ano1 = ano.substring(0, 4)
+        dia1 = ano.substring(6, 8)
+        mes1 = ano.substring(4, 6)
+
+        if (parseFloat(ano1) > parseFloat(year) || parseFloat(mes1) > parseFloat(month) + 1) {
+            data.value = ''
+            alert('Data maior que o dia de hoje.')
+        } else {
+            if (parseFloat(dia1) > parseFloat(day) && parseFloat(mes1) == parseFloat(month) + 1) {
+                data.value = ''
+                alert('Data maior que o dia de hoje.')
+            } else {
+                dataord.value = ano1 + mes1 + dia1
+                dataini.value = dia1 + '/' + mes1 + '/' + ano1
             }
         }
-        function mascara_dataprev() {
-            var data = document.getElementById('dataprev')
-            var currenTime = new Date()
-            var year = currenTime.getFullYear()
-            var month = currenTime.getMonth()
-            var day = currenTime.getDate()
-            var ano = data.value
-            ano1 = ano.substring(6, 10)
-            dia1 = ano.substring(0, 2)
-            mes1 = ano.substring(3, 5)
+    };
+    function mascara_dataprev() {
+        var data = document.getElementById('valDataPrev')
+        var dataprev = document.getElementById('dataprev')
+        var dataini = document.getElementById('valDataIni')
 
-            if (data.value.length == 2 || data.value.length == 5) {
-                data.value += "/"
-            }
-            if (data.value.length == 10) {
-                if (parseFloat(ano1) < parseFloat(year) || parseFloat(mes1) < parseFloat(month) + 1) {
+        var novadata = data.value
+        novadata = novadata.replace(novadata.substring(4, 5), "")
+        novadata = novadata.replace(novadata.substring(6, 7), "")
+
+        var currenTime = new Date()
+        var year = currenTime.getFullYear()
+        var month = currenTime.getMonth()
+        var day = currenTime.getDate()
+
+        var ano = novadata
+        ano1 = ano.substring(0, 4)
+        dia1 = ano.substring(6, 8)
+        mes1 = ano.substring(4, 6)
+
+        if (dataini.value != '') {
+
+            if (parseFloat(ano1) < parseFloat(year) || parseFloat(mes1) < parseFloat(month) + 1) {
+                data.value = ''
+                alert('Data deve ser maior que data inicial.')
+            } else {
+                if (parseFloat(ano1) == parseFloat(year) && parseFloat(mes1) == parseFloat(month) + 1 && parseFloat(dia1) < parseFloat(day)) {
                     data.value = ''
+                    alert('Data deve ser maior que data inicial.')
                 } else {
-                    if (parseFloat(ano1) == parseFloat(year) && parseFloat(mes1) == parseFloat(month) + 1 && parseFloat(dia1) < parseFloat(day))
-                        data.value = ''
+                    dataprev.value = dia1 + '/' + mes1 + '/' + ano1
                 }
             }
+        }else{
+            alert('Primeiro escolha a data inicial.')
+            data.value = ''
         }
-    </script>
-    <form action="/projeto/novo/" method="post">
+    };
+    //Slecionar estados e cidades
+    window.onload = function () {
 
+        var estados = document.getElementById('estado');
+        var cidades = document.getElementById('cidade');
+
+        /*
+        cidades.onchange = function () {
+            if (cidades.value !== "") {
+                //Basta modificar está linha conforme a necessidade
+                window.location = "pagina.asp?estado=" + estados.value + "&cidade=" + cidades.value
+            }
+        };
+        */
+
+        new dgCidadesEstados({
+            estado: estados,
+            cidade: cidades,
+            estadoVal: '<%=Request("estado") %>',
+            cidadeVal: '<%=Request("cidade") %>'
+        });
+    };
+</script>
+<div class="container mt-4">
+    <form action="/projeto/novo/" method="post">
         <!-- Modal -->
         <div class="modal fade" id="custosModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -161,6 +203,7 @@
                 </div>
             </div>
         </div>
+        <!-- Modal -->
 
         <div class="row">
             <div class="row">
@@ -168,61 +211,59 @@
                 <hr>
             </div>
             <div class="col-md-6">
-
                 <div class="row">
-                    <div class="col-md-5">
-                        <label for="nome" class="fw-bold col-form-label col-form-label-sm"> Nome do Projeto:
-                        </label>
+                    <div class="col-md-5 text-end">
+                        <label for="nome" class="fw-bold col-form-label col-form-label-sm mb-2"> Nome do Projeto:
+                        </label><br>
+                        <label for="cliente" class="fw-bold col-form-label col-form-label-sm mb-2"> Cliente:
+                        </label><br>
+                        <label for="uf" class="fw-bold col-form-label col-form-label-sm mb-2"> Estado:
+                        </label><br>
+                        <label for="cidade" class="fw-bold col-form-label col-form-label-sm mb-2"> Cidade:
+                        </label><br>
+                        <label for="ptnprj" class="fw-bold col-form-label col-form-label-sm mb-2"> Potência do
+                            Projeto:</label><br>
+                        <label for="vendedor" class="fw-bold col-form-label col-form-label-sm mb-2"> Vendedor:
+                        </label><br>
+                        <!--<label for="percom" class="fw-bold col-form-label col-form-label-sm mb-2"> Comissão: </label><br>-->
+                        <label for="inputState" class="fw-bold col-form-label col-form-label-sm mb-2">Custos:
+                        </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Regime Tributário: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Gestor Responsável:</label><br>
+                        <label class='col-form-label col-form-label-sm fw-bold mb-2'>Data Inicio Projeto:</label><br>
+                        <label class='col-form-label col-form-label-sm fw-bold mb-2'>Data Previsão de Entrega:</label>
                     </div>
                     <div class="col-md-7">
                         <input type="text" name="nome" id="nome" class="form-control form-control-sm mb-2">
-                    </div>
-                    <div class="col-md-5">
-                        <label for="cliente" class="fw-bold col-form-label col-form-label-sm"> Cliente: </label>
-                    </div>
-                    <div class="col-md-7">
-                        <input type="text" name="cliente" id="cliente" class="form-control form-control-sm mb-2">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-5">
-                        <label for="ptnprj" class="fw-bold col-form-label col-form-label-sm"> Potência do Projeto:
-                        </label>
-                    </div>
-
-                    <div class="col-md-7">
+                        <select class='form-select form-select-sm mb-2' name='cliente'>
+                            {{#each clientes}}
+                            <option value="{{_id}}">{{nome}}</option>
+                            {{else}}
+                            <option value=''>Nenhum cliente cadastrado</option>
+                            {{/each}}
+                        </select>
+                        <!--<input type="text" name="cliente" id="cliente" class="form-control form-control-sm mb-2">-->
+                        <select id="estado" name='uf' class='form-select form-select-sm mb-2'>
+                        </select>
+                        <select id="cidade" name='cidade' class='form-select form-select-sm mb-2'>
+                        </select>
                         <input type="number" name="potencia" id="potencia" class="form-control form-control-sm mb-2"
                             placeholder="kWp" aria-placeholder="R$">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-5">
-                        <label for="percom" class="fw-bold col-form-label col-form-label-sm"> Comissão: </label>
-                    </div>
-
-                    <div class="col-md-7">
+                        <select name='vendedor' class="form-select form-select-sm mb-2">
+                            {{#each vendedor}}
+                            <option value="{{_id}}">{{nome}}</option>
+                            {{else}}
+                            <option value=''>Nenhum vendedor cadastrado</option>
+                            {{/each}}
+                        </select>
+                        <!--                  
                         <input type="number" name="comissao" id="comissao" class="form-control form-control-sm mb-2"
-                            placeholder="%">
-                    </div>
-                </div>
-
-                <div class="row mb-2">
-                    <div class="col-md-5">
-                        <label for="inputState" class="fw-bold col-form-label col-form-label-sm">Custos: </label>
-                    </div>
-                    <div class="col-md-7">
-                        <select id="inputState" name='tipocusto' class="form-select form-select-sm">
+                            placeholder="%">     
+                        -->
+                        <select id="inputState" name='tipocusto' class="form-select form-select-sm mb-2">
                             <option>Diretos</option>
                             <option>Por Hora</option>
                         </select>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-5">
-                        <label class='fw-bold col-form-label col-form-label-sm'>Regime Tributário: </label>
-                    </div>
-                    <div class="col-md-7">
                         <select name='regime' class="form-select form-select-sm mb-2">
                             {{#each regime}}
                             <option value="{{_id}}">{{nome}}</option>
@@ -230,11 +271,6 @@
                             <option value=''>Nenhuma configuração encontrada</option>
                             {{/each}}
                         </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <label class='fw-bold col-sm-5 col-form-label col-form-label-sm'>Gestor Responsável: </label>
-                    <div class="col-sm-7">
                         <select name='pessoa' class="form-select form-select-sm mb-2">
                             {{#each pessoas}}
                             <option value="{{_id}}">{{nome}}</option>
@@ -242,48 +278,45 @@
                             <option value=''>Nenhuma configuração encontrada</option>
                             {{/each}}
                         </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <label class='col-form-label col-form-label-sm col-md-5 fw-bold mb-2'>Data Inicio Projeto:</label>
-                    <div class="col-md-7">
-                        <input class='form-control form-control-sm mb-2' type='text' name='dataini' id='dataini'
-                            placeholder='__/__/____' autocomplete="off" maxlength="10" onkeyup="mascara_dataini()">
-                    </div>
-                </div>
-                <div class="row">
-                    <label class='col-form-label col-form-label-sm col-md-5 fw-bold'>Data Previsão de
-                        Entrega:</label>
-                    <div class="col-md-7">
-                        <input class='form-control form-control-sm' type='text' name='dataprev' id='dataprev'
-                            placeholder='__/__/____' autocomplete="off" maxlength="10" onkeyup="mascara_dataprev()">
-                        <input type="hidden" name='dataord' id='dataord' value=''>    
+                        <!--
+                        <input class='form-control form-control-sm mb-2' type='date' name='valDataIni' id='valDataIni'
+                            placeholder='__/__/____' autocomplete="off" maxlength="10" onmouseout="mascara_dataini()">
+                        <input class='form-control form-control-sm' type='date' name='valDataPrev' id='valDataPrev'
+                            placeholder='__/__/____' autocomplete="off" maxlength="10" onmouseout="mascara_dataprev()">
+                        -->
+                        <input class='form-control form-control-sm mb-2' type='date' name='valDataIni' id='valDataIni'
+                            onchange="mascara_dataini()">
+                        <input class='form-control form-control-sm' type='date' name='valDataPrev' id='valDataPrev'
+                            onchange="mascara_dataprev()">
+                        <input type="hidden" name='dataord' id='dataord' value=''>
+                        <input type="hidden" name='dataini' id='dataini' value=''>
+                        <input type="hidden" name='dataprev' id='dataprev' value=''>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="row">
-                    <div class="col-md-5">
-                        <label for="vlrorc" class="fw-bold col-form-label col-form-label-sm"> Valor Orçado do
+                    <div class="col-md-4 text-end mb-3">
+                        <label for="vlrorc" class="fw-bold col-form-label col-form-label-sm mb-2"> Valor Orçado do
                             Projeto:
+                        </label><br>
+                        <label for="vlreqi" class="fw-bold col-form-label col-form-label-sm mb-1"> Valor Kit Gerador:
+                        </label><br>
+                        <label class="fw-bold col-form-label col-form-label-sm"> Faturar Kit Gerador:
                         </label>
                     </div>
                     <div class="col-md-5">
                         <input type="number" name="valor" id="valor" class="form-control form-control-sm mb-2"
                             placeholder="R$" aria-placeholder="R$">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-5">
-                        <label for="vlreqi" class="fw-bold col-form-label col-form-label-sm"> Valor Kit Gerador:
-                        </label>
-                    </div>
-                    <div class="col-md-5">
                         <input type="number" name="equipamento" id="equipamento"
                             class="form-control form-control-sm mb-2" placeholder="R$" aria-placeholder="R$">
+                        <div class="form-check form-switch">
+                            <input name='checkFatura' class="form-check-input" type="checkbox">
+                        </div>
                     </div>
                 </div>
                 <div class="row">
+                    <label class='fw-bold col-form-label col-form-label-sm'>Complementos</label>
                     <div class="col-md-4">
                         <div class="form-check">
                             <input name='estsolo' class="form-check-input" type="checkbox">
@@ -310,16 +343,18 @@
                     </div>
                 </div>
                 <div class="row">
-                    <a class="mt-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#custosModal"><i class='bi bi-list-ul'></i> Lançar Custos
+                    <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#custosModal"><i
+                            class='bi bi-list-ul'></i> Lançar Custos
                         Detalhados do Orçamento
                     </a>
                 </div>
-                <div class="row mt-2 card" style="height: 170px;">
+                <div class="row mt-2 card" style="height: 150px;">
                     <div class="col-md-2">
                         <label class='fw-bold col-form-label col-form-label-sm'>Requisitos: </span>
                     </div>
                     <div class="col-md-9 mb-1">
-                        <textarea name='obstxt' class="form-control" rows='3' style="width: 540px;height: 130px;"></textarea>
+                        <textarea name='requisitos' class="form-control" rows='3'
+                            style="width: 540px;height: 110px;"></textarea>
                     </div>
                 </div>
                 <!--
@@ -332,11 +367,10 @@
                     </div>
                 </div>
                 -->
+                <div class="row mt-2">
+                    <button type='submit' class='btn btn-success'> <i class='bi bi-layers'></i> Ir para Custos</button>
+                </div>
             </div>
-
-        </div>
-        <div class="row mt-2">
-            <button type='submit' class='btn btn-success'> <i class='bi bi-layers'></i> Ir para Custos</button>
         </div>
     </form>
 </div>

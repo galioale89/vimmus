@@ -11,229 +11,177 @@
         height: 60px;
     }
 
-    .lists {
-        display: flex;
-        flex: 1;
-        width: 100%;
-        cursor: pointer;
+
+    .botao-menu {
+        background-color: rgb(40, 55, 86);
+        border: white 1px solid;
+        color: white;
     }
 
-    .lists .list {
-        display: flex;
-        flex-flow: column;
-        flex: 1;
-
-        width: 100%;
-        min-width: 250px;
-        max-width: 350px;
-        height: 100%;
-        min-height: 300px;
-
-        background-color: rgba(255, 253, 253, 0.1);
-        margin: 0 15px;
-        padding: 8px;
-        transition: all 0.2s linear;
+    .botao-menu:hover {
+        background-color: rgb(40, 55, 86);
+        border: white 1px solid;
+        font-weight: 600;
+        color: white;
     }
 
-    .lists .list .list-item {
-        background-color: #F3F3F3;
-        border-radius: 8px;
-        padding: 15px 20px;
-        text-align: center;
-        margin: 4px 0px;
-    }
-
-    .lists .list .item {
-        background-color: #F3F3F3;
-        border-radius: 8px;
-        padding: 15px 20px;
-        text-align: center;
-        margin: 4px 0px;
+    .ativo {
+        background-color: rgb(10, 30, 68);
     }
 </style>
-<!---  Modal --->
-<div class='modal fade' id='formaequipe' tabindex="-1" aria-hidden="true">
-    <div class='modal-dialog modal-xl'>
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="row text-center" style="margin-top: 100px">
-                    <h2><i class="bi bi-people"></i> Criação de Equipes</h2><br>
-                    <p style="color: white;">Aqui serão ser criadas as equipes que poderão ser
-                        vinculadas aos projetos
-                    </p>
-                </div>
-            </div>
-            <div class="modal-body">
-                <form method='post' action='/pessoa/criarequipe'>
-                    <div class="body">
-                        <div class="card-body">
-                            <div class="row" style="margin-top: 100px;">
-                                <div class="col-md-5">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <label class="col-form-label col-form-label-sm fw-bold"
-                                                style="color: white;">Nome
-                                                Equipe:</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <input type='text' name='nome' class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <button class="col-6 btn btn-success btn-lg"
-                                            style="margin-left: 100px; margin-block-start: 60px;"
-                                            onclick="getItemValue()">Criar
-                                            Equipe</button>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="lists">
-                                        <div class="list">
-                                            <label
-                                                class="col-form-label col-form-label-md fw-bold text-center">Profissionais
-                                                Disponíveis</label>
-                                            {{#each instaladores}}
-                                            <div class="list-item" style='color: black;' draggable="true"
-                                                name='{{_id}}'>{{nome}}
-                                            </div>
-                                            {{else}}
-                                            {{/each}}
-                                        </div>
-                                        <div class="list" id='funins' name='funins'>
-                                            <label
-                                                class="col-form-label col-form-label-md fw-bold text-center">Profissionais
-                                                Alocados</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <input type='hidden' class='ins0' name='ins0' id='ins0' value=''>
-                                <input type='hidden' class='ins1' name='ins1' id='ins1' value=''>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Ok</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- End Modal -->
 
-<div class="container card mt-2">
-
+<div style="width: 98%;padding-left: 2%;padding-top: 1%;">
     <div class="row">
-        <h4 class="shadow p-3 mb-2 bg-body rounded" style="color:white;background: linear-gradient(200deg, rgb(73, 91, 182), rgb(43, 57, 128), rgb(16, 32, 110));">Projeto: {{projeto.nome}} </h4>
+        <h4 class="header">
+            {{cliente.nome}} </h4>
     </div>
 
-    <div class="btn-group">
-        <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-primary"><i class="bi bi-tools"></i>
+    <div class="btn-group  col-12 mx-auto">
+        <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"></i>
             Instalação</a>
-        <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-primary"><i class="bi bi-pencil"></i>
+        <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"></i>
             Projetista</a>
-        <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-primary"><i class="bi bi-puzzle"></i> Gestão</a>
-        <a href="/gerenciamento/{{projeto._id}}" class="btn btn-primary active"><i
-                class="bi bi-cursor"></i>Gerenciamento</a>
-        <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-primary"><i
-                class="bi bi-calculator"></i>Tributos</a>
+        <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
+            Gestão</a>
+        <a href="/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i class="bi bi-puzzle"></i>
+            Gerenciamento</a>
+        <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-calculator"></i>
+            Tributos</a>
     </div>
 
     <form action='/gerenciamento' method="post">
 
         <input type="hidden" name="id" value='{{projeto._id}}'>
 
-        <div class="row g-3">
-
-            <div class="col-md-5">
-
-                <div class="">
-                    <label for="combustivel" class="fw-bold col-sm-10 col-form-label col-form-label-sm">Estadia</label>
-                    </label>
-                    <div class="row g-3">
-                        <div class="col">
-                            <label for="trabalho" class="col-sm-10 col-form-label col-form-label-sm">R$ Diária: </label>
-                            <div class="input-group input-group-sm mb-1">
-                                <input type="number" name="vlrdia" value='{{projeto.vlrdia}}' class="form-control">
+        <div class="row mt-2 mb-2">
+            <div class="col-md-7">
+                <div class="row">
+                    <div class="col-md-6 card">
+                        <div class="row" style="padding: 5px">
+                            <a href='/pessoa/formaequipe/{{projeto._id}}' class='btn btn-sm btn-primary'> <i class="bi bi-people"></i> Equipe </a>
+                        </div>
+                        <div class="row mt-1 text-end">
+                            <label class="fw-bold col-sm-5 col-form-label col-form-label-sm">Equipe:
+                            </label>
+                            <div class="col-sm-6">
+                                <div class="input-group input-group-sm mb-1">
+                                    <input type="text" name="equipe" value='{{projeto.qtdequipe}}' class="form-control">
+                                </div>
+                            </div>
+                            <label for="tothrs" class="fw-bold col-sm-5 col-form-label col-form-label-sm">Horas Projeto:
+                            </label>
+                            <div class="col-sm-6">
+                                <label class="col-form-label col-form-label-sm mb-1"> {{projeto.tothrs}} </label>
+                            </div>
+                            <label for="diastr" class="fw-bold col-sm-5 col-form-label col-form-label-sm">Dias de Obras:
+                            </label>
+                            <div class="col-sm-6">
+                                <label class="col-form-label col-form-label-sm mb-1"> {{projeto.diastr}} </label>
                             </div>
                         </div>
-                        <div class="col">
-                            <label for="valor" class="col-form-label col-form-label-sm">Num. de Diárias: </label>
-                            <div class="input-group input-group-sm mb-1">
-                                <input disabled type="number" name="numdia" value='{{projeto.diastr}}'
-                                    class="form-control">
+                    </div>
+                    <div class="col-md-6 card">
+                        <label for="combustivel"
+                            class="fw-bold col-sm-10 col-form-label col-form-label-sm">Combustível</label>
+
+                        <div class="row text-end">
+                            <label for="unidade" class="col-sm-5 col-form-label col-form-label-sm">Distância</label>
+                            <div class="col-sm-5">
+                                <div class="input-group input-group-sm mb-1">
+                                    <input type="text" name="discmb" value='{{projeto.discmb}}' class="form-control">
+                                </div>
+                            </div>
+
+                            <label for="trabalho" class="col-sm-5 col-form-label col-form-label-sm">R$
+                                Litro Combustível</label>
+                            <div class="col-sm-5">
+                                <div class="input-group input-group-sm mb-1">
+                                    <input type="text" name="ltocmb" value='{{projeto.ltocmb}}' class="form-control">
+                                </div>
+                            </div>
+
+                            <label for="total" class="col-sm-5 col-form-label col-form-label-sm">R$ Total</label>
+                            <div class="col-sm-5">
+                                <div class="input-group input-group-sm mb-1">
+                                    <span class="input-group-text">$</span>
+                                    <input disabled type="number" class="form-control" name="totcmb"
+                                        value='{{projeto.totcmb}}' aria-label="R$ ">
+                                    <span class="input-group-text">.00</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-md-6 card">
+                        <label for="alimentação"
+                            class="fw-bold col-sm-10 col-form-label col-form-label-sm">Alimentação</label>
+
+                        <div class="row text-end">
+                            <label for="vlrali" class="col-sm-5 col-form-label col-form-label-sm">Valor por Pessoa:
+                            </label>
+                            <div class="col-sm-5">
+                                <div class="input-group input-group-sm mb-1">
+                                    <input type="text" name="vlrali" value='{{projeto.vlrali}}' class="form-control">
+                                </div>
+                            </div>
+
+                            <label for="total" class="col-sm-5 col-form-label col-form-label-sm">R$ Total</label>
+                            <div class="col-sm-5">
+                                <div class="input-group input-group-sm mb-1">
+                                    <span class="input-group-text">$</span>
+                                    <input disabled type="number" class="form-control" name="totali"
+                                        value='{{projeto.totali}}' aria-label="R$ ">
+                                    <span class="input-group-text">.00</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="col">
-                            <label for="total" class="col-sm-6 col-form-label col-form-label-sm">Total</label>
-                            <div class="input-group input-group-sm mb-1">
-                                <span class="input-group-text">$</span>
-                                <input disabled type="number" class="form-control" name="tothtl"
-                                    value='{{projeto.tothtl}}' aria-label="R$ ">
-                                <span class="input-group-text">.00</span>
+                    </div>
+                    <div class="col-md-6 card">
+                        <label for="estadia" class="fw-bold col-form-label col-form-label-sm">Estadia </label>
+                        <div class="row text-end">
+                            <label for="trabalho" class="col-md-5 col-form-label col-form-label-sm">R$ Diária
+                            </label>
+                            <div class="col-md-5">
+                                <div class="input-group input-group-sm mb-1">
+                                    <input type="number" name="vlrdia" value='{{projeto.vlrdia}}' class="form-control">
+                                </div>
+                            </div>
+                
+                            <label for="valor" class="col-md-5 col-form-label col-form-label-sm">Número de
+                                Diárias</label>
+                            <div class="col-md-5">
+                                <div class="input-group input-group-sm mb-1">
+                                    <input disabled type="number" name="numdia" value='{{projeto.diastr}}'
+                                        class="form-control">
+                                </div>
+                            </div>
+
+                            <label for="total" class="col-md-5 col-form-label col-form-label-sm">Total</label>
+                            <div class="col-sm-5">
+                                <div class="input-group input-group-sm mb-1">
+                                    <span class="input-group-text">$</span>
+                                    <input disabled type="number" class="form-control" name="tothtl"
+                                        value='{{projeto.tothtl}}' aria-label="R$ ">
+                                    <span class="input-group-text">.00</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="">
-                    <label for="combustivel"
-                        class="fw-bold col-sm-10 col-form-label col-form-label-sm">Combustível</label>
-                    <div class="row g-3">
-                        <div class="col">
-                            <label for="unidade" class="col-sm-7 col-form-label col-form-label-sm">Distância: </label>
-                            <div class="input-group input-group-sm mb-1">
-                                <input type="number" name="discmb" value='{{projeto.discmb}}' class="form-control">
-                            </div>
-                        </div>
-                        <div class="col">
-                            <label for="trabalho" class="col-sm-6 col-form-label col-form-label-sm">R$ Litro:</label>
-                            <div class="input-group input-group-sm mb-1">
-                                <input type="number" name="ltocmb" value='{{projeto.ltocmb}}'
-                                    class="form-control col-sm-2">
-                            </div>
-                        </div>
-                        <div class="col">
-                            <label for="total" class="col-form-label col-form-label-sm">R$ Total:</label>
-                            <div class="input-group input-group-sm mb-1">
-                                <span class="input-group-text">$</span>
-                                <input disabled type="number" class="form-control" name="totcmb"
-                                    value='{{projeto.totcmb}}' aria-label="R$ ">
-                                <span class="input-group-text">.00</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="">
-                    <label for="alimentacao"
-                        class="fw-bold col-sm-10 col-form-label col-form-label-sm">Alimentação</label>
-                    <div class="row g-3">
-                        <div class="col">
-                            <label for="trabalho" class="col-form-label col-form-label-sm">R$ Valor por Pessoa:</label>
-                            <div class="input-group input-group-sm mb-1">
-                                <input type="number" name="vlrali" value='{{projeto.vlrali}}' class="form-control">
-                            </div>
-                        </div>
-                        <div class="col">
-                            <label for="total" class="col-form-label col-form-label-sm">R$ Total: </label>
-                            <div class="input-group input-group-sm mb-1">
-                                <span class="input-group-text">$</span>
-                                <input disabled type="number" class="form-control" name="totlai"
-                                    value='{{projeto.totali}}' aria-label="R$ ">
-                                <span class="input-group-text">.00</span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="row mt-3">
+                    <button type="submit" class="btn btn-sm btn-success" name="aplicar"> <i
+                            class="bi bi-check-circle"></i> Aplicar</button>
                 </div>
             </div>
-            <div class="col-md-4 card mt-4">
+            <div class="col-md-5">
+                <label class="fw-bold col-md-6 col-form-label col-form-label-sm">Orçado do Projeto: R$ {{projeto.valor}}</label>
                 <div class="row mt-2">
-                    <div class="row">
                         <label class="fw-bold col-md-6 col-form-label col-form-label-sm">Reserva</label>
                         <div class="col">
                             <label class="fw-bold col-md-5 col-form-label col-form-label-sm">R$
                                 {{projeto.reserva}}</label>
-                        </div>
                     </div>
                     <hr>
                     <div class="row">
@@ -322,59 +270,9 @@
                     </div>
                 </div>
             </div>
-            <div class='col-md-3 mt-4 card'>
-                <div class="row mb-1 mt-2">
-                    <label for="diastr" class="fw-bold col-md-7 col-form-label col-form-label-sm">Total de
-                        Horas:</label>
-                    <div class="col">
-                        <label for="tothrs"
-                            class="fw-bold col-md-5 col-form-label col-form-label-sm">{{projeto.tothrs}}</label>
-                    </div>
-                </div>
-                <hr>
-                <div class="col">
-                    <div class="row mb-1 mt-2">
-                        <label for="diastr" class="fw-bold col-md-7 col-form-label col-form-label-sm">Horas
-                            Instalação:</label>
-                        <div class="col">
-                            <label for="diastr"
-                                class="fw-bold col-md-5 col-form-label col-form-label-sm">{{projeto.trbint}}</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-7">
-                            <label for="equipe" class="col-form-label col-form-label-sm fw-bold">Equipe
-                                Instaladores:
-                            </label>
-                        </div>
-                        <div class="col-md-5">
-                            <input type="number" name="equipe" value='{{projeto.equipe}}'
-                                class="form-control form-control-sm">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <label for="diastr" class="fw-bold col-md-7 col-form-label col-form-label-sm">Dias
-                            da Obra:</label>
-                        <div class="col">
-                            <label for="diastr"
-                                class="fw-bold col-md-4 col-form-label col-form-label-sm">{{projeto.diastr}}</label>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row col-12 mx-auto">
-                        <!-- <a class='btn btn-sm btn-primary mb-2' data-bs-toggle="modal" data-bs-target='#formaequipe'><i
-                                class='bi bi-people'></i>Equipe</a>-->
-                        <a href='/pessoa/formaequipe/{{projeto._id}}' class='btn btn-sm btn-primary mb-2'><i class='bi bi-people'></i> Equipe</a>        
-                    </div>
-                    <div class="row col-12 mx-auto">
-                        <button type='submit' class='btn btn-sm btn-success'> <i class="bi bi-check-circle"></i> Aplicar
-                        </button>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="row">
-            <div class="col-md-4 card mt-2">
+            <div class="col-md-4 card" style="background-color: rgba(79, 99, 140);color: white;">
                 <label for="int" class="fw-bold col-form-label col-form-label-sm">INSTALAÇÃO</label>
                 <div class="row">
                     <div class="col-md-5">
@@ -397,7 +295,7 @@
                 </div>
             </div>
 
-            <div class="col-md-4 card mt-2">
+            <div class="col-md-4 card" style="background-color: rgba(79, 99, 140);color: white;">
                 <label for="pro" class="fw-bold col-sm-5 col-form-label col-form-label-sm">PROJETISTA</label>
                 <div class="row">
                     <div class="col-md-5">
@@ -418,7 +316,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 card mt-2">
+            <div class="col-md-4 card" style="background-color: rgba(79, 99, 140);color: white;">
                 <label for="ges" class="fw-bold col-sm-5 col-form-label col-form-label-sm">GESTÃO</label>
                 <div class="row">
                     <div class="col-md-5">
@@ -443,54 +341,6 @@
 </div>
 
 <script>
-    const list_items = document.querySelectorAll('.list-item');
-    const lists = document.querySelectorAll('.list');
-
-    let draggedItem = null;
-
-    for (let i = 0; i < list_items.length; i++) {
-        const item = list_items[i];
-
-        item.addEventListener('dragstart', function () {
-            draggedItem = item;
-            setTimeout(function () {
-                item.style.display = 'none';
-            }, 0)
-        });
-
-        item.addEventListener('dragend', function () {
-            this.className = 'item';
-            setTimeout(function () {
-                draggedItem.style.display = 'block';
-                draggedItem = null;
-            }, 0);
-        })
-
-        for (let j = 0; j < lists.length; j++) {
-            const list = lists[j];
-
-            list.addEventListener('dragover', function (e) {
-                e.preventDefault();
-            });
-
-            list.addEventListener('dragenter', function (e) {
-                e.preventDefault();
-                this.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
-            });
-
-            list.addEventListener('dragleave', function (e) {
-                this.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
-            });
-
-            list.addEventListener('drop', function (e) {
-
-                console.log('drop');
-                this.append(draggedItem);
-                this.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
-            });
-        }
-    }
-
     function getItemValue() {
         const item = document.querySelectorAll('.item');
         for (i = 0; i < item.length; i++) {

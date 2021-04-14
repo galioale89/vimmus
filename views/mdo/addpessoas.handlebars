@@ -1,10 +1,28 @@
 <style>
-    .icone{
-        font-size: 30px; 
-        color: rgb(2, 38, 78);"
+    .icone {
+        font-size: 30px;
+        color: rgb(2, 38, 78);
     }
 </style>
 <script>
+    function valida_celular() {
+        var cel = document.getElementById('celular')
+        if (cel.value.length == 1) {
+            cel.value = '(' + cel.value
+        }
+        if (cel.value.length == 3) {
+            cel.value += ')'
+        }
+        if (cel.value.length == 4) {
+            cel.value += ' '
+        }
+        if (cel.value.length == 6) {
+            cel.value += ' '
+        }
+        if (cel.value.length == 11) {
+            cel.value += '-'
+        }
+    }
     function preview_foto() {
         var imagem = document.querySelector('input[name=foto]').files[0]
         var preview = document.querySelector('img[name=foto]')
@@ -20,7 +38,7 @@
             preview.src = ''
         }
     }
-
+/*
     function preview_fotocert() {
         var imagem = document.querySelector('input[name=fotocert]').files[0]
         var preview = document.querySelector('img[name=fotocert]')
@@ -36,7 +54,7 @@
             preview.src = ''
         }
     }
-
+*/
     function mascara_data() {
         var data = document.getElementById('data')
         var currenTime = new Date()
@@ -53,21 +71,22 @@
                 data.value = ''
             }
         }
-    }
+    };
 
     function valida_cnpj() {
-        var doc = document.getElementById('cnpj')
+        var cnpj = document.getElementById('cnpj')
 
-        if (doc.value.length == 2 || doc.value.length == 6) {
-            doc.value += '.'
+        if (cnpj.value.length == 2 || cnpj.value.length == 6) {
+            cnpj.value += '.'
         }
-        if (doc.value.length == 10) {
-            doc.value += '/'
+        if (cnpj.value.length == 10) {
+            cnpj.value += '/'
         }
-        if (doc.value.length == 15) {
-            doc.value += '-'
+        if (cnpj.value.length == 15) {
+            cnpj.value += '-'
         }
-        if (doc.value.length == 18) {
+
+        if (cnpj.value.length == 18) {
 
             var d1 = cnpj.value
             var p1 = d1.substring(0, 2)
@@ -89,7 +108,7 @@
                 numdoc == "99999999999999") {
                 cnpj.value = ''
             }
-            cnpj.value = numdoc
+            
             // Valida DVs
             var tamanho = numdoc.length - 2
             var numeros = numdoc.substring(0, tamanho)
@@ -120,8 +139,7 @@
                 cnpj.value = ''
             }
         }
-
-    }
+    };
 
     function valida_cpf() {
         var doc = document.getElementById('cpf')
@@ -176,7 +194,19 @@
             }
 
         }
-    }
+    };
+    window.onload = function () {
+
+        var estados = document.getElementById('estado');
+        var cidades = document.getElementById('cidade');
+
+        new dgCidadesEstados({
+            estado: estados,
+            cidade: cidades,
+            estadoVal: '<%=Request("estado") %>',
+            cidadeVal: '<%=Request("cidade") %>'
+        });
+    };    
 
 </script>
 
@@ -191,92 +221,79 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                    <div class="input-group input-group-sm">
-                       <label class='input-group-text'>Certificado</label>
-                       <input type='file' name='fotocert' id='fotocert' class='form-control' onchange="preview_fotocert()">
+                        <div class="input-group input-group-sm">
+                            <label class='input-group-text'>Certificado</label>
+                            <input type='file' name='fotocert' id='fotocert' class='form-control'
+                                onchange="preview_fotocert()">
+                        </div>
+                        <div class="row">
+                            <img id='fotocert' name='fotocert'
+                                style="margin-left: 12px;border: solid 5px; border-color: rgba(220, 220, 220, 0.5); width: 900px; height: 250px;" />
+                        </div>
                     </div>
                     <div class="row">
-                        <img id='fotocert' name='fotocert' style="margin-left: 12px;border: solid 5px; border-color: rgba(220, 220, 220, 0.5); width: 900px; height: 250px;"/>
+                        <div class="input-group input-group-sm">
+                            <label class='input-group-text'>CREA</label>
+                            <input type='file' name='fotocrea' id='fotocrea' class='form-control'>
+                        </div>
                     </div>
-                    </div>
-                    <div class="row">
-                    <div class="input-group input-group-sm">
-                       <label class='input-group-text'>CREA</label>
-                       <input type='file' name='fotocrea' id='fotocrea' class='form-control'>
-                    </div>                        
-                    </div>                    
                 </div>
                 <div class="modal-footer">
-                    <button type='button' class='btn btn-secondary'data-bs-dismiss='modal'>Ok</button>
+                    <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Ok</button>
                 </div>
             </div>
         </div>
     </div>
     <!-- Fim Modal -->
 
-    <div class="cotainer mt-2" style="width: 1000px; margin-left: 150px;">
-        <h5><i class="bi bi-people icone"></i> Cadastro de Pessoas</h5>
+    <div class="cotainer mt-2" style="width: 80%; margin-left: 150px;">
+
+        <div class="row mt-2">
+            <div class="col-md-8">
+                <h5><i class="bi bi-people icone"></i> Cadastro de Pessoas</h5>
+            </div>
+            <div class="col-md-4 mt-2" style="text-align: right;">
+                <a href='/pessoa/vendedor' class='btn btn-sm btn-primary'>Vendedor</a>
+                <a href='/pessoa/novo' class='btn btn-sm btn-primary'>Novo</a>
+                <button type='submit' class='btn btn-sm btn-success'>Aplicar</button>
+            </div>
+        </div>
+
         <div class="row mt-2">
             <div class="col-md-7">
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Nome Completo: </label>
-                    <div class="col-md-8">
-                        <input type='text' name='nome' class='form-control form-control-sm'>
+                <div class="row mb-2 text-end">
+                    <div class="col-md-3">
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Nome Completo: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Endereço: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Estado: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Cidade: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>CNPJ: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>CPF: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Inicio Atividades: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Celular: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>E-mail: </label>
                     </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Endereço: </label>
                     <div class="col-md-8">
-                        <input type='text' name='endereco' class='form-control form-control-sm'>
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Cidade: </label>
-                    <div class="col-md-8">
-                        <input type='text ' name='cidade' class='form-control form-control-sm'>
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Estado: </label>
-                    <div class="col-md-8">
-                        <input type='text ' name='uf' class='form-control form-control-sm'>
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>CNPJ: </label>
-                    <div class="col-md-8">
-                        <input type='text' class='form-control form-control-sm' maxlength="18" autocomplete="off"
+                        <input type='text' name='nome' class='form-control form-control-sm mb-1'>
+                        <input type='text' name='endereco' class='form-control form-control-sm mb-1'>
+                        <select id='estado' name='uf' class='form-select form-select-sm mt-1'></select>
+                        <select id='cidade' name='cidade' class='form-select form-select-sm mt-1'></select>
+                        <!--
+                        <input type='text ' name='cidade' class='form-control form-control-sm mb-1'>
+                        <input type='text ' name='uf' class='form-control form-control-sm mb-1'>
+                        -->
+                        <input type='text' class='form-control form-control-sm mb-1 mt-1' maxlength="18" autocomplete="off"
                             id='cnpj' name='cnpj' onkeyup="valida_cnpj()">
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>CPF: </label>
-                    <div class="col-md-8">
-                        <input type='text' class='form-control form-control-sm' maxlength="14" autocomplete="off"
+                        <input type='text' class='form-control form-control-sm mb-1' maxlength="14" autocomplete="off"
                             id='cpf' name='cpf' onkeyup="valida_cpf()">
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Inicio Atividades: </label>
-                    <div class="col-md-8">
-                        <input type='text' class='form-control form-control-sm' autocomplete="off" maxlength="7"
+                        <input type='text' class='form-control form-control-sm mb-1' autocomplete="off" maxlength="7"
                             placeholder='__/____' id='data' name='iniati' maxlength="8" onkeyup="mascara_data()">
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Celular: </label>
-                    <div class="col-md-8">
-                        <input type='text ' name='celular' class='form-control form-control-sm'>
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>E-mail: </label>
-                    <div class="col-md-8">
-                        <input type='text' name='email' class='form-control form-control-sm'>
+                        <input type='text ' name='celular' id='celular' class='form-control form-control-sm mb-1'
+                            maxlength="16" autocomplete="off" onkeyup="valida_celular()">
+                        <input type='text' name='email' class='form-control form-control-sm mb-1'>
                     </div>
                 </div>
             </div>
-
             <div class="col-md-5">
                 <div class="container card">
                     <label class='col-form-label col-form-label-sm fw-bold'>Função:</label>
@@ -308,7 +325,7 @@
                     </div>
                 </div>
                 <div class="row mt-2" style="margin-left: 120px;">
-                    <img id='foto' name='foto' style="width: 190px; height: 220px;" />
+                    <img id='foto' name='foto' style="width: 160px; height: 190px;" />
                 </div>
                 <!--
                 <div class="row">
@@ -316,54 +333,51 @@
                 </div>
                 -->
             </div>
-        </div>
-        <hr>
-        <div class="row mb-2">
-            <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Especialidades: </label><br>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-check form-switch">
-                        <input name='maninv' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Manutenção de
-                            Inversores</label>
-                    </div>
+            <hr>
+            <div class="row mb-2">
+                <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Especialidades: </label><br>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-check form-switch">
+                            <input name='maninv' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Manutenção de
+                                Inversores</label>
+                        </div>
 
-                    <div class="form-check form-switch">
-                        <input name='subcom' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Substituição de
-                            Componentes</label>
-                    </div>
+                        <div class="form-check form-switch">
+                            <input name='subcom' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Substituição de
+                                Componentes</label>
+                        </div>
 
-                </div>
-                <div class="col-md-4">
-                    <div class="form-check form-switch">
-                        <input name='repequ' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Reposicionamento de
-                            Equipamento</label>
                     </div>
+                    <div class="col-md-4">
+                        <div class="form-check form-switch">
+                            <input name='repequ' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Reposicionamento de
+                                Equipamento</label>
+                        </div>
 
-                    <div class="form-check form-switch">
-                        <input name='vistor' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Vistoria de Conexões e
-                            Instalações</label>
+                        <div class="form-check form-switch">
+                            <input name='vistor' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Vistoria de Conexões e
+                                Instalações</label>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-check form-switch">
-                        <input name='dlaudo' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Diagnóstico e Laudos</label>
-                    </div>
+                    <div class="col-md-4">
+                        <div class="form-check form-switch">
+                            <input name='dlaudo' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Diagnóstico e Laudos</label>
+                        </div>
 
-                    <div class="form-check form-switch">
-                        <input name='limmod' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Limpeza de
-                            Módulos(Painéis)</label>
+                        <div class="form-check form-switch">
+                            <input name='limmod' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Limpeza de
+                                Módulos(Painéis)</label>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <button type='submit' class='btn btn-success'>Aplicar</button>
         </div>
     </div>
 </form>

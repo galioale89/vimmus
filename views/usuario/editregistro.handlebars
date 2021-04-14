@@ -1,4 +1,4 @@
- <style>
+<style>
     .botao {
         border-radius: 50px;
         width: 100px;
@@ -14,9 +14,10 @@
         text-align: center;
         vertical-align: text-top;
         background: linear-gradient(135deg, rgb(116, 114, 238), rgb(79, 77, 189), rgb(11, 9, 161));
-        background-color: rgba(31, 27, 255, 0.9);        
+        background-color: rgba(31, 27, 255, 0.9);
+        cursor: pointer;
     }
-    
+
     .botao:hover {
         border-top-color: rgb(205, 223, 245);
         border-left-color: rgb(205, 223, 245);
@@ -25,22 +26,41 @@
         color: white;
         font-weight: 600;
     }
-
 </style>
 <script>
-    function valida_cnpj() {
-        var doc = document.getElementById('cnpj')
+    function valida_celular() {
+        var cel = document.getElementById('celular')
+        if (cel.value.length == 1) {
+            cel.value = '(' + cel.value
+        }
+        if (cel.value.length == 3) {
+            cel.value += ')'
+        }
+        if (cel.value.length == 4) {
+            cel.value += ' '
+        }
+        if (cel.value.length == 6) {
+            cel.value += ' '
+        }
+        if (cel.value.length == 11) {
+            cel.value += '-'
+        }
+    };
 
-        if (doc.value.length == 2 || doc.value.length == 6) {
-            doc.value += '.'
+    function valida_cnpj() {
+        var cnpj = document.getElementById('cnpj')
+
+        if (cnpj.value.length == 2 || cnpj.value.length == 6) {
+            cnpj.value += '.'
         }
-        if (doc.value.length == 10) {
-            doc.value += '/'
+        if (cnpj.value.length == 10) {
+            cnpj.value += '/'
         }
-        if (doc.value.length == 15) {
-            doc.value += '-'
+        if (cnpj.value.length == 15) {
+            cnpj.value += '-'
         }
-        if (doc.value.length == 18) {
+
+        if (cnpj.value.length == 18) {
 
             var d1 = cnpj.value
             var p1 = d1.substring(0, 2)
@@ -62,7 +82,7 @@
                 numdoc == "99999999999999") {
                 cnpj.value = ''
             }
-            cnpj.value = numdoc
+            
             // Valida DVs
             var tamanho = numdoc.length - 2
             var numeros = numdoc.substring(0, tamanho)
@@ -93,83 +113,154 @@
                 cnpj.value = ''
             }
         }
+    };
 
-    }
+    window.onload = function () {
+
+        var estados = document.getElementById('estado');
+        var cidades = document.getElementById('cidade');
+
+        new dgCidadesEstados({
+            estado: estados,
+            cidade: cidades,
+            estadoVal: '<%=Request("estado") %>',
+            cidadeVal: '<%=Request("cidade") %>'
+        });
+    };
 </script>
-<div style="width: 700px; height: 100px; margin-left: 350px;margin-top: 10px;">
 
-    <div class="card">
-        <div class="card-body">
-            <h6 class="text-center mt-1 mb-4">Minha Conta</h6>
-            <form action="/usuario/editregistro" method="post">
-                <!-- Modal Alterar Senha -->
-                <div class="modal fade" tabindex="-1" id='senha' aria-hidden="true">
-                    <div class="modal-dialog modal-sm">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Alterar a Senha</h5>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label class='col-form-label col-form-label-sm mt-1' for="senha">Senha:
-                                        </label><br>
-                                        <label class='col-form-label col-form-label-sm mt-1' for="senha">Repita sua
-                                            senha:
-                                        </label><br>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input name="senha" type="password" class="form-control form-control-sm mt-1">
-                                        <input name="senharep" type="password"
-                                            class="form-control form-control-sm mt-1">
-                                    </div>
+<div class="">
+
+    <div class='card' style="width: 50%;margin-left: 300px;margin-top: 10px;">
+        <h6 class="text-center header">Minha Conta</h6>
+
+        <form {{#if ehMaster}} action="/administrador/editregistro" {{else}} action="/usuario/editregistro" {{/if}}
+            method="post">
+
+            <!-- Modal Alterar Senha -->
+            <div class="modal fade" tabindex="-1" id='senha' aria-hidden="true">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Alterar a Senha</h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row text-end">
+                                <div class="col-md-4">
+                                    <label class='fw-bold col-form-label col-form-label-sm mt-1' for="senha">Senha:
+                                    </label><br>
+                                    <label class='fw-bold col-form-label col-form-label-sm mt-1' for="senha">Repita sua
+                                        senha:</label>
+                                    <br>
+                                </div>
+                                <div class="col-md-6">
+                                    <input name="senha" type="password" class="form-control form-control-sm mt-1">
+                                    <input name="senharep" type="password" class="form-control form-control-sm mt-1">
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ok</button>
+                            <div style="text-align: center;color:chocolate">
+                                <label class="fw-bold col-form-label col-form-label-sm mt-2">A senha deve conter
+                                    ao menos 6 dígitos.</label>
                             </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ok</button>
                         </div>
                     </div>
                 </div>
-                <!-- -->
-                <input type='hidden' name='id' value='{{usuario._id}}'>
-                <div class="row">
-                    <div class="col-md-4 text-end">
-                        <label class='col-form-label col-form-label-sm' for="razao">Razão Social: </label><br>
-                        <label class='col-form-label col-form-label-sm mt-1' for="fantasia">Nome Fantasia: </label><br>
-                        <label class='col-form-label col-form-label-sm mt-1' for="cnpj">CNPJ: </label><br>
-                        <label class='col-form-label col-form-label-sm mt-1' for="endereco">Endereço Empresa:
-                        </label><br>
-                        <label class='col-form-label col-form-label-sm mt-1' for="cidade">Cidade: </label><br>
-                        <label class='col-form-label col-form-label-sm mt-1' for="uf">Estado: </label><br>
-                        <label class='col-form-label col-form-label-sm mt-1' for="telefone">Telefone: </label><br>
-                        <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Nome de Usuário: </label><br>
-                        <label class='col-form-label col-form-label-sm mt-1' for="email">E-mail: </label><br>
+            </div>
+            <!-- -->
 
+            <input type='hidden' name='id' value='{{usuario._id}}'>
+            <div class="row mb-2">
+                <div class="col-md-4 text-end">
+                    <label class='col-form-label col-form-label-sm' for="razao">Nome: </label><br>
+                    <label class='col-form-label col-form-label-sm' for="razao">Razão Social: </label><br>
+                    <label class='col-form-label col-form-label-sm mt-1' for="fantasia">Nome Fantasia: </label><br>
+                    <label class='col-form-label col-form-label-sm mt-1' for="cnpj">CNPJ: </label><br>
+                    <label class='col-form-label col-form-label-sm mt-1' for="endereco">Endereço Empresa:
+                    </label><br>
+                    <label class='col-form-label col-form-label-sm mt-1' for="cidade">Estado: </label><br>
+                    <label class='col-form-label col-form-label-sm mt-1' for="uf">Cidade: </label><br>
+                    <label class='col-form-label col-form-label-sm mt-1' for="telefone">Telefone: </label><br>
+                    <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Nome de Usuário: </label><br>
+                    <label class='col-form-label col-form-label-sm mt-1' for="email">E-mail: </label><br>
+
+                </div>
+                <div class="col-md-7">
+                    <input name="nome" id="nome" class="form-control form-control-sm mb-1" value='{{usuario.nome}}'>
+                    <input name="razao" id="razao" class="form-control form-control-sm" value='{{usuario.razao}}'>
+                    <input name="fantasia" id="fantasia" class="form-control form-control-sm mt-1"
+                        value='{{usuario.fantasia}}'>
+                    <input type='text' class='form-control form-control-sm mt-1' maxlength="18" autocomplete="off"
+                        id='cnpj' name='cnpj' onkeyup="valida_cnpj()" value='{{usuario.cnpj}}'>
+                    <input name="endereco" id="endereco" class="form-control form-control-sm mt-1"
+                        value='{{usuario.endereco}}'>
+                    {{#if usuario.uf}}
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label class='col-form-label col-form-label-sm mt-1'>{{usuario.uf}}</label><br>
+                        </div>
+                        <div class="col-md-7">
+                            <select id='estado' name='uf' class='form-select form-select-sm mt-1'></select>
+                        </div>
                     </div>
-                    <div class="col-md-7">
-                        <input name="razao" id="razao" class="form-control form-control-sm" value='{{usuario.razao}}'>
-                        <input name="fantasia" id="fantasia" class="form-control form-control-sm mt-1"
-                            value='{{usuario.fantasia}}'>
-                        <input type='text' class='form-control form-control-sm mt-1' maxlength="18" autocomplete="off"
-                            id='cnpj' name='cnpj' onkeyup="valida_cnpj()" value='{{usuario.cnpj}}'>
-                        <input name="endereco" id="endereco" class="form-control form-control-sm mt-1"
-                            value='{{usuario.endereco}}'>
-                        <input name="cidade" id="cidade" class="form-control form-control-sm mt-1"
-                            value='{{usuario.cidade}}'>
-                        <input name="uf" id="uf" class="form-control form-control-sm mt-1" value='{{usuario.uf}}'>
-                        <input name="telefone" id="telefone" class="form-control form-control-sm mt-1"
-                            value='{{usuario.telefone}}'>
-                        <input name="usuario" id="usuario" class="form-control form-control-sm mt-1"
-                            value='{{usuario.usuario}}'>
-                        <label for="email" class="col-form-label col-form-label-sm mt-1" value='{{usuario.email}}'>
+                    <!--
+                    <input name="uf" id="uf" class="form-control form-control-sm mt-1" value='{{usuario.uf}}'>
+                    -->
+
+                    {{else}}
+                    <select id='estado' name='uf' class='form-select form-select-sm mt-1'></select>
+                    {{/if}}
+                    {{#if usuario.cidade}}
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label class='col-form-label col-form-label-sm mt-1'>{{usuario.cidade}}</label><br>
+                        </div>
+                        <div class="col-md-7">
+                            <select id='cidade' name='cidade' class='form-select form-select-sm mt-1'></select>
+                        </div>
                     </div>
-                    <div class="btn-group btn-group-sm gap-2" style="margin-left: 220px">
-                        <a class="mt-2 botao" data-bs-toggle='modal' data-bs-target='#senha'>Alterar Senha</a>
-                        <button type="submit" class="botao mt-2">Registrar</button>
-                        <a href='/projeto/menu' class="botao mt-2">Voltar</a>
+                    <!--
+                    <input name="cidade" id="cidade" class="form-control form-control-sm mt-1"
+                        value='{{usuario.cidade}}'>-->
+
+                    {{else}}
+                    <select id='cidade' name='cidade' class='form-select form-select-sm mt-1'></select>
+                    {{/if}}
+                    <input name="telefone" id="celular" class="form-control form-control-sm mt-1"
+                        value='{{usuario.telefone}}' maxlength="16" autocomplete="off" onkeyup="valida_celular()">
+                    <input name="usuario" id="usuario" class="form-control form-control-sm mt-1"
+                        value='{{usuario.usuario}}'>
+                    <label for="email" class="col-form-label col-form-label-sm">{{usuario.email}}</label>
+                </div>
+                <div class="row" style="width:600px;margin-left: 150px;">
+                    {{#if ehMaster}}
+                    <div class="col-md-3">
+                        <label class="col-form-label col-form-label-sm">Tipo de Usuário</label>
                     </div>
-            </form>
-        </div>
+                    <div class="col-md-6">
+                        <select name='tipo' class="form-select form-select-sm">
+                            <option style="font-weight: 800;">{{usuario.ehAdmin}}</option>
+                            <option>0</option>
+                            <option>1</option>
+                            <option>3</option>
+                        </select>
+                    </div>
+                    <label class="col-form-label col-form-label-sm">0 - Master | 1 - Admin | 3 - Solictação</label>
+                    {{/if}}
+                </div>
+                <div class="btn-group btn-group-sm mx-auto gap-2 col-6">
+                    <a class="mt-2 btn btn-sm btn-primary" data-bs-toggle='modal' data-bs-target='#senha'>Alterar
+                        Senha</a>
+                    <button type="submit" class="btn btn-sm btn-success mt-2">Registrar</button>
+                    {{#if ehMaster}}
+                    <a href='/administrador/' class="btn btn-sm btn-primary mt-2">Voltar</a>
+                    {{else}}
+                    <a href='/menu' class="btn btn-sm btn-primary mt-2">Voltar</a>
+                    {{/if}}
+                </div>
+            </div>
+        </form>
     </div>
 </div>

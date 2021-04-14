@@ -1,12 +1,38 @@
-<script>
+<style>
+    .icone {
+        font-size: 30px;
+        color: rgb(2, 38, 78);
+        "
 
+    }
+</style>
+<script>
     window.onload = function imageOption() {
         var imagem = document.getElementById('carregaFoto')
         var foto = document.getElementById("foto")
-        
+
         foto.src = imagem.value
 
-    }
+    };
+
+    function valida_celular() {
+        var cel = document.getElementById('celular')
+        if (cel.value.length == 1) {
+            cel.value = '(' + cel.value
+        }
+        if (cel.value.length == 3) {
+            cel.value += ')'
+        }
+        if (cel.value.length == 4) {
+            cel.value += ' '
+        }
+        if (cel.value.length == 6) {
+            cel.value += ' '
+        }
+        if (cel.value.length == 11) {
+            cel.value += '-'
+        }
+    };
 
     function preview_foto() {
         var imagem = document.querySelector('input[name=foto]').files[0]
@@ -22,8 +48,8 @@
         } else {
             preview.src = ''
         }
-    }
-
+    };
+/*
     function preview_fotocert() {
         var imagem = document.querySelector('input[name=fotocert]').files[0]
         var preview = document.querySelector('img[name=fotocert]')
@@ -38,7 +64,8 @@
         } else {
             preview.src = ''
         }
-    }
+    };
+*/
     function mascara_data() {
         var data = document.getElementById('data')
         var currenTime = new Date()
@@ -55,21 +82,22 @@
                 data.value = ''
             }
         }
-    }
+    };
 
     function valida_cnpj() {
-        var doc = document.getElementById('cnpj')
+        var cnpj = document.getElementById('cnpj')
 
-        if (doc.value.length == 2 || doc.value.length == 6) {
-            doc.value += '.'
+        if (cnpj.value.length == 2 || cnpj.value.length == 6) {
+            cnpj.value += '.'
         }
-        if (doc.value.length == 10) {
-            doc.value += '/'
+        if (cnpj.value.length == 10) {
+            cnpj.value += '/'
         }
-        if (doc.value.length == 15) {
-            doc.value += '-'
+        if (cnpj.value.length == 15) {
+            cnpj.value += '-'
         }
-        if (doc.value.length == 18) {
+
+        if (cnpj.value.length == 18) {
 
             var d1 = cnpj.value
             var p1 = d1.substring(0, 2)
@@ -91,7 +119,7 @@
                 numdoc == "99999999999999") {
                 cnpj.value = ''
             }
-            cnpj.value = numdoc
+            
             // Valida DVs
             var tamanho = numdoc.length - 2
             var numeros = numdoc.substring(0, tamanho)
@@ -122,8 +150,7 @@
                 cnpj.value = ''
             }
         }
-
-    }
+    };
 
     function valida_cpf() {
         var doc = document.getElementById('cpf')
@@ -178,130 +205,224 @@
             }
 
         }
-    }
+    };
+    window.onload = function () {
+
+        var estados = document.getElementById('estado');
+        var cidades = document.getElementById('cidade');
+
+        new dgCidadesEstados({
+            estado: estados,
+            cidade: cidades,
+            estadoVal: '<%=Request("estado") %>',
+            cidadeVal: '<%=Request("cidade") %>'
+        });
+    };
 
 </script>
 <form action='/pessoa/editar' method='post' enctype="multipart/form-data">
 
     <input type='hidden' name='id' value='{{pessoa._id}}'>
+    <input type='hidden' name='ehVendedor' value='{{pessoa.ehVendedor}}'>
 
-    <div class="cotainer mt-2" style="width: 1000px; margin-left: 150px;">
-        <h5><i class="bi bi-people icone"></i> Pessoas</h5>
+    <div class="cotainer mt-2" style="width: 80%; margin-left: 150px;">
+
+        <div class="row mt-2 mb-3">
+            <div class="col-md-8 mt-2">
+                <h5><i class="bi bi-people icone"></i> Edição de Pessoas</h5>
+            </div>
+            <div class="col-md-4 mt-4 text-end">
+                <a href='/pessoa/consulta' class='btn btn-sm btn-primary'>Voltar</a>
+                <a href='/pessoa/novo' class='btn btn-sm btn-primary'>Novo</a>
+                <a href='/pessoa/consulta' class='btn btn-sm btn-primary'>Buscar</a>
+                <button type='submit' class='btn btn-sm btn-success'>Salvar</button>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-md-7">
                 <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Nome Completo: </label>
-                    <div class="col-md-8">
-                        <input type='text ' name='nome' class='form-control form-control-sm' value='{{pessoa.nome}}'>
+                    <div class="col-md-3  text-end">
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Nome Completo: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Endereço: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Estado: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Cidade: </label><br>
+                        {{#if pessoa.cnpj}}
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>CNPJ: </label><br>
+                        {{/if}}
+                        {{#if pessoa.cpf}}
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>CPF: </label><br>
+                        {{/if}}
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Inicio Atividades: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Celular: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>E-mail: </label>
                     </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Endereço: </label>
                     <div class="col-md-8">
-                        <input type='text ' name='endereco' class='form-control form-control-sm'
+                        <input type='text' name='nome' class='form-control form-control-sm mb-1'
+                            value='{{pessoa.nome}}'>
+                        <input type='text' name='endereco' class='form-control form-control-sm mb-1'
                             value='{{pessoa.endereco}}'>
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Cidade: </label>
-                    <div class="col-md-8">
-                        <input type='text ' name='cidade' class='form-control form-control-sm'
-                            value='{{pessoa.cidade}}'>
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Estado: </label>
-                    <div class="col-md-8">
-                        <input type='text ' name='uf' class='form-control form-control-sm' value='{{pessoa.uf}}'>
-                    </div>
-                </div>
-                {{#if pessoa.cnpj}}
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>CNPJ: </label>
-                    <div class="col-md-8">
-                        <input type='text ' id='cnpj' name='cnpj' class='form-control form-control-sm'
-                            autocomplete='off' maxlength="18" onkeyup="valida_cnpj()" value='{{pessoa.cnpj}}'>
-                    </div>
-                </div>
-                {{else}}
-                {{/if}}
-                {{#if pessoa.cpf}}
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>CPF: </label>
-                    <div class="col-md-8">
-                        <input type='text' class='form-control form-control-sm' maxlength="14" autocomplete="off"
+                        {{#if pessoa.uf}}
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label class='col-form-label col-form-label-sm mt-1'>{{pessoa.uf}}</label><br>
+                            </div>
+                            <div class="col-md-7">
+                                <select id='estado' name='uf' class='form-select form-select-sm mt-1'></select>
+                            </div>
+                        </div>
+                        {{else}}
+                        <select id='estado' name='uf' class='form-select form-select-sm mt-1'></select>
+                        {{/if}}
+                        {{#if pessoa.cidade}}
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label class='col-form-label col-form-label-sm mt-1'>{{pessoa.cidade}}</label><br>
+                            </div>
+                            <div class="col-md-7">
+                                <select id='cidade' name='cidade' class='form-select form-select-sm mt-1'></select>
+                            </div>
+                        </div>
+                        {{else}}
+                        <select id='cidade' name='cidade' class='form-select form-select-sm mt-1'></select>
+                        {{/if}}
+                        <!--
+                        <input type='text ' name='cidade' class='form-control form-control-sm mb-1' value='{{pessoa.cidade}}'>
+                        <input type='text ' name='uf' class='form-control form-control-sm mb-1' value='{{pessoa.uf}}'>
+                        -->
+                        {{#if pessoa.cnpj}}
+                        <input type='text' class='form-control form-control-sm mb-1' maxlength="18" autocomplete="off"
+                            id='cnpj' name='cnpj' onkeyup="valida_cnpj()" value='{{pessoa.cnpj}}'>
+                        {{/if}}
+                        {{#if pessoa.cpf}}
+                        <input type='text' class='form-control form-control-sm mb-1 mt-1' maxlength="14" autocomplete="off"
                             id='cpf' name='cpf' onkeyup="valida_cpf()" value='{{pessoa.cpf}}'>
-                    </div>
-                </div>
-                {{else}}
-                {{/if}}
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Inicio Atividades: </label>
-                    <div class="col-md-8">
-                        <input type='text ' id='data' name='iniati' class='form-control form-control-sm'
-                            autocomplete="off" placeholder='__/____' maxlength="8" onkeyup="mascara_data()"
+                        {{/if}}
+                        <input type='text' class='form-control form-control-sm mb-1' autocomplete="off" maxlength="7"
+                            placeholder='__/____' id='data' name='iniati' maxlength="8" onkeyup="mascara_data()"
                             value='{{pessoa.iniati}}'>
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Celular: </label>
-                    <div class="col-md-8">
-                        <input type='text ' name='celular' class='form-control form-control-sm'
-                            value='{{pessoa.celular}}'>
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>E-mail: </label>
-                    <div class="col-md-8">
-                        <input type='text ' name='email' class='form-control form-control-sm' value='{{pessoa.email}}'>
+                        <input type='text ' name='celular' id='celular' class='form-control form-control-sm mb-1'
+                            maxlength="16" autocomplete="off" onkeyup="valida_celular()" value='{{pessoa.celular}}'>
+                        <input type='text' name='email' class='form-control form-control-sm mb-1'
+                            value='{{pessoa.email}}'>
                     </div>
                 </div>
             </div>
-
+            {{#if pessoa.ehVendedor}}
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Comissão:</label>
+                    </div>
+                    <div class="col-md-9">
+                        <input class='form-control form-control-sm' type='text' name='percom' value={{pessoa.percom}}>
+                    </div>
+                </div>
+                <div class="row">
+                    <div name='upload' class="col" style="margin-block-start: 20px; margin-inline-start: 100px;">
+                        <div class=''></div>
+                    </div>
+                    <div class="">
+                        <div class="input-group input-group-sm">
+                            <label class="input-group-text">Foto</label>
+                            <input type="file" name='foto' class='form-control' onchange="preview_foto()">
+                            <input type='hidden' name='carregaFoto' id='carregaFoto' value='{{pessoa.foto}}'>
+                        </div>
+                        <div class="row mt-2" style="margin-left: 120px;">
+                            <img src='{{pessoa.foto}}' id='foto' name='foto' style="width: 160px; height: 160px;" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            {{else}}
             <div class="col-md-5">
-                <div class='container card'>
+                <div class="container card">
                     <label class='col-form-label col-form-label-sm fw-bold'>Função:</label>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-check form-switch">
-                                <input name='funges' class="form-check-input" type="checkbox"
-                                    id="flexSwitchCheckDefault" {{pessoa.funges}}>
-                                <label class="form-check-label" for="flexSwitchCheckDefault">Gestor</label>
+                                <input name='funges' class="form-check-input" type="checkbox" {{pessoa.funges}}>
+                                <label class="form-check-label">Gestor</label>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-check form-switch">
-                                <input name='funpro' class="form-check-input" type="checkbox"
-                                    id="flexSwitchCheckDefault" {{pessoa.funpro}}>
-                                <label class="form-check-label" for="flexSwitchCheckDefault">Projetista</label>
+                                <input name='funpro' class="form-check-input" type="checkbox" {{pessoa.funpro}}>
+                                <label class="form-check-label">Projetista</label>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-check form-switch">
-                                <input name='funins' class="form-check-input" type="checkbox"
-                                    id="flexSwitchCheckDefault" {{pessoa.funins}}>
-                                <label class="form-check-label" for="flexSwitchCheckDefault">Instalador</label>
+                                <input name='funins' class="form-check-input" type="checkbox" {{pessoa.funins}}>
+                                <label class="form-check-label">Instalador</label>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div name='upload' class="col" style="margin-block-start: 20px; margin-inline-start: 100px;">
-                    <div class=''></div>
-                </div>
-                <div class="mt-4">
+                <div class="row mt-4">
                     <div class="input-group input-group-sm">
                         <label class="input-group-text">Foto</label>
-                        <input type="file" name='foto' class='form-control' onchange="preview_foto()">
-                        <input type='hidden' name='carregaFoto' id='carregaFoto' value='{{pessoa.foto}}'>
+                        <input type="file" name='foto' id="foto" class='form-control' onchange="preview_foto()">
                     </div>
-                    <div class="row mt-2" style="margin-left: 120px;">
-                        <img id='foto' name='foto' style="width: 190px; height: 220px">
+                </div>
+                <div class="row mt-2" style="margin-left: 120px;">
+                    <img src='/{{pessoa.foto}}' id='foto' name='foto' style="width: 160px; height: 160px;" />
+                </div>
+                <!--
+                <div class="row">
+                    <a class='mt-3 btn btn-primary' data-bs-toggle="modal" data-bs-target='#certificado'>Adicionar Certificados</a>
+                </div>
+                -->
+            </div>
+            <hr>
+            <div class="row">
+                <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Especialidades: </label><br>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-check form-switch">
+                            <input name='maninv' class="form-check-input" type="checkbox" {{pessoa.maninv}}>
+                            <label class="form-check-label">Manutenção de
+                                Inversores</label>
+                        </div>
+
+                        <div class="form-check form-switch">
+                            <input name='subcom' class="form-check-input" type="checkbox" {{pessoa.subcom}}>
+                            <label class="form-check-label">Substituição de
+                                Componentes</label>
+                        </div>
+
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-check form-switch">
+                            <input name='repequ' class="form-check-input" type="checkbox" {{pessoa.repequ}}>
+                            <label class="form-check-label">Reposicionamento de
+                                Equipamento</label>
+                        </div>
+
+                        <div class="form-check form-switch">
+                            <input name='vistor' class="form-check-input" type="checkbox" {{pessoa.vistor}}>
+                            <label class="form-check-label">Vistoria de Conexões e
+                                Instalações</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-check form-switch">
+                            <input name='dlaudo' class="form-check-input" type="checkbox" {{pessoa.dlaudo}}>
+                            <label class="form-check-label">Diagnóstico e
+                                Laudos</label>
+                        </div>
+
+                        <div class="form-check form-switch">
+                            <input name='limmod' class="form-check-input" type="checkbox" {{pessoa.limmod}}>
+                            <label class="form-check-label">Limpeza de
+                                Módulos(Painéis)</label>
+                        </div>
                     </div>
                 </div>
             </div>
+            {{/if}}
         </div>
-        <hr>
         <!-- Oculto para MVP
         <div class="row mb-2">
             <div class="col-md-4">
@@ -362,51 +483,5 @@
             </div>
         </div>
         -->
-        <div class="row">
-            <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Especialidades: </label><br>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-check form-switch">
-                        <input name='maninv' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Manutenção de
-                            Inversores</label>
-                    </div>
-
-                    <div class="form-check form-switch">
-                        <input name='subcom' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Substituição de
-                            Componentes</label>
-                    </div>
-
-                </div>
-                <div class="col-md-4">
-                    <div class="form-check form-switch">
-                        <input name='repequ' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Reposicionamento de
-                            Equipamento</label>
-                    </div>
-
-                    <div class="form-check form-switch">
-                        <input name='vistor' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Vistoria de Conexões e
-                            Instalações</label>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-check form-switch">
-                        <input name='dlaudo' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Diagnóstico e Laudos</label>
-                    </div>
-
-                    <div class="form-check form-switch">
-                        <input name='limmod' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Limpeza de
-                            Módulos(Painéis)</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <button type='submit' value='upload' class='btn btn-success'>Aplicar</button>
-        </div>
+    </div>
 </form>

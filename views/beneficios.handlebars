@@ -1,0 +1,47 @@
+<div style="position: fixed;overflow: hidden;width: 100%;height: 87%;" class="fadeIn">
+    <img src="beneficios.svg" style="width: 100%;">
+</div>
+<img src="beneficios_principais.svg" style="position: relative; width: 100%;margin-top: 50%;">
+<img src="beneficios_detalhes.svg" style="position: relative; width: 100%;">
+<span id="mouse"></span>
+<script>
+
+    const debounce = function (func, wait, immediate) {
+        let timeout;
+        return function (...args) {
+            const context = this;
+            const later = function () {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            const callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    };
+
+
+    const target = document.querySelectorAll('[data-anime]')
+    var animationClass = 'animate';
+
+    function animeScroll() {
+        const winTop = window.pageYOffset + ((window.innerHeight * 1 / 4));
+        target.forEach(function (element) {
+            if (winTop > element.offsetTop) {
+                element.classList.add(animationClass)
+            } else {
+                element.classList.remove(animationClass)
+            }
+        });
+    };
+
+    animeScroll();
+
+    if (target.length) {
+        window.addEventListener('scroll', debounce(function () {
+            animeScroll();
+        }), 200);
+    }
+
+</script>

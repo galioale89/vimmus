@@ -4,7 +4,7 @@
         border: solid 1px;
         border-color: grey;
         border-radius: 5px;
-        background-color: rgb(75, 73, 204);
+        background-color: rgb(40,57,89);
         color: white;
         font-size: 20px;
         font-weight: bold;
@@ -16,7 +16,7 @@
         width: 100%;
         border-radius: 10px;
         border: solid 1px;
-        background: linear-gradient(135deg, rgb(62, 81, 177), rgb(11, 19, 58, 1), rgb(11, 19, 58, 1));
+        background: linear-gradient(135deg, rgb(40, 57,89, 1), rgb(11, 19, 58, 1));
         padding: 10px;
         text-align: center;
     }
@@ -57,18 +57,19 @@
         background: white;
         border: solid 1px;
         border-color: rgba(153, 151, 151, 0.384);
-        border-radius: 10px;
+        border-radius: 5px;
         width: 100%;
-        height: 100%;
+        height: fit-content;
         padding: 4px;
     }
 </style>
 
-<div style="position: static;width: 100%;height: 100%;padding: 10px;">
+<div style="padding: 10px;height: fit-content;">
     <div class="header">Projetos {{pessoa.nome}}</div>
+    
     <div class="row" style="width: 100%;padding-left: 20px;">
         <div class="col-md-4" style="padding: 10px;">
-            <h6 class="contorno">Responsável</h6>
+            <h6 class="header">Responsável</h6>
             <div class="quadro">
                 <table>
                     <tr>
@@ -89,7 +90,7 @@
             </div>
         </div>
         <div class="col-md-4" style="padding: 10px">
-            <h6 class='contorno'>Instalador</h6>
+            <h6 class='header'>Instalador</h6>
             <div class="quadro">
                 <table>
                     <tr>
@@ -110,7 +111,7 @@
             </div>
         </div>
         <div class="col-md-4" style="padding: 10px">
-            <h6 class="contorno">Projetista</h6>
+            <h6 class="header">Projetista</h6>
             <div class="quadro">
                 <table>
                     <tr>

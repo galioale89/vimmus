@@ -1,0 +1,200 @@
+<style>
+    #quadro {
+        background: white;
+        border: rgba(200, 200, 200, 0.8) solid 1px;
+        border-radius: 5px;
+        width: 95%;
+        height: fit-content;
+        padding: 6px;
+        margin-left: 50px;
+        margin-top: 40px;
+        margin-bottom: 40px;
+    }
+
+    table,
+    tr,
+    td {
+        border-collapse: collapse;
+        font-size: 14px;
+        border: rgba(255, 255, 255, 0.8) 1px solid;
+        width: fit-content;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    th {
+        font-weight: 500;
+        background-color: rgb(40, 55, 86);
+        color: white;
+        border: rgba(255, 255, 255, 0.8) 1px solid;
+    }
+</style>
+<div id='quadro'>
+    <h5 class="text-center">Relatório de Projetos Realizados</h5>
+    <div class="row">
+        <div class="col-md-8" style="font-size: 15px;text-align: left;">
+            <form method='post' action="/relatorios/filtrarReal">
+                <a href='/' class='no-print' style="text-decoration: none;color: black;" value="Imprimir"
+                    onClick="window.print();return false" /><i class="bi bi-printer"></i> Imprimir</a>
+
+                <div class="row mt-1">
+                    <div class="col-md-1">
+                        <label class='col-form-label col-form-label-sm'>Mês:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <select class='form-select form-select-sm' name='filtromes'>
+                            <option>Tudo</option>
+                            <option>Janeiro</option>
+                            <option>Fevereiro</option>
+                            <option>Março</option>
+                            <option>Abril</option>
+                            <option>Maio</option>
+                            <option>Junho</option>
+                            <option>Julho</option>
+                            <option>Agosto</option>
+                            <option>Setembro</option>
+                            <option>Outubro</option>
+                            <option>Novembro</option>
+                            <option>Dezembro</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class='col-form-label col-form-label-sm'>Filtrar por Perído:</label>
+                    </div>
+                    <div class="col-md-1">
+                        <label class='col-form-label col-form-label-sm'>Início:</label>
+                    </div>
+                    <div class='col-md-2'>
+                        <input class='form-control form-control-sm mb-2' type='text' name='dataini' id='dataini'
+                            placeholder='__/__/____' autocomplete="off" maxlength="10" onkeyup="mascara_dataini()">
+                    </div>
+                    <div class='col-md-1' style="padding: 0px">
+                        <label
+                            class='col-form-label col-form-label-sm'>á&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fim:</label>
+                    </div>
+                    <div class='col-md-2'>
+                        <input class='form-control form-control-sm mb-2' type='text' name='datafim' id='datafim'
+                            placeholder='__/__/____' autocomplete="off" maxlength="10" onkeyup="mascara_datafim()">
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" class='btn btn-sm btn-primary'>Filtrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4" style="font-size: 12px;text-align: right;">
+            <div>Data Emissão: {{dataemissao}}</div>
+            <div>Hora Emissão: {{tempo}}</div>
+            <div>Usuário: {{nome_usuario}}</div>
+            <div>Total de Projetos: {{qtdprj}}</div>
+        </div>
+    </div>
+    <table>
+        <tr>
+            <th>Projeto</th>
+            <th>Cliente</th>
+            <!--
+            <th>Cidade</th>
+            <th>Estado</th>
+            <th>Endereço</th>
+            -->
+            <th>Cadastro</th>
+            <th>Inicio</th>
+            <th>Entrega</th>
+            <th>Faturado</th>
+            <th>Total</th>
+            <th>Custos</th>
+            <th>%</th>
+            <th>Lucro Bruto</th>
+            <th>Lucro Líquido</th>
+            <th>%</th>
+            <th>Tributos</th>
+            <th>%</th>
+        </tr>
+        {{#each realizado}}
+        <tr>
+            <td>{{nome}}</td>
+            <td>{{nomecliente}}</td>
+            <!--
+            <td></td>
+            <td></td>
+            <td></td>
+            -->
+            <td>{{data}}</td>
+            <td>{{dataini}}</td>
+            <td>{{datafim}}</td>
+            <td>R$ {{vlrNFS}}</td>
+            <td>R$ {{valor}}</td>
+            <td>R$ {{custoPlano}}</td>
+            <td>{{parDedVlr}}</td>
+            <td>R$ {{lucroBruto}}</td>
+            <td>R$ {{lucroLiquido}}</td>
+            <td>{{parLiqVlr}}</td>
+            <td>R$ {{totalImposto}}</td>
+            <td>{{parImpVlr}}</td>
+        </tr>
+        {{else}}
+        <h6>Nenhum projeto foi realizado.</h6>
+        {{/each}}
+        <tr style="background-color: rgba(200, 200, 200, 0.8);font-weight: 700;">
+            <td style="font-size: 12px;" colspan='5'>Total</td>
+            <td style="font-size: 12px;"> R$ {{soma_vlrnfs}}</td>
+            <td style="font-size: 12px;">R$ {{soma_valor}}</td>
+            <td style="font-size: 12px;">R$ {{soma_custo}}</td>
+            <td style="font-size: 12px;">{{perMedCusto}}</td>
+            <td style="font-size: 12px;">R$ {{soma_lb}}</td>
+            <td style="font-size: 12px;">R$ {{soma_ll}}</td>
+            <td style="font-size: 12px;">{{perMedLL}}</td>
+            <td style="font-size: 12px;">R$ {{soma_tributos}}</td>
+            <td style="font-size: 12px;">{{perMedTrb}}</td>
+        </tr>
+    </table>
+</div>
+<script>
+    function mascara_dataini() {
+        var data = document.getElementById('dataini')
+        //var dataord = document.getElementById('dataord')
+        var currenTime = new Date()
+        var year = currenTime.getFullYear()
+        var month = currenTime.getMonth()
+        var day = currenTime.getDate()
+        var ano = data.value
+        ano1 = ano.substring(6, 10)
+        dia1 = ano.substring(0, 2)
+        mes1 = ano.substring(3, 5)
+
+
+        if (data.value.length == 2 || data.value.length == 5) {
+            data.value += "/"
+        }
+        if (data.value.length == 10) {
+            if (parseFloat(mes1) > 12 || parseFloat(dia1) > 31) {
+                data.value = ''
+            }
+        }
+    }
+    function mascara_datafim() {
+        var data = document.getElementById('datafim')
+        //var dataord = document.getElementById('dataord')
+        var currenTime = new Date()
+        var year = currenTime.getFullYear()
+        var month = currenTime.getMonth()
+        var day = currenTime.getDate()
+        var ano = data.value
+        ano1 = ano.substring(6, 10)
+        dia1 = ano.substring(0, 2)
+        mes1 = ano.substring(3, 5)
+
+
+        if (data.value.length == 2 || data.value.length == 5) {
+            data.value += "/"
+        }
+        if (data.value.length == 10) {
+            if (parseFloat(mes1) > 12 || parseFloat(dia1) > 31) {
+                data.value = ''
+            }
+        }
+    }
+</script>

@@ -1,629 +1,431 @@
-<script>
-    function mascara_dataprev() {
-        var data = document.getElementById('dataprev')
-        var currenTime = new Date()
-        var year = currenTime.getFullYear()
-        var month = currenTime.getMonth()
-        var day = currenTime.getDate()
-        var ano = data.value
-        ano1 = ano.substring(6, 10)
-        dia1 = ano.substring(0, 2)
-        mes1 = ano.substring(3, 5)
-
-        if (data.value.length == 2 || data.value.length == 5) {
-            data.value += "/"
-        }
-        if (data.value.length == 10) {
-            if (parseFloat(ano1) < parseFloat(year) || parseFloat(mes1) < parseFloat(month) + 1) {
-                data.value = ''
-            } else {
-                if (parseFloat(ano1) == parseFloat(year) && parseFloat(mes1) == parseFloat(month) + 1 && parseFloat(dia1) < parseFloat(day)) {
-                    data.value = ''
-                }
-            }
-        }
+<style>
+    .botao-menu {
+        background-color: rgb(40, 55, 86);
+        border: white solid 1px;
+        color: white;
     }
-</script>
-<div class="card-body">
-    <form action='/projeto/editar/direto/' method='post'>
-        <!-- Modal -->
-        <div class="modal fade" id="custosModal" tabindex="1" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Laçar custos detalhados do projeto</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-4 text-end">
-                                <label class='col-form-label col-form-label-sm fw-bold'>Descrição</label><br>
-                                <div class="row mb-1">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Kit Gerador:</label>
+
+    .botao-menu:hover {
+        background-color: rgb(40, 55, 86);
+        border: white 1px solid;
+        font-weight: 600;
+        color: white;
+    }
+
+    .ativo {
+        background-color: rgb(10, 30, 68);
+    }
+</style>
+
+<form action='/projeto/editar/direto/' method='post'>
+    <!-- Modal Consulta Alíquotas-->
+    <div class="modal fade" id='consultaAliquota' tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tributos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 card">
+                            <div class="row contorno ">
+                                <label class="fw-bold col-form-label col-form-label-sm ">Valores dos Tributos (R$):
+                                </label>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 text-end">
+                                    <label class="fw-bold col-form-label col-form-label-sm">DAS: </label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm">ISS: </label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm">IRPJ: </label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm">IRPJ Adicional: </label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm">CSLL: </label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm">PIS: </label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm">COFINS: </label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm">ICMS: </label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm">Total: </label><br>
                                 </div>
-                                <div class="row mb-1">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Estrutura:</label>
-                                </div>
-                                <div class="row mb-1">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Cerca:</label>
-                                </div>
-                                <div class="row mb-1">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Postes de Condução de
-                                        Fios:</label>
-                                </div>
-                                <div class="row mb-1">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Disjuntores:</label>
-                                </div>
-                                <div class="row mb-1">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>DPS:</label>
-                                </div>
-                                <div class="row mb-1">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Cabos:</label>
-                                </div>
-                                <div class="row mb-1">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Outros Componentes:
+                                <div class="col-md-6">
+                                    <label class="col-form-label col-form-label-sm">R$
+                                        {{projeto.impostoSimples}}</label><br>
+                                    <label class="col-form-label col-form-label-sm">R$ {{projeto.impNFS}}</label><br>
+                                    <label class="col-form-label col-form-label-sm">R$ {{projeto.impostoIRPJ}}</label><br>
+                                    <label class="col-form-label col-form-label-sm">R$ {{projeto.impostoAdd}}
+                                    </label><br>
+                                    <label class="col-form-label col-form-label-sm">R$ {{projeto.impostoCSLL}}
+                                    </label><br>
+                                    <label class="col-form-label col-form-label-sm">R$ {{projeto.impostoPIS}}
+                                    </label><br>
+                                    <label class="col-form-label col-form-label-sm">R$ {{projeto.impostoCOFINS}}
+                                    </label><br>
+                                    <label class="col-form-label col-form-label-sm">R$ {{projeto.impostoICMS}}
+                                    </label><br>
+                                    <label class="col-form-label col-form-label-sm">R$ {{projeto.totalImposto}}
+                                    </label><br>
                                 </div>
                             </div>
-                            <div class="col-md-1">
-                                <label class='col-form-label col-form-label-sm fw-bold'>UN</label><br>
-                                <input type='number' value='{{detalhe.unidadeEqu}}'
-                                    class='form-control form-control-sm mb-1' name='unidadeEqu'>
-                                <input type='number' value='{{detalhe.unidadeEst}}'
-                                    class='form-control form-control-sm mb-1' name='unidadeEst'>
-                                <input type='number' value='{{detalhe.unidadeCer}}'
-                                    class='form-control form-control-sm mb-1' name='unidadeCer'>
-                                <input type='number' value='{{detalhe.unidadePos}}'
-                                    class='form-control form-control-sm mb-1' name='unidadePos'>
-                                <input type='number' value='{{detalhe.unidadeDis}}'
-                                    class='form-control form-control-sm mb-1' name='unidadeDis'>
-                                <input type='number' value='{{detalhe.unidadeDPS}}'
-                                    class='form-control form-control-sm mb-1' name='unidadeDPS'>
-                                <input type='number' value='{{detalhe.unidadeCab}}'
-                                    class='form-control form-control-sm mb-1' name='unidadeCab'>
-                                <input type='number' value='{{detalhe.unidadeOcp}}'
-                                    class='form-control form-control-sm mb-1' name='unidadeOcp'>
+                        </div>
+                        <div class="col-md-6 card">
+                            <div class="row contorno">
+                                <label class="fw-bold col-form-label col-form-label-sm">Alíquotas:
+                                </label>
                             </div>
-                            <div class="col-md-3">
-                                <label type='number' class='col-form-label col-form-label-sm fw-bold'>R$
-                                    Unitário</label><br>
-                                <input type='number' value='{{detalhe.vlrUniEqu}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniEqu'>
-                                <input type='number' value='{{detalhe.vlrUniEst}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniEst'>
-                                <input type='number' value='{{detalhe.vlrUniCer}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCer'>
-                                <input type='number' value='{{detalhe.vlrUniPos}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniPos'>
-                                <input type='number' value='{{detalhe.vlrUniDis}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDis'>
-                                <input type='number' value='{{detalhe.vlrUniDPS}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDPS'>
-                                <input type='number' value='{{detalhe.vlrUniCab}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCab'>
-                                <input type='number' value='{{detalhe.vlrUniOcp}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniOcp'>
+                            <div class="row" style="height: fit-content;">
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-6 text-end">
+                                            <label class="fw-bold col-form-label col-form-label-sm">DAS:
+                                            </label><br>
+                                            <label class="fw-bold col-form-label col-form-label-sm">NF-s:
+                                            </label><br>
+                                            <label class="fw-bold col-form-label col-form-label-sm">IRPJ:
+                                            </label><br>
+                                            <label class="fw-bold col-form-label col-form-label-sm">IRPJ Add:
+                                            </label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="col-form-label col-form-label-sm">{{rp.alqDAS}}
+                                                %</label><br>
+                                            <label class="col-form-label col-form-label-sm">{{rp.alqNFS}}
+                                                %</label><br>
+                                            <label class="col-form-label col-form-label-sm">{{rp.alqIRPJ}}%</label><br>
+                                            <label class="col-form-label col-form-label-sm">{{rp.alqIRPJAdd}}%</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-6 text-end">
+                                            <label class="fw-bold col-form-label col-form-label-sm">ICMS:
+                                            </label><br>
+                                            <label class="fw-bold col-form-label col-form-label-sm">PIS:
+                                            </label><br>
+                                            <label class="fw-bold  col-form-label col-form-label-sm">COFINS:
+                                            </label><br>
+                                            <label class="fw-bold col-form-label col-form-label-sm">CSLL:
+                                            </label>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="col-form-label col-form-label-sm">{{rp.alqICMS}}%</label><br>
+                                            <label class="col-form-label col-form-label-sm">{{rp.alqPIS}}%</label><br>
+                                            <label
+                                                class="col-form-label col-form-label-sm">{{rp.alqCOFINS}}%</label><br>
+                                            <label class="col-form-label col-form-label-sm">{{rp.alqCSLL}}%</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <label class='col-form-label col-form-label-sm fw-bold'>R$ Total</label><br>
-                                <input type='number' value='{{detalhe.valorEqu}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorEqu'>
-                                <input type='number' value='{{detalhe.valorEst}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorEst'>
-                                <input type='number' value='{{detalhe.valorCer}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorCer'>
-                                <input type='number' value='{{detalhe.valorPos}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorPos'>
-                                <input type='number' value='{{detalhe.valorDis}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorDis'>
-                                <input type='number' value='{{detalhe.valorDPS}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorDPS'>
-                                <input type='number' value='{{detalhe.valorCab}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorCab'>
-                                <input type='number' value='{{detalhe.valorOcp}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorOcp'>
+                            <div class="row">
+                                <label class="fw-bold col-form-label col-form-label-sm contorno">Parâmetros</label>
+                                <div class="col-md-7">
+                                    <label for="estrutura" class="fw-bold col-form-label col-form-label-sm">Regime
+                                        Tributário:</label>
+                                    {{#if ehLR}}
+                                    <label class="fw-bold col-form-label col-form-label-sm" />Projeção
+                                    Lucro:</label>
+                                    {{else}}
+                                    {{#if ehLP}}
+                                    <label class="fw-bold col-form-label col-form-label-sm" />Projeção
+                                    Faturamento:</label>
+                                    {{/if}}
+                                    {{/if}}
+                                    {{#if ehSimples }}
+                                    <label class="fw-bold col-form-label col-form-label-sm">Fator de redução
+                                        Simples:</label>
+                                    </label>
+                                    {{else}}
+                                    {{/if}}
+                                </div>
+                                <div class="col-md-5">
+                                    <label class='col-form-label col-form-label-sm'>{{rp.regime}}</label><br>
+                                    {{#if ehSimples }}
+                                    <label class="col-form-label col-form-label-sm">R$ {{rp.proje}}</label>
+                                    <label class="col-form-label col-form-label-sm">R$ {{rp.vlrred}}</label>
+                                    {{else}}
+                                    {{/if}}
+                                    {{#if ehLR}}
+                                    <label class="col-form-label col-form-label-sm">R$ {{rp.prjLR}}</label>
+                                    {{else}}
+                                    {{/if}}
+                                    {{#if ehLP}}
+                                    <label class="col-form-label col-form-label-sm">R$ {{rp.prjLP}}</label>
+                                    {{else}}
+                                    {{/if}}
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ok</button>
-                    </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <!-- Fim Modal -->
+
+    <div class='row' style="width: 100%;padding-left: 2%;padding-top: 1%;">
+        <div style="width: 100%;">
+            <h5 class="header">{{cliente.nome}} </h5>
+        </div>
+        <div class='btn-group col-12 mx-auto'>
+            <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'><i class="bi bi-house"></i>
+                Principal</a>
+            <a href="/projeto/direto/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i class="bi bi-layers"></i>
+                Custos Diretos</a>
         </div>
 
         <input type="hidden" name="id" value='{{projeto._id}}'>
-        <div class="row">
-            <div class="card col-md-6">
-                <div class="row mt-2">
-                    <div class="col-md-5">
-                        <label for="nome" class=" fw-bold col-form-label col-form-label-sm"> Nome do Projeto: </label>
-                    </div>
-                    <div class="col-md-7">
-                        <input type="text" name="nome" id="nome" value='{{projeto.nome}}'
-                            class="form-control form-control-sm mb-2">
-                    </div>
-                    <div class="col-md-5">
-                        <label for="cliente" class="fw-bold col-form-label col-form-label-sm"> Cliente: </label>
-                    </div>
-                    <div class="col-md-7">
-                        <input type="text" name="cliente" id="cliente" value='{{projeto.cliente}}'
-                            class="form-control form-control-sm mb-2">
-                    </div>
-                </div>
+        <div class="row mt-1" style="width: 100%;padding-left: 15px; height: 530px;">
+            <div class="col-md-8" style="padding-left: 30px;">
                 <div class="row">
-                    <div class="col-md-5">
-                        <label for="vlrorc" class="fw-bold  col-form-label col-form-label-sm"> Valor Orçado do Projeto:
-                        </label>
-                    </div>
-                    <div class="col-md-7">
-                        <input type="number" name="valor" id="valor" value='{{projeto.valor}}'
-                            class="form-control form-control-sm mb-2" placeholder="R$" aria-placeholder="R$">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-5">
-                        <label for="vlreqi" class=" fw-bold col-form-label col-form-label-sm"> Valor Kit Gerador:
-                        </label>
-                    </div>
-                    <div class="col-md-7">
-                        <input type="number" name="equipamento" id="equipamento" value='{{projeto.vlrequ}}'
-                            class="form-control form-control-sm mb-2" placeholder="R$" aria-placeholder="R$">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-5">
-                        <label for="ptnprj" class=" fw-bold col-form-label col-form-label-sm"> Potência do
-                            Projeto:</label>
-                    </div>
-                    <div class="col-md-7">
-                        <input type="number" name="potencia" id="potencia" value='{{projeto.potencia}}'
-                            class="form-control form-control-sm mb-2" placeholder="kWp" aria-placeholder="R$">
-                    </div>
-                </div>
-                <!-- Provisório -->
-                <div class="row">
-                    <div class="col-md-5">
-                        <label for="percom" class=" fw-bold col-form-label col-form-label-sm"> Comissão: </label>
-                    </div>
-                    <div class="col-md-7">
-                        <input type="number" name="comissao" id="comissao" value='{{projeto.percom}}'
-                            class="form-control form-control-sm mb-2" placeholder="%">
-                    </div>
-                </div>
-                <!-- -->
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-check">
-                            <input name='estsolo' class="form-check-input" type="checkbox" {{projeto.temEstSolo}}>
-                            <label class="form-check-label col-form-label col-form-label-sm"> Estrutura
-                                de Solo
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-check">
-                            <input name='cercamento' class="form-check-input" type="checkbox" {{projeto.temCercamento}}>
-                            <label class="form-check-label col-form-label col-form-label-sm">
-                                Cercamento
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-check">
-                            <input name='poste' class="form-check-input" type="checkbox" {{projeto.temPosteCond}}>
-                            <label class="form-check-label col-form-label col-form-label-sm">
-                                Postes de Condução
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <!--
-                <div class="row">
-                    <div class="input-group mb-3">
-                        <label class="input-group-text" for="inputGroupFile01">Orçamento</label>
-                        <input type="file" class="form-control" id="inputGroupFile01">
-                    </div>
-                </div>
-                -->
-            </div>
-            <div class="col-md-6 card">
-                <!--
-                <div class="row mt-2">
-                    <div class="col-md-4">
-                        <label for="percom" class=" fw-bold col-form-label col-form-label-sm"> Comissão: </label>
-                    </div>
                     <div class="col-md-6">
-                        <input type="number" name="comissao" id="comissao" value='{{projeto.percom}}'
-                            class="form-control form-control-sm mb-2" placeholder="%">
-                    </div>
-                </div>
-                -->
-                <div class="row">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-4'>Responsável: </label>
-                    <div class="col-md-8">
-                        <label class='col-form-label col-form-label-sm'>{{pr.nome}}</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-4 mt-1'>Alterar Responsável: </label>
-                    <div class="col-md-6">
-                        <select name='funres' class='form-select form-select-sm mb-3'>
-                            {{#each responsavel}}
-                            <option value='{{_id}}'>{{nome}}</option>
-                            {{else}}
-                            <option value=''>Nenhuma pessoa foi encontrada</option>
-                            {{/each}}
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <div class='form-check'>
-                            <input class='form-check-input' type='checkbox' name='checkRes'>
-                            <label class='form-check-label col-form-label col-form-label-sm'></label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-4'>Regime Tributário: </label>
-                    <div class="col-md-8">
-                        <label class='col-form-label col-form-label-sm'>{{rp.regime}}</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-4 mt-1'>Alterar Regime: </label>
-                    <div class="col-md-6 mt-1">
-                        <select name='regime' class="form-select form-select-sm mb-3">
-                            {{#each regime}}
-                            <option value="{{_id}}">{{nome}}</option>
-                            {{else}}
-                            <option value=''>Nenhuma configuração encontrada</option>
-                            {{/each}}
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <div class='form-check'>
-                            <input class='form-check-input' type='checkbox' name='checkRegime'>
-                            <label class='form-check-label col-form-label col-form-label-sm'></label>
-                        </div>
-                    </div>
-                </div>
-                <div class="card mb-2">
-                    <div class="row mb-1" style="margin-left: 5px;">
-                        <div class="col-md-2 mt-1">
-                            <label class='col-form-label col-form-label-sm fw-bold'>Data Inicio:</label>
-                        </div>
-                        <div class="col-md-2 mt-1">
-                            <label class='col-form-label col-form-label-sm'>{{projeto.dataini}}</label>
-                        </div>
-                        <div class="col-md-3 mt-1">
-                            <label class="fw-bold col-form-label col-form-label-sm"> Previsão de Entrega:
-                            </label>
-                        </div>
-                        <div class="col-md-3 mt-1">
-                            <div class="col-md-10">
-                                <input class='form-control form-control-sm' type='text' name='dataprev' id='dataprev'
-                                    placeholder='__/__/____' autocomplete="off" maxlength="10"
-                                    value='{{projeto.dataprev}}' onkeyup="mascara_dataprev()">
-                            </div>
-                        </div>
-                        <div class="row mt-1">
-                            <div class="col-md-2">
-                                <label class='col-form-label col-form-label-sm fw-bold'>Motivo:</label>
-                                <div class='form-check'>
-                                    <input class='mt-2 form-check-input' type='checkbox' name='checkDatPrev'>
-                                    <label class='form-check-label col-form-label col-form-label-sm'>Alterar</label>
-                                </div>
-                            </div>
-                            <div class="col-md-10">
-                                <textarea name='motivo' class='form-control' rows='2' placeholder="Observação">{{projeto.motivo}}</textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mt-2">
-
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-6 d-grid gap-2 col-12">
-                            <a class="btn btn-sm btn-primary " data-bs-toggle="modal" data-bs-target="#custosModal"><i
-                                    class="bi bi-list-ul"></i> Lançar Custos
-                                Detalhados do Orçamento
-                            </a>
-                        </div>
-                        <div class="col-md-6 d-grid gap-2 col-12">
+                        <div class="row quadro" style="background-color: white;">
                             <a href='/pessoa/formaequipe/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
                                     class="bi bi-people"></i> Equipe </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-6 d-grid gap-2 col-12">
-                            <a href='/gerenciamento/dashboard/{{projeto._id}}' class='btn btn-sm btn-primary'><i
-                                    class="bi bi-bar-chart"></i> Dashboard</a>
-                        </div>
-                        <div class="col-md-6 d-grid gap-2 col-12">
-                            <button type="submit" class="btn btn-sm btn-success" name="aplicar"> <i
-                                    class="bi bi-check-circle"></i> Aplicar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-8">
-                <div class="container">
-                    <div class="row mt-2">
-                        <div class="col-md-6">
-                            <div class="row">
-                                <h5 class="fw-bold container mt-2 mb-2">Projeto: {{projeto.nome}} </h5>
-                            </div>
-                            <div class="row"
-                                style="border: solid 1px; border-color: rgba(70,70,70, 0.2);border-radius: 5px;">
-                                <div class="row mt-2">
-                                    <div class="col-md-9">
-                                        <label class="fw-bold col-form-label col-form-label-sm">Instaladores na
-                                            equipe:</label><br>
-                                        <label class="fw-bold col-form-label col-form-label-sm">Total de Horas (Execução
-                                            e
-                                            Planejamento):</label><br>
-                                        <label class="fw-bold col-form-label col-form-label-sm">Total de Dias
-                                            Obras:</label><br>
-                                        <label class="fw-bold col-form-label col-form-label-sm">Total de Horas Obra
-                                            Registrado:</label><br>
-                                        <label class="fw-bold col-form-label col-form-label-sm">Total de Dias Obra
-                                            Registrado:</label>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <input type="number" class="form-control form-control-sm mb-2" name='equipe'
-                                            id="equipe" value='{{projeto.equipe}}'>
-                                        <input type="number" class="form-control form-control-sm mb-2" name='tothrs'
-                                            id="tothrs" value='{{projeto.tothrs}}'>
-                                        <input type="number" class="form-control form-control-sm" name='diastr'
-                                            id="diastr">
-                                        <label class="col-form-label col-form-label-sm">{{projeto.trbint}}</label><br>
-                                        <label class="col-form-label col-form-label-sm">{{projeto.diastr}}</label>
-                                    </div>
+                            <div class="row mt-1">
+                                <div class="col-md-7 text-end">
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Instaladores na
+                                        equipe:</label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Total de
+                                        Horas:</label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Dias de Obras
+                                        (lançar):</label><br>
+                                    {{#if projeto.trbint}}
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Horas de Obra
+                                        Registrado:</label><br>
+                                    {{/if}}
+                                    <label class="fw-bold col-form-label col-form-label-sm">Dias de Obra
+                                        Registrado:</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
+                                        class="form-control form-control-sm mb-1" name='equipe' id="equipe"
+                                        value='{{projeto.qtdequipe}}'>
+                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
+                                        class="form-control form-control-sm mb-1" name='tothrs' id="tothrs"
+                                        value='{{projeto.tothrs}}'>
+                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
+                                        class="form-control form-control-sm mb-1" name='diastr' id="diastr">
+                                    {{#if projeto.trbint}}
+                                    <label class="col-form-label col-form-label-sm mb-1">{{projeto.trbint}}</label><br>
+                                    {{/if}}
+                                    <label class="col-form-label col-form-label-sm">{{projeto.diastr}}</label>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="col-md-6"
-                            style="margin-top: 40px; border: solid 1px; border-color: rgb(70,70,70,0.2); border-radius: 5px;">
-                            <div class="row">
-                                <div class="row">
-                                    <div
-                                        style="border: solid 1px; border-color: rgb(231, 214, 214); border-left: gray;border-top: gray;border-right: gray;">
-                                        <label class='col-form-label col-form-label-md fw-bold'>Definir os recursos do
-                                            projeto:</label>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label
-                                            class='col-form-label col-form-label-sm fw-bold mb-1'>Instalador:</label><br>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <input type='hidden' name='pinome' value='{{pi.nome}}'>
-                                        <label class='col-form-label col-form-label-sm fw-bold'>{{pi.nome}}</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-10">
-                                        <select class='form-select form-select-sm' name='funins'>
-                                            {{#each instalador}}
-                                            <option value="{{_id}}">{{nome}}</option>
-                                            {{else}}
-                                            <option>Nenhum projetista cadastrado</option>
-                                            {{/each}}
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class='form-check'>
-                                            <input type='checkbox' class='form-check-input' name='checkIns'>
-                                            <label
-                                                class='form-check-label col-form-label col-form-label-sm'>Alterar</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <label
-                                            class='col-form-label col-form-label-sm fw-bold mb-1'>Projetista:</label><br>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <input type='hidden' name='ppnome' value='{{pp.nome}}'>
-                                        <label class='col-form-label col-form-label-sm fw-bold'>{{pp.nome}}</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-10">
-                                        <select class='form-select form-select-sm' name='funpro'>
-                                            {{#each projetista}}
-                                            <option value="{{_id}}">{{nome}}</option>
-                                            {{else}}
-                                            <option>Nenhum instalador cadastrado</option>
-                                            {{/each}}
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class='form-check'>
-                                            <input type='checkbox' class='form-check-input' name='checkPro'>
-                                            <label
-                                                class='form-check-label col-form-label col-form-label-sm'>Alterar</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="container">
-                    <div class="row mt-2">
-                        <div class="col-md-6 card">
-                            <div class="row mt-2">
+                        <div class="row card">
+                            <div class="row" style="margin-top: 5px;">
                                 <div class="col-md-10">
-                                    <label class="fw-bold col-form-label col-form-label-sm col-md-5">Custos
-                                        Operacionais</label>
-                                    <label
-                                        class="fw-bold col-form-label col-form-label-sm col-md-6">R${{projeto.totcop}}</label>
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-2">Custos
+                                        Operacionais:</label>
+                                    <label class="fw-bold col-form-label col-form-label-sm">R$
+                                        {{projeto.totcop}}</label>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-md-1" style="margin-top: 5px;">
                                     <label class="fw-bold col-form-label col-form-label-sm">Horas</label>
                                 </div>
-                                <hr>
                             </div>
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-4 text-end">
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Instalação:</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Projetista:</label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Valor
+                                        ART:</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Gestão:</label><br>
                                     <label
                                         class="fw-bold col-form-label col-form-label-sm mb-1">Deslocamento:</label><br>
                                     <label
                                         class="fw-bold col-form-label col-form-label-sm mb-1">Alimentação:</label><br>
                                 </div>
-                                <div class="col-md-7">
+                                <div class="col-md-6">
                                     <div class="input-group input-group-sm mb-1">
                                         <span class="input-group-text">$</span>
-                                        <input type="number" class="form-control form-control-sm" name='totint'
-                                            id="totint" value='{{projeto.totint}}' aria-label='R$'>
+                                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
+                                            class="form-control form-control-sm" name='totint' id="totint"
+                                            value='{{projeto.totint}}' aria-label='R$'>
                                         <span class="input-group-text">.00</span>
                                     </div>
 
                                     <div class="input-group input-group-sm mb-1">
                                         <span class="input-group-text">$</span>
-                                        <input type="number" class="form-control form-control-sm" name='totpro'
-                                            id="totpro" value='{{projeto.totpro}}' aria-label="R$ ">
+                                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
+                                            class="form-control form-control-sm" name='totpro' id="totpro"
+                                            value='{{projeto.totpro}}' aria-label="R$ ">
                                         <span class="input-group-text">.00</span>
                                     </div>
 
                                     <div class="input-group input-group-sm mb-1">
                                         <span class="input-group-text">$</span>
-                                        <input type="number" class="form-control form-control-sm" name='totges'
-                                            id="totges" value='{{projeto.totges}}' aria-label="R$ ">
+                                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
+                                            class="form-control" id="vlrart" name="vlrart" value='{{projeto.vlrart}}'
+                                            aria-label="R$ ">
                                         <span class="input-group-text">.00</span>
                                     </div>
 
                                     <div class="input-group input-group-sm mb-1">
                                         <span class="input-group-text">$</span>
-                                        <input type="number" class="form-control form-control-sm" id="totdes"
-                                            name="totdes" value='{{projeto.totdes}}' aria-label="R$ ">
+                                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
+                                            class="form-control form-control-sm" name='totges' id="totges"
+                                            value='{{projeto.totges}}' aria-label="R$ ">
                                         <span class="input-group-text">.00</span>
                                     </div>
-                                    <div class="col">
+
+                                    <div class="input-group input-group-sm mb-1">
+                                        <span class="input-group-text">$</span>
+                                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
+                                            class="form-control form-control-sm" id="totdes" name="totdes"
+                                            value='{{projeto.totdes}}' aria-label="R$ ">
+                                        <span class="input-group-text">.00</span>
+                                    </div>
+                                    <div class="col" style="margin-bottom: 11%;">
                                         <div class="input-group input-group-sm mb-1">
                                             <span class="input-group-text">$</span>
-                                            <input type="number" class="form-control form-control-sm" id="totali"
-                                                name="totali" value='{{projeto.totali}}' aria-label="R$ ">
+                                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
+                                                class="form-control form-control-sm" id="totali" name="totali"
+                                                value='{{projeto.totali}}' aria-label="R$ ">
                                             <span class="input-group-text">.00</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
-                                    <div class="row mt-1" style='margin-right: 1px;'>
-                                        <input type='number' name='trbint' class='form-control form-control-sm'
-                                            value='{{projeto.trbint}}'>
+                                    <div class="row" style='margin-right: 1px;'>
+                                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='number' name='trbint'
+                                            class='form-control form-control-sm' value='{{projeto.trbint}}'>
                                     </div>
                                     <div class="row mt-1" style='margin-right: 1px;'>
-                                        <input type='number' name='trbpro' class='form-control form-control-sm'
-                                            value='{{projeto.trbpro}}'>
+                                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='number' name='trbpro'
+                                            class='form-control form-control-sm' value='{{projeto.trbpro}}'>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="col-md-6 card">
-                            <div class="row mt-2">
-                                <div class="row">
-                                    <label class="fw-bold col-md-6 col-form-label col-form-label-sm">Reserva</label>
-                                    <div class="col">
-                                        <label class="fw-bold col-md-5 col-form-label col-form-label-sm">R$
-                                            {{projeto.reserva}}</label>
+                    <div class="col-md-6">
+                        <div class="row card">
+                            <label class='col-form-label fw-bold' style="padding-top:7%">Definir os recursos do
+                                projeto</label>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class='col-form-label col-form-label-sm fw-bold mb-1'>Instalador:</label><br>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type='hidden' name='pinome' value='{{pi.nome}}'>
+                                    <label class='col-form-label col-form-label-sm fw-bold'>{{pi.nome}}</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <select {{#if projeto.orcado}}{{else}}disabled{{/if}}
+                                        class='form-select form-select-sm' name='funins'>
+                                        {{#each instalador}}
+                                        <option value="{{_id}}">{{nome}}</option>
+                                        {{else}}
+                                        <option>Nenhum projetista cadastrado</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class='form-check'>
+                                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='checkbox'
+                                            class='form-check-input col-sm-2' name='checkIns'>
+                                        <label class='form-check-label col-form-labels'>Alterar</label>
                                     </div>
                                 </div>
-                                <hr>
-                                <div class="row">
-                                    <label class="fw-bold col-sm-6 col-form-label col-form-label-sm">Reserva
-                                        Gerencial:
-                                    </label>
-                                    <div class="col">
-                                        <div class="input-group input-group-sm mb-1">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number" class="form-control form-control-sm" id="resger"
-                                                name="resger" value='{{projeto.resger}}' aria-label="R$ ">
-                                            <span class="input-group-text">.00</span>
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class='col-form-label col-form-label-sm fw-bold mb-1'>Projetista:</label><br>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type='hidden' name='ppnome' value='{{pp.nome}}'>
+                                    <label class='col-form-label col-form-label-sm fw-bold'>{{pp.nome}}</label>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-md-10">
+                                    <select {{#if projeto.orcado}}{{else}}disabled{{/if}}
+                                        class='form-select form-select-sm' name='funpro'>
+                                        {{#each projetista}}
+                                        <option value="{{_id}}">{{nome}}</option>
+                                        {{else}}
+                                        <option>Nenhum instalador cadastrado</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class='form-check'>
+                                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='checkbox'
+                                            class='form-check-input' name='checkPro'>
+                                        <label class='form-check-label'>Alterar</label>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <label class="fw-bold col-sm-6 col-form-label col-form-label-sm">Reserva
-                                        Contingência:
-                                    </label>
-                                    <div class="col">
-                                        <div class="input-group input-group-sm mb-1">
-                                            <label class='fw-bold col-form-label col-form-label-sm'>R$
-                                                {{projeto.rescon}}</label>
-                                        </div>
-                                    </div>
+                            </div>
+                        </div>
+                        <div class="row card">
+                            <div class="row">
+                                <div class="col-md-6 text-end">
+                                    <label class="fw-bold col-form-label col-form-label-sm">Reserva</label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Reserva Gerencial:
+                                    </label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm">Reserva
+                                        Contingência:</label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Adicional:
+                                    </label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Imprevisto
+                                        Elétrico:</label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Seguro:</label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Cercamento:</label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm">Postes de
+                                        Condução:</label><br>
                                 </div>
-                                <div class="row">
-                                    <label class="fw-bold col-sm-6 col-form-label col-form-label-sm">Adicional:
-                                    </label>
-                                    <div class="col">
-                                        <div class="input-group input-group-sm mb-1">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number" class="form-control form-control-sm" id="conadd"
-                                                name="conadd" value='{{projeto.conadd}}' aria-label="R$ ">
-                                            <span class="input-group-text">.00</span>
-                                        </div>
+                                <div class="col-md-6">
+                                    <label class="fw-bold col-form-label col-form-label-sm">R$
+                                        {{projeto.reserva}}</label>
+                                    <div class="input-group input-group-sm mb-1">
+                                        <span class="input-group-text">$</span>
+                                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
+                                            class="form-control form-control-sm" id="resger" name="resger"
+                                            value='{{projeto.resger}}' aria-label="R$ ">
+                                        <span class="input-group-text">.00</span>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <label class="fw-bold col-sm-6 col-form-label col-form-label-sm">Imprevisto
-                                        Elétrico:</label>
-                                    <div class="col">
-                                        <div class="input-group input-group-sm mb-1">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number" class="form-control form-control-sm" id="impele"
-                                                name="impele" value='{{projeto.impele}}' aria-label="R$ ">
-                                            <span class="input-group-text">.00</span>
-                                        </div>
+                                    <div class="input-group input-group-sm">
+                                        <label class='fw-bold col-form-label col-form-label-sm'>R$
+                                            {{projeto.rescon}}</label>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <label class="fw-bold col-sm-6 col-form-label col-form-label-sm">Seguro:</label>
-                                    <div class="col">
-                                        <div class="input-group input-group-sm mb-1">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number" class="form-control form-control-sm" id="seguro"
-                                                name="seguro" value='{{projeto.seguro}}' aria-label="R$ ">
-                                            <span class="input-group-text">.00</span>
-                                        </div>
+                                    <div class="input-group input-group-sm mb-1">
+                                        <span class="input-group-text">$</span>
+                                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
+                                            class="form-control form-control-sm" id="conadd" name="conadd"
+                                            value='{{projeto.conadd}}' aria-label="R$ ">
+                                        <span class="input-group-text">.00</span>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <label class="fw-bold col-sm-6 col-form-label col-form-label-sm">Cercamento:</label>
-                                    <div class="col">
-                                        <div class="input-group input-group-sm mb-1">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number" class="form-control form-control-sm" id="outcer"
-                                                name="outcer" value='{{projeto.outcer}}' aria-label="R$ ">
-                                            <span class="input-group-text">.00</span>
-                                        </div>
+                                    <div class="input-group input-group-sm mb-1">
+                                        <span class="input-group-text">$</span>
+                                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
+                                            class="form-control form-control-sm" id="impele" name="impele"
+                                            value='{{projeto.impele}}' aria-label="R$ ">
+                                        <span class="input-group-text">.00</span>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <label class="fw-bold col-sm-6 col-form-label col-form-label-sm">Postes de
-                                        Condução:</label>
-                                    <div class="col">
-                                        <div class="input-group input-group-sm mb-1">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number" class="form-control form-control-sm" id="outpos"
-                                                name="outpos" value='{{projeto.outpos}}' aria-label="R$ ">
-                                            <span class="input-group-text">.00</span>
-                                        </div>
+                                    <div class="input-group input-group-sm mb-1">
+                                        <span class="input-group-text">$</span>
+                                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
+                                            class="form-control form-control-sm" id="seguro" name="seguro"
+                                            value='{{projeto.seguro}}' aria-label="R$ ">
+                                        <span class="input-group-text">.00</span>
+                                    </div>
+                                    <div class="input-group input-group-sm mb-1">
+                                        <span class="input-group-text">$</span>
+                                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
+                                            class="form-control form-control-sm" id="outcer" name="outcer"
+                                            value='{{projeto.outcer}}' aria-label="R$ ">
+                                        <span class="input-group-text">.00</span>
+                                    </div>
+                                    <div class="input-group input-group-sm mb-1">
+                                        <span class="input-group-text">$</span>
+                                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
+                                            class="form-control form-control-sm" id="outpos" name="outpos"
+                                            value='{{projeto.outpos}}' aria-label="R$ ">
+                                        <span class="input-group-text">.00</span>
                                     </div>
                                 </div>
                             </div>
@@ -631,173 +433,61 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 card mt-2">
-                <div class="row">
-                    <label class='fw-bold col-form-label col-form-label-lg'>Demonstrativo</label>
-                </div>
-                <div class="row">
-                    <div class="col-md-7">
-                        <label class="fw-bold col-form-label col-form-label-sm">Valor Faturado:</label>
-                    </div>
-                    <div class="col-md-5">
-                        <label class='fw-bold col-form-label col-form-label-sm'>R$ {{projeto.vlrNFS}}</label>
+            <div class="col-md-4">
+                <div class="row mb-2">
+                    <div class="btn-group gap-2">
+                        <button {{#if projeto.orcado}}{{else}}disabled{{/if}} type="submit"
+                            class="btn btn-sm btn-success">Aplicar</button>
+                        <a class="btn btn-sm btn-primary" data-bs-toggle='modal' data-bs-target="#consultaAliquota">Ver
+                            Tributos</a>
+                        <a href='/menu' class='btn btn-sm btn-primary'> <i class="bi bi-back"></i> Voltar ao Menu</a>                            
                     </div>
                 </div>
-                <div class="row">
-                    <label class='fw-bold col-md-7 col-form-label col-form-label-sm'>(+)Total do Projeto:
-                    </label>
-                    <div class="col col-md-3">
-                        <label class='fw-bold col-form-label col-form-label-sm'>R$ {{projeto.valor}}</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <label class='fw-bold col-md-7 col-form-label col-form-label-sm'>(-)Custos Totais:</label>
-                    <div class="col-md-3">
-                        <label class='fw-bold col-form-label col-form-label-sm'>R$
-                            {{projeto.custoTotal}}</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <label class='col-md-7 col-form-label col-form-label-sm'>Custo Planejado: </label>
-                    <div class="col col-md-3">
-                        <label class='col-form-label col-form-label-sm'>R$
-                            {{projeto.custoPlano}}</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-7">
-                        <label class='col-form-label col-form-label-sm'>Custo Kit Gerador: </label>
-                    </div>
-                    <div class="col-md-3">
-                        <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrequ}}</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <label class='fw-bold col-md-7 col-form-label col-form-label-sm'>(=)Lucro Bruto:
-                    </label>
-                    <div class="col col-md-3">
-                        <label class='fw-bold col-form-label col-form-label-sm'>R$
-                            {{projeto.lucroBruto}}</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <label class='col-md-7 col-form-label  col-form-label-sm'>(-)Comissão:
-                        ({{projeto.percom}}%)</label>
-                    <div class="col col-md-3">
-                        <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrcom}}</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <label class='fw-bold col-md-7 col-form-label col-form-label-sm'>(=)Lucro Bruto Antes dos
-                        Impostos:
-                    </label>
-                    <div class="col col-md-3">
-                        <label class='fw-bold col-form-label col-form-label-sm'>R$ {{projeto.lbaimp}}</label>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <label class=' col-md-7 col-form-label col-form-label-sm'>(-)Tributos: </label>
-                    <div class="col col-md-3">
-                        <label class='col-form-label col-form-label-sm'>R$ {{projeto.totalImposto}}</label>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <label class='fw-bold col-md-7 col-form-label col-form-label-sm'>(-)Lucro Líquido: </label>
-                    <div class="col col-md-3">
-                        <label class='fw-bold col-form-label col-form-label-sm'>R$
-                            {{projeto.lucroLiquido}}</label>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div
-                        style="border: solid 1px; border-color: rgb(231, 214, 214); border-left: gray;border-bottom: gray;border-right: gray;">
-                        <label class='fw-bold col-form-label col-form-label-sm'>Aliquotas</label>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label class="fw-bold col-form-label col-form-label-sm">DAS:
-                                        </label>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="col-form-label col-form-label-sm">{{rp.alqDAS}}
-                                            %</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label class="fw-bold col-form-label col-form-label-sm">NF-s:
-                                        </label>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="col-form-label col-form-label-sm">{{rp.alqNFS}}
-                                            %</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label class="fw-bold col-form-label col-form-label-sm">IRPJ:
-                                        </label>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="col-form-label col-form-label-sm">{{rp.alqIRPJ}}%</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label class="fw-bold col-form-label col-form-label-sm">IRPJ Add:
-                                        </label>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="col-form-label col-form-label-sm">{{rp.alqIRPJAdd}}%</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label class="fw-bold col-form-label col-form-label-sm">ICMS:
-                                        </label>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="col-form-label col-form-label-sm">{{rp.alqICMS}}%</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label class="fw-bold col-form-label col-form-label-sm">PIS:
-                                        </label>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="col-form-label col-form-label-sm">{{rp.alqPIS}}%</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label class="fw-bold  col-form-label col-form-label-sm">COFINS:
-                                        </label>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="col-form-label col-form-label-sm">{{rp.alqCOFINS}}%</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label class="fw-bold col-form-label col-form-label-sm">CSLL:
-                                        </label>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="col-form-label col-form-label-sm">{{rp.alqCSLL}}%</label>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="contorno-titulo mt-2">
+                    <label class='fw-bold col-form-label col-form-label-lg mt-3'>Demonstrativo</label>
+                    <div class="row" style="font-size: 23px;">
+                        <div class="col-md-7 text-end">
+                            <label class="fw-bold col-form-label col-form-label-sm">Valor Faturado:</label><br>
+                            <label class='fw-bold col-md-7 col-form-label col-form-label-sm'>(+)Total do
+                                Projeto:</label><br>
+                            <label class='fw-bold col-md-7 col-form-label col-form-label-sm'>(-)Custos
+                                Totais:</label><br>
+                            <label class='col-md-7 col-form-label col-form-label-sm'>Custo Planejado:
+                            </label><br>
+                            <label class='col-form-label col-form-label-sm'>Custo Kit Gerador: </label><br>
+                            <label class='fw-bold col-md-7 col-form-label col-form-label-sm'>(=)Lucro Bruto:
+                            </label><br>
+                            <label class='col-md-7 col-form-label  col-form-label-sm'>(-)Comissão:
+                                ({{projeto.percom}}%)</label><br>
+                            <label class='fw-bold col-md-7 col-form-label col-form-label-sm'>(=)LAI:</label><br>
+                            <label class=' col-md-7 col-form-label col-form-label-sm'>(-)Tributos: </label>
+                            <label style="padding-bottom: 15%;"
+                                class='fw-bold col-md-7 col-form-label col-form-label-sm'>(-)Lucro Líquido:
+                            </label>
+                        </div>
+                        <div class="col-md-5 text-start">
+                            <label class='fw-bold col-form-label col-form-label-sm'>R$
+                                {{projeto.vlrNFS}}</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>R$
+                                {{projeto.valor}}</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>R$
+                                {{projeto.custoTotal}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$
+                                {{projeto.custoPlano}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrkit}}</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>R$
+                                {{projeto.lucroBruto}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrcom}}</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>R$
+                                {{projeto.lbaimp}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$
+                                {{projeto.totalImposto}}</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>R$
+                                {{projeto.lucroLiquido}}</label>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </form>
-</div>
+    </div>
+</form>

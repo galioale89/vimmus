@@ -1,104 +1,196 @@
-const { sum } = require('d3-array')
-const { render } = require('ejs')
-
 const express = require('express')
 const router = express.Router()
-
-const path = require("path")
 
 require('../model/Usuario')
 const mongoose = require('mongoose')
 const Usuario = mongoose.model('usuario')
 
+const nodemailer = require('nodemailer')
 const bcrypt = require("bcryptjs")
 const passport = require("passport")
 
+/*
+//Configurando envio de SMS
+const Vonage = require('@vonage/server-sdk')
+
+const vonage = new Vonage({
+  apiKey: "db9a4e8d",
+  apiSecret: "JAONfDZDLw5t3Uqh"
+})
+*/
+
+//Configurando envio de e-mail
+const transporter = nodemailer.createTransport({ // Configura os parâmetros de conexão com servidor.
+    host: 'smtp.umbler.com',
+    port: 587,
+    secure: false,
+    auth: {
+        user: 'alexandre@vimmus.com.br',
+        pass: '3rdn4x3L@'
+    },
+    tls: {
+        rejectUnauthorized: false
+    }
+})
+
 router.use(express.static('imagens'))
+router.use(express.static('imagens/upload'))
 const { ehAdmin } = require('../helpers/ehAdmin')
 
 router.get('/editar/:id', ehAdmin, (req, res) => {
+    const { ehAdmin } = req.user
     Usuario.findOne({ _id: req.params.id }).lean().then((usuario) => {
-        res.render('usuario/editregistro', { usuario: usuario })
+        if (ehAdmin == 0) {
+            ehMaster = true
+        } else {
+            ehMaster = false
+        }
+        res.render('usuario/editregistro', { usuario: usuario, ehMaster: ehMaster })
     })
 })
 
-router.get('/registro', (req, res) => {
-    res.render('usuario/registro')
-})
-
-router.post("/registro", (req, res) => {
+router.post('/enviar', (req, res) => {
+    var sucesso = []
     var erros = []
-
-    if (!req.body.usuario || typeof req.body.usuario == undefined || req.body.usuario == true) {
-        erros.push({ texto: "É necessário cadastrar um nome de usuário" })
+    if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == true) {
+        erros.push({ texto: "É necessário cadastrar o nome." })
     }
-    if (!req.body.razao || typeof req.body.razao == undefined || req.body.razao == true) {
-        erros.push({ texto: "É necessário cadastrar a Razão Social" })
-    }
-    if (!req.body.cnpj || typeof req.body.cnpj == undefined || req.body.cnpj == true) {
-        erros.push({ texto: "É necessário cadastrar o CNPJ da empresa" })
+    if (!req.body.celular || typeof req.body.celular == undefined || req.body.celular == true) {
+        erros.push({ texto: "É necessário cadastrar um número de celular." })
     }
     if (!req.body.email || typeof req.body.email == undefined || req.body.email == true) {
-        erros.push({ texto: "É necessário cadastrar um e-mail da empresa" })
+        erros.push({ texto: "É necessário cadastrar um e-mail." })
     }
-    if (!req.body.telefone || typeof req.body.telefone == undefined || req.body.telefone == true) {
-        erros.push({ texto: "É necessário cadastrar um telefone" })
-    }
-    if (!req.body.senha || typeof req.body.senha == undefined || req.body.senha == true) {
-        erros.push({ texto: "Senha Inválida" })
-    }
-
-    if (req.body.senha.length < 5) {
-        erros.push({ texto: "A senha deve ter ao menos 6 caracteres." })
-    }
-
-    if (req.body.senha != req.body.senharep) {
-        erros.push({ texto: "Senhas diferentes. Verificar." })
-    }
-
     if (erros.length > 0) {
-        res.render("usuario/registro", { erros: erros })
+        res.render('index', { erros: erros })
     } else {
-        Usuario.findOne({ email: req.body.email }).then((usuario) => {
-            if (usuario) {
-                req.flash("error_msg", "Já existe uma conta com este e-mail.")
-                res.redirect("/registro")
-            } else {
-                const novoUsuario = new Usuario({
-                    razao: req.body.razao,
-                    fantasia: req.body.fantasia,
-                    cnpj: req.body.cnpj,
-                    endereco: req.body.endereco,
-                    cidade: req.body.cidade,
-                    uf: req.body.uf,
-                    telefone: req.body.telefone,
-                    usuario: req.body.usuario,
-                    email: req.body.email,
-                    senha: req.body.senha,
-                    ehAdmin: 1
-                })
 
-                bcrypt.genSalt(10, (erro, salt) => {
-                    bcrypt.hash(novoUsuario.senha, salt, (erro, hash) => {
-                        if (erro) {
-                            req.flash("error_msg", "Houve um erro durante o salvamento do usuário")
-                            res.redirect("/")
-                        }
+        var email = req.body.email
 
-                        novoUsuario.senha = hash
+        var nome = req.body.nome
+        nome = nome.toLowerCase()
 
-                        novoUsuario.save().then(() => {
-                            req.flash("success_msg", "Usuário criado com sucesso!")
-                            res.redirect("/")
-                        }).catch((err) => {
-                            req.flash("error_msg", "Ocorreu uma falha interna")
-                            res.redirect("/usuario/registro")
-                        })
-                    })
-                })
+        var usuario = nome.split(' ')
+        if (usuario[0].length == 0) {
+            usuario = nome
+        } else {
+            usuario = usuario[0]
+        }
+
+        //Testando se usuário já está cadastrado
+        Usuario.find({ usuario: usuario }).then((user) => {
+            if (user.length != 0) {
+                var comp = Math.floor(Math.random() * (999 - 1)) + 1;
+                usuario = usuario + comp;
             }
+
+            Usuario.find({ usuario: usuario }).then((user2) => {
+                if (user2.length != 0) {
+                    var comp = Math.floor(Math.random() * (999 - 1)) + 1;
+                    usuario = usuario + comp;
+                }
+
+                var senha = Math.floor(Math.random() * (999999 - 111111)) + 111111;
+
+                var texto = 'Olá ' + req.body.nome + ',' + '\n' +
+                    'Aqui esta seu usuário e senha para acessar o sistema da VIMMUS e começar a geranciar de forma eficáz seus projetos.' + '\n' +
+                    'Usuário: ' + usuario + '\n' +
+                    'Senha: ' + senha + '\n' + '\n' +
+                    'Alexandre Galiotto' + '\n' +
+                    'Vimmus Soluções' + '\n' +
+                    'Celular/WhatApp: (49) 9 9183-2978'
+
+                //Parâmetros do E-mail
+                const mailOptions = { // Define informações pertinentes ao E-mail que será enviado
+                    from: '"VIMMUS Soluções" <alexandre@vimmus.com.br>',
+                    to: email,
+                    subject: 'Solicitação de Senha',
+                    //text: 'Nome: ' + req.body.nome + ';' + 'Celular: ' + req.body.celular + ';' + 'E-mail: '+ req.body.email
+                    text: texto,
+                    html: "<img src=/header/header.svg style=width: 100%;>",
+                }
+                /*
+                //Parâmentros do SMS
+                const from = "Vonage APIs"
+                const to = "5549991832978"
+                const text = texto
+                */
+
+                Usuario.findOne({ email: req.body.email }).then((usuario_email) => {
+                    if (usuario_email) {
+                        req.flash("error_msg", "Já existe uma conta com este e-mail.")
+                        res.redirect("/")
+                    } else {
+                        var data = new Date()
+                        var ano = data.getFullYear()
+                        var mes = parseFloat(data.getMonth()) + 1
+                        var dia = data.getDate()
+
+                        const novoUsuario = new Usuario({
+                            nome: req.body.nome,
+                            usuario: usuario,
+                            telefone: req.body.celular,
+                            email: email,
+                            ehAdmin: 3,
+                            senha: senha,
+                            data: ano + '' + mes + '' + dia
+                        })
+
+                        bcrypt.genSalt(10, (erro, salt) => {
+                            bcrypt.hash(novoUsuario.senha, salt, (erro, hash) => {
+                                if (erro) {
+                                    req.flash("error_msg", "Houve um erro durante o salvamento do usuário")
+                                    res.redirect("/")
+                                }
+
+                                novoUsuario.senha = hash
+
+                                novoUsuario.save().then(() => {
+                                    req.flash("success_msg", novoUsuario.nome + ', sua senha será enviada por e-mail e sua confirmação de acesso será feita em instantes.')
+                                    //Enviando e-mail
+                                    transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
+                                        if (err) {
+                                            return console.log(err)
+                                        }
+                                        //console.log(info)
+                                    })
+                                    res.redirect("/")
+                                }).catch((err) => {
+                                    req.flash("error_msg", "Ocorreu uma falha interna")
+                                    res.redirect("/usuario/registro")
+                                })
+                            })
+                        })
+
+                        /*
+                        //Enviando SMS
+                        vonage.message.sendSms(from, to, text, (err, responseData) => {
+                            if (err) {
+                                //console.log(err);
+                            } else {
+                                if(responseData.messages[0]['status'] === "0") {
+                                    //console.log("Message sent successfully.");
+                                } else {
+                                    //console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
+                                }
+                            }
+                        })    
+                        
+                        */
+                        res.render('index', { sucesso: sucesso })
+                    }
+                }).catch((err) => {
+                    req.flash("error_msg", "Houve um erro ao se registrar.")
+                    res.redirect("/")
+                })
+
+
+            }).catch((err) => {
+                req.flash("error_msg", "Ocorreu uma falha interna")
+                res.redirect("/usuario/registro")
+            })
         }).catch((err) => {
-            req.flash("error_msg", "Houve um erro ao se registrar.")
+            req.flash("error_msg", "Ocorreu uma falha interna")
             res.redirect("/usuario/registro")
         })
     }
@@ -110,7 +202,7 @@ router.get("/login", (req, res) => {
 
 router.post("/login", (req, res, next) => {
     passport.authenticate("local", {
-        successRedirect: "/projeto/menu",
+        successRedirect: "/menu",
         failureRedirect: "/usuario/login",
         failureFlash: true
     })(req, res, next)
@@ -119,7 +211,7 @@ router.post("/login", (req, res, next) => {
 router.post("/editregistro", ehAdmin, (req, res) => {
     var erros = []
     var sucesso = []
-
+    
     if (!req.body.usuario || typeof req.body.usuario == undefined || req.body.usuario == true) {
         erros.push({ texto: "É necessário cadastrar um nome de usuário" })
     }
@@ -133,7 +225,6 @@ router.post("/editregistro", ehAdmin, (req, res) => {
     if (!req.body.telefone || typeof req.body.telefone == undefined || req.body.telefone == true) {
         erros.push({ texto: "É necessário cadastrar um telefone" })
     }
-
 
     if ((req.body.senha != '' && req.body.senharep == '') || (req.body.senha == '' && req.body.senharep != '')) {
         if (!req.body.senha || typeof req.body.senha == undefined || req.body.senha == true) {
@@ -147,25 +238,37 @@ router.post("/editregistro", ehAdmin, (req, res) => {
             erros.push({ texto: "Senhas diferentes. Verificar." })
         }
     }
-
-
     if (erros.length > 0) {
-        res.render("usuario/registro", { erros: erros })
+        Usuario.findOne({ _id: req.body.id }).lean().then((usuarios) => {
+            res.render("usuario/editregistro", { erros: erros, usuarios: usuarios })
+        })
+
     } else {
 
         Usuario.findOne({ _id: req.body.id }).then((usuario) => {
+
+            //console.log('req.body.nome=>'+req.body.nome)
+            //console.log('razao=>'+req.body.razao)
+            //console.log('fantasia=>'+req.body.fantasia)
+            //console.log('cnpj=>'+req.body.cnpj)
+            //console.log('endereco=>'+req.body.endereco)
+            //console.log('cidade=>'+req.body.cidade)
+            //console.log('uf=>'+req.body.uf)
+            //console.log('telefone=>'+req.body.telefone)
+            //console.log('req.body.usuario=>'+req.body.usuario)
+
+            usuario.nome = req.body.nome
             usuario.razao = req.body.razao
             usuario.fantasia = req.body.fantasia
             usuario.cnpj = req.body.cnpj
             usuario.endereco = req.body.endereco
-            usuario.endereco = req.body.cidade
+            usuario.cidade = req.body.cidade
             usuario.uf = req.body.uf
             usuario.telefone = req.body.telefone
             usuario.usuario = req.body.usuario
 
-            if (req.body.senha != '' && req.body.senharep != '' ) {
+            if (req.body.senha != '' && req.body.senharep != '') {
                 usuario.senha = req.body.senha
-
 
                 bcrypt.genSalt(10, (erro, salt) => {
                     bcrypt.hash(usuario.senha, salt, (erro, hash) => {
@@ -190,7 +293,21 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                         })
                     })
                 })
+            } else {
+                usuario.save().then(() => {
+                    Usuario.findOne({ _id: req.body.id }).lean().then((usuario) => {
+                        sucesso.push({ texto: "Alterações do usuário realizadas com sucesso!" })
+                        res.render("usuario/editregistro", { usuario: usuario, sucesso: sucesso })
+                    }).catch((err) => {
+                        req.flash("error_msg", "Ocorreu uma falha interna.")
+                        res.redirect("/menu")
+                    })
+                }).catch((err) => {
+                    req.flash("error_msg", "Não foi possível salvar o registro.")
+                    res.redirect("/menu")
+                })
             }
+
         }).catch((err) => {
             req.flash("error_msg", "Houve uma falha ao encontrar o usuário.")
             res.redirect("/")

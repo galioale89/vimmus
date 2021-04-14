@@ -1,17 +1,50 @@
+<style>
+    .quadro {
+        background: white;
+        border: solid 1px;
+        border-color: rgba(153, 151, 151, 0.384);
+        border-radius: 10px;
+        width: 700px;
+        height: fit-content;
+        margin-left: 300px;
+        margin-top: 30px;
+        padding: 10px;
+    }
+</style>
 <script>
+    function valida_celular() {
+        var cel = document.getElementById('celular')
+        if (cel.value.length == 1) {
+            cel.value = '(' + cel.value
+        }
+        if (cel.value.length == 3) {
+            cel.value += ')'
+        }
+        if (cel.value.length == 4) {
+            cel.value += ' '
+        }
+        if (cel.value.length == 6) {
+            cel.value += ' '
+        }
+        if (cel.value.length == 11) {
+            cel.value += '-'
+        }
+    };
+    
     function valida_cnpj() {
-        var doc = document.getElementById('cnpj')
+        var cnpj = document.getElementById('cnpj')
 
-        if (doc.value.length == 2 || doc.value.length == 6) {
-            doc.value += '.'
+        if (cnpj.value.length == 2 || cnpj.value.length == 6) {
+            cnpj.value += '.'
         }
-        if (doc.value.length == 10) {
-            doc.value += '/'
+        if (cnpj.value.length == 10) {
+            cnpj.value += '/'
         }
-        if (doc.value.length == 15) {
-            doc.value += '-'
+        if (cnpj.value.length == 15) {
+            cnpj.value += '-'
         }
-        if (doc.value.length == 18) {
+
+        if (cnpj.value.length == 18) {
 
             var d1 = cnpj.value
             var p1 = d1.substring(0, 2)
@@ -33,7 +66,7 @@
                 numdoc == "99999999999999") {
                 cnpj.value = ''
             }
-            cnpj.value = numdoc
+            
             // Valida DVs
             var tamanho = numdoc.length - 2
             var numeros = numdoc.substring(0, tamanho)
@@ -64,44 +97,69 @@
                 cnpj.value = ''
             }
         }
+    };
 
-    }
+    window.onload = function () {
+
+            var estados = document.getElementById('estado');
+            var cidades = document.getElementById('cidade');
+            
+            /*
+            cidades.onchange = function () {
+                if (cidades.value !== "") {
+                    //Basta modificar está linha conforme a necessidade
+                    window.location = "pagina.asp?estado=" + estados.value + "&cidade=" + cidades.value
+                }
+            };
+            */
+
+            new dgCidadesEstados({
+                estado: estados,
+                cidade: cidades,
+                estadoVal: '<%=Request("estado") %>',
+                cidadeVal: '<%=Request("cidade") %>'
+            });
+        };    
 </script>
-<div style="width: 700px; height: 100px; margin-left: 350px;margin-top: 10px;">
-    <div class="card">
-        <div class="card-body">
-            <h6 class="text-center mt-1 mb-4">Registrar Novo Usuário</h6>
-            <form action="/usuario/registro" method="post">
-                <div class="row">
-                    <div class="col-md-4 text-end">
-                        <label class='col-form-label col-form-label-sm' for="razao">Razão Social: </label><br>
-                        <label class='col-form-label col-form-label-sm mt-1' for="fantasia">Nome Fantasia: </label><br>
-                        <label class='col-form-label col-form-label-sm mt-1' for="cnpj">CNPJ: </label><br>
-                        <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Endereço Empresa: </label><br>
-                        <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Cidade: </label><br>
-                        <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Estado: </label><br>
-                        <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Telefone: </label><br>
-                        <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Nome de Usuário: </label><br>
-                        <label class='col-form-label col-form-label-sm mt-1' for="email">E-mail: </label><br>
-                        <label class='col-form-label col-form-label-sm mt-1' for="senha">Senha: </label><br>
-                        <label class='col-form-label col-form-label-sm mt-1' for="senha">Repita sua senha: </label><br>
-                    </div>
-                    <div class="col-md-7">
-                        <input name="razao" id="razao" class="form-control form-control-sm">
-                        <input name="fantasia" id="fantasia" class="form-control form-control-sm mt-1">
-                        <input type='text' class='form-control form-control-sm mt-1' maxlength="18" autocomplete="off"
-                            id='cnpj' name='cnpj' onkeyup="valida_cnpj()">
-                        <input name="endereco" id="endereo" class="form-control form-control-sm mt-1">
-                        <input name="cidade" id="cidade" class="form-control form-control-sm mt-1">
-                        <input name="uf" id="uf" class="form-control form-control-sm mt-1">
-                        <input name="telefone" id="telefone" class="form-control form-control-sm mt-1">
-                        <input name="usuario" id="usuario" class="form-control form-control-sm mt-1">
-                        <input name="email" type="email" class="form-control form-control-sm mt-1">
-                        <input name="senha" type="password" class="form-control form-control-sm mt-1">
-                        <input name="senharep" type="password" class="form-control form-control-sm mt-1">
-                    </div>
-                    <br><button type="submit" class="btn btn-sm btn-success mt-4">Registrar</button>
-            </form>
-        </div>
-    </div>
+<div
+    style="background-color: rgb(0,120,255,0.05);background-image: url(fundosite.png); background-repeat: no-repeat; height: 100%; width: 100%;position: absolute;">
+    <form action="/usuario/registro" method="post">
+        <div class="quadro">
+            <h5>Cadastrar Novo Usuário</h5>
+            <div class="row mt-4">
+                <div class="col-md-4 text-end">
+                    <label class='col-form-label col-form-label-sm' for="razao">Razão Social: </label><br>
+                    <label class='col-form-label col-form-label-sm mt-1' for="fantasia">Nome Fantasia: </label><br>
+                    <label class='col-form-label col-form-label-sm mt-1' for="cnpj">CNPJ: </label><br>
+                    <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Endereço Empresa:
+                    </label><br>
+                    <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Cidade: </label><br>
+                    <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Estado: </label><br>
+                    <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Telefone: </label><br>
+                    <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Nome de Usuário: </label><br>
+                    <label class='col-form-label col-form-label-sm mt-1' for="email">E-mail: </label><br>
+                    <label class='col-form-label col-form-label-sm mt-1' for="senha">Senha: </label><br>
+                    <label class='col-form-label col-form-label-sm mt-1' for="senha">Repita sua senha: </label><br>
+                </div>
+                <div class="col-md-5">
+                    <input name="razao" id="razao" class="form-control form-control-sm">
+                    <input name="fantasia" id="fantasia" class="form-control form-control-sm mt-1">
+                    <input type='text' class='form-control form-control-sm mt-1' maxlength="18" autocomplete="off"
+                        id='cnpj' name='cnpj' onkeyup="valida_cnpj()">
+                    <input name="endereco" id="endereo" class="form-control form-control-sm mt-1">
+                    <select id='cidade' name='cidade' clas='form-select'></select>
+                    <!--<input name="cidade" id="cidade" class="form-control form-control-sm mt-1">-->
+                    <select id='estado' name='uf' clas='form-select'></select>
+                    <!--<input name="uf" id="uf" class="form-control form-control-sm mt-1">-->
+                    <input name="celular" id="celular" maxlength="16" autocomplete="off" onkeyup="valida_celular()" class="form-control form-control-sm mt-1">
+                    <input name="usuario" id="usuario" class="form-control form-control-sm mt-1">
+                    <input name="email" type="email" class="form-control form-control-sm mt-1">
+                    <input name="senha" type="password" class="form-control form-control-sm mt-1">
+                    <input name="senharep" type="password" class="form-control form-control-sm mt-1">
+                </div>
+            </div>
+            <div class="row">
+                <button type="submit" class="btn btn-sm btn-success mt-4 mx-auto col-6">Registrar</button>
+            </div>
+    </form>
 </div>

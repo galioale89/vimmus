@@ -1,14 +1,43 @@
-<div style="width: 300px; height: 50px;margin-left: 500px;margin-top:100px;">
-    <div class="card">
-        <div class="card-body">
-            <h6 class='text-center'>Login </h6>
-            <form action="/usuario/login" method="post">
-                <label class='col-form-label col-form-label-sm' for="email">Usuario: </label>
-                <input name="usuario" class="form-control form-control-sm">
-                <label class='col-form-label col-form-label-sm' for="senha">Senha: </label>
-                <input type="password" name="senha" class="form-control form-control-sm">
-                <br><button type="submit" class="btn btn-success mx-auto col-12"> Entrar</button>
-            </form>
+<style type="text/css">
+  .botao {
+    height: 30px;
+    width: 100px;
+    margin-left: 28px;
+    text-decoration: none;
+    border-radius: 10px;
+    color: rgb(11, 19, 58, 1);
+  }
+
+  .botao:hover {
+    height: 30px;
+    width: 120px;
+    background: linear-gradient(45deg, rgb(62, 81, 177), rgb(11, 19, 58, 1), rgb(11, 19, 58, 1));
+    color: white;
+    border: solid 1px;
+    border-color: rgb(155, 155, 155);
+    border-radius: 10px;
+    text-decoration: none;
+  }
+</style>
+<div id='fundoSite' style="width: 100%;height: 90%;margin-top: 20px;">
+  <img src='/body/login.svg' width="100%">
+</div>
+<div id='principal' style="margin-bottom: 100px">
+  <div style="margin-left: 39%;margin-top: 15%;width: fit-content; height: fit-content;">
+    <form action="/usuario/login" method="post">
+      <div class="row" style="padding: 10px;margin-left: 20px;">
+        <div class="col-md-1 text-end">
+          <div style="margin-bottom: 10px;color: white"><i class='bi bi-person'></i></div>
+          <div><i style="color: white" class='bi bi-key white'></i></div>
         </div>
-    </div>
+        <div class="col-md-10">
+          <input name="usuario" class="form-control form-control-sm mb-1">
+          <input type="password" name="senha" class="form-control form-control-sm">
+        </div>
+      </div>
+      <br>
+      <button type="submit" class="btn btn-sm col-6"
+        style="margin-left: 32%;color: white;background-color: rgba(24, 155, 24, 0.9)"> Entrar</button>
+    </form>
+  </div>
 </div>

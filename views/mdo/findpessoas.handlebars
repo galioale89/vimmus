@@ -1,50 +1,28 @@
 <style>
-    .botao {
-        background-color: rgba(31, 27, 255, 0.9);
-        text-shadow: 1px 1px 10px rgb(238, 237, 245);
-        border-radius: 50px;
-        width: 50px;
-        height: 50px;
-        border: solid 4px;
-        font-size: 22px;
-        border-top-color: rgb(3, 67, 141);
-        border-left-color: rgb(3, 67, 141);
-        border-right-color: rgb(205, 223, 245);
-        border-bottom-color: rgb(205, 223, 245);
+    #header {
+        width: 100%;
+        border: solid 1px;
+        border-color: grey;
+        background-color: rgb(40, 55, 86);
     }
-
-    .botao .realizado {
-        background-color: rgba(65, 255, 27, 0.9);
-    }
-
-    .botao:hover {
-        border-top-color: rgb(205, 223, 245);
-        border-left-color: rgb(205, 223, 245);
-        border-right-color: rgb(3, 67, 141);
-        border-bottom-color: rgb(3, 67, 141);
-    }
-
-    .icone {
-        margin-left: 10px;
-        color: white;
-    }
-    .header{
-         width: 1116px; 
-         border: solid 1px; 
-         border-color: grey;  
-         border-radius: 5px;
-         background-color: rgb(20, 18, 163);        
+       .filtro-selecao{
+        width: fit-content;
+        height: fit-content;
+        background: white;
+        border: solid 1px;
+        border-radius: 10px;
+        margin-left: 5px;
     }
 </style>
-<div class="container-sm mt-4">
-    <div class='header'>
+<div class="container-sm mt-2">
+    <div id='header'>
         <div class="row">
             <form action='/pessoa/filtrar' method='post'>
                 <div class="col-md-4">
                     <h5 class='mt-2' style="margin-left: 20px; color: white;">Pessoas </h5>
                 </div>
                 <hr style="color: white;">
-                <div class="row mb-4" style="margin-left: 10px;">
+                <div class="row" style="margin-left: 10px;">
                     <div class="col mb-2">
                         <label class='col-form-label col-form-label-sm' style="color: white;">Nome</label>
                         <div class="col">
@@ -63,18 +41,34 @@
                             <input name='cidade' type='text' class="form-control form-control-sm">
                         </div>
                     </div>
+                    <div class="col">
+                        <label class='col-form-label col-form-label-sm' style="color: white;">Função</label>
+                        <select class="form-select form-select-sm" name='funcao'>
+                            <option>Todos</option>
+                            <option>Instalador</option>
+                            <option>Projetista</option>
+                            <option>Gestor</option>
+                            <option>Vendedor</option>
+                        </select>
+                    </div>
                     <div class="col mt-4">
-                        <button type='submit' class='btn btn-success'>Filtrar</button>
+                        <button type='submit' class='botaofiltrar'><i class='bi bi-search icone'></i></button>
                     </div>
                 </div>
             </form>
+        </div>
+        <div class="row mb-2">
+            <div class='filtro-selecao' style="margin-left: 30px;">Nome: {{nome}}</div>
+            <div class='filtro-selecao'>UF: {{uf}}</div>
+            <div class='filtro-selecao'>Cidade: {{cidade}}</div>
+            <div class='filtro-selecao'>Função: {{funcao}}</div>
         </div>
     </div>
 
 
     {{#each pessoas}}
-    <div class="card mb-2 mt-2">
-        <div class="card-body">
+    <div class="card mb-2 mt-2; margin-bottom: 30px;">
+        <div style="padding: 5px;">
             <input type='hidden' name='id' value='{{_id}}'>
             <div class="row">
                 <div class="col-md-5">
@@ -113,17 +107,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2 mt-3">
+                <div class="col-md-2 mt-2">
                     <div class='btn-group btn-group-sm gap-2' role='group'>
                         <a href='/pessoa/vermais/{{_id}}' class='botao ativado'><i class="bi bi-eye icone"></i></a>
-                        <a href='/pessoa/edicao/{{_id}}' class='botao'> <i class='bi bi-pen icone'></i> </a>
-                        <a href='/pessoa/confirmaexclusao/{{_id}}' class="botao"> <i class='bi bi-trash icone'></i> </a>
+                        <a href='/pessoa/edicao/{{_id}}' class='botao ativado'> <i class='bi bi-pen icone'></i> </a>
+                        <a href='/pessoa/confirmaexclusao/{{_id}}' class="botao ativado"> <i
+                                class='bi bi-trash icone'></i> </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     {{else}}
-    <h6>Nenhuma prssoa encontrada</h6>
+    <h6>Nenhuma pessoa cadastrada</h6>
     {{/each}}
 </div>

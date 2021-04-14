@@ -1,80 +1,13 @@
 <style>
-    .header{
-        width: 1116px; 
-        border: solid 1px; 
-        border-color: grey;  
-        border-radius: 5px;
-        background-color: rgb(20, 18, 163);        
-    }
-    .botao {
-        text-shadow: 1px 1px 10px rgb(238, 237, 245);
-        border-radius: 50px;
-        width: 50px;
-        height: 50px;
-        border: solid 4px;
-        font-size: 22px;
-        border-top-color: rgb(3, 67, 141);
-        border-left-color: rgb(3, 67, 141);
-        border-right-color: rgb(205, 223, 245);
-        border-bottom-color: rgb(205, 223, 245);
-    }
-
-    .botao:hover {
-        border-top-color: rgb(205, 223, 245);
-        border-left-color: rgb(205, 223, 245);
-        border-right-color: rgb(3, 67, 141);
-        border-bottom-color: rgb(3, 67, 141);
-    }
-
-    .botaofiltrar {
-        text-shadow: 1px 1px 10px rgb(238, 237, 245);
-        border-radius: 50px;
-        width: 50px;
-        height: 50px;
-        border: solid 4px;
-        font-size: 22px;
-        border-color: rgb(205, 223, 245);
-        background: linear-gradient(135deg, rgb(116, 114, 238), rgb(79, 77, 189), rgb(11, 9, 161));
-        background-color: rgba(31, 27, 255, 0.9);
-    }
-
-    .botaofiltrar:hover {
-        border-color: white;
-    }
-
-    .ativado {
-        background: linear-gradient(135deg, rgb(116, 114, 238), rgb(79, 77, 189), rgb(11, 9, 161));
-        background-color: rgba(31, 27, 255, 0.9);
-    }
-
-    .desativado {
-        background-color: rgba(31, 27, 255, 0.185);
-        text-shadow: 1px 1px 10px rgb(238, 237, 245);
-        border-radius: 50px;
-        width: 50px;
-        height: 50px;
-        border: solid 4px;
-        font-size: 22px;
-        border-color: rgba(31, 27, 255, 0.185);
-        ;
-    }
-
-    .realizado {
-        background-color: rgb(44, 156, 0);
-        text-shadow: 1px 1px 10px rgb(238, 237, 245);
-        border-radius: 50px;
-        width: 50px;
-        height: 50px;
-        border: solid 4px;
-        font-size: 22px;
-        border-color: rgba(31, 27, 255, 0.185);
-        ;
-    }
-    .icone {
+    #header {
+        width: 98%;
+        border: solid 1px;
+        border-color: grey;
+        background-color: rgb(40, 55, 86);
         margin-left: 10px;
-        color: white;
     }
-    .filtro-selecao{
+
+    .filtro-selecao {
         width: fit-content;
         height: fit-content;
         background: white;
@@ -83,19 +16,18 @@
         margin-left: 5px;
     }
 </style>
-<div class="container-sm mt-4">
-    <div class='header'>
+<div class="container-sm mt-2">
+    <div id='header'>
         <div class="row">
             <form action='/projeto/filtrar/' method='post'>
                 <div class="col-md-4">
                     <h5 class="mt-2" style="margin-left: 20px; color: white;">Lista Projetos </h5>
                 </div>
                 <hr style="color: white;">
-
                 <div class="row" style="margin-left: 10px">
                     <div class="col-md-3">
-                        <label class='col-label-control col-label-control-sm' style="color: white;">Tipo de
-                            Projeto:</label>
+                        <label class='col-form-label col-form-label-sm' style="color: white;">Tipo de
+                            Projeto</label>
                         <select class='form-select form-select-sm' name='direto'>
                             <option>Todos</option>
                             <option>Direto</option>
@@ -103,7 +35,7 @@
                         </select>
                     </div>
                     <div class='col-md-3'>
-                        <label class='col-label-control col-label-control-sm' style="color: white;">Realizado:</label>
+                        <label class='col-form-label col-form-label-sm' style="color: white;">Realizado</label>
                         <select class='form-select form-select-sm' name='realizado'>
                             <option>Todos</option>
                             <option>Sim</option>
@@ -111,7 +43,7 @@
                         </select>
                     </div>
                     <div class='col-md-3'>
-                        <label class='col-label-control col-label-control-sm' style="color: white;">Responsável:</label>
+                        <label class='col-form-label col-form-label-sm' style="color: white;">Responsável</label>
                         <select name='funres' class='form-select form-select-sm'>
                             <option>Todos</option>
                             {{#each responsavel}}
@@ -138,66 +70,53 @@
         </div>
     </div>
 
-    {{#each projetos}}
-    <div class="card mb-2 mt-2">
-            <div class="row" style="margin-left: 10px;">
-                <div class="col-md-5">
-                    <div class="row">
-                        <label for='nome' class='fw-bold col-sm-3 col-form-label col-form-label-sm col-md-4'> Nome do
+    <div style="margin-bottom: 30px;">
+        {{#each projetos}}
+        <div class="row" style="width: 98%; margin-left: 10px;border: rgba(200,200,200,0.5) 1px solid">
+            <div class="col-md-5">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for='nome' class='fw-bold col-form-label col-form-label-sm'> Nome do
                             Projeto:
+                        </label><br>
+                        <label for='nome' class='fw-bold col-form-label col-form-label-sm'> Cliente:
+                        </label><br>
+                        <label for='nome' class='fw-bold col-form-label col-form-label-sm'> Valor:
                         </label>
-                        <div class="col">
-                            <label class='col-sm-10 col-form-label col-form-label-sm' for='nome'> {{nome}} </label>
-                        </div>
                     </div>
-                    <div class="row">
-                        <label for='nome' class='fw-bold col-sm-3 col-form-label col-form-label-sm col-md-4'> Potencia:
-                        </label>
-                        <div class="col">
-                            <label class='col-sm-10 col-form-label col-form-label-sm' for='nome'> {{potencia}}
-                                kWp</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <label for='nome' class='fw-bold col-sm-3 col-form-label col-form-label-sm col-md-4'> Valor:
-                        </label>
-                        <div class="col">
-                            <label class='col-sm-10 col-form-label col-form-label-sm' for='nome'> R$ {{valor}} </label>
-                        </div>
+                    <div class="col-md-8">
+                        <label class='col-form-label col-form-label-sm'> {{nome}} </label><br>
+                        <label class='col-form-label col-form-label-sm'> {{nomecliente}} </label><br>
+                        <label class='col-form-label col-form-label-sm'> R$ {{valor}} </label>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="row">
-                        <label for='dataini' class='fw-bold col-sm-3 col-form-label col-form-label-sm col-md-7'> Data
-                            Inicial:
-                        </label>
-                        <div class="col">
-                            <label class='col-sm-10 col-form-label col-form-label-sm' for='dataini'> {{dataini}}
-                            </label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <label for='datprev' class='fw-bold col-sm-3 col-form-label col-form-label-sm col-md-7'> Data
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for='dataini' class='fw-bold col-form-label col-form-label-sm'>
+                            Data Inicial:
+                        </label><br>
+                        <label for='datprev' class='fw-bold col-form-label col-form-label-sm'>
                             Previsão de Entrega:
+                        </label><br>
+                        <label for='nome' class='fw-bold col-form-label col-form-label-sm'>
+                            Potencia:
                         </label>
-                        <div class="col">
-                            <label class='col-sm-10 col-form-label col-form-label-sm' for='datprev'> {{dataprev}}
-                            </label>
-                        </div>
                     </div>
-                    <div class="row">
-                        <label for='nome' class='fw-bold col-sm-3 col-form-label col-form-label-sm col-md-4'> É Direto?
-                        </label>
-                        <div class="col">
-                            <label class='col-sm-10 col-form-label col-form-label-sm' for='nome'> {{#if
-                                ehDireto}}Sim{{else}}Não{{/if}} </label>
-                        </div>
+                    <div class="col-md-6">
+                        <label class='col-form-label col-form-label-sm' for='dataini'> {{dataini}}
+                        </label><br>
+                        <label class='col-form-label col-form-label-sm' for='datprev'> {{dataprev}}
+                        </label><br>
+                        <label class='col-form-label col-form-label-sm' for='nome'> {{potencia}}
+                            kWp</label>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class='btn-group btn-group-sm col-12 gap-2 mx-auto mt-4' role='group'>
-                        <a href='/projeto/vermais/{{_id}}' class="botao ativado"><i
-                                class="bi bi-eye icone"></i>
+            </div>
+            <div class="col-md-3">
+                <div class='btn-group btn-group-sm col-12 gap-2 mx-auto mt-4' role='group'>
+                    <a href='/projeto/vermais/{{_id}}' class="botao ativado"><i class="bi bi-eye icone"></i>
                         {{#if foiRealizado}}
                         <a class='desativado'><i class="bi bi-pen icone"></i></a>
                         {{else}}
@@ -215,11 +134,11 @@
                         <a href='/projeto/confirmaexclusao/{{_id}}' class="botao ativado"><i
                                 class="bi bi-trash icone"></i>
                         </a>
-                    </div>
                 </div>
             </div>
         </div>
-    {{else}}
-    <h6>Nenhum projeto encontrado</h6>
-    {{/each}}
+        {{else}}
+        <h6>Nenhum projeto encontrado</h6>
+        {{/each}}
+    </div>
 </div>

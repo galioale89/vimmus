@@ -1,13 +1,16 @@
 const express = require('express')
 const router = express.Router()
+
 const mongoose = require('mongoose')
+
 require('../model/Configuracao')
 require('../model/Regime')
+
 const Configuracao = mongoose.model('configuracao')
 const Regime = mongoose.model('regime')
 
 //Configurando pasta de imagens 
-express.static('views/imagens')
+router.use(express.static('imagens'))
 
 const { ehAdmin } = require('../helpers/ehAdmin')
 
@@ -20,7 +23,8 @@ router.get('/addregime', ehAdmin, (req, res) => {
 })
 
 router.get('/consulta', ehAdmin, (req, res) => {
-    Configuracao.find().sort({ data: 'desc' }).lean().then((configuracoes) => {
+    const {_id} = req.user
+    Configuracao.find({user: _id}).sort({ data: 'desc' }).lean().then((configuracoes) => {
         res.render('configuracao/findconfiguracao', { configuracoes: configuracoes })
     }).catch((err) => {
         req.flash('error_msg', 'Nenhum projeto encontrado')
@@ -29,7 +33,8 @@ router.get('/consulta', ehAdmin, (req, res) => {
 })
 
 router.get('/consultaregime', ehAdmin, (req, res) => {
-    Regime.find().sort({ data: 'desc' }).lean().then((regime) => {
+    const {_id} = req.user
+    Regime.find({user: _id}).sort({ data: 'desc' }).lean().then((regime) => {
         res.render('configuracao/findregime', { regime: regime })
     }).catch((err) => {
         req.flash('error_msg', 'Nenhum regime encontrado')
@@ -76,7 +81,7 @@ router.get('/removeregime/:id', ehAdmin, (req, res) => {
 })
 
 router.post('/addregime', ehAdmin, (req, res) => {
-
+    const {_id} = req.user
     var proje
 
     var erros = []
@@ -138,6 +143,7 @@ router.post('/addregime', ehAdmin, (req, res) => {
 
     } else {
         const regime = {
+            user: _id,
             nome: req.body.nome,
             regime: req.body.regime,
             tipo: req.body.tipo,
@@ -159,7 +165,7 @@ router.post('/addregime', ehAdmin, (req, res) => {
 
         new Regime(regime).save().then(() => {
             req.flash('success_msg', 'Configurações de tributos salvas com sucesso')
-            res.redirect('/projeto/menu')
+            res.redirect('/menu')
         }).catch((err) => {
             req.flash('error_msg', 'Houve um erro ao salvar as configurações de impostos.')
             res.redirect('/configuracao/addregime')
@@ -169,8 +175,9 @@ router.post('/addregime', ehAdmin, (req, res) => {
 })
 
 router.post('/novo', ehAdmin, (req, res) => {
-
+    const {_id} = req.user
     const configuracao = {
+        user: _id,
         slug: req.body.slug,
         potencia: req.body.potencia,
         minest: req.body.minest,
@@ -189,14 +196,15 @@ router.post('/novo', ehAdmin, (req, res) => {
 
     new Configuracao(configuracao).save().then(() => {
         req.flash('success_msg', 'Configurações salvas com sucesso')
-        res.redirect('/projeto/menu')
+        res.redirect('/menu')
     }).catch((err) => {
         req.flash('error_msg', 'Houve um erro ao salvar as configurações.')
-        res.redirect('/configuracao/consulta')
+        res.redirect('/configuracao/novo')
     })
 })
 
 router.post('/editconfiguracao/', ehAdmin, (req, res) => {
+    
     Configuracao.findOne({ _id: req.body.id }).then((configuracao) => {
         configuracao.slug = req.body.slug
         configuracao.potencia = req.body.potencia
@@ -219,6 +227,7 @@ router.post('/editconfiguracao/', ehAdmin, (req, res) => {
 })
 
 router.post('/editregime/', ehAdmin, (req, res) => {
+    
     var erros = []
 
     if (req.body.alqNFS == '') {

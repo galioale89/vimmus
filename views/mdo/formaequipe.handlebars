@@ -96,7 +96,7 @@
             </div>
         </header>
         <div class="card-body">
-            <div class="row" style="margin-top: 100px;">
+            <div class="row" style="margin-top: 100px;width: 100%;">
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-3">
@@ -107,6 +107,12 @@
                             <input type='texte' class="form-control">
                         </div>
                     </div>
+                    <select class='form-select' name='equipe'>
+                        {{#each equipe}}
+                        <option value="{{_id}}">{{nome}}</option>
+                        {{else}}
+                        <option>Nenhuma equipe padrão cadastrada</option>
+                    </select>
                     <div class="row">
                         <button class="col-6 btn btn-success btn-lg"
                             style="margin-left: 100px; margin-block-start: 60px;">Criar Equipe</button>
@@ -158,24 +164,7 @@
                 draggedItem = null;
             }, 0);
         }
-    /*
-    for (let i = 0; i < fill.length; i++) {
-        const item = fill[i];
 
-        item.addEventListener('dragstart', function () {
-            draggedItem = item;
-            setTimeout(function () {
-                item.style.display = 'none';
-            }, 0)
-        });
-
-        item.addEventListener('dragend', function () {
-            setTimeout(function () {
-                draggedItem.style.display = 'block';
-                draggedItem = null;
-            }, 0);
-        })
-     */
         // Loop through empty boxes and add listeners
         for (const empty of empties) {
             empty.addEventListener('dragover', dragOver);

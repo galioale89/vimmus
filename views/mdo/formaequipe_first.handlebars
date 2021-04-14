@@ -53,30 +53,30 @@
 </style>
 <form method='post' action='/pessoa/criarequipe'>
   <div class="body">
-    <input type='hidden' name='id' value='{{projeto._id}}'/>
-    <div class='row' style="background-color: white;">
-      .
-    </div>
-    <div class="card-body" style="color: white">
-      <div class="row" style="margin-top: 20px;">
+    <input type='hidden' name='id' value='{{projeto._id}}' />
+    <div class="card-body" style="color: white;margin-top:50px">
+      <div class="row" style="margin-top: 20px;width: 100%;">
         <div class="col-md-5">
           <div class="row">
-            <div class="row text-center mb-4" style="margin-left: 50px; margin-top: 50px">
+            <div class="row text-center mb-1" style="margin-top: 50px">
               <h2><i class="bi bi-people"></i> Criação de Equipes</h2><br>
               <p style="color: white;">Aqui serão ser criadas as equipes que poderão ser vinculadas aos projetos </p>
             </div>
-            <!--
-            <div class="row" style="margin-left: 50px;">
-              <div class="col-md-3">
-                <label class="col-form-label col-form-label-sm fw-bold" style="color: white;">Nome Equipe:</label>
-              </div>
-              <div class="col-md-8">
-                <input type='text' name='nome' class="form-control" value='{{equipe.nome}}'>
-              </div>
-            </div>
-            -->
           </div>
-          <div class="row" style="margin-left: 100px;">
+          <div class="form-floating">
+            <select name='id_equipe' class="form-select" id="floatingSelect" aria-label="Floating label select example">
+              {{#if equipe}}
+              <option>Nenhuma equipe selecionada</option>
+              {{/if}}
+              {{#each equipe}}
+              <option value="{{_id}}">{{nome}}</option>
+              {{else}}
+              <option>Nenhuma equipe padrão cadastrada</option>
+              {{/each}}
+            </select>
+            <label for="floatingSelect" style="color: black;">Selecionar equipe padrão</label>
+          </div>
+          <div class="row mt-4" style="margin-left: 50px;">
             <button type='submit' class="col-6 btn btn-sm btn-success btn-lg" style="margin-left: 100px;"
               onclick="getItemValue()">Criar Equipe</button>
           </div>
@@ -98,6 +98,9 @@
         <input type='hidden' class='ins0' name='ins0' id='ins0' value=''>
         <input type='hidden' class='ins1' name='ins1' id='ins1' value=''>
         <input type='hidden' class='ins2' name='ins2' id='ins2' value=''>
+        <input type='hidden' class='ins3' name='ins3' id='ins3' value=''>
+        <input type='hidden' class='ins4' name='ins4' id='ins4' value=''>
+        <input type='hidden' class='ins5' name='ins5' id='ins5' value=''>
       </div>
     </div>
   </div>
@@ -169,7 +172,19 @@
         case 2:
           var insdes = document.getElementById('ins2');
           insdes.value = element
-          break;          
+          break;
+        case 3:
+          var insdes = document.getElementById('ins3');
+          insdes.value = element
+          break;   
+        case 4:
+          var insdes = document.getElementById('ins4');
+          insdes.value = element
+          break;   
+        case 5:
+          var insdes = document.getElementById('ins5');
+          insdes.value = element
+          break;            
       }
     }
   }
