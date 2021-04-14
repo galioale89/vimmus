@@ -9,7 +9,6 @@ const mongoose = require('mongoose')
 
 const session = require('express-session')
 const flash = require('connect-flash')
-const { ESRCH } = require("constants")
 
 const customdo = require("./routes/customdo")
 const configuracao = require("./routes/configuracao")
