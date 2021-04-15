@@ -136,134 +136,156 @@ router.post("/editregistro", ehMaster, (req, res) => {
     var erros = []
     var sucesso = []
 
-    if ((req.body.senha != '' && req.body.senharep == '') || (req.body.senha == '' && req.body.senharep != '')) {
-        if (!req.body.senha || typeof req.body.senha == undefined || req.body.senha == true) {
-            erros.push({ texto: "Senha Inválida" })
-        }
-        if (validaSenha.length < 5) {
-            erros.push({ texto: "A senha deve ter ao menos 6 caracteres." })
-        }
+    Usuarios.findOne({ usuario: req.body.usuario }).then((usuario_existe) => {
+        if (usuario_existe == null) {
+            console.log('Usuário não existe.')
+            console.log('existe: usuario_existe=>'+usuario_existe)
+            if ((req.body.senha != '' && req.body.senharep == '') || (req.body.senha == '' && req.body.senharep != '')) {
+                if (!req.body.senha || typeof req.body.senha == undefined || req.body.senha == true) {
+                    erros.push({ texto: "Senha Inválida" })
+                }
+                if (validaSenha.length < 5) {
+                    erros.push({ texto: "A senha deve ter ao menos 6 caracteres." })
+                }
+                if (req.body.senha != req.body.senharep) {
+                    erros.push({ texto: "Senhas diferentes. Verificar." })
+                }
+            }
+            if (req.body.usuario == '' || req.body.usuario == null) {
+                erros.push({ texto: 'É necessário ter um usuário.' })
+            }
+            if (req.body.nome == '' || req.body.nome == null) {
+                erros.push({ texto: 'É necessário ter um nome.' })
+            }
+            if (erros.length > 0) {
+                Usuarios.findOne({ _id: req.body.id }).lean().then((usuarios) => {
+                    const { ehAdmin } = req.user
+                    if (ehAdmin == 0) {
+                        ehUserMaster = true
+                    } else {
+                        ehUserMaster = false
+                    }
+                    res.render("usuario/editregistro", { erros: erros, usuario: usuarios, ehUserMaster:ehUserMaster })
+                })
 
-        if (req.body.senha != req.body.senharep) {
-            erros.push({ texto: "Senhas diferentes. Verificar." })
-        }
-    }
-    if (req.body.usuario == '' || req.body.usuario == null) {
-        erros.push({ texto: 'É necessário ter um usuário.' })
-    }
-    if (req.body.nome == '' || req.body.nome == null) {
-        erros.push({ texto: 'É necessário ter um nome.' })
-    }
-    if (erros.length > 0) {
-        Usuarios.findOne({ _id: req.body.id }).lean().then((usuarios) => {
-            res.render("usuario/editregistro", { erros: erros, usuarios: usuarios })
-        })
-
-    } else {
-        Usuarios.findOne({ _id: req.body.id }).then((usuario) => {
-            var razao = 0
-            var fantasia = 0
-            var cnpj = 0
-            var endereco = 0
-            var cidade = 0
-            var uf = 0
-            var telefone = 0
-
-            if (req.body.razao == '') {
-                razao = 0
             } else {
-                razao = req.body.razao
-            }
-            if (req.body.fantasia == '') {
-                fantasia = 0
-            } else {
-                fantasia = req.body.fantasia
-            }
-            if (req.body.cnpj == '') {
-                cnpj = 0
-            } else {
-                cnpj = req.body.cnpj
-            }
-            if (req.body.endereco == '') {
-                endereco = 0
-            } else {
-                endereco = req.body.endereco
-            }
-            
-            if (req.body.cidade == '') {
-                cidade = 0
-            } else {
-                cidade = req.body.cidade
-            }
-            
-            
-             if (req.body.uf == '') {
-                 uf = 0
-             } else {
-                 uf = req.body.uf
-             }
-             
+                Usuarios.findOne({ _id: req.body.id }).then((usuario) => {
+                    var razao = 0
+                    var fantasia = 0
+                    var cnpj = 0
+                    var endereco = 0
+                    var cidade = 0
+                    var uf = 0
+                    var telefone = 0
 
-            if (req.body.telefone == '') {
-                telefone = 0
-            } else {
-                telefone = req.body.telefone
-            }
+                    if (req.body.razao == '') {
+                        razao = 0
+                    } else {
+                        razao = req.body.razao
+                    }
+                    if (req.body.fantasia == '') {
+                        fantasia = 0
+                    } else {
+                        fantasia = req.body.fantasia
+                    }
+                    if (req.body.cnpj == '') {
+                        cnpj = 0
+                    } else {
+                        cnpj = req.body.cnpj
+                    }
+                    if (req.body.endereco == '') {
+                        endereco = 0
+                    } else {
+                        endereco = req.body.endereco
+                    }
 
-            usuario.nome = req.body.nome
-            usuario.razao = razao
-            usuario.fantasia = fantasia
-            usuario.cnpj = cnpj
-            usuario.endereco = endereco
-            if (req.body.cidade != '') {
-                usuario.cidade = cidade
-            }
-            if (req.body.uf != '') {
-                usuario.uf = uf
-            }
-            usuario.telefone = telefone
-            usuario.usuario = req.body.usuario
-            usuario.ehAdmin = req.body.tipo
+                    if (req.body.cidade == '') {
+                        cidade = 0
+                    } else {
+                        cidade = req.body.cidade
+                    }
+                    if (req.body.uf == '') {
+                        uf = 0
+                    } else {
+                        uf = req.body.uf
+                    }
 
-            //console.log('req.body.nome=>'+req.body.nome)
-            //console.log('razao=>'+razao)
-            //console.log('fantasia=>'+fantasia)
-            //console.log('cnpj=>'+cnpj)
-            //console.log('endereco=>'+endereco)
-            //console.log('cidade=>'+cidade)
-            //console.log('uf=>'+uf)
-            //console.log('telefone=>'+telefone)
-            //console.log('req.body.usuario=>'+req.body.usuario)
-            //console.log('req.body.tipo=>'+req.body.tipo)
+                    if (req.body.telefone == '') {
+                        telefone = 0
+                    } else {
+                        telefone = req.body.telefone
+                    }
+
+                    usuario.nome = req.body.nome
+                    usuario.razao = razao
+                    usuario.fantasia = fantasia
+                    usuario.cnpj = cnpj
+                    usuario.endereco = endereco
+                    if (req.body.cidade != '') {
+                        usuario.cidade = cidade
+                    }
+                    if (req.body.uf != '') {
+                        usuario.uf = uf
+                    }
+                    usuario.telefone = telefone
+                    usuario.usuario = req.body.usuario
+                    usuario.ehAdmin = req.body.tipo
+
+                    //console.log('req.body.nome=>'+req.body.nome)
+                    //console.log('razao=>'+razao)
+                    //console.log('fantasia=>'+fantasia)
+                    //console.log('cnpj=>'+cnpj)
+                    //console.log('endereco=>'+endereco)
+                    //console.log('cidade=>'+cidade)
+                    //console.log('uf=>'+uf)
+                    //console.log('telefone=>'+telefone)
+                    //console.log('req.body.usuario=>'+req.body.usuario)
+                    //console.log('req.body.tipo=>'+req.body.tipo)
 
 
-            if (usuario.datalib == '' || usuario.datalib == null) {
-                var data = new Date()
-                var ano = data.getFullYear()
-                var mes = parseFloat(data.getMonth()) + 1
-                var dia = data.getDate()
-                usuario.datalib = ano + '' + mes + '' + dia
+                    if (usuario.datalib == '' || usuario.datalib == null) {
+                        var data = new Date()
+                        var ano = data.getFullYear()
+                        var mes = parseFloat(data.getMonth()) + 1
+                        var dia = data.getDate()
+                        usuario.datalib = ano + '' + mes + '' + dia
 
-                var dataexp = new Date()
-                dataexp.setDate(data.getDate() + 30)
-                var anoexp = dataexp.getFullYear()
-                var mesexp = parseFloat(dataexp.getMonth()) + 1
-                var diaexp = dataexp.getDate()
-                usuario.dataexp = anoexp + '' + mesexp + '' + diaexp
-            }
+                        var dataexp = new Date()
+                        dataexp.setDate(data.getDate() + 30)
+                        var anoexp = dataexp.getFullYear()
+                        var mesexp = parseFloat(dataexp.getMonth()) + 1
+                        var diaexp = dataexp.getDate()
+                        usuario.dataexp = anoexp + '' + mesexp + '' + diaexp
+                    }
 
-            //console.log('senha=>' + req.body.senha)
-            if (req.body.senha != '') {
-                usuario.senha = req.body.senha
+                    //console.log('senha=>' + req.body.senha)
+                    if (req.body.senha != '') {
+                        usuario.senha = req.body.senha
 
-                bcrypt.genSalt(10, (erro, salt) => {
-                    bcrypt.hash(usuario.senha, salt, (erro, hash) => {
-                        if (erro) {
-                            req.flash("error_msg", "Houve um erro durante o salvamento do usuário.")
-                            res.redirect("/administrador")
-                        }
-                        usuario.senha = hash
-                        //console.log('hash=>' + hash)
+                        bcrypt.genSalt(10, (erro, salt) => {
+                            bcrypt.hash(usuario.senha, salt, (erro, hash) => {
+                                if (erro) {
+                                    req.flash("error_msg", "Houve um erro durante o salvamento do usuário.")
+                                    res.redirect("/administrador")
+                                }
+                                usuario.senha = hash
+                                //console.log('hash=>' + hash)
+                                usuario.save().then(() => {
+                                    Usuarios.find().sort({ data: 'desc' }).lean().then((usuarios) => {
+                                        sucesso.push({ texto: "Alterações do usuário realizadas com sucesso!" })
+                                        res.render("usuario/administrador", { usuarios: usuarios, sucesso: sucesso })
+                                    }).catch((err) => {
+                                        req.flash("error_msg", "Ocorreu uma falha interna.")
+                                        res.redirect("/administrador/")
+                                    })
+                                }).catch((err) => {
+                                    req.flash("error_msg", "Não foi possível salvar o registro.")
+                                    res.redirect("/administrador")
+                                })
+                            })
+                        })
+
+                    } else {
                         usuario.save().then(() => {
                             Usuarios.find().sort({ data: 'desc' }).lean().then((usuarios) => {
                                 sucesso.push({ texto: "Alterações do usuário realizadas com sucesso!" })
@@ -276,27 +298,202 @@ router.post("/editregistro", ehMaster, (req, res) => {
                             req.flash("error_msg", "Não foi possível salvar o registro.")
                             res.redirect("/administrador")
                         })
-                    })
-                })
-
-            } else {
-                usuario.save().then(() => {
-                    Usuarios.find().sort({ data: 'desc' }).lean().then((usuarios) => {
-                        sucesso.push({ texto: "Alterações do usuário realizadas com sucesso!" })
-                        res.render("usuario/administrador", { usuarios: usuarios, sucesso: sucesso })
-                    }).catch((err) => {
-                        req.flash("error_msg", "Ocorreu uma falha interna.")
-                        res.redirect("/administrador/")
-                    })
+                    }
                 }).catch((err) => {
-                    req.flash("error_msg", "Não foi possível salvar o registro.")
+                    req.flash("error_msg", "Houve uma falha ao encontrar o usuário.")
                     res.redirect("/administrador")
                 })
             }
-        }).catch((err) => {
-            req.flash("error_msg", "Houve uma falha ao encontrar o usuário.")
-            res.redirect("/administrador")
-        })
-    }
+        } else {
+            Usuarios.findOne({ _id: req.body.id }).lean().then((usuario_atual) => {
+                console.log('Usuário existe.')
+                console.log('atual: usuario_existe=>'+usuario_existe.usuario)
+                console.log('usuario_atual=>'+usuario_atual.usuario)
+                if (usuario_existe.usuario != usuario_atual.usuario) {
+                    erros.push({ texto: 'Me desculpe, este nome de usuario já existe. Por favor tente outro.' })
+                    const { ehAdmin } = req.user
+                    if (ehAdmin == 0) {
+                        ehUserMaster = true
+                    } else {
+                        ehUserMaster = false
+                    }
+                    res.render("usuario/editregistro", { erros: erros, usuario: usuario_atual, ehUserMaster:ehUserMaster })
+                } else {
+                    if ((req.body.senha != '' && req.body.senharep == '') || (req.body.senha == '' && req.body.senharep != '')) {
+                        if (!req.body.senha || typeof req.body.senha == undefined || req.body.senha == true) {
+                            erros.push({ texto: "Senha Inválida" })
+                        }
+                        if (validaSenha.length < 5) {
+                            erros.push({ texto: "A senha deve ter ao menos 6 caracteres." })
+                        }
+
+                        if (req.body.senha != req.body.senharep) {
+                            erros.push({ texto: "Senhas diferentes. Verificar." })
+                        }
+                    }
+                    if (req.body.usuario == '' || req.body.usuario == null) {
+                        erros.push({ texto: 'É necessário ter um usuário.' })
+                    }
+                    if (req.body.nome == '' || req.body.nome == null) {
+                        erros.push({ texto: 'É necessário ter um nome.' })
+                    }
+                    if (erros.length > 0) {
+                        Usuarios.findOne({ _id: req.body.id }).lean().then((usuarios) => {
+                            const { ehAdmin } = req.user
+                            if (ehAdmin == 0) {
+                                ehUserMaster = true
+                            } else {
+                                ehUserMaster = false
+                            }
+                            res.render("usuario/editregistro", { erros: erros, usuario: usuarios, ehUserMaster:ehUserMaster })
+                        })
+
+                    } else {
+                        Usuarios.findOne({ _id: req.body.id }).then((usuario) => {
+                            var razao = 0
+                            var fantasia = 0
+                            var cnpj = 0
+                            var endereco = 0
+                            var cidade = 0
+                            var uf = 0
+                            var telefone = 0
+
+                            if (req.body.razao == '') {
+                                razao = 0
+                            } else {
+                                razao = req.body.razao
+                            }
+                            if (req.body.fantasia == '') {
+                                fantasia = 0
+                            } else {
+                                fantasia = req.body.fantasia
+                            }
+                            if (req.body.cnpj == '') {
+                                cnpj = 0
+                            } else {
+                                cnpj = req.body.cnpj
+                            }
+                            if (req.body.endereco == '') {
+                                endereco = 0
+                            } else {
+                                endereco = req.body.endereco
+                            }
+
+                            if (req.body.cidade == '') {
+                                cidade = 0
+                            } else {
+                                cidade = req.body.cidade
+                            }
+                            if (req.body.uf == '') {
+                                uf = 0
+                            } else {
+                                uf = req.body.uf
+                            }
+
+                            if (req.body.telefone == '') {
+                                telefone = 0
+                            } else {
+                                telefone = req.body.telefone
+                            }
+
+                            usuario.nome = req.body.nome
+                            usuario.razao = razao
+                            usuario.fantasia = fantasia
+                            usuario.cnpj = cnpj
+                            usuario.endereco = endereco
+                            if (req.body.cidade != '') {
+                                usuario.cidade = cidade
+                            }
+                            if (req.body.uf != '') {
+                                usuario.uf = uf
+                            }
+                            usuario.telefone = telefone
+                            usuario.usuario = req.body.usuario
+                            usuario.ehAdmin = req.body.tipo
+
+                            //console.log('req.body.nome=>'+req.body.nome)
+                            //console.log('razao=>'+razao)
+                            //console.log('fantasia=>'+fantasia)
+                            //console.log('cnpj=>'+cnpj)
+                            //console.log('endereco=>'+endereco)
+                            //console.log('cidade=>'+cidade)
+                            //console.log('uf=>'+uf)
+                            //console.log('telefone=>'+telefone)
+                            //console.log('req.body.usuario=>'+req.body.usuario)
+                            //console.log('req.body.tipo=>'+req.body.tipo)
+
+
+                            if (usuario.datalib == '' || usuario.datalib == null) {
+                                var data = new Date()
+                                var ano = data.getFullYear()
+                                var mes = parseFloat(data.getMonth()) + 1
+                                var dia = data.getDate()
+                                usuario.datalib = ano + '' + mes + '' + dia
+
+                                var dataexp = new Date()
+                                dataexp.setDate(data.getDate() + 30)
+                                var anoexp = dataexp.getFullYear()
+                                var mesexp = parseFloat(dataexp.getMonth()) + 1
+                                var diaexp = dataexp.getDate()
+                                usuario.dataexp = anoexp + '' + mesexp + '' + diaexp
+                            }
+
+                            //console.log('senha=>' + req.body.senha)
+                            if (req.body.senha != '') {
+                                usuario.senha = req.body.senha
+
+                                bcrypt.genSalt(10, (erro, salt) => {
+                                    bcrypt.hash(usuario.senha, salt, (erro, hash) => {
+                                        if (erro) {
+                                            req.flash("error_msg", "Houve um erro durante o salvamento do usuário.")
+                                            res.redirect("/administrador")
+                                        }
+                                        usuario.senha = hash
+                                        //console.log('hash=>' + hash)
+                                        usuario.save().then(() => {
+                                            Usuarios.find().sort({ data: 'desc' }).lean().then((usuarios) => {
+                                                sucesso.push({ texto: "Alterações do usuário realizadas com sucesso!" })
+                                                res.render("usuario/administrador", { usuarios: usuarios, sucesso: sucesso })
+                                            }).catch((err) => {
+                                                req.flash("error_msg", "Ocorreu uma falha interna.")
+                                                res.redirect("/administrador/")
+                                            })
+                                        }).catch((err) => {
+                                            req.flash("error_msg", "Não foi possível salvar o registro.")
+                                            res.redirect("/administrador")
+                                        })
+                                    })
+                                })
+
+                            } else {
+                                usuario.save().then(() => {
+                                    Usuarios.find().sort({ data: 'desc' }).lean().then((usuarios) => {
+                                        sucesso.push({ texto: "Alterações do usuário realizadas com sucesso!" })
+                                        res.render("usuario/administrador", { usuarios: usuarios, sucesso: sucesso })
+                                    }).catch((err) => {
+                                        req.flash("error_msg", "Ocorreu uma falha interna.")
+                                        res.redirect("/administrador/")
+                                    })
+                                }).catch((err) => {
+                                    req.flash("error_msg", "Não foi possível salvar o registro.")
+                                    res.redirect("/administrador")
+                                })
+                            }
+                        }).catch((err) => {
+                            req.flash("error_msg", "Houve uma falha ao encontrar o usuário.")
+                            res.redirect("/administrador")
+                        })
+                    }
+                }
+
+            }).catch((err) => {
+                req.flash("error_msg", "Houve uma falha ao encontrar o usuário.")
+                res.redirect("/administrador")
+            })
+        }
+    }).catch((err) => {
+        req.flash("error_msg", "Houve uma falha ao encontrar o usuário.")
+        res.redirect("/administrador")
+    })
 })
 module.exports = router
