@@ -93,12 +93,13 @@ router.post('/enviar', (req, res) => {
                 var senha = Math.floor(Math.random() * (999999 - 111111)) + 111111;
 
                 var texto = 'Olá ' + req.body.nome + ',' + '\n' + '\n' +
-                    'Aqui está seu usuário e senha para acessar o sistema da VIMMUS e começar a geranciar de forma eficáz seus projetos.' + '\n' +
+                    'Aqui está seu usuário e senha para acessar o sistema da VIMMUS e começar a gerenciar de forma eficáz seus projetos.' + '\n' +
                     'Usuário: ' + usuario + '\n' +
                     'Senha: ' + senha + '\n' +
                     'Fique a vontade par alterar o nome de usuário (de acordo com a disponibilidade) e sua senha.' + '\n' + '\n' +
-                    'Lembres-se que ao realizar o login você concorda com nossos termo de usuário e nossa política de privacidade.' + '\n' +
-                    'Mas não se preocupe, estamos a disposição para te ajudar com qualquer dúvida no e-mail solucoes@vimmus.com.br. Manda um e-mail que vamos te responder o mais rápido possível.' + '\n' + '\n' +
+                    'Lembre-se que ao realizar o login você concorda com o termo de uso e a política de privacidade.' + '\n' +
+                    'Mas não se preocupe, estamos a disposição para te ajudar com qualquer dúvida no e-mail solucoes@vimmus.com.br.' + '\n' +
+                    'Envie um e-mail que vamos te responder o mais rápido possível.' + '\n' + '\n' +
                     'Alexandre Galiotto' + '\n' +
                     'Vimmus Soluções' + '\n' +
                     'Celular/WhatApp: (49) 9 9183-2978'
