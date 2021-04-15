@@ -202,10 +202,9 @@ app.use('/usuario', usuario)
 app.use('/administrador', administrador)
 app.use('/relatorios/', relatorios)
 
-
 //Outros
 //Acesso ao localhost
-const PORT = 8080
-app.listen(PORT, () => {
-  console.log("Servidor conectado com sucesso!")
-})
+var port = process.env.PORT || 3000;
+app.listen(port, function () {
+    console.log('Umbler listening on port %s', port);
+});
