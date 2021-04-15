@@ -92,10 +92,13 @@ router.post('/enviar', (req, res) => {
 
                 var senha = Math.floor(Math.random() * (999999 - 111111)) + 111111;
 
-                var texto = 'Olá ' + req.body.nome + ',' + '\n' +
-                    'Aqui esta seu usuário e senha para acessar o sistema da VIMMUS e começar a geranciar de forma eficáz seus projetos.' + '\n' +
+                var texto = 'Olá ' + req.body.nome + ',' + '\n' + '\n' + 
+                    'Aqui está seu usuário e senha para acessar o sistema da VIMMUS e começar a geranciar de forma eficáz seus projetos.' + '\n' +
                     'Usuário: ' + usuario + '\n' +
-                    'Senha: ' + senha + '\n' + '\n' +
+                    'Senha: ' + senha + '\n' +
+                    'Fique a vontade par alterar o nome de usuário (de acordo com a disponibilidade) e sua senha.' + '\n' + '\n' +
+                    'Lembres-se que ao realizar o login você concorda com nossos termo de usuário e nossa política de privacidade.' + '\n' +
+                    'Mas não se preocupe, estamos a disposição para te ajudar com qualquer dúvida no e-mail solucoes@vimmus.com.br. Manda um e-mail que vamos te responder o mais rápido possível.' + '\n' + '\n' +
                     'Alexandre Galiotto' + '\n' +
                     'Vimmus Soluções' + '\n' +
                     'Celular/WhatApp: (49) 9 9183-2978'
@@ -106,8 +109,7 @@ router.post('/enviar', (req, res) => {
                     to: email,
                     subject: 'Solicitação de Senha',
                     //text: 'Nome: ' + req.body.nome + ';' + 'Celular: ' + req.body.celular + ';' + 'E-mail: '+ req.body.email
-                    text: texto,
-                    html: "<img src=/header/header.svg style=width: 100%;>",
+                    text: texto
                 }
                 /*
                 //Parâmentros do SMS
@@ -146,7 +148,7 @@ router.post('/enviar', (req, res) => {
                                 novoUsuario.senha = hash
 
                                 novoUsuario.save().then(() => {
-                                    req.flash("success_msg", novoUsuario.nome + ', sua senha será enviada por e-mail e sua confirmação de acesso será feita em instantes.')
+                                    req.flash("success_msg", novoUsuario.nome + ', sua senha será enviada por e-mail e sua confirmação de acesso será feita em instantes. Não esqueça de verificar suar caixa de spam!')
                                     //Enviando e-mail
                                     transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
                                         if (err) {
