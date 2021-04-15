@@ -92,7 +92,7 @@ router.post('/enviar', (req, res) => {
 
                 var senha = Math.floor(Math.random() * (999999 - 111111)) + 111111;
 
-                var texto = 'Olá ' + req.body.nome + ',' + '\n' + '\n' + 
+                var texto = 'Olá ' + req.body.nome + ',' + '\n' + '\n' +
                     'Aqui está seu usuário e senha para acessar o sistema da VIMMUS e começar a geranciar de forma eficáz seus projetos.' + '\n' +
                     'Usuário: ' + usuario + '\n' +
                     'Senha: ' + senha + '\n' +
@@ -120,7 +120,7 @@ router.post('/enviar', (req, res) => {
 
                 Usuario.findOne({ email: req.body.email }).then((usuario_email) => {
                     if (usuario_email) {
-                        req.flash("error_msg", "Já existe uma conta com este e-mail.")
+                        req.flash("error_msg", "Já existe uma conta com este e-mail: " + req.body.email + '.')
                         res.redirect("/")
                     } else {
                         var data = new Date()
@@ -148,7 +148,7 @@ router.post('/enviar', (req, res) => {
                                 novoUsuario.senha = hash
 
                                 novoUsuario.save().then(() => {
-                                    req.flash("success_msg", novoUsuario.nome + ', sua senha será enviada por e-mail e sua confirmação de acesso será feita em instantes. Não esqueça de verificar suar caixa de spam!')
+                                    req.flash("success_msg", novoUsuario.nome + ', sua senha será enviada por e-mail para: ' + req.body.email + ', e sua confirmação de acesso será feita em instantes. Não esqueça de verificar suar caixa de spam!')
                                     //Enviando e-mail
                                     transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
                                         if (err) {
