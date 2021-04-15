@@ -74,21 +74,21 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <input type='number' class='form-control form-control-sm' name='impISS' placeholder="R$"
+                            <input type='text' class='form-control form-control-sm' name='impISS' placeholder="R$"
                                 value='{{realizado.impISS}}' {{#if realizado.foiRealizado}} disabled {{/if}}>
-                            <input type='number' class='form-control form-control-sm' name='impSimples' placeholder="R$"
+                            <input type='text' class='form-control form-control-sm' name='impSimples' placeholder="R$"
                                 value='{{realizado.impSimples}}' {{#if realizado.foiRealizado}} disabled {{/if}}>
-                            <input type='number' class='form-control form-control-sm' name='impIRPJ' placeholder="R$"
+                            <input type='text' class='form-control form-control-sm' name='impIRPJ' placeholder="R$"
                                 value='{{realizado.impIRPJ}}' {{#if realizado.foiRealizado}} disabled {{/if}}>
-                            <input type='number' class='form-control form-control-sm' name='impIRPJAdd' placeholder="R$"
+                            <input type='text' class='form-control form-control-sm' name='impIRPJAdd' placeholder="R$"
                                 value='{{realizado.impIRPJAdd}}' {{#if realizado.foiRealizado}} disabled {{/if}}>
-                            <input type='number' class='form-control form-control-sm' name='impCSLL' placeholder="R$"
+                            <input type='text' class='form-control form-control-sm' name='impCSLL' placeholder="R$"
                                 value='{{realizado.impCSLL}}' {{#if realizado.foiRealizado}} disabled {{/if}}>
-                            <input type='number' class='form-control form-control-sm' name='impPIS' placeholder="R$"
+                            <input type='text' class='form-control form-control-sm' name='impPIS' placeholder="R$"
                                 value='{{realizado.impPIS}}' {{#if realizado.foiRealizado}} disabled {{/if}}>
-                            <input type='number' class='form-control form-control-sm' name='impCOFINS' placeholder="R$"
+                            <input type='text' class='form-control form-control-sm' name='impCOFINS' placeholder="R$"
                                 value='{{realizado.impCOFINS}}' {{#if realizado.foiRealizado}} disabled {{/if}}>
-                            <input type='number' class='form-control form-control-sm' name='impICMS' placeholder="R$"
+                            <input type='text' class='form-control form-control-sm' name='impICMS' placeholder="R$"
                                 value='{{realizado.impICMS}}' {{#if realizado.foiRealizado}} disabled {{/if}}>
                         </div>
                     </div>
@@ -111,7 +111,7 @@
                     <div class="row">
                         <label class='col-form-label col-form-label-sm col-sm-5 fw-bold'>Kit Gerador:</label>
                         <div class="col-md-6">
-                            <input name='vlrequ' placeholder='R$' class='form-control form-control-sm' type='number'
+                            <input name='vlrequ' placeholder='R$' class='form-control form-control-sm' type='text'
                                 value={{realizado.vlrkit}} {{#if realizado.foiRealizado}} disabled {{/if}}>
                         </div>
                     </div>
@@ -258,41 +258,41 @@
             <div class="col-md-2 text-center">
                 <h6>Realizado</h6>
                 <hr>
-                <input type='number' class='form-control form-control-sm' name='totint' value='{{realizado.totint}}'
+                <input type='text' class='form-control form-control-sm' name='totint' value='{{realizado.totint}}'
                     {{#if realizado.foiRealizado}} disabled {{/if}}>
-                <input type='number' class='form-control form-control-sm' name='totges' value='{{realizado.totges}}'
+                <input type='text' class='form-control form-control-sm' name='totges' value='{{realizado.totges}}'
                     {{#if realizado.foiRealizado}} disabled {{/if}}>
-                <input type='number' class='form-control form-control-sm' name='totpro' value='{{realizado.totpro}}'
+                <input type='text' class='form-control form-control-sm' name='totpro' value='{{realizado.totpro}}'
                     {{#if realizado.foiRealizado}} disabled {{/if}}>
                 {{#if projeto.ehDireto}}                    
-                <input type='number' class='form-control form-control-sm' name='totdes' value='{{realizado.totdes}}'
+                <input type='text' class='form-control form-control-sm' name='totdes' value='{{realizado.totdes}}'
                     {{#if realizado.foiRealizado}} disabled {{/if}}>
                 {{else}}
-                <input type='number' class='form-control form-control-sm' name='tothtl' value='{{realizado.tothtl}}'
+                <input type='text' class='form-control form-control-sm' name='tothtl' value='{{realizado.tothtl}}'
                     {{#if realizado.foiRealizado}} disabled {{/if}}>
-                <input type='number' class='form-control form-control-sm' name='totcmb' value='{{realizado.totcmb}}'
+                <input type='text' class='form-control form-control-sm' name='totcmb' value='{{realizado.totcmb}}'
                     {{#if realizado.foiRealizado}} disabled {{/if}}>                    
                 {{/if}}
-                <input type='number' class='form-control form-control-sm' name='totali' value='{{realizado.totali}}'
+                <input type='text' class='form-control form-control-sm' name='totali' value='{{realizado.totali}}'
                     {{#if realizado.foiRealizado}} disabled {{/if}}>
                 {{#if temCercamento}}
-                <input type='number' class='form-control form-control-sm' name='cercamento'
+                <input type='text' class='form-control form-control-sm' name='cercamento'
                     value='{{realizado.cercamento}}' {{#if realizado.foiRealizado}} disabled {{/if}}>
                 {{/if}}
                 
                 {{#if temOcp}}
-                <input type='number' class='form-control form-control-sm' name='ocp' value='{{realizado.ocp}}'
+                <input type='text' class='form-control form-control-sm' name='ocp' value='{{realizado.ocp}}'
                     {{#if realizado.foiRealizado}} disabled {{/if}}>
                 {{/if}}
                 
                 {{#if temPosteCond}}
-                <input type='number' class='form-control form-control-sm' name='postecond'
+                <input type='text' class='form-control form-control-sm' name='postecond'
                     value='{{realizado.postecond}}' {{#if realizado.foiRealizado}} disabled {{/if}}>
                 {{/if}}
                 <label class='col-form-label col-form-label-sm' name='custoPlano'>R$
                     {{realizado.custoPlano}}</label>
                 <hr>
-                <input type='number' class='form-control form-control-sm' name='vlrcom' value='{{realizado.vlrcom}}'
+                <input type='text' class='form-control form-control-sm' name='vlrcom' value='{{realizado.vlrcom}}'
                     {{#if realizado.foiRealizado}} disabled {{/if}}>
                 <hr>
                 <h6>Realizado</h6>
