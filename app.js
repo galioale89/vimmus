@@ -69,7 +69,7 @@ app.use(express.static('imagens/upload'))
 
 //Mongoose DB
 mongoose.Promise = global.Promise
-mongoose.connect('mongodb://localhost/vimmusapp', {
+mongoose.connect('mongodb://alegaliotto:3rdn4x3L4@mongo_vimmus:27017/vimmus', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => {
