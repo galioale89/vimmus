@@ -1,15 +1,18 @@
-const { ObjectId } = require('bson')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const Detalhado = new Schema({
-    
-    projeto:{
+
+    projeto: {
         type: Schema.Types.ObjectId,
-       ref: 'projeto',
-       require: true,
+        ref: 'projeto',
+        require: true,
     },
-    unidadeEqu:{
+    checkUni: {
+        type: String,
+        require: false,
+    },
+    unidadeEqu: {
         type: Number,
         require: false
     },
@@ -104,8 +107,8 @@ const Detalhado = new Schema({
     valorOcp: {
         type: Number,
         require: false
-    },        
-    vlrTotal:{
+    },
+    vlrTotal: {
         type: Number,
         require: false
     }

@@ -2,10 +2,19 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const Equipe = new Schema({
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'usuario',
+    require: false
+  },
   projeto: {
     type: Schema.Types.ObjectId,
     ref: 'projeto',
     require: true
+  },
+  ativo:{
+    type: Boolean,
+    require: false,
   },
   nome: {
     type: String,
@@ -22,24 +31,19 @@ const Equipe = new Schema({
   ins2: {
     type: String,
     require: false
-  }  
-  /*
-  ins0: {
-    type: Schema.Types.ObjectId,
-    ref: 'pessoa',
+  },
+  ins3: {
+    type: String,
     require: false
   },
-  ins1: {
-    type: Schema.Types.ObjectId,
-    ref: 'pessoa',
+  ins4: {
+    type: String,
     require: false
   },
-  ins2: {
-    type: Schema.Types.ObjectId,
-    ref: 'pessoa',
+  ins5: {
+    type: String,
     require: false
   }
-  */
 })
 
 mongoose.model('equipe', Equipe)

@@ -1,94 +1,138 @@
-const { ObjectId } = require('bson')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const Realizado = new Schema({
-    projeto:{
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'usuario',
+        require: true
+    },
+    projeto: {
         type: Schema.Types.ObjectId,
         ref: 'projeto',
-        require: true 
+        require: true
     },
-    vlrNFS:{
-        type: Number,
-        require: false
+    nome: {
+      type: String,
+      require:false
     },
-    vlrequ:{
-        type: Number,
-        require: false
-    },
-    totint:{
-        type: Number,
-        require: false
-    },
-    totges:{
-        type: Number,
-        require: false
-    },
-    totpro:{
-        type: Number,
-        require: false
-    },
-    totdes:{
-        type: Number,
-        require: false
-    },
-    totali:{
-        type: Number,
-        require: false
-    },
-    tothtl:{
-        type: Number,
-        require: false
-    },
-    reserva:{
-        type: Number,
-        require: false
-    },
-    custoPlano:{
-        type: Number,
-        require: false
-    },
-    impmanual:{
+    cliente: {
         type: String,
+        require:false
+    },    
+    dataini: {
+        type: String,
+        require:false
+    },   
+    datafim: {
+        type: String,
+        require:false
+    },
+    valDataFim: {
+        type: String,
+        require:false
+    },    
+    valor: {
+        type: Number,
+        require: false
+    },        
+    vlrNFS: {
+        type: Number,
+        require: false
+    },
+    vlrequ: {
+        type: Number,
+        require: false
+    },
+    vlrkit: {
+        type: Number,
         require: false
     },    
-    impISS:{
+    totint: {
         type: Number,
         require: false
     },
-    impSimples:{
+    totges: {
         type: Number,
         require: false
     },
-    impIRPJ:{
+    totpro: {
         type: Number,
         require: false
     },
-    impIRPJAdd:{
+    totdes: {
         type: Number,
         require: false
     },
-    impCSLL:{
+    totali: {
         type: Number,
         require: false
     },
-    impPIS:{
+    tothtl: {
         type: Number,
         require: false
     },
-    impCOFINS:{
+    totcmb: {
+        type: Number,
+        require: false
+    },    
+    cercamento: {
         type: Number,
         require: false
     },
-    impICMS:{
+    postecond: {
+        type: Number,
+        require: false
+    },   
+    ocp: {
+        type: Number,
+        require: false
+    },      
+    custoPlano: {
         type: Number,
         require: false
     },
-    totalImposto:{
+    impmanual: {
+        type: String,
+        require: false
+    },
+    impISS: {
         type: Number,
         require: false
     },
-    vlrcom:{
+    impSimples: {
+        type: Number,
+        require: false
+    },
+    impIRPJ: {
+        type: Number,
+        require: false
+    },
+    impIRPJAdd: {
+        type: Number,
+        require: false
+    },
+    impCSLL: {
+        type: Number,
+        require: false
+    },
+    impPIS: {
+        type: Number,
+        require: false
+    },
+    impCOFINS: {
+        type: Number,
+        require: false
+    },
+    impICMS: {
+        type: Number,
+        require: false
+    },
+    totalImposto: {
+        type: Number,
+        require: false
+    },
+    vlrcom: {
         type: Number,
         require: false
     },
@@ -96,145 +140,153 @@ const Realizado = new Schema({
         type: Number,
         require: false
     },
-    lbaimp:{
+    lbaimp: {
         type: Number,
-        require:false
+        require: false
     },
     lucroLiquido: {
         type: Number,
         require: false
     },
-    parLiqVlr:{
+    parLiqVlr: {
         type: Number,
         require: false
     },
-    parIntVlr:{
+    parIntVlr: {
         type: Number,
         require: false
     },
-    parGesVlr:{
+    parGesVlr: {
         type: Number,
         require: false
     },
-    parProVlr:{
+    parProVlr: {
         type: Number,
         require: false
     },
-    parDesVlr:{
+    parDesVlr: {
         type: Number,
         require: false
     },
-    parCmbVlr:{
+    parCmbVlr: {
         type: Number,
         require: false
     },
-    parAliVlr:{
+    parAliVlr: {
         type: Number,
         require: false
     },
-    parEstVlr:{
+    parEstVlr: {
         type: Number,
         require: false
     },
-    parDedVlr:{
-        type: Number,
-        require: false
-    },    
-    parComVlr:{
+    parDedVlr: {
         type: Number,
         require: false
     },
-    parISSVlr:{
+    parComVlr: {
         type: Number,
         require: false
     },
-    parImpVlr:{
-        type: Number,
-        require: false
-    },    
-    parLiqNfs:{
-        type: Number,
-        require: false
-    },    
-    parIntNfs:{
+    parISSVlr: {
         type: Number,
         require: false
     },
-    parGesNfs:{
+    parImpVlr: {
         type: Number,
         require: false
     },
-    parProNfs:{
+    parLiqNfs: {
         type: Number,
         require: false
     },
-    parDesNfs:{
+    parIntNfs: {
         type: Number,
         require: false
     },
-    parCmbNfs:{
+    parGesNfs: {
         type: Number,
         require: false
     },
-    parAliNfs:{
+    parProNfs: {
         type: Number,
         require: false
     },
-    parEstNfs:{
+    parDesNfs: {
         type: Number,
         require: false
     },
-    parDedNfs:{
-        type: Number,
-        require: false
-    },     
-    parComNfs:{
-        type: Number,
-        require: false
-    },    
-    parISSNfs:{
+    parCmbNfs: {
         type: Number,
         require: false
     },
-    parImpNfs:{
+    parAliNfs: {
         type: Number,
         require: false
     },
-    parVlrRlz:{
-       type: Boolean,
-       require: false,
+    parEstNfs: {
+        type: Number,
+        require: false
     },
-    parNfsRlz:{
+    parDedNfs: {
+        type: Number,
+        require: false
+    },
+    parComNfs: {
+        type: Number,
+        require: false
+    },
+    parISSNfs: {
+        type: Number,
+        require: false
+    },
+    parImpNfs: {
+        type: Number,
+        require: false
+    },
+    parVlrRlz: {
         type: Boolean,
         require: false,
     },
-    varLucRlz:{
+    parNfsRlz: {
         type: Boolean,
         require: false,
     },
-    varCusto:{
+    varLucRlz: {
+        type: Boolean,
+        require: false,
+    },
+    varCusto: {
         type: Number,
         require: true
     },
-    varLB:{
+    varLB: {
         type: Number,
         require: true
     },
-    varLAI:{
+    varLAI: {
         type: Number,
         require: true
     },
-    varLL:{
+    varLL: {
         type: Number,
         require: true
     },
-    foiRealizado:{
+    foiRealizado: {
         type: Boolean,
         require: true
     },
-    data:{
+    datapadrao: {
+        type: Date,
+        default: Date.now()
+     },    
+    datareg: {
+        type: Number,
+        require: false
+    },
+    data: {
         type: String,
-        require:false
+        require: false
     }
 })
 

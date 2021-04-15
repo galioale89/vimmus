@@ -1,7 +1,11 @@
 const mongoose = require('mongoose')
-const Squema = mongoose.Schema
+const Schema = mongoose.Schema
 
-const Pessoa = new Squema({
+const Pessoa = new Schema({
+    user:{
+        type: Schema.Types.ObjectId,
+        require: false,
+    },
     nome: {
         type: String,
         require: true
@@ -88,18 +92,14 @@ const Pessoa = new Squema({
         type: Date,
         require: true,
     },  
-    dataprev:{
-        type: Date,
-        require: true
+    ehVendedor:{
+         type: Boolean,
+         require: false,
     },
-    ultdata:{
-        type: Date,
+    percom:{
+        type: Number,
         require: false,
-    },
-    motivo:{
-        type: String,
-        require: false
-    }            
+   }      
 })
 
 mongoose.model('pessoa', Pessoa)

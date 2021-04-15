@@ -2,13 +2,16 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const Config = new Schema({
-
+    user:{
+        type: Schema.Types.ObjectId,
+        require: false,
+    },
     slug:{
          type: String,
          require: true
     },
     potencia: {
-        type: Number,
+        type: String,
         require: true,  
     },
     minest: {

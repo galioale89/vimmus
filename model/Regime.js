@@ -2,7 +2,11 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const Regime = new Schema({
-
+    user:{
+        type: Schema.Types.ObjectId,
+        ref: 'usuario',
+        require: false,
+    },
     nome: {
         type: String,
         require: true

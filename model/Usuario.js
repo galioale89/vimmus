@@ -4,49 +4,64 @@ const Schema = Mongoose.Schema
 const Usuario = new Schema({
     razao: {
         type: String,
-        require: true
+        require: false
     },
     fantasia: {
         type: String,
-        require: true
+        require: false
+    },
+    nome: {
+        type: String,
+        require: false
     },
     usuario: {
         type: String,
-        require: true
+        require: false
     },
     cnpj: {
         type: String,
-        require: true
+        require: false
     },
-    endereco:{
+    endereco: {
         type: String,
-        require: true        
+        require: false
     },
-    cidade:{
+    cidade: {
         type: String,
-        require: true        
+        require: false
     },
-    uf:{
+    uf: {
         type: String,
-        require: true        
-    },        
-    telefone:{
+        require: false
+    },
+    telefone: {
         type: String,
-        require: true        
+        require: false
     },
     email: {
         type: String,
-        require: true
+        require: false
     },
     senha: {
         type: String,
-        require: true
+        require: false
     },
-    
-    ehAdmin:{
-      type: Number,
-      default: 0
-    }
+    ehAdmin: {
+        type: Number,
+        default: 3
+    },
+    data: {
+        type: String,
+        require: false
+    },
+    datalib: {
+        type: String,
+        require: false
+    },
+    dataexp: {
+        type: String,
+        require: false
+    }        
 })
 
-Mongoose.model ("usuario", Usuario)
+Mongoose.model("usuario", Usuario)

@@ -1,16 +1,32 @@
-const { ObjectId } = require('bson')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const Projeto = new Schema({
+    user:{
+        type: Schema.Types.ObjectId,
+        ref: 'usuario',
+        require: false,
+    },    
     nome: {
         type: String,
         require: true
     },
+    cidade: {
+        type: String,
+        require: true
+    },
+    uf: {
+        type: String,
+        require: true
+    },        
     cliente:{
         type: String,
         require: false
     },
+    nomecliente:{
+        type: String,
+        require: false
+    },    
     valor: {
          type: Number,
          require: true
@@ -19,6 +35,18 @@ const Projeto = new Schema({
         type: Number,
         require: true
     },
+    vlrkit: {
+        type: Number,
+        require: true
+    },    
+    fatequ: {
+        type: Boolean,
+        require: true
+    },
+    vlrfat: {
+        type: Number,
+        require: true
+    },    
     potencia: {
         type: Number,
         require: false
@@ -27,8 +55,13 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
-    equipe:{
+    qtdequipe:{
         type: Number,
+        require: false
+    },    
+    equipe:{
+        type: Schema.Types.ObjectId,
+        ref: 'equipe',
         require: false
     },
     tothrs:{
@@ -147,6 +180,10 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
+    vlrart: {
+        type: Number,
+        require: false
+    },    
     uniart: {
         type: Number,
         require: false
@@ -488,7 +525,16 @@ const Projeto = new Schema({
     obstxt: {
         type: String,
         require: false
-    },    
+    },
+    requisitos: {
+        type: String,
+        require: false
+    },
+    vendedor:{ 
+        type: Schema.Types.ObjectId,
+        ref: 'pessoa',
+        require: false
+    },        
     funres:{ 
         type: Schema.Types.ObjectId,
         ref: 'pessoa',
@@ -532,6 +578,10 @@ const Projeto = new Schema({
         type: String,
         require: true
     },
+    valDataPrev: {
+        type: String,
+        require: true
+    },
     dataord: {
         type: String,
         require: true
@@ -552,13 +602,37 @@ const Projeto = new Schema({
         type: String,
         require: false
     },
+    valDataFim:{
+        type: String,
+        require: false
+    },    
     data: {
        type: String,
        require: false
     },
     datareg: {
+        type: Number,
+        require: false
+     },    
+    datapadrao: {
        type: Date,
        default: Date.now()
+    },
+    executando:{
+        type: Boolean,
+        require: false
+    },
+    parado:{
+        type: Boolean,
+        require: false
+    },  
+    orcado:{
+        type: Boolean,
+        require: false
+    }, 
+    homologado:{
+        type: Boolean,
+        require: false
     }
 })
 
