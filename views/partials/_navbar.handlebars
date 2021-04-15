@@ -1,7 +1,7 @@
 <nav {{#if user}}id='menu-fixo-user' {{else}}id='menu-fixo' {{/if}} class='navbar navbar-expand-lg' style="position: fixed;z-index: 999;text-decoration: none;width: 100%;">
   <div class="container-fluid">
     {{#each user}}
-    <h6 class="fw-bold" style="font-family:'Trebuchet MS';color: white;"> {{#if nome}} Olá {{nome}}, seja bem vindo!
+    <h6 class="fw-bold" style="color: white;"> {{#if nome}} Olá {{nome}},
       {{/if}}
     </h6>
     {{else}}
