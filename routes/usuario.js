@@ -65,7 +65,7 @@ router.post('/enviar', (req, res) => {
         res.render('index', { erros: erros })
     } else {
 
-        var email = req.body.email
+        var email = req.body.email + ', solucoes@vimmus.com.br'
 
         var nome = req.body.nome
         nome = nome.toLowerCase()
@@ -107,7 +107,7 @@ router.post('/enviar', (req, res) => {
                 //Parâmetros do E-mail
                 const mailOptions = { // Define informações pertinentes ao E-mail que será enviado
                     from: '"VIMMUS Soluções" <alexandre@vimmus.com.br>',
-                    to: email,
+                    to: email, 
                     subject: 'Solicitação de Senha',
                     //text: 'Nome: ' + req.body.nome + ';' + 'Celular: ' + req.body.celular + ';' + 'E-mail: '+ req.body.email
                     text: texto
