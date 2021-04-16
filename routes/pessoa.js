@@ -72,7 +72,7 @@ router.get('/formaequipe/:id', ehAdmin, (req, res) => {
                     const { ins4 } = equipe
                     const { ins5 } = equipe
 
-                    console.log(ins0,ins1,ins2,ins3,ins4,ins5)
+                    console.log(ins0, ins1, ins2, ins3, ins4, ins5)
 
                     for (var i = 0; i < instaladores.length; i++) {
                         const { nome } = instaladores[i]
@@ -167,6 +167,7 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
 
             const equipe = {
                 projeto: req.body.id,
+                nome_projeto: projeto.nome,
                 ins0: req.body.ins0,
                 ins1: req.body.ins1,
                 ins2: req.body.ins2,
@@ -260,6 +261,7 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
             Equipe.findOne({ _id: req.body.id_equipe }).lean().then((equipe) => {
                 const equipe_nova = {
                     projeto: req.body.id,
+                    nome_projeto: projeto.nome,
                     ins0: equipe.ins0,
                     ins1: equipe.ins1,
                     ins2: equipe.ins2,
@@ -276,7 +278,7 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
                 console.log('ins4=>' + equipe.ins4)
                 console.log('ins5=>' + equipe.ins5)
 
-                
+
                 new Equipe(equipe_nova).save().then(() => {
                     sucesso.push({ texto: 'Equipe registrada com suceso.' })
                 }).catch((err) => {
@@ -393,6 +395,7 @@ router.post('/salvarequipe/', ehAdmin, (req, res) => {
         })
         const equipe_nova = {
             projeto: req.body.id,
+            nome_projeto: projeto.nome,
             ins0: req.body.ins0,
             ins1: req.body.ins1,
             ins2: req.body.ins2,
@@ -415,7 +418,7 @@ router.post('/salvarequipe/', ehAdmin, (req, res) => {
             const { ins2 } = equipe_nova
             const { ins3 } = equipe_nova
             const { ins4 } = equipe_nova
-            const { ins5 } = equipe_nova            
+            const { ins5 } = equipe_nova
             //console.log(ins0, ins1, ins2)
 
             for (var i = 0; i < instaladores.length; i++) {
@@ -646,29 +649,53 @@ router.get('/consulta', ehAdmin, (req, res) => {
 })
 
 router.get('/vermais/:id', ehAdmin, (req, res) => {
+    var qtdins_equipe = 0
+    var nome_projetos = []
     Pessoa.findOne({ _id: req.params.id }).lean().then((pessoa) => {
+        console.log(pessoa.nome)
         Projeto.find({ funres: pessoa._id }).sort({ dataord: 'asc' }).lean().then((prjres) => {
             Projeto.find({ funins: pessoa._id }).sort({ dataord: 'desc' }).lean().then((prjins) => {
                 Projeto.find({ funpro: pessoa._id }).sort({ dataord: 'desc' }).lean().then((prjpro) => {
-                    var qtdres = prjres.length
-                    var qtdins = prjins.length
-                    var qtdpro = prjpro.length
-                    res.render('mdo/vermais', { pessoa: pessoa, prjres: prjres, prjins: prjins, prjpro: prjpro, qtdres: qtdres, qtdpro: qtdpro, qtdins: qtdins })
+                    Projeto.find({ vendedor: pessoa._id }).sort({ dataord: 'desc' }).lean().then((prjven) => {
+                        Equipe.find({ $or: [{ ins0: pessoa.nome }, { ins1: pessoa.nome }, { ins2: pessoa.nome }, { ins3: pessoa.nome }, { ins4: pessoa.nome }, { ins5: pessoa.nome }] }).lean().then((equipe) => {
+                            equipe.forEach(element => {
+                                const {nome_projeto} = element
+                                console.log(nome_projeto)
+                                if (nome_projeto != undefined) {
+                                    qtdins_equipe = qtdins_equipe  + 1
+                                    nome_projetos.push({nome: nome_projeto})
+                                }                                
+                            })
+                            console.log(qtdins_equipe)
+                            console.log(nome_projetos)
+                            var qtdven = prjven.length
+                            var qtdres = prjres.length
+                            var qtdins = prjins.length
+                            var qtdpro = prjpro.length
+                            res.render('mdo/vermais', { pessoa: pessoa, prjres: prjres, prjins: prjins, prjpro: prjpro, prjven: prjven, qtdres: qtdres, qtdpro: qtdpro, qtdins: qtdins, qtdven: qtdven, qtdins_equipe: qtdins_equipe, nome_projetos: nome_projetos })
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Não foram encontradas pessoas na equipe.')
+                            res.redirect('/pessoa/consulta')
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Não foram encontradas projetos para esta pessoa.')
+                        res.redirect('/pessoa/consulta')
+                    })
                 }).catch((err) => {
-                    req.flash('error_msg', 'Não foram encontradas projetos para esta pessoa')
-                    res.redirect('/pessoa')
+                    req.flash('error_msg', 'Não foram encontradas projetos para esta pessoa.')
+                    res.redirect('/pessoa/consulta')
                 })
             }).catch((err) => {
-                req.flash('error_msg', 'Não foram encontradas projetos para esta pessoa')
-                res.redirect('/pessoa')
+                req.flash('error_msg', 'Não foram encontradas projetos para esta pessoa.')
+                res.redirect('/pessoa/consulta')
             })
         }).catch((err) => {
-            req.flash('error_msg', 'Não foram encontradas projetos para esta pessoa')
-            res.redirect('/pessoa')
+            req.flash('error_msg', 'Não foram encontradas projetos para esta pessoa.')
+            res.redirect('/pessoa/consulta')
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foram encontradas pessoas.')
-        res.redirect('/pessoa')
+        res.redirect('/pessoa/consulta')
     })
 
 })

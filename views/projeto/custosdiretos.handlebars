@@ -151,9 +151,11 @@
             <div class="col-md-8" style="padding-left: 30px;">
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="row quadro" style="background-color: white;">
+                        <div class="row card" style="background-color: white;">
+                            <div class="row" style="padding: 5px;padding-left: 7%;">
                             <a href='/pessoa/formaequipe/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
                                     class="bi bi-people"></i> Equipe </a>
+                            </div>
                             <div class="row mt-1">
                                 <div class="col-md-7 text-end">
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Instaladores na
@@ -275,7 +277,7 @@
 
                     <div class="col-md-6">
                         <div class="row card">
-                            <label class='col-form-label fw-bold' style="padding-top:6%">Definir os recursos do
+                            <label class='col-form-label fw-bold' style="padding-top:3.5%">Definir os recursos do
                                 projeto</label>
                             <div class="row">
                                 <div class="col-md-3">
@@ -301,7 +303,7 @@
                                     <div class='form-check'>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='checkbox'
                                             class='form-check-input' name='checkIns'>
-                                        <label class='form-check-label col-form-label col-form-label-sm'>Alterar</label>
+                                        <label class='form-check-label'>Alterar</label>
                                     </div>
                                 </div>
                             </div>
@@ -329,7 +331,7 @@
                                     <div class='form-check'>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='checkbox'
                                             class='form-check-input' name='checkPro'>
-                                        <label class='form-check-label col-form-label col-form-label-sm'>Alterar</label>
+                                        <label class='form-check-label'>Alterar</label>
                                     </div>
                                 </div>
                             </div>
