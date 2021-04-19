@@ -426,15 +426,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="row mt-2">
-                    <div class="row mb-2" style="width: 100%;margin-left: 5px;">
+                <div class="row">
+                    <div class="row" style="width: 100%;margin-left: 5px;">
                         <a {{#if projeto.orcado}}data-bs-toggle="modal" data-bs-target="#custosModal"
                             {{else}}style='opacity: 0.5;pointer-events:none' {{/if}} class="btn btn-sm btn-primary "><i
                                 class="bi bi-list-ul"></i> Lançar Custos
                             Detalhados do Orçamento
                         </a>
                     </div>
-                    <div class="row" style="width: 100%;margin-left: 5px;">
+                    <div class="row mt-4" style="width: 100%;margin-left: 5px;">
                         <div class='btn-group col-12 gap-2'>
                             <button {{#if projeto.orcado}}{{else}}disabled{{/if}} type="submit"
                                 class="btn btn-sm btn-success" name="aplicar" style="border-radius: 30px;"> <i

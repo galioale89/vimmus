@@ -198,7 +198,7 @@ router.post('/', ehAdmin, (req, res) => {
         })
     } else {
         Projeto.findOne({ _id: req.body.id }).then((projeto) => {
-            Detalhado.findOne({projeto: req.body.id }).then((detalhe) => {
+            Detalhado.findOne({ projeto: req.body.id }).then((detalhe) => {
                 //console.log('entrou')
                 //Edição dos Custos de Deslocamento
                 //var medkmh = 10
@@ -218,12 +218,12 @@ router.post('/', ehAdmin, (req, res) => {
                     var diastr = Math.round(parseFloat(projeto.trbint) / parseFloat(hrsequ))
                     projeto.diastr = diastr
 
-                    
-                    console.log('equipe=>'+equipe)
-                    console.log('hrsequ=>'+hrsequ)
-                    console.log('projeto.trbint=>'+projeto.trbint)
-                    console.log('diastr=>'+diastr)
-                    
+
+                    console.log('equipe=>' + equipe)
+                    console.log('hrsequ=>' + hrsequ)
+                    console.log('projeto.trbint=>' + projeto.trbint)
+                    console.log('diastr=>' + diastr)
+
 
                     var vlrali
                     var discmb
@@ -254,12 +254,12 @@ router.post('/', ehAdmin, (req, res) => {
                     projeto.ltocmb = ltocmb
                     projeto.vlrdia = vlrdia
 
-                    
-                    console.log('vlrali=>'+vlrali)
-                    console.log('discmb=>'+discmb)
-                    console.log('ltocmb=>'+ltocmb)
-                    console.log('vlrdia=>'+vlrdia)
-                    
+
+                    console.log('vlrali=>' + vlrali)
+                    console.log('discmb=>' + discmb)
+                    console.log('ltocmb=>' + ltocmb)
+                    console.log('vlrdia=>' + vlrdia)
+
 
                     var tothtl
                     var totcmb
@@ -295,13 +295,13 @@ router.post('/', ehAdmin, (req, res) => {
 
                     var tothrs = parseFloat(projeto.trbint) + parseFloat(projeto.trbpro) + parseFloat(projeto.trbges)
                     projeto.tothrs = tothrs
-                    
-                    console.log('totcmb=>'+totcmb)
-                    console.log('tothtl=>'+tothtl)
-                    console.log('totali=>'+totali)
-                    console.log('totdes=>'+totdes)
-                    console.log('tothrs=>'+tothrs)
-                    
+
+                    console.log('totcmb=>' + totcmb)
+                    console.log('tothtl=>' + tothtl)
+                    console.log('totali=>' + totali)
+                    console.log('totdes=>' + totdes)
+                    console.log('tothrs=>' + tothrs)
+
 
                     //Custo de Reserva
                     var resger
@@ -347,14 +347,14 @@ router.post('/', ehAdmin, (req, res) => {
                     projeto.outcer = outcer
                     projeto.outpos = outpos
 
-                    
-                    console.log('resger=>'+resger)
-                    console.log('conadd=>'+conadd)
-                    console.log('impele=>'+impele)
-                    console.log('seguro=>'+seguro)
-                    console.log('outcer=>'+outcer)
-                    console.log('outpos=>'+outpos)
-                    
+
+                    console.log('resger=>' + resger)
+                    console.log('conadd=>' + conadd)
+                    console.log('impele=>' + impele)
+                    console.log('seguro=>' + seguro)
+                    console.log('outcer=>' + outcer)
+                    console.log('outpos=>' + outpos)
+
 
                     var rescon = parseFloat(impele) + parseFloat(seguro) + parseFloat(outcer) + parseFloat(outpos)
                     rescon = parseFloat(rescon) + parseFloat(conadd)
@@ -362,19 +362,19 @@ router.post('/', ehAdmin, (req, res) => {
                     var reserva = parseFloat(resger) + parseFloat(rescon)
                     projeto.reserva = reserva.toFixed(2)
 
-                    
-                    console.log('rescon=>'+rescon)
-                    console.log('reserva=>'+reserva)    
-                    console.log('valorCer=>'+detalhe.valorCer)    
-                    console.log('valorPos=>'+detalhe.valorPos)    
-                    
+
+                    console.log('rescon=>' + rescon)
+                    console.log('reserva=>' + reserva)
+                    console.log('valorCer=>' + detalhe.valorCer)
+                    console.log('valorPos=>' + detalhe.valorPos)
+
 
                     var totcop = parseFloat(projeto.totint) + parseFloat(projeto.totpro) + parseFloat(projeto.totges) + parseFloat(totdes) + parseFloat(detalhe.valorCer) + parseFloat(detalhe.valorPos) + parseFloat(detalhe.valorOcp)
                     projeto.totcop = totcop.toFixed(2)
-                    console.log('totcop=>'+totcop)
+                    console.log('totcop=>' + totcop)
                     var custoPlano = parseFloat(totcop) + parseFloat(reserva)
                     projeto.custoPlano = custoPlano.toFixed(2)
-                    console.log('custoPlano=>'+custoPlano)
+                    console.log('custoPlano=>' + custoPlano)
                     custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
                     projeto.custoTotal = custoTotal.toFixed(2)
                     //console.log('custoTotal=>'+custoTotal)
@@ -483,7 +483,7 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
     } else {
 
         Projeto.findOne({ _id: req.body.id }).then((projeto) => {
-            Detalhado.findOne({projeto: req.body.id }).then((detalhe) => {
+            Detalhado.findOne({ projeto: req.body.id }).then((detalhe) => {
                 //console.log('entrou')
                 //Edição dos Custos de Deslocamento
                 //var medkmh = 10
@@ -773,10 +773,16 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                 projeto.vlrNFS = vlrNFS
                 projeto.impNFS = impNFS
 
-                if (regime.alqICMS != null || regime.alqICMS != '') {
-                    impostoICMS = parseFloat(projeto.vlrkit) * (parseFloat(regime.alqICMS) / 100)
+                if (projeto.fatequ == true) {
+                    if (regime.alqICMS != null || regime.alqICMS != '') {
+                        impostoICMS = parseFloat(projeto.vlrkit) * (parseFloat(regime.alqICMS) / 100)
+                        projeto.impostoICMS = impostoICMS.toFixed(2)
+                    }
+                } else {
+                    impostoICMS = 0
                     projeto.impostoICMS = impostoICMS.toFixed(2)
                 }
+
 
                 if (regime.regime == 'Simples') {
                     var alqEfe = ((parseFloat(prjFat) * (parseFloat(regime.alqDAS) / 100)) - (parseFloat(regime.vlrred))) / parseFloat(prjFat)
@@ -1006,8 +1012,13 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
             projeto.vlrNFS = vlrNFS.toFixed(2)
             projeto.impNFS = impNFS.toFixed(2)
 
-            if (regime.alqICMS != null || regime.alqICMS != '') {
-                impostoICMS = parseFloat(projeto.vlrkit) * (parseFloat(regime.alqICMS) / 100)
+            if (projeto.fatequ == true) {
+                if (regime.alqICMS != null || regime.alqICMS != '') {
+                    impostoICMS = parseFloat(projeto.vlrkit) * (parseFloat(regime.alqICMS) / 100)
+                    projeto.impostoICMS = impostoICMS.toFixed(2)
+                }
+            } else {
+                impostoICMS = 0
                 projeto.impostoICMS = impostoICMS.toFixed(2)
             }
 

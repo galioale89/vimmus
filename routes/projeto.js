@@ -1252,7 +1252,7 @@ router.post('/direto', ehAdmin, (req, res) => {
      var ehLR = false
      var erros = []
      var rp
-     
+
      if (req.body.vlrart == '' || req.body.vlrart == 0) {
           erros.push({ texto: 'Prencheer valor de custo da ART.' })
      }
@@ -1515,8 +1515,13 @@ router.post('/direto', ehAdmin, (req, res) => {
 
                               //Validar ICMS
                               var impostoICMS
-                              if (rp.alqICMS != null) {
-                                   impostoICMS = parseFloat(projeto.vlrkit) * (parseFloat(rp.alqICMS) / 100)
+                              if (projeto.fatequ == true) {
+                                   if (rp.alqICMS != null) {
+                                        impostoICMS = parseFloat(projeto.vlrkit) * (parseFloat(rp.alqICMS) / 100)
+                                        projeto.impostoICMS = impostoICMS.toFixed(2)
+                                   }
+                              } else {
+                                   impostoICMS = 0
                                    projeto.impostoICMS = impostoICMS.toFixed(2)
                               }
 
@@ -2069,12 +2074,17 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
 
                               var impostoICMS
                               //Validar ICMS
-                              if (regime_prj.alqICMS != null) {
-                                   impostoICMS = parseFloat(projeto.vlrequ) * (parseFloat(regime_prj.alqICMS) / 100)
-                                   projeto.impostoICMS = impostoICMS.toFixed(2)
+                              if (projeto.fatequ == true) {
+                                   if (regime_prj.alqICMS != null) {
+                                        impostoICMS = parseFloat(projeto.vlrequ) * (parseFloat(regime_prj.alqICMS) / 100)
+                                        projeto.impostoICMS = impostoICMS.toFixed(2)
+                                   } else {
+                                        impostoICMS = 0
+                                        projeto.impostoICMS = 0
+                                   }
                               } else {
                                    impostoICMS = 0
-                                   projeto.impostoICMS = 0
+                                   projeto.impostoICMS = impostoICMS.toFixed(2)
                               }
                               ////console.log('ICMS=>', impostoICMS)
 
@@ -2630,11 +2640,16 @@ router.post('/realizar', ehAdmin, (req, res) => {
                                    impISS = impISSNfs.toFixed(2)
                               }
 
-                              if (rp.alqICMS == '' || rp.alqICMS == null) {
-                                   impICMS = 0
+                              if (projeto.fatequ == true) {
+                                   if (rp.alqICMS == '' || rp.alqICMS == null) {
+                                        impICMS = 0
+                                   } else {
+                                        impostoICMS = parseFloat(vlrkit) * (parseFloat(rp.alqICMS) / 100)
+                                        impICMS = impostoICMS.toFixed(2)
+                                   }
                               } else {
-                                   impostoICMS = parseFloat(vlrkit) * (parseFloat(rp.alqICMS) / 100)
-                                   impICMS = impostoICMS.toFixed(2)
+                                   impostoICMS = 0
+                                   projeto.impostoICMS = impostoICMS.toFixed(2)
                               }
 
                               var fatadd
