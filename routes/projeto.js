@@ -310,7 +310,7 @@ router.get('/remover/:id', ehAdmin, (req, res) => {
                          Realizado.findOneAndRemove({ projeto: req.params.id }).then(() => {
                               Equipe.findOneAndRemove({ projeto: req.params.id }).then(() => {
                                    req.flash('success_msg', 'Projeto removido com sucesso')
-                                   res.redirect('/projeto/consulta')
+                                   res.redirect('/menu')
                               }).catch(() => {
                                    req.flash('error_msg', 'Não foi possível remover o realizado projeto.')
                                    res.redirect('/projeto/consulta')
