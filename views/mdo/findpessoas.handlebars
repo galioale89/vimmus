@@ -5,7 +5,8 @@
         border-color: grey;
         background-color: rgb(40, 55, 86);
     }
-       .filtro-selecao{
+
+    .filtro-selecao {
         width: fit-content;
         height: fit-content;
         background: white;
@@ -66,9 +67,9 @@
     </div>
 
 
-    {{#each pessoas}}
-    <div class="card mt-2; margin-bottom: 70px;">
-        <div style="padding: 5px;">
+    <div style="margin-bottom: 30px;">
+        {{#each pessoas}}
+        <div class="row" style="width: 100%; margin-left: 0px;border: rgba(200,200,200,0.5) 1px solid">
             <input type='hidden' name='id' value='{{_id}}'>
             <div class="row">
                 <div class="col-md-5">
@@ -117,8 +118,8 @@
                 </div>
             </div>
         </div>
+        {{else}}
+        <h6>Nenhuma pessoa cadastrada</h6>
+        {{/each}}
     </div>
-    {{else}}
-    <h6>Nenhuma pessoa cadastrada</h6>
-    {{/each}}
 </div>
