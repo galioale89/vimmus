@@ -2520,38 +2520,28 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          console.log('totalPlano=>' + totalPlano)
 
                          var vlrequ
-                         var vlrFaturado
                          var impISSNfs
                          var vlrPrjNFS
+
                          if (req.body.vlrequ != '') {
                               vlrequ = req.body.vlrequ
-                              vlrkit = projeto.vlrkit
-                              if (projeto.fatequ == false) {
-                                   vlrFaturado = parseFloat(projeto.valor) - parseFloat(vlrequ)
-                                   impISSNfs = parseFloat(vlrFaturado) * (parseFloat(rp.alqNFS) / 100)
-                                   if (projeto.vlrfat == projeto.vlrNFS) {
-                                        vlrPrjNFS = projeto.vlrfat
-                                   } else {
-                                        vlrPrjNFS = vlrFaturado.toFixed(2)
-                                   }
-                              } else {
-                                   vlrPrjNFS = projeto.vlrNFS
-                              }
+                              vlrkit = req.body.vlrequ                              
                          } else {
                               vlrequ = projeto.vlrequ
                               vlrkit = projeto.vlrkit
-                              if (projeto.vlrNFS != '') {
-                                   vlrPrjNFS = projeto.vlrNFS
-                              } else {
-                                   vlrPrjNFS = 0
-                              }
+                         }
+
+                         if (projeto.fatequ == true){
+                              vlrPrjNFS = parseFloat(projeto.valor)
+                         }else{
+                              vlrPrjNFS = parseFloat(projeto.valor) - parseFloat(vlrkit)
                          }
 
                          console.log('vlrequ=>' + vlrequ)
                          console.log('vlrPrjNFS=>' + vlrPrjNFS)
 
-                         var prjLucroBruto = parseFloat(vlrPrjNFS) - parseFloat(totalPlano)
-                         prjLucroBruto = prjLucroBruto.toFixed(2)
+                         var prjLucroBruto = parseFloat(projeto.valor) - parseFloat(vlrkit) - parseFloat(totalPlano)                              
+                         prjLucroBruto = prjLucroBruto.toFixed(2) 
 
                          //Valida a comissão e calcula o lucroBruto
                          var vlrcom
