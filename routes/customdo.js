@@ -253,8 +253,8 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                     var trbinv = Math.round(parseFloat(req.body.uniinv) * (parseFloat(config.mininv) / 60))
 
                     var totatr = Math.round(parseFloat(trbatr) * parseFloat(req.body.vlrhri))
-                    var totest = Math.round(parseFloat(trbest) * parseFloat(req.body.vlrhri))
-                    var totmod = Math.round(parseFloat(trbmod) * parseFloat(req.body.vlrhri))
+                    var totest = Math.round(parseFloat(trbest) * parseFloat(req.body.vlrhri) * parseFloat(projeto.qtdequipe))
+                    var totmod = Math.round(parseFloat(trbmod) * parseFloat(req.body.vlrhri) * parseFloat(projeto.qtdequipe))
                     var totinv = Math.round(parseFloat(trbinv) * parseFloat(req.body.vlrhri))
 
                     var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr)).toFixed(2)
@@ -282,6 +282,24 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                     if (req.body.pinome == null) {
                          projeto.funins = req.body.funins
                     }
+                    console.log('vlrhri=>'+req.body.vlrhri)
+                    console.log('uniatr=>'+req.body.uniatr)
+                    console.log('trbatr=>'+trbatr)
+                    console.log('uniest=>'+req.body.uniest)
+                    console.log('trbest=>'+trbest)
+                    console.log('unimod=>'+req.body.unimod)
+                    console.log('trbmod=>'+trbmod)
+                    console.log('uniinv=>'+trbinv)
+                    console.log('trbinv=>'+totest)
+                    console.log('totest=>'+totmod)
+                    console.log('totmod=>'+totatr)
+                    console.log('totatr=>'+totinv)
+                    console.log('totinv=>'+totint)
+                    console.log('totest=>'+totint)
+                    console.log('trbint=>'+trbint)
+                    console.log('funins=>'+req.body.funins)
+
+
 
                     projeto.save().then(() => {
                          sucesso.push({ texto: 'Custo de instalação aplicado com sucesso' })
@@ -626,8 +644,8 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                     var trbinv = Math.round(parseFloat(req.body.uniinv) * (parseFloat(config.mininv) / 60))
 
                     var totatr = Math.round(parseFloat(trbatr) * parseFloat(req.body.vlrhri))
-                    var totest = Math.round(parseFloat(trbest) * parseFloat(req.body.vlrhri))
-                    var totmod = Math.round(parseFloat(trbmod) * parseFloat(req.body.vlrhri))
+                    var totest = Math.round(parseFloat(trbest) * parseFloat(req.body.vlrhri) * parseFloat(projeto.qtdequipe))
+                    var totmod = Math.round(parseFloat(trbmod) * parseFloat(req.body.vlrhri) * parseFloat(projeto.qtdequipe))
                     var totinv = Math.round(parseFloat(trbinv) * parseFloat(req.body.vlrhri))
 
                     var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr)).toFixed(2)
