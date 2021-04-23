@@ -563,7 +563,7 @@ router.get('/confirmaexclusaoequipe/:id', ehAdmin, (req, res) => {
         res.render('mdo/confirmaexclusaoequipe', { equipe: equipe })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar a equipe')
-        res.redirect('/projeto/consulta')
+        res.redirect('/menu')
     })
 })
 
@@ -572,7 +572,7 @@ router.get('/confirmaexclusao/:id', ehAdmin, (req, res) => {
         res.render('mdo/confirmaexclusao', { pessoa: pessoa })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar o projeto')
-        res.redirect('/projeto/consulta')
+        res.redirect('/menu')
     })
 })
 
@@ -1083,7 +1083,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
     switch (funcao) {
         case 'Instalador': funins = 'checked', funges = 'unchecked', funpro = 'unchecked', ehVendedor = false;
             break;
-        case 'Projetisa': funins = 'unchecked', funges = 'unchecked', funpro = 'checked', ehVendedor = false;
+        case 'Projetista': funins = 'unchecked', funges = 'unchecked', funpro = 'checked', ehVendedor = false;
             break;
         case 'Gestor': funins = 'unchecked', funges = 'checked', funpro = 'unchecked', ehVendedor = false;
             break;
