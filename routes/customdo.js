@@ -253,8 +253,8 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                     var trbinv = Math.round(parseFloat(req.body.uniinv) * (parseFloat(config.mininv) / 60))
 
                     var totatr = Math.round(parseFloat(trbatr) * parseFloat(req.body.vlrhri))
-                    var totest = Math.round(parseFloat(trbest) * parseFloat(req.body.vlrhri) * parseFloat(projeto.qtdequipe))
-                    var totmod = Math.round(parseFloat(trbmod) * parseFloat(req.body.vlrhri) * parseFloat(projeto.qtdequipe))
+                    var totest = Math.round(parseFloat(trbest) * parseFloat(req.body.vlrhri) * 3)
+                    var totmod = Math.round(parseFloat(trbmod) * parseFloat(req.body.vlrhri) * 3)
                     var totinv = Math.round(parseFloat(trbinv) * parseFloat(req.body.vlrhri))
 
                     var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr)).toFixed(2)
