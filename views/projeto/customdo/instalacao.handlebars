@@ -59,7 +59,7 @@
                                 </label>
                             </div>
                             <div class="col-md-5">
-                                <input type="number" name="vlrhri" id='vlrhri' value='{{projeto.vlrhri}}'
+                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="vlrhri" id='vlrhri' value='{{projeto.vlrhri}}'
                                     class='form-control form-control-sm'>
                             </div>
                         </div>
@@ -71,7 +71,7 @@
                             </div>
                             {{#if projeto.funins}}
                             <div class="col-md-8">
-                                <input type='hidden' nome='pinome' value='{{pi.nome}}'>
+                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='hidden' nome='pinome' value='{{pi.nome}}'>
                                 <label class='col-form-label col-form-label-sm'>{{pi.nome}}</label>
                             </div>
                             {{else}}
@@ -99,7 +99,7 @@
                             <div class="col">
                                 <label for="unidade" class="col-sm-10 col-form-label col-form-label-sm">Unidade</label>
                                 <div class="input-group input-group-sm mb-1">
-                                    <input type="number" name="uniatr" id='uniatr' value='{{projeto.uniatr}}'
+                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="uniatr" id='uniatr' value='{{projeto.uniatr}}'
                                         class='form-control'>
                                 </div>
                             </div>
@@ -128,7 +128,7 @@
                             </div>
                             <div class="col">
                                 <div class="input-group input-group-sm mb-1">
-                                    <input type="number" name="uniest" id='uniest' value='{{projeto.uniest}}'
+                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="uniest" id='uniest' value='{{projeto.uniest}}'
                                         class='form-control'>
                                 </div>
                             </div>
@@ -155,7 +155,7 @@
                             </div>
                             <div class="col">
                                 <div class="input-group input-group-sm mb-1">
-                                    <input type="number" name='unimod' id="unimod" value='{{projeto.unimod}}'
+                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name='unimod' id="unimod" value='{{projeto.unimod}}'
                                         class='form-control'>
                                 </div>
                             </div>
@@ -184,7 +184,7 @@
                             <div class="col">
 
                                 <div class="input-group input-group-sm mb-1">
-                                    <input type="number" name='uniinv' id="uniinv" value='{{projeto.uniinv}}'
+                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name='uniinv' id="uniinv" value='{{projeto.uniinv}}'
                                         class="form-control">
                                 </div>
                             </div>
