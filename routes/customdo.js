@@ -80,7 +80,7 @@ router.get('/projetista/:id', ehAdmin, (req, res) => {
 })
 
 router.get('/gestao/:id', ehAdmin, (req, res) => {
-     const {_id} = req.user
+     const { _id } = req.user
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
           Pessoa.findOne({ _id: projeto.funres }).lean().then((projeto_res) => {
                pr = projeto_res
@@ -219,7 +219,7 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
      }
      if (!req.body.uniatr || req.body.uniatr == null || typeof req.body.uniatr == undefined) {
           erros.push({ texto: 'Preencer o valor de unidades do aterramento.' })
-     }     
+     }
      if (!req.body.vlrhri || req.body.vlrhri == null) {
           erros.push({ texto: 'Preencer o valor R$/hora dos instaladores.' })
      }
@@ -266,7 +266,7 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                     projeto.qtdequipe = 3
                     projeto.vlrhri = req.body.vlrhri
                     projeto.uniatr = req.body.uniatr
-                    projeto.trbatr = trbatr           
+                    projeto.trbatr = trbatr
                     projeto.uniest = req.body.uniest
                     projeto.trbest = trbest
                     projeto.unimod = req.body.unimod
@@ -292,12 +292,12 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                                    req.flash('error_msg', 'Hove uma falha interna')
                                    res.redirect('/pessoa/consulta')
                               })
-                                   Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                                        res.render('projeto/customdo/instalacao', { sucesso: sucesso, projeto: projeto, pi:pi, cliente: cliente })
-                                   }).catch((err) => {
-                                        req.flash('error_msg', 'Nenhum cliente encontrado.')
-                                        res.redirect('/pessoa/consulta')
-                                   })
+                              Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                                   res.render('projeto/customdo/instalacao', { sucesso: sucesso, projeto: projeto, pi: pi, cliente: cliente })
+                              }).catch((err) => {
+                                   req.flash('error_msg', 'Nenhum cliente encontrado.')
+                                   res.redirect('/pessoa/consulta')
+                              })
 
                          }).catch((err) => {
                               req.flash('error_msg', 'Hove uma falha interna')
@@ -532,22 +532,23 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                     projeto_id = projeto._id
                     Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
                          Pessoa.findOne({ _id: projeto.funres }).lean().then((pessoa_funres) => {
-                              responsavel = pessoa_funres
-                         }).catch((err) => {
-                              req.flash('error_msg', 'Hove uma falha interna')
-                              res.redirect('/pessoa/consulta')
-                         })
-                         Regime.find({ user: _id }).lean().then((regime) => {
-                              Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                                   //projeto_id = projeto._id
-                                   res.render('projeto/customdo/gestao', { sucesso: sucesso, projeto: projeto, regime: regime, cliente: cliente })
+                              pr = pessoa_funres
+
+                              Regime.find({ user: _id }).lean().then((regime) => {
+                                   Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                                        //projeto_id = projeto._id
+                                        res.render('projeto/customdo/gestao', { sucesso: sucesso, projeto: projeto, regime: regime, cliente: cliente, pr:pr })
+                                   }).catch((err) => {
+                                        req.flash('error_msg', 'Nenhum cliente encontrado.')
+                                        res.redirect('/pessoa/consulta')
+                                   })
                               }).catch((err) => {
-                                   req.flash('error_msg', 'Nenhum cliente encontrado.')
-                                   res.redirect('/pessoa/consulta')
+                                   req.flash('error_msg', 'Hove uma falha interna')
+                                   res.redirect('/projeto/consulta')
                               })
                          }).catch((err) => {
                               req.flash('error_msg', 'Hove uma falha interna')
-                              res.redirect('/projeto/consulta')
+                              res.redirect('/pessoa/consulta')
                          })
                     }).catch((err) => {
                          req.flash('error_msg', 'Hove uma falha interna')
@@ -577,7 +578,7 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
      }
      if (!req.body.uniatr || req.body.uniatr == null || typeof req.body.uniatr == undefined) {
           erros.push({ texto: 'Preencer o valor de unidades do aterramento.' })
-     }       
+     }
      if (!req.body.vlrhri || req.body.vlrhri == null) {
           erros.push({ texto: 'Preencer o valor R$/hora dos instaladores' })
      }
@@ -612,7 +613,7 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
           Projeto.findOne({ _id: req.body.id }).then((projeto) => {
 
                Configuracao.findOne({ _id: projeto.configuracao }).then((config) => {
-                    
+
                     var tothrs
 
                     projeto_id = projeto._id
@@ -643,7 +644,7 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
 
                     projeto.vlrhri = req.body.vlrhri
                     projeto.uniatr = req.body.uniatr
-                    projeto.trbatr = trbatr           
+                    projeto.trbatr = trbatr
                     projeto.uniest = req.body.uniest
                     projeto.trbest = trbest
                     projeto.unimod = req.body.unimod
@@ -674,9 +675,9 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                               })
 
                               Pessoa.find({ funins: 'checked', user: _id }).lean().then((instalador) => {
-                                   
+
                                    Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                                        res.render('projeto/customdo/editinstalacao', { sucesso: sucesso, projeto: projeto, pi:pi, instalador:instalador, cliente: cliente })
+                                        res.render('projeto/customdo/editinstalacao', { sucesso: sucesso, projeto: projeto, pi: pi, instalador: instalador, cliente: cliente })
                                    }).catch((err) => {
                                         req.flash('error_msg', 'Nenhum cliente encontrado.')
                                         res.redirect('/pessoa/consulta')
@@ -974,27 +975,28 @@ router.post('/editar/gestao/', ehAdmin, (req, res) => {
 
                          Pessoa.findOne({ _id: projeto.funres }).lean().then((pessoa_res) => {
                               pr = pessoa_res
+
+                              Regime.find({ user: _id }).lean().then((regime) => {
+                                   Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {
+                                        Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                                             res.render('projeto/customdo/editgestao', { sucesso: sucesso, projeto: projeto, regime: regime, rp: rp, responsavel: responsavel, pr: pr, cliente: cliente })
+                                        }).catch((err) => {
+                                             req.flash('error_msg', 'Nenhum cliente encontrado.')
+                                             res.redirect('/pessoa/consulta')
+                                        })
+                                   }).catch((err) => {
+                                        req.flash('error_msg', 'Hove uma falha interna')
+                                        res.redirect('/pessoa/consulta')
+                                   })
+                              }).catch((err) => {
+                                   req.flash('error_msg', 'Hove uma falha interna')
+                                   res.redirect('/configuracao/consultaregime')
+                              })
                          }).catch((err) => {
                               req.flash('error_msg', 'Hove uma falha interna')
                               res.redirect('/pessoa/consulta')
                          })
 
-                         Regime.find({ user: _id }).lean().then((regime) => {
-                              Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {
-                                   Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                                        res.render('projeto/customdo/editgestao', { sucesso: sucesso, projeto: projeto, regime: regime, rp: rp, responsavel: responsavel, pr: pr, cliente: cliente })
-                                   }).catch((err) => {
-                                        req.flash('error_msg', 'Nenhum cliente encontrado.')
-                                        res.redirect('/pessoa/consulta')
-                                   })
-                              }).catch((err) => {
-                                   req.flash('error_msg', 'Hove uma falha interna')
-                                   res.redirect('/pessoa/consulta')
-                              })
-                         }).catch((err) => {
-                              req.flash('error_msg', 'Hove uma falha interna')
-                              res.redirect('/configuracao/consultaregime')
-                         })
                     }).catch((err) => {
                          req.flash('error_msg', 'Hove uma falha interna')
                          res.redirect('/projeto/consulta')
