@@ -162,7 +162,7 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
             res.redirect('/projeto/consulta')
         })
 
-        if (req.body.id_equipe == 'Nenhuma equipe selecionada') {
+        if (req.body.id_equipe == 'Nenhuma equipe selecionada' || req.body.id_equipe == 'Nenhuma equipe padrão cadastrada') {
             console.log('É manual')
 
             const equipe = {
@@ -720,9 +720,13 @@ router.post('/novo', uploadfoto.single('foto'), ehAdmin, (req, res) => {
     } else {
         documento = req.body.cpf
     }
+    console.log('nome=>'+req.body.nome )
+    console.log('endereco=>'+req.body.endereco )
+    console.log('documento=>'+req.body.documento )
+    console.log('celular=>'+req.body.celular )
+    console.log('email=>'+req.body.email )
 
-    if (req.body.nome == '' || req.body.endereco == '' || req.body.cidade == '' ||
-        req.body.uf == '' || documento == '' || req.body.iniati == '' ||
+    if (req.body.nome == '' || req.body.endereco == '' || documento == '' ||
         req.body.celular == '' || req.body.email == '') {
         erros.push({ texto: 'Todos os campos de descrição são obrigatórios' })
     }
@@ -902,8 +906,13 @@ router.post('/editar', uploadfoto.single('foto'), ehAdmin, (req, res) => {
         documento = req.body.cpf
     }
 
-    if (req.body.nome == '' || req.body.endereco == '' || req.body.cidade == '' ||
-        req.body.uf == '' || documento == '' || req.body.iniati == '' ||
+    console.log('nome=>'+req.body.nome )
+    console.log('endereco=>'+req.body.endereco )
+    console.log('documento=>'+req.body.documento )
+    console.log('celular=>'+req.body.celular )
+    console.log('email=>'+req.body.email )
+
+    if (req.body.nome == '' || req.body.endereco == '' ||  documento == '' || req.body.iniati == '' ||
         req.body.celular == '' || req.body.email == '') {
         erros.push({ texto: 'Todo os campos de descrição são obrigatórios' })
     }
@@ -1012,8 +1021,12 @@ router.post('/editar', uploadfoto.single('foto'), ehAdmin, (req, res) => {
 
             pessoa.nome = req.body.nome
             pessoa.endereco = req.body.endereco
-            pessoa.cidade = req.body.cidade
-            pessoa.uf = req.body.uf
+            if (req.body.uf != '' && req.body.uf != pessoa.uf){
+                pessoa.uf = req.body.uf
+            }
+            if (req.body.cidade != '' && req.body.uf != pessoa.cidade){
+                pessoa.cidade = req.body.cidade
+            }
             pessoa.cnpj = cnpj
             pessoa.cpf = cpf
             pessoa.iniati = req.body.iniati

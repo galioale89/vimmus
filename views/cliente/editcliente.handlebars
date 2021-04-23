@@ -1,3 +1,9 @@
+<style>
+    .icone {
+        font-size: 30px;
+        color: rgb(2, 38, 78);
+    }    
+</style>
 <script>
     function valida_celular() {
         var cel = document.getElementById('celular')
@@ -205,7 +211,6 @@
             <div class="col-md-3 text-end">
                 <label class='fw-bold col-form-label col-form-label-sm mb-1'>Nome Completo: </label><br>
                 <label class='fw-bold col-form-label col-form-label-sm'>Endereço: </label><br>
-                <label class="mb-2" style="color: white">.</label><br>
                 <label class='fw-bold col-form-label col-form-label-sm mb-1'>Estado: </label><br>
                 <label class='fw-bold col-form-label col-form-label-sm mb-1'>Cidade: </label><br>
                 {{#if cliente.cnpj}}
@@ -221,9 +226,6 @@
                 <input type='text' name='nome' class='form-control form-control-sm mb-1' value='{{cliente.nome}}'>
                 <input type='text' name='endereco' class='form-control form-control-sm'
                     value='{{cliente.endereco}}'>
-                <div class="row text-center">
-                    <label class='fw-bold col-form-label col-form-label-sm'>Alterar: </label><br>
-                </div>
                 <div class="row" style="margin-top: 3px">
                     <div class="col-md-5">
                         <label class='col-form-label col-form-label-sm'>{{cliente.uf}}</label>

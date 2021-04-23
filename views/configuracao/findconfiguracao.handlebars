@@ -23,15 +23,17 @@
     </div>
 
     {{#each configuracoes}}
-    <div class="card mb-1" style="width: 80%;margin-left: 100px;">
+    <div class="card mb-1" style="width: 100%">
         <div class="row" style="padding-left: 50px;padding-top: 10px;padding-bottom: 10px;">
-            <div class="col-md-2">
-                <label for='nome' class='fw-bold col-form-label col-form-label-sm'> Slug: </label>
+            <div class="col-md-3">
+                <label for='nome' class='fw-bold col-form-label col-form-label-sm'> Apelido: </label>
                 <label class='col-form-label col-form-label-sm'> {{slug}} </label>
             </div>
             <div class="col-md-7">
                 <label class='fw-bold col-form-label col-form-label-sm'>Minutos | </label>
-                <label class='col-form-label col-form-label-sm'> Estrutura:</label>
+                <label class='col-form-label col-form-label-sm'> Aterramento:</label>
+                <label for='minatr' class='col-form-label col-form-label-sm'> {{minatr}}</label>
+                <label class='col-form-label col-form-label-sm' style="margin-left: 10px;"> Estrutura:</label>
                 <label for='minest' class='col-form-label col-form-label-sm'> {{minest}}</label>
                 <label class='col-form-label col-form-label-sm' style="margin-left: 10px;"> Módulos: </label>
                 <label for='minmod' class='col-form-label col-form-label-sm'> {{minmod}}</label>
@@ -40,7 +42,7 @@
                 <label class='col-form-label col-form-label-sm' style="margin-left: 10px;"> Média Km/litro:</label>
                 <label for='medkmh' class='col-form-label col-form-label-sm'>{{medkmh}} </label>
             </div>
-            <div class="col-md-3 jd-flex justify-content-end">
+            <div class="col-md-2 jd-flex justify-content-end">
                 <div class='btn-group btn-group-sm mx-auto col-6' role='group'>
                     <a href='/configuracao/editconfiguracao/{{_id}}' class='botao'><i class='bi bi-pen icone'></i>
                     </a>

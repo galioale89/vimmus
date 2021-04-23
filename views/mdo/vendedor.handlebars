@@ -23,7 +23,7 @@
             cel.value += '-'
         }
     };
-    
+
     function preview_foto() {
         var imagem = document.querySelector('input[name=foto]').files[0]
         var preview = document.querySelector('img[name=foto]')
@@ -39,23 +39,23 @@
             preview.src = ''
         }
     };
-/*
-    function preview_fotocert() {
-        var imagem = document.querySelector('input[name=fotocert]').files[0]
-        var preview = document.querySelector('img[name=fotocert]')
-
-        var reader = new FileReader()
-        reader.onloadend = function () {
-            preview.src = reader.result
-        }
-
-        if (imagem) {
-            reader.readAsDataURL(imagem)
-        } else {
-            preview.src = ''
-        }
-    };
-*/
+    /*
+        function preview_fotocert() {
+            var imagem = document.querySelector('input[name=fotocert]').files[0]
+            var preview = document.querySelector('img[name=fotocert]')
+    
+            var reader = new FileReader()
+            reader.onloadend = function () {
+                preview.src = reader.result
+            }
+    
+            if (imagem) {
+                reader.readAsDataURL(imagem)
+            } else {
+                preview.src = ''
+            }
+        };
+    */
     function mascara_data() {
         var data = document.getElementById('data')
         var currenTime = new Date()
@@ -109,7 +109,7 @@
                 numdoc == "99999999999999") {
                 cnpj.value = ''
             }
-            
+
             // Valida DVs
             var tamanho = numdoc.length - 2
             var numeros = numdoc.substring(0, tamanho)
@@ -196,7 +196,18 @@
 
         }
     };
+    window.onload = function () {
 
+        var estados = document.getElementById('estado');
+        var cidades = document.getElementById('cidade');
+
+        new dgCidadesEstados({
+            estado: estados,
+            cidade: cidades,
+            estadoVal: '<%=Request("estado") %>',
+            cidadeVal: '<%=Request("cidade") %>'
+        });
+    };   
 </script>
 
 <form action='/pessoa/novo' method='post' enctype="multipart/form-data">
@@ -219,67 +230,36 @@
             </div>
         </div>
         <div class="row mt-2">
-            <div class="col-md-7">
+            <div class="col-md-7 text-end">
                 <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Nome Completo: </label>
-                    <div class="col-md-8">
-                        <input type='text' name='nome' class='form-control form-control-sm'>
+                    <div class="col-md-3">
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Nome Completo: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Endereço: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Estado: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Cidade: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>CNPJ: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>CPF: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Inicio Atividades: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Celular: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>E-mail: </label>
                     </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Endereço: </label>
-                    <div class="col-md-8">
-                        <input type='text' name='endereco' class='form-control form-control-sm'>
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Cidade: </label>
-                    <div class="col-md-8">
-                        <input type='text ' name='cidade' class='form-control form-control-sm'>
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Estado: </label>
-                    <div class="col-md-8">
-                        <input type='text ' name='uf' class='form-control form-control-sm'>
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>CNPJ: </label>
-                    <div class="col-md-8">
-                        <input type='text' class='form-control form-control-sm' maxlength="18" autocomplete="off"
+                    <div class="col-md-9">
+                        <input type='text' name='nome' class='form-control form-control-sm mb-1'>
+                        <input type='text' name='endereco' class='form-control form-control-sm mb-1'>
+                        <select id='estado' name='uf' class='form-select form-select-sm mt-1 mb-1'></select>
+                        <select id='cidade' name='cidade' class='form-select form-select-sm mt-1 mb-1'></select>
+                        <input type='text' class='form-control form-control-sm mb-1' maxlength="18" autocomplete="off"
                             id='cnpj' name='cnpj' onkeyup="valida_cnpj()">
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>CPF: </label>
-                    <div class="col-md-8">
-                        <input type='text' class='form-control form-control-sm' maxlength="14" autocomplete="off"
+                        <input type='text' class='form-control form-control-sm mb-1' maxlength="14" autocomplete="off"
                             id='cpf' name='cpf' onkeyup="valida_cpf()">
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Inicio Atividades: </label>
-                    <div class="col-md-8">
-                        <input type='text' class='form-control form-control-sm' autocomplete="off" maxlength="7"
+                        <input type='text' class='form-control form-control-sm mb-1' autocomplete="off" maxlength="7"
                             placeholder='__/____' id='data' name='iniati' maxlength="8" onkeyup="mascara_data()">
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>Celular: </label>
-                    <div class="col-md-8">
-                        <input type='text ' name='celular' id='celular' class='form-control form-control-sm'
+                        <input type='text ' name='celular' id='celular' class='form-control form-control-sm mb-1'
                             maxlength="16" autocomplete="off" onkeyup="valida_celular()">
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm col-md-3'>E-mail: </label>
-                    <div class="col-md-8">
-                        <input type='text' name='email' class='form-control form-control-sm'>
+                        <input type='text' name='email' class='form-control form-control-sm mb-1'>
                     </div>
                 </div>
             </div>
-
             <div class="col-md-5">
                 <div class="row">
                     <div class="col-md-5">

@@ -209,17 +209,19 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
      var erros = []
 
      if (!req.body.uniest || req.body.uniest == "" || typeof req.body.uniest == undefined) {
-          erros.push({ texto: 'Preencer o valor de unidades dos equipamentos' })
+          erros.push({ texto: 'Preencer o valor de unidades dos equipamentos.' })
      }
      if (!req.body.unimod || req.body.unimod == null || typeof req.body.unimod == undefined) {
-          erros.push({ texto: 'Preencer o valor de unidades dos modulos' })
+          erros.push({ texto: 'Preencer o valor de unidades dos modulos.' })
      }
      if (!req.body.uniinv || req.body.uniinv == null || typeof req.body.uniinv == undefined) {
-          erros.push({ texto: 'Preencer o valor de unidades dos inversores' })
+          erros.push({ texto: 'Preencer o valor de unidades dos inversores.' })
      }
-
+     if (!req.body.uniatr || req.body.uniatr == null || typeof req.body.uniatr == undefined) {
+          erros.push({ texto: 'Preencer o valor de unidades do aterramento.' })
+     }     
      if (!req.body.vlrhri || req.body.vlrhri == null) {
-          erros.push({ texto: 'Preencer o valor R$/hora dos instaladores' })
+          erros.push({ texto: 'Preencer o valor R$/hora dos instaladores.' })
      }
 
      if (erros.length > 0) {
@@ -245,21 +247,25 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
 
                Configuracao.findOne({ _id: projeto.configuracao }).then((config) => {
 
+                    var trbatr = Math.round(parseFloat(req.body.uniatr) * (parseFloat(config.minatr) / 60))
                     var trbest = Math.round(parseFloat(req.body.uniest) * (parseFloat(config.minest) / 60))
                     var trbmod = Math.round(parseFloat(req.body.unimod) * (parseFloat(config.minmod) / 60))
                     var trbinv = Math.round(parseFloat(req.body.uniinv) * (parseFloat(config.mininv) / 60))
 
+                    var totatr = Math.round(parseFloat(trbatr) * parseFloat(req.body.vlrhri))
                     var totest = Math.round(parseFloat(trbest) * parseFloat(req.body.vlrhri))
                     var totmod = Math.round(parseFloat(trbmod) * parseFloat(req.body.vlrhri))
                     var totinv = Math.round(parseFloat(trbinv) * parseFloat(req.body.vlrhri))
 
-                    var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv)).toFixed(2)
+                    var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr)).toFixed(2)
 
-                    var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv))
+                    var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr))
 
                     var sucesso = []
 
                     projeto.vlrhri = req.body.vlrhri
+                    projeto.uniatr = req.body.uniatr
+                    projeto.trbatr = trbatr           
                     projeto.uniest = req.body.uniest
                     projeto.trbest = trbest
                     projeto.unimod = req.body.unimod
@@ -268,6 +274,7 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                     projeto.trbinv = trbinv
                     projeto.totest = totest
                     projeto.totmod = totmod
+                    projeto.totatr = totatr
                     projeto.totinv = totinv
                     projeto.totint = totint
                     projeto.trbint = trbint
@@ -567,6 +574,9 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
      if (!req.body.uniinv || req.body.uniinv == null || typeof req.body.uniinv == undefined) {
           erros.push({ texto: 'Preencer o valor de unidades dos inversores' })
      }
+     if (!req.body.uniatr || req.body.uniatr == null || typeof req.body.uniatr == undefined) {
+          erros.push({ texto: 'Preencer o valor de unidades do aterramento.' })
+     }       
      if (!req.body.vlrhri || req.body.vlrhri == null) {
           erros.push({ texto: 'Preencer o valor R$/hora dos instaladores' })
      }
@@ -608,17 +618,19 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
 
                     //Edição dos Custos de Instalação
 
+                    var trbatr = Math.round(parseFloat(req.body.uniatr) * (parseFloat(config.minatr) / 60))
                     var trbest = Math.round(parseFloat(req.body.uniest) * (parseFloat(config.minest) / 60))
                     var trbmod = Math.round(parseFloat(req.body.unimod) * (parseFloat(config.minmod) / 60))
                     var trbinv = Math.round(parseFloat(req.body.uniinv) * (parseFloat(config.mininv) / 60))
 
+                    var totatr = Math.round(parseFloat(trbatr) * parseFloat(req.body.vlrhri))
                     var totest = Math.round(parseFloat(trbest) * parseFloat(req.body.vlrhri))
                     var totmod = Math.round(parseFloat(trbmod) * parseFloat(req.body.vlrhri))
                     var totinv = Math.round(parseFloat(trbinv) * parseFloat(req.body.vlrhri))
 
-                    var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv)).toFixed(2)
+                    var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr)).toFixed(2)
 
-                    var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv))
+                    var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr))
 
                     tothrs = parseFloat(trbint)
                     if (projeto.trbpro != null) {
@@ -629,20 +641,20 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                     }
 
                     projeto.vlrhri = req.body.vlrhri
+                    projeto.uniatr = req.body.uniatr
+                    projeto.trbatr = trbatr           
                     projeto.uniest = req.body.uniest
                     projeto.trbest = trbest
                     projeto.unimod = req.body.unimod
                     projeto.trbmod = trbmod
                     projeto.uniinv = req.body.uniinv
                     projeto.trbinv = trbinv
-
                     projeto.totest = totest
                     projeto.totmod = totmod
                     projeto.totinv = totinv
+                    projeto.totatr = totatr
                     projeto.totint = totint
-
                     projeto.trbint = trbint
-                    projeto.tothrs = tothrs
 
                     if (req.body.checkIns != null) {
                          projeto.funins = req.body.funins

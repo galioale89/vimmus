@@ -72,22 +72,34 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
-    uniest: {
+    trbatr: {
         type: Number,
         require: false
     },    
+    uniatr: {
+        type: Number,
+        require: false
+    },        
+    totatr: {
+        type: Number,
+        require: false
+    },     
     trbest: {
+        type: Number,
+        require: false
+    }, 
+    uniest: {
         type: Number,
         require: false
     }, 
     totest: {
          type: Number,
          require: false
-     },
+     },  
     unimod: {
         type: Number,
         require: false
-    },    
+    },       
     trbmod: {
         type: Number,
         require: false
@@ -95,15 +107,15 @@ const Projeto = new Schema({
     totmod: {
         type: Number,
         require: false
-    },
-    uniinv: {
-        type: Number,
-        require: false
-    },    
+    },  
     trbinv: {
         type: Number,
         require: false
     }, 
+    uniinv: {
+        type: Number,
+        require: false
+    },     
     totinv: {
         type: Number,
         require: false
@@ -570,6 +582,14 @@ const Projeto = new Schema({
         type: Boolean,
         require: true
     },
+    dataIns: {
+        type: String,
+        require: true
+    },    
+    valDataIns: {
+        type: String,
+        require: true
+    },        
     dataini: {
         type: String,
         require: true

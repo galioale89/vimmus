@@ -17,7 +17,7 @@
                 <th style="font-size: 20px;">Projetos Realizados</th>
                 <th style="font-size: 20px;width: 200px;">Total kWp</th>
                 <th colspan="2" style="font-size: 20px;">Dispêndios Totais/kWp</th>
-                <th style="font-size: 20px;">Faturado/kWp</th>
+                <th style="font-size: 20px;">Total Projeto/kWp</th>
                 <th style="font-size: 20px;">% Lucro Liquido</th>
             </tr>
             <tr>
@@ -53,7 +53,7 @@
                         <td>Dipêndios Totais</td>
                     </tr>
                     <tr>
-                        <td>R$ {{medkwp_totequ}}</td>
+                        <td>R$ {{medkwp_totkit}}</td>
                         <td>R$ {{medkwp_totcop}}</td>
                         <td>R$ {{medkwp_totcom}}</td>
                         <td>R$ {{medkwp_totimp}}</td>
@@ -62,7 +62,7 @@
                     </tr>
                     <td>
                         <div class="sessao-dash textoper" style="margin-left: 5px;">
-                            <label>{{per_totequ}}%</label>
+                            <label>{{per_totkit}}%</label>
                         </div>
                     </td>
                     <td>
@@ -104,7 +104,6 @@
 
                     </tr>
                     <tr>
-
                         <td>
                             <div class="sessao-dash-cop textoper" style="margin-inline-start: 5px;">
                                 <label>{{per_totint}}%</label>
@@ -131,6 +130,21 @@
                             </div>
                         </td>
                     </tr>
+                    <tr>
+                        <td class="text-end">Cercamento</td>
+                        <td>R$ {{medkwp_cercamento}}</td>
+                        <td>{{per_cercamento}} %</td>
+                    </tr>
+                    <tr>
+                        <td class="text-end">Poste Condução</td>
+                        <td>R$ {{medkwp_postecond}}</td>
+                        <td>{{per_postecond}} %</td>
+                    </tr>
+                    <tr>
+                        <td class="text-end">Outros</td>
+                        <td>R$ {{medkwp_ocp}}</td>
+                        <td>{{per_ocp}} %</td>
+                    </tr>                                        
                 </table>
 
             </td>

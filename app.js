@@ -103,10 +103,10 @@ app.get('/beneficios', (req, res) => {
 })
 //Direcionando para página principal
 app.get('/menu', ehAdmin, (req, res) => {
-  var cont = 0
   var perVlr = 0
-  var perVlrMed = 0
-  var perNfsMed = 0
+  var somaLL = 0
+  var somaVF = 0
+  var somaVT = 0
   var perRealizado = 0
 
   const { _id } = req.user
@@ -116,14 +116,14 @@ app.get('/menu', ehAdmin, (req, res) => {
       for (i = 0; i < prj_vlr.length; i++) {
         perVlr = prj_vlr[i]
         if (perVlr.parLiqVlr != undefined && perVlr.parLiqNfs != undefined) {
-          perVlrMed = parseFloat(perVlrMed) + parseFloat(perVlr.parLiqVlr)
-          perNfsMed = parseFloat(perNfsMed) + parseFloat(perVlr.parLiqNfs)
+          somaLL = parseFloat(somaLL) + parseFloat(perVlr.lucroLiquido)
+          somaVF = parseFloat(somaVF) + parseFloat(perVlr.vlrNFS)
+          somaVT = parseFloat(somaVT) + parseFloat(perVlr.valor)
         }
       }
-      perVlrMed = (parseFloat(perVlrMed) / parseFloat(prj_vlr.length)).toFixed(1)
-      perNfsMed = (parseFloat(perNfsMed) / parseFloat(prj_vlr.length)).toFixed(1)
+      var perVlrMed = (parseFloat(somaLL) / parseFloat(somaVT) * 100).toFixed(1)
+      var perNfsMed = (parseFloat(somaLL) / parseFloat(somaVF) * 100).toFixed(1)
       const { _id } = req.user
-      const { fantasia } = req.user
       Projeto.find({ foiRealizado: false, user: _id }).sort({ dataord: 'asc' }).lean().then((dataord) => {
         var numprj = projetos.length
         Projeto.find({ foiRealizado: true, user: _id }).then((foiRealizado) => {

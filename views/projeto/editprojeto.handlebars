@@ -24,6 +24,40 @@
     }
 </style>
 <script>
+
+    function mascara_datains() {
+        var data = document.getElementById('valDataIns')
+        var datains = document.getElementById('datains')
+        var dataini = document.getElementById('dataini')
+
+        var novadata = data.value
+        novadata = novadata.replace(novadata.substring(4, 5), "")
+        novadata = novadata.replace(novadata.substring(6, 7), "")
+
+        var dia = novadata.substring(6, 8)
+        var mes = novadata.substring(4, 6)
+        var ano = novadata.substring(0, 4)
+        var dataNova = ano + mes + dia
+
+        var dataBase = dataini.value
+        var dia1 = dataBase.substring(0, 2)
+        var mes1 = dataBase.substring(3, 5)
+        var ano1 = dataBase.substring(6, 10)
+        dataBase = ano1 + mes1 + dia1
+
+        var datanova = parseFloat(dataNova)
+        var database = parseFloat(dataBase)
+
+        var salvaDataIns = dia + '/' + mes + '/' + ano
+
+        if (datanova < database) {
+            data.value = ''
+            alert('A data de início da instalação deve ser maior ou igual a data de início do projeto.')
+        } else {
+            datains.value = salvaDataIns
+        }
+    };
+
     function mascara_dataprev() {
         var data = document.getElementById('valDataPrev')
         var dataprev = document.getElementById('dataprev')
@@ -243,41 +277,39 @@
                     <div class="col-md-3 text-end">
                         <label for="nome" class=" fw-bold col-form-label col-form-label-sm"> Nome do Projeto:
                         </label><br>
-                        <label for="cliente" class="fw-bold col-form-label col-form-label-sm mt-1 mb-2"> Cliente:
-                        </label><br><br>
-                        <label for="estado" class="fw-bold col-form-label col-form-label-sm mb-2"> Estado:
+                        <label for="cliente" class="fw-bold col-form-label col-form-label-sm mt-1"> Cliente:
+                        </label><br>
+                        <label for="estado" class="fw-bold col-form-label col-form-label-sm"> Estado:
                         </label><br>
                         <label for="cidade" class="fw-bold col-form-label col-form-label-sm mb-2"> Cidade:
                         </label><br>
-                        <label for="vlrorc" class="fw-bold  col-form-label col-form-label-sm mb-2"> Valor Orçado
+                        <label for="vlrorc" class="fw-bold  col-form-label col-form-label-sm mb-2"> Valor Orçado:
                         </label><br>
                         <label for="vlreqi" class=" fw-bold col-form-label col-form-label-sm mb-2"> Valor Kit
                             Gerador: </label><br>
                         <label for="ptnprj" class=" fw-bold col-form-label col-form-label-sm mb-2"> Potência do
                             Projeto:</label>
+                        <label class=" fw-bold col-form-label col-form-label-sm mb-2"> Data de Instalação:</label>
                     </div>
                     <div class="col-md-9">
                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text" name="nome" id="nome"
                             value='{{projeto.nome}}' class="form-control form-control-sm mt-1">
                         <label class="col-form-label col-form-label-sm">{{cliente.nome}}</label>
-                        <div class="row text-center">
-                            <div style="padding-left: 91%;">
-                                <label class='fw-bold col-form-label col-form-label-sm'>Alterar </label><br>
-                            </div>
-                        </div>
+
                         <div class="row">
                             <div class="col-md-5">
                                 <label class='col-form-label col-form-label-sm'>{{projeto.uf}}</label>
                             </div>
                             <div class="col-md-6">
                                 <select {{#if projeto.orcado}}{{else}}disabled{{/if}} id="estado" name='uf'
-                                    class='form-select form-select-sm mb-2'>
+                                    class='form-select form-select-sm'>
                                 </select>
                             </div>
                             <div class="col-md-1">
-                                <div class="form-check">
-                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='checkbox'
-                                        class='form-check-input' name='checkLocal'>
+                                <div class="row text-center">
+                                    <div style="padding-left: 0;">
+                                        <label class='fw-bold col-form-label col-form-label-sm'>Alterar </label><br>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -290,6 +322,12 @@
                                     class='form-select form-select-sm mb-2'>
                                 </select>
                             </div>
+                            <div class="col-md-1">
+                                <div class="form-check">
+                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='checkbox'
+                                        class='form-check-input' name='checkLocal'>
+                                </div>
+                            </div>
                         </div>
                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="valor" id="valor"
                             value='{{projeto.valor}}' class="form-control form-control-sm mb-2" placeholder="R$"
@@ -300,6 +338,11 @@
                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="potencia" id="potencia"
                             value='{{projeto.potencia}}' class="form-control form-control-sm mb-2" placeholder="kWp"
                             aria-placeholder="R$">
+                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='form-control form-control-sm'
+                            type='date' name='valDataIns' id='valDataIns' value='{{projeto.valDataIns}}'
+                            onchange="mascara_datains()">
+                        <input type="hidden" name='datains' id='datains' value=''>
+                        <input type="hidden" name='dataini' id='dataini' value='{{projeto.dataini}}'>
                     </div>
                 </div>
                 <div class="card mb-2">

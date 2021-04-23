@@ -310,7 +310,7 @@ router.get('/remover/:id', ehAdmin, (req, res) => {
                          Realizado.findOneAndRemove({ projeto: req.params.id }).then(() => {
                               Equipe.findOneAndRemove({ projeto: req.params.id }).then(() => {
                                    req.flash('success_msg', 'Projeto removido com sucesso')
-                                   res.redirect('/menu')
+                                   res.redirect('/projeto/consulta')
                               }).catch(() => {
                                    req.flash('error_msg', 'Não foi possível remover o realizado projeto.')
                                    res.redirect('/projeto/consulta')
@@ -355,22 +355,22 @@ router.post("/novo", ehAdmin, (req, res) => {
           var vlrkit
 
           //--Rotina do cadastro dos detalhes
-          var unidadeEqu
-          var unidadeEst
-          var unidadeCer
-          var unidadePos
-          var unidadeDis
-          var unidadeDPS
-          var unidadeCab
-          var unidadeOcp
-          var vlrUniEqu
-          var vlrUniEst
-          var vlrUniCer
-          var vlrUniPos
-          var vlrUniDis
-          var vlrUniDPS
-          var vlrUniCab
-          var vlrUniOcp
+          var unidadeEqu = 0
+          var unidadeEst = 0
+          var unidadeCer = 0
+          var unidadePos = 0 
+          var unidadeDis = 0
+          var unidadeDPS = 0
+          var unidadeCab = 0
+          var unidadeOcp = 0
+          var vlrUniEqu = 0
+          var vlrUniEst = 0
+          var vlrUniCer = 0
+          var vlrUniPos = 0
+          var vlrUniDis = 0
+          var vlrUniDPS = 0
+          var vlrUniCab = 0
+          var vlrUniOcp = 0
           var valorEqu = 0
           var valorEst = 0
           var valorCer = 0
@@ -409,7 +409,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                }
           }
           //Valida valor Cercamento Detalhado
-          if (req.body.temCercamento != null) {
+          if (req.body.cercamento != null) {
                if (req.body.valorCer != '') {
                     unidadeCer = 0
                     vlrUniCer = 0
@@ -424,7 +424,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                }
           }
           //Valida valor Postes Detalhado
-          if (req.body.temPosteCond != null) {
+          if (req.body.poste != null) {
                if (req.body.valorPos != '') {
                     unidadePos = 0
                     vlrUniPos = 0
@@ -506,7 +506,7 @@ router.post("/novo", ehAdmin, (req, res) => {
           valor = req.body.valor
 
           //Valida valor do equipameento
-          if (req.body.equipamento == '' || parseFloat(req.body.equipamento) == 0) {
+          if (req.body.vlrEqu != '' || parseFloat(req.body.vlrEqu) != 0) {
                vlrequ = vlrTotal
                vlrkit = parseFloat(valorEqu) + parseFloat(valorEst) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab)
           } else {
@@ -665,6 +665,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                        const detalhado = {
                                                             projeto: projeto._id,
                                                             vlrTotal: vlrequ,
+                                                            checkUni: checkUni,
                                                             unidadeEqu: unidadeEqu,
                                                             unidadeEst: unidadeEst,
                                                             unidadeCer: unidadeCer,
@@ -895,22 +896,22 @@ router.post('/edicao', ehAdmin, (req, res) => {
                               estsolo = 'checked'
                          }
                          //--Rotina do cadastro dos detalhes
-                         var unidadeEqu
-                         var unidadeEst
-                         var unidadeCer
-                         var unidadePos
-                         var unidadeDis
-                         var unidadeDPS
-                         var unidadeCab
-                         var unidadeOcp
-                         var vlrUniEqu
-                         var vlrUniEst
-                         var vlrUniCer
-                         var vlrUniPos
-                         var vlrUniDis
-                         var vlrUniDPS
-                         var vlrUniCab
-                         var vlrUniOcp
+                         var unidadeEqu = 0
+                         var unidadeEst = 0
+                         var unidadeCer = 0
+                         var unidadePos = 0
+                         var unidadeDis = 0
+                         var unidadeDPS = 0
+                         var unidadeCab = 0
+                         var unidadeOcp = 0
+                         var vlrUniEqu = 0
+                         var vlrUniEst = 0
+                         var vlrUniCer = 0 
+                         var vlrUniPos = 0
+                         var vlrUniDis = 0 
+                         var vlrUniDPS = 0
+                         var vlrUniCab = 0
+                         var vlrUniOcp = 0
                          var valorEqu = 0
                          var valorEst = 0
                          var valorCer = 0
@@ -954,7 +955,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          }
 
                          //Valida valor Cercamento Detalhado
-                         if (req.body.temCercamento != null) {
+                         if (req.body.cercamento != null) {
                               if (req.body.valorCer != '' && req.body.checkUni == null) {
                                    unidadeCer = 0
                                    vlrUniCer = 0
@@ -969,7 +970,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          }
 
                          //Valida valor Postes Detalhado
-                         if (req.body.temPosteCond != null) {
+                         if (req.body.poste != null) {
                               if (req.body.valorPos != '' && req.body.checkUni == null) {
                                    unidadePos = 0
                                    vlrUniPos = 0
@@ -1032,8 +1033,12 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          }
                          //console.log('valorEqu=>' + valorEqu)
                          //console.log('valorEst=>' + valorEst)
-                         //console.log('valorCer=>' + valorCer)
-                         //console.log('valorPos=>' + valorPos)
+                         console.log('unidadeCer=>' + unidadeCer)
+                         console.log('unidadePos=>' + unidadePos)
+                         console.log('vlrUniCer=>' + vlrUniCer)
+                         console.log('vlrUniPos=>' + vlrUniPos)
+                         console.log('valorCer=>' + valorCer)
+                         console.log('valorPos=>' + valorPos)
                          //console.log('valorDis=>' + valorDis)
                          //console.log('valorDPS=>' + valorDPS)
                          //console.log('valorCab=>' + valorCab)
@@ -1114,7 +1119,12 @@ router.post('/edicao', ehAdmin, (req, res) => {
                               projeto.dataprev = req.body.dataprev
                               projeto.valDataPrev = req.body.valDataPrev
                               projeto.ultdat = projeto.dataprev
+                              projeto.dataord = projeto.datord
                          }
+
+                         //Alterar data de Início da Instalação
+                         projeto.dataIns = req.body.datains
+                         projeto.valDataIns = req.body.valDataIns
                          //Altera o vendedor                          
                          var percom
                          var vendedor
@@ -2452,6 +2462,8 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               totali = 0
                          }
                          if (projeto.ehDireto == true) {
+                              tothtl = 0
+                              totcmb = 0
                               if (req.body.totdes != '') {
                                    totdes = req.body.totdes
                               } else {
@@ -2504,6 +2516,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                                    postecond = req.body.postecond
                               }
                          }
+                         
                          console.log('totint=>' + totint)
                          console.log('totges=>' + totges)
                          console.log('totpro=>' + totpro)
@@ -2541,7 +2554,8 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          console.log('vlrPrjNFS=>' + vlrPrjNFS)
 
                          var prjLucroBruto = parseFloat(projeto.valor) - parseFloat(vlrkit) - parseFloat(totalPlano)                              
-                         prjLucroBruto = prjLucroBruto.toFixed(2) 
+                         prjLucroBruto = prjLucroBruto.toFixed(2)  
+
 
                          //Valida a comissão e calcula o lucroBruto
                          var vlrcom
