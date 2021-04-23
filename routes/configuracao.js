@@ -180,6 +180,7 @@ router.post('/novo', ehAdmin, (req, res) => {
         user: _id,
         slug: req.body.slug,
         potencia: req.body.potencia,
+        minatr: req.body.minatr,
         minest: req.body.minest,
         minmod: req.body.minmod,
         mininv: req.body.mininv,
@@ -208,6 +209,7 @@ router.post('/editconfiguracao/', ehAdmin, (req, res) => {
     Configuracao.findOne({ _id: req.body.id }).then((configuracao) => {
         configuracao.slug = req.body.slug
         configuracao.potencia = req.body.potencia
+        configuracao.minatr = req.body.minatr
         configuracao.minest = req.body.minest
         configuracao.minmod = req.body.minmod
         configuracao.mininv = req.body.mininv
