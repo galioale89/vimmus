@@ -506,7 +506,7 @@ router.post("/novo", ehAdmin, (req, res) => {
           valor = req.body.valor
 
           //Valida valor do equipameento
-          if (req.body.vlrEqu != '' || parseFloat(req.body.vlrEqu) != 0) {
+          if (parseFloat(valorEqu) != 0) {
                vlrequ = vlrTotal
                vlrkit = parseFloat(valorEqu) + parseFloat(valorEst) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab)
           } else {
@@ -765,11 +765,12 @@ router.post('/configurar/:id', ehAdmin, (req, res) => {
                projeto.save().then(() => {
                     var sucesso = []
                     sucesso.push({ texto: 'Projeto configurado com sucesso.' })
+                    console.log('salvou')
 
-                    Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
-                         Pessoa.find({ funins: 'checked', user: _id }).lean().then((instalador) => {
+                    Projeto.findOne({ _id: req.params.id }).lean().then((projeto_find) => {
+                         Pessoa.find({ funpro: 'checked', user: _id }).lean().then((projetista) => {
 
-                              res.render("projeto/customdo/instalacao", { sucesso: sucesso, projeto: projeto, instalador: instalador, cliente: cliente })
+                              res.render("projeto/customdo/projetista", { sucesso: sucesso, projeto: projeto_find, projetista: projetista, cliente: cliente })
 
                          }).catch((err) => {
                               req.flash('error_msg', 'Houve um problema interno.')

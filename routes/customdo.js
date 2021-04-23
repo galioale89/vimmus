@@ -263,6 +263,7 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
 
                     var sucesso = []
 
+                    projeto.qtdequipe = 3
                     projeto.vlrhri = req.body.vlrhri
                     projeto.uniatr = req.body.uniatr
                     projeto.trbatr = trbatr           

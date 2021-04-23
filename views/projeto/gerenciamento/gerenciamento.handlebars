@@ -37,12 +37,12 @@
     </div>
 
     <div class="btn-group  col-12 mx-auto">
-        <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"></i>
-            Instalação</a>
         <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"></i>
             Projetista</a>
         <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
             Gestão</a>
+        <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"></i>
+            Instalação</a>            
         <a href="/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i class="bi bi-puzzle"></i>
             Gerenciamento</a>
         <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-calculator"></i>
@@ -57,16 +57,11 @@
             <div class="col-md-7">
                 <div class="row">
                     <div class="col-md-6 card">
-                        <div class="row" style="padding: 5px">
-                            <a href='/pessoa/formaequipe/{{projeto._id}}' class='btn btn-sm btn-primary'> <i class="bi bi-people"></i> Equipe </a>
-                        </div>
-                        <div class="row mt-1 text-end">
+                        <div class="row mt-3 text-end">
                             <label class="fw-bold col-sm-5 col-form-label col-form-label-sm">Equipe:
                             </label>
                             <div class="col-sm-6">
-                                <div class="input-group input-group-sm mb-1">
-                                    <input type="text" name="equipe" value='{{projeto.qtdequipe}}' class="form-control">
-                                </div>
+                                <label class="col-form-label col-form-label-sm">{{projeto.qtdequipe}}</label>
                             </div>
                             <label for="tothrs" class="fw-bold col-sm-5 col-form-label col-form-label-sm">Horas Projeto:
                             </label>

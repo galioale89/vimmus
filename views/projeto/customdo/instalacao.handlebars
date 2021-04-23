@@ -37,13 +37,13 @@
         <input type="hidden" name="id" value='{{projeto._id}}'>
 
         <div class="btn-group  col-12 mx-auto'">
-            <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i
-                    class="bi bi-tools"></i>
-                Instalação</a>
             <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"></i>
                 Projetista</a>
             <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
                 Gestão</a>
+            <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i
+                    class="bi bi-tools"></i>
+                Instalação</a>                
             <a href="/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-puzzle"></i>
                 Gerenciamento</a>
             <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i
@@ -59,8 +59,8 @@
                                 </label>
                             </div>
                             <div class="col-md-5">
-                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="vlrhri" id='vlrhri' value='{{projeto.vlrhri}}'
-                                    class='form-control form-control-sm'>
+                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="vlrhri"
+                                    id='vlrhri' value='{{projeto.vlrhri}}' class='form-control form-control-sm'>
                             </div>
                         </div>
                     </div>
@@ -71,7 +71,8 @@
                             </div>
                             {{#if projeto.funins}}
                             <div class="col-md-8">
-                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='hidden' nome='pinome' value='{{pi.nome}}'>
+                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='hidden' nome='pinome'
+                                    value='{{pi.nome}}'>
                                 <label class='col-form-label col-form-label-sm'>{{pi.nome}}</label>
                             </div>
                             {{else}}
@@ -89,8 +90,18 @@
                     </div>
                 </div>
                 <div class="row mt-2">
-                    <div class="card" style="padding: 10px; padding-top: 22px; padding-bottom: 22px;">
+                    <div class="card" style="padding: 7px;">
                         <div class="row">
+                            <div class="row mb-3">
+                                <div class='col-sm-3'>
+                                    <a href='/pessoa/formaequipe/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
+                                            class="bi bi-people"></i> Equipe de Instalação </a>
+                                </div>
+                                <div class='col-md-3' style="border:rgb(68, 96, 238) 1px solid;border-radius: 5px;">
+                                    <label class="fw-bold col-form-label col-form-label-sm"> {{#if projeto.qtdequipe}}{{projeto.qtdequipe}}{{else}}0{{/if}}
+                                        pessoas na equipe</label>
+                                </div>
+                            </div>                            
                             <div class="col-md-3 text-end">
                                 <label for="aterramento" class="col-form-label col-form-label-sm">Atividades</label><br>
                                 <label for="aterramento"
@@ -99,8 +110,8 @@
                             <div class="col">
                                 <label for="unidade" class="col-sm-10 col-form-label col-form-label-sm">Unidade</label>
                                 <div class="input-group input-group-sm mb-1">
-                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="uniatr" id='uniatr' value='{{projeto.uniatr}}'
-                                        class='form-control'>
+                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="uniatr"
+                                        id='uniatr' value='{{projeto.uniatr}}' class='form-control'>
                                 </div>
                             </div>
                             <div class="col">
@@ -128,8 +139,8 @@
                             </div>
                             <div class="col">
                                 <div class="input-group input-group-sm mb-1">
-                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="uniest" id='uniest' value='{{projeto.uniest}}'
-                                        class='form-control'>
+                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="uniest"
+                                        id='uniest' value='{{projeto.uniest}}' class='form-control'>
                                 </div>
                             </div>
                             <div class="col">
@@ -155,8 +166,8 @@
                             </div>
                             <div class="col">
                                 <div class="input-group input-group-sm mb-1">
-                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name='unimod' id="unimod" value='{{projeto.unimod}}'
-                                        class='form-control'>
+                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name='unimod'
+                                        id="unimod" value='{{projeto.unimod}}' class='form-control'>
                                 </div>
                             </div>
                             <div class="col">
@@ -184,8 +195,8 @@
                             <div class="col">
 
                                 <div class="input-group input-group-sm mb-1">
-                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name='uniinv' id="uniinv" value='{{projeto.uniinv}}'
-                                        class="form-control">
+                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name='uniinv'
+                                        id="uniinv" value='{{projeto.uniinv}}' class="form-control">
                                 </div>
                             </div>
                             <div class="col">

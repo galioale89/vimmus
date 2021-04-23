@@ -162,10 +162,11 @@ router.get('/editar/gerenciamento/:id', ehAdmin, (req, res) => {
 router.post('/', ehAdmin, (req, res) => {
     const { _id } = req.user
     var erros = []
-
+    /*
     if (req.body.equipe == '') {
         erros.push({ texto: 'Prencheer valor de equipe de instalação de no mínimo 1 integrante.' })
     }
+    */
     //Valida campos já salvos
     Projeto.findOne({ _id: req.body.id }).then((projeto) => {
         if (parseFloat(projeto.trbint) == 0 || projeto.trbint == null) {
@@ -211,7 +212,7 @@ router.post('/', ehAdmin, (req, res) => {
                     }
 
                     //Definindo o número de dias de obras
-                    var equipe = req.body.equipe
+                    var equipe = projeto.qtdequipe
                     projeto.qtdequipe = equipe
 
                     var hrsequ = parseFloat(equipe) * 6
@@ -442,11 +443,11 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
     const { _id } = req.user
     var erros = []
     var sucesso = []
-
+    /*
     if (req.body.equipe == '') {
         erros.push({ texto: 'Prencheer valor de equipe de instalação de no mínimo 1 integrante.' })
     }
-
+    */
     //Valida total dos custos já salvos para aplicar as informações de gerenciamento
     Projeto.findOne({ _id: req.body.id }).then((projeto_valida) => {
         if (parseFloat(projeto_valida.trbint) == 0 || projeto_valida.trbint == null) {
@@ -496,7 +497,7 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                     }
 
                     //Definindo o número de dias de obras
-                    var equipe = req.body.equipe
+                    var equipe = projeto.qtdequipe
                     projeto.qtdequipe = equipe
 
                     var hrsequ = parseFloat(equipe) * 6

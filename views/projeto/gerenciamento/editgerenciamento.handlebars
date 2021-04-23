@@ -26,46 +26,34 @@
         <div class='btn-group col-12 mx-auto'>
             <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'> <i
                     class="bi bi-house"></i>Projeto</a>
-            <a href="/customdo/editar/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                    class="bi bi-tools"></i>
-                Instalação</a>
             <a href="/customdo/editar/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                    class="bi bi-pencil"></i>
-                Projetista</a>
-            <a href="/customdo/editar/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
-                Gestão</a>
+                    class="bi bi-pencil"></i> Projetista</a>
+            <a href="/customdo/editar/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i> Gestão</a>
+            <a href="/customdo/editar/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+                    class="bi bi-tools"></i> Instalação</a>                
             <a href="/gerenciamento/editar/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i
-                    class="bi bi-puzzle"></i>
-                Gerenciamento</a>
+                    class="bi bi-puzzle"></i> Gerenciamento</a>
             <a href="/gerenciamento/editar/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i
                     class="bi bi-calculator"></i> Tributos</a>
         </div>
-
-
         <div class="row mt-2 mb-2">
             <div class="col-md-7">
                 <div class="row">
                     <div class="col-md-6 card">
-                        <div class="row" style="padding: 5px">
-                            <a href='/pessoa/formaequipe/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
-                                    class="bi bi-people"></i> Equipe </a>
-                        </div>
-                        <div class="row mt-1 text-end">
+                        <div class="row mt-3 text-end">
                             <label class="fw-bold col-sm-5 col-form-label col-form-label-sm">Equipe: </label>
-                            <div class="col-sm-6">
-                                <div class="input-group input-group-sm mb-1">
-                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text" name="equipe" value='{{projeto.qtdequipe}}' class="form-control">
-                                </div>
+                            <div class="col-sm-6 mb-1" style="border:rgba(68, 96, 238,0.5) 1px solid;border-radius: 5px;">
+                                    <label class="col-form-label col-form-label-sm">{{projeto.qtdequipe}}</label>
                             </div>
                             <label for="tothrs" class="fw-bold col-sm-5 col-form-label col-form-label-sm">Horas Projeto:
                             </label>
-                            <div class="col-sm-6">
-                                <label class="col-form-label col-form-label-sm mb-1"> {{projeto.tothrs}} </label>
+                            <div class="col-sm-6 mb-1" style="border:rgba(68, 96, 238,0.5) 1px solid;border-radius: 5px;">
+                                <label class="col-form-label col-form-label-sm"> {{projeto.tothrs}} </label>
                             </div>
                             <label for="diastr" class="fw-bold col-sm-5 col-form-label col-form-label-sm">Dias de Obras:
                             </label>
-                            <div class="col-sm-6">
-                                <label class="col-form-label col-form-label-sm mb-1"> {{projeto.diastr}} </label>
+                            <div class="col-sm-6" style="border:rgba(68, 96, 238,0.5) 1px solid;border-radius: 5px;">
+                                <label class="col-form-label col-form-label-sm"> {{projeto.diastr}} </label>
                             </div>
                         </div>
                     </div>

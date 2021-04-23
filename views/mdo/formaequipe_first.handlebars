@@ -76,9 +76,16 @@
             </select>
             <label for="floatingSelect" style="color: black;">Selecionar equipe padrão</label>
           </div>
-          <div class="row mt-4" style="margin-left: 50px;">
-            <button type='submit' class="col-6 btn btn-sm btn-success btn-lg" style="margin-left: 100px;"
+          <div class="row gap-2 col-6 mt-4" style="margin-left: 50px;">
+            <button type='submit' class="btn btn-sm btn-success btn-lg" style="margin-left: 100px;"
               onclick="getItemValue()">Criar Equipe</button>
+            {{#if projeto.ehDireto}}
+            <a href='/projeto/direto/{{projeto._id}}' class="mt-1 btn btn-primary btn-sm"
+              style="margin-left: 100px;">Voltar para o Projeto</a>
+            {{else}}
+            <a href='/customdo/editar/instalacao/{{projeto._id}}' class="mt-1 btn btn-primary btn-sm"
+              style="margin-left: 100px;">Voltar para o Projeto</a>
+            {{/if}}
           </div>
         </div>
         <div class="col-md-6">
@@ -176,15 +183,15 @@
         case 3:
           var insdes = document.getElementById('ins3');
           insdes.value = element
-          break;   
+          break;
         case 4:
           var insdes = document.getElementById('ins4');
           insdes.value = element
-          break;   
+          break;
         case 5:
           var insdes = document.getElementById('ins5');
           insdes.value = element
-          break;            
+          break;
       }
     }
   }
