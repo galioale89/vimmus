@@ -660,6 +660,8 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                          totmod = (parseFloat(trbmod) * parseFloat(req.body.vlrhri)).toFixed(2)
                     }
 
+                    var totinv = Math.round(parseFloat(trbinv) * parseFloat(req.body.vlrhri))
+
                     var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr)).toFixed(2)
 
                     var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr))
