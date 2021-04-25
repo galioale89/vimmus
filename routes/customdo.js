@@ -640,30 +640,34 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                     var totest
                     var totmod
                     var trbatr = Math.round(parseFloat(req.body.uniatr) * (parseFloat(config.minatr) / 60))
-                    var trbest = Math.round(parseFloat(req.body.uniest) * (parseFloat(config.minest) / 60))
-                    var trbmod = Math.round(parseFloat(req.body.unimod) * (parseFloat(config.minmod) / 60))
-                    var trbinv = Math.round(parseFloat(req.body.uniinv) * (parseFloat(config.mininv) / 60))
-
                     var totatr = Math.round(parseFloat(trbatr) * parseFloat(req.body.vlrhri))
 
-                    if (projeto.qtdequipe > 3) {
-                         var insadd  = (parseFloat(projeto.qtdequipe) - 3)
-                         console.log('insadd=>'+insadd)
-                         var vlrins = (6 * parseFloat(req.body.vlrhri) * insadd)
-                         console.log('vlrins=>'+vlrins)
-
-                         totest = ((parseFloat(trbest) * parseFloat(req.body.vlrhri)) + parseFloat(vlrins)).toFixed(2)
-                         totmod = ((parseFloat(trbmod) * parseFloat(req.body.vlrhri)) + parseFloat(vlrins)).toFixed(2)
-
-                    }else{
+                    if (parseFloat(projeto.unimod) > 22 && parseFloat(projeto.uniest) > 7 && parseFloat(projeto.qtdequipe) > 4){
+                         var trbest = Math.round(parseFloat(req.body.uniest) * (parseFloat(config.minest) * 2 / (parseFloat(projeto.qtdequipe)-2) / 60))
+                         var trbmod = Math.round(parseFloat(req.body.unimod) * (parseFloat(config.minmod) * 2 / (parseFloat(projeto.qtdequipe)-2) / 60))                         
                          totest = (parseFloat(trbest) * parseFloat(req.body.vlrhri)).toFixed(2)
-                         totmod = (parseFloat(trbmod) * parseFloat(req.body.vlrhri)).toFixed(2)
+                         totmod = (parseFloat(trbmod) * parseFloat(req.body.vlrhri)).toFixed(2)                         
+                    }else{
+                         var trbest = Math.round(parseFloat(req.body.uniest) * (parseFloat(config.minest) / 60))
+                         var trbmod = Math.round(parseFloat(req.body.unimod) * (parseFloat(config.minmod) / 60))
+                         if (projeto.qtdequipe > 3) {
+                              var insadd  = (parseFloat(projeto.qtdequipe) - 3)
+                              console.log('insadd=>'+insadd)
+                              var vlrins = (6 * parseFloat(req.body.vlrhri) * insadd)
+                              console.log('vlrins=>'+vlrins)
+     
+                              totest = ((parseFloat(trbest) * parseFloat(req.body.vlrhri)) + parseFloat(vlrins)).toFixed(2)
+                              totmod = ((parseFloat(trbmod) * parseFloat(req.body.vlrhri)) + parseFloat(vlrins)).toFixed(2)
+                         }else{
+                              totest = (parseFloat(trbest) * parseFloat(req.body.vlrhri)).toFixed(2)
+                              totmod = (parseFloat(trbmod) * parseFloat(req.body.vlrhri)).toFixed(2)
+                         }                         
                     }
 
+                    var trbinv = Math.round(parseFloat(req.body.uniinv) * (parseFloat(config.mininv) / 60))
                     var totinv = Math.round(parseFloat(trbinv) * parseFloat(req.body.vlrhri))
 
                     var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr)).toFixed(2)
-
                     var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr))
 
                     tothrs = parseFloat(trbint)
