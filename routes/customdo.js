@@ -642,7 +642,7 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                     var trbatr = Math.round(parseFloat(req.body.uniatr) * (parseFloat(config.minatr) / 60))
                     var totatr = Math.round(parseFloat(trbatr) * parseFloat(req.body.vlrhri))
 
-                    if (parseFloat(projeto.unimod) > 22 && parseFloat(projeto.uniest) > 7 && parseFloat(projeto.qtdequipe) > 4){
+                    if (parseFloat(projeto.unimod) > 13 && parseFloat(projeto.uniest) > 3 && parseFloat(projeto.qtdequipe) > 5){
                          var trbest = Math.round(parseFloat(req.body.uniest) * (parseFloat(config.minest) * 2 / (parseFloat(projeto.qtdequipe)-2) / 60))
                          var trbmod = Math.round(parseFloat(req.body.unimod) * (parseFloat(config.minmod) * 2 / (parseFloat(projeto.qtdequipe)-2) / 60))                         
                          totest = (parseFloat(trbest) * parseFloat(req.body.vlrhri)).toFixed(2)

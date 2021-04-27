@@ -216,7 +216,7 @@ router.post('/', ehAdmin, (req, res) => {
                     projeto.qtdequipe = equipe
 
                     var hrsequ = parseFloat(equipe) * 6
-                    var diastr = Math.round(parseFloat(projeto.trbint) / parseFloat(hrsequ))
+                    var diastr = Math.round(parseFloat((projeto.trbmod) + parseFloat(projeto.trbest))  / parseFloat(config.hrstrb))
                     projeto.diastr = diastr
 
 
@@ -500,6 +500,7 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                     var equipe = projeto.qtdequipe
                     projeto.qtdequipe = equipe
 
+                    /*
                     var hrsequ
                     if (parseFloat(projeto.unimod) > 22 && parseFloat(projeto.uniest) > 7 && parseFloat(projeto.qtdequipe) > 4) {
                         hrsequ = (parseFloat(equipe) - 2) * 6
@@ -510,6 +511,9 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                     if (diastr == 0) {
                         diastr = 1
                     }
+                    projeto.diastr = diastr
+                    */
+                    var diastr = Math.round(parseFloat((projeto.trbmod) + parseFloat(projeto.trbest))  / parseFloat(config.hrstrb)  )
                     projeto.diastr = diastr
 
                     //console.log('equipe=>'+equipe)

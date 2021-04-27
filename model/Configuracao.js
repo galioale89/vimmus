@@ -14,6 +14,10 @@ const Config = new Schema({
         type: String,
         require: true,  
     },
+    hrstrb: {
+        type: String,
+        require: true
+    },      
     minatr: {
         type: Number,
         require: true

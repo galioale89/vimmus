@@ -176,6 +176,24 @@ router.post('/addregime', ehAdmin, (req, res) => {
 
 router.post('/novo', ehAdmin, (req, res) => {
     const {_id} = req.user
+    if (req.body.hrstrb == '') {
+        erros.push({ texto: 'É necessário preencher as horas trabalhadas dos instaladores.' })
+    }  
+    if (req.body.slug == '') {
+        erros.push({ texto: 'É necessário preencher o nome da configuração de tempo.' })
+    }  
+    if (req.body.minatr == '') {
+        erros.push({ texto: 'É necessário preencher os minutos para o aterramento.' })
+    }  
+    if (req.body.minest == '') {
+        erros.push({ texto: 'É necessário preencher os minutos para a instalação das estruturas.' })
+    }  
+    if (req.body.minmod == '') {
+        erros.push({ texto: 'É necessário preencher os minutos para a instalação dos módulos.' })
+    }  
+    if (req.body.mininv == '') {
+        erros.push({ texto: 'É necessário preencher os minutos para a instalação dos inversores.' })
+    }                          
     const configuracao = {
         user: _id,
         slug: req.body.slug,
@@ -184,6 +202,7 @@ router.post('/novo', ehAdmin, (req, res) => {
         minest: req.body.minest,
         minmod: req.body.minmod,
         mininv: req.body.mininv,
+        hrstrb: req.body.hrstrb,
         /*
         minart: req.body.minart,
         minmem: req.body.minmem,
@@ -213,6 +232,7 @@ router.post('/editconfiguracao/', ehAdmin, (req, res) => {
         configuracao.minest = req.body.minest
         configuracao.minmod = req.body.minmod
         configuracao.mininv = req.body.mininv
+        configuracao.hrstrb = req.body.hrstrb
         configuracao.medkmh = req.body.medkmh
 
         configuracao.save().then(() => {

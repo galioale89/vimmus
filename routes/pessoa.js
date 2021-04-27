@@ -34,7 +34,7 @@ router.get('/vendedor', ehAdmin, (req, res) => {
 
     var aviso = []
     var ehVendedor = true
-    aviso.push({ texto: 'Obrigatório o preenchimento de todos os campos descritivos, da adição da foto e da escolha de uma função.' })
+    aviso.push({ texto: 'Obrigatório o preenchimento de todos os campos descritivos e da escolha de ao menos uma função.' })
     res.render('mdo/vendedor', { aviso: aviso, ehVendedor: ehVendedor })
 
 })
@@ -544,7 +544,7 @@ router.get('/novo', ehAdmin, (req, res) => {
 
     var aviso = []
 
-    aviso.push({ texto: 'Obrigatório o preenchimento de todos os campos descritivos, da adição da foto e da escolha de uma função.' })
+    aviso.push({ texto: 'Obrigatório o preenchimento de todos os campos descritivos e da escolha de ao menos uma função.' })
     res.render('mdo/addpessoas', { aviso: aviso })
 
 })
