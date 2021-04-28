@@ -1370,7 +1370,7 @@ router.post('/direto', ehAdmin, (req, res) => {
 
                               if (req.body.diastr == '' || req.body.diastr == 0) {
                                    if (req.body.equipe != '') {
-                                        var hrsequ = parseFloat(req.body.equipe) * 6
+                                        var hrsequ = (parseFloat(req.body.equipe) - 1) * 6
                                         if (req.body.trbint != '' && req.body.trbint > 0) {
                                              var dias = Math.round(parseFloat(req.body.trbint) / parseFloat(hrsequ))
                                              if (dias == 0) { dias = 1 }
@@ -1920,7 +1920,7 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                               projeto.qtdequipe = req.body.equipe
                               if (req.body.diastr == '' || req.body.diastr == 0) {
                                    if (req.body.equipe != '' && req.body.equipe > 0) {
-                                        var hrsequ = parseFloat(req.body.equipe) * 6
+                                        var hrsequ = (parseFloat(req.body.equipe) - 1)* 6
                                         if (req.body.trbint != '' && req.body.trbint > 0) {
                                              projeto.qtdequipe = req.body.equipe
                                              var dias = Math.round(parseFloat(req.body.trbint) / parseFloat(hrsequ))
