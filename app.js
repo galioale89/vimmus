@@ -148,39 +148,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                         ehMaster = false
                       }
                       var totLista = parseFloat(qtdAberto) + parseFloat(qtdExecucao) + parseFloat(qtdParado) + parseFloat(qtdHomologado)
-                      Configuracao.findOne({ slug: 'Padrão' }).then((config) => {
-                        console.log('encontrou algo')
-                        if (!config) {
-                          const configuracao = {
-                            user: _id,
-                            slug: 'Padrão',
-                            potencia: 'Todas',
-                            minatr: 120,
-                            minest: 60,
-                            minmod: 60,
-                            mininv: 60,
-                            hrstrb: '6.5',
-                            /*
-                            minart: req.body.minart,
-                            minmem: req.body.minmem,
-                            minsit: req.body.minsit,
-                            minuni: req.body.minuni,
-                            mindis: req.body.mindis,
-                            minate: req.body.minate,
-                            */
-                            medkmh: 12
-                          }
-                    
-                          new Configuracao(configuracao).save().then(() => {
-                            res.render("menu", { numprjrlz: numprjrlz, numprjnrl: numprjnrl, numprj: numprj, foiRealizado: foiRealizado, naoRealizado: naoRealizado, dataord: dataord, perVlrMed: perVlrMed, perNfsMed: perNfsMed, perRealizado: perRealizado, id: _id, ehMaster: ehMaster, qtdAberto: qtdAberto, qtdExecucao: qtdExecucao, qtdParado: qtdParado, qtdHomologado: qtdHomologado, qtdEntregue: qtdEntregue, perEntregue: perEntregue, totLista: totLista })
-                          }).catch((err) => {
-                            req.flash('error_msg', 'Houve um erro ao salvar as configurações.')
-                            res.redirect('/configuracao/novo')
-                          })
-                        }else{
-                          res.render("menu", { numprjrlz: numprjrlz, numprjnrl: numprjnrl, numprj: numprj, foiRealizado: foiRealizado, naoRealizado: naoRealizado, dataord: dataord, perVlrMed: perVlrMed, perNfsMed: perNfsMed, perRealizado: perRealizado, id: _id, ehMaster: ehMaster, qtdAberto: qtdAberto, qtdExecucao: qtdExecucao, qtdParado: qtdParado, qtdHomologado: qtdHomologado, qtdEntregue: qtdEntregue, perEntregue: perEntregue, totLista: totLista })
-                        }
-                      })                      
+                      res.render("menu", { numprjrlz: numprjrlz, numprjnrl: numprjnrl, numprj: numprj, foiRealizado: foiRealizado, naoRealizado: naoRealizado, dataord: dataord, perVlrMed: perVlrMed, perNfsMed: perNfsMed, perRealizado: perRealizado, id: _id, ehMaster: ehMaster, qtdAberto: qtdAberto, qtdExecucao: qtdExecucao, qtdParado: qtdParado, qtdHomologado: qtdHomologado, qtdEntregue:qtdEntregue, perEntregue: perEntregue, totLista:totLista })
                     }).catch((err) => {
                       req.flash("error_msg", "Ocorreu uma falha interna<Homologado>")
                       res.redirect("/")
