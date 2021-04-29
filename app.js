@@ -151,7 +151,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                         ehMaster = false
                       }
                       var totLista = parseFloat(qtdAberto) + parseFloat(qtdExecucao) + parseFloat(qtdParado) + parseFloat(qtdHomologado)
-
+                      sucesso.push({texto: 'Boa tarde!'})
                       Configuracao.findOne({ user: _id, slug: 'Padrão' }).then((config) => {
                         if (!config) {
                           sucesso.push({texto: 'Configurações iniciais salvas automaticamente. Verifique e atualize os dados mantendo o mesmo nome <Padrão>.'})
