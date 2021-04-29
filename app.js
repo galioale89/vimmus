@@ -151,9 +151,10 @@ app.get('/menu', ehAdmin, (req, res) => {
                         ehMaster = false
                       }
                       var totLista = parseFloat(qtdAberto) + parseFloat(qtdExecucao) + parseFloat(qtdParado) + parseFloat(qtdHomologado)
+
                       Configuracao.findOne({ user: _id, slug: 'Padrão' }).then((config) => {
                         if (!config) {
-                          sucesso.push({texto: 'Configurações iniciais salvas automaticamente. Verifique e atualize os dados mantendo o mesmo nome <Padrão>.'})
+                          sucesso.push({texto: 'Configurações iniciais automaticamente.'})
                           const config_padrao = {
                             user: _id,
                             slug: 'Padrão',
@@ -181,7 +182,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                             res.redirect('/configuracao/novo')
                           })
                         }else{
-                          res.render("menu", { sucesso:sucesso, numprjrlz: numprjrlz, numprjnrl: numprjnrl, numprj: numprj, foiRealizado: foiRealizado, naoRealizado: naoRealizado, dataord: dataord, perVlrMed: perVlrMed, perNfsMed: perNfsMed, perRealizado: perRealizado, id: _id, ehMaster: ehMaster, qtdAberto: qtdAberto, qtdExecucao: qtdExecucao, qtdParado: qtdParado, qtdHomologado: qtdHomologado, qtdEntregue: qtdEntregue, perEntregue: perEntregue, totLista: totLista })
+                          res.render("menu", { numprjrlz: numprjrlz, numprjnrl: numprjnrl, numprj: numprj, foiRealizado: foiRealizado, naoRealizado: naoRealizado, dataord: dataord, perVlrMed: perVlrMed, perNfsMed: perNfsMed, perRealizado: perRealizado, id: _id, ehMaster: ehMaster, qtdAberto: qtdAberto, qtdExecucao: qtdExecucao, qtdParado: qtdParado, qtdHomologado: qtdHomologado, qtdEntregue: qtdEntregue, perEntregue: perEntregue, totLista: totLista })
                         }
                       })                      
                       
