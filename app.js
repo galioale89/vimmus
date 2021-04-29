@@ -149,8 +149,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                         ehMaster = false
                       }
                       var totLista = parseFloat(qtdAberto) + parseFloat(qtdExecucao) + parseFloat(qtdParado) + parseFloat(qtdHomologado)
-                      Configuracao.findOne({ slug: 'Padrão' }).then((config) => {
-                        console.log('encontrou algo')
+                      Configuracao.findOne({ user: _id, slug: 'Padrão' }).then((config) => {
                         if (!config) {
                           const configuracao = {
                             user: _id,
