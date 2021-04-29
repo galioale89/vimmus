@@ -109,6 +109,7 @@ app.get('/menu', ehAdmin, (req, res) => {
   var somaVF = 0
   var somaVT = 0
   var perRealizado = 0
+  var sucesso = []
 
   const { _id } = req.user
   const { ehAdmin } = req.user
@@ -152,9 +153,9 @@ app.get('/menu', ehAdmin, (req, res) => {
                       var totLista = parseFloat(qtdAberto) + parseFloat(qtdExecucao) + parseFloat(qtdParado) + parseFloat(qtdHomologado)
 
                       Configuracao.findOne({ user: _id, slug: 'Padrão' }).then((config) => {
-                        console.log('encontrou algo')
                         if (!config) {
-                          const configuracao = {
+                          sucesso.push({texto: 'Configurações iniciais salvas automaticamente. Verifique e atualize os dados mantendo o mesmo nome <Padrão>.'})
+                          const config_padrao = {
                             user: _id,
                             slug: 'Padrão',
                             potencia: 'Todas',
@@ -173,9 +174,9 @@ app.get('/menu', ehAdmin, (req, res) => {
                             */
                             medkmh: 12
                           }
-                    
-                          new Configuracao(configuracao).save().then(() => {
-                            res.render("menu", { numprjrlz: numprjrlz, numprjnrl: numprjnrl, numprj: numprj, foiRealizado: foiRealizado, naoRealizado: naoRealizado, dataord: dataord, perVlrMed: perVlrMed, perNfsMed: perNfsMed, perRealizado: perRealizado, id: _id, ehMaster: ehMaster, qtdAberto: qtdAberto, qtdExecucao: qtdExecucao, qtdParado: qtdParado, qtdHomologado: qtdHomologado, qtdEntregue: qtdEntregue, perEntregue: perEntregue, totLista: totLista })
+                           
+                          new Configuracao(config_padrao).save().then(() => {
+                            res.render("menu", { sucesso: sucesso, numprjrlz: numprjrlz, numprjnrl: numprjnrl, numprj: numprj, foiRealizado: foiRealizado, naoRealizado: naoRealizado, dataord: dataord, perVlrMed: perVlrMed, perNfsMed: perNfsMed, perRealizado: perRealizado, id: _id, ehMaster: ehMaster, qtdAberto: qtdAberto, qtdExecucao: qtdExecucao, qtdParado: qtdParado, qtdHomologado: qtdHomologado, qtdEntregue: qtdEntregue, perEntregue: perEntregue, totLista: totLista })
                           }).catch((err) => {
                             req.flash('error_msg', 'Houve um erro ao salvar as configurações.')
                             res.redirect('/configuracao/novo')
