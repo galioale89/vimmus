@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
+    "@mapbox/node-pre-gyp": "^1.0.4",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "bootstrap": "^4.6.0",
@@ -36,7 +37,6 @@
     "twilio": "^3.59.0",
     "util": "^0.12.3"
   },
-  "devDependencies": {},
   "scripts": {
     "start": "node app"
   },
