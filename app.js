@@ -112,6 +112,7 @@ app.get('/menu', ehAdmin, (req, res) => {
 
   const { _id } = req.user
   const { ehAdmin } = req.user
+
   Projeto.find({ user: _id }).then((projetos) => {
     Realizado.find({ user: _id }).then((prj_vlr) => {
       for (i = 0; i < prj_vlr.length; i++) {
@@ -149,7 +150,9 @@ app.get('/menu', ehAdmin, (req, res) => {
                         ehMaster = false
                       }
                       var totLista = parseFloat(qtdAberto) + parseFloat(qtdExecucao) + parseFloat(qtdParado) + parseFloat(qtdHomologado)
+
                       Configuracao.findOne({ user: _id, slug: 'Padrão' }).then((config) => {
+                        console.log('encontrou algo')
                         if (!config) {
                           const configuracao = {
                             user: _id,
@@ -180,7 +183,8 @@ app.get('/menu', ehAdmin, (req, res) => {
                         }else{
                           res.render("menu", { numprjrlz: numprjrlz, numprjnrl: numprjnrl, numprj: numprj, foiRealizado: foiRealizado, naoRealizado: naoRealizado, dataord: dataord, perVlrMed: perVlrMed, perNfsMed: perNfsMed, perRealizado: perRealizado, id: _id, ehMaster: ehMaster, qtdAberto: qtdAberto, qtdExecucao: qtdExecucao, qtdParado: qtdParado, qtdHomologado: qtdHomologado, qtdEntregue: qtdEntregue, perEntregue: perEntregue, totLista: totLista })
                         }
-                      })                        
+                      })                      
+                      
                     }).catch((err) => {
                       req.flash("error_msg", "Ocorreu uma falha interna<Homologado>")
                       res.redirect("/")
