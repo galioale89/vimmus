@@ -25,6 +25,7 @@
     "g3": "^0.2.37",
     "handlebars": "^4.7.6",
     "inputmask": "^5.0.5",
+    "install-scripts": "^1.1.1",
     "jquery": "^3.5.1",
     "mongoose": "^5.11.15",
     "mongoose-file": "^0.0.2",
@@ -39,6 +40,6 @@
   "scripts": {
     "start": "node app"
   },
-  "author": "Alexandre Galiotto <alexandre@vimmus.com.br>",
+  "author": "",
   "license": "ISC"
 }
