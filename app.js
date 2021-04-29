@@ -22,6 +22,7 @@ const relatorios = require('./routes/relatorios')
 
 const Projeto = mongoose.model('projeto')
 const Realizado = mongoose.model('realizado')
+const Configuracao = mongoose.model('configuracao')
 
 //Chamando função de validação de autenticação do usuário pela função passport
 const passport = require("passport")
