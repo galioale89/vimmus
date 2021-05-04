@@ -48,7 +48,7 @@ const Projeto = new Schema({
         require: true
     },    
     potencia: {
-        type: Number,
+        type: String,
         require: false
     },
     vrskwp: {

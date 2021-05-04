@@ -20,63 +20,63 @@ const Regime = new Schema({
         require: false
     },
     vlrred: {
-        type: Number,
+        type: String,
         require: false
     },
     fatmed:{
-        type: Number,
+        type: String,
         require: false
     },
     alqDAS: {
-        type: Number,
+        type: String,
         require: false
     },
     alqICMS: {
-        type: Number,
+        type: String,
         require: false
     },
     alqPIS: {
-        type: Number,
+        type: String,
         require: false
     },
     alqCOFINS: {
-        type: Number,
+        type: String,
         require: false
     },
     alqIRPJ: {
-        type: Number,
+        type: String,
         require: false
     },
     alqIRPJAdd: {
-        type: Number,
+        type: String,
         require: false
     },
     alqCSLL: {
-        type: Number,
+        type: String,
         require: false
     },
     alqNFS:{
-        type: Number,
+        type: String,
         require: false
     },
     alqINSS:{
-        type: Number,
+        type: String,
         require: false
     },
     prjLR:{
-        type: Number,
+        type: String,
         require: false
     },
     prjLP:{
-        type: Number,
+        type: String,
         require: false
     },
     prjFat:{
-        type: Number,
+        type: String,
         require: false
     },
     vlrDAS:{
-        type: Number,
+        type: String,
         require: false
     },
     data: {
