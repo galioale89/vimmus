@@ -60,7 +60,7 @@ router.get('/editregime/:id', ehAdmin, (req, res) => {
     })
 })
 
-router.get('/removeconfiguracao:id', ehAdmin, (req, res) => {
+router.get('/removeconfiguracao/:id', ehAdmin, (req, res) => {
     Configuracao.findOneAndRemove({ _id: req.params.id }).then(() => {
         req.flash('success_msg', 'Configuracao removida com sucesso')
         res.redirect('/configuracao/consultaregime')
