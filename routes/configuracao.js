@@ -66,7 +66,7 @@ router.get('/removeconfiguracao/:id', ehAdmin, (req, res) => {
         res.redirect('/configuracao/consultaregime')
     }).catch(() => {
         req.flash('error_msg', 'Não foi possível remover a configuração.')
-        res.redirect('/configurcao/consultaregime')
+        res.redirect('/configurcao/consulta')
     })
 })
 
