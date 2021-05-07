@@ -34,7 +34,7 @@ router.get('/vendedor', ehAdmin, (req, res) => {
 
     var aviso = []
     var ehVendedor = true
-    aviso.push({ texto: 'Obrigatório o preenchimento de todos os campos descritivos e da escolha de ao menos uma função.' })
+    aviso.push({ texto: 'Obrigatório o preenchimento de todos os campos descritivos, da adição da foto e da escolha de uma função.' })
     res.render('mdo/vendedor', { aviso: aviso, ehVendedor: ehVendedor })
 
 })
@@ -72,7 +72,7 @@ router.get('/formaequipe/:id', ehAdmin, (req, res) => {
                     const { ins4 } = equipe
                     const { ins5 } = equipe
 
-                    console.log(ins0, ins1, ins2, ins3, ins4, ins5)
+                    //console.log(ins0, ins1, ins2, ins3, ins4, ins5)
 
                     for (var i = 0; i < instaladores.length; i++) {
                         const { nome } = instaladores[i]
@@ -155,7 +155,7 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
         Equipe.findOne({ projeto: projeto._id }).then((equipe_existe) => {
             if (equipe_existe != null) {
                 equipe_existe.remove()
-                //console.log('removido')
+                ////console.log('removido')
             }
         }).catch((err) => {
             req.flash('error_msg', 'Houve uma falha ao encontrar a equipe.')
@@ -163,8 +163,7 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
         })
 
         if (req.body.id_equipe == 'Nenhuma equipe selecionada' || req.body.id_equipe == 'Nenhuma equipe padrão cadastrada') {
-            console.log('É manual')
-
+            //console.log('É manual')
             const equipe = {
                 projeto: req.body.id,
                 nome_projeto: projeto.nome,
@@ -241,7 +240,7 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
                     projeto_salva.qtdequipe = ins_dentro.length
                     projeto_salva.save().then(() => {
                         var texto = qtdins + ' no projeto.'
-                        ////console.log(qtdins)
+                        //////console.log(qtdins)
                         sucesso.push({ texto: texto })
                         res.render('mdo/editformaequipe_first', { sucesso: sucesso, projeto: projeto, fora: ins_fora, dentro: ins_dentro })
                     }).catch((err) => {
@@ -270,13 +269,13 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
                     ins5: equipe.ins5
                 }
 
-                console.log('id=>' + equipe._id)
-                console.log('ins0=>' + equipe.ins0)
-                console.log('ins1=>' + equipe.ins1)
-                console.log('ins2=>' + equipe.ins2)
-                console.log('ins3=>' + equipe.ins3)
-                console.log('ins4=>' + equipe.ins4)
-                console.log('ins5=>' + equipe.ins5)
+                //console.log('id=>' + equipe._id)
+                //console.log('ins0=>' + equipe.ins0)
+                //console.log('ins1=>' + equipe.ins1)
+                //console.log('ins2=>' + equipe.ins2)
+                //console.log('ins3=>' + equipe.ins3)
+                //console.log('ins4=>' + equipe.ins4)
+                //console.log('ins5=>' + equipe.ins5)
 
 
                 new Equipe(equipe_nova).save().then(() => {
@@ -293,7 +292,7 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
                         const { ins3 } = equipe
                         const { ins4 } = equipe
                         const { ins5 } = equipe
-                        //console.log(ins0, ins1, ins2)
+                        ////console.log(ins0, ins1, ins2)
 
                         for (var i = 0; i < instaladores.length; i++) {
                             const { nome } = instaladores[i]
@@ -323,7 +322,7 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
                                 }
                             }
                         }
-                        //console.log(ins0, ins1, ins2)
+                        ////console.log(ins0, ins1, ins2)
                         var qtdins
                         switch (ins_dentro.length) {
                             case 1: qtdins = 'Um instalador registrado'
@@ -344,7 +343,7 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
                             projeto_salva.qtdequipe = ins_dentro.length
                             projeto_salva.save().then(() => {
                                 var texto = qtdins + ' no projeto.'
-                                ////console.log(qtdins)
+                                //////console.log(qtdins)
                                 sucesso.push({ texto: texto })
                                 res.render('mdo/editformaequipe_first', { sucesso: sucesso, projeto: projeto, fora: ins_fora, dentro: ins_dentro })
                             }).catch((err) => {
@@ -387,7 +386,7 @@ router.post('/salvarequipe/', ehAdmin, (req, res) => {
         Equipe.findOne({ projeto: projeto._id }).then((equipe_existe) => {
             if (equipe_existe != null) {
                 equipe_existe.remove()
-                //console.log('removido')
+                ////console.log('removido')
             }
         }).catch((err) => {
             req.flash('error_msg', 'Houve uma falha ao encontrar a equipe.')
@@ -404,7 +403,7 @@ router.post('/salvarequipe/', ehAdmin, (req, res) => {
             ins5: req.body.ins5
         }
 
-        ////console.log(req.body.ins0, req.body.ins1, req.body.ins2)
+        //////console.log(req.body.ins0, req.body.ins1, req.body.ins2)
         new Equipe(equipe_nova).save().then(() => {
             sucesso.push({ texto: 'Equipe registrada com suceso.' })
         }).catch((err) => {
@@ -419,7 +418,7 @@ router.post('/salvarequipe/', ehAdmin, (req, res) => {
             const { ins3 } = equipe_nova
             const { ins4 } = equipe_nova
             const { ins5 } = equipe_nova
-            //console.log(ins0, ins1, ins2)
+            ////console.log(ins0, ins1, ins2)
 
             for (var i = 0; i < instaladores.length; i++) {
                 const { nome } = instaladores[i]
@@ -449,7 +448,7 @@ router.post('/salvarequipe/', ehAdmin, (req, res) => {
                     }
                 }
             }
-            //console.log(ins0, ins1, ins2)
+            ////console.log(ins0, ins1, ins2)
             var qtdins
             switch (ins_dentro.length) {
                 case 1: qtdins = 'Um instalador registrado'
@@ -470,7 +469,7 @@ router.post('/salvarequipe/', ehAdmin, (req, res) => {
                 projeto_salva.qtdequipe = ins_dentro.length
                 projeto_salva.save().then(() => {
                     var texto = qtdins + ' no projeto.'
-                    ////console.log(qtdins)
+                    //////console.log(qtdins)
                     sucesso.push({ texto: texto })
                     res.render('mdo/editformaequipe_first', { sucesso: sucesso, projeto: projeto, fora: ins_fora, dentro: ins_dentro })
                 }).catch((err) => {
@@ -525,7 +524,7 @@ router.post('/criarequipepadrao', ehAdmin, (req, res) => {
         ins5: req.body.ins5
     })
 
-    //console.log(req.body.ins0, req.body.ins1, req.body.ins2)
+    ////console.log(req.body.ins0, req.body.ins1, req.body.ins2)
     novaequipe.save().then(() => {
         Equipe.find({ user: _id, ativo: true }).lean().then((equipe) => {
             req.flash('success_msg', 'Equipe padrão criada com suecesso.')
@@ -544,7 +543,7 @@ router.get('/novo', ehAdmin, (req, res) => {
 
     var aviso = []
 
-    aviso.push({ texto: 'Obrigatório o preenchimento de todos os campos descritivos e da escolha de ao menos uma função.' })
+    aviso.push({ texto: 'Obrigatório o preenchimento de todos os campos descritivos, da adição da foto e da escolha de uma função.' })
     res.render('mdo/addpessoas', { aviso: aviso })
 
 })
@@ -652,22 +651,22 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
     var qtdins_equipe = 0
     var nome_projetos = []
     Pessoa.findOne({ _id: req.params.id }).lean().then((pessoa) => {
-        console.log(pessoa.nome)
+        //console.log(pessoa.nome)
         Projeto.find({ funres: pessoa._id }).sort({ dataord: 'asc' }).lean().then((prjres) => {
             Projeto.find({ funins: pessoa._id }).sort({ dataord: 'desc' }).lean().then((prjins) => {
                 Projeto.find({ funpro: pessoa._id }).sort({ dataord: 'desc' }).lean().then((prjpro) => {
                     Projeto.find({ vendedor: pessoa._id }).sort({ dataord: 'desc' }).lean().then((prjven) => {
                         Equipe.find({ $or: [{ ins0: pessoa.nome }, { ins1: pessoa.nome }, { ins2: pessoa.nome }, { ins3: pessoa.nome }, { ins4: pessoa.nome }, { ins5: pessoa.nome }] }).lean().then((equipe) => {
                             equipe.forEach(element => {
-                                const {nome_projeto} = element
-                                console.log(nome_projeto)
+                                const { nome_projeto } = element
+                                //console.log(nome_projeto)
                                 if (nome_projeto != undefined) {
-                                    qtdins_equipe = qtdins_equipe  + 1
-                                    nome_projetos.push({nome: nome_projeto})
-                                }                                
+                                    qtdins_equipe = qtdins_equipe + 1
+                                    nome_projetos.push({ nome: nome_projeto })
+                                }
                             })
-                            console.log(qtdins_equipe)
-                            console.log(nome_projetos)
+                            //console.log(qtdins_equipe)
+                            //console.log(nome_projetos)
                             var qtdven = prjven.length
                             var qtdres = prjres.length
                             var qtdins = prjins.length
@@ -720,11 +719,11 @@ router.post('/novo', uploadfoto.single('foto'), ehAdmin, (req, res) => {
     } else {
         documento = req.body.cpf
     }
-    console.log('nome=>'+req.body.nome )
-    console.log('endereco=>'+req.body.endereco )
-    console.log('documento=>'+req.body.documento )
-    console.log('celular=>'+req.body.celular )
-    console.log('email=>'+req.body.email )
+    //console.log('nome=>'+req.body.nome )
+    //console.log('endereco=>'+req.body.endereco )
+    //console.log('documento=>'+req.body.documento )
+    //console.log('celular=>'+req.body.celular )
+    //console.log('email=>'+req.body.email )
 
     if (req.body.nome == '' || req.body.endereco == '' || documento == '' ||
         req.body.celular == '' || req.body.email == '') {
@@ -906,13 +905,13 @@ router.post('/editar', uploadfoto.single('foto'), ehAdmin, (req, res) => {
         documento = req.body.cpf
     }
 
-    console.log('nome=>'+req.body.nome )
-    console.log('endereco=>'+req.body.endereco )
-    console.log('documento=>'+req.body.documento )
-    console.log('celular=>'+req.body.celular )
-    console.log('email=>'+req.body.email )
+    //console.log('nome=>'+req.body.nome )
+    //console.log('endereco=>'+req.body.endereco )
+    //console.log('documento=>'+req.body.documento )
+    //console.log('celular=>'+req.body.celular )
+    //console.log('email=>'+req.body.email )
 
-    if (req.body.nome == '' || req.body.endereco == '' ||  documento == '' || req.body.iniati == '' ||
+    if (req.body.nome == '' || req.body.endereco == '' || documento == '' || req.body.iniati == '' ||
         req.body.celular == '' || req.body.email == '') {
         erros.push({ texto: 'Todo os campos de descrição são obrigatórios' })
     }
@@ -1021,10 +1020,10 @@ router.post('/editar', uploadfoto.single('foto'), ehAdmin, (req, res) => {
 
             pessoa.nome = req.body.nome
             pessoa.endereco = req.body.endereco
-            if (req.body.uf != '' && req.body.uf != pessoa.uf){
+            if (req.body.uf != '' && req.body.uf != pessoa.uf) {
                 pessoa.uf = req.body.uf
             }
-            if (req.body.cidade != '' && req.body.uf != pessoa.cidade){
+            if (req.body.cidade != '' && req.body.uf != pessoa.cidade) {
                 pessoa.cidade = req.body.cidade
             }
             pessoa.cnpj = cnpj
@@ -1090,11 +1089,11 @@ router.post('/filtrar', ehAdmin, (req, res) => {
         case 'Vendedor': funins = 'unchecked', funges = 'unchecked', funpro = 'unchecked', ehVendedor = true;
             break;
     }
-    //console.log('funcao=>' + funcao)
-    //console.log('funins=>' + funins)
-    //console.log('funges=>' + funges)
-    //console.log('funpro=>' + funpro)
-    //console.log('ehVendedor=>' + ehVendedor)
+    ////console.log('funcao=>' + funcao)
+    ////console.log('funins=>' + funins)
+    ////console.log('funges=>' + funges)
+    ////console.log('funpro=>' + funpro)
+    ////console.log('ehVendedor=>' + ehVendedor)
 
     if (nome != '' && uf != '' && cidade != '' && funcao != 'Todos') {
         Pessoa.find({ nome: new RegExp(nome), uf: new RegExp(uf), cidade: new RegExp(cidade), funins: funins, funges: funges, funpro: funpro, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {

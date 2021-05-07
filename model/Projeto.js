@@ -220,6 +220,10 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
+    totpro_art: {
+        type: Number,
+        require: false
+    },    
     trbesc:{
         type: Number,
         require: false
@@ -420,7 +424,7 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
-    parEquVlr:{
+    parKitVlr:{
         type: Number,
         require: false
     },
@@ -436,6 +440,10 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
+    parArtVlr:{
+        type: Number,
+        require: false
+    },    
     parDesVlr:{
         type: Number,
         require: false
@@ -476,6 +484,10 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },    
+    parKitNfs:{
+        type: Number,
+        require: false
+    },      
     parIntNfs:{
         type: Number,
         require: false
@@ -488,6 +500,10 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
+    parArtNfs:{
+        type: Number,
+        require: false
+    },    
     parDesNfs:{
         type: Number,
         require: false

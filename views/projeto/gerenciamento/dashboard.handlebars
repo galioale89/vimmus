@@ -1,5 +1,11 @@
-<div class="row mt-1" style="width: 95%;margin-left: 30px;">
+<div class="row mt-1" style="width: 95%;margin-left: 30px;">    
     <div class="col-md-2">
+        <div class="row mt-2">
+                <div class="btn-group col-12 gap-2">
+                    <a href='/projeto/edicao/{{projeto._id}}' class='btn btn-primary btn-sm'> Editar </a>
+                    <a href='/projeto/vermais/{{projeto._id}}' class='btn btn-primary btn-sm'> Ver Mais </a>
+                </div>
+        </div>        
         <div class="row text-center" style="padding:5px; border-radius: 5px;">
             <div class="card text-white mb-2"
                 style="padding:10px; border-radius: 80px;background-color: rgb(71, 114, 207);">
@@ -11,7 +17,7 @@
                 <div class="row text-center">
                     <div class="card text-white mb-2"
                         style="border-radius: 80px;background-color: rgba(71, 135, 207, 1);">
-                        <div class="fw-bold card-header  text-center">Valor Total
+                        <div class="fw-bold text-center">Valor Total <br>
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.valor}}</label>
                         </div>
                         <h2 class="text-center card-title">{{projeto.parLiqVlr}} %</h2>
@@ -21,15 +27,23 @@
             <a href='/gerenciamento/dashboardliquido/{{projeto._id}}' style='text-decoration: none;'>
                 <div class="row text-center mb-2">
                     <div class="card text-white" style="border-radius: 80px;background-color: rgba(41, 8, 159);">
-                        <div class="fw-bold card-header">Valor Faturado
+                        <div class="fw-bold text-center">Valor Faturado <br>
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrNFS}}</label>
                         </div>
                         <h2 class="text-center card-title">{{projeto.parLiqNfs}} %</h2>
                     </div>
                 </div>
             </a>
+            {{#if projeto.reserva}}
+            <div class="">
+                <div class="card text-white mb-1" style="background-color: rgb(32, 255, 62);">
+                    <div class="fw-bold">Reserva</div>
+                    <h4>R$ {{projeto.reserva}}</h4>
+                </div>
+            </div>
+            {{/if}}            
         </div>
-        <div class='row'>
+        <div class='row mt-1'>
             <div style="height: 60px; border-radius: 5px; border:rgba(220,220,220,1) solid 1px;">
                 <div class="row">
                     <div class="col-md-6 text-end">
@@ -37,30 +51,21 @@
                         <label class='fw-bold col-form-label col-form-label-sm'>kWp: </label>
                     </div>
                     <div class="col-md-5">
-                        <label class='col-form-label col-form-label-sm'>R$ {{projeto.vrskwp}}</label>
+                        <label class='col-form-label col-form-label-sm'>R$ {{projeto.vrskwp}}</label><br>
                         <label class='col-form-label col-form-label-sm'>{{projeto.potencia}}</label>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row mt-2">
-            <div style="height: 60px">
-                <div class="row">
-                    <a href='/projeto/edicao/{{projeto._id}}' class='btn btn-primary mb-1 btn-sm'> Editar </a>
-                    <a href='/projeto/vermais/{{projeto._id}}' class='btn btn-primary btn-sm'> Ver Mais </a>
-                </div>
-            </div>
-        </div>
-
     </div>
 
     <div class="col-md-5">
-        <h5 class='fw-bold mt-2'>Participação sobre o Total do Projeto</h5>
+        <h5 class='fw-bold mt-1'>Participação sobre o Total do Projeto</h5>
         <div style="height: 500px;">
             <canvas id='chartLL' class='mb-4' style="width: 100px; height: 100px;"></canvas>
         </div>
         <input id='parLiqVlr' name='parLiqVlr' type="hidden" value={{projeto.parLiqVlr}}>
-        <input id='parEquVlr' name='parEquVlr' type="hidden" value={{projeto.parEquVlr}}>
+        <input id='parKitVlr' name='parKitVlr' type="hidden" value={{projeto.parKitVlr}}>
         <input id='parDedVlr' name='parDedVlr' type="hidden" value={{projeto.parDedVlr}}>
         <input id='parImpVlr' name='parImpVlr' type="hidden" value={{projeto.parImpVlr}}>
         <input id='parISSVlr' name='parISSVlr' type="hidden" value={{projeto.parISSVlr}}>
@@ -70,9 +75,9 @@
             <div class="col-md-6">
                 <div class="card text-white mb-3" style="max-width: 22rem; background-color:  rgba(249, 240, 71, 1);">
                     <div class="fw-bold card-header">Equipamento</div>
-                    <h4>R$ {{projeto.vlrequ}}</h4>
+                    <h4>R$ {{projeto.vlrkit}}</h4>
                 </div>
-                <div class='card text-white mb-2' style=" background-color: rgba(194, 189, 188, 1); max-width: 22rem;">
+                <div class='card text-white' style=" background-color: rgba(194, 189, 188, 1); max-width: 22rem;">
                     <div class="fw-bold card-header">Deduções</div>
                     <h4>R$ {{projeto.totcop}}</h4>
                 </div>
@@ -83,7 +88,7 @@
                     <h4>R$ {{projeto.totalImposto}}</h4>
 
                 </div>
-                <div class="card text-white mb-2" style="max-width: 22rem; background-color: rgba(255, 49, 53, 1);">
+                <div class="card text-white" style="max-width: 22rem; background-color: rgba(255, 49, 53, 1);">
                     <div class="fw-bold card-header">ISS</div>
                     <h4>R$ {{projeto.impNFS}}</h4>
 
@@ -105,9 +110,10 @@
         <input type='hidden' id='parIntVlr' value='{{projeto.parIntVlr}}'>
         <input type='hidden' id='parGesVlr' value='{{projeto.parGesVlr}}'>
         <input type='hidden' id='parProVlr' value='{{projeto.parProVlr}}'>
+        <input type='hidden' id='parArtVlr' value='{{projeto.parArtVlr}}'>
         <input type='hidden' id='parDesVlr' value='{{projeto.parDesVlr}}'>
-        <input type='hidden' id='parEstVlr' value='{{projeto.parEstVlr}}'>
         <input type='hidden' id='parCmbVlr' value='{{projeto.parCmbVlr}}'>
+        <input type='hidden' id='parEstVlr' value='{{projeto.parEstVlr}}'>
         <input type='hidden' id='parAliVlr' value='{{projeto.parAliVlr}}'>
         <input type='hidden' id='parResVlr' value='{{projeto.parResVlr}}'>
 
@@ -117,66 +123,60 @@
                     <div class="fw-bold card-header">Instalação</div>
                     <h4>R$ {{projeto.totint}}</h4>
                 </div>
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(130, 130, 130, 1);">
+                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(110, 110, 110, 1);">
                     <div class="fw-bold card-header">Projetista</div>
                     <h4>R$ {{projeto.totpro}}</h4>
-                </div>
-                {{#if projeto.parAliVlr}}
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(220, 220, 220, 1);">
-                    <div class="fw-bold card-header">Alimentação</div>
-                    <h4>R$ {{projeto.totali}}</h4>
-                </div>
-                {{else}}
-                {{/if}}
-            </div>
-            <div class="col-md-6">
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(100, 100, 100, 1);">
-                    <div class="fw-bold card-header">Gestão</div>
-                    <h4>R$ {{projeto.totges}}</h4>
-                </div>
-                {{#if projeto.parDesVlr}}
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(160, 160, 160, 1);">
-                    <div class="fw-bold card-header">Deslocamento</div>
-                    <h4>R$ {{projeto.totdes}}</h4>
-                </div>
-                {{else}}
-                {{/if}}
+                </div>             
                 {{#if projeto.parEstVlr}}
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(160, 160, 160, 1);">
+                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(190, 190, 190, 1);">
                     <div class="fw-bold card-header">Estadia</div>
                     <h4>R$ {{projeto.tothtl}}</h4>
                 </div>
-                {{else}}
-                {{/if}}
+                {{/if}}        
+                {{#if projeto.parAliVlr}}
+                <div class="card text-white mb-3" style="max-width: 22rem; margin-bottom: 100px; background-color: rgba(210, 210, 210, 1);">
+                    <div class="fw-bold card-header">Alimentação</div>
+                    <h4>R$ {{projeto.totali}}</h4>
+                </div>
+                {{/if}}                             
+            </div>
+            <div class="col-md-6">
+                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(90, 90, 90, 1);">
+                    <div class="fw-bold card-header">Gestão</div>
+                    <h4>R$ {{projeto.totges}}</h4>
+                </div>
+                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(130, 130, 130, 1);">
+                    <div class="fw-bold card-header">Valor ART</div>
+                    <h4>R$ {{projeto.vlrart}}</h4>
+                </div>
                 {{#if projeto.parCmbVlr}}
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(160, 160, 160, 1);">
+                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(170, 170, 170, 1);">
                     <div class="fw-bold card-header">Combustível</div>
                     <h4>R$ {{projeto.totcmb}}</h4>
                 </div>
-                {{else}}
                 {{/if}}
-            </div>      
-            <div class="col-6 mx-auto" style="margin-bottom: 20px;">
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(190, 190, 190, 1);">
-                    <div class="fw-bold card-header">Reserva</div>
-                    <h4>R$ {{projeto.reserva}}</h4>
+                {{#if projeto.parDesVlr}}
+                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(150, 150, 150, 1);">
+                    <div class="fw-bold card-header">Deslocamento</div>
+                    <h4>R$ {{projeto.totdes}}</h4>
                 </div>
-            </div>              
-        </div>     
+                {{/if}}                              
+            </div>
+        </div>
     </div>
 </div>
 
 <script type='text/javascript'>
     //Gráfico Pariticpação Lucro Liquido
     var parLiqVlr = document.getElementById('parLiqVlr')
-    var parEquVlr = document.getElementById('parEquVlr')
+    var parKitVlr = document.getElementById('parKitVlr')
     var parDedVlr = document.getElementById('parDedVlr')
     var parImpVlr = document.getElementById('parImpVlr')
     var parISSVlr = document.getElementById('parISSVlr')
     var parComVlr = document.getElementById('parComVlr')
 
     var perLL = [parLiqVlr.value,
-    parEquVlr.value,
+    parKitVlr.value,
     parDedVlr.value,
     parImpVlr.value,
     parISSVlr.value,
@@ -186,9 +186,10 @@
     var parIntVlr = document.getElementById('parIntVlr')
     var parGesVlr = document.getElementById('parGesVlr')
     var parProVlr = document.getElementById('parProVlr')
+    var parArtVlr = document.getElementById('parArtVlr')
     var parDesVlr = document.getElementById('parDesVlr')
-    var parEstVlr = document.getElementById('parResVlr')
     var parCmbVlr = document.getElementById('parCmbVlr')
+    var parEstVlr = document.getElementById('parEstVlr')
     var parAliVlr = document.getElementById('parAliVlr')
     var parResVlr = document.getElementById('parResVlr')
 
@@ -202,9 +203,11 @@
     var perDes = [parIntVlr.value,
     parGesVlr.value,
     parProVlr.value,
-    parTraVlr,
-    parAliVlr.value,
+    parArtVlr.value,
+    parDesVlr.value,
+    parCmbVlr.value,
     parEstVlr.value,
+    parAliVlr.value,
     parResVlr.value]
 
     var ctxLL = document.getElementById('chartLL').getContext('2d');
@@ -255,7 +258,7 @@
     var chartDes = new Chart(ctxDes, {
         type: 'doughnut',
         data: {
-            labels: ['Instalação', 'Gestão', 'Projetista', 'Deslocamento', 'Alimentação', 'Estadia', 'Reserva'],
+            labels: ['Instalação', 'Gestão', 'Projetista', 'Valor ART', 'Deslocamento', 'Combustível', 'Estadia', 'Alimentação'],
             datasets: [{
                 data: [perDes[0],
                 perDes[1],
@@ -263,7 +266,8 @@
                 perDes[3],
                 perDes[4],
                 perDes[5],
-                perDes[6]],
+                perDes[6],
+                perDes[7]],
 
                 backgroundColor: [
                     'rgba(70, 70, 70, 0.2)',
@@ -271,7 +275,8 @@
                     'rgba(110, 110, 110, 0.2)',
                     'rgba(130, 130, 130, 0.2)',
                     'rgba(150, 150, 150, 0.2)',
-                    'rgba(180, 180, 180, 0.2)',
+                    'rgba(170, 150, 170, 0.2)',
+                    'rgba(190, 190, 190, 0.2)',
                     'rgba(210, 210, 210, 0.2)'
                 ],
 
@@ -281,7 +286,8 @@
                     'rgba(110, 110, 110, 1)',
                     'rgba(130, 130, 130, 1)',
                     'rgba(150, 150, 150, 1)',
-                    'rgba(180, 180, 180, 1)',
+                    'rgba(170, 150, 170, 1)',
+                    'rgba(190, 190, 190, 1)',
                     'rgba(210, 210, 210, 1)'
                 ],
                 borderWidth: 1

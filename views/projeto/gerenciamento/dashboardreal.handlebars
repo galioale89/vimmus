@@ -12,7 +12,7 @@
                 <div class="row text-center mb-2 mt-2">
                     <div class="card text-white"
                         style="border-radius: 80px;background-color: {{#if realizado.parVlrRlz}} rgba(78, 207, 71, 1) {{else}}rgba(255, 71, 71, 1){{/if}};">
-                        <div class="fw-bold card-header">Valor Total
+                        <div class="fw-bold">Valor Total <br>
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.valor}}</label>
                         </div>
                         <h2 class="text-center card-title">{{realizado.parLiqVlr}} %</h2>
@@ -23,7 +23,7 @@
             <a href='/gerenciamento/dashboardrealliquido/{{realizado._id}}' style='text-decoration: none;'>
                 <div class="card text-white row"
                     style="border-radius: 80px;background-color: {{#if realizado.parNfsRlz}} rgba(10, 159, 8, 1) {{else}} rgba(159, 10, 10, 1) {{/if}};">
-                    <div class="fw-bold card-header">Total Faturado
+                    <div class="fw-bold">Total Faturado <br>
                         <label clas='col-form-label col-form-label-sm'> R$ {{realizado.vlrNFS}}</label>
                     </div>
                     <h2 class="text-center card-title">{{realizado.parLiqNfs}} %</h2>
@@ -44,6 +44,7 @@
         </div>
 
         <input id='parLiqVlr' name='parLiqVlr' type="hidden" value={{realizado.parLiqVlr}}>
+        <input id='parKitVlr' name='parKitVlr' type="hidden" value={{realizado.parKitVlr}}>
         <input id='parDedVlr' name='parEquVlr' type="hidden" value={{realizado.parDedVlr}}>
         <input id='parImpVlr' name='parImpVlr' type="hidden" value={{realizado.parImpVlr}}>
         <input id='parISSVlr' name='parISSVlr' type="hidden" value={{realizado.parISSVlr}}>
@@ -51,13 +52,13 @@
 
         <div class="row mt-2 text-center" style="height: 300px;">
             <div class="col-md-6">
-                <div class='card text-white mb-3' style=" background-color:  rgba(194, 189, 188, 1); max-width: 22rem;">
+                <div class='card text-white mb-3' style=" background-color:  rgba(249, 240, 71, 1); max-width: 22rem;">
+                    <div class="fw-bold card-header">Equipamento</div>
+                    <h4>R$ {{realizado.vlrkit}}</h4>
+                </div>
+                <div class="card text-white mb-3" style="background-color:rgba(194, 189, 188, 1); max-width: 22rem;">
                     <div class="fw-bold card-header">Deduções</div>
                     <h4>R$ {{realizado.custoPlano}}</h4>
-                </div>
-                <div class="card text-white mb-3" style="background-color:rgba(255, 161, 8, 1); max-width: 22rem;">
-                    <div class="fw-bold card-header">Comissão</div>
-                    <h4>R$ {{realizado.vlrcom}}</h4>
                 </div>
             </div>
             <div class="col-md-6">
@@ -70,6 +71,12 @@
                     <h4>R$ {{realizado.impISS}}</h4>
                 </div>
             </div>
+            <div class="col-6 mx-auto">
+                <div class="card text-white mb-3" style="background-color:rgba(255, 161, 8, 1); max-width: 22rem;">
+                    <div class="fw-bold card-header">Comissão</div>
+                    <h4>R$ {{realizado.vlrcom}}</h4>
+                </div>
+            </div>
         </div>
     </div>
     <div class="col-md-5">
@@ -80,6 +87,7 @@
         <input type='hidden' id='parIntVlr' value='{{realizado.parIntVlr}}'>
         <input type='hidden' id='parGesVlr' value='{{realizado.parGesVlr}}'>
         <input type='hidden' id='parProVlr' value='{{realizado.parProVlr}}'>
+        <input type='hidden' id='parArtVlr' value='{{realizado.parArtVlr}}'>
         <input type='hidden' id='parDesVlr' value='{{realizado.parDesVlr}}'>
         <input type='hidden' id='parAliVlr' value='{{realizado.parAliVlr}}'>
         <input type='hidden' id='parEstVlr' value='{{realizado.parEstVlr}}'>
@@ -92,44 +100,44 @@
                     <div class="fw-bold card-header">Instalação</div>
                     <h4>R$ {{realizado.totint}}</h4>
                 </div>
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(130, 130, 130, 1);">
+                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(110, 110, 110, 1);">
                     <div class="fw-bold card-header">Projetista</div>
                     <h4>R$ {{realizado.totpro}}</h4>
-                </div>
-                {{#if realizado.parAliVlr}}
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(220, 220, 220, 1);">
-                    <div class="fw-bold card-header">Alimentação</div>
-                    <h4>R$ {{realizado.totali}}</h4>
-                </div>
-                {{else}}
-                {{/if}}
-            </div>
-            <div class="col-md-6">
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(100, 100, 100, 1);">
-                    <div class="fw-bold card-header">Gestão</div>
-                    <h4>R$ {{realizado.totges}}</h4>
-                </div>
-                {{#if realizado.parDesVlr}}
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(160, 160, 160, 1);">
-                    <div class="fw-bold card-header">Deslocamento</div>
-                    <h4>R$ {{realizado.totdes}}</h4>
-                </div>
-                {{else}}
-                {{/if}}
+                </div>         
                 {{#if realizado.parEstVlr}}
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(160, 160, 160, 1);">
+                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(190, 190, 190, 1);">
                     <div class="fw-bold card-header">Estadia</div>
                     <h4>R$ {{realizado.tothtl}}</h4>
                 </div>
-                {{else}}
-                {{/if}}
+                {{/if}}         
+                {{#if realizado.parAliVlr}}
+                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(210, 210, 210, 1);">
+                    <div class="fw-bold card-header">Alimentação</div>
+                    <h4>R$ {{realizado.totali}}</h4>
+                </div>
+                {{/if}}                            
+            </div>
+            <div class="col-md-6">
+                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(90, 90, 90, 1);">
+                    <div class="fw-bold card-header">Gestão</div>
+                    <h4>R$ {{realizado.totges}}</h4>
+                </div>
+                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(130, 130, 130, 1);">
+                    <div class="fw-bold card-header">Valor ART</div>
+                    <h4>R$ {{realizado.vlrart}}</h4>
+                </div>           
                 {{#if realizado.parCmbVlr}}
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(160, 160, 160, 1);">
+                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(170, 170, 170, 1);">
                     <div class="fw-bold card-header">Combustível</div>
                     <h4>R$ {{realizado.totcmb}}</h4>
                 </div>
-                {{else}}
-                {{/if}}
+                {{/if}}              
+                {{#if realizado.parDesVlr}}
+                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(150, 150, 150, 1);">
+                    <div class="fw-bold card-header">Deslocamento</div>
+                    <h4>R$ {{realizado.totdes}}</h4>
+                </div>
+                {{/if}}                    
             </div>
         </div>
     </div>
@@ -142,12 +150,14 @@
 
     //Gráfico Pariticpação Lucro Liquido
     var parLiqVlr = document.getElementById('parLiqVlr')
+    var parDedVlr = document.getElementById('parKitVlr')
     var parDedVlr = document.getElementById('parDedVlr')
     var parImpVlr = document.getElementById('parImpVlr')
     var parISSVlr = document.getElementById('parISSVlr')
     var parComVlr = document.getElementById('parComVlr')
 
     var perLL = [parLiqVlr.value,
+    parKitVlr.value,
     parDedVlr.value,
     parImpVlr.value,
     parISSVlr.value,
@@ -157,10 +167,11 @@
     var parIntVlr = document.getElementById('parIntVlr')
     var parGesVlr = document.getElementById('parGesVlr')
     var parProVlr = document.getElementById('parProVlr')
+    var parArtVlr = document.getElementById('parArtVlr')
     var parDesVlr = document.getElementById('parDesVlr')
-    var parAliVlr = document.getElementById('parAliVlr')
+    var parDesVlr = document.getElementById('parCmbVlr')
     var parEstVlr = document.getElementById('parEstVlr')
-    var parCmbVlr = document.getElementById('parCmbVlr')
+    var parAliVlr = document.getElementById('parAliVlr')
 
     var parTraVlr
     if (parCmbVlr.value > 0) {
@@ -172,9 +183,11 @@
     var perDes = [parIntVlr.value,
     parGesVlr.value,
     parProVlr.value,
-    parTraVlr,
-    parAliVlr.value,
-    parEstVlr.value]
+    parArtVlr.value,
+    parDesVlr.value,
+    parCmbVlr.value,
+    parEstVlr.value,
+    parAliVlr.value,]
 
     var ctxLL = document.getElementById('chartLL').getContext('2d');
     var ctxDes = document.getElementById('chartDes').getContext('2d');
@@ -182,16 +195,18 @@
     var chartLL = new Chart(ctxLL, {
         type: 'doughnut',
         data: {
-            labels: ['Lucro Líquido', 'Deduções', 'Tributos', 'ISS', 'Comissão'],
+            labels: ['Lucro Líquido', 'Kit Gerador','Deduções', 'Tributos', 'ISS', 'Comissão'],
             datasets: [{
                 data: [perLL[0],
                 perLL[1],
                 perLL[2],
                 perLL[3],
-                perLL[4]],
+                perLL[4],
+                perLL[5]],
 
                 backgroundColor: [
                     'rgba(71, 135, 207, 0.2)',
+                    'rgba(249, 240, 71, 0.2)',
                     'rgba(194, 189, 188, 0.2)',
                     'rgba(255, 49, 53, 0.2)',
                     'rgba(255, 49, 53, 0.2)',
@@ -200,6 +215,7 @@
 
                 borderColor: [
                     'rgba(71, 135, 207, 1)',
+                    'rgba(249, 240, 71, 1)',
                     'rgba(194, 189, 188, 1)',
                     'rgba(255, 49, 53, 1)',
                     'rgba(255, 49, 53, 1)',
@@ -221,14 +237,16 @@
     var chartDes = new Chart(ctxDes, {
         type: 'doughnut',
         data: {
-            labels: ['Instalação', 'Gestão', 'Projetista', 'Deslocamento', 'Alimentação', 'Estadia'],
+            labels: ['Instalação', 'Gestão', 'Projetista', 'Valor ART','Deslocamento', 'Combustível','Estadia','Alimentação'],
             datasets: [{
                 data: [perDes[0],
                 perDes[1],
                 perDes[2],
                 perDes[3],
                 perDes[4],
-                perDes[5]],
+                perDes[5],
+                perDes[6],
+                perDes[7]],
 
                 backgroundColor: [
                     'rgba(70, 70, 70, 0.2)',
@@ -236,7 +254,9 @@
                     'rgba(110, 110, 110, 0.2)',
                     'rgba(130, 130, 130, 0.2)',
                     'rgba(150, 150, 150, 0.2)',
-                    'rgba(180, 180, 180, 0.2)'
+                    'rgba(170, 170, 170, 0.2)',
+                    'rgba(190, 190, 190, 0.2)',
+                    'rgba(210, 210, 210, 0.2)'
                 ],
 
                 borderColor: [
@@ -245,7 +265,9 @@
                     'rgba(110, 110, 110, 1)',
                     'rgba(130, 130, 130, 1)',
                     'rgba(150, 150, 150, 1)',
-                    'rgba(180, 180, 180, 1)'
+                    'rgba(170, 170, 170, 1)',
+                    'rgba(190, 190, 190, 1)',
+                    'rgba(210, 210, 210, 0.2)'
                 ],
                 borderWidth: 1
             }]

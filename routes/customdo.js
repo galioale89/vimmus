@@ -282,22 +282,22 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                     if (req.body.pinome == null) {
                          projeto.funins = req.body.funins
                     }
-                    console.log('vlrhri=>'+req.body.vlrhri)
-                    console.log('uniatr=>'+req.body.uniatr)
-                    console.log('trbatr=>'+trbatr)
-                    console.log('uniest=>'+req.body.uniest)
-                    console.log('trbest=>'+trbest)
-                    console.log('unimod=>'+req.body.unimod)
-                    console.log('trbmod=>'+trbmod)
-                    console.log('uniinv=>'+trbinv)
-                    console.log('trbinv=>'+totest)
-                    console.log('totest=>'+totmod)
-                    console.log('totmod=>'+totatr)
-                    console.log('totatr=>'+totinv)
-                    console.log('totinv=>'+totint)
-                    console.log('totest=>'+totint)
-                    console.log('trbint=>'+trbint)
-                    console.log('funins=>'+req.body.funins)
+                    //console.log('vlrhri=>'+req.body.vlrhri)
+                    //console.log('uniatr=>'+req.body.uniatr)
+                    //console.log('trbatr=>'+trbatr)
+                    //console.log('uniest=>'+req.body.uniest)
+                    //console.log('trbest=>'+trbest)
+                    //console.log('unimod=>'+req.body.unimod)
+                    //console.log('trbmod=>'+trbmod)
+                    //console.log('uniinv=>'+trbinv)
+                    //console.log('trbinv=>'+totest)
+                    //console.log('totest=>'+totmod)
+                    //console.log('totmod=>'+totatr)
+                    //console.log('totatr=>'+totinv)
+                    //console.log('totinv=>'+totint)
+                    //console.log('totest=>'+totint)
+                    //console.log('trbint=>'+trbint)
+                    //console.log('funins=>'+req.body.funins)
 
 
 
@@ -406,7 +406,7 @@ router.post('/projetista/', ehAdmin, (req, res) => {
 
                var vlrart = req.body.vlrart
 
-               var totpro = parseFloat(totsit) + parseFloat(totuni) + parseFloat(totdis) + parseFloat(totate) + parseFloat(totart) + parseFloat(totmem) + parseFloat(vlrart)
+               var totpro = parseFloat(totsit) + parseFloat(totuni) + parseFloat(totdis) + parseFloat(totate) + parseFloat(totart) + parseFloat(totmem)
 
                var trbpro = Math.round(parseFloat(trbsit) + parseFloat(trbuni) + parseFloat(trbdis) + parseFloat(trbate) + parseFloat(trbart) + parseFloat(trbmem))
 
@@ -434,6 +434,7 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                projeto.totmem = totmem
                projeto.trbpro = trbpro
                projeto.totpro = totpro
+               projeto.totpro_art = parseFloat(totpro) + parseFloat(vlrart)
                if (req.body.ppnome == null) {
                     projeto.funpro = req.body.funpro
                }
@@ -652,9 +653,9 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                          var trbmod = Math.round(parseFloat(req.body.unimod) * (parseFloat(config.minmod) / 60))
                          if (projeto.qtdequipe > 3) {
                               var insadd  = (parseFloat(projeto.qtdequipe) - 3)
-                              console.log('insadd=>'+insadd)
+                              //console.log('insadd=>'+insadd)
                               var vlrins = (6 * parseFloat(req.body.vlrhri))
-                              console.log('vlrins=>'+vlrins)
+                              //console.log('vlrins=>'+vlrins)
      
                               totest = (((parseFloat(trbest) * parseFloat(req.body.vlrhri)) + parseFloat(vlrins)) * insadd).toFixed(2)
                               totmod = (((parseFloat(trbmod) * parseFloat(req.body.vlrhri)) + parseFloat(vlrins)) * insadd).toFixed(2)
@@ -822,7 +823,7 @@ router.post('/editar/projetista/', ehAdmin, (req, res) => {
 
                var vlrart = req.body.vlrart
 
-               var totpro = (parseFloat(totsit) + parseFloat(totuni) + parseFloat(totdis) + parseFloat(totate) + parseFloat(totart) + parseFloat(totmem) + parseFloat(vlrart)).toFixed(2)
+               var totpro = (parseFloat(totsit) + parseFloat(totuni) + parseFloat(totdis) + parseFloat(totate) + parseFloat(totart) + parseFloat(totmem)).toFixed(2)
 
                var trbpro = Math.round(parseFloat(trbsit) + parseFloat(trbuni) + parseFloat(trbdis) + parseFloat(trbate) + parseFloat(trbart) + parseFloat(trbmem))
 
@@ -850,6 +851,7 @@ router.post('/editar/projetista/', ehAdmin, (req, res) => {
                projeto.totmem = totmem
                projeto.trbpro = trbpro
                projeto.totpro = totpro
+               projeto.totpro_art = parseFloat(totpro) + parseFloat(vlrart)
                projeto.tothrs = tothrs
                if (req.body.checkPro != null) {
                     projeto.funpro = req.body.funpro

@@ -220,10 +220,10 @@ router.post('/', ehAdmin, (req, res) => {
                     projeto.diastr = diastr
 
 
-                    console.log('equipe=>' + equipe)
-                    console.log('hrsequ=>' + hrsequ)
-                    console.log('projeto.trbint=>' + projeto.trbint)
-                    console.log('diastr=>' + diastr)
+                    //console.log('equipe=>' + equipe)
+                    //console.log('hrsequ=>' + hrsequ)
+                    //console.log('projeto.trbint=>' + projeto.trbint)
+                    //console.log('diastr=>' + diastr)
 
 
                     var vlrali
@@ -256,10 +256,10 @@ router.post('/', ehAdmin, (req, res) => {
                     projeto.vlrdia = vlrdia
 
 
-                    console.log('vlrali=>' + vlrali)
-                    console.log('discmb=>' + discmb)
-                    console.log('ltocmb=>' + ltocmb)
-                    console.log('vlrdia=>' + vlrdia)
+                    //console.log('vlrali=>' + vlrali)
+                    //console.log('discmb=>' + discmb)
+                    //console.log('ltocmb=>' + ltocmb)
+                    //console.log('vlrdia=>' + vlrdia)
 
 
                     var tothtl
@@ -297,11 +297,11 @@ router.post('/', ehAdmin, (req, res) => {
                     var tothrs = parseFloat(projeto.trbint) + parseFloat(projeto.trbpro) + parseFloat(projeto.trbges)
                     projeto.tothrs = tothrs
 
-                    console.log('totcmb=>' + totcmb)
-                    console.log('tothtl=>' + tothtl)
-                    console.log('totali=>' + totali)
-                    console.log('totdes=>' + totdes)
-                    console.log('tothrs=>' + tothrs)
+                    //console.log('totcmb=>' + totcmb)
+                    //console.log('tothtl=>' + tothtl)
+                    //console.log('totali=>' + totali)
+                    //console.log('totdes=>' + totdes)
+                    //console.log('tothrs=>' + tothrs)
 
 
                     //Custo de Reserva
@@ -349,12 +349,12 @@ router.post('/', ehAdmin, (req, res) => {
                     projeto.outpos = outpos
 
 
-                    console.log('resger=>' + resger)
-                    console.log('conadd=>' + conadd)
-                    console.log('impele=>' + impele)
-                    console.log('seguro=>' + seguro)
-                    console.log('outcer=>' + outcer)
-                    console.log('outpos=>' + outpos)
+                    //console.log('resger=>' + resger)
+                    //console.log('conadd=>' + conadd)
+                    //console.log('impele=>' + impele)
+                    //console.log('seguro=>' + seguro)
+                    //console.log('outcer=>' + outcer)
+                    //console.log('outpos=>' + outpos)
 
 
                     var rescon = parseFloat(impele) + parseFloat(seguro) + parseFloat(outcer) + parseFloat(outpos)
@@ -364,18 +364,18 @@ router.post('/', ehAdmin, (req, res) => {
                     projeto.reserva = reserva.toFixed(2)
 
 
-                    console.log('rescon=>' + rescon)
-                    console.log('reserva=>' + reserva)
-                    console.log('valorCer=>' + detalhe.valorCer)
-                    console.log('valorPos=>' + detalhe.valorPos)
+                    //console.log('rescon=>' + rescon)
+                    //console.log('reserva=>' + reserva)
+                    //console.log('valorCer=>' + detalhe.valorCer)
+                    //console.log('valorPos=>' + detalhe.valorPos)
 
 
-                    var totcop = parseFloat(projeto.totint) + parseFloat(projeto.totpro) + parseFloat(projeto.totges) + parseFloat(totdes) + parseFloat(detalhe.valorCer) + parseFloat(detalhe.valorPos) + parseFloat(detalhe.valorOcp)
+                    var totcop = parseFloat(projeto.totint) + parseFloat(projeto.totpro) + parseFloat(projeto.vlrart) + parseFloat(projeto.totges) + parseFloat(totdes) + parseFloat(detalhe.valorCer) + parseFloat(detalhe.valorPos) + parseFloat(detalhe.valorOcp)
                     projeto.totcop = totcop.toFixed(2)
-                    console.log('totcop=>' + totcop)
+                    //console.log('totcop=>' + totcop)
                     var custoPlano = parseFloat(totcop) + parseFloat(reserva)
                     projeto.custoPlano = custoPlano.toFixed(2)
-                    console.log('custoPlano=>' + custoPlano)
+                    //console.log('custoPlano=>' + custoPlano)
                     custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
                     projeto.custoTotal = custoTotal.toFixed(2)
                     //console.log('custoTotal=>'+custoTotal)
@@ -516,9 +516,7 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                     var diastr = Math.round(parseFloat((projeto.trbmod) + parseFloat(projeto.trbest))  / parseFloat(config.hrstrb)  )
                     projeto.diastr = diastr
 
-                    //console.log('equipe=>'+equipe)
-                    //console.log('hrsequ=>'+hrsequ)
-                    //console.log('diastr=>'+diastr)
+                    console.log('equipe=>'+equipe)
 
                     var vlrali
                     var discmb
@@ -587,13 +585,13 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
 
                     var tothrs = parseFloat(projeto.trbint) + parseFloat(projeto.trbpro) + parseFloat(projeto.trbges)
                     projeto.tothrs = tothrs
-                    /*
+                    
                     //console.log('totcmb=>'+totcmb)
                     //console.log('tothtl=>'+tothtl)
                     //console.log('totali=>'+totali)
                     //console.log('totdes=>'+totdes)
                     //console.log('tothrs=>'+tothrs)
-                    */
+                    
 
                     //Custo de Reserva
                     var resger
@@ -638,14 +636,14 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                     projeto.seguro = seguro
                     projeto.outcer = outcer
                     projeto.outpos = outpos
-                    /*
+                    
                     //console.log('resger=>'+resger)
                     //console.log('conadd=>'+conadd)
                     //console.log('impele=>'+impele)
                     //console.log('seguro=>'+seguro)
                     //console.log('outcer=>'+outcer)
                     //console.log('outpos=>'+outpos)
-                    */
+                    
 
                     var rescon = parseFloat(impele) + parseFloat(seguro) + parseFloat(outcer) + parseFloat(outpos)
                     rescon = parseFloat(rescon) + parseFloat(conadd)
@@ -654,10 +652,15 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                     projeto.reserva = reserva.toFixed(2)
 
                     //console.log('rescon=>'+rescon)
-                    //console.log('reserva=>'+reserva)    
+                    //console.log('reserva=>'+reserva)   
+                    //console.log('projeto.totint=>'+projeto.totint)
+                    //console.log('projeto.totpro=>'+projeto.totpro) 
+                    //console.log('projeto.totges=>'+projeto.totges) 
+                    //console.log('projeto.valorCer=>'+projeto.valorCer)
+                    //console.log('projeto.valorPos=>'+projeto.valorPos)
+                    //console.log('projeto.valorOcp=>'+projeto.valorOcp)
 
-                    //console.log('vlrcom=>'+vlrcom)
-                    var totcop = parseFloat(projeto.totint) + parseFloat(projeto.totpro) + parseFloat(projeto.totges) + parseFloat(totdes) + parseFloat(detalhe.valorCer) + parseFloat(detalhe.valorPos) + parseFloat(detalhe.valorOcp)
+                    var totcop = parseFloat(projeto.totint) + parseFloat(projeto.totpro) + parseFloat(projeto.vlrart) + parseFloat(projeto.totges) + parseFloat(totdes) + parseFloat(detalhe.valorCer) + parseFloat(detalhe.valorPos) + parseFloat(detalhe.valorOcp)
                     projeto.totcop = totcop.toFixed(2)
                     //console.log('totcop=>'+totcop)
                     var custoPlano = parseFloat(totcop) + parseFloat(reserva)
@@ -679,6 +682,7 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                     } else {
                         vlrcom = 0
                     }
+                    //console.log('vlrcom=>'+vlrcom)
 
                     //Comissão e Lucro Antes dos Impostos
                     var lbaimp
@@ -868,14 +872,16 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                 //Participação sobre o lucro total
                 var parLiqVlr = parseFloat(lucroLiquido) / parseFloat(projeto.valor) * 100
                 projeto.parLiqVlr = parLiqVlr.toFixed(2)
-                var parEquVlr = parseFloat(projeto.vlrequ) / parseFloat(projeto.valor) * 100
-                projeto.parEquVlr = parEquVlr.toFixed(2)
+                var parKitVlr = parseFloat(projeto.vlrkit) / parseFloat(projeto.valor) * 100
+                projeto.parKitVlr = parKitVlr.toFixed(2)
                 var parIntVlr = parseFloat(projeto.totint) / parseFloat(projeto.valor) * 100
                 projeto.parIntVlr = parIntVlr.toFixed(2)
                 var parGesVlr = parseFloat(projeto.totges) / parseFloat(projeto.valor) * 100
                 projeto.parGesVlr = parGesVlr.toFixed(2)
                 var parProVlr = parseFloat(projeto.totpro) / parseFloat(projeto.valor) * 100
                 projeto.parProVlr = parProVlr.toFixed(2)
+                var parArtVlr = parseFloat(projeto.vlrart) / parseFloat(projeto.valor) * 100
+                projeto.parArtVlr = parArtVlr.toFixed(2)                
                 if (parseFloat(projeto.totcmb) > 0) {
                     var parCmbVlr = parseFloat(projeto.totcmb) / parseFloat(projeto.valor) * 100
                     projeto.parCmbVlr = parseFloat(parCmbVlr).toFixed(2)
@@ -892,7 +898,7 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                     var parResVlr = parseFloat(projeto.reserva) / parseFloat(projeto.valor) * 100
                     projeto.parResVlr = parseFloat(parResVlr).toFixed(2)
                 }
-                var parDedVlr = parseFloat(projeto.custoPlano) / parseFloat(projeto.valor) * 100
+                var parDedVlr = parseFloat(projeto.totcop) / parseFloat(projeto.valor) * 100
                 projeto.parDedVlr = parDedVlr.toFixed(2)
                 var parISSVlr = parseFloat(impNFS) / parseFloat(projeto.valor) * 100
                 projeto.parISSVlr = parISSVlr.toFixed(2)
@@ -906,12 +912,18 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                 //Participação sobre o Faturamento      
                 var parLiqNfs = parseFloat(lucroLiquido) / parseFloat(vlrNFS) * 100
                 projeto.parLiqNfs = parseFloat(parLiqNfs).toFixed(2)
+                if (projeto.fatequ == true){
+                var parKitNfs = parseFloat(vlrkit) / parseFloat(vlrNFS) * 100
+                projeto.parKitNfs = parseFloat(parKitNfs).toFixed(2)    
+                }            
                 var parIntNfs = parseFloat(projeto.totint) / parseFloat(vlrNFS) * 100
                 projeto.parIntNfs = parseFloat(parIntNfs).toFixed(2)
                 var parGesNfs = parseFloat(projeto.totges) / parseFloat(vlrNFS) * 100
                 projeto.parGesNfs = parseFloat(parGesNfs).toFixed(2)
                 var parProNfs = parseFloat(projeto.totpro) / parseFloat(vlrNFS) * 100
                 projeto.parProNfs = parseFloat(parProNfs).toFixed(2)
+                var parArtNfs = parseFloat(projeto.vlrart) / parseFloat(vlrNFS) * 100
+                projeto.parArtNfs = parseFloat(parArtNfs).toFixed(2)                
                 if (parseFloat(projeto.totcmb) > 0) {
                     var parCmbNfs = parseFloat(projeto.totcmb) / parseFloat(vlrNFS) * 100
                     projeto.parCmbNfs = parseFloat(parCmbNfs).toFixed(2)
@@ -928,7 +940,7 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                     var parResNfs = parseFloat(projeto.reserva) / parseFloat(vlrNFS) * 100
                     projeto.parResNfs = parseFloat(parResNfs).toFixed(2)
                 }
-                var parDedNfs = parseFloat(projeto.custoPlano) / parseFloat(vlrNFS) * 100
+                var parDedNfs = parseFloat(projeto.totcop) / parseFloat(vlrNFS) * 100
                 projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
                 var parISSNfs = parseFloat(impNFS) / parseFloat(vlrNFS) * 100
                 projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)
@@ -1114,14 +1126,16 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
             //Participação sobre o lucro total
             var parLiqVlr = parseFloat(lucroLiquido) / parseFloat(projeto.valor) * 100
             projeto.parLiqVlr = parLiqVlr.toFixed(2)
-            var parEquVlr = parseFloat(projeto.vlrequ) / parseFloat(projeto.valor) * 100
-            projeto.parEquVlr = parEquVlr.toFixed(2)
+            var parKitVlr = parseFloat(projeto.vlrkit) / parseFloat(projeto.valor) * 100
+            projeto.parKitVlr = parKitVlr.toFixed(2)
             var parIntVlr = parseFloat(projeto.totint) / parseFloat(projeto.valor) * 100
             projeto.parIntVlr = parIntVlr.toFixed(2)
             var parGesVlr = parseFloat(projeto.totges) / parseFloat(projeto.valor) * 100
             projeto.parGesVlr = parGesVlr.toFixed(2)
             var parProVlr = parseFloat(projeto.totpro) / parseFloat(projeto.valor) * 100
             projeto.parProVlr = parProVlr.toFixed(2)
+            var parArtVlr = parseFloat(projeto.vlrart) / parseFloat(projeto.valor) * 100
+            projeto.parArtVlr = parArtVlr.toFixed(2)            
             if (parseFloat(projeto.totcmb) > 0) {
                 var parCmbVlr = parseFloat(projeto.totcmb) / parseFloat(projeto.valor) * 100
                 projeto.parCmbVlr = parseFloat(parCmbVlr).toFixed(2)
@@ -1138,7 +1152,7 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
                 var parResVlr = parseFloat(projeto.reserva) / parseFloat(projeto.valor) * 100
                 projeto.parResVlr = parseFloat(parResVlr).toFixed(2)
             }
-            var parDedVlr = parseFloat(projeto.custoPlano) / parseFloat(projeto.valor) * 100
+            var parDedVlr = parseFloat(projeto.totcop) / parseFloat(projeto.valor) * 100
             projeto.parDedVlr = parDedVlr.toFixed(2)
             var parISSVlr = parseFloat(impNFS) / parseFloat(projeto.valor) * 100
             projeto.parISSVlr = parISSVlr.toFixed(2)
@@ -1152,12 +1166,18 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
             //Participação sobre o Faturamento      
             var parLiqNfs = parseFloat(lucroLiquido) / parseFloat(vlrNFS) * 100
             projeto.parLiqNfs = parseFloat(parLiqNfs).toFixed(2)
+            if (projeto.fatequ == true){
+            var parKitNfs = parseFloat(projeto.vlrkit) / parseFloat(vlrNFS) * 100
+            projeto.parKitNfs = parseFloat(parKitNfs).toFixed(2)    
+            }        
             var parIntNfs = parseFloat(projeto.totint) / parseFloat(vlrNFS) * 100
             projeto.parIntNfs = parseFloat(parIntNfs).toFixed(2)
             var parGesNfs = parseFloat(projeto.totges) / parseFloat(vlrNFS) * 100
             projeto.parGesNfs = parseFloat(parGesNfs).toFixed(2)
             var parProNfs = parseFloat(projeto.totpro) / parseFloat(vlrNFS) * 100
             projeto.parProNfs = parseFloat(parProNfs).toFixed(2)
+            var parArtNfs = parseFloat(projeto.vlrart) / parseFloat(vlrNFS) * 100
+            projeto.parArtNfs = parseFloat(parArtNfs).toFixed(2)            
             if (parseFloat(projeto.totcmb) > 0) {
                 var parCmbNfs = parseFloat(projeto.totcmb) / parseFloat(vlrNFS) * 100
                 projeto.parCmbNfs = parseFloat(parCmbNfs).toFixed(2)
@@ -1174,7 +1194,7 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
                 var parResNfs = parseFloat(projeto.reserva) / parseFloat(vlrNFS) * 100
                 projeto.parResNfs = parseFloat(parResNfs).toFixed(2)
             }
-            var parDedNfs = parseFloat(projeto.custoPlano) / parseFloat(vlrNFS) * 100
+            var parDedNfs = parseFloat(projeto.totcop) / parseFloat(vlrNFS) * 100
             projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
             var parISSNfs = parseFloat(impNFS) / parseFloat(vlrNFS) * 100
             projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)

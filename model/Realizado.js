@@ -60,6 +60,10 @@ const Realizado = new Schema({
         type: Number,
         require: false
     },
+    vlrart: {
+        type: Number,
+        require: false
+    },    
     totdes: {
         type: Number,
         require: false
@@ -152,6 +156,10 @@ const Realizado = new Schema({
         type: Number,
         require: false
     },
+    parKitVlr: {
+        type: Number,
+        require: false
+    },
     parIntVlr: {
         type: Number,
         require: false
@@ -164,6 +172,10 @@ const Realizado = new Schema({
         type: Number,
         require: false
     },
+    parArtVlr: {
+        type: Number,
+        require: false
+    },    
     parDesVlr: {
         type: Number,
         require: false
@@ -200,6 +212,10 @@ const Realizado = new Schema({
         type: Number,
         require: false
     },
+    parKitNfs: {
+        type: Number,
+        require: false
+    },    
     parIntNfs: {
         type: Number,
         require: false
@@ -212,6 +228,10 @@ const Realizado = new Schema({
         type: Number,
         require: false
     },
+    parArtNfs: {
+        type: Number,
+        require: false
+    },    
     parDesNfs: {
         type: Number,
         require: false

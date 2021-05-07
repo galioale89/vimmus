@@ -16,7 +16,15 @@
         background-color: rgb(10, 30, 68);
     }
 </style>
-
+<script>
+    function valida_numequ(){
+        var equipe = document.getElementById('equipe')
+        if (equipe.value < 3){
+            alert('O número de integrantes da equipe deve ter no mínimo 3 pessoas.')
+            equipe.value = ''
+        }
+    }
+</script>
 <form action='/projeto/editar/direto/' method='post'>
     <!-- Modal Consulta Alíquotas-->
     <div class="modal fade" id='consultaAliquota' tabindex="-1" aria-hidden="true">
@@ -201,7 +209,7 @@
                                 <div class="col-md-4">
                                     <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
                                         class="form-control form-control-sm mb-1" name='equipe' id="equipe"
-                                        value='{{projeto.qtdequipe}}'>
+                                        value='{{projeto.qtdequipe}}' oninput="valida_numequ()">
                                     <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
                                         class="form-control form-control-sm mb-1" name='tothrs' id="tothrs"
                                         value='{{projeto.tothrs}}'>

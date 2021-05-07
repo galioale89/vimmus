@@ -50,6 +50,16 @@
                     class="bi bi-calculator"></i> Tributos</a>
         </div>
         <div class='row'>
+                            <div class="row mb-2 mt-1">
+                                <div class='col-sm-2'>
+                                    <a href='/pessoa/formaequipe/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
+                                            class="bi bi-people"></i> Equipe de Instalação </a>
+                                </div>
+                                <div class='col-md-2' style="border:rgb(68, 96, 238) 1px solid;border-radius: 5px;">
+                                    <label class="fw-bold col-form-label col-form-label-sm">{{#if projeto.qtdequipe}}{{projeto.qtdequipe}}{{else}}0{{/if}}
+                                        pessoas na equipe</label>
+                                </div>
+                            </div>             
             <div class="col-md-8">
                 <div class="row mt-2">
                     <div class="col-md-4">
@@ -91,17 +101,7 @@
                 </div>
                 <div class="row mt-2">
                     <div class="card" style="padding: 7px;">
-                        <div class="row">
-                            <div class="row mb-3">
-                                <div class='col-sm-3'>
-                                    <a href='/pessoa/formaequipe/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
-                                            class="bi bi-people"></i> Equipe de Instalação </a>
-                                </div>
-                                <div class='col-md-3' style="border:rgb(68, 96, 238) 1px solid;border-radius: 5px;">
-                                    <label class="fw-bold col-form-label col-form-label-sm"> {{#if projeto.qtdequipe}}{{projeto.qtdequipe}}{{else}}0{{/if}}
-                                        pessoas na equipe</label>
-                                </div>
-                            </div>                            
+                        <div class="row">                         
                             <div class="col-md-3 text-end">
                                 <label for="aterramento" class="col-form-label col-form-label-sm">Atividades</label><br>
                                 <label for="aterramento"

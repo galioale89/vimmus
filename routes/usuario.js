@@ -94,13 +94,12 @@ router.post('/enviar', (req, res) => {
                 var senha = Math.floor(Math.random() * (999999 - 111111)) + 111111;
 
                 var texto = 'Olá ' + req.body.nome + ',' + '\n' + '\n' +
-                    'Aqui está seu usuário e senha para acessar o sistema da VIMMUS GC e começar a gerenciar de forma eficaz seus projetos.' + '\n' +
+                    'Aqui está seu usuário e senha para acessar o sistema da VIMMUS e começar a geranciar de forma eficáz seus projetos.' + '\n' +
                     'Usuário: ' + usuario + '\n' +
                     'Senha: ' + senha + '\n' +
                     'Fique a vontade par alterar o nome de usuário (de acordo com a disponibilidade) e sua senha.' + '\n' + '\n' +
-                    'Lembre-se que ao realizar o login você concorda com o termo de uso e a política de privacidade.' + '\n' +
-                    'Mas não se preocupe, estamos a disposição para te ajudar com qualquer dúvida no e-mail solucoes@vimmus.com.br.' + '\n' +
-                    'Envie um e-mail que vamos te responder o mais rápido possível.' + '\n' + '\n' +
+                    'Lembre-se que ao realizar o login você concorda com nossos termo de usuário e nossa política de privacidade.' + '\n' +
+                    'Mas não se preocupe, estamos a disposição para te ajudar com qualquer dúvida no e-mail solucoes@vimmus.com.br. Manda um e-mail que vamos te responder o mais rápido possível.' + '\n' + '\n' +
                     'Alexandre Galiotto' + '\n' +
                     'Vimmus Soluções' + '\n' +
                     'Celular/WhatApp: (49) 9 9183-2978'
@@ -108,7 +107,7 @@ router.post('/enviar', (req, res) => {
                 //Parâmetros do E-mail
                 const mailOptions = { // Define informações pertinentes ao E-mail que será enviado
                     from: '"VIMMUS Soluções" <alexandre@vimmus.com.br>',
-                    to: email_mais, 
+                    to: email_mais,
                     subject: 'Solicitação de Senha',
                     //text: 'Nome: ' + req.body.nome + ';' + 'Celular: ' + req.body.celular + ';' + 'E-mail: '+ req.body.email
                     text: texto
@@ -150,13 +149,13 @@ router.post('/enviar', (req, res) => {
                                 novoUsuario.senha = hash
 
                                 novoUsuario.save().then(() => {
-                                    req.flash("success_msg", novoUsuario.nome + ', sua senha será enviada por e-mail para: ' + novoUsuario.email + ', e sua confirmação de acesso será feita em até 24 horas. Não esqueça de verificar sua caixa de spam!')
+                                    req.flash("success_msg", novoUsuario.nome + ', sua senha será enviada por e-mail para: ' + novoUsuario.email + ', e sua confirmação de acesso será feita em até 24 horas. Não esqueça de verificar suar caixa de spam!')
                                     //Enviando e-mail
                                     transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
                                         if (err) {
-                                            return console.log(err)
+                                            return //console.log(err)
                                         }
-                                        //console.log(info)
+                                        ////console.log(info)
                                     })
                                     res.redirect("/")
                                 }).catch((err) => {
@@ -170,12 +169,12 @@ router.post('/enviar', (req, res) => {
                         //Enviando SMS
                         vonage.message.sendSms(from, to, text, (err, responseData) => {
                             if (err) {
-                                //console.log(err);
+                                ////console.log(err);
                             } else {
                                 if(responseData.messages[0]['status'] === "0") {
-                                    //console.log("Message sent successfully.");
+                                    ////console.log("Message sent successfully.");
                                 } else {
-                                    //console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
+                                    ////console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
                                 }
                             }
                         })    
@@ -187,8 +186,6 @@ router.post('/enviar', (req, res) => {
                     req.flash("error_msg", "Houve um erro ao se registrar.")
                     res.redirect("/")
                 })
-
-
             }).catch((err) => {
                 req.flash("error_msg", "Ocorreu uma falha interna")
                 res.redirect("/usuario/registro")
@@ -219,8 +216,8 @@ router.post("/editregistro", ehAdmin, (req, res) => {
     Usuario.findOne({ usuario: req.body.usuario }).then((usuario_existe) => {
 
         if (usuario_existe == null) {
-            console.log('Usuário não existe.')
-            console.log('existe: usuario_existe=>' + usuario_existe)
+            //console.log('Usuário não existe.')
+            //console.log('existe: usuario_existe=>' + usuario_existe)
             if (!req.body.usuario || typeof req.body.usuario == undefined || req.body.usuario == true) {
                 erros.push({ texto: "É necessário cadastrar um nome de usuário" })
             }
@@ -255,15 +252,15 @@ router.post("/editregistro", ehAdmin, (req, res) => {
 
                 Usuario.findOne({ _id: req.body.id }).then((usuario) => {
 
-                    //console.log('req.body.nome=>'+req.body.nome)
-                    //console.log('razao=>'+req.body.razao)
-                    //console.log('fantasia=>'+req.body.fantasia)
-                    //console.log('cnpj=>'+req.body.cnpj)
-                    //console.log('endereco=>'+req.body.endereco)
-                    //console.log('cidade=>'+req.body.cidade)
-                    //console.log('uf=>'+req.body.uf)
-                    //console.log('telefone=>'+req.body.telefone)
-                    //console.log('req.body.usuario=>'+req.body.usuario)
+                    ////console.log('req.body.nome=>'+req.body.nome)
+                    ////console.log('razao=>'+req.body.razao)
+                    ////console.log('fantasia=>'+req.body.fantasia)
+                    ////console.log('cnpj=>'+req.body.cnpj)
+                    ////console.log('endereco=>'+req.body.endereco)
+                    ////console.log('cidade=>'+req.body.cidade)
+                    ////console.log('uf=>'+req.body.uf)
+                    ////console.log('telefone=>'+req.body.telefone)
+                    ////console.log('req.body.usuario=>'+req.body.usuario)
                     var cidade = 0
                     var uf = 0
 
@@ -341,11 +338,11 @@ router.post("/editregistro", ehAdmin, (req, res) => {
 
             }
         } else {
-            console.log('Usuário existe')
+            //console.log('Usuário existe')
             Usuario.findOne({ _id: req.body.id }).lean().then((usuario_atual) => {
-                console.log('Usuário existe.')
-                console.log('atual: usuario_existe=>' + usuario_existe.usuario)
-                console.log('usuario_atual=>' + usuario_atual.usuario)
+                //console.log('Usuário existe.')
+                //console.log('atual: usuario_existe=>' + usuario_existe.usuario)
+                //console.log('usuario_atual=>' + usuario_atual.usuario)
                 if (usuario_existe.usuario != usuario_atual.usuario) {
                     erros.push({ texto: 'Me desculpe, este nome de usuario já existe. Por favor tente outro.' })
                     const { ehAdmin } = req.user
@@ -359,15 +356,15 @@ router.post("/editregistro", ehAdmin, (req, res) => {
 
                     Usuario.findOne({ _id: req.body.id }).then((usuario) => {
 
-                        //console.log('req.body.nome=>'+req.body.nome)
-                        //console.log('razao=>'+req.body.razao)
-                        //console.log('fantasia=>'+req.body.fantasia)
-                        //console.log('cnpj=>'+req.body.cnpj)
-                        //console.log('endereco=>'+req.body.endereco)
-                        //console.log('cidade=>'+req.body.cidade)
-                        //console.log('uf=>'+req.body.uf)
-                        //console.log('telefone=>'+req.body.telefone)
-                        //console.log('req.body.usuario=>'+req.body.usuario)
+                        ////console.log('req.body.nome=>'+req.body.nome)
+                        ////console.log('razao=>'+req.body.razao)
+                        ////console.log('fantasia=>'+req.body.fantasia)
+                        ////console.log('cnpj=>'+req.body.cnpj)
+                        ////console.log('endereco=>'+req.body.endereco)
+                        ////console.log('cidade=>'+req.body.cidade)
+                        ////console.log('uf=>'+req.body.uf)
+                        ////console.log('telefone=>'+req.body.telefone)
+                        ////console.log('req.body.usuario=>'+req.body.usuario)
                         var cidade = 0
                         var uf = 0
 

@@ -89,9 +89,9 @@ router.get('/realizar/:id', ehAdmin, (req, res) => {
                     } else {
                          temOcp = false
                     }
-                    console.log('temCercamento=>' + temCercamento)
-                    console.log('temPosteCond=>' + temPosteCond)
-                    console.log('temOcp=>' + temOcp)
+                    //console.log('temCercamento=>' + temCercamento)
+                    //console.log('temPosteCond=>' + temPosteCond)
+                    //console.log('temOcp=>' + temOcp)
 
                     if (realizado) {
                          var varCP = false
@@ -596,7 +596,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                var percom
                Pessoa.findOne({ _id: req.body.vendedor }).then((vendedor) => {
                     percom = vendedor.percom
-                    ////console.log('percom=>' + percom)
+                    //console.log('percom=>' + percom)
 
                     var data = new Date()
                     var dia = data.getDate()
@@ -765,7 +765,7 @@ router.post('/configurar/:id', ehAdmin, (req, res) => {
                projeto.save().then(() => {
                     var sucesso = []
                     sucesso.push({ texto: 'Projeto configurado com sucesso.' })
-                    console.log('salvou')
+                    //console.log('salvou')
 
                     Projeto.findOne({ _id: req.params.id }).lean().then((projeto_find) => {
                          Pessoa.find({ funpro: 'checked', user: _id }).lean().then((projetista) => {
@@ -1034,12 +1034,12 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          }
                          //console.log('valorEqu=>' + valorEqu)
                          //console.log('valorEst=>' + valorEst)
-                         console.log('unidadeCer=>' + unidadeCer)
-                         console.log('unidadePos=>' + unidadePos)
-                         console.log('vlrUniCer=>' + vlrUniCer)
-                         console.log('vlrUniPos=>' + vlrUniPos)
-                         console.log('valorCer=>' + valorCer)
-                         console.log('valorPos=>' + valorPos)
+                         //console.log('unidadeCer=>' + unidadeCer)
+                         //console.log('unidadePos=>' + unidadePos)
+                         //console.log('vlrUniCer=>' + vlrUniCer)
+                         //console.log('vlrUniPos=>' + vlrUniPos)
+                         //console.log('valorCer=>' + valorCer)
+                         //console.log('valorPos=>' + valorPos)
                          //console.log('valorDis=>' + valorDis)
                          //console.log('valorDPS=>' + valorDPS)
                          //console.log('valorCab=>' + valorCab)
@@ -1055,13 +1055,13 @@ router.post('/edicao', ehAdmin, (req, res) => {
                               vlrequ = vlrTotal
                               vlrkit = parseFloat(valorEqu) + parseFloat(valorEst) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab)
                          } else {
-                              console.log('não tem lançamento manual de kit.')
+                              //console.log('não tem lançamento manual de kit.')
                               validaequant = parseFloat(projeto.vlrkit) - (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorDis) + parseFloat(detalhe.valorDPS) + parseFloat(detalhe.valorCab))
-                              console.log('validaequant=>' + validaequant)
+                              //console.log('validaequant=>' + validaequant)
                               validaequfut = parseFloat(req.body.equipamento) - (parseFloat(valorEst) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab))
-                              console.log('validaequfut=>' + validaequfut)
+                              //console.log('validaequfut=>' + validaequfut)
                               if (parseFloat(validaequant) != parseFloat(validaequfut)) {
-                                   console.log('Os valores dos kits são difentes')
+                                   //console.log('Os valores dos kits são difentes')
                                    if (req.body.equipamento == projeto.vlrkit) {
                                         vlrequ = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab) + parseFloat(valorOcp)
                                         vlrkit = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab)
@@ -1070,7 +1070,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                         vlrkit = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab)
                                    }
                               } else {
-                                   console.log('Os valores dos kits são iguais')
+                                   //console.log('Os valores dos kits são iguais')
                                    vlrequ = projeto.vlrequ
                                    vlrkit = projeto.vlrkit
                               }
@@ -1491,13 +1491,13 @@ router.post('/direto', ehAdmin, (req, res) => {
 
                               var totcop = parseFloat(totint) + parseFloat(totpro) + parseFloat(vlrart) + parseFloat(totges) + parseFloat(totdes) + parseFloat(totali)
 
-                              console.log('totint=>' + totint)
-                              console.log('totpro=>' + totpro)
-                              console.log('totges=>' + totges)
-                              console.log('totali=>' + totali)
-                              console.log('detalhe.valorOcp=>' + detalhe.valorOcp)
-                              console.log('detalhe.valorCer=>' + detalhe.valorCer)
-                              console.log('detalhe.valorPos=>' + detalhe.valorPos)
+                              //console.log('totint=>' + totint)
+                              //console.log('totpro=>' + totpro)
+                              //console.log('totges=>' + totges)
+                              //console.log('totali=>' + totali)
+                              //console.log('detalhe.valorOcp=>' + detalhe.valorOcp)
+                              //console.log('detalhe.valorCer=>' + detalhe.valorCer)
+                              //console.log('detalhe.valorPos=>' + detalhe.valorPos)
 
                               projeto.totcop = totcop.toFixed(2)
 
@@ -1536,13 +1536,13 @@ router.post('/direto', ehAdmin, (req, res) => {
                                    projeto.impostoICMS = impostoICMS.toFixed(2)
                               }
 
-                              console.log('vlrNFS=>' + vlrNFS)
-                              console.log('vlrcom=>' + vlrcom)
-                              console.log('totcop=>' + totcop)
-                              console.log('reserva=>' + reserva)
-                              console.log('custoPlano=>' + custoPlano)
-                              console.log('custoTotal=>' + custoTotal)
-                              console.log('lucroBruto=>' + lucroBruto)
+                              //console.log('vlrNFS=>' + vlrNFS)
+                              //console.log('vlrcom=>' + vlrcom)
+                              //console.log('totcop=>' + totcop)
+                              //console.log('reserva=>' + reserva)
+                              //console.log('custoPlano=>' + custoPlano)
+                              //console.log('custoTotal=>' + custoTotal)
+                              //console.log('lucroBruto=>' + lucroBruto)
 
                               //Deduzindo as comissões do Lucro Antes dos Impostos
                               var lbaimp = 0
@@ -1553,14 +1553,14 @@ router.post('/direto', ehAdmin, (req, res) => {
                               }
                               projeto.lbaimp = lbaimp.toFixed(2)
 
-                              var totalSimples
+                              var totalSimples = 0
                               var impostoIRPJ
                               var impostoIRPJAdd
                               var impostoCSLL
                               var impostoPIS
                               var impostoCOFINS
                               var totalImpGrafico
-                              var totalImposto
+                              var totalImposto = 0
 
                               var fatadd
                               var fataju
@@ -1569,11 +1569,21 @@ router.post('/direto', ehAdmin, (req, res) => {
                               var prjLP = rp.prjLP
                               var prjFat = rp.prjFat
 
+                              console.log('rp.regime=>'+rp.regime)
+
                               if (rp.regime == 'Simples') {
+                                   //console.log('encontrou regime')
+                                   //console.log('prjFat=>'+prjFat)
+                                   //console.log('rp.alqDAS=>'+rp.alqDAS)
+                                   //console.log('rp.vlrred=>'+rp.vlrred)
+
                                    var alqEfe = ((parseFloat(prjFat) * (parseFloat(rp.alqDAS) / 100)) - (parseFloat(rp.vlrred))) / parseFloat(prjFat)
+                                   //console.log('alqEfe=>'+alqEfe)                   
                                    totalSimples = parseFloat(vlrNFS) * (parseFloat(alqEfe))
+                                   //console.log('totalSimples=>'+totalSimples)
                                    totalImpGrafico = totalSimples.toFixed(2)
-                                   projeto.impostoSimples = totalImpGrafico.toFixed(2)
+                                   projeto.impostoSimples = totalSimples.toFixed(2)
+                                   //console.log('totalImpGrafico=>'+totalImpGrafico)
                               }
 
                               else {
@@ -1641,36 +1651,88 @@ router.post('/direto', ehAdmin, (req, res) => {
                               } else {
                                    totalImposto = parseFloat(totalImpGrafico) + parseFloat(impNFS)
                               }
-
-                              console.log('IRPJ=>' + impostoIRPJ)
-                              console.log('CSLL=>' + impostoCSLL)
-                              console.log('COFINS=>' + impostoCOFINS)
-                              console.log('PIS=>' + impostoPIS)
+                             
+                              //console.log('IRPJ=>' + impostoIRPJ)
+                              //console.log('CSLL=>' + impostoCSLL)
+                              //console.log('COFINS=>' + impostoCOFINS)
+                              //console.log('PIS=>' + impostoPIS)
 
                               //Lucro Líquido após descontar os impostos
-                              projeto.totalImposto = parseFloat(totalImposto).toFixed(2)
+                              projeto.totalImposto = totalImposto.toFixed(2)
 
                               var lucroLiquido = parseFloat(lbaimp) - parseFloat(totalImposto)
                               projeto.lucroLiquido = lucroLiquido.toFixed(2)
 
-                              //Dashboard              
-                              //Participação sobre o Faturamento  
+                              console.log('totalImposto=>'+totalImposto)
+                              console.log('lucroLiquido=>'+lucroLiquido)
 
+                              //Dashboard              
+                              //Participação sobre o valor total do projeto
+                              var parLiqVlr = parseFloat(lucroLiquido) / parseFloat(projeto.valor) * 100
+                              projeto.parLiqVlr = parseFloat(parLiqVlr).toFixed(2)
+                              var parKitVlr = parseFloat(projeto.vlrkit) / parseFloat(projeto.valor) * 100
+                              projeto.parKitVlr = parseFloat(parKitVlr).toFixed(2)                              
+                              var parIntVlr = parseFloat(totint) / parseFloat(projeto.valor) * 100
+                              projeto.parIntVlr = parseFloat(parIntVlr).toFixed(2)
+                              var parGesVlr = parseFloat(totges) / parseFloat(projeto.valor) * 100
+                              projeto.parGesVlr = parseFloat(parGesVlr).toFixed(2)
+                              var parProVlr = parseFloat(totpro) / parseFloat(projeto.valor) * 100
+                              projeto.parProVlr = parseFloat(parProVlr).toFixed(2)
+                              var parArtVlr = parseFloat(vlrart) / parseFloat(projeto.valor) * 100
+                              projeto.parArtVlr = parseFloat(parArtVlr).toFixed(2)                                                          
+                              var parDesVlr = parseFloat(totdes) / parseFloat(projeto.valor) * 100
+                              projeto.parDesVlr = parseFloat(parDesVlr).toFixed(2)
+                              var parAliVlr = parseFloat(totali) / parseFloat(projeto.valor) * 100
+                              projeto.parAliVlr = parseFloat(parAliVlr).toFixed(2)
+                              var parResVlr = parseFloat(reserva) / parseFloat(projeto.valor) * 100
+                              projeto.parResVlr = parseFloat(parResVlr).toFixed(2)
+                              var parDedVlr = parseFloat(totcop) / parseFloat(projeto.valor) * 100
+                              projeto.parDedVlr = parseFloat(parDedVlr).toFixed(2)
+                              var parISSVlr = parseFloat(impNFS) / parseFloat(projeto.valor) * 100
+                              projeto.parISSVlr = parseFloat(parISSVlr).toFixed(2)
+                              var parImpVlr = parseFloat(totalImposto) / parseFloat(projeto.valor) * 100
+                              projeto.parImpVlr = parseFloat(parImpVlr).toFixed(2)
+                              if (vlrcom > 0) {
+                                   var parComVlr = parseFloat(vlrcom) / parseFloat(projeto.valor) * 100
+                                   projeto.parComVlr = parseFloat(parComVlr).toFixed(2)
+                              }
+                              //console.log('parLiqVlr=>'+parLiqVlr)
+                              //console.log('parEquVlr=>'+parEquVlr)
+                              //console.log('parIntVlr=>'+parIntVlr)
+                              //console.log('parGesVlr=>'+parGesVlr)
+                              //console.log('parProVlr=>'+parProVlr)
+                              //console.log('parDesVlr=>'+parDesVlr)
+                              //console.log('parAliVlr=>'+parAliVlr)
+                              //console.log('parResVlr=>'+parResVlr)
+                              //console.log('parDedVlr=>'+parDedVlr)
+                              //console.log('parISSVlr=>'+parISSVlr)
+                              //console.log('parImpVlr=>'+parImpVlr)                              
+                              //console.log('parComVlr=>'+parComVlr) 
+
+                              //Participação sobre o Faturamento  
                               var parLiqNfs = parseFloat(lucroLiquido) / parseFloat(vlrNFS) * 100
                               projeto.parLiqNfs = parseFloat(parLiqNfs).toFixed(2)
+                              if (projeto.fatequ == true){
+                              var parKitNfs = parseFloat(projeto.vlrkit) / parseFloat(vlrNFS) * 100
+                              projeto.parKitNfs = parseFloat(parKitNfs).toFixed(2)                              
+                              }else{
+                                   projeto.parKitNfs = 0  
+                              }
                               var parIntNfs = parseFloat(totint) / parseFloat(vlrNFS) * 100
                               projeto.parIntNfs = parseFloat(parIntNfs).toFixed(2)
                               var parGesNfs = parseFloat(totges) / parseFloat(vlrNFS) * 100
                               projeto.parGesNfs = parseFloat(parGesNfs).toFixed(2)
                               var parProNfs = parseFloat(totpro) / parseFloat(vlrNFS) * 100
                               projeto.parProNfs = parseFloat(parProNfs).toFixed(2)
+                              var parArtNfs = parseFloat(vlrart) / parseFloat(vlrNFS) * 100
+                              projeto.parArtNfs = parseFloat(parArtNfs).toFixed(2)                              
                               var parDesNfs = parseFloat(totdes) / parseFloat(vlrNFS) * 100
                               projeto.parDesNfs = parseFloat(parDesNfs).toFixed(2)
                               var parAliNfs = parseFloat(totali) / parseFloat(vlrNFS) * 100
                               projeto.parAliNfs = parseFloat(parAliNfs).toFixed(2)
                               var parResNfs = parseFloat(reserva) / parseFloat(vlrNFS) * 100
                               projeto.parResNfs = parseFloat(parResNfs).toFixed(2)
-                              var parDedNfs = parseFloat(custoPlano) / parseFloat(vlrNFS) * 100
+                              var parDedNfs = parseFloat(totcop) / parseFloat(vlrNFS) * 100
                               projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
                               var parISSNfs = parseFloat(impNFS) / parseFloat(vlrNFS) * 100
                               projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)
@@ -1681,33 +1743,17 @@ router.post('/direto', ehAdmin, (req, res) => {
                                    projeto.parComNfs = parseFloat(parComNfs).toFixed(2)
                               }
 
-                              //Participação sobre o valor total do projeto
-                              var parLiqVlr = parseFloat(lucroLiquido) / parseFloat(projeto.valor) * 100
-                              projeto.parLiqVlr = parseFloat(parLiqVlr).toFixed(2)
-                              var parEquVlr = parseFloat(projeto.vlrequ) / parseFloat(projeto.valor) * 100
-                              projeto.parEquVlr = parseFloat(parEquVlr).toFixed(2)
-                              var parIntVlr = parseFloat(totint) / parseFloat(projeto.valor) * 100
-                              projeto.parIntVlr = parseFloat(parIntVlr).toFixed(2)
-                              var parGesVlr = parseFloat(totges) / parseFloat(projeto.valor) * 100
-                              projeto.parGesVlr = parseFloat(parGesVlr).toFixed(2)
-                              var parProVlr = parseFloat(totpro) / parseFloat(projeto.valor) * 100
-                              projeto.parProVlr = parseFloat(parProVlr).toFixed(2)
-                              var parDesVlr = parseFloat(totdes) / parseFloat(projeto.valor) * 100
-                              projeto.parDesVlr = parseFloat(parDesVlr).toFixed(2)
-                              var parAliVlr = parseFloat(totali) / parseFloat(projeto.valor) * 100
-                              projeto.parAliVlr = parseFloat(parAliVlr).toFixed(2)
-                              var parResVlr = parseFloat(reserva) / parseFloat(projeto.valor) * 100
-                              projeto.parResVlr = parseFloat(parResVlr).toFixed(2)
-                              var parDedVlr = parseFloat(custoPlano) / parseFloat(projeto.valor) * 100
-                              projeto.parDedVlr = parseFloat(parDedVlr).toFixed(2)
-                              var parISSVlr = parseFloat(impNFS) / parseFloat(projeto.valor) * 100
-                              projeto.parISSVlr = parseFloat(parISSVlr).toFixed(2)
-                              var parImpVlr = parseFloat(totalImposto) / parseFloat(projeto.valor) * 100
-                              projeto.parImpVlr = parseFloat(parImpVlr).toFixed(2)
-                              if (vlrcom > 0) {
-                                   var parComVlr = parseFloat(vlrcom) / parseFloat(projeto.valor) * 100
-                                   projeto.parComVlr = parseFloat(parComVlr).toFixed(2)
-                              }
+                              //console.log('parLiqNfs=>'+parLiqNfs)
+                              //console.log('parIntNfs=>'+parIntNfs)
+                              //console.log('parGesNfs=>'+parGesNfs)
+                              //console.log('parProNfs=>'+parProNfs)
+                              //console.log('parDesNfs=>'+parDesNfs)
+                              //console.log('parAliNfs=>'+parAliNfs)
+                              //console.log('parResNfs=>'+parResNfs)
+                              //console.log('parDedNfs=>'+parDedNfs)
+                              //console.log('parISSNfs=>'+parISSNfs)
+                              //console.log('parImpNfs=>'+parImpNfs)
+                              //console.log('parComNfs=>'+parComNfs)
 
                               projeto.save().then(() => {
                                    var sucesso = []
@@ -1920,7 +1966,7 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                               projeto.qtdequipe = req.body.equipe
                               if (req.body.diastr == '' || req.body.diastr == 0) {
                                    if (req.body.equipe != '' && req.body.equipe > 0) {
-                                        var hrsequ = (parseFloat(req.body.equipe) - 1)* 6
+                                        var hrsequ = (parseFloat(req.body.equipe) -1) * 6
                                         if (req.body.trbint != '' && req.body.trbint > 0) {
                                              projeto.qtdequipe = req.body.equipe
                                              var dias = Math.round(parseFloat(req.body.trbint) / parseFloat(hrsequ))
@@ -2041,13 +2087,13 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                               }
 
                               var totcop = parseFloat(totint) + parseFloat(totpro) + parseFloat(vlrart) + parseFloat(totges) + parseFloat(totdes) + parseFloat(totali)
-                              console.log('totint=>' + totint)
-                              console.log('totpro=>' + totpro)
-                              console.log('totges=>' + totges)
-                              console.log('totali=>' + totali)
-                              console.log('detalhe.valorOcp=>' + detalhe.valorOcp)
-                              console.log('detalhe.valorCer=>' + detalhe.valorCer)
-                              console.log('detalhe.valorPos=>' + detalhe.valorPos)
+                              //console.log('totint=>' + totint)
+                              //console.log('totpro=>' + totpro)
+                              //console.log('totges=>' + totges)
+                              //console.log('totali=>' + totali)
+                              //console.log('detalhe.valorOcp=>' + detalhe.valorOcp)
+                              //console.log('detalhe.valorCer=>' + detalhe.valorCer)
+                              //console.log('detalhe.valorPos=>' + detalhe.valorPos)
 
                               projeto.totcop = totcop.toFixed(2)
 
@@ -2073,6 +2119,7 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                               var impNFS = parseFloat(vlrNFS) * (parseFloat(regime_prj.alqNFS) / 100)
                               projeto.vlrNFS = vlrNFS.toFixed(2)
                               projeto.impNFS = impNFS.toFixed(2)
+                              
                               /*
                               //console.log('vlrNFS=>' + vlrNFS)
                               //console.log('vlrcom=>' + vlrcom)
@@ -2097,7 +2144,7 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                                    impostoICMS = 0
                                    projeto.impostoICMS = impostoICMS.toFixed(2)
                               }
-                              ////console.log('ICMS=>', impostoICMS)
+                              //console.log('ICMS=>', impostoICMS)
 
                               var lbaimp
                               //Deduzindo as comissões do Lucro Antes dos Impostos
@@ -2158,10 +2205,10 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                                         }
                                         totalImpGrafico = totalImposto.toFixed(2)
 
-                                        console.log('IRPJ=>' + impostoIRPJ)
-                                        console.log('CSLL=>' + impostoCSLL)
-                                        console.log('COFINS=>' + impostoCOFINS)
-                                        console.log('PIS=>' + impostoPIS)
+                                        //console.log('IRPJ=>' + impostoIRPJ)
+                                        //console.log('CSLL=>' + impostoCSLL)
+                                        //console.log('COFINS=>' + impostoCOFINS)
+                                        //console.log('PIS=>' + impostoPIS)
 
                                    } else {
                                         //Imposto adicional de IRPJ
@@ -2212,50 +2259,27 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                               projeto.lucroLiquido = lucroLiquido.toFixed(2)
 
                               //Dashboard              
-                              //Participação sobre o Faturamento  
-                              var parLiqNfs = parseFloat(lucroLiquido) / parseFloat(vlrNFS) * 100
-                              projeto.parLiqNfs = parseFloat(parLiqNfs).toFixed(2)
-                              var parIntNfs = parseFloat(totint) / parseFloat(vlrNFS) * 100
-                              projeto.parIntNfs = parseFloat(parIntNfs).toFixed(2)
-                              var parGesNfs = parseFloat(totges) / parseFloat(vlrNFS) * 100
-                              projeto.parGesNfs = parseFloat(parGesNfs).toFixed(2)
-                              var parProNfs = parseFloat(totpro) / parseFloat(vlrNFS) * 100
-                              projeto.parProNfs = parseFloat(parProNfs).toFixed(2)
-                              var parDesNfs = parseFloat(totdes) / parseFloat(vlrNFS) * 100
-                              projeto.parDesNfs = parseFloat(parDesNfs).toFixed(2)
-                              var parAliNfs = parseFloat(totali) / parseFloat(vlrNFS) * 100
-                              projeto.parAliNfs = parseFloat(parAliNfs).toFixed(2)
-                              var parResNfs = parseFloat(reserva) / parseFloat(vlrNFS) * 100
-                              projeto.parResNfs = parseFloat(parResNfs).toFixed(2)
-                              var parDedNfs = parseFloat(custoPlano) / parseFloat(vlrNFS) * 100
-                              projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
-                              var parISSNfs = parseFloat(impNFS) / parseFloat(vlrNFS) * 100
-                              projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)
-                              var parImpNfs = parseFloat(totalImposto) / parseFloat(vlrNFS) * 100
-                              projeto.parImpNfs = parseFloat(parImpNfs).toFixed(2)
-                              if (vlrcom > 0) {
-                                   var parComNfs = parseFloat(vlrcom) / parseFloat(vlrNFS) * 100
-                                   projeto.parComNfs = parseFloat(parComNfs).toFixed(2)
-                              }
 
                               //Participação sobre o valor total do projeto
                               var parLiqVlr = parseFloat(lucroLiquido) / parseFloat(projeto.valor) * 100
                               projeto.parLiqVlr = parseFloat(parLiqVlr).toFixed(2)
-                              var parEquVlr = parseFloat(projeto.vlrequ) / parseFloat(projeto.valor) * 100
-                              projeto.parEquVlr = parseFloat(parEquVlr).toFixed(2)
+                              var parKitVlr = parseFloat(projeto.vlrkit) / parseFloat(projeto.valor) * 100
+                              projeto.parKitVlr = parseFloat(parKitVlr).toFixed(2)                              
                               var parIntVlr = parseFloat(totint) / parseFloat(projeto.valor) * 100
                               projeto.parIntVlr = parseFloat(parIntVlr).toFixed(2)
                               var parGesVlr = parseFloat(totges) / parseFloat(projeto.valor) * 100
                               projeto.parGesVlr = parseFloat(parGesVlr).toFixed(2)
                               var parProVlr = parseFloat(totpro) / parseFloat(projeto.valor) * 100
                               projeto.parProVlr = parseFloat(parProVlr).toFixed(2)
+                              var parArtVlr = parseFloat(vlrart) / parseFloat(projeto.valor) * 100
+                              projeto.parArtVlr = parseFloat(parArtVlr).toFixed(2)                              
                               var parDesVlr = parseFloat(totdes) / parseFloat(projeto.valor) * 100
                               projeto.parDesVlr = parseFloat(parDesVlr).toFixed(2)
                               var parAliVlr = parseFloat(totali) / parseFloat(projeto.valor) * 100
                               projeto.parAliVlr = parseFloat(parAliVlr).toFixed(2)
                               var parResVlr = parseFloat(reserva) / parseFloat(projeto.valor) * 100
                               projeto.parResVlr = parseFloat(parResVlr).toFixed(2)
-                              var parDedVlr = parseFloat(custoPlano) / parseFloat(projeto.valor) * 100
+                              var parDedVlr = parseFloat(totcop) / parseFloat(projeto.valor) * 100
                               projeto.parDedVlr = parseFloat(parDedVlr).toFixed(2)
                               var parISSVlr = parseFloat(impNFS) / parseFloat(projeto.valor) * 100
                               projeto.parISSVlr = parseFloat(parISSVlr).toFixed(2)
@@ -2265,6 +2289,40 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                                    var parComVlr = parseFloat(vlrcom) / parseFloat(projeto.valor) * 100
                                    projeto.parComVlr = parseFloat(parComVlr).toFixed(2)
                               }
+
+                              //Participação sobre o Faturamento  
+                              var parLiqNfs = parseFloat(lucroLiquido) / parseFloat(vlrNFS) * 100
+                              projeto.parLiqNfs = parseFloat(parLiqNfs).toFixed(2)
+                              if (projeto.fatequ == true){
+                              var parKitNfs = parseFloat(vlrkit) / parseFloat(vlrNFS) * 100
+                              projeto.parKitNfs = parseFloat(parKitNfs).toFixed(2)        
+                              }else{
+                                   projeto.parKitNfs = 0
+                              }                      
+                              var parIntNfs = parseFloat(totint) / parseFloat(vlrNFS) * 100
+                              projeto.parIntNfs = parseFloat(parIntNfs).toFixed(2)
+                              var parGesNfs = parseFloat(totges) / parseFloat(vlrNFS) * 100
+                              projeto.parGesNfs = parseFloat(parGesNfs).toFixed(2)
+                              var parProNfs = parseFloat(totpro) / parseFloat(vlrNFS) * 100
+                              projeto.parProNfs = parseFloat(parProNfs).toFixed(2)
+                              var parArtNfs = parseFloat(vlrart) / parseFloat(vlrNFS) * 100
+                              projeto.parArtNfs = parseFloat(parArtNfs).toFixed(2)                              
+                              var parDesNfs = parseFloat(totdes) / parseFloat(vlrNFS) * 100
+                              projeto.parDesNfs = parseFloat(parDesNfs).toFixed(2)
+                              var parAliNfs = parseFloat(totali) / parseFloat(vlrNFS) * 100
+                              projeto.parAliNfs = parseFloat(parAliNfs).toFixed(2)
+                              var parResNfs = parseFloat(reserva) / parseFloat(vlrNFS) * 100
+                              projeto.parResNfs = parseFloat(parResNfs).toFixed(2)
+                              var parDedNfs = parseFloat(totcop) / parseFloat(vlrNFS) * 100
+                              projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
+                              var parISSNfs = parseFloat(impNFS) / parseFloat(vlrNFS) * 100
+                              projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)
+                              var parImpNfs = parseFloat(totalImposto) / parseFloat(vlrNFS) * 100
+                              projeto.parImpNfs = parseFloat(parImpNfs).toFixed(2)
+                              if (vlrcom > 0) {
+                                   var parComNfs = parseFloat(vlrcom) / parseFloat(vlrNFS) * 100
+                                   projeto.parComNfs = parseFloat(parComNfs).toFixed(2)
+                              }                              
 
                               projeto.save().then(() => {
                                    sucesso.push({ texto: 'Projeto salvo com sucesso' })
@@ -2436,6 +2494,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          var totint
                          var totges
                          var totpro
+                         var vlrart
                          var totali
                          var totdes
                          var tothtl
@@ -2457,6 +2516,11 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          } else {
                               totpro = 0
                          }
+                         if (req.body.vlrart != '') {
+                              vlrart = req.body.vlrart
+                         } else {
+                              vlrart = 0
+                         }                         
                          if (req.body.totali != '') {
                               totali = req.body.totali
                          } else {
@@ -2530,7 +2594,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          console.log('ocp=>' + ocp)
                          console.log('postecond=>' + postecond)
 
-                         totalPlano = parseFloat(totint) + parseFloat(totges) + parseFloat(totpro) + parseFloat(totali) + parseFloat(totdes) + parseFloat(totcmb) + parseFloat(tothtl) + parseFloat(cercamento) + parseFloat(postecond) + parseFloat(ocp)
+                         totalPlano = parseFloat(totint) + parseFloat(totges) + parseFloat(totpro) + parseFloat(vlrart) + parseFloat(totali) + parseFloat(totdes) + parseFloat(totcmb) + parseFloat(tothtl) + parseFloat(cercamento) + parseFloat(postecond) + parseFloat(ocp)
                          console.log('totalPlano=>' + totalPlano)
 
                          var vlrequ
@@ -2679,12 +2743,12 @@ router.post('/realizar', ehAdmin, (req, res) => {
                                         //Imposto Adicional de IRPJ
                                         if ((parseFloat(prjLR) / 12) > 20000) {
                                              fatadd = (parseFloat(prjLR) / 12) - 20000
-                                             console.log('fatadd=>' + fatadd)
+                                             //console.log('fatadd=>' + fatadd)
                                              fataju = parseFloat(fatadd) * (parseFloat(rp.alqIRPJAdd) / 100)
-                                             console.log('fataju=>' + fataju)
-                                             console.log('lbaimp=>' + lbaimp)
+                                             //console.log('fataju=>' + fataju)
+                                             //console.log('lbaimp=>' + lbaimp)
                                              aux = Math.round(parseFloat(fatadd) / parseFloat(lbaimp))
-                                             console.log('aux=>' + aux)
+                                             //console.log('aux=>' + aux)
                                              impIRPJAdd = parseFloat(fataju) / parseFloat(aux)
                                              projeto.impIRPJAdd = impIRPJAdd.toFixed(2)
                                         }
@@ -2759,14 +2823,16 @@ router.post('/realizar', ehAdmin, (req, res) => {
 
                          var parLiqVlr = (parseFloat(lucroLiquido) / parseFloat(prjValor)) * 100
                          parLiqVlr = parLiqVlr.toFixed(2)
-
+                         var parKitVlr = (parseFloat(vlrkit) / parseFloat(prjValor)) * 100
+                         parKitVlr = parKitVlr.toFixed(2) 
                          var parIntVlr = (parseFloat(totint) / parseFloat(prjValor)) * 100
                          parIntVlr = parIntVlr.toFixed(2)
-
                          var parGesVlr = (parseFloat(totges) / parseFloat(prjValor)) * 100
                          parGesVlr = parGesVlr.toFixed(2)
                          var parProVlr = (parseFloat(totpro) / parseFloat(prjValor)) * 100
                          parProVlr = parProVlr.toFixed(2)
+                         var parArtVlr = (parseFloat(vlrart) / parseFloat(prjValor)) * 100
+                         parArtVlr = parArtVlr.toFixed(2)                         
                          var parDesVlr = (parseFloat(totdes) / parseFloat(prjValor)) * 100
                          parDesVlr = parDesVlr.toFixed(2)
                          var parCmbVlr
@@ -2776,10 +2842,8 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               parCmbVlr = 0
                          }
                          parCmbVlr = parCmbVlr.toFixed(2)
-
                          var parAliVlr = (parseFloat(totali) / parseFloat(prjValor)) * 100
                          parAliVrl = parseFloat(parAliVlr).toFixed(2)
-
                          var parEstVlr
                          if (projeto.ehDireto == false) {
                               parEstVlr = (parseFloat(tothtl) / parseFloat(prjValor)) * 100
@@ -2787,7 +2851,6 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               parEstVlr = 0
                          }
                          parEstVlr = parEstVlr.toFixed(2)
-
                          var parDedVlr = (parseFloat(totalPlano) / parseFloat(prjValor)) * 100
                          parDedVlr = parDedVlr.toFixed(2)
                          var parISSVlr = (parseFloat(impISS) / parseFloat(prjValor)) * 100
@@ -2799,15 +2862,22 @@ router.post('/realizar', ehAdmin, (req, res) => {
 
                          var parLiqNfs = (parseFloat(lucroLiquido) / parseFloat(vlrPrjNFS)) * 100
                          parLiqNfs = parLiqNfs.toFixed(2)
+                         if (projeto.fatequ == true){
+                         var parKitNfs = (parseFloat(vlrkit) / parseFloat(vlrPrjNFS)) * 100
+                         parKitNfs = parKitNfs.toFixed(2)   
+                         } else{
+                              parKitNfs = 0
+                         }             
                          var parIntNfs = (parseFloat(totint) / parseFloat(vlrPrjNFS)) * 100
                          parIntNfs = parIntNfs.toFixed(2)
                          var parGesNfs = (parseFloat(totges) / parseFloat(vlrPrjNFS)) * 100
                          parGesNfs = parGesNfs.toFixed(2)
                          var parProNfs = (parseFloat(totpro) / parseFloat(vlrPrjNFS)) * 100
                          parProNfs = parProNfs.toFixed(2)
+                         var parArtNfs = (parseFloat(vlrart) / parseFloat(vlrPrjNFS)) * 100
+                         parArtNfs = parArtNfs.toFixed(2)                         
                          var parDesNfs = (parseFloat(totdes) / parseFloat(vlrPrjNFS)) * 100
                          parDesNfs = parDesNfs.toFixed(2)
-
                          var parCmbNfs
                          if (projeto.ehDireto == false) {
                               parCmbNfs = (parseFloat(totcmb) / parseFloat(vlrPrjNFS)) * 100
@@ -2815,10 +2885,8 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               parCmbNfs = 0
                          }
                          parCmbNfs = parCmbNfs.toFixed(2)
-
                          var parAliNfs = (parseFloat(totali) / parseFloat(vlrPrjNFS)) * 100
                          parAliNfs = parAliNfs.toFixed(2)
-
                          var parEstNfs
                          if (projeto.ehDireto == false) {
                               parEstNfs = (parseFloat(tothtl) / parseFloat(vlrPrjNFS)) * 100
@@ -2826,14 +2894,12 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               parEstNfs = 0
                          }
                          parEstNfs = parEstNfs.toFixed(2)
-
                          if (parseFloat(totalPlano) > 0) {
                               var parDedNfs = (parseFloat(totalPlano) / parseFloat(vlrPrjNFS)) * 100
                               parDedNfs = parseFloat(parDedNfs).toFixed(2)
                          } else {
                               parDedNfs = 0
                          }
-
                          var parISSNfs = (parseFloat(impISS) / parseFloat(vlrPrjNFS)) * 100
                          parISSNfs = parISSNfs.toFixed(2)
                          var parImpNfs = ((parseFloat(totalImposto) - parseFloat(impISS)) / parseFloat(projeto.vlrNFS)) * 100
@@ -2980,6 +3046,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               totint: totint,
                               totges: totges,
                               totpro: totpro,
+                              vlrart: vlrart,
                               totali: totali,
                               totdes: totdes,
                               tothtl: tothtl,
@@ -3014,12 +3081,13 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               varLL: varLL,
 
                               parLiqVlr: parLiqVlr,
+                              parKitVlr: parKitVlr,
                               parIntVlr: parIntVlr,
                               parGesVlr: parGesVlr,
                               parProVlr: parProVlr,
+                              parArtVlr: parArtVlr,
                               parDesVlr: parDesVlr,
                               parAliVlr: parAliVlr,
-
                               parCmbVlr: parCmbVlr,
                               parEstVlr: parEstVlr,
                               parDedVlr: parDedVlr,
@@ -3028,9 +3096,11 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               parComVlr: parComVlr,
 
                               parLiqNfs: parLiqNfs,
+                              parKitNfs: parKitNfs,
                               parIntNfs: parIntNfs,
                               parGesNfs: parGesNfs,
                               parProNfs: parProNfs,
+                              parArtNfs: parArtNfs,
                               parDesNfs: parDesNfs,
                               parAliNfs: parAliNfs,
                               parEstNfs: parEstNfs,
