@@ -902,7 +902,7 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                 projeto.parDedVlr = parDedVlr.toFixed(2)
                 var parISSVlr = parseFloat(impNFS) / parseFloat(projeto.valor) * 100
                 projeto.parISSVlr = parISSVlr.toFixed(2)
-                var parImpVlr = parseFloat(totalImpGrafico) / parseFloat(projeto.valor) * 100
+                var parImpVlr = (parseFloat(totalImpGrafico) - parseFloat(impNFS)) / parseFloat(projeto.valor) * 100
                 projeto.parImpVlr = parImpVlr.toFixed(2)
                 if (projeto.vlrcom > 0) {
                     var parComVlr = parseFloat(projeto.vlrcom) / parseFloat(projeto.valor) * 100
@@ -944,7 +944,7 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                 projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
                 var parISSNfs = parseFloat(impNFS) / parseFloat(vlrNFS) * 100
                 projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)
-                var parImpNfs = parseFloat(totalImpGrafico) / parseFloat(vlrNFS) * 100
+                var parImpNfs = (parseFloat(totalImpGrafico) - parseFloat(impNFS)) / parseFloat(vlrNFS) * 100
                 projeto.parImpNfs = parseFloat(parImpNfs).toFixed(2)
                 if (projeto.vlrcom > 0) {
                     var parComNfs = parseFloat(projeto.vlrcom) / parseFloat(vlrNFS) * 100
@@ -1156,7 +1156,7 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
             projeto.parDedVlr = parDedVlr.toFixed(2)
             var parISSVlr = parseFloat(impNFS) / parseFloat(projeto.valor) * 100
             projeto.parISSVlr = parISSVlr.toFixed(2)
-            var parImpVlr = parseFloat(totalImpGrafico) / parseFloat(projeto.valor) * 100
+            var parImpVlr = (parseFloat(totalImpGrafico) - parseFloat(impNFS)) / parseFloat(projeto.valor) * 100
             projeto.parImpVlr = parImpVlr.toFixed(2)
             if (projeto.vlrcom > 0) {
                 var parComVlr = parseFloat(projeto.vlrcom) / parseFloat(projeto.valor) * 100
@@ -1198,7 +1198,7 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
             projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
             var parISSNfs = parseFloat(impNFS) / parseFloat(vlrNFS) * 100
             projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)
-            var parImpNfs = parseFloat(totalImpGrafico) / parseFloat(vlrNFS) * 100
+            var parImpNfs = (parseFloat(totalImpGrafico) - parseFloat(impNFS)) / parseFloat(vlrNFS) * 100
             projeto.parImpNfs = parseFloat(parImpNfs).toFixed(2)
             if (projeto.vlrcom > 0) {
                 var parComNfs = parseFloat(projeto.vlrcom) / parseFloat(vlrNFS) * 100

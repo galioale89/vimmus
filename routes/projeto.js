@@ -1690,7 +1690,7 @@ router.post('/direto', ehAdmin, (req, res) => {
                               projeto.parDedVlr = parseFloat(parDedVlr).toFixed(2)
                               var parISSVlr = parseFloat(impNFS) / parseFloat(projeto.valor) * 100
                               projeto.parISSVlr = parseFloat(parISSVlr).toFixed(2)
-                              var parImpVlr = parseFloat(totalImposto) / parseFloat(projeto.valor) * 100
+                              var parImpVlr = (parseFloat(totalImposto) - parseFloat(impISS)) / parseFloat(projeto.valor) * 100
                               projeto.parImpVlr = parseFloat(parImpVlr).toFixed(2)
                               if (vlrcom > 0) {
                                    var parComVlr = parseFloat(vlrcom) / parseFloat(projeto.valor) * 100
@@ -1736,7 +1736,7 @@ router.post('/direto', ehAdmin, (req, res) => {
                               projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
                               var parISSNfs = parseFloat(impNFS) / parseFloat(vlrNFS) * 100
                               projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)
-                              var parImpNfs = parseFloat(totalImposto) / parseFloat(vlrNFS) * 100
+                              var parImpNfs = (parseFloat(totalImposto) - parseFloat(impISS)) / parseFloat(vlrNFS) * 100
                               projeto.parImpNfs = parseFloat(parImpNfs).toFixed(2)
                               if (vlrcom > 0) {
                                    var parComNfs = parseFloat(vlrcom) / parseFloat(vlrNFS) * 100
@@ -2317,7 +2317,7 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                               projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
                               var parISSNfs = parseFloat(impNFS) / parseFloat(vlrNFS) * 100
                               projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)
-                              var parImpNfs = parseFloat(totalImposto) / parseFloat(vlrNFS) * 100
+                              var parImpNfs = (parseFloat(totalImposto) - parseFloat(impISS)) / parseFloat(vlrNFS) * 100
                               projeto.parImpNfs = parseFloat(parImpNfs).toFixed(2)
                               if (vlrcom > 0) {
                                    var parComNfs = parseFloat(vlrcom) / parseFloat(vlrNFS) * 100
@@ -2582,20 +2582,20 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               }
                          }
                          
-                         console.log('totint=>' + totint)
-                         console.log('totges=>' + totges)
-                         console.log('totpro=>' + totpro)
-                         console.log('totdes=>' + totdes)
-                         console.log('totali=>' + totali)
-                         console.log('totcmb=>' + totcmb)
-                         console.log('tothtl=>' + tothtl)
-                         console.log('totali=>' + totali)
-                         console.log('cercamento=>' + cercamento)
-                         console.log('ocp=>' + ocp)
-                         console.log('postecond=>' + postecond)
+                         //console.log('totint=>' + totint)
+                         //console.log('totges=>' + totges)
+                         //console.log('totpro=>' + totpro)
+                         //console.log('totdes=>' + totdes)
+                         //console.log('totali=>' + totali)
+                         //console.log('totcmb=>' + totcmb)
+                         //console.log('tothtl=>' + tothtl)
+                         //console.log('totali=>' + totali)
+                         //console.log('cercamento=>' + cercamento)
+                         //console.log('ocp=>' + ocp)
+                         //console.log('postecond=>' + postecond)
 
                          totalPlano = parseFloat(totint) + parseFloat(totges) + parseFloat(totpro) + parseFloat(vlrart) + parseFloat(totali) + parseFloat(totdes) + parseFloat(totcmb) + parseFloat(tothtl) + parseFloat(cercamento) + parseFloat(postecond) + parseFloat(ocp)
-                         console.log('totalPlano=>' + totalPlano)
+                         //console.log('totalPlano=>' + totalPlano)
 
                          var vlrequ
                          var impISSNfs
@@ -2615,8 +2615,8 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               vlrPrjNFS = parseFloat(projeto.valor) - parseFloat(vlrkit)
                          }
 
-                         console.log('vlrequ=>' + vlrequ)
-                         console.log('vlrPrjNFS=>' + vlrPrjNFS)
+                         //console.log('vlrequ=>' + vlrequ)
+                         //console.log('vlrPrjNFS=>' + vlrPrjNFS)
 
                          var prjLucroBruto = parseFloat(projeto.valor) - parseFloat(vlrkit) - parseFloat(totalPlano)                              
                          prjLucroBruto = prjLucroBruto.toFixed(2)  
@@ -2855,7 +2855,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          parDedVlr = parDedVlr.toFixed(2)
                          var parISSVlr = (parseFloat(impISS) / parseFloat(prjValor)) * 100
                          parISSVlr = parISSVlr.toFixed(2)
-                         var parImpVlr = (parseFloat(totalImposto) / parseFloat(prjValor)) * 100
+                         var parImpVlr = ((parseFloat(totalImposto) - parseFloat(impISS)) / parseFloat(prjValor)) * 100
                          parImpVlr = parImpVlr.toFixed(2)
                          var parComVlr = (parseFloat(vlrcom) / parseFloat(projeto.valor)) * 100
                          parComVlr = parComVlr.toFixed(2)
@@ -2955,80 +2955,80 @@ router.post('/realizar', ehAdmin, (req, res) => {
 
                          var datareg = ano + mes + dia
                          //Para verificar alguma falha quando salva o registro do realizado
-                         console.log('user=>' + _id)
-                         console.log('projeto=>' + prj_id)
-                         console.log('foiRealizado=>' + false)
-                         console.log('nome=>' + projeto.nome)
-                         console.log('cliente=>' + projeto.cliente)
-                         console.log('dataini=>' + projeto.dataini)
-                         console.log('datafim=>' + datafim)
-                         console.log('valor=>' + projeto.valor)
-                         console.log('data=>' + dia + '/' + mes + '/' + ano)
-                         console.log('datareg=>' + datareg)
-                         console.log('totint=>' + totint)
-                         console.log('totges=>' + totges)
-                         console.log('totpro=>' + totpro)
-                         console.log('totali=>' + totali)
-                         console.log('totdes=>' + totdes)
-                         console.log('tothtl=>' + tothtl)
-                         console.log('cercamento=>' + cercamento)
-                         console.log('ocp=>' + ocp)
-                         console.log('postecond=>' + postecond)
-                         console.log('custoPlano=>' + totalPlano)
-                         console.log('vlrequ=>' + vlrequ)
-                         console.log('vlrNFS=>' + vlrPrjNFS)
-                         console.log('lucroBruto=>' + prjLucroBruto)
-                         console.log('vlrcom=>' + vlrcom)
-                         console.log('lbaimp=>' + lbaimp)
+                         //console.log('user=>' + _id)
+                         //console.log('projeto=>' + prj_id)
+                         //console.log('foiRealizado=>' + false)
+                         //console.log('nome=>' + projeto.nome)
+                         //console.log('cliente=>' + projeto.cliente)
+                         //console.log('dataini=>' + projeto.dataini)
+                         //console.log('datafim=>' + datafim)
+                         //console.log('valor=>' + projeto.valor)
+                         //console.log('data=>' + dia + '/' + mes + '/' + ano)
+                         //console.log('datareg=>' + datareg)
+                         //console.log('totint=>' + totint)
+                         //console.log('totges=>' + totges)
+                         //console.log('totpro=>' + totpro)
+                         //console.log('totali=>' + totali)
+                         //console.log('totdes=>' + totdes)
+                         //console.log('tothtl=>' + tothtl)
+                         //console.log('cercamento=>' + cercamento)
+                         //console.log('ocp=>' + ocp)
+                         //console.log('postecond=>' + postecond)
+                         //console.log('custoPlano=>' + totalPlano)
+                         //console.log('vlrequ=>' + vlrequ)
+                         //console.log('vlrNFS=>' + vlrPrjNFS)
+                         //console.log('lucroBruto=>' + prjLucroBruto)
+                         //console.log('vlrcom=>' + vlrcom)
+                         //console.log('lbaimp=>' + lbaimp)
 
-                         console.log('impmanual=>' + impmanual)
-                         console.log('impISS=>' + impISS)
-                         console.log('impICMS=>' + impICMS)
-                         console.log('impSimples=>' + impSimples)
-                         console.log('impIRPJ=>' + impIRPJ)
-                         console.log('impIRPJAdd=>' + impIRPJAdd)
-                         console.log('impCSLL=>' + impCSLL)
-                         console.log('impPIS=>' + impPIS)
-                         console.log('impCOFINS=>' + impCOFINS)
+                         //console.log('impmanual=>' + impmanual)
+                         //console.log('impISS=>' + impISS)
+                         //console.log('impICMS=>' + impICMS)
+                         //console.log('impSimples=>' + impSimples)
+                         //console.log('impIRPJ=>' + impIRPJ)
+                         //console.log('impIRPJAdd=>' + impIRPJAdd)
+                         //console.log('impCSLL=>' + impCSLL)
+                         //console.log('impPIS=>' + impPIS)
+                         //console.log('impCOFINS=>' + impCOFINS)
 
-                         console.log('totalImposto=>' + totalImposto)
-                         console.log('lucroLiquido=>' + lucroLiquido)
+                         //console.log('totalImposto=>' + totalImposto)
+                         //console.log('lucroLiquido=>' + lucroLiquido)
 
-                         console.log('varCusto=>' + varCusto)
-                         console.log('varLB=>' + varLB)
-                         console.log('varLAI=>' + varLAI)
-                         console.log('varLL=>' + varLL)
+                         //console.log('varCusto=>' + varCusto)
+                         //console.log('varLB=>' + varLB)
+                         //console.log('varLAI=>' + varLAI)
+                         //console.log('varLL=>' + varLL)
 
-                         console.log('parLiqVlr=>' + parLiqVlr)
-                         console.log('parIntVlr=>' + parIntVlr)
-                         console.log('parGesVlr=>' + parGesVlr)
-                         console.log('parProVlr=>' + parProVlr)
-                         console.log('parDesVlr=>' + parDesVlr)
-                         console.log('parAliVlr=>' + parAliVlr)
+                         //console.log('parLiqVlr=>' + parLiqVlr)
+                         //console.log('parIntVlr=>' + parIntVlr)
+                         //console.log('parGesVlr=>' + parGesVlr)
+                         //console.log('parProVlr=>' + parProVlr)
+                         //console.log('parDesVlr=>' + parDesVlr)
+                         //console.log('parAliVlr=>' + parAliVlr)
 
-                         console.log('parCmbVlr=>' + parCmbVlr)
-                         console.log('parEstVlr=>' + parEstVlr)
-                         console.log('parDedVlr=>' + parDedVlr)
-                         console.log('parISSVlr=>' + parISSVlr)
-                         console.log('parImpVlr=>' + parImpVlr)
-                         console.log('parComVlr=>' + parComVlr)
+                         //console.log('parCmbVlr=>' + parCmbVlr)
+                         //console.log('parEstVlr=>' + parEstVlr)
+                         //console.log('parDedVlr=>' + parDedVlr)
+                         //console.log('parISSVlr=>' + parISSVlr)
+                         //console.log('parImpVlr=>' + parImpVlr)
+                         //console.log('parComVlr=>' + parComVlr)
 
-                         console.log('parLiqNfs=>' + parLiqNfs)
-                         console.log('parIntNfs=>' + parIntNfs)
-                         console.log('parGesNfs=>' + parGesNfs)
-                         console.log('parProNfs=>' + parProNfs)
-                         console.log('parDesNfs=>' + parDesNfs)
-                         console.log('parAliNfs=>' + parAliNfs)
-                         console.log('parCmbNfs=>' + parEstNfs)
-                         console.log('parEstNfs=>' + parEstNfs)
-                         console.log('parDedNfs=>' + parDedNfs)
-                         console.log('parISSNfs=>' + parISSNfs)
-                         console.log('parImpNfs=>' + parImpNfs)
-                         console.log('parComNfs=>' + parComNfs)
+                         //console.log('parLiqNfs=>' + parLiqNfs)
+                         //console.log('parIntNfs=>' + parIntNfs)
+                         //console.log('parGesNfs=>' + parGesNfs)
+                         //console.log('parProNfs=>' + parProNfs)
+                         //console.log('parDesNfs=>' + parDesNfs)
+                         //console.log('parAliNfs=>' + parAliNfs)
+                         //console.log('parCmbNfs=>' + parEstNfs)
+                         //console.log('parEstNfs=>' + parEstNfs)
+                         //console.log('parDedNfs=>' + parDedNfs)
+                         //console.log('parISSNfs=>' + parISSNfs)
+                         //console.log('parImpNfs=>' + parImpNfs)
+                         //console.log('parComNfs=>' + parComNfs)
 
-                         console.log('parNfsRlz=>' + parNfsRlz)
-                         console.log('parVlrRlz=>' + parVlrRlz)
-                         console.log('varLucRlz=>' + varLucRlz)
+                         //console.log('parNfsRlz=>' + parNfsRlz)
+                         //console.log('parVlrRlz=>' + parVlrRlz)
+                         //console.log('varLucRlz=>' + varLucRlz)
 
 
                          const realizado = {

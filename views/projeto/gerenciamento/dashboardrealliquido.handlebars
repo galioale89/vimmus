@@ -13,7 +13,7 @@
                 <div class="row text-center mb-2 mt-2">
                     <div class="card text-white"
                         style="border-radius: 80px;background-color: {{#if realizado.parVlrRlz}} rgba(78, 207, 71, 1) {{else}}rgba(255, 71, 71, 1){{/if}};">
-                        <div class="fw-bold">Valor Total <br>
+                        <div class="fw-bold">Valor Total
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.valor}}</label>
                         </div>
                         <h2 class="text-center card-title">{{realizado.parLiqVlr}} %</h2>
@@ -24,7 +24,7 @@
             <a href='/gerenciamento/dashboardrealliquido/{{realizado._id}}' style='text-decoration: none;'>
                 <div class="card text-white row"
                     style="border-radius: 80px;background-color: {{#if realizado.parNfsRlz}} rgba(10, 159, 8, 1) {{else}} rgba(159, 10, 10, 1) {{/if}};">
-                    <div class="fw-bold">Total Faturado <br>
+                    <div class="fw-bold">Total Faturado
                         <label clas='col-form-label col-form-label-sm'> R$ {{realizado.vlrNFS}}</label>
                     </div>
                     <h2 class="text-center card-title">{{realizado.parLiqNfs}} %</h2>
