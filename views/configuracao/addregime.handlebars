@@ -8,172 +8,143 @@
     <label for="minutos" class='fw-bold mt-2'> Cadastro de Regime Tributário</label>
     <br>
     <form action='/configuracao/addregime' method='post'>
-        <div class="row mb-2">
-            <div class="col card">
-                <div class="row mt-2">
-                    <label for='slug' class='fw-bold col-sm-2 col-form-label col-form-label-sm'> Nome: </label>
-                    <div class="col-md-4">
-                        <input id='nome' name='nome' class='form-control form-control-sm'>
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col-md-6">
-                        <div class="row">
-                            <label for='regime' class='fw-bold col-md-4 col-form-label col-form-label-sm'> Regime:
-                            </label>
-                            <div class="col-md-8">
-                                <select name='regime' class='form-select form-select-sm'>
-                                    <option>MEI</option>
-                                    <option>Simples</option>
-                                    <option>Lucro Real</option>
-                                    <option>Lucro Presumido</option>
-                                </select>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="col-md-6">
-                        <div class="row">
-                            <label for='tipo' class='fw-bold col-md-3 col-form-label col-form-label-sm mb-2'> Tipo:
-                            </label>
-                            <div class="col-md-8">
-                                <select name='tipo' class='form-select form-select-sm'>
-                                    <option>Nenhum</option>
-                                    <option>Anexo III</option>
-                                    <option>Anexo V</option>
-                                    <option>Não Cumulativo</option>
-                                    <option>Cumulativo</option>
-                                </select>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <label class='fw-bold col-form-label col-form-label-sm'>Parâmetros </label>
-                <div class="col-md-6">
-                    <div class='row mb-2'>
-                        <label class='col-md-6 col-form-label col-form-label-sm'> Fator de Redução: </label>
-                        <div class="col-sm-6">
-                            <input type='number' id='vlrred' name='vlrred' class='form-control form-control-sm'
-                                placeholder="R$">
-                        </div>
-                    </div>
-                    <div class='row mb-2'>
-                        <label class='col-md-6 col-form-label col-form-label-sm'> Projeção de Faturamento Simples:
-                        </label>
-                        <div class="col-md-6">
-                            <input type='number' id='prjFat' name='prjFat' class='form-control form-control-sm'
-                                placeholder="R$">
-                        </div>
-                    </div>
-                    <div class='row mb-2'>
-                        <label class='col-sm-6 col-form-label col-form-label-sm'> Valor do DAS para MEI: </label>
-                        <div class="col-sm-6">
-                            <input type='number' id='vlrDAS' name='vlrDAS' class='form-control form-control-sm'
-                                placeholder="R$">
-                        </div>
-                    </div>
-
-                    <div class='row mb-2'>
-                        <label class='col-sm-6 col-form-label col-form-label-sm'> Projeção de Lucro Real: </label>
-                        <div class="col-sm-6">
-                            <input type='number' id='prjLR' name='prjLR' class='form-control form-control-sm'
-                                placeholder="R$">
-                        </div>
-                    </div>
-                    <div class='row mb-2'>
-                        <label class='col-sm-6 col-form-label col-form-label-sm'> Projeção de Faturamento Trimestral
-                            para Lucro Presumido: </label>
-                        <div class="col-sm-6">
-                            <input type='number' id='prjLP' name='prjLP' class='form-control form-control-sm'
-                                placeholder="R$">
-                        </div>
-                    </div>
-
-                </div>
-                <div class="col-md-6">
-                    <div class="row">
-                        <label class='fw-bold col-form-label col-form-label-sm'>Alíquotas </label>
-                        <div class="col-md-6">
-                            <div class='row mb-2'>
-                                <label class='col-sm-6 col-form-label col-form-label-sm'> DAS: </label>
-                                <div class="col-sm-5">
-                                    <input type='text' id='alqDAS' name='alqDAS' class='form-control form-control-sm'
-                                        placeholder="%">
-                                </div>
-                            </div>
-                            <div class="row mb-2">
-                                <label class='col-sm-6 col-form-label col-form-label-sm'> IRPJ: </label>
-                                <div class="col-sm-5">
-                                    <input type='text' id='alqIRPJ' name='alqIRPJ'
-                                        class='form-control form-control-sm' placeholder="%">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <label class='col-sm-6 col-form-label col-form-label-sm'> IRPJ Adicional: </label>
-                                <div class="col-sm-5">
-                                    <input type='text' id='alqIRPJAdd' name='alqIRPJAdd'
-                                        class='form-control form-control-sm mb-2' placeholder="%">
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <label class='col-sm-6 col-form-label col-form-label-sm'> CSLL: </label>
-                                <div class="col-sm-5">
-                                    <input type='text' id='alqCSLL' name='alqCSLL'
-                                        class='form-control form-control-sm mb-2 ' placeholder="%">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="row">
-                                <label class='col-sm-4 col-form-label col-form-label-sm'> NF-s: </label>
-                                <div class="col-sm-5">
-                                    <input type='text' id='alqNFS' name='alqNFS'
-                                        class='form-control form-control-sm mb-2 ' placeholder="%">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <label class='col-sm-4 col-form-label col-form-label-sm'> ICMS: </label>
-                                <div class="col-sm-5">
-                                    <input type='text' id='alqICMS' name='alqICMS'
-                                        class='form-control form-control-sm mb-2 ' placeholder="%">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <label class='col-sm-4 col-form-label col-form-label-sm'> PIS: </label>
-                                <div class="col-sm-5">
-                                    <input type='text' id='alqPIS' name='alqPIS'
-                                        class='form-control form-control-sm mb-2 ' placeholder="%">
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <label class='col-sm-4 col-form-label col-form-label-sm'> COFINS: </label>
-                                <div class="col-sm-5">
-                                    <input type='text' id='alqCOFINS' name='alqCOFINS'
-                                        class='form-control form-control-sm mb-2' placeholder="%">
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <label class='col-sm-4 col-form-label col-form-label-sm'> INSS CPP: </label>
-                                <div class="col-sm-5">
-                                    <input type='text' id='alqINSS' name='alqINSS'
-                                        class='form-control form-control-sm mb-2' placeholder="%">
-                                </div>
-                            </div>                            
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="row">
-            <button type='submit' class='btn btn-success'> Aplicar </button>
+            <input type='hidden' name='id' value='{{regime._id}}'>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="row mb-2" style="margin-left: 2px;">
+                        <div class="row mt-2">
+                            <label for='slug' class='fw-bold col-sm-2 col-form-label col-form-label-sm'> Nome: </label>
+                            <div class="col-md-4">
+                                <input id='nome' name='nome' value='{{regime.nome}}'
+                                    class='form-control form-control-sm'>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label for='regime' class='fw-bold col-md-4 col-form-label col-form-label-sm'>
+                                        Regime:
+                                    </label>
+                                    <div class="col-md-8">
+                                        <select name='regime' class='form-select form-select-sm'>
+                                            <option style="font-weight: bold;">{{regime.regime}}</option>
+                                            <option>MEI</option>
+                                            <option>Simples</option>
+                                            <option>Lucro Real</option>
+                                            <option>Lucro Presumido</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label for='tipo' class='fw-bold col-md-3 col-form-label col-form-label-sm mb-2'>
+                                        Tipo:
+                                    </label>
+                                    <div class="col-md-8">
+                                        <select name='tipo' class='form-select form-select-sm'>
+                                            <option style="font-weight: bold;">{{regime.tipo}}</option>
+                                            <option>Nenhum</option>
+                                            <option>Anexo III</option>
+                                            <option>Anexo V</option>
+                                            <option>Não Cumulativo</option>
+                                            <option>Cumulativo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-1 mb-2">
+                    <label class='fw-bold col-form-label col-form-label-sm text-center'>Alíquotas </label>
+                    <div class="row" style="margin-left: 5px;">
+                        <div class="col-md-2">
+                            <label class='col-form-label col-form-label-sm mb-1'> DAS: </label><br>
+                            <label class='col-form-label col-form-label-sm mb-1'> ISS: </label><br>
+                            <label class='col-form-label col-form-label-sm mb-1'> ICMS: </label>
+                        </div>
+                        <div class="col-md-2">
+                            <input type='text' id='alqDAS' name='alqDAS' value='{{regime.alqDAS}}'
+                                class='form-control form-control-sm mb-1' placeholder="%">
+                            <input type='text' id='alqNFS' name='alqNFS' value='{{regime.alqNFS}}'
+                                class='form-control form-control-sm mb-1 ' placeholder="%">
+                            <input type='text' id='alqICMS' name='alqICMS' value='{{regime.alqICMS}}'
+                                class='form-control form-control-sm mb-1 ' placeholder="%">
+                        </div>
+                        <div class="col-md-3">
+                            <label class='col-form-label col-form-label-sm mb-1'> IRPJ: </label><br>
+                            <label class='col-form-label col-form-label-sm mb-1'> IRPJ Adicional: </label><br>
+                            <label class='col-form-label col-form-label-sm mb-1'> CSLL: </label><br>
+                            <label class='col-form-label col-form-label-sm mb-1'> PIS: </label><br>
+                            <label class='col-form-label col-form-label-sm mb-1'> COFINS: </label>
+                        </div>
+                        <div class="col-md-2">
+                            <input type='text' id='alqIRPJ' name='alqIRPJ' value='{{regime.alqIRPJ}}'
+                                class='form-control form-control-sm mb-1' placeholder="%">
+                            <input type='text' id='alqIRPJAdd' name='alqIRPJAdd' value='{{regime.alqIRPJAdd}}'
+                                class='form-control form-control-sm mb-1' placeholder="%">
+                            <input type='text' id='alqCSLL' name='alqCSLL' value='{{regime.alqCSLL}}'
+                                class='form-control form-control-sm mb-1 ' placeholder="%">
+                            <input type='text' id='alqPIS' name='alqPIS' value='{{regime.alqPIS}}'
+                                class='form-control form-control-sm mb-1 ' placeholder="%">
+                            <input type='text' id='alqCOFINS' name='alqCOFINS' value='{{regime.alqCOFINS}}'
+                                class='form-control form-control-sm mb-1' placeholder="%">
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class="col-md-4">
+                      <label class='col-form-label col-form-label-sm'>Despesas Administrativas:</label><br>
+                      <label class='col-form-label col-form-label-sm'>Percentual Despesas:</label>
+                    </div>
+                    <div class="col-md-8">
+                       <input class="form-control form-control-sm" name='desadm' placeholder="Valor mensal das despesas fixas e variáveis somadas." value={{regime.desadm}}>
+                       <input class="form-control form-control-sm" name='perdes' placeholder="Percentual (%) das despesas por projeto." value={{regime.perdes}}>
+                    </div>
+                </div>                
+
+            </div>
+            <div class="col-md-6">
+                <div class="container">
+                    <label class='fw-bold col-form-label col-form-label-sm'>Parâmetros </label>
+                    <div class="row">
+                        <div class="col-md-7">
+                            <label class='col-form-label col-form-label-sm fw-bold'>Simples</label><br>
+                            <label class='col-form-label col-form-label-sm mb-1'> Fator de Redução: </label><br>
+                            <label class='col-form-label col-form-label-sm mb-1'> Projeção de Faturamento:</label><br>
+                            <hr>
+                            <label class='col-form-label col-form-label-sm mb-1'> Projeção de Lucro Real: </label><br>
+                            <hr>
+                            <label class='col-form-label col-form-label-sm mb-1'> Projeção de Faturamento Lucro
+                                Presumido:
+                            </label><br>
+                            <hr>
+                            <label class='col-form-label col-form-label-sm mb-1'> Valor do DAS para MEI: </label>
+                        </div>
+                        <div class="col-md-5">
+                            <div style="margin-top: 10px;"></div><br>
+                            <input type='text' id='vlrred' name='vlrred' value='{{regime.vlrred}}'
+                                class='form-control form-control-sm mb-1' placeholder="R$" />
+                            <input type='text' id='prjFat' name='prjFat' value='{{regime.prjFat}}'
+                                class='form-control form-control-sm mb-1' placeholder="R$">
+                                <hr>
+                            <input type='text' id='prjLR' name='prjLR' value='{{regime.prjLR}}'
+                                class='form-control form-control-sm' style="margin-bottom: 20px;" placeholder="R$">
+                                <hr>
+                            <input type='text' id='prjLP' name='prjLP' value='{{regime.prjLP}}'
+                                class='form-control form-control-sm' style="margin-bottom: 20px;" placeholder="R$">
+                                <hr>
+                            <input type='text' id='vlrDAS' name='vlrDAS' value='{{regime.vlrDAS}}'
+                                class='form-control form-control-sm mb-1' placeholder="R$">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <button type='submit' class='btn btn-sm btn-success mx-auto mb-3'> Aplicar </button>
+                </div>   
+            </div>
         </div>
     </form>
 </div>

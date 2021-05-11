@@ -63,6 +63,14 @@ const Regime = new Schema({
         type: String,
         require: false
     },
+    desadm: {
+        type: String,
+        require: false
+    },
+    perdes: {
+        type: String,
+        require: false
+    },    
     prjLR:{
         type: String,
         require: false

@@ -654,11 +654,10 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                          if (projeto.qtdequipe > 3) {
                               var insadd  = (parseFloat(projeto.qtdequipe) - 3)
                               //console.log('insadd=>'+insadd)
-                              var vlrins = (6 * parseFloat(req.body.vlrhri))
                               //console.log('vlrins=>'+vlrins)
      
-                              totest = (((parseFloat(trbest) * parseFloat(req.body.vlrhri)) + parseFloat(vlrins)) * insadd).toFixed(2)
-                              totmod = (((parseFloat(trbmod) * parseFloat(req.body.vlrhri)) + parseFloat(vlrins)) * insadd).toFixed(2)
+                              totest = ((parseFloat(trbest) * parseFloat(req.body.vlrhri) * 2) + (parseFloat(trbest) * parseFloat(req.body.vlrhri) * insadd)).toFixed(2)
+                              totmod = ((parseFloat(trbmod) * parseFloat(req.body.vlrhri) * 2) + (parseFloat(trbmod) * parseFloat(req.body.vlrhri) * insadd)).toFixed(2)
                          }else{
                               totest = (parseFloat(trbest) * parseFloat(req.body.vlrhri) * 2).toFixed(2)
                               totmod = (parseFloat(trbmod) * parseFloat(req.body.vlrhri) * 2).toFixed(2)

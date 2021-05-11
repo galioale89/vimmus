@@ -1,11 +1,15 @@
 <div class="row mt-1" style="width: 95%; margin-left: 30px;">
     <input type='hidden' id='ehDireto' value='{{projeto.ehDireto}}'>
     <div class="col-md-2">
+        <div class=" btn-group gap-2 col-12 mt-2">
+            <a href='/projeto/realizar/{{projeto._id}}' class='btn btn-primary btn-sm'> Editar </a>
+            <a href='/projeto/vermais/{{projeto._id}}' class='btn btn-primary btn-sm'> Ver Mais </a>
+        </div>        
         <div class="row text-center" style="padding:5px; border-radius: 5px;">
-            <h5 class='fw-bold mt-2'>Lucro Líquido</h5>
             <div class="card text-white"
                 style="border-radius: 80px;background-color: {{#if realizado.varLucRlz}}rgb(71, 114, 207) {{else}}rgb(255, 70, 70){{/if}};">
-                <h4 class='text-center mt-4'>R$ {{realizado.lucroLiquido}}</h4>
+                <h5 class='fw-bold mt-2'>Lucro Líquido</h5>
+                <h4 class='text-center'>R$ {{realizado.lucroLiquido}}</h4>
                 <label class='col-form-label col-form-label-sm'>Orçado: R$
                     {{projeto.lucroLiquido}}</label>
             </div>
@@ -13,7 +17,7 @@
                 <div class="row text-center mb-2 mt-2">
                     <div class="card text-white"
                         style="border-radius: 80px;background-color: {{#if realizado.parVlrRlz}} rgba(78, 207, 71, 1) {{else}}rgba(255, 71, 71, 1){{/if}};">
-                        <div class="fw-bold">Valor Total
+                        <div class="fw-bold">Valor Total <br>
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.valor}}</label>
                         </div>
                         <h2 class="text-center card-title">{{realizado.parLiqVlr}} %</h2>
@@ -31,12 +35,15 @@
                     <label class='col-form-label col-form-label-sm'>Orçado: {{projeto.parLiqNfs}} %</label>
                 </div>
             </a>
+            {{#if projeto.desAdm}}
+            <div class="mt-2">
+                <div class="card text-white mb-1" style="background-color: rgba(194, 189, 188, 1)">
+                    <div class="fw-bold">Despesas Adminsitrativas</div>
+                    <h4>R$ {{projeto.desAdm}}</h4>
+                </div>
+            </div>
+            {{/if}}             
         </div>
-        <div class="row mt-1 justify-content-center" style="height: 60px">
-            <a href='/projeto/realizar/{{projeto._id}}' class='btn btn-primary btn-sm mb-1'> Editar </a>
-            <a href='/projeto/vermais/{{projeto._id}}' class='btn btn-primary btn-sm'> Ver Mais </a>
-        </div>
-
     </div>
 
 
@@ -53,23 +60,22 @@
         <input id='parComNfs' name='parComNfs' type="hidden" value={{realizado.parComNfs}}>
 
         <div class="row mt-2 text-center" style="height: 300px;">
-            <div class="col-md-6">
-                <div class="card text-white mb-3" style="background-color:rgba(255, 161, 8, 1); max-width: 22rem;">
-                    <div class="fw-bold card-header">Comissão</div>
-                    <h4>R$ {{realizado.vlrcom}}</h4>
-                </div>                 
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(255, 49, 53, 1);">
-                    <div class="fw-bold card-header">Tributos</div>
-                    <h4>R$ {{realizado.totalImposto}}</h4>
-                </div>
-            </div>
-            <div class="col-md-6">
+            <div class="col-md-6">       
                 <div class='card text-white text-center mb-3'
                     style=" background-color: rgba(194, 189, 188, 1); max-width: 22rem;">
                     <div class="fw-bold card-header">Deduções</div>
                     <h4>R$ {{realizado.custoPlano}}</h4>
-                </div>                
-
+                </div>                              
+                <div class="card text-white mb-3" style="background-color:rgba(255, 161, 8, 1); max-width: 22rem;">
+                    <div class="fw-bold card-header">Comissão</div>
+                    <h4>R$ {{realizado.vlrcom}}</h4>
+                </div>  
+            </div>
+            <div class="col-md-6">
+                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(255, 49, 53, 1);">
+                    <div class="fw-bold card-header">Impostos</div>
+                    <h4>R$ {{realizado.totalImposto}}</h4>
+                </div>          
                 <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(255, 49, 53, 1);">
                     <div class="fw-bold card-header">ISS</div>
                     <h4>R$ {{realizado.impISS}}</h4>

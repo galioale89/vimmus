@@ -84,9 +84,9 @@
                         <div class="sessao-dash-total textoper" style="margin-left: 5px;">
                             <label>{{per_deducao}}%</label>
                         </div>
-                    </td>                    
+                    </td>
                     <tr>
-                    
+
                     </tr>
                     <tr>
                         <td>Instalação</td>
@@ -144,11 +144,12 @@
                         <td class="text-end">Outros</td>
                         <td>R$ {{medkwp_ocp}}</td>
                         <td>{{per_ocp}} %</td>
-                    </tr>                                        
+                    </tr>
                 </table>
 
             </td>
             <td>
+                <!--
                 <div style="width: 700px;height: 300px;margin-top: 30px;">
                     <input id='prjjan' type="hidden" value='{{prjjan}}'>
                     <input id='prjfev' type="hidden" value='{{prjfev}}'>
@@ -164,6 +165,17 @@
                     <input id='prjdez' type="hidden" value='{{prjdez}}'>
                     <canvas id='chartPrj' class='mt-2 mb-1'></canvas>
                 </div>
+                -->
+                <div style="width: 700px;height: 300px;margin-top: 30px;">
+                    <input id='totfat' type="hidden" value='{{soma_totfat}}'>
+                    <input id='totliq' type="hidden" value='{{soma_totliq}}'>
+                    <input id='totkit' type="hidden" value='{{soma_totkit}}'>
+                    <input id='totcom' type="hidden" value='{{soma_totcom}}'>
+                    <input id='totcop' type="hidden" value='{{soma_totcop}}'>
+                    <input id='totadm' type="hidden" value='{{soma_totadm}}'>
+                    <input id='tottrb' type="hidden" value='{{soma_tottrb}}'>
+                    <canvas id='chartTot' class='mt-2 mb-1'></canvas>
+                </div>
             </td>
         </tr>
     </table>
@@ -171,6 +183,64 @@
 </div>
 
 <script>
+    var soma_totfat = document.getElementById('totfat')
+    var soma_totcop = document.getElementById('totcop')
+    var soma_totkit = document.getElementById('totkit')
+    var soma_totcom = document.getElementById('totcom')
+    var soma_totliq = document.getElementById('totliq')
+    var soma_totadm = document.getElementById('totadm')
+    var soma_tottrb = document.getElementById('tottrb')
+    var ctxTot = document.getElementById('chartTot').getContext('2d')
+    var chartTot = new Chart(ctxTot, {
+        type: 'bar',
+        data: {
+            labels: ['Faturamento', 'Equipamentos', 'Comissão', 'Custos', 'Despesas', 'Tributos', 'Lucro Liquido'],
+            datasets: [{
+                data: [soma_totfat.value, soma_totkit.value, soma_totcom.value, soma_totcop.value, soma_totadm.value, soma_tottrb.value, soma_totliq.value],
+                backgroundColor: [
+                    'rgba(41, 8, 159, 0.5)',
+                    'rgba(249, 240, 71, 0.5)',
+                    'rgba(255, 161, 8, 0.5)',
+                    'rgba(194, 189, 188, 0.5)',
+                    'rgba(194, 189, 188, 0.5)',
+                    'rgba(255, 49, 53, 0.5)',
+                    'rgb(32, 255, 62, 0.5)'
+                ],
+
+                borderColor: [
+                    'rgba(41, 8, 159, 1)',
+                    'rgba(249,240,71, 1)',
+                    'rgba(255, 161, 8, 1)',
+                    'rgba(194, 189, 188, 1)',
+                    'rgba(194, 189, 188, 1)',
+                    'rgba(255, 49, 53, 1)',
+                    'rgb(32, 255, 62, 1)'
+                ],
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+            scales: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Resultados'
+                    },
+                    ticks: {
+                        min: 0,
+                    },
+                }],
+            },
+            legend: {
+                labels: {
+                    boxWidth: 0,
+                },
+                display: false,
+            },
+        }
+    })
+
     var prjjan = document.getElementById('prjjan')
     var prjfev = document.getElementById('prjfev')
     var prjmar = document.getElementById('prjmar')

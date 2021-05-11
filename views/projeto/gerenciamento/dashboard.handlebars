@@ -2,7 +2,10 @@
     <div class="col-md-2">
         <div class="row mt-2">
                 <div class="btn-group col-12 gap-2">
+                    {{#if projeto.foiRealizado}}
+                    {{else}}
                     <a href='/projeto/edicao/{{projeto._id}}' class='btn btn-primary btn-sm'> Editar </a>
+                    {{/if}}
                     <a href='/projeto/vermais/{{projeto._id}}' class='btn btn-primary btn-sm'> Ver Mais </a>
                 </div>
         </div>        
@@ -41,7 +44,15 @@
                     <h4>R$ {{projeto.reserva}}</h4>
                 </div>
             </div>
-            {{/if}}            
+            {{/if}}     
+            {{#if projeto.desAdm}}
+            <div class="">
+                <div class="card text-white mb-1" style="background-color: rgba(194, 189, 188, 1)">
+                    <div class="fw-bold">Despesas Administrativas</div>
+                    <h4>R$ {{projeto.desAdm}}</h4>
+                </div>
+            </div>
+            {{/if}}                     
         </div>
         <div class='row mt-1'>
             <div style="height: 60px; border-radius: 5px; border:rgba(220,220,220,1) solid 1px;">
@@ -84,7 +95,7 @@
             </div>
             <div class="col-md-6">
                 <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(255, 49, 53, 1);">
-                    <div class="fw-bold card-header">Tributos</div>
+                    <div class="fw-bold card-header">Impostos</div>
                     <h4>R$ {{projeto.totalImposto}}</h4>
 
                 </div>
@@ -226,12 +237,12 @@
                 perLL[5]],
 
                 backgroundColor: [
-                    'rgba(71, 135, 207, 0.2)',
-                    'rgba(249, 240, 71, 0.2)',
-                    'rgba(194, 189, 188, 0.2)',
-                    'rgba(255, 49, 53, 0.2)',
-                    'rgba(255, 49, 53, 0.2)',
-                    'rgba(255, 161, 8, 0.2)'
+                    'rgba(71, 135, 207, 0.5)',
+                    'rgba(249, 240, 71, 0.5)',
+                    'rgba(194, 189, 188, 0.5)',
+                    'rgba(255, 49, 53, 0.5)',
+                    'rgba(255, 49, 53, 0.5)',
+                    'rgba(255, 161, 8, 0.5)'
                 ],
 
                 borderColor: [

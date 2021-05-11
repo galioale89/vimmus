@@ -505,9 +505,8 @@
                                 class='btn btn-sm btn-warning'><i class="bi bi-check"></i> Em Homologação</a>
                             {{else}}
                             {{#if projeto.foiRealizado}}
-                            <a href='/projeto/homologar/{{projeto._id}}'
-                                style="color: white; background-color: rgb(19, 2, 172);border-radius: 30px;"
-                                class='btn btn-sm btn-warning'><i class="bi bi-stopwatch"></i> Projeto Realizado</a>
+                            <div style="color: white; background-color: rgb(19, 2, 172);border-radius: 30px;"
+                                class='btn btn-sm btn-warning'><i class="bi bi-stopwatch"></i> Projeto Realizado</div>
                             {{else}}
                             <a href='/projeto/homologar/{{projeto._id}}'
                                 style="color: white; background-color: rgb(252, 137, 7);border-radius: 30px;"

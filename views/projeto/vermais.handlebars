@@ -65,9 +65,10 @@
                                     <h5 class='text-start' style="font-family: Segoe UI;">Reserva:</h5>
                                 </div>
                                 <div class="col-md-8">
-                                    
+
                                     {{#if realizado.foiRealizado}}
-                                    <div style="text-align: left;font-size: 17px;"><i class='bi bi-bookmark-check' style="color: rgb(40,55,89);"></i></div>
+                                    <div style="text-align: left;font-size: 17px;"><i class='bi bi-bookmark-check'
+                                            style="color: rgb(40,55,89);"></i></div>
                                     {{else}}
                                     {{#if projeto.executando}}
                                     <div id='execucao'></div>
@@ -79,7 +80,7 @@
                                     <div id='homologado'></div>
                                     {{else}}
                                     {{#if projeto.foiRealizado}}
-                                    <div id='realizado'></div>                                    
+                                    <div id='realizado'></div>
                                     {{else}}
                                     <div id='aguardando'></div>
                                     {{/if}}
@@ -87,7 +88,7 @@
                                     {{/if}}
                                     {{/if}}
                                     {{/if}}
-                                    <h5 class='text-start mt-2' >R$ {{projeto.reserva}}</h5>
+                                    <h5 class='text-start mt-2'>R$ {{projeto.reserva}}</h5>
                                 </div>
                             </div>
                         </div>
@@ -187,12 +188,12 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <label class='fw-bold col-form-label col-form-label-sm'>Requisitos</label>
-                        <textarea class='form-control' rows='3'>{{projeto.requisitos}}</textarea>
+                        <label class='fw-bold col-form-label col-form-label-sm'>Premissas</label>
+                        <textarea class='form-control' rows='3'>{{projeto.premissas}}</textarea>
                     </div>
                     <div class="col-md-6">
-                        <label class='fw-bold col-form-label col-form-label-sm'>Observações</label>
-                        <textarea class='form-control' rows='3'>{{projeto.obstxt}}</textarea>
+                        <label class='fw-bold col-form-label col-form-label-sm'>Requisitos</label>
+                        <textarea class='form-control' rows='3'>{{projeto.requisitos}}</textarea>
                     </div>
                 </div>
             </div>

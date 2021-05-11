@@ -392,6 +392,10 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
+    totalTributos :{
+        type: Number,
+        require: false
+    },
     custoPlano:{
         type: Number,
         require: false
@@ -413,6 +417,10 @@ const Projeto = new Schema({
         require: false
     },
     lucroBruto: {
+        type: Number,
+        require: false
+    },
+    desAdm: {
         type: Number,
         require: false
     },
@@ -550,7 +558,7 @@ const Projeto = new Schema({
         ref: 'regime',
         require: false
     },
-    obstxt: {
+    premissas: {
         type: String,
         require: false
     },

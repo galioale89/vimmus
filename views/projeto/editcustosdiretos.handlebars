@@ -17,9 +17,9 @@
     }
 </style>
 <script>
-    function valida_numequ(){
+    function valida_numequ() {
         var equipe = document.getElementById('equipe')
-        if (equipe.value < 3){
+        if (equipe.value < 3) {
             alert('O número de integrantes da equipe deve ter no mínimo 3 pessoas.')
             equipe.value = ''
         }
@@ -57,7 +57,8 @@
                                     <label class="col-form-label col-form-label-sm">R$
                                         {{projeto.impostoSimples}}</label><br>
                                     <label class="col-form-label col-form-label-sm">R$ {{projeto.impNFS}}</label><br>
-                                    <label class="col-form-label col-form-label-sm">R$ {{projeto.impostoIRPJ}}</label><br>
+                                    <label class="col-form-label col-form-label-sm">R$
+                                        {{projeto.impostoIRPJ}}</label><br>
                                     <label class="col-form-label col-form-label-sm">R$ {{projeto.impostoAdd}}
                                     </label><br>
                                     <label class="col-form-label col-form-label-sm">R$ {{projeto.impostoCSLL}}
@@ -68,7 +69,7 @@
                                     </label><br>
                                     <label class="col-form-label col-form-label-sm">R$ {{projeto.impostoICMS}}
                                     </label><br>
-                                    <label class="col-form-label col-form-label-sm">R$ {{projeto.totalImposto}}
+                                    <label class="col-form-label col-form-label-sm">R$ {{projeto.totalTributos}}
                                     </label><br>
                                 </div>
                             </div>
@@ -188,8 +189,8 @@
                     <div class="col-md-6">
                         <div class="row card" style="background-color: white;">
                             <div class="row" style="padding: 5px;padding-left: 7%;">
-                            <a href='/pessoa/formaequipe/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
-                                    class="bi bi-people"></i> Equipe </a>
+                                <a href='/pessoa/formaequipe/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
+                                        class="bi bi-people"></i> Equipe </a>
                             </div>
                             <div class="row mt-1">
                                 <div class="col-md-7 text-end">
@@ -330,7 +331,7 @@
                                         {{#each instalador}}
                                         <option value="{{_id}}">{{nome}}</option>
                                         {{else}}
-                                        <option>Nenhum projetista cadastrado</option>
+                                        <option>Nenhum instalador cadastrado</option>
                                         {{/each}}
                                     </select>
                                 </div>
@@ -358,7 +359,7 @@
                                         {{#each projetista}}
                                         <option value="{{_id}}">{{nome}}</option>
                                         {{else}}
-                                        <option>Nenhum instalador cadastrado</option>
+                                        <option>Nenhum projetista cadastrado</option>
                                         {{/each}}
                                     </select>
                                 </div>
@@ -450,29 +451,29 @@
                             class="btn btn-sm btn-success">Aplicar</button>
                         <a class="btn btn-sm btn-primary" data-bs-toggle='modal' data-bs-target="#consultaAliquota">Ver
                             Tributos</a>
-                        <a href='/menu' class='btn btn-sm btn-primary'> <i class="bi bi-back"></i> Voltar ao Menu</a>                            
+                        <a href='/menu' class='btn btn-sm btn-primary'> <i class="bi bi-back"></i> Voltar ao Menu</a>
                     </div>
                 </div>
                 <div class="contorno-titulo mt-2">
                     <label class='fw-bold col-form-label col-form-label-lg mt-3'>Demonstrativo</label>
-                    <div class="row" style="font-size: 23px;">
+                    <div class="row">
                         <div class="col-md-7 text-end">
                             <label class="fw-bold col-form-label col-form-label-sm">Valor Faturado:</label><br>
-                            <label class='fw-bold col-md-7 col-form-label col-form-label-sm'>(+)Total do
+                            <label class='fw-bold col-form-label col-form-label-sm'>(+)Total do
                                 Projeto:</label><br>
-                            <label class='fw-bold col-md-7 col-form-label col-form-label-sm'>(-)Custos
+                            <label class='fw-bold col-form-label col-form-label-sm'>(-)Custos
                                 Totais:</label><br>
-                            <label class='col-md-7 col-form-label col-form-label-sm'>Custo Planejado:
+                            <label class='col-form-label col-form-label-sm'>Custo Planejado:
                             </label><br>
                             <label class='col-form-label col-form-label-sm'>Custo Kit Gerador: </label><br>
-                            <label class='fw-bold col-md-7 col-form-label col-form-label-sm'>(=)Lucro Bruto:
+                            <label class='fw-bold col-form-label col-form-label-sm'>(=)Lucro Bruto:
                             </label><br>
-                            <label class='col-md-7 col-form-label  col-form-label-sm'>(-)Comissão:
+                            <label class='col-form-label  col-form-label-sm'>(-)Comissão:
                                 ({{projeto.percom}}%)</label><br>
-                            <label class='fw-bold col-md-7 col-form-label col-form-label-sm'>(=)LAI:</label><br>
-                            <label class=' col-md-7 col-form-label col-form-label-sm'>(-)Tributos: </label>
-                            <label style="padding-bottom: 15%;"
-                                class='fw-bold col-md-7 col-form-label col-form-label-sm'>(-)Lucro Líquido:
+                            <label class='col-form-label  col-form-label-sm'>(-)Despesas Administrastivas:</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>(=)LAI:</label><br>
+                            <label class='col-form-label col-form-label-sm'>(-)Tributos: </label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>(-)Lucro Líquido:
                             </label>
                         </div>
                         <div class="col-md-5 text-start">
@@ -488,10 +489,11 @@
                             <label class='fw-bold col-form-label col-form-label-sm'>R$
                                 {{projeto.lucroBruto}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrcom}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.desAdm}}</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>R$
                                 {{projeto.lbaimp}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$
-                                {{projeto.totalImposto}}</label><br>
+                                {{projeto.totalTributos}}</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>R$
                                 {{projeto.lucroLiquido}}</label>
                         </div>

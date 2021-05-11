@@ -2,7 +2,10 @@
     <div class="col-md-2">
         <div class="row mt-2">
             <div class="btn-group col-12 gap-2">
+                {{#if projeto.foiRealizado}}
+                {{else}}
                 <a href='/projeto/edicao/{{projeto._id}}' class='btn btn-primary btn-sm'> Editar </a>
+                {{/if}}
                 <a href='/projeto/vermais/{{projeto._id}}' class='btn btn-primary btn-sm'> Ver Mais </a>
             </div>
         </div>
@@ -39,6 +42,14 @@
                 <div class="card text-white mb-1" style="background-color: rgb(32, 255, 62);">
                     <div class="fw-bold">Reserva</div>
                     <h4>R$ {{projeto.reserva}}</h4>
+                </div>
+            </div>
+            {{/if}}
+            {{#if projeto.desAdm}}
+            <div class="">
+                <div class="card text-white mb-1" style="background-color: rgba(194, 189, 188, 1)">
+                    <div class="fw-bold">Despesas Administrativas</div>
+                    <h4>R$ {{projeto.desAdm}}</h4>
                 </div>
             </div>
             {{/if}}
@@ -79,16 +90,16 @@
                     <h4>R$ {{projeto.totcop}}</h4>
                 </div>
                 <div class="card text-white" style="max-width: 22rem; background-color: rgba(255, 49, 53, 1);">
-                    <div class="fw-bold card-header">Tributos</div>
+                    <div class="fw-bold card-header">Impostos</div>
                     <h4>R$ {{projeto.totalImposto}}</h4>
 
-                </div>                
+                </div>
             </div>
             <div class="col-md-6">
                 <div class="card text-white mb-3" style="background-color:rgba(255, 161, 8, 1); max-width: 22rem;">
                     <div class="fw-bold card-header">Comissão</div>
                     <h4>R$ {{projeto.vlrcom}}</h4>
-                </div>                   
+                </div>
                 <div class="card text-white" style="max-width: 22rem; background-color: rgba(255, 49, 53, 1);">
                     <div class="fw-bold card-header">ISS</div>
                     <h4>R$ {{projeto.impNFS}}</h4>
@@ -99,7 +110,7 @@
                 <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(249, 240, 71, 1);">
                     <div class="fw-bold card-header">Equipamento</div>
                     <h4>R$ {{projeto.vlrkit}}</h4>
-                </div>                
+                </div>
             </div>
             {{/if}}
         </div>
@@ -157,7 +168,8 @@
                 </div>
                 {{/if}}
                 {{#if projeto.parAliNfs}}
-                <div class="card text-white mb-3" style="max-width: 22rem; px;background-color: rgba(210, 210, 210, 1);">
+                <div class="card text-white mb-3"
+                    style="max-width: 22rem; px;background-color: rgba(210, 210, 210, 1);">
                     <div class="fw-bold card-header">Alimentação</div>
                     <h4>R$ {{projeto.totali}}</h4>
                 </div>

@@ -253,8 +253,8 @@
                     {{projeto.impostoCOFINS}}</label><br>
                 <label class='col-form-label col-form-label-sm' for='impostoICMS'>R$
                     {{projeto.impostoICMS}}</label><br>
-                <label class='col-form-label col-form-label-sm' for='totalImposto'>R$
-                    {{projeto.totalImposto}}</label><br>
+                <label class='col-form-label col-form-label-sm' for='totalTributos'>R$
+                    {{projeto.totalTributos}}</label><br>
             </div>
             <div class="col-md-2 text-center">
                 <h6>Realizado</h6>
@@ -311,7 +311,7 @@
                 <label class='col-form-label col-form-label-sm' for='impCOFINS'>R$
                     {{realizado.impCOFINS}}</label><br>
                 <label class='col-form-label col-form-label-sm' for='impICMS'>R$ {{realizado.impICMS}}</label><br>
-                <label class='col-form-label col-form-label-sm' for='totalImposto'>R${{realizado.totalImposto}}</label>
+                <label class='col-form-label col-form-label-sm' for='totalTributos'>R${{realizado.totalTributos}}</label>
             </div>
             <div class="col-md-6">
                 <div class="row text-end" style="margin-inline-start: 10px;">
@@ -346,7 +346,7 @@
                         {{projeto.valor}} </label>
                     <div class="col-md-6">
                         <div class="row">
-                            <div class="col-md-7">
+                            <div class="col-md-7 text-end">
                                 <label class='fw-bold col-form-label col-form-label-sm'>Faturado:
                                 </label>
                             </div>
@@ -356,7 +356,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-7">
+                            <div class="col-md-7 text-end">
                                 <label class='fw-bold col-form-label col-form-label-sm'>Kit Gerador: </label>
                             </div>
                             <div class="col-md-5">
@@ -365,8 +365,8 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-7">
-                                <label class='fw-bold col-form-label col-form-label-sm'>Custo Planejeado:
+                            <div class="col-md-7 text-end">
+                                <label class='fw-bold col-form-label col-form-label-sm'>Custo Planejado:
                                 </label>
                             </div>
                             <div class="col-md-5">
@@ -375,40 +375,49 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-7">
-                                <label class="fw-bold col-form-label col-form-label-sm">Reserva: </label>
+                            <div class="col-md-7 text-end">
+                                <label class="fw-bold col-form-label col-form-label-sm">Despesas Adm.: </label>
                             </div>
                             <div class="col-md-5">
                                 <label class='col-form-label col-form-label-sm' for='reserva'>R$
-                                    {{projeto.reserva}}</label>
+                                    {{projeto.desAdm}}</label>
                             </div>
-                        </div>
+                        </div>                          
                     </div>
                     <div class="col-md-6">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-7 text-end">
+                                <label class="fw-bold col-form-label col-form-label-sm">Despesas Adm.: </label>
+                            </div>
+                            <div class="col-md-5">
+                                <label class='col-form-label col-form-label-sm' for='reserva'>R$
+                                    {{projeto.desAdm}}</label>
+                            </div>
+                        </div>                        
+                        <div class="row">
+                            <div class="col-md-7 text-end">
                                 <label class='fw-bold col-form-label col-form-label-sm'>Lucro Bruto:
                                 </label>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-5">
                                 <label class='col-form-label col-form-label-sm text-center'>R$
                                     {{projeto.lucroBruto}}</label>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-7 text-end">
                                 <label class='fw-bold col-form-label col-form-label-sm'>LAI: </label>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-5">
                                 <label class='col-form-label col-form-label-sm text-center'>R$
                                     {{projeto.lbaimp}}</label>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-7 text-end">
                                 <label class='fw-bold col-form-label col-form-label-sm'>Lucro Líquido: </label>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-5">
                                 <label class='col-form-label col-form-label-sm text-center'>R$
                                     {{projeto.lucroLiquido}}</label>
                             </div>

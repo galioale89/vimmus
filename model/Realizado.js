@@ -132,6 +132,10 @@ const Realizado = new Schema({
         type: Number,
         require: false
     },
+    totalTributos: {
+        type: Number,
+        require: false
+    },    
     totalImposto: {
         type: Number,
         require: false
@@ -144,6 +148,10 @@ const Realizado = new Schema({
         type: Number,
         require: false
     },
+    desAdm: {
+        type: Number,
+        require: false
+    },    
     lbaimp: {
         type: Number,
         require: false

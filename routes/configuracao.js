@@ -66,7 +66,7 @@ router.get('/removeconfiguracao/:id', ehAdmin, (req, res) => {
         res.redirect('/configuracao/consultaregime')
     }).catch(() => {
         req.flash('error_msg', 'Não foi possível remover a configuração.')
-        res.redirect('/configurcao/consulta')
+        res.redirect('/configurcao/consultaregime')
     })
 })
 
@@ -160,7 +160,9 @@ router.post('/addregime', ehAdmin, (req, res) => {
             prjFat: req.body.prjFat,
             prjLP: req.body.prjLP,
             alqINSS: req.body.alqINSS,
-            vlrDAS: req.body.vlrDAS
+            vlrDAS: req.body.vlrDAS,
+            desadm: req.body.desadm,
+            perdes: req.body.perdes
         }
 
         new Regime(regime).save().then(() => {
@@ -390,8 +392,19 @@ router.post('/editregime/', ehAdmin, (req, res) => {
             } else {
                 regime.prjLP = req.body.prjLP
             }
+
+            if (req.body.desadm == '' || parseFloat(req.body.desadm) == 0) {
+                regime.desadm = 0
+            } else {
+                regime.desadm = req.body.desadm
+            }            
             
-            
+            if (req.body.perdes == '' || parseFloat(req.body.perdes) == 0) {
+                regime.perdes = 0
+            } else {
+                regime.perdes = req.body.perdes
+            }              
+
             regime.save().then(() => {
                 req.flash('success_msg', 'Regime alterado com sucesso')
                 res.redirect('/configuracao/consultaregime')

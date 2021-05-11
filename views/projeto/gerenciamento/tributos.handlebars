@@ -1,5 +1,4 @@
 <style>
-
     .botao-menu {
         background-color: rgb(40, 55, 86);
         border: white solid 1px;
@@ -16,7 +15,6 @@
     .ativo {
         background-color: rgb(10, 30, 68);
     }
-
 </style>
 
 <div style="width: 98%;padding-left: 2%;padding-top: 1%;">
@@ -31,7 +29,7 @@
         <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
             Gestão</a>
         <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"></i>
-            Instalação</a>            
+            Instalação</a>
         <a href="/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-puzzle"></i>
             Gerenciamento</a>
         <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i
@@ -51,31 +49,23 @@
                         </div>
                         <div class="row">
                             <div class="col-md-7">
-                                <label for="estrutura" class="fw-bold col-form-label col-form-label-sm">Regime
-                                    Tributário:</label>
-                                <label class="fw-bold col-form-label col-form-label-sm" />Projeção Faturamento
-                                ou Lucro:
+                                <label for="estrutura" class="fw-bold col-form-label col-form-label-sm">Regime Tributário:</label><br>
+                                <label class="fw-bold col-form-label col-form-label-sm"/>Projeção Faturamento ou Lucro: </label><br>
                                 {{#if ehSimples }}
-                                <label class="fw-bold col-form-label col-form-label-sm">Fator de redução
-                                    Simples:</label>
-                                </label>
-                                {{else}}
+                                <label class="fw-bold col-form-label col-form-label-sm">Fator de redução Simples:</label><br>
                                 {{/if}}
                             </div>
                             <div class="col-md-5">
                                 <label class='col-form-label col-form-label-sm'>{{regime.regime}}</label><br>
                                 {{#if ehSimples }}
-                                <label class="col-form-label col-form-label-sm">R$ {{regime.proje}}</label>
-                                <label class="col-form-label col-form-label-sm">R$ {{regime.vlrred}}</label>
-                                {{else}}
+                                <label class="col-form-label col-form-label-sm">R$ {{regime.prjFat}}</label><br>
+                                <label class="col-form-label col-form-label-sm">R$ {{regime.vlrred}}</label><br>
                                 {{/if}}
                                 {{#if ehLR}}
-                                <label class="col-form-label col-form-label-sm">R$ {{regime.prjLR}}</label>
-                                {{else}}
+                                <label class="col-form-label col-form-label-sm">R$ {{regime.prjLR}}</label><br>
                                 {{/if}}
                                 {{#if ehLP}}
-                                <label class="col-form-label col-form-label-sm">R$ {{regime.prjLP}}</label>
-                                {{else}}
+                                <label class="col-form-label col-form-label-sm">R$ {{regime.prjLP}}</label><br>
                                 {{/if}}
                             </div>
                         </div>
@@ -86,7 +76,7 @@
                 <div class="row">
                     <div class="card">
                         <div class="row">
-                            <label class="fw-bold col-form-label col-form-label-sm contorno">Alíquotas   </label><br>
+                            <label class="fw-bold col-form-label col-form-label-sm contorno">Alíquotas </label><br>
                         </div>
                         <div class="row">
                             <div class="col-md-3 text-end">
@@ -151,10 +141,10 @@
                         <label class="col-form-label col-form-label-sm">R$ {{projeto.impostoPIS}} </label><br>
                         <label class="col-form-label col-form-label-sm">R$ {{projeto.impostoCOFINS}} </label><br>
                         <label class="col-form-label col-form-label-sm">R$ {{projeto.impostoICMS}} </label><br>
-                        <label class="col-form-label col-form-label-sm">R$ {{projeto.totalImposto}} </label><br>
+                        <label class="col-form-label col-form-label-sm">R$ {{projeto.totalTributos}} </label><br>
                     </div>
                 </div>
-                
+
             </div>
 
             <div class="col-md-5 contorno-titulo" style="font-size: 20px;">
@@ -162,19 +152,20 @@
                 <div class="row" style="font-size: 20px;">
                     <div class="col-md-6 text-end">
                         <label class="fw-bold col-form-label col-form-label-sm">Valor Faturado:</label><br>
-                        <label class='fw-bold col-md-7 col-form-label col-form-label-sm'>(+)Total do
+                        <label class='fw-bold col-form-label col-form-label-sm'>(+)Total do
                             Projeto:</label><br>
-                        <label class='fw-bold col-md-7 col-form-label col-form-label-sm'>(-)Custos
+                        <label class='fw-bold col-form-label col-form-label-sm'>(-)Custos
                             Totais:</label><br>
-                        <label class='col-md-7 col-form-label col-form-label-sm'>Custo Planejado: </label><br>
+                        <label class='col-form-label col-form-label-sm'>Custo Planejado: </label><br>
                         <label class='col-form-label col-form-label-sm'>Custo Kit Gerador: </label><br>
-                        <label class='fw-bold col-md-7 col-form-label col-form-label-sm'>(=)Lucro Bruto:
+                        <label class='fw-bold col-form-label col-form-label-sm'>(=)Lucro Bruto:
                         </label><br>
-                        <label class='col-md-7 col-form-label  col-form-label-sm'>(-)Comissão:
+                        <label class='col-form-label  col-form-label-sm'>(-)Comissão:
                             ({{projeto.percom}}%)</label><br>
-                        <label class='fw-bold col-md-7 col-form-label col-form-label-sm'>(=)LAI:</label><br>
-                        <label class=' col-md-7 col-form-label col-form-label-sm'>(-)Tributos: </label>
-                        <label class='fw-bold col-md-7 col-form-label col-form-label-sm'>(-)Lucro Líquido: </label>
+                        <label class='col-form-label  col-form-label-sm'>(-)Despesas Administrastivas:</label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm'>(=)LAI:</label><br>
+                        <label class=' col-form-label col-form-label-sm'>(-)Tributos: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm'>(-)Lucro Líquido: </label>
                     </div>
                     <div class="col-md-5 text-start">
                         <label class='fw-bold col-form-label col-form-label-sm'>R$ {{projeto.vlrNFS}}</label><br>
@@ -186,8 +177,9 @@
                         <label class='fw-bold col-form-label col-form-label-sm'>R$
                             {{projeto.lucroBruto}}</label><br>
                         <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrcom}}</label><br>
+                        <label class='col-form-label col-form-label-sm'>R$ {{projeto.desAdm}}</label><br>
                         <label class='fw-bold col-form-label col-form-label-sm'>R$ {{projeto.lbaimp}}</label><br>
-                        <label class='col-form-label col-form-label-sm'>R$ {{projeto.totalImposto}}</label><br>
+                        <label class='col-form-label col-form-label-sm'>R$ {{projeto.totalTributos}}</label><br>
                         <label class='fw-bold col-form-label col-form-label-sm'>R$
                             {{projeto.lucroLiquido}}</label>
                     </div>
@@ -195,5 +187,4 @@
             </div>
         </div>
     </form>
-
 </div>
