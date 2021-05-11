@@ -127,7 +127,7 @@ app.get('/menu', ehAdmin, (req, res) => {
       var perVlrMed = (parseFloat(somaLL) / parseFloat(somaVT) * 100).toFixed(1)
       var perNfsMed = (parseFloat(somaLL) / parseFloat(somaVF) * 100).toFixed(1)
       const { _id } = req.user
-      aviso.push({texto: 'Para todos os campos de valor utilzar ponto para separar os decimais e não usuar pontos para separar os milhares.'})
+      aviso.push({texto: 'Para todos os campos de valor utilizar ponto para separar os decimais e não usar ponto para separar os milhares.'})
       Projeto.find({ foiRealizado: false, user: _id }).sort({ dataord: 'asc' }).lean().then((dataord) => {
         var numprj = projetos.length
         Projeto.find({ foiRealizado: true, user: _id }).then((foiRealizado) => {

@@ -94,7 +94,7 @@ router.post('/enviar', (req, res) => {
                 var senha = Math.floor(Math.random() * (999999 - 111111)) + 111111;
 
                 var texto = 'Olá ' + req.body.nome + ',' + '\n' + '\n' +
-                    'Aqui está seu usuário e senha para acessar o sistema da VIMMUS e começar a geranciar de forma eficáz seus projetos.' + '\n' +
+                    'Aqui está seu usuário e senha para acessar o sistema da VIMMUS e começar a geranciar de forma eficaz seus projetos.' + '\n' +
                     'Usuário: ' + usuario + '\n' +
                     'Senha: ' + senha + '\n' +
                     'Fique a vontade par alterar o nome de usuário (de acordo com a disponibilidade) e sua senha.' + '\n' + '\n' +
