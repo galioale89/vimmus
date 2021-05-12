@@ -63,8 +63,8 @@
                         <div class="col-md-4">
                             <div class="row mt-2">
                                 <div class="col-md-4">
-                                    <h5 class='text-start' style="font-family: Segoe UI;">Status:</h5>
-                                    <h5 class='text-start' style="font-family: Segoe UI;">Reserva:</h5>
+                                    <h5 class='text-start'>Status:</h5>
+                                    <h5 class='text-start'>Reserva:</h5>
                                 </div>
                                 <div class="col-md-8">
 
@@ -131,43 +131,53 @@
                             <label class='fw-bold col-form-label col-form-label-sm'>Equipamento:</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>Custo Operacional:</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>Lucro Bruto:</label><br>
-                            <label class='fw-bold col-form-label col-form-label-sm'>Tributos:</label><br>
-                            <label class='fw-bold col-form-label col-form-label-sm'>Lucro Antes dos
-                                Impostos:</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>Comissão:</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>Despesas Adm.:</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>LAI:</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>Tributos:</label><br>    
                             <label class='fw-bold col-form-label col-form-label-sm'>Lucro Líquido:</label><br>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <label class="fw-bold">Orçado</label>
+                        <div class="row">
+                            <div class="col-md-1">
+                                <a href='/gerenciamento/dashboard/{{projeto._id}}'><i class='bi bi-file-bar-graph'></i></a>              
+                            </div>
+                            <div class="col-md-10">
+                                <label class='fw-bold'>Orçado</label>
+                            </div>                            
+                        </div>
                         <hr>
                         <div class="row">
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrequ}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.totcop}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.lucroBruto}}</label><br>
-                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.totalImposto}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrcom}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.desAdm}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.lbaimp}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.totalTributos}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.lucroLiquido}}</label><br>
-                            <div class="row">
-                                <a href='/gerenciamento/dashboard/{{projeto._id}}'
-                                    class='btn btn-primary btn-sm'>Dashboard
-                                    Orçado</a>
-                            </div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <label class="fw-bold">Realizado</label>
+                        <div class="row">
+                            <div class="col-md-1">
+                                <a href='/gerenciamento/dashboard/{{projeto._id}}'><i class='bi bi-file-bar-graph'></i></a>              
+                            </div>               
+                            <div class="col-md-10">
+                                <label class='fw-bold'>Realizado</label>
+                            </div>                            
+                        </div>                                     
                         <hr>
                         <div class="row">
                             <label class='col-form-label col-form-label-sm'>R$ {{realizado.vlrequ}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{realizado.custoPlano}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{realizado.lucroBruto}}</label><br>
-                            <label class='col-form-label col-form-label-sm'>R$ {{realizado.totalImposto}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{realizado.vlrcom}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{realizado.desAdm}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{realizado.lbaimp}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{realizado.totalTributos}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{realizado.lucroLiquido}}</label><br>
-                            <div class="row">
-                                <a href='/gerenciamento/dashboardreal/{{realizado._id}}'
-                                    class='btn btn-primary btn-sm'>Dashboard Realizado</a>
-                            </div>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -188,6 +198,7 @@
                         </div>
                     </div>
                 </div>
+                <hr>
                 <div class="row">
                     <div class="col-md-6">
                         <label class='fw-bold col-form-label col-form-label-sm'>Premissas</label>
