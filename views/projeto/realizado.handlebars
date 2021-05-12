@@ -20,6 +20,7 @@
             data.value = ''
         } else {
             datafim.value = dia1 + '/' + mes1 + '/' + ano1
+            alert('Lembre-se de clicar no botão Calcular para salvar da data, e em seguida clique no botão Finalizar.')
         }
     };
 </script>
@@ -342,17 +343,16 @@
                 </div>
                 <div class="row"
                     style="margin-top: 50px; height: fit-content; width: 100%; border-radius: 10px; border:  rgba(220, 220, 220, 0.4) solid 1px;">
-                    <label class='contorno-titulo' style="font-size: 20px;font-weight: 500;">Valor Total Orçado: R$
-                        {{projeto.valor}} </label>
+                    <label class='contorno-titulo' style="font-size: 20px;font-weight: 500;">Valor Total Faturado: R$ {{projeto.vlrfat}} </label>
                     <div class="col-md-6">
                         <div class="row">
                             <div class="col-md-7 text-end">
-                                <label class='fw-bold col-form-label col-form-label-sm'>Faturado:
+                                <label class='fw-bold col-form-label col-form-label-sm'>Orçado:
                                 </label>
                             </div>
                             <div class="col-md-5">
                                 <label class='col-form-label col-form-label-sm text-center'>R$
-                                    {{projeto.vlrNFS}}</label>
+                                    {{projeto.valor}}</label>
                             </div>
                         </div>
                         <div class="row">
@@ -376,13 +376,23 @@
                         </div>
                         <div class="row">
                             <div class="col-md-7 text-end">
-                                <label class="fw-bold col-form-label col-form-label-sm">Despesas Adm.: </label>
+                                <label class="fw-bold col-form-label col-form-label-sm">Reserva: </label>
                             </div>
                             <div class="col-md-5">
                                 <label class='col-form-label col-form-label-sm' for='reserva'>R$
-                                    {{projeto.desAdm}}</label>
+                                    {{projeto.reserva}}</label>
                             </div>
-                        </div>                          
+                        </div>     
+                        <div class="row">
+                            <div class="col-md-7 text-end">
+                                <label class='fw-bold col-form-label col-form-label-sm'>Lucro Bruto:
+                                </label>
+                            </div>
+                            <div class="col-md-5">
+                                <label class='col-form-label col-form-label-sm text-center'>R$
+                                    {{projeto.lucroBruto}}</label>
+                            </div>
+                        </div>                                           
                     </div>
                     <div class="col-md-6">
                         <div class="row">
@@ -393,17 +403,16 @@
                                 <label class='col-form-label col-form-label-sm' for='reserva'>R$
                                     {{projeto.desAdm}}</label>
                             </div>
-                        </div>                        
+                        </div> 
                         <div class="row">
                             <div class="col-md-7 text-end">
-                                <label class='fw-bold col-form-label col-form-label-sm'>Lucro Bruto:
-                                </label>
+                                <label class="fw-bold col-form-label col-form-label-sm">Comissão: </label>
                             </div>
                             <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm text-center'>R$
-                                    {{projeto.lucroBruto}}</label>
+                                <label class='col-form-label col-form-label-sm' for='comissao'>R$
+                                    {{projeto.vlrcom}}</label>
                             </div>
-                        </div>
+                        </div>                                                  
                         <div class="row">
                             <div class="col-md-7 text-end">
                                 <label class='fw-bold col-form-label col-form-label-sm'>LAI: </label>
@@ -412,7 +421,17 @@
                                 <label class='col-form-label col-form-label-sm text-center'>R$
                                     {{projeto.lbaimp}}</label>
                             </div>
-                        </div>
+                        </div>  
+                        <div class="row">
+                            <div class="col-md-7 text-end">
+                                <label class='fw-bold col-form-label col-form-label-sm'>Tributos:
+                                </label>
+                            </div>
+                            <div class="col-md-5">
+                                <label class='col-form-label col-form-label-sm text-center'>R$
+                                    {{projeto.totalTributos}}</label>
+                            </div>
+                        </div>                        
                         <div class="row">
                             <div class="col-md-7 text-end">
                                 <label class='fw-bold col-form-label col-form-label-sm'>Lucro Líquido: </label>
