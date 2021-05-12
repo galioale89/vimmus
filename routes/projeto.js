@@ -3089,6 +3089,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          const realizado = {
                               user: _id,
                               projeto: prj_id,
+                              potencia: projeto.potencia,
                               foiRealizado: false,
                               nome: projeto.nome,
                               cliente: projeto.nomecliente,

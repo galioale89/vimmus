@@ -12,6 +12,10 @@ const Realizado = new Schema({
         ref: 'projeto',
         require: true
     },
+    potencia: {
+        type: String,
+        require:false        
+    },
     nome: {
       type: String,
       require:false

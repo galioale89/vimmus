@@ -166,20 +166,51 @@
                     <canvas id='chartPrj' class='mt-2 mb-1'></canvas>
                 </div>
                 -->
-                <div style="width: 700px;height: 300px;margin-top: 30px;">
-                    <input id='totfat' type="hidden" value='{{soma_totfat}}'>
-                    <input id='totliq' type="hidden" value='{{soma_totliq}}'>
-                    <input id='totkit' type="hidden" value='{{soma_totkit}}'>
-                    <input id='totcom' type="hidden" value='{{soma_totcom}}'>
-                    <input id='totcop' type="hidden" value='{{soma_totcop}}'>
-                    <input id='totadm' type="hidden" value='{{soma_totadm}}'>
-                    <input id='tottrb' type="hidden" value='{{soma_tottrb}}'>
-                    <canvas id='chartTot' class='mt-2 mb-1'></canvas>
-                </div>
+                <form method='post' action='/relatorios/filtradash'>
+                    <div style="width: 700px;height: 100%;">
+                        <div class="row">
+                            {{#if mestitulo}}
+                            <label class='col-form-label col-form-label-lg'>{{mestitulo}}/{{ano}}</label>
+                            {{/if}}
+                            <div class="col-md-5">
+                                <label class='col-form-label col-form-label-sm'>Selecione o mês e digite o ano desejado:<label>
+                            </div>
+                            <div class="col-md-3">
+                                <select class='form-select form-select-sm' name='messel'>
+                                    <option>Janeiro</option>
+                                    <option>Fevereiro</option>
+                                    <option>Março</option>
+                                    <option>Abril</option>
+                                    <option>Maio</option>
+                                    <option>Junho</option>
+                                    <option>Julho</option>
+                                    <option>Agosto</option>
+                                    <option>Setembro</option>
+                                    <option>Outubro</option>
+                                    <option>Novembro</option>
+                                    <option>Dezembro</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <input class='form-control form-control-sm' type='number' name='mesano' placeholder="Ano">
+                            </div>
+                            <div class="col-md-2">
+                                <button type='submit' class='btn btn-primary btn-sm'>Filtrar</button>
+                            </div>
+                        </div>
+                        <input id='totfat' type="hidden" value='{{soma_totfat}}'>
+                        <input id='totliq' type="hidden" value='{{soma_totliq}}'>
+                        <input id='totkit' type="hidden" value='{{soma_totkit}}'>
+                        <input id='totcom' type="hidden" value='{{soma_totcom}}'>
+                        <input id='totcop' type="hidden" value='{{soma_totcop}}'>
+                        <input id='totadm' type="hidden" value='{{soma_totadm}}'>
+                        <input id='tottrb' type="hidden" value='{{soma_tottrb}}'>
+                        <canvas id='chartTot' class='mt-2 mb-1'></canvas>
+                    </div>
+                </form>
             </td>
         </tr>
     </table>
-
 </div>
 
 <script>

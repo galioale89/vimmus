@@ -321,7 +321,7 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
                 if (desAdm != undefined) {
                     soma_totadm = (parseFloat(soma_totadm) + parseFloat(desAdm)).toFixed(2)
                     console.log('desAdm=>' + desAdm)
-                }else{
+                } else {
                     soma_totadm = (parseFloat(soma_totadm) + 0).toFixed(2)
                 }
                 soma_totint = (parseFloat(soma_totint) + parseFloat(totint)).toFixed(2)
@@ -380,6 +380,281 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
 
             res.render('relatorios/dashboardcustos', { prjjan: prjjan, prjfev: prjfev, prjmar: prjmar, prjabr: prjabr, prjmai: prjmai, prjjun: prjjun, prjjul: prjjul, prjago: prjago, prjset: prjset, prjout: prjout, prjnov: prjnov, prjdez: prjdez, numprj: numprj, soma_kwp: soma_kwp, soma_totcop: soma_totcop, soma_totint: soma_totint, soma_totpro: soma_totpro, soma_totges: soma_totges, soma_totdes: soma_totdes, soma_totali: soma_totali, soma_totimp: soma_totimp, soma_totkit: soma_totkit, soma_totcom: soma_totcom, soma_totao: soma_total, medkwp_totcop: medkwp_totcop, medkwp_totint: medkwp_totint, medkwp_totpro: medkwp_totpro, medkwp_totges: medkwp_totges, medkwp_totdes: medkwp_totdes, medkwp_totali: medkwp_totali, medkwp_totimp: medkwp_totimp, medkwp_totkit: medkwp_totkit, medkwp_totcom: medkwp_totcom, medkwp_totfat: medkwp_totfat, medkwp_total: medkwp_total, per_totcop: per_totcop, per_totint: per_totint, per_totpro: per_totpro, per_totges: per_totges, per_totali: per_totali, per_totimp: per_totimp, per_totdes: per_totdes, per_totkit: per_totkit, per_totcom: per_totcom, per_deducao: per_deducao, per_LL: per_LL, soma_cercamento: soma_cercamento, soma_postecond: soma_postecond, soma_ocp: soma_ocp, medkwp_cercamento: medkwp_cercamento, medkwp_postecond: medkwp_postecond, medkwp_ocp: medkwp_ocp, per_cercamento: per_cercamento, per_postecond: per_postecond, per_ocp: per_ocp, soma_totfat: soma_totfat, soma_totadm: soma_totadm, soma_totliq: soma_totliq, soma_tottrb: soma_tottrb })
         })
+    })
+
+})
+
+router.post('/filtradash', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    var ano = req.body.mesano
+    var dataini
+    var datafim
+    var mestitulo
+
+    console.log('req.body.messel=>' + req.body.messel)
+
+    switch (req.body.messel) {
+        case 'Janeiro':
+            dataini = ano + '01' + '01'
+            datafim = ano + '01' + '31'
+            mestitulo = 'Janeiro'
+            break;
+        case 'Fevereiro':
+            dataini = ano + '02' + '01'
+            datafim = ano + '02' + '28'
+            mestitulo = 'Fevereiro'
+            break;
+        case 'Março':
+            dataini = ano + '03' + '01'
+            datafim = ano + '03' + '31'
+            mestitulo = 'Março'
+            break;
+        case 'Abril':
+            dataini = ano + '04' + '01'
+            datafim = ano + '04' + '30'
+            mestitulo = 'Abril'
+            break;
+        case 'Maio':
+            dataini = ano + '05' + '01'
+            datafim = ano + '05' + '31'
+            mestitulo = 'Maio'
+            break;
+        case 'Junho':
+            dataini = ano + '06' + '01'
+            datafim = ano + '06' + '30'
+            mestitulo = 'Junho'
+            break;
+        case 'Julho':
+            dataini = ano + '07' + '01'
+            datafim = ano + '07' + '31'
+            mestitulo = 'Julho'
+            break;
+        case 'Agosto':
+            dataini = ano + '08' + '01'
+            datafim = ano + '08' + '30'
+            mestitulo = 'Agosto'
+            break;
+        case 'Setembro':
+            dataini = ano + '09' + '01'
+            datafim = ano + '09' + '31'
+            mestitulo = 'Setembro'
+            break;
+        case 'Outubro':
+            dataini = ano + '10' + '01'
+            datafim = ano + '10' + '31'
+            mestitulo = 'Outubro'
+            break;
+        case 'Novembro':
+            dataini = ano + '11' + '01'
+            datafim = ano + '11' + '30'
+            mestitulo = 'Novembro'
+            break;
+        case 'Dezembro':
+            dataini = ano + '12' + '01'
+            datafim = ano + '12' + '31'
+            mestitulo = 'Dezembro'
+            break;
+        default:
+            dataini = ano + '01' + '01'
+            datafim = ano + '12' + '31'
+    }
+
+    console.log('dataini=>' + dataini)
+    console.log('datafim=>' + datafim)
+
+    var soma_kwp = 0
+    var soma_totcop = 0
+    var soma_totadm = 0
+    var soma_totint = 0
+    var soma_totpro = 0
+    var soma_totges = 0
+    var soma_totdes = 0
+    var soma_totali = 0
+    var soma_totcmb = 0
+    var soma_tothtl = 0
+    var soma_totimp = 0
+    var soma_tottrb = 0
+    var soma_totkit = 0
+    var soma_totfat = 0
+    var soma_totcom = 0
+    var soma_total = 0
+    var soma_totliq = 0
+    var soma_cercamento = 0
+    var soma_postecond = 0
+    var soma_ocp = 0
+    var medkwp_totcop = 0
+    var medkwp_totint = 0
+    var medkwp_totpro = 0
+    var medkwp_totges = 0
+    var medkwp_totdes = 0
+    var medkwp_totali = 0
+    var medkwp_totimp = 0
+    var medkwp_totkit = 0
+    var medkwp_totfat = 0
+    var medkwp_totcom = 0
+    var medkwp_total = 0
+    var medkwp_cercamento = 0
+    var medkwp_postecond = 0
+    var medkwp_ocp = 0
+
+    var per_totcop = 0
+    var per_totint = 0
+    var per_totpro = 0
+    var per_totges = 0
+    var per_totdes = 0
+    var per_totali = 0
+    var per_totimp = 0
+    var per_totkit = 0
+    var per_totcom = 0
+    var per_cercamento = 0
+    var per_postecond = 0
+    var per_ocp = 0
+
+    Realizado.find({ 'datareg': { $lte: datafim, $gte: dataini }, user: _id }).lean().then((realizado) => {
+
+        var numprj = realizado.length
+
+        for (i = 0; i < realizado.length; i++) {
+
+            /*
+            //Contar projetos por mês
+            const { datareg } = realizado[i]
+            //console.log('datareg=>' + datareg)
+            
+            if (datareg != undefined) {
+                //Janeiro
+                if (datareg >= 20210101 && datareg <= 20210131) {
+                    prjjan += 1
+                }
+                //Fevereiro
+                if (datareg >= 20210201 && datareg <= 20210228) {
+                    prjfev += 1
+                }
+                //Março
+                if (datareg >= 20210301 && datareg <= 20210331) {
+                    prjmar += 1
+                }
+                //Abril
+                if (datareg >= 20210401 && datareg <= 20210430) {
+                    prjabr += 1
+                }
+                //Maio
+                if (datareg >= 20210501 && datareg <= 20210530) {
+                    prjmai = +1
+                }
+                //Junho
+                if (datareg >= 20210601 && datareg <= 20210631) {
+                    prjjun = +1
+                }
+                //Julho
+                if (datareg >= 20210701 && datareg <= 20210730) {
+                    prjjul = +1
+                }
+                //Agosto
+                if (datareg >= 20210801 && datareg <= 20210831) {
+                    prjago = +1
+                }
+                //Setembro
+                if (datareg >= 20210901 && datareg <= 20210930) {
+                    prjset = +1
+                }
+                //Outubro
+                if (datareg >= 20211001 && datareg <= 20211031) {
+                    prjout = +1
+                }
+                //Novembro
+                if (datareg >= 20211101 && datareg <= 20211130) {
+                    prjnov = +1
+                }
+                //Dezembro
+                if (datareg >= 20211201 && datareg <= 20211231) {
+                    prjdez = +1
+                }
+            }
+            */
+
+            const { custoPlano } = realizado[i]
+            const {potencia} = realizado[i]
+            const { desAdm } = realizado[i]
+            const { totint } = realizado[i]
+            const { totpro } = realizado[i]
+            const { totges } = realizado[i]
+            const { totdes } = realizado[i]
+            const { totali } = realizado[i]
+            const { totcmb } = realizado[i]
+            const { tothtl } = realizado[i]
+            const { totalImposto } = realizado[i]
+            const { totalTributos } = realizado[i]
+            const { vlrkit } = realizado[i]
+            const { valor } = realizado[i]
+            const { vlrcom } = realizado[i]
+            const { cercamento } = realizado[i]
+            const { postecond } = realizado[i]
+            const { ocp } = realizado[i]
+            const { lucroLiquido } = realizado[i]
+
+            soma_totcop = (parseFloat(soma_totcop) + parseFloat(custoPlano)).toFixed(2)
+            if (desAdm != undefined) {
+                soma_totadm = (parseFloat(soma_totadm) + parseFloat(desAdm)).toFixed(2)
+                //console.log('desAdm=>' + desAdm)
+            } else {
+                soma_totadm = (parseFloat(soma_totadm) + 0).toFixed(2)
+            }
+            soma_kwp = (parseFloat(soma_kwp) + parseFloat(potencia)).toFixed(2)
+            soma_totint = (parseFloat(soma_totint) + parseFloat(totint)).toFixed(2)
+            soma_totpro = (parseFloat(soma_totpro) + parseFloat(totpro)).toFixed(2)
+            soma_totges = (parseFloat(soma_totges) + parseFloat(totges)).toFixed(2)
+            soma_totdes = (parseFloat(soma_totdes) + parseFloat(totdes)).toFixed(2)
+            soma_totali = (parseFloat(soma_totali) + parseFloat(totali)).toFixed(2)
+            soma_totcmb = (parseFloat(soma_totcmb) + parseFloat(totcmb)).toFixed(2)
+            soma_tothtl = (parseFloat(soma_tothtl) + parseFloat(tothtl)).toFixed(2)
+            soma_tottrb = (parseFloat(soma_tottrb) + parseFloat(totalTributos)).toFixed(2)
+            soma_totimp = (parseFloat(soma_totimp) + parseFloat(totalImposto)).toFixed(2)
+            soma_totkit = (parseFloat(soma_totkit) + parseFloat(vlrkit)).toFixed(2)
+            soma_totfat = (parseFloat(soma_totfat) + parseFloat(valor)).toFixed(2)
+            soma_totcom = (parseFloat(soma_totcom) + parseFloat(vlrcom)).toFixed(2)
+            soma_cercamento = (parseFloat(soma_cercamento) + parseFloat(cercamento)).toFixed(2)
+            soma_postecond = (parseFloat(soma_postecond) + parseFloat(postecond)).toFixed(2)
+            soma_ocp = (parseFloat(soma_ocp) + parseFloat(ocp)).toFixed(2)
+            soma_totliq = (parseFloat(soma_totliq) + parseFloat(lucroLiquido)).toFixed(2)
+        }
+        //console.log('soma_totadm=>' + soma_totadm)
+
+        soma_total = (parseFloat(soma_totcop) + parseFloat(soma_totkit) + parseFloat(soma_totcom) + parseFloat(soma_tottrb) + parseFloat(soma_totadm)).toFixed(2)
+        medkwp_total = (parseFloat(soma_total) / parseFloat(soma_kwp)).toFixed(2)
+
+        medkwp_totcop = (parseFloat(soma_totcop) / parseFloat(soma_kwp)).toFixed(2)
+        medkwp_totint = (parseFloat(soma_totint) / parseFloat(soma_kwp)).toFixed(2)
+        medkwp_totpro = (parseFloat(soma_totpro) / parseFloat(soma_kwp)).toFixed(2)
+        medkwp_totges = (parseFloat(soma_totges) / parseFloat(soma_kwp)).toFixed(2)
+        medkwp_totdes = ((parseFloat(soma_totdes) + parseFloat(soma_totcmb) + parseFloat(soma_tothtl)) / parseFloat(soma_kwp)).toFixed(2)
+        medkwp_totali = (parseFloat(soma_totali) / parseFloat(soma_kwp)).toFixed(2)
+        medkwp_totimp = (parseFloat(soma_totimp) / parseFloat(soma_kwp)).toFixed(2)
+        medkwp_totkit = (parseFloat(soma_totkit) / parseFloat(soma_kwp)).toFixed(2)
+        medkwp_totcom = (parseFloat(soma_totcom) / parseFloat(soma_kwp)).toFixed(2)
+        medkwp_cercamento = (parseFloat(soma_cercamento) / parseFloat(soma_kwp)).toFixed(2)
+        medkwp_postecond = (parseFloat(soma_postecond) / parseFloat(soma_kwp)).toFixed(2)
+        medkwp_ocp = (parseFloat(soma_ocp) / parseFloat(soma_kwp)).toFixed(2)
+        medkwp_totfat = (parseFloat(soma_totfat) / parseFloat(soma_kwp)).toFixed(2)
+
+        per_totcop = (parseFloat(medkwp_totcop) / parseFloat(medkwp_totfat) * 100).toFixed(2)
+        per_totint = (parseFloat(medkwp_totint) / parseFloat(medkwp_totfat) * 100).toFixed(2)
+        per_totpro = (parseFloat(medkwp_totpro) / parseFloat(medkwp_totfat) * 100).toFixed(2)
+        per_totges = (parseFloat(medkwp_totges) / parseFloat(medkwp_totfat) * 100).toFixed(2)
+        per_totdes = (parseFloat(medkwp_totdes) / parseFloat(medkwp_totfat) * 100).toFixed(2)
+        per_totali = (parseFloat(medkwp_totali) / parseFloat(medkwp_totfat) * 100).toFixed(2)
+        per_totimp = (parseFloat(medkwp_totimp) / parseFloat(medkwp_totfat) * 100).toFixed(2)
+        per_totkit = (parseFloat(medkwp_totkit) / parseFloat(medkwp_totfat) * 100).toFixed(2)
+        per_totcom = (parseFloat(medkwp_totcom) / parseFloat(medkwp_totfat) * 100).toFixed(2)
+        per_cercamento = (parseFloat(medkwp_cercamento) / parseFloat(medkwp_totfat) * 100).toFixed(2)
+        per_postecond = (parseFloat(medkwp_postecond) / parseFloat(medkwp_totfat) * 100).toFixed(2)
+        per_ocp = (parseFloat(medkwp_ocp) / parseFloat(medkwp_totfat) * 100).toFixed(2)
+
+        var per_deducao = (parseFloat(medkwp_total) / parseFloat(medkwp_totfat) * 100).toFixed(2)
+        var per_LL = (100 - per_deducao).toFixed(2)
+        //var soma_custoTotal = parseFloat(soma_totcop) + parseFloat(soma_totadm)
+
+        res.render('relatorios/dashboardcustos', { mestitulo: mestitulo,ano:ano,numprj: numprj, soma_kwp: soma_kwp, soma_totcop: soma_totcop, soma_totint: soma_totint, soma_totpro: soma_totpro, soma_totges: soma_totges, soma_totdes: soma_totdes, soma_totali: soma_totali, soma_totimp: soma_totimp, soma_totkit: soma_totkit, soma_totcom: soma_totcom, soma_totao: soma_total, medkwp_totcop: medkwp_totcop, medkwp_totint: medkwp_totint, medkwp_totpro: medkwp_totpro, medkwp_totges: medkwp_totges, medkwp_totdes: medkwp_totdes, medkwp_totali: medkwp_totali, medkwp_totimp: medkwp_totimp, medkwp_totkit: medkwp_totkit, medkwp_totcom: medkwp_totcom, medkwp_totfat: medkwp_totfat, medkwp_total: medkwp_total, per_totcop: per_totcop, per_totint: per_totint, per_totpro: per_totpro, per_totges: per_totges, per_totali: per_totali, per_totimp: per_totimp, per_totdes: per_totdes, per_totkit: per_totkit, per_totcom: per_totcom, per_deducao: per_deducao, per_LL: per_LL, soma_cercamento: soma_cercamento, soma_postecond: soma_postecond, soma_ocp: soma_ocp, medkwp_cercamento: medkwp_cercamento, medkwp_postecond: medkwp_postecond, medkwp_ocp: medkwp_ocp, per_cercamento: per_cercamento, per_postecond: per_postecond, per_ocp: per_ocp, soma_totfat: soma_totfat, soma_totadm: soma_totadm, soma_totliq: soma_totliq, soma_tottrb: soma_tottrb })
     })
 
 })
