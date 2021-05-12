@@ -751,6 +751,47 @@ router.post("/novo", ehAdmin, (req, res) => {
 
 })
 
+router.post('/salvar_prereq', ehAdmin, (req, res) => {
+     var sucesso = []
+     Projeto.findOne({ _id: req.body.id }).then((projeto) => {
+          console.timeLog('req.body.premissas=>'+req.body.premissas)
+          console.timeLog('req.body.requisitos=>'+req.body.requisitos)
+          projeto.premissas = req.body.premissas
+          projeto.requisitos = req.body.requisitos
+          projeto.save().then(() => {
+               console.log('salvou projeto')
+               Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
+                    Realizado.findOne({ projeto: projeto._id }).lean().then((realizado) => {
+                         Pessoa.findOne({ _id: projeto.funres }).lean().then((responsavel) => {
+                              Regime.findOne({ _id: projeto.regime }).lean().then((regime) => {
+                                   sucesso.push({ texto: 'Premissas e requisitos salvos com sucesso.' })
+                                   res.render('projeto/vermais', { sucesso: sucesso, projeto: projeto, responsavel: responsavel, regime: regime, realizado: realizado })
+                              }).catch((err) => {
+                                   req.flash('error_msg', 'Nenhum regime encontrado')
+                                   res.redirect('/configuracao/consultaregime')
+                              })
+                         }).catch((err) => {
+                              req.flash('error_msg', 'Nenhum responsável encontrado')
+                              res.redirect('/pessoa/consulta')
+                         })
+                    }).catch((err) => {
+                         req.flash('error_msg', 'Projeto não realizado')
+                         res.redirect('/pessoa/consulta')
+                    })
+               }).catch((err) => {
+                    req.flash('error_msg', 'Nenhum projeto encontrado')
+                    res.redirect('/projeto/consulta')
+               })
+          }).catch((err) => {
+               req.flash('error_msg', 'Houve um erro ao salvar as premissas e')
+               res.redirect('/configuracao/consultaregime')
+          })
+     }).catch((err) => {
+          req.flash('error_msg', 'Houve um erro ao encontrar o projeto')
+          res.redirect('/configuracao/consultaregime')
+     })
+})
+
 router.post('/configurar/:id', ehAdmin, (req, res) => {
      const { _id } = req.user
 
@@ -1552,19 +1593,19 @@ router.post('/direto', ehAdmin, (req, res) => {
                                    lbaimp = parseFloat(lucroBruto) - parseFloat(vlrcom)
                               }
 
-                              console.log('lbaimp=>'+lbaimp)                                
-                              console.log('rp.desadm=>'+rp.desadm) 
+                              console.log('lbaimp=>' + lbaimp)
+                              console.log('rp.desadm=>' + rp.desadm)
                               var desAdm = 0
                               if (parseFloat(rp.desadm) > 0) {
-                                  desAdm = (parseFloat(rp.desadm) * (parseFloat(rp.perdes) / 100)).toFixed(2)
-                                  console.log('desAdm=>'+desAdm)
-                                  lbaimp = (parseFloat(lbaimp) -  parseFloat(desAdm)).toFixed(2)
-                                  projeto.lbaimp = lbaimp
-                                  console.log('lbaimp=>'+lbaimp)  
-                                  projeto.desAdm = parseFloat(desAdm).toFixed(2)
+                                   desAdm = (parseFloat(rp.desadm) * (parseFloat(rp.perdes) / 100)).toFixed(2)
+                                   console.log('desAdm=>' + desAdm)
+                                   lbaimp = (parseFloat(lbaimp) - parseFloat(desAdm)).toFixed(2)
+                                   projeto.lbaimp = lbaimp
+                                   console.log('lbaimp=>' + lbaimp)
+                                   projeto.desAdm = parseFloat(desAdm).toFixed(2)
                               } else {
-                                  projeto.lbaimp = parseFloat(lbaimp).toFixed(2)
-                                  projeto.desAdm = 0
+                                   projeto.lbaimp = parseFloat(lbaimp).toFixed(2)
+                                   projeto.desAdm = 0
                               }
 
                               var totalSimples = 0
@@ -1670,8 +1711,8 @@ router.post('/direto', ehAdmin, (req, res) => {
 
                               //Lucro Líquido descontados os impostos
                               var lucroLiquido = 0
-                              console.log('lbaimp=>'+lbaimp)
-                              console.log('totalTributos=>'+totalTributos)
+                              console.log('lbaimp=>' + lbaimp)
+                              console.log('totalTributos=>' + totalTributos)
                               lucroLiquido = parseFloat(lbaimp) - parseFloat(totalTributos)
                               projeto.lucroLiquido = parseFloat(lucroLiquido).toFixed(2)
                               console.log('lucroLiquido=>' + lucroLiquido)
@@ -2161,16 +2202,16 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                               console.log('lbaimp=>' + lbaimp)
 
                               console.log('regime_prj.desadm=>' + regime_prj.desadm)
-                              
+
                               var desAdm = 0
                               if (parseFloat(regime_prj.desadm) > 0) {
-                                  desAdm = (parseFloat(regime_prj.desadm) * (parseFloat(regime_prj.perdes) / 100)).toFixed(2)
-                                  console.log('desAdm=>'+desAdm)
-                                  lbaimp = (parseFloat(lbaimp) -  parseFloat(desAdm)).toFixed(2)
-                                  projeto.lbaimp = lbaimp
-                                  projeto.desAdm = parseFloat(desAdm).toFixed(2)
+                                   desAdm = (parseFloat(regime_prj.desadm) * (parseFloat(regime_prj.perdes) / 100)).toFixed(2)
+                                   console.log('desAdm=>' + desAdm)
+                                   lbaimp = (parseFloat(lbaimp) - parseFloat(desAdm)).toFixed(2)
+                                   projeto.lbaimp = lbaimp
+                                   projeto.desAdm = parseFloat(desAdm).toFixed(2)
                               } else {
-                                  projeto.lbaimp = parseFloat(lbaimp).toFixed(2)
+                                   projeto.lbaimp = parseFloat(lbaimp).toFixed(2)
                               }
 
                               console.log('desAdm=>' + desAdm)
@@ -2674,17 +2715,17 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               vlrcom = req.body.vlrcom
                          }
                          console.log('vlrcom=>' + vlrcom)
-                         
+
                          var lbaimp = 0
                          lbaimp = parseFloat(prjLucroBruto) - parseFloat(vlrcom)
                          lbaimp = parseFloat(lbaimp).toFixed(2)
-                         
+
                          var desAdm = 0
                          if (parseFloat(rp.desadm) > 0) {
-                             desAdm = (parseFloat(rp.desadm) * (parseFloat(rp.perdes) / 100)).toFixed(2)
-                             lbaimp = (parseFloat(lbaimp) -  parseFloat(desAdm)).toFixed(2)
+                              desAdm = (parseFloat(rp.desadm) * (parseFloat(rp.perdes) / 100)).toFixed(2)
+                              lbaimp = (parseFloat(lbaimp) - parseFloat(desAdm)).toFixed(2)
                          }
-                         console.log('desAdm=>'+desAdm)
+                         console.log('desAdm=>' + desAdm)
                          //-------------------------------------
                          var impmanual
                          var impISS
@@ -2780,12 +2821,12 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               var prjFat = rp.prjFat
 
                               if (rp.regime == 'Simples') {
-                                   console.log('prjFat=>'+prjFat)
-                                   console.log('rp.alqDAS=>'+rp.alqDAS)
-                                   console.log('rp.vlrred=>'+rp.vlrred)
+                                   console.log('prjFat=>' + prjFat)
+                                   console.log('rp.alqDAS=>' + rp.alqDAS)
+                                   console.log('rp.vlrred=>' + rp.vlrred)
                                    var alqEfe = ((parseFloat(prjFat) * (parseFloat(rp.alqDAS) / 100)) - (parseFloat(rp.vlrred))) / parseFloat(prjFat)
-                                   impSimples = (parseFloat(vlrPrjNFS) * parseFloat(alqEfe)).toFixed(2)
-                                   console.log('impSimples=>'+impSimples)
+                                   impSimples = parseFloat(vlrPrjNFS) * (parseFloat(alqEfe))
+                                   console.log('impSimples=>' + impSimples)
                                    totalImposto = parseFloat(impSimples).toFixed(2)
                                    impIRPJ = 0
                                    impIRPJAdd = 0
@@ -2804,7 +2845,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                                              aux = Math.round(parseFloat(fatadd) / parseFloat(lbaimp))
                                              console.log('aux=>' + aux)
                                              impIRPJAdd = (parseFloat(fataju) / parseFloat(aux)).toFixed(2)
-                                             
+
                                         } else {
                                              impIRPJAdd = 0
                                         }
@@ -2848,7 +2889,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               }
                          }
                          //----------------------------
-                         console.log('impICMS=>'+impICMS)
+                         console.log('impICMS=>' + impICMS)
 
                          var totalTributos = 0
                          if (parseFloat(impICMS) > 0) {
