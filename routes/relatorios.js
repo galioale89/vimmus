@@ -397,66 +397,67 @@ router.post('/filtradash', ehAdmin, (req, res) => {
         case 'Janeiro':
             dataini = ano + '01' + '01'
             datafim = ano + '01' + '31'
-            mestitulo = 'Janeiro'
+            mestitulo = 'Janeiro de '
             break;
         case 'Fevereiro':
             dataini = ano + '02' + '01'
             datafim = ano + '02' + '28'
-            mestitulo = 'Fevereiro'
+            mestitulo = 'Fevereiro de '
             break;
         case 'Março':
             dataini = ano + '03' + '01'
             datafim = ano + '03' + '31'
-            mestitulo = 'Março'
+            mestitulo = 'Março /'
             break;
         case 'Abril':
             dataini = ano + '04' + '01'
             datafim = ano + '04' + '30'
-            mestitulo = 'Abril'
+            mestitulo = 'Abril de '
             break;
         case 'Maio':
             dataini = ano + '05' + '01'
             datafim = ano + '05' + '31'
-            mestitulo = 'Maio'
+            mestitulo = 'Maio de '
             break;
         case 'Junho':
             dataini = ano + '06' + '01'
             datafim = ano + '06' + '30'
-            mestitulo = 'Junho'
+            mestitulo = 'Junho de '
             break;
         case 'Julho':
             dataini = ano + '07' + '01'
             datafim = ano + '07' + '31'
-            mestitulo = 'Julho'
+            mestitulo = 'Julho de '
             break;
         case 'Agosto':
             dataini = ano + '08' + '01'
             datafim = ano + '08' + '30'
-            mestitulo = 'Agosto'
+            mestitulo = 'Agosto de '
             break;
         case 'Setembro':
             dataini = ano + '09' + '01'
             datafim = ano + '09' + '31'
-            mestitulo = 'Setembro'
+            mestitulo = 'Setembro de '
             break;
         case 'Outubro':
             dataini = ano + '10' + '01'
             datafim = ano + '10' + '31'
-            mestitulo = 'Outubro'
+            mestitulo = 'Outubro de '
             break;
         case 'Novembro':
             dataini = ano + '11' + '01'
             datafim = ano + '11' + '30'
-            mestitulo = 'Novembro'
+            mestitulo = 'Novembro de '
             break;
         case 'Dezembro':
             dataini = ano + '12' + '01'
             datafim = ano + '12' + '31'
-            mestitulo = 'Dezembro'
+            mestitulo = 'Dezembro de '
             break;
         default:
             dataini = ano + '01' + '01'
             datafim = ano + '12' + '31'
+            mestitulo = 'Todo ano de '
     }
 
     console.log('dataini=>' + dataini)

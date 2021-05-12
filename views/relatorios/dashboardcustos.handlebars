@@ -169,9 +169,7 @@
                 <form method='post' action='/relatorios/filtradash'>
                     <div style="width: 700px;height: 100%;">
                         <div class="row">
-                            {{#if mestitulo}}
-                            <label class='col-form-label col-form-label-lg'>{{mestitulo}}/{{ano}}</label>
-                            {{/if}}
+                            <label class='col-form-label col-form-label-lg'>{{mestitulo}}{{ano}}</label>
                             <div class="col-md-5">
                                 <label class='col-form-label col-form-label-sm'>Selecione o mês e digite o ano desejado:<label>
                             </div>
@@ -189,6 +187,7 @@
                                     <option>Outubro</option>
                                     <option>Novembro</option>
                                     <option>Dezembro</option>
+                                    <option>Todos</option>
                                 </select>
                             </div>
                             <div class="col-md-2">
