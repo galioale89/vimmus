@@ -94,8 +94,7 @@
       </table>
       <div class="col-md-6">
         <label class='col-form-label col-form-label-sm'
-          style="margin-left: 20px; text-align: center;font-weight: 500;">Total
-          Orçado</label>
+          style="margin-left: 20px; text-align: center;font-weight: 500;">Total do Projeto</label>
         <div class='sessao' style="margin-left: 25px;">
           <div class='textoper'>{{perVlrMed}}%</div>
         </div>
@@ -109,12 +108,11 @@
     </div>
     <div class='row quadro'>
       <table>
-        <tr class="contorno-titulo">
-          <th style="padding-left: 30%;">Realizado</th>
-          <th style="padding-right: 10%;">Aberto</th>
+        <tr class="">
+          <th style="padding-left: 20%;">Classificação dos Projetos</th>
         </tr>
       </table>
-      <div style="height: 290px;width: 100%;">
+      <div style="height: 290px;width: 100%;padding-bottom: 5%;">
         <input type='hidden' id='numprj' value='{{numprj}}'>
         <input type='hidden' id='numprjrlz' value='{{numprjrlz}}'>
         <input type='hidden' id='numprjnrl' value='{{numprjnrl}}'>
@@ -190,7 +188,7 @@
     </div>
 
     <div class='quadro-scroll' style="margin-left: 5px;margin-bottom: 40px;">
-      <table style="width:100%">
+      <table style="width: 100%">
         <tr class='contorno-titulo'>
           <th>Status</th>
           <th>Cliente</th>
@@ -248,9 +246,9 @@
     var numprjnrl = document.getElementById('numprjnrl')
     var ctxPrj = document.getElementById('chartPrj').getContext('2d');
     var chartPrj = new Chart(ctxPrj, {
-      type: 'bar',
+      type: 'doughnut',
       data: {
-        labels: ['', ''],
+        labels: ['Realizados', 'Não Realizados'],
         datasets: [{
           data: [numprjrlz.value, numprjnrl.value],
           backgroundColor: [
@@ -261,29 +259,29 @@
             'rgba(37, 139, 33, 1)',
             'rgba(50, 140, 230, 1)',
           ],
-          borderWidth: 1
+          borderWidth: 1,
         }]
       },
       options: {
         maintainAspectRatio: false,
         responsive: true,
         scales: {
-          yAxes: [{
+          y: [{
             scaleLabel: {
-              display: true,
-              labelString: "Quantidade de Projetos",
+              display: false,
             },
             ticks: {
               min: 0,
             },
-
+            grid:{
+              drawBorder: false,
+            },
           }],
         },
         legend: {
-          labels: {
-            boxWidth: 0,
-          },
-          display: false,
+          display: true,
+          position: 'top',
+          align:'center',
         },
       }
     });

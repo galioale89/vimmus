@@ -206,7 +206,7 @@
     var ctxDes = document.getElementById('chartDes').getContext('2d');
 
     var chartLL = new Chart(ctxLL, {
-        type: 'doughnut',
+        type: 'pie',
         data: {
             labels: ['Lucro Líquido', 'Valor Kit', 'Deduções', 'Tributos', 'ISS', 'Comissão'],
             datasets: [{
@@ -244,7 +244,7 @@
     });
 
     var chartDes = new Chart(ctxDes, {
-        type: 'doughnut',
+        type: 'pie',
         data: {
             labels: ['Instalação', 'Gestão', 'Projetista', 'Valor ART','Deslocamento', 'Combustível', 'Estadia', 'Alimentação'],
             datasets: [{
