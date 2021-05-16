@@ -399,8 +399,12 @@ router.post('/', ehAdmin, (req, res) => {
                         }
                         var desAdm = 0
                         if (parseFloat(regime.desadm) > 0) {
-                            desAdm = (parseFloat(regime.desadm) * (parseFloat(regime.perdes) / 100)).toFixed(2)
-                            lbaimp = (parseFloat(lbaimp) -  parseFloat(desAdm)).toFixed(2)
+                            if (regime.tipodesp == 'Percentual'){
+                                desAdm = (parseFloat(regime.desadm) * (parseFloat(regime.perdes) / 100)).toFixed(2)
+                            }else{
+                                desAdm = ((parseFloat(regime.desadm) / parseFloat(regime.estkwp)) * parseFloat(projeto.potencia)).toFixed(2)
+                            }
+                            lbaimp = (parseFloat(lbaimp) - parseFloat(desAdm)).toFixed(2)
                             projeto.lbaimp = lbaimp
                             projeto.desAdm = parseFloat(desAdm).toFixed(2)
                         } else {
@@ -680,66 +684,76 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                         projeto.custoTotal = custoTotal.toFixed(2)
                         //console.log('custoTotal=>'+custoTotal)
                         //Lucro Bruto
-                        var lucroBruto = parseFloat(projeto.valor) - parseFloat(custoTotal)
-                        projeto.lucroBruto = lucroBruto.toFixed(2)
-                        //console.log('lucroBruto=>'+lucroBruto)
+                        console.log('projeto.vlrfat=>'+projeto.vlrfat)
+                        var vlrNFS = parseFloat(projeto.vlrfat)
+                        console.log('regime.alqNFS=>'+regime.alqNFS)
+                        var impNFS = parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)
+                        projeto.vlrNFS = vlrNFS
+                        projeto.impNFS = impNFS
+                        console.log('impNFS=>'+impNFS)
+                        console.log('projeto.valor=>'+projeto.valor)
+                        var recBruta = parseFloat(projeto.valor) - parseFloat(impNFS)
+                        projeto.recBruta = parseFloat(recBruta).toFixed(2)       
+                        
+                        console.log('recBruta=>'+recBruta)
+                        console.log('projeto.vlrkit=>'+projeto.vlrkit)
 
+                        var lucroBruto = parseFloat(recBruta) - parseFloat(projeto.vlrkit)
+                        projeto.lucroBruto = parseFloat(lucroBruto).toFixed(2)
+                        //console.log('lucroBruto=>'+lucroBruto)
+                        var desAdm = 0
+                        if (parseFloat(regime.desadm) > 0) {
+                            console.log('tipodesp=>'+regime.tipodesp)
+                            if (regime.tipodesp == 'Percentual'){
+                                desAdm = (parseFloat(regime.desadm) * (parseFloat(regime.perdes) / 100)).toFixed(2)
+                            }else{
+                                desAdm = ((parseFloat(regime.desadm) / parseFloat(regime.estkwp)) * parseFloat(projeto.potencia)).toFixed(2)
+                            }
+                            console.log('desAdm=>'+desAdm)                            
+                            lbaimp = (parseFloat(lucroBruto) - parseFloat(custoPlano) - parseFloat(desAdm)).toFixed(2)                            
+                            projeto.desAdm = parseFloat(desAdm).toFixed(2)
+                        } else {
+                            lbaimp = (parseFloat(lucroBruto) - parseFloat(custoPlano)).toFixed(2)
+                            projeto.desAdm = 0
+                        }
                         //Validando a comissão
                         var vlrcom
                         if (projeto.percom != null) {
                             vlrcom = parseFloat(projeto.vlrfat) * (parseFloat(projeto.percom) / 100)
-                            projeto.vlrcom = vlrcom.toFixed(2)
+                            projeto.lbaimp = (parseFloat(lbaimp) - parseFloat(vlrcom)).toFixed(2)
                         } else {
                             vlrcom = 0
+                            projeto.lbaimp = parseFloat(lbaimp).toFixed(2)   
                         }
-                        //console.log('vlrcom=>'+vlrcom)
+                        projeto.vlrcom = vlrcom.toFixed(2)
 
-                        //Comissão e Lucro Antes dos Impostos
-                        var lbaimp
-                        if (vlrcom == 0) {
-                            lbaimp = lucroBruto.toFixed(2)
-                        } else {
-                            lbaimp = parseFloat(lucroBruto) - parseFloat(vlrcom)
-                        }
+                        console.log('lbaimp=>' + lbaimp)
 
-                        var desAdm = 0
-                        if (parseFloat(regime.desadm) > 0) {
-                            desAdm = (parseFloat(regime.desadm) * (parseFloat(regime.perdes) / 100)).toFixed(2)
-                            lbaimp = (parseFloat(lbaimp) -  parseFloat(desAdm)).toFixed(2)
-                            projeto.lbaimp = lbaimp
-                            projeto.desAdm = parseFloat(desAdm).toFixed(2)
-                        } else {
-                            projeto.lbaimp = parseFloat(lbaimp).toFixed(2)
-                            projeto.desAdm = 0
-                        }
-                        
-                        console.log('lbaimp=>'+lbaimp)
+                        projeto.save().then(() => {
 
-                            projeto.save().then(() => {
+                            sucesso.push({ texto: 'Custo de gerenciamento aplicado com sucesso.' })
 
-                                sucesso.push({ texto: 'Custo de gerenciamento aplicado com sucesso.' })
+                            Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
 
-                                Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
-
-                                    Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                                        res.render('projeto/gerenciamento/editgerenciamento', { sucesso: sucesso, projeto: projeto, cliente: cliente })
-                                    }).catch((err) => {
-                                        req.flash('error_msg', 'Nenhum cliente encontrado.')
-                                        res.redirect('/cliente/consulta')
-                                    })
-
+                                Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                                    res.render('projeto/gerenciamento/editgerenciamento', { sucesso: sucesso, projeto: projeto, cliente: cliente })
                                 }).catch((err) => {
-                                    req.flash('error_msg', 'Hove uma falha interna.')
-                                    res.redirect('/projeto/consulta')
+                                    req.flash('error_msg', 'Nenhum cliente encontrado.')
+                                    res.redirect('/cliente/consulta')
                                 })
+
                             }).catch((err) => {
-                                req.flash('error_msg', 'Falha ao aplicar os custos do projeto.')
+                                req.flash('error_msg', 'Hove uma falha interna.')
                                 res.redirect('/projeto/consulta')
                             })
                         }).catch((err) => {
-                            req.flash('error_msg', 'Houve um erro ao encontrar o regime.')
-                            res.redirect('/configuracao/consulta')
+                            req.flash('error_msg', 'Falha ao aplicar os custos do projeto.')
+                            res.redirect('/projeto/consulta')
                         })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Houve um erro ao encontrar o regime.')
+                        res.redirect('/configuracao/consulta')
+                    })
                 }).catch((err) => {
                     req.flash('error_msg', 'Houve um erro ao encontrar as configurações.')
                     res.redirect('/configuracao/consulta')
@@ -803,32 +817,17 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                 var impostoCOFINS = 0
                 var impostoICMS = 0
                 var totalImposto = 0
+                var totalTributos = 0
 
                 var fatadd
                 var fataju
                 var aux
 
                 //Validar calculos dos impostos
-                var vlrNFS = parseFloat(projeto.vlrfat)
-                var impNFS = parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)
-                projeto.vlrNFS = vlrNFS
-                projeto.impNFS = impNFS
-
-                if (projeto.fatequ == true) {
-                    if (regime.alqICMS != null || regime.alqICMS != '') {
-                        impostoICMS = parseFloat(projeto.vlrkit) * (parseFloat(regime.alqICMS) / 100)
-                        projeto.impostoICMS = impostoICMS.toFixed(2)
-                    }
-                } else {
-                    impostoICMS = 0
-                    projeto.impostoICMS = impostoICMS.toFixed(2)
-                }
-
-
                 if (regime.regime == 'Simples') {
                     console.log('Regime=>Simples')
                     var alqEfe = ((parseFloat(prjFat) * (parseFloat(regime.alqDAS) / 100)) - (parseFloat(regime.vlrred))) / parseFloat(prjFat)
-                    var totalSimples = parseFloat(vlrNFS) * (parseFloat(alqEfe))
+                    var totalSimples = parseFloat(projeto.vlrNFS) * (parseFloat(alqEfe))
                     totalImposto = parseFloat(totalSimples).toFixed(2)
                     projeto.impostoSimples = parseFloat(totalImposto).toFixed(2)
                 } else {
@@ -848,9 +847,9 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                         projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
                         impostoCSLL = parseFloat(projeto.lbaimp) * (parseFloat(regime.alqCSLL) / 100)
                         projeto.impostoCSLL = impostoCSLL.toFixed(2)
-                        impostoPIS = parseFloat(vlrNFS) * 0.5 * (parseFloat(regime.alqPIS) / 100)
+                        impostoPIS = parseFloat(projeto.vlrNFS) * 0.5 * (parseFloat(regime.alqPIS) / 100)
                         projeto.impostoPIS = impostoPIS.toFixed(2)
-                        impostoCOFINS = parseFloat(vlrNFS) * 0.5 * (parseFloat(regime.alqCOFINS) / 100)
+                        impostoCOFINS = parseFloat(projeto.vlrNFS) * 0.5 * (parseFloat(regime.alqCOFINS) / 100)
                         projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
                         totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
 
@@ -859,20 +858,20 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                         if (((parseFloat(prjLP) * 0.32) / 3) > 20000) {
                             fatadd = ((parseFloat(prjLP) * 0.32) / 3) - 20000
                             fataju = parseFloat(fatadd) / 20000
-                            impostoIRPJAdd = (parseFloat(vlrNFS) * 0.32) * parseFloat(fataju).toFixed(2) * (parseFloat(regime.alqIRPJAdd) / 100)
+                            impostoIRPJAdd = (parseFloat(projeto.vlrNFS) * 0.32) * parseFloat(fataju).toFixed(2) * (parseFloat(regime.alqIRPJAdd) / 100)
                             projeto.impostoAdd = impostoIRPJAdd.toFixed(2)
                         } else {
                             impostoIRPJAdd = 0
                             projeto.impostoAdd = 0
                         }
 
-                        impostoIRPJ = parseFloat(vlrNFS) * 0.32 * (parseFloat(regime.alqIRPJ) / 100)
+                        impostoIRPJ = parseFloat(projeto.vlrNFS) * 0.32 * (parseFloat(regime.alqIRPJ) / 100)
                         projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
-                        impostoCSLL = parseFloat(vlrNFS) * 0.32 * (parseFloat(regime.alqCSLL) / 100)
+                        impostoCSLL = parseFloat(projeto.vlrNFS) * 0.32 * (parseFloat(regime.alqCSLL) / 100)
                         projeto.impostoCSLL = impostoCSLL.toFixed(2)
-                        impostoCOFINS = parseFloat(vlrNFS) * (parseFloat(regime.alqCOFINS) / 100)
+                        impostoCOFINS = parseFloat(projeto.vlrNFS) * (parseFloat(regime.alqCOFINS) / 100)
                         projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
-                        impostoPIS = parseFloat(vlrNFS) * (parseFloat(regime.alqPIS) / 100)
+                        impostoPIS = parseFloat(projeto.vlrNFS) * (parseFloat(regime.alqPIS) / 100)
                         projeto.impostoPIS = impostoPIS.toFixed(2)
                         totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
                     }
@@ -881,17 +880,23 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                 //console.log('totalImpGrafico=>'+totalImpGrafico)
                 //console.log('impNFS=>'+impNFS)
                 //console.log('impostoICMS=>'+impostoICMS)
-                var totalTributos = 0
-                if (impostoICMS > 0) {
-                    totalTributos = parseFloat(totalImposto) + parseFloat(impNFS) + parseFloat(impostoICMS)
-                    totalImposto = parseFloat(totalImposto) + parseFloat(impostoICMS)
+
+                //Validar ICMS
+                var impostoICMS
+                if (projeto.fatequ == true) {
+                    if (regime_prj.alqICMS != null) {
+                        impostoICMS = parseFloat(projeto.vlrkit) * (1 - (parseFloat(regime_prj.alqICMS) / 100)) * (parseFloat(regime_prj.alqICMS) / 100)
+                        totalTributos = parseFloat(totalImposto) + parseFloat(projeto.impNFS) + parseFloat(impostoICMS)
+                        totalImposto = parseFloat(totalImposto) + parseFloat(impostoICMS)
+                    }
                 } else {
-                    totalTributos = parseFloat(totalImposto) + parseFloat(impNFS)
+                    impostoICMS = 0
+                    totalTributos = parseFloat(totalImposto) + parseFloat(projeto.impNFS)
                 }
+                projeto.impostoICMS = impostoICMS.toFixed(2)
+
                 console.log('totalImposto=>' + totalImposto)
-                projeto.totalImposto = parseFloat(totalImposto).toFixed(2)
                 console.log('totaTributos=>' + totalTributos)
-                projeto.totalTributos = parseFloat(totalTributos).toFixed(2)
 
                 //Lucro Líquido descontados os impostos
                 var lucroLiquido = 0
@@ -956,58 +961,58 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                 }
 
                 //Participação sobre o Faturamento      
-                var parLiqNfs = parseFloat(lucroLiquido) / parseFloat(vlrNFS) * 100
+                var parLiqNfs = parseFloat(lucroLiquido) / parseFloat(projeto.vlrNFS) * 100
                 projeto.parLiqNfs = parseFloat(parLiqNfs).toFixed(2)
                 console.log('parLiqNfs=>' + parLiqNfs)
                 if (projeto.fatequ == true) {
-                    var parKitNfs = parseFloat(projeto.vlrkit) / parseFloat(vlrNFS) * 100
+                    var parKitNfs = parseFloat(projeto.vlrkit) / parseFloat(projeto.vlrNFS) * 100
                     projeto.parKitNfs = parseFloat(parKitNfs).toFixed(2)
                     console.log('parKitNfs=>' + parKitNfs)
                 }
-                var parIntNfs = parseFloat(projeto.totint) / parseFloat(vlrNFS) * 100
+                var parIntNfs = parseFloat(projeto.totint) / parseFloat(projeto.vlrNFS) * 100
                 projeto.parIntNfs = parseFloat(parIntNfs).toFixed(2)
                 console.log('parIntNfs=>' + parIntNfs)
-                var parGesNfs = parseFloat(projeto.totges) / parseFloat(vlrNFS) * 100
+                var parGesNfs = parseFloat(projeto.totges) / parseFloat(projeto.vlrNFS) * 100
                 projeto.parGesNfs = parseFloat(parGesNfs).toFixed(2)
                 console.log('parGesNfs=>' + parGesNfs)
-                var parProNfs = parseFloat(projeto.totpro) / parseFloat(vlrNFS) * 100
+                var parProNfs = parseFloat(projeto.totpro) / parseFloat(projeto.vlrNFS) * 100
                 projeto.parProNfs = parseFloat(parProNfs).toFixed(2)
                 console.log('parProNfs=>' + parProNfs)
-                var parArtNfs = parseFloat(projeto.vlrart) / parseFloat(vlrNFS) * 100
+                var parArtNfs = parseFloat(projeto.vlrart) / parseFloat(projeto.vlrNFS) * 100
                 projeto.parArtNfs = parseFloat(parArtNfs).toFixed(2)
                 console.log('parArtNfs=>' + parArtNfs)
                 if (parseFloat(projeto.totcmb) > 0) {
-                    var parCmbNfs = parseFloat(projeto.totcmb) / parseFloat(vlrNFS) * 100
+                    var parCmbNfs = parseFloat(projeto.totcmb) / parseFloat(projeto.vlrNFS) * 100
                     projeto.parCmbNfs = parseFloat(parCmbNfs).toFixed(2)
                     console.log('parCmbNfs=>' + parEstNfs)
                 }
                 if (parseFloat(projeto.totali) > 0) {
-                    var parAliNfs = parseFloat(projeto.totali) / parseFloat(vlrNFS) * 100
+                    var parAliNfs = parseFloat(projeto.totali) / parseFloat(projeto.vlrNFS) * 100
                     projeto.parAliNfs = parseFloat(parAliNfs).toFixed(2)
                     console.log('parAliNfs=>' + parAliNfs)
                 }
                 if (parseFloat(projeto.tothtl) > 0) {
-                    var parEstNfs = parseFloat(projeto.tothtl) / parseFloat(vlrNFS) * 100
+                    var parEstNfs = parseFloat(projeto.tothtl) / parseFloat(projeto.vlrNFS) * 100
                     projeto.parEstNfs = parEstNfs.toFixed(2)
                     console.log('parEstNfs=>' + parEstNfs)
 
                 }
                 if (parseFloat(projeto.reserva) > 0) {
-                    var parResNfs = parseFloat(projeto.reserva) / parseFloat(vlrNFS) * 100
+                    var parResNfs = parseFloat(projeto.reserva) / parseFloat(projeto.vlrNFS) * 100
                     projeto.parResNfs = parseFloat(parResNfs).toFixed(2)
                     console.log('parResNfs=>' + parResNfs)
                 }
-                var parDedNfs = parseFloat(projeto.totcop) / parseFloat(vlrNFS) * 100
+                var parDedNfs = parseFloat(projeto.totcop) / parseFloat(projeto.vlrNFS) * 100
                 projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
                 console.log('parDedNfs=>' + parDedNfs)
-                var parISSNfs = parseFloat(impNFS) / parseFloat(vlrNFS) * 100
+                var parISSNfs = parseFloat(impNFS) / parseFloat(projeto.vlrNFS) * 100
                 projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)
                 console.log('parISSNfs=>' + parISSNfs)
-                var parImpNfs = (parseFloat(totalImposto) / parseFloat(vlrNFS)) * 100
+                var parImpNfs = (parseFloat(totalImposto) / parseFloat(projeto.vlrNFS)) * 100
                 projeto.parImpNfs = parseFloat(parImpNfs).toFixed(2)
                 console.log('parImpNfs=>' + parImpNfs)
                 if (projeto.vlrcom > 0) {
-                    var parComNfs = parseFloat(projeto.vlrcom) / parseFloat(vlrNFS) * 100
+                    var parComNfs = parseFloat(projeto.vlrcom) / parseFloat(projeto.vlrNFS) * 100
                     projeto.parComNfs = parseFloat(parComNfs).toFixed(2)
                     console.log('parComNfs=>' + parComNfs)
                 }
@@ -1076,40 +1081,25 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
             var prjLP = regime.prjLP
             //var vlrDAS = regime.vlrDAS
 
-            var impostoIRPJ
-            var impostoIRPJAdd
-            var impostoCSLL
-            var impostoPIS
-            var impostoCOFINS
-            var impostoICMS
-            var totalImposto
+            var impostoIRPJ = 0
+            var impostoIRPJAdd = 0
+            var impostoCSLL = 0
+            var impostoPIS = 0
+            var impostoCOFINS = 0
+            var impostoICMS = 0
+            var totalImposto = 0
+            var totalTributos = 0
 
             var fatadd
             var fataju
             var aux
 
-            //Validar calculos dos impostos
-            var vlrNFS = parseFloat(projeto.vlrfat)
-            //console.log('vlrNFS=>' + vlrNFS)
-            var impNFS = parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)
-            //console.log('impNFS=>' + impNFS)
-            projeto.vlrNFS = vlrNFS.toFixed(2)
-            projeto.impNFS = impNFS.toFixed(2)
-
-            if (projeto.fatequ == true) {
-                if (regime.alqICMS != null || regime.alqICMS != '') {
-                    impostoICMS = parseFloat(projeto.vlrkit) * (parseFloat(regime.alqICMS) / 100)
-                    projeto.impostoICMS = impostoICMS.toFixed(2)
-                }
-            } else {
-                impostoICMS = 0
-                projeto.impostoICMS = impostoICMS.toFixed(2)
-            }
+            console.log('projeto.vlrNFS=>'+projeto.vlrNFS)
 
             if (regime.regime == 'Simples') {
                 console.log('Regime=>Simples')
                 var alqEfe = ((parseFloat(prjFat) * (parseFloat(regime.alqDAS) / 100)) - (parseFloat(regime.vlrred))) / parseFloat(prjFat)
-                var totalSimples = parseFloat(vlrNFS) * (parseFloat(alqEfe))
+                var totalSimples = parseFloat(projeto.vlrNFS) * (parseFloat(alqEfe))
                 totalImposto = parseFloat(totalSimples).toFixed(2)
                 projeto.impostoSimples = parseFloat(totalImposto).toFixed(2)
             } else {
@@ -1132,9 +1122,9 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
                     projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
                     impostoCSLL = parseFloat(projeto.lbaimp) * (parseFloat(regime.alqCSLL) / 100)
                     projeto.impostoCSLL = impostoCSLL.toFixed(2)
-                    impostoPIS = parseFloat(vlrNFS) * 0.5 * (parseFloat(regime.alqPIS) / 100)
+                    impostoPIS = parseFloat(projeto.vlrNFS) * 0.5 * (parseFloat(regime.alqPIS) / 100)
                     projeto.impostoPIS = impostoPIS.toFixed(2)
-                    impostoCOFINS = parseFloat(vlrNFS) * 0.5 * (parseFloat(regime.alqCOFINS) / 100)
+                    impostoCOFINS = parseFloat(projeto.vlrNFS) * 0.5 * (parseFloat(regime.alqCOFINS) / 100)
                     projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
                     totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
                 } else {
@@ -1142,44 +1132,49 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
                     if (((parseFloat(prjLP) * 0.32) / 3) > 20000) {
                         fatadd = ((parseFloat(prjLP) * 0.32) / 3) - 20000
                         fataju = parseFloat(fatadd) / 20000
-                        impostoIRPJAdd = (parseFloat(vlrNFS) * 0.32) * (parseFloat(fataju) / 100) * (parseFloat(regime.alqIRPJAdd) / 100)
+                        impostoIRPJAdd = (parseFloat(projeto.vlrNFS) * 0.32) * (parseFloat(fataju) / 100) * (parseFloat(regime.alqIRPJAdd) / 100)
                         projeto.impostoAdd = impostoIRPJAdd.toFixed(2)
                     } else {
                         impostoIRPJAdd = 0
                         projeto.impostoAdd = 0
                     }
                     //console.log('impostoIRPJAdd=>' + impostoIRPJAdd)
-                    impostoIRPJ = parseFloat(vlrNFS) * 0.32 * (parseFloat(regime.alqIRPJ) / 100)
+                    impostoIRPJ = parseFloat(projeto.vlrNFS) * 0.32 * (parseFloat(regime.alqIRPJ) / 100)
                     projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
                     //console.log('impostoIRPJ=>' + impostoIRPJ)
-                    impostoCSLL = parseFloat(vlrNFS) * 0.32 * (parseFloat(regime.alqCSLL) / 100)
+                    impostoCSLL = parseFloat(projeto.vlrNFS) * 0.32 * (parseFloat(regime.alqCSLL) / 100)
                     projeto.impostoCSLL = impostoCSLL.toFixed(2)
                     //console.log('impostoCSLL=>' + impostoCSLL)
-                    impostoCOFINS = parseFloat(vlrNFS) * (parseFloat(regime.alqCOFINS) / 100)
+                    impostoCOFINS = parseFloat(projeto.vlrNFS) * (parseFloat(regime.alqCOFINS) / 100)
                     projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
                     //console.log('impostoCOFINS=>' + impostoCOFINS)
-                    impostoPIS = parseFloat(vlrNFS) * (parseFloat(regime.alqPIS) / 100)
+                    impostoPIS = parseFloat(projeto.vlrNFS) * (parseFloat(regime.alqPIS) / 100)
                     projeto.impostoPIS = impostoPIS.toFixed(2)
                     //console.log('impostoPIS=>' + impostoPIS)
                     totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
                     //console.log('totalImposto=>' + totalImposto)
                 }
             }
-            var totalTributos = 0
-            if (impostoICMS > 0) {
-                totalTributos = parseFloat(totalImposto) + parseFloat(impNFS) + parseFloat(impostoICMS)
-                totalImposto = parseFloat(totalImposto) + parseFloat(impostoICMS)
+            //Validar ICMS
+            if (projeto.fatequ == true) {
+                if (regime.alqICMS != null) {
+                    impostoICMS = parseFloat(projeto.vlrkit) * (1 - (parseFloat(regime.alqICMS) / 100)) * (parseFloat(regime.alqICMS) / 100)
+                    totalTributos = parseFloat(totalImposto) + parseFloat(projeto.impNFS) + parseFloat(impostoICMS)
+                    totalImposto = parseFloat(totalImposto) + parseFloat(impostoICMS)
+                }
             } else {
-                totalTributos = parseFloat(totalImposto) + parseFloat(impNFS)
+                impostoICMS = 0
+                totalTributos = parseFloat(totalImposto) + parseFloat(projeto.impNFS)
             }
+            projeto.impostoICMS = impostoICMS.toFixed(2)
             console.log('totalImposto=>' + totalImposto)
             projeto.totalImposto = parseFloat(totalImposto).toFixed(2)
-            console.log('totaTributos=>' + totalTributos)
+            console.log('totalTributos=>' + totalTributos)
             projeto.totalTributos = parseFloat(totalTributos).toFixed(2)
 
             //Lucro Líquido descontados os impostos
             var lucroLiquido = 0
-            lucroLiquido = parseFloat(projeto.lbaimp) - parseFloat(totalTributos)
+            lucroLiquido = parseFloat(projeto.lbaimp) - parseFloat(totalImposto)
             projeto.lucroLiquido = parseFloat(lucroLiquido).toFixed(2)
 
             //Dashboard
@@ -1214,7 +1209,7 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
             }
             var parDedVlr = parseFloat(projeto.totcop) / parseFloat(projeto.valor) * 100
             projeto.parDedVlr = parDedVlr.toFixed(2)
-            var parISSVlr = parseFloat(impNFS) / parseFloat(projeto.valor) * 100
+            var parISSVlr = parseFloat(projeto.impNFS) / parseFloat(projeto.valor) * 100
             projeto.parISSVlr = parISSVlr.toFixed(2)
             var parImpVlr = (parseFloat(totalImposto) / parseFloat(projeto.valor)) * 100
             projeto.parImpVlr = parImpVlr.toFixed(2)
@@ -1224,44 +1219,44 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
             }
 
             //Participação sobre o Faturamento      
-            var parLiqNfs = parseFloat(lucroLiquido) / parseFloat(vlrNFS) * 100
+            var parLiqNfs = parseFloat(lucroLiquido) / parseFloat(projeto.vlrNFS) * 100
             projeto.parLiqNfs = parseFloat(parLiqNfs).toFixed(2)
             if (projeto.fatequ == true) {
-                var parKitNfs = parseFloat(projeto.vlrkit) / parseFloat(vlrNFS) * 100
+                var parKitNfs = parseFloat(projeto.vlrkit) / parseFloat(projeto.vlrNFS) * 100
                 projeto.parKitNfs = parseFloat(parKitNfs).toFixed(2)
             }
-            var parIntNfs = parseFloat(projeto.totint) / parseFloat(vlrNFS) * 100
+            var parIntNfs = parseFloat(projeto.totint) / parseFloat(projeto.vlrNFS) * 100
             projeto.parIntNfs = parseFloat(parIntNfs).toFixed(2)
-            var parGesNfs = parseFloat(projeto.totges) / parseFloat(vlrNFS) * 100
+            var parGesNfs = parseFloat(projeto.totges) / parseFloat(projeto.vlrNFS) * 100
             projeto.parGesNfs = parseFloat(parGesNfs).toFixed(2)
-            var parProNfs = parseFloat(projeto.totpro) / parseFloat(vlrNFS) * 100
+            var parProNfs = parseFloat(projeto.totpro) / parseFloat(projeto.vlrNFS) * 100
             projeto.parProNfs = parseFloat(parProNfs).toFixed(2)
-            var parArtNfs = parseFloat(projeto.vlrart) / parseFloat(vlrNFS) * 100
+            var parArtNfs = parseFloat(projeto.vlrart) / parseFloat(projeto.vlrNFS) * 100
             projeto.parArtNfs = parseFloat(parArtNfs).toFixed(2)
             if (parseFloat(projeto.totcmb) > 0) {
-                var parCmbNfs = parseFloat(projeto.totcmb) / parseFloat(vlrNFS) * 100
+                var parCmbNfs = parseFloat(projeto.totcmb) / parseFloat(projeto.vlrNFS) * 100
                 projeto.parCmbNfs = parseFloat(parCmbNfs).toFixed(2)
             }
             if (parseFloat(projeto.totali) > 0) {
-                var parAliNfs = parseFloat(projeto.totali) / parseFloat(vlrNFS) * 100
+                var parAliNfs = parseFloat(projeto.totali) / parseFloat(projeto.vlrNFS) * 100
                 projeto.parAliNfs = parseFloat(parAliNfs).toFixed(2)
             }
             if (parseFloat(projeto.tothtl) > 0) {
-                var parEstNfs = parseFloat(projeto.tothtl) / parseFloat(vlrNFS) * 100
+                var parEstNfs = parseFloat(projeto.tothtl) / parseFloat(projeto.vlrNFS) * 100
                 projeto.parEstNfs = parEstNfs.toFixed(2)
             }
             if (parseFloat(projeto.reserva) > 0) {
-                var parResNfs = parseFloat(projeto.reserva) / parseFloat(vlrNFS) * 100
+                var parResNfs = parseFloat(projeto.reserva) / parseFloat(projeto.vlrNFS) * 100
                 projeto.parResNfs = parseFloat(parResNfs).toFixed(2)
             }
-            var parDedNfs = parseFloat(projeto.totcop) / parseFloat(vlrNFS) * 100
+            var parDedNfs = parseFloat(projeto.totcop) / parseFloat(projeto.vlrNFS) * 100
             projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
-            var parISSNfs = parseFloat(impNFS) / parseFloat(vlrNFS) * 100
+            var parISSNfs = parseFloat(projeto.impNFS) / parseFloat(projeto.vlrNFS) * 100
             projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)
-            var parImpNfs = (parseFloat(totalImposto) / parseFloat(vlrNFS)) * 100
+            var parImpNfs = (parseFloat(totalImposto) / parseFloat(projeto.vlrNFS)) * 100
             projeto.parImpNfs = parseFloat(parImpNfs).toFixed(2)
             if (projeto.vlrcom > 0) {
-                var parComNfs = parseFloat(projeto.vlrcom) / parseFloat(vlrNFS) * 100
+                var parComNfs = parseFloat(projeto.vlrcom) / parseFloat(projeto.vlrNFS) * 100
                 projeto.parComNfs = parseFloat(parComNfs).toFixed(2)
             }
 

@@ -39,7 +39,11 @@ const Realizado = new Schema({
     valor: {
         type: Number,
         require: false
-    },        
+    },    
+    recBruta:{
+        type: Number,
+        require: false
+    }, 
     vlrNFS: {
         type: Number,
         require: false
@@ -292,6 +296,10 @@ const Realizado = new Schema({
         type: Number,
         require: true
     },
+    varRB: {
+        type: Number,
+        require: true
+    },    
     varLB: {
         type: Number,
         require: true

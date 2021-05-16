@@ -37,7 +37,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6 card">
-                            <div class="row contorno ">
+                            <div class="row contorno">
                                 <label class="fw-bold col-form-label col-form-label-sm ">Valores dos Tributos (R$):
                                 </label>
                             </div>
@@ -80,7 +80,6 @@
                                 </label>
                             </div>
                             <div class="row" style="height: fit-content;">
-
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-md-6 text-end">
@@ -171,7 +170,7 @@
     </div>
     <!-- Fim Modal -->
 
-    <div class='row' style="width: 100%;padding-left: 2%;padding-top: 1%;">
+    <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
         <div style="width: 100%;">
             <h5 class="header">{{cliente.nome}} </h5>
         </div>
@@ -185,6 +184,15 @@
         <input type="hidden" name="id" value='{{projeto._id}}'>
         <div class="row mt-1" style="width: 100%;padding-left: 15px; height: 530px;">
             <div class="col-md-8" style="padding-left: 30px;">
+                <div class="row">
+                    <div class="col-md-6 text-end">
+                        <label class="fw-bold col-form-label col-form-label-sm" style="font-size: 20px;">Valor Faturado:</label><br>
+                    </div>
+                    <div class="col-md-6 text-start">
+                        <label class='fw-bold col-form-label col-form-label-sm' style="font-size: 20px;">R$
+                            {{projeto.vlrNFS}}</label><br>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="row card" style="background-color: white;">
@@ -448,52 +456,49 @@
                 <div class="row mb-2">
                     <div class="btn-group gap-2">
                         <button {{#if projeto.orcado}}{{else}}disabled{{/if}} type="submit"
-                            class="btn btn-sm btn-success">Aplicar</button>
-                        <a class="btn btn-sm btn-primary" data-bs-toggle='modal' data-bs-target="#consultaAliquota">Ver
-                            Tributos</a>
+                            class="btn btn-sm btn-success"><i class="bi bi-check-circle"></i> Aplicar</button>
+                        <a class="btn btn-sm btn-primary" data-bs-toggle='modal' data-bs-target="#consultaAliquota"><i
+                                class="bi bi-calculator"></i> Ver Tributos</a>
                         <a href='/menu' class='btn btn-sm btn-primary'> <i class="bi bi-back"></i> Voltar ao Menu</a>
                     </div>
                 </div>
-                <div class="contorno-titulo mt-2">
-                    <label class='fw-bold col-form-label col-form-label-lg mt-3'>Demonstrativo</label>
-                    <div class="row">
+                <div class="contorno-titulo mt-2" style="margin-bottom: 10%;">
+                    <label class='fw-bold col-form-label col-form-label-lg mt-4'>Demonstrativo</label>
+                    <div class="row mt-4">
                         <div class="col-md-7 text-end">
-                            <label class="fw-bold col-form-label col-form-label-sm">Valor Faturado:</label><br>
-                            <label class='fw-bold col-form-label col-form-label-sm'>(+)Total do
-                                Projeto:</label><br>
-                            <label class='fw-bold col-form-label col-form-label-sm'>(-)Custos
-                                Totais:</label><br>
-                            <label class='col-form-label col-form-label-sm'>Custo Planejado:
-                            </label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>(+)Total do Projeto:</label><br>
+                            <label class='col-form-label col-form-label-sm'>(-)ISS:</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>(=)Receita Bruta:</label><br>
                             <label class='col-form-label col-form-label-sm'>Custo Kit Gerador: </label><br>
-                            <label class='fw-bold col-form-label col-form-label-sm'>(=)Lucro Bruto:
+                            <label class='fw-bold  col-form-label col-form-label-sm'>(=)Lucro Bruto:
                             </label><br>
+                            <label class='col-form-label  col-form-label-sm'>(-)Custo Planejado:</label><br>
+                            <label class='col-form-label  col-form-label-sm'>(-)Despesas Administrativas:</label><br>
                             <label class='col-form-label  col-form-label-sm'>(-)Comissão:
                                 ({{projeto.percom}}%)</label><br>
-                            <label class='col-form-label  col-form-label-sm'>(-)Despesas Administrativas:</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>(=)LAI:</label><br>
                             <label class='col-form-label col-form-label-sm'>(-)Tributos: </label><br>
-                            <label class='fw-bold col-form-label col-form-label-sm'>(-)Lucro Líquido:
+                            <label class='fw-bold col-form-label col-form-label-sm' style="margin-bottom: 20%;">(-)Lucro Líquido:
                             </label>
                         </div>
                         <div class="col-md-5 text-start">
                             <label class='fw-bold col-form-label col-form-label-sm'>R$
-                                {{projeto.vlrNFS}}</label><br>
-                            <label class='fw-bold col-form-label col-form-label-sm'>R$
                                 {{projeto.valor}}</label><br>
-                            <label class='fw-bold col-form-label col-form-label-sm'>R$
-                                {{projeto.custoTotal}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$
-                                {{projeto.custoPlano}}</label><br>
+                                {{projeto.impNFS}}</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>R$
+                                {{projeto.recBruta}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrkit}}</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>R$
                                 {{projeto.lucroBruto}}</label><br>
-                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrcom}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$
+                                {{projeto.custoPlano}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.desAdm}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrcom}}</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>R$
                                 {{projeto.lbaimp}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$
-                                {{projeto.totalTributos}}</label><br>
+                                {{projeto.totalImposto}}</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>R$
                                 {{projeto.lucroLiquido}}</label>
                         </div>

@@ -31,6 +31,10 @@ const Projeto = new Schema({
          type: Number,
          require: true
     },
+    recBruta:{
+        type: Number,
+        require: true        
+    },
     vlrequ: {
         type: Number,
         require: true

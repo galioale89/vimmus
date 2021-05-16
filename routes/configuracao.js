@@ -161,8 +161,10 @@ router.post('/addregime', ehAdmin, (req, res) => {
             prjLP: req.body.prjLP,
             alqINSS: req.body.alqINSS,
             vlrDAS: req.body.vlrDAS,
+            tipodes: req.body.tipodes,
             desadm: req.body.desadm,
-            perdes: req.body.perdes
+            perdes: req.body.perdes,
+            estkwp: req.body.estkwp
         }
 
         new Regime(regime).save().then(() => {
@@ -392,6 +394,8 @@ router.post('/editregime/', ehAdmin, (req, res) => {
             } else {
                 regime.prjLP = req.body.prjLP
             }
+            
+            regime.tipodesp = req.body.tipodesp
 
             if (req.body.desadm == '' || parseFloat(req.body.desadm) == 0) {
                 regime.desadm = 0
@@ -403,7 +407,13 @@ router.post('/editregime/', ehAdmin, (req, res) => {
                 regime.perdes = 0
             } else {
                 regime.perdes = req.body.perdes
-            }              
+            }            
+              
+            if (req.body.estkwp == '' || parseFloat(req.body.estkwp) == 0) {
+                regime.estkwp = 0
+            } else {
+                regime.estkwp = req.body.estkwp
+            }             
 
             regime.save().then(() => {
                 req.flash('success_msg', 'Regime alterado com sucesso')

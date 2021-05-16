@@ -149,13 +149,24 @@
     </div>
     <!-- Fim Modal -->
 
-    <div class='row' style="width: 100%;padding-left: 2%;padding-top: 1%">
+    <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
         <div style="width: 100%;">
             <h5 class="header">{{cliente.nome}} </h5>
         </div>
+
         <input type="hidden" name="id" value='{{projeto._id}}'>
         <div class="row mt-1" style="width: 100%;padding-left: 15px; height: 530px;">
             <div class="col-md-8" style="padding-left: 30px;">
+                <div class="row">
+                    <div class="col-md-6 text-end">
+                        <label class="fw-bold col-form-label col-form-label-sm" style="font-size: 20px;">Valor
+                            Faturado:</label><br>
+                    </div>
+                    <div class="col-md-6 text-start">
+                        <label class='fw-bold col-form-label col-form-label-sm' style="font-size: 20px;">R$
+                            {{projeto.vlrNFS}}</label><br>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="row card" style="background-color: white;">
@@ -172,8 +183,8 @@
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Dias de Obras
                                         (lançar):</label><br>
                                     {{#if projeto.trbint}}
-                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Horas
-                                        Obra Registrado:</label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Horas de Obra
+                                        Registrado:</label><br>
                                     {{/if}}
                                     <label class="fw-bold col-form-label col-form-label-sm">Dias de Obra
                                         Registrado:</label>
@@ -181,8 +192,7 @@
                                 <div class="col-md-4">
                                     <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
                                         class="form-control form-control-sm mb-1" name='equipe' id="equipe"
-                                        value='{{projeto.qtdequipe}}' oninput="valida_numequ()"
-                                        onload="valida_numequ()">
+                                        value='{{projeto.qtdequipe}}' oninput="valida_numequ()">
                                     <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
                                         class="form-control form-control-sm mb-1" name='tothrs' id="tothrs"
                                         value='{{projeto.tothrs}}'>
@@ -219,7 +229,7 @@
                                     <label
                                         class="fw-bold col-form-label col-form-label-sm mb-1">Alimentação:</label><br>
                                 </div>
-                                <div class="col-md-6 ">
+                                <div class="col-md-6">
                                     <div class="input-group input-group-sm mb-1">
                                         <span class="input-group-text">$</span>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
@@ -259,7 +269,7 @@
                                             value='{{projeto.totdes}}' aria-label="R$ ">
                                         <span class="input-group-text">.00</span>
                                     </div>
-                                    <div class="col">
+                                    <div class="col" style="margin-bottom: 11%;">
                                         <div class="input-group input-group-sm mb-1">
                                             <span class="input-group-text">$</span>
                                             <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
@@ -285,7 +295,7 @@
 
                     <div class="col-md-6">
                         <div class="row card">
-                            <label class='col-form-label fw-bold' style="padding-top:3.5%">Definir os recursos do
+                            <label class='col-form-label fw-bold' style="padding-top:7%">Definir os recursos do
                                 projeto</label>
                             <div class="row">
                                 <div class="col-md-3">
@@ -310,8 +320,8 @@
                                 <div class="col-md-2">
                                     <div class='form-check'>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='checkbox'
-                                            class='form-check-input' name='checkIns'>
-                                        <label class='form-check-label'>Alterar</label>
+                                            class='form-check-input col-sm-2' name='checkIns'>
+                                        <label class='form-check-label col-form-labels'>Alterar</label>
                                     </div>
                                 </div>
                             </div>
@@ -344,23 +354,21 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row card">
+                        <div class="row card" style="margin-bottom: 30px;">
                             <div class="row">
                                 <div class="col-md-6 text-end">
                                     <label class="fw-bold col-form-label col-form-label-sm">Reserva</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Reserva Gerencial:
                                     </label><br>
-                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Reserva
-                                        Contingência:
-                                    </label><br>
-                                    <label class="fw-bold col-form-label col-form-label-sm">Adicional:
+                                    <label class="fw-bold col-form-label col-form-label-sm">Reserva
+                                        Contingência:</label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Adicional:
                                     </label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Imprevisto
                                         Elétrico:</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Seguro:</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Cercamento:</label><br>
-                                    <label class="fw-bold col-form-label col-form-label-sm">Postes de
-                                        Condução:</label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm">Postes de Condução:</label><br>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="fw-bold col-form-label col-form-label-sm">R$
@@ -421,53 +429,49 @@
                 <div class="row mb-2">
                     <div class="btn-group gap-2">
                         <button {{#if projeto.orcado}}{{else}}disabled{{/if}} type="submit"
-                            class="btn btn-sm btn-success">Aplicar</button>
-                        <a class="btn btn-sm btn-primary" data-bs-toggle='modal' data-bs-target="#consultaAliquota">Ver
-                            Tributos</a>
+                            class="btn btn-sm btn-success"><i class="bi bi-check-circle"></i> Aplicar</button>
+                        <a class="btn btn-sm btn-primary" data-bs-toggle='modal' data-bs-target="#consultaAliquota"><i
+                                class="bi bi-calculator"></i> Ver Tributos</a>
                         <a href='/menu' class='btn btn-sm btn-primary'> <i class="bi bi-back"></i> Voltar ao Menu</a>
                     </div>
                 </div>
-                <div class="contorno-titulo mt-2">
-                    <label class='fw-bold col-form-label col-form-label-lg mt-3'>Demonstrativo</label>
-                    <div class="row">
+                <div class="contorno-titulo mt-2" style="margin-bottom: 10%;">
+                    <label class='fw-bold col-form-label col-form-label-lg mt-4'>Demonstrativo</label>
+                    <div class="row mt-4">
                         <div class="col-md-7 text-end">
-                            <label class="fw-bold col-form-label col-form-label-sm">Valor Faturado:</label><br>
-                            <label class='fw-bold col-form-label col-form-label-sm'>(+)Total do
-                                Projeto:</label><br>
-                            <label class='fw-bold col-form-label col-form-label-sm'>(-)Custos
-                                Totais:</label><br>
-                            <label class='col-form-label col-form-label-sm'>Custo Planejado:
-                            </label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>(+)Total do Projeto:</label><br>
+                            <label class='col-form-label col-form-label-sm'>(-)ISS:</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>(=)Receita Bruta:</label><br>
                             <label class='col-form-label col-form-label-sm'>Custo Kit Gerador: </label><br>
                             <label class='fw-bold  col-form-label col-form-label-sm'>(=)Lucro Bruto:
                             </label><br>
+                            <label class='col-form-label  col-form-label-sm'>(-)Custo Planejado:</label><br>
+                            <label class='col-form-label  col-form-label-sm'>(-)Despesas Administrativas:</label><br>
                             <label class='col-form-label  col-form-label-sm'>(-)Comissão:
                                 ({{projeto.percom}}%)</label><br>
-                            <label class='col-form-label  col-form-label-sm'>(-)Despesas Administrativas:</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>(=)LAI:</label><br>
                             <label class='col-form-label col-form-label-sm'>(-)Tributos: </label><br>
-                            <label style="padding-bottom: 15%;"
-                                class='fw-bold col-form-label col-form-label-sm'>(-)Lucro Líquido:
+                            <label class='fw-bold col-form-label col-form-label-sm' style="margin-bottom: 20%;">(-)Lucro Líquido:
                             </label>
                         </div>
                         <div class="col-md-5 text-start">
                             <label class='fw-bold col-form-label col-form-label-sm'>R$
-                                {{projeto.vlrNFS}}</label><br>
-                            <label class='fw-bold col-form-label col-form-label-sm'>R$
                                 {{projeto.valor}}</label><br>
-                            <label class='fw-bold col-form-label col-form-label-sm'>R$
-                                {{projeto.custoTotal}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$
-                                {{projeto.custoPlano}}</label><br>
+                                {{projeto.impNFS}}</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>R$
+                                {{projeto.recBruta}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrkit}}</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>R$
                                 {{projeto.lucroBruto}}</label><br>
-                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrcom}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$
+                                {{projeto.custoPlano}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.desAdm}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrcom}}</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>R$
                                 {{projeto.lbaimp}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$
-                                {{projeto.totalTributos}}</label><br>
+                                {{projeto.totalImposto}}</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>R$
                                 {{projeto.lucroLiquido}}</label>
                         </div>

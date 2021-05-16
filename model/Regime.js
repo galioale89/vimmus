@@ -63,6 +63,10 @@ const Regime = new Schema({
         type: String,
         require: false
     },
+    tipodesp: {
+        type: String,
+        require: false
+    },
     desadm: {
         type: String,
         require: false
@@ -71,6 +75,10 @@ const Regime = new Schema({
         type: String,
         require: false
     },    
+    estkwp:{
+        type: String,
+        require: false
+    },
     prjLR:{
         type: String,
         require: false

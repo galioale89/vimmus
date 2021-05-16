@@ -41,15 +41,17 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row">
-                            <div class="col-md-3 text-end" style='margin-inline-start: 40px;'>
+                            <div class="col-md-4 text-end" style='margin-inline-start: 40px;'>
                                 <label class='fw-bold col-form-label col-form-label-sm'>Gestor(a):</label><br>
-                                <label class='fw-bold col-form-label col-form-label-sm'>Total:</label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm'>Total Orçado:</label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm'>Valor Faturado:</label><br>
                                 <label class='fw-bold col-form-label col-form-label-sm'>Horas:</label><br>
                                 <label class='fw-bold col-form-label col-form-label-sm'>Dias Obra:</label><br>
                             </div>
                             <div class="col-md-6 text-start">
                                 <label class='col-form-label col-form-label-sm'>{{responsavel.nome}}</label><br>
                                 <label class='col-form-label col-form-label-sm'>R$ {{projeto.valor}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrfat}}</label><br>
                                 <label class='col-form-label col-form-label-sm'>{{projeto.tothrs}} h</label><br>
                                 <label class='col-form-label col-form-label-sm'>{{projeto.diastr}} dia(s)</label><br>
                             </div>
@@ -128,11 +130,13 @@
                 <div class="row">
                     <div class="col-md-3 mt-2 text-end">
                         <div class="row mt-5">
+                            <label class='fw-bold col-form-label col-form-label-sm'>ISS:</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>Receita Bruta:</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>Equipamento:</label><br>
-                            <label class='fw-bold col-form-label col-form-label-sm'>Custo Operacional:</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>Lucro Bruto:</label><br>
-                            <label class='fw-bold col-form-label col-form-label-sm'>Comissão:</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>Custo Operacional:</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>Despesas Adm.:</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>Comissão:</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>LAI:</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>Tributos:</label><br>    
                             <label class='fw-bold col-form-label col-form-label-sm'>Lucro Líquido:</label><br>
@@ -149,13 +153,15 @@
                         </div>
                         <hr>
                         <div class="row">
-                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrequ}}</label><br>
-                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.totcop}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.impNFS}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.recBruta}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrkit}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.lucroBruto}}</label><br>
-                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrcom}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.totcop}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.desAdm}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrcom}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.lbaimp}}</label><br>
-                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.totalTributos}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.totalImposto}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.lucroLiquido}}</label><br>
                         </div>
                     </div>
@@ -170,13 +176,15 @@
                         </div>                                     
                         <hr>
                         <div class="row">
-                            <label class='col-form-label col-form-label-sm'>R$ {{realizado.vlrequ}}</label><br>
-                            <label class='col-form-label col-form-label-sm'>R$ {{realizado.custoPlano}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{realizado.impISS}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{realizado.recBruta}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{realizado.vlrkit}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{realizado.lucroBruto}}</label><br>
-                            <label class='col-form-label col-form-label-sm'>R$ {{realizado.vlrcom}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{realizado.custoPlano}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{realizado.desAdm}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{realizado.vlrcom}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{realizado.lbaimp}}</label><br>
-                            <label class='col-form-label col-form-label-sm'>R$ {{realizado.totalTributos}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{realizado.totalImposto}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{realizado.lucroLiquido}}</label><br>
                         </div>
                     </div>

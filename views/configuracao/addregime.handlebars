@@ -95,16 +95,32 @@
                     </div>
                 </div>
                 <div class='row'>
-                    <div class="col-md-4">
-                      <label class='col-form-label col-form-label-sm'>Despesas Administrativas:</label><br>
-                      <label class='col-form-label col-form-label-sm'>Percentual Despesas:</label>
+                    <div class="row">
+                        <div class="col-md-4 text-end">
+                            <label class="col-form-label col-form-label-sm">Tipo Despesa: </label>
+                        </div>
+                        <div class="col-md-7 mb-2" style="margin-left: 8px;">
+                            <select class='form-select form-select-sm' name='tipodesp'>
+                                <option>Percentual</option>
+                                <option>kWp Médios</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 text-end">
+                        <label class='col-form-label col-form-label-sm mb-2'>Despesas Administrativas:</label><br>
+                        <label class='col-form-label col-form-label-sm mb-2'>Percentual Despesas:</label><br>
+                        <label class='col-form-label col-form-label-sm'>Média kWp:</label>
                     </div>
                     <div class="col-md-8">
-                       <input class="form-control form-control-sm" name='desadm' placeholder="Valor mensal das despesas fixas e variáveis somadas." value={{regime.desadm}}>
-                       <input class="form-control form-control-sm" name='perdes' placeholder="Percentual (%) das despesas por projeto." value={{regime.perdes}}>
+                        <input class="form-control form-control-sm mb-2" name='desadm'
+                            placeholder="Valor mensal das despesas fixas e variáveis somadas." value={{regime.desadm}}>
+                        <input class="form-control form-control-sm mb-2" name='perdes'
+                            placeholder="Percentual (%) das despesas por projeto." value={{regime.perdes}}>
+                        <input class="form-control form-control-sm" name='estkwp'
+                            placeholder="Estimativa dos kWp mensais." value={{regime.estkwp}}>
                     </div>
-                </div>                
-
+                </div>
             </div>
             <div class="col-md-6">
                 <div class="container">
@@ -129,21 +145,21 @@
                                 class='form-control form-control-sm mb-1' placeholder="R$" />
                             <input type='text' id='prjFat' name='prjFat' value='{{regime.prjFat}}'
                                 class='form-control form-control-sm mb-1' placeholder="R$">
-                                <hr>
+                            <hr>
                             <input type='text' id='prjLR' name='prjLR' value='{{regime.prjLR}}'
                                 class='form-control form-control-sm' style="margin-bottom: 20px;" placeholder="R$">
-                                <hr>
+                            <hr>
                             <input type='text' id='prjLP' name='prjLP' value='{{regime.prjLP}}'
                                 class='form-control form-control-sm' style="margin-bottom: 20px;" placeholder="R$">
-                                <hr>
+                            <hr>
                             <input type='text' id='vlrDAS' name='vlrDAS' value='{{regime.vlrDAS}}'
                                 class='form-control form-control-sm mb-1' placeholder="R$">
                         </div>
+                        <div class="row mt-4">
+                            <button type='submit' class='btn btn-sm btn-success mx-auto mb-3'> Aplicar </button>
+                        </div>
                     </div>
                 </div>
-                <div class="row mt-4">
-                    <button type='submit' class='btn btn-sm btn-success mx-auto mb-3'> Aplicar </button>
-                </div>   
             </div>
         </div>
     </form>
