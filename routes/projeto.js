@@ -921,7 +921,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
 
                     Detalhado.findOne({ projeto: projeto._id }).then((detalhe) => {
 
-                         //projeto_id = projeto._id
+                         projeto.nome = req.body.nome
 
                          //Validação de check box  
                          var cercamento
@@ -1185,7 +1185,6 @@ router.post('/edicao', ehAdmin, (req, res) => {
                               vlrfat = parseFloat(req.body.valor) - parseFloat(vlrkit)
                          }
                          if (req.body.checkLocal != null && req.body.uf != '' && req.body.cidade != '') {
-                              projeto.nome = req.body.nome
                               if (req.body.uf != projeto.uf && req.body.uf != projeto.cidade) {
                                    projeto.uf = req.body.uf
                                    projeto.cidade = req.body.cidade
