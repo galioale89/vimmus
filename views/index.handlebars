@@ -34,11 +34,44 @@
         </div>
     </div>
     -->
+    <form method="post" action='/usuario/salvacontato'>
+        <div style="width: 100%;" data-anime='left' class="fadeIn">
+            <div style="width: 100%; height: fit;text-align: center;background: white;padding: 10px;color: white;">
+                <div class='row' style="width: 100%;">
+                    <div class='col-md-8'>
+                        <div style="margin-left: 7%;color: rgb(40,55,89);">
+                            <h4 style="color: rgb(40,55,89);margin-left: 7%;"> Quer conhecer o Sistema VIMMUS GC de
+                                Gestão de Custos</h4>
+                            <h4 style="color: rgb(40,55,89);margin-left: 7%;"> para Projetos de Energia Solar?</h4>
+                             <p>
+                            <label class='col-form-label col-form-label-sm'>Entre em contato pelo
+                                WhatsApp:</label><label class='fw-bold col-form-label col-form-label-sm'> <label> </label> (49) 9
+                                9183-2978 </label> <label class='col-form-label col-form-label-sm'>ou envie um e-mail
+                                para</label><label
+                                class='fw-bold col-form-label col-form-label-sm'><label> </label> solucoes@vimmus.com.br.</label>
+                            <label class='col-form-label col-form-label-sm'>Se preferir informe seus dados no quadro
+                                ao lado que entraremos em contato.</label>
+                        </div>
+                    </div>
+                    <div class='col-md-4 mt-1' style="padding-right: 60px;">
+                        <input type="text" name='nome' placeholder="Nome" class="form-control form-control-sm mb-1">
+                        <input type="email" placeholder="E-mail" name='email' class="form-control form-control-sm mb-1">
+                        <input type="text" class="form-control form-control-sm mb-1" name='celular' id='celular'
+                            placeholder="Número do Telefone" maxlength="16" autocomplete="off"
+                            onkeyup="valida_celular()">
+                        <button type='submit' class='btn btn-sm btn-success col-12'>Enviar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 
     <div class='fadeIn' style="width: 100%;">
         <img src='/body/passo-a-passo.svg' style="width: 100%;" />
     </div>
 
+
+    <!--
     <div style="width: 100%;" data-anime='left' class="fadeIn">
         <form method="post" action='/usuario/enviar'>
             <div class='formulario'>
@@ -86,6 +119,7 @@
             </div>
         </form>
     </div>
+    -->
 </div>
 <script>
     function valida_celular() {

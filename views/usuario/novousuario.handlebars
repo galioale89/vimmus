@@ -1,0 +1,32 @@
+<div style="width: 100%;">
+    <form method="post" action='/usuario/enviar'>
+        <div class='formulario' style="width: 50%;">
+            <div style="margin-top: 20px;margin-left: 35%;">
+                <h6>Cadastre o nome, e-mail e telefone para receber a senha de acesso</h6>
+                <table>
+                    <tr align="right">
+                        <td><label class="col-form-label col-form-label-sm mb-1">Nome:</label><br></td>
+                        <td><input type="text" name='nome' style="width: 320px;"
+                                class="form-control form-control-sm mb-1">
+                        </td>
+                    </tr>
+                    <tr align="right">
+                        <td><label class="col-form-label col-form-label-sm mb-1">Celular:</label><br>
+                        </td>
+                        <td><input type="text" class="form-control form-control-sm mb-1" name='celular' id='celular'
+                                placeholder="(XX) X XXXX-XXXX" maxlength="16" autocomplete="off"
+                                onkeyup="valida_celular()">
+                        </td>
+                    </tr>
+                    <tr align="right">
+                        <td><label class="col-form-label col-form-label-sm">Email:</label></td>
+                        <td><input type="email" name='email' class="form-control form-control-sm"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="input-group gap-2 mt-2 ">
+            <button type="submit" class="btn btn-sm btn-success" style='margin-left: 42%'>Enviar</button>
+            <a href='/administrador' class='btn btn-sm btn-primary'>Voltar</a>
+            </div>
+    </form>
+</div>

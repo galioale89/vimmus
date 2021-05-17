@@ -37,6 +37,10 @@ router.use(express.static('imagens'))
 router.use(express.static('imagens/upload'))
 const { ehAdmin } = require('../helpers/ehAdmin')
 
+router.get('/novousuario', ehAdmin, (req, res) => {
+    res.render('usuario/novousuario')
+})
+
 router.get('/editar/:id', ehAdmin, (req, res) => {
     const { ehAdmin } = req.user
     Usuario.findOne({ _id: req.params.id }).lean().then((usuario) => {
@@ -94,7 +98,7 @@ router.post('/enviar', (req, res) => {
                 var senha = Math.floor(Math.random() * (999999 - 111111)) + 111111;
 
                 var texto = 'Olá ' + req.body.nome + ',' + '\n' + '\n' +
-                    'Aqui está seu usuário e senha para acessar o sistema da VIMMUS e começar a geranciar de forma eficaz seus projetos.' + '\n' +
+                    'Aqui está seu usuário e senha para acessar o sistema da VIMMUS e começar a geranciar de forma eficáz seus projetos.' + '\n' +
                     'Usuário: ' + usuario + '\n' +
                     'Senha: ' + senha + '\n' +
                     'Fique a vontade par alterar o nome de usuário (de acordo com a disponibilidade) e sua senha.' + '\n' + '\n' +
@@ -157,7 +161,7 @@ router.post('/enviar', (req, res) => {
                                         }
                                         ////console.log(info)
                                     })
-                                    res.redirect("/")
+                                    res.redirect("/menu")
                                 }).catch((err) => {
                                     req.flash("error_msg", "Ocorreu uma falha interna")
                                     res.redirect("/usuario/registro")
@@ -193,6 +197,58 @@ router.post('/enviar', (req, res) => {
         }).catch((err) => {
             req.flash("error_msg", "Ocorreu uma falha interna")
             res.redirect("/usuario/registro")
+        })
+    }
+})
+
+router.post('/salvacontato', (req, res) => {
+    var sucesso = []
+    var erros = []
+    if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == true) {
+        erros.push({ texto: "É necessário cadastrar o nome." })
+    }
+    if (!req.body.celular || typeof req.body.celular == undefined || req.body.celular == true) {
+        erros.push({ texto: "É necessário cadastrar um número de celular." })
+    }
+    if (!req.body.email || typeof req.body.email == undefined || req.body.email == true) {
+        erros.push({ texto: "É necessário cadastrar um e-mail." })
+    }
+    if (erros.length > 0) {
+        res.render('index', { erros: erros })
+    } else {
+
+        var email = req.body.email
+        var nome = req.body.nome
+
+        Usuario.findOne({ email: req.body.email }).then((usuario_email) => {
+            if (usuario_email) {
+                req.flash("aviso_msg", nome + ", em breve entraremos em contato com você.")
+                res.redirect("/")
+            } else {
+                var data = new Date()
+                var ano = data.getFullYear()
+                var mes = parseFloat(data.getMonth()) + 1
+                var dia = data.getDate()
+
+                const novoUsuario = new Usuario({
+                    nome: req.body.nome,
+                    telefone: req.body.celular,
+                    email: email,
+                    ehAdmin: 3,
+                    data: ano + '' + mes + '' + dia
+                })
+
+                novoUsuario.save().then(() => {
+                    sucesso.push({texto: novoUsuario.nome + ', em breve entraremos em contato com você. Não esqueça de verificar sua caixa de spam!'})
+                    res.render('index', {sucesso:sucesso})
+                }).catch((err) => {
+                    req.flash("error_msg", "Ocorreu uma falha interna")
+                    res.redirect("/usuario/registro")
+                })
+            }
+        }).catch((err) => {
+            req.flash("error_msg", "Houve um erro ao se registrar.")
+            res.redirect("/")
         })
     }
 })

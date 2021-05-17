@@ -3,12 +3,14 @@
         color: white;
         border-radius: 10px;
         border: solid 1px;
+        border-radius: 5px;
         background: linear-gradient(135deg, rgb(62, 81, 177), rgb(11, 19, 58, 1), rgb(11, 19, 58, 1));
     }
 
     .botao-menu {
         background-color: rgb(40, 55, 86);
         border: white solid 1px;
+        border-radius: 5px;
         color: white;
     }
 
@@ -34,9 +36,9 @@
     }
 </style>
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
-    <div class="row">
-        <h5 class="header"> {{cliente.nome}} </h5>
-    </div>
+        <div style="width: 100%;">
+            <h5 class="header">{{cliente.nome}} </h5>
+        </div>
 
     <form action='/customdo/editar/instalacao' method='post'>
 
