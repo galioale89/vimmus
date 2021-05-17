@@ -921,12 +921,14 @@ router.post('/edicao', ehAdmin, (req, res) => {
 
                     Detalhado.findOne({ projeto: projeto._id }).then((detalhe) => {
 
-                         projeto.nome = req.body.nome
+                         //projeto_id = projeto._id
 
                          //Validação de check box  
                          var cercamento
                          var poste
                          var estsolo
+
+                         projeto.nome = req.body.nome
 
                          if (req.body.cercamento != null) {
                               cercamento = 'checked'
