@@ -163,7 +163,7 @@ router.post('/addregime', ehAdmin, (req, res) => {
             vlrDAS: req.body.vlrDAS,
             tipodes: req.body.tipodes,
             desadm: req.body.desadm,
-            perdes: req.body.perdes,
+            perdesp: req.body.perdesp,
             estkwp: req.body.estkwp
         }
 
