@@ -3165,7 +3165,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               recBruta: prjRecBruta,
                               lucroBruto: prjLucroBruto,
                               vlrcom: vlrcom,
-                              desAdm: desAdm,
+                              desAdm: projeto.desAdm,
                               lbaimp: lbaimp,
 
                               impmanual: impmanual,
