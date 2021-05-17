@@ -4,6 +4,7 @@
     margin-left: 2px;
     color: black;
   }
+
   .icone:hover {
     color: darkgreen;
   }
@@ -13,21 +14,31 @@
   tr,
   td {
     border-collapse: collapse;
-    border: rgba(120,120,120,0.5) solid 1px;
+    border: rgba(120, 120, 120, 0.5) solid 1px;
     text-align: left;
     font-size: 14px;
     font-weight: 500;
     width: fit-content;
   }
-  th{
-    background-color: rgb(40,50,120);
+
+  th {
+    background-color: rgb(40, 50, 120);
     color: white;
   }
-  table{
+
+  table {
     width: 95%;
   }
-</style> 
-  <h4 style="margin-left: 20px;margin-top: 40px">Controle de Acesso</h4>
+</style>
+  <div class="row">
+    <div class="col-md-3">
+      <h4 style="margin-left: 40px;margin-top: 40px">Controle de Acesso</h4>
+    </div>
+    <div class="col-md-4">
+      <a href='/usuario/novousuario' class="btn mt-3 text-start" style="font-size: 35px;"><i class='bi bi-clipboard-plus'></i></a>
+    </div>
+  </div>
+
   <table style="margin-left: 20px;margin-top: 20px;">
     <tr>
       <th>Usuário</th>
