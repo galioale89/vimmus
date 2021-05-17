@@ -40,7 +40,7 @@ const Realizado = new Schema({
         type: Number,
         require: false
     },    
-    recBruta:{
+    recLiquida:{
         type: Number,
         require: false
     }, 

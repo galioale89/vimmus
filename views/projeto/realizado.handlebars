@@ -329,9 +329,9 @@
                 </div>
                 -->
                 <div class="container" style="height: 100px;">
-                    <canvas id='chartRB' class='mb-4 mx-auto'></canvas><br>
-                    <input type='hidden' name='orcRB' id='orcRB' value='{{projeto.recBruta}}'></input>
-                    <input type='hidden' id='rlzRB' value='{{realizado.recBruta}}'></input>
+                    <canvas id='chartRL' class='mb-4 mx-auto'></canvas><br>
+                    <input type='hidden' name='orcRL' id='orcRL' value='{{projeto.recLiquida}}'></input>
+                    <input type='hidden' id='rlzRB' value='{{realizado.recLiquida}}'></input>
                 </div>                
                 <div class="container" style='height: 100px'>
                     <canvas id='chartLB' class='mb-4 mx-auto'></canvas>
@@ -373,11 +373,11 @@
                         </div>                        
                         <div class="row">
                             <div class="col-md-7 text-end">
-                                <label class='fw-bold col-form-label col-form-label-sm'>Receita Bruta: </label>
+                                <label class='fw-bold col-form-label col-form-label-sm'>Receita Líquida: </label>
                             </div>
                             <div class="col-md-5">
                                 <label class='col-form-label col-form-label-sm text-center'>R$
-                                    {{projeto.recBruta}}</label>
+                                    {{projeto.recLiquida}}</label>
                             </div>
                         </div>                        
                         <div class="row">
@@ -529,8 +529,8 @@
 
 <script type='text/javascript'>
 
-    var corRBFill
-    var corRBBorder
+    var corRLFill
+    var corRLBorder
     var corLBFill
     var corLBBorder
     var corLAIFill
@@ -541,9 +541,9 @@
     //var orcCP = document.getElementById('orcCP')
     //var rlzCP = document.getElementById('rlzCP')
     //var cp = [orcCP.value, rlzCP.value]
-    var orcRB = document.getElementById('orcRB')
-    var rlzRB = document.getElementById('rlzRB')
-    var rb = [orcRB.value, rlzRB.value]    
+    var orcRL = document.getElementById('orcRL')
+    var rlzRL = document.getElementById('rlzRL')
+    var rl = [orcRL.value, rlzRL.value]    
 
     var orcLB = document.getElementById('orcLB')
     var rlzLB = document.getElementById('rlzLB')
@@ -558,7 +558,7 @@
     var ll = [orcLL.value, rlzLL.value]
 
     //var ctxCP = document.getElementById('chartCP').getContext('2d')
-    var ctxRB = document.getElementById('chartRB').getContext('2d')
+    var ctxRL = document.getElementById('chartRL').getContext('2d')
     var ctxLB = document.getElementById('chartLB').getContext('2d')
     var ctxLAI = document.getElementById('chartLAI').getContext('2d')
     var ctxLL = document.getElementById('chartLL').getContext('2d')
@@ -568,12 +568,12 @@
     //Automação da cor do bars de acordo com a relação positiva entre orçado e realizado
     //Custo Planejado  
 
-    if (parseFloat(orcRB.value) <= parseFloat(rlzRB.value)) {
-        corRBFill = corFill[0]
-        corRBBorder = corBorder[0]
+    if (parseFloat(orcRL.value) > parseFloat(rlzRL.value)) {
+        corRLFill = corFill[0]
+        corRLBorder = corBorder[0]
     } else {
-        corRBFill = corFill[1]
-        corRBBorder = corBorder[1]
+        corRLFill = corFill[1]
+        corRLBorder = corBorder[1]
     }
     //corCPFill = toString(corCPFill)
     //corCPBorder = toString(corCPBorder)
@@ -602,21 +602,21 @@
         corLLBorder = corBorder[1]
     }
 
-    var chartRB = new Chart(ctxRB, {
+    var chartRL = new Chart(ctxRL, {
         type: 'horizontalBar',
         data: {
             labels: ['Orçado', 'Realizado'],
             datasets: [{
-                label: 'Receita Bruta',
+                label: 'Receita Líquida',
                 data: [rb[0], rb[1]],
                 backgroundColor: [
                     'rgba(249, 240, 71, 0.2)',
-                    corRBFill,
+                    corRLFill,
                 ],
 
                 borderColor: [
                     'rgba(249, 240, 71, 1)',
-                    corRBBorder,
+                    corRLBorder,
                 ],
                 borderWidth: 1
             }]

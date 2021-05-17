@@ -31,7 +31,7 @@ const Projeto = new Schema({
          type: Number,
          require: true
     },
-    recBruta:{
+    recLiquida:{
         type: Number,
         require: true        
     },

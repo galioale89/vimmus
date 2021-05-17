@@ -692,13 +692,13 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                         projeto.impNFS = impNFS
                         console.log('impNFS=>'+impNFS)
                         console.log('projeto.valor=>'+projeto.valor)
-                        var recBruta = parseFloat(projeto.valor) - parseFloat(impNFS)
-                        projeto.recBruta = parseFloat(recBruta).toFixed(2)       
+                        var recLiquida = parseFloat(projeto.valor) - parseFloat(impNFS)
+                        projeto.recLiquida = parseFloat(recLiquida).toFixed(2)       
                         
-                        console.log('recBruta=>'+recBruta)
+                        console.log('recLiquida=>'+recLiquida)
                         console.log('projeto.vlrkit=>'+projeto.vlrkit)
 
-                        var lucroBruto = parseFloat(recBruta) - parseFloat(projeto.vlrkit)
+                        var lucroBruto = parseFloat(recLiquida) - parseFloat(projeto.vlrkit)
                         projeto.lucroBruto = parseFloat(lucroBruto).toFixed(2)
                         //console.log('lucroBruto=>'+lucroBruto)
                         var desAdm = 0

@@ -1563,10 +1563,10 @@ router.post('/direto', ehAdmin, (req, res) => {
                               projeto.impNFS = impNFS.toFixed(2)
 
                               //Definindo o Lucro Bruto
-                              var recBruta = parseFloat(projeto.valor) - parseFloat(impNFS)
-                              projeto.recBruta = recBruta.toFixed(2)
+                              var recLiquida = parseFloat(projeto.valor) - parseFloat(impNFS)
+                              projeto.recLiquida = recLiquida.toFixed(2)
 
-                              var lucroBruto = parseFloat(recBruta) - parseFloat(projeto.vlrkit)
+                              var lucroBruto = parseFloat(recLiquida) - parseFloat(projeto.vlrkit)
                               projeto.lucroBruto = lucroBruto.toFixed(2)
 
                               //console.log('vlrNFS=>' + vlrNFS)
@@ -2168,10 +2168,10 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                               console.log('projeto.valor=>' + projeto.valor)
 
                               //Definindo o Lucro Bruto
-                              var recBruta = parseFloat(projeto.valor) - parseFloat(impNFS)
-                              projeto.recBruta = recBruta.toFixed(2)
+                              var recLiquida = parseFloat(projeto.valor) - parseFloat(impNFS)
+                              projeto.recLiquida = recLiquida.toFixed(2)
 
-                              var lucroBruto = parseFloat(recBruta) - parseFloat(projeto.vlrkit)
+                              var lucroBruto = parseFloat(recLiquida) - parseFloat(projeto.vlrkit)
                               projeto.lucroBruto = lucroBruto.toFixed(2)
 
                               //console.log('vlrNFS=>' + vlrNFS)
@@ -2569,7 +2569,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          var prj_id = projeto._id
                          var prjCusto = projeto.totcop
                          var prjValor = projeto.valor
-                         var projeto_recBruta = projeto.recBruta
+                         var projeto_recLiquida = projeto.recLiquida
                          var projeto_lucroBruto = projeto.lucroBruto
                          var projeto_lbaimp = projeto.lbaimp
                          var projeto_lucroLiquido = projeto.lucroLiquido
@@ -2734,10 +2734,10 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               }
                          }
 
-                         var prjRecBruta = parseFloat(projeto.valor) - parseFloat(impISS)
-                         prjRecBruta = parseFloat(prjRecBruta).toFixed(2)
+                         var prjrecLiquida = parseFloat(projeto.valor) - parseFloat(impISS)
+                         prjrecLiquida = parseFloat(prjrecLiquida).toFixed(2)
 
-                         var prjLucroBruto = parseFloat(prjRecBruta) - parseFloat(vlrkit)
+                         var prjLucroBruto = parseFloat(prjrecLiquida) - parseFloat(vlrkit)
                          prjLucroBruto = parseFloat(prjLucroBruto).toFixed(2)
 
                          //Valida a comissão e calcula o lucroBruto
@@ -2913,7 +2913,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          //CÁLCULO DAS VARIAÇÕES
                          var varCusto = - (((parseFloat(prjCusto) - parseFloat(totalPlano)) / parseFloat(prjCusto)) * 100)
                          varCusto = varCusto.toFixed(2)
-                         var varRB = - (((parseFloat(projeto_recBruta) - parseFloat(prjRecBruta)) / parseFloat(projeto_recBruta)) * 100)
+                         var varRB = - (((parseFloat(projeto_recLiquida) - parseFloat(prjrecLiquida)) / parseFloat(projeto_recLiquida)) * 100)
                          varRB = varRB.toFixed(2)
                          var varLB = -(((parseFloat(projeto_lucroBruto) - parseFloat(prjLucroBruto)) / parseFloat(projeto_lucroBruto)) * 100)
                          varLB = varLB.toFixed(2)
@@ -3162,7 +3162,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               vlrequ: vlrequ,
                               vlrkit: vlrkit,
                               vlrNFS: vlrPrjNFS,
-                              recBruta: prjRecBruta,
+                              recLiquida: prjrecLiquida,
                               lucroBruto: prjLucroBruto,
                               vlrcom: vlrcom,
                               desAdm: projeto.desAdm,
