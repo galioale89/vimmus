@@ -331,7 +331,7 @@
                 <div class="container" style="height: 100px;">
                     <canvas id='chartRL' class='mb-4 mx-auto'></canvas><br>
                     <input type='hidden' name='orcRL' id='orcRL' value='{{projeto.recLiquida}}'></input>
-                    <input type='hidden' id='rlzRB' value='{{realizado.recLiquida}}'></input>
+                    <input type='hidden' id='rlzRL' value='{{realizado.recLiquida}}'></input>
                 </div>                
                 <div class="container" style='height: 100px'>
                     <canvas id='chartLB' class='mb-4 mx-auto'></canvas>
@@ -608,7 +608,7 @@
             labels: ['Orçado', 'Realizado'],
             datasets: [{
                 label: 'Receita Líquida',
-                data: [rb[0], rb[1]],
+                data: [rl[0], rl[1]],
                 backgroundColor: [
                     'rgba(249, 240, 71, 0.2)',
                     corRLFill,
