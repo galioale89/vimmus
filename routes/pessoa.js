@@ -657,7 +657,7 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
             Projeto.find({ funins: pessoa._id, user: _id }).sort({ dataord: 'desc' }).lean().then((prjins) => {
                 Projeto.find({ funpro: pessoa._id, user: _id }).sort({ dataord: 'desc' }).lean().then((prjpro) => {
                     Projeto.find({ vendedor: pessoa._id, user: _id }).sort({ dataord: 'desc' }).lean().then((prjven) => {
-                        Equipe.find({ $or: [{ ins0: pessoa.nome }, { ins1: pessoa.nome }, { ins2: pessoa.nome }, { ins3: pessoa.nome }, { ins4: pessoa.nome }, { ins5: pessoa.nome }] }).lean().then((equipe) => {
+                        Equipe.find({ $or: [{ ins0: pessoa.nome }, { ins1: pessoa.nome }, { ins2: pessoa.nome }, { ins3: pessoa.nome }, { ins4: pessoa.nome }, { ins5: pessoa.nome }], user: _id }).lean().then((equipe) => {
                             equipe.forEach(element => {
                                 const { nome_projeto } = element
                                 //console.log(nome_projeto)
