@@ -16,8 +16,8 @@
             <tr>
                 <th style="font-size: 20px;">Projetos Realizados</th>
                 <th style="font-size: 20px;width: 200px;">Total kWp</th>
-                <th colspan="2" style="font-size: 20px;">Dispêndios Totais/kWp</th>
-                <th style="font-size: 20px;">Total Projeto/kWp</th>
+                <th colspan="2" style="font-size: 20px;">Dispêndios/kWp</th>
+                <th style="font-size: 20px;">Faturado/kWp</th>
                 <th style="font-size: 20px;">% Lucro Liquido</th>
             </tr>
             <tr>
@@ -205,6 +205,7 @@
                         <input id='totadm' type="hidden" value='{{soma_totadm}}'>
                         <input id='tottrb' type="hidden" value='{{soma_tottrb}}'>
                         <canvas id='chartTot' class='mt-2 mb-1'></canvas>
+                        <h5>Total dos Projetos Vendidos: R$ {{soma_totprj}}</h5>
                     </div>
                 </form>
             </td>
@@ -224,7 +225,7 @@
     var chartTot = new Chart(ctxTot, {
         type: 'bar',
         data: {
-            labels: ['Faturamento', 'Equipamentos', 'Comissão', 'Custos', 'Despesas', 'Tributos', 'Lucro Liquido'],
+            labels: ['Faturado', 'Equipamentos', 'Comissão', 'Custos', 'Despesas', 'Tributos', 'Lucro Liquido'],
             datasets: [{
                 data: [soma_totfat.value, soma_totkit.value, soma_totcom.value, soma_totcop.value, soma_totadm.value, soma_tottrb.value, soma_totliq.value],
                 backgroundColor: [

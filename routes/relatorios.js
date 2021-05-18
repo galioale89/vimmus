@@ -174,6 +174,7 @@ router.get('/listarabertos', ehAdmin, (req, res) => {
 
 router.get('/dashboardcustos', ehAdmin, (req, res) => {
     const { _id } = req.user
+    console.log('user=>'+_id)
     var soma_kwp = 0
     var soma_totcop = 0
     var soma_totadm = 0
@@ -187,6 +188,7 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
     var soma_totimp = 0
     var soma_tottrb = 0
     var soma_totkit = 0
+    var soma_totprj = 0
     var soma_totfat = 0
     var soma_totcom = 0
     var soma_total = 0
@@ -202,6 +204,7 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
     var medkwp_totali = 0
     var medkwp_totimp = 0
     var medkwp_totkit = 0
+    var medkwp_totprj = 0
     var medkwp_totfat = 0
     var medkwp_totcom = 0
     var medkwp_total = 0
@@ -242,7 +245,7 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
 
                 //Contar projetos por mês
                 const { datareg } = realizado[i]
-                //console.log('datareg=>' + datareg)
+                console.log('datareg=>' + datareg)
 
                 if (datareg != undefined) {
                     //Janeiro
@@ -296,6 +299,7 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
                 }
 
                 const { potencia } = projetos[i]
+                const { fatequ } = projetos[i]
                 const { custoPlano } = realizado[i]
                 const { desAdm } = realizado[i]
                 const { totint } = realizado[i]
@@ -309,6 +313,8 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
                 const { totalTributos } = realizado[i]
                 const { vlrkit } = realizado[i]
                 const { valor } = realizado[i]
+                const { vlrfat } = projetos[i]
+                console.log('vlrfat=>'+vlrfat)
                 const { vlrcom } = realizado[i]
                 const { cercamento } = realizado[i]
                 const { postecond } = realizado[i]
@@ -333,8 +339,11 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
                 soma_tothtl = (parseFloat(soma_tothtl) + parseFloat(tothtl)).toFixed(2)
                 soma_tottrb = (parseFloat(soma_tottrb) + parseFloat(totalTributos)).toFixed(2)
                 soma_totimp = (parseFloat(soma_totimp) + parseFloat(totalImposto)).toFixed(2)
+                if (fatequ == true){
                 soma_totkit = (parseFloat(soma_totkit) + parseFloat(vlrkit)).toFixed(2)
-                soma_totfat = (parseFloat(soma_totfat) + parseFloat(valor)).toFixed(2)
+                }
+                soma_totprj = (parseFloat(soma_totprj) + parseFloat(valor)).toFixed(2)
+                soma_totfat = (parseFloat(soma_totfat) + parseFloat(vlrfat)).toFixed(2)
                 soma_totcom = (parseFloat(soma_totcom) + parseFloat(vlrcom)).toFixed(2)
                 soma_cercamento = (parseFloat(soma_cercamento) + parseFloat(cercamento)).toFixed(2)
                 soma_postecond = (parseFloat(soma_postecond) + parseFloat(postecond)).toFixed(2)
@@ -359,6 +368,7 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
             medkwp_cercamento = (parseFloat(soma_cercamento) / parseFloat(soma_kwp)).toFixed(2)
             medkwp_postecond = (parseFloat(soma_postecond) / parseFloat(soma_kwp)).toFixed(2)
             medkwp_ocp = (parseFloat(soma_ocp) / parseFloat(soma_kwp)).toFixed(2)
+            medkwp_totprj = (parseFloat(soma_totprj) / parseFloat(soma_kwp)).toFixed(2)
             medkwp_totfat = (parseFloat(soma_totfat) / parseFloat(soma_kwp)).toFixed(2)
 
             per_totcop = (parseFloat(medkwp_totcop) / parseFloat(medkwp_totfat) * 100).toFixed(2)
@@ -378,7 +388,7 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
             var per_LL = (100 - per_deducao).toFixed(2)
             //var soma_custoTotal = parseFloat(soma_totcop) + parseFloat(soma_totadm)
 
-            res.render('relatorios/dashboardcustos', { prjjan: prjjan, prjfev: prjfev, prjmar: prjmar, prjabr: prjabr, prjmai: prjmai, prjjun: prjjun, prjjul: prjjul, prjago: prjago, prjset: prjset, prjout: prjout, prjnov: prjnov, prjdez: prjdez, numprj: numprj, soma_kwp: soma_kwp, soma_totcop: soma_totcop, soma_totint: soma_totint, soma_totpro: soma_totpro, soma_totges: soma_totges, soma_totdes: soma_totdes, soma_totali: soma_totali, soma_totimp: soma_totimp, soma_totkit: soma_totkit, soma_totcom: soma_totcom, soma_totao: soma_total, medkwp_totcop: medkwp_totcop, medkwp_totint: medkwp_totint, medkwp_totpro: medkwp_totpro, medkwp_totges: medkwp_totges, medkwp_totdes: medkwp_totdes, medkwp_totali: medkwp_totali, medkwp_totimp: medkwp_totimp, medkwp_totkit: medkwp_totkit, medkwp_totcom: medkwp_totcom, medkwp_totfat: medkwp_totfat, medkwp_total: medkwp_total, per_totcop: per_totcop, per_totint: per_totint, per_totpro: per_totpro, per_totges: per_totges, per_totali: per_totali, per_totimp: per_totimp, per_totdes: per_totdes, per_totkit: per_totkit, per_totcom: per_totcom, per_deducao: per_deducao, per_LL: per_LL, soma_cercamento: soma_cercamento, soma_postecond: soma_postecond, soma_ocp: soma_ocp, medkwp_cercamento: medkwp_cercamento, medkwp_postecond: medkwp_postecond, medkwp_ocp: medkwp_ocp, per_cercamento: per_cercamento, per_postecond: per_postecond, per_ocp: per_ocp, soma_totfat: soma_totfat, soma_totadm: soma_totadm, soma_totliq: soma_totliq, soma_tottrb: soma_tottrb })
+            res.render('relatorios/dashboardcustos', { prjjan: prjjan, prjfev: prjfev, prjmar: prjmar, prjabr: prjabr, prjmai: prjmai, prjjun: prjjun, prjjul: prjjul, prjago: prjago, prjset: prjset, prjout: prjout, prjnov: prjnov, prjdez: prjdez, numprj: numprj, soma_kwp: soma_kwp, soma_totcop: soma_totcop, soma_totint: soma_totint, soma_totpro: soma_totpro, soma_totges: soma_totges, soma_totdes: soma_totdes, soma_totali: soma_totali, soma_totimp: soma_totimp, soma_totkit: soma_totkit, soma_totcom: soma_totcom, soma_totao: soma_total, medkwp_totcop: medkwp_totcop, medkwp_totint: medkwp_totint, medkwp_totpro: medkwp_totpro, medkwp_totges: medkwp_totges, medkwp_totdes: medkwp_totdes, medkwp_totali: medkwp_totali, medkwp_totimp: medkwp_totimp, medkwp_totkit: medkwp_totkit, medkwp_totcom: medkwp_totcom, medkwp_totprj: medkwp_totprj,medkwp_totfat: medkwp_totfat, medkwp_total: medkwp_total, per_totcop: per_totcop, per_totint: per_totint, per_totpro: per_totpro, per_totges: per_totges, per_totali: per_totali, per_totimp: per_totimp, per_totdes: per_totdes, per_totkit: per_totkit, per_totcom: per_totcom, per_deducao: per_deducao, per_LL: per_LL, soma_cercamento: soma_cercamento, soma_postecond: soma_postecond, soma_ocp: soma_ocp, medkwp_cercamento: medkwp_cercamento, medkwp_postecond: medkwp_postecond, medkwp_ocp: medkwp_ocp, per_cercamento: per_cercamento, per_postecond: per_postecond, per_ocp: per_ocp, soma_totprj: soma_totprj, soma_totfat: soma_totfat,soma_totadm: soma_totadm, soma_totliq: soma_totliq, soma_tottrb: soma_tottrb })
         })
     })
 
@@ -476,7 +486,7 @@ router.post('/filtradash', ehAdmin, (req, res) => {
     var soma_totimp = 0
     var soma_tottrb = 0
     var soma_totkit = 0
-    var soma_totfat = 0
+    var soma_totprj = 0
     var soma_totcom = 0
     var soma_total = 0
     var soma_totliq = 0
@@ -491,7 +501,7 @@ router.post('/filtradash', ehAdmin, (req, res) => {
     var medkwp_totali = 0
     var medkwp_totimp = 0
     var medkwp_totkit = 0
-    var medkwp_totfat = 0
+    var medkwp_totprj = 0
     var medkwp_totcom = 0
     var medkwp_total = 0
     var medkwp_cercamento = 0
@@ -612,7 +622,7 @@ router.post('/filtradash', ehAdmin, (req, res) => {
             soma_tottrb = (parseFloat(soma_tottrb) + parseFloat(totalTributos)).toFixed(2)
             soma_totimp = (parseFloat(soma_totimp) + parseFloat(totalImposto)).toFixed(2)
             soma_totkit = (parseFloat(soma_totkit) + parseFloat(vlrkit)).toFixed(2)
-            soma_totfat = (parseFloat(soma_totfat) + parseFloat(valor)).toFixed(2)
+            soma_totprj = (parseFloat(soma_totprj) + parseFloat(valor)).toFixed(2)
             soma_totcom = (parseFloat(soma_totcom) + parseFloat(vlrcom)).toFixed(2)
             soma_cercamento = (parseFloat(soma_cercamento) + parseFloat(cercamento)).toFixed(2)
             soma_postecond = (parseFloat(soma_postecond) + parseFloat(postecond)).toFixed(2)
@@ -636,26 +646,26 @@ router.post('/filtradash', ehAdmin, (req, res) => {
         medkwp_cercamento = (parseFloat(soma_cercamento) / parseFloat(soma_kwp)).toFixed(2)
         medkwp_postecond = (parseFloat(soma_postecond) / parseFloat(soma_kwp)).toFixed(2)
         medkwp_ocp = (parseFloat(soma_ocp) / parseFloat(soma_kwp)).toFixed(2)
-        medkwp_totfat = (parseFloat(soma_totfat) / parseFloat(soma_kwp)).toFixed(2)
+        medkwp_totprj = (parseFloat(soma_totprj) / parseFloat(soma_kwp)).toFixed(2)
 
-        per_totcop = (parseFloat(medkwp_totcop) / parseFloat(medkwp_totfat) * 100).toFixed(2)
-        per_totint = (parseFloat(medkwp_totint) / parseFloat(medkwp_totfat) * 100).toFixed(2)
-        per_totpro = (parseFloat(medkwp_totpro) / parseFloat(medkwp_totfat) * 100).toFixed(2)
-        per_totges = (parseFloat(medkwp_totges) / parseFloat(medkwp_totfat) * 100).toFixed(2)
-        per_totdes = (parseFloat(medkwp_totdes) / parseFloat(medkwp_totfat) * 100).toFixed(2)
-        per_totali = (parseFloat(medkwp_totali) / parseFloat(medkwp_totfat) * 100).toFixed(2)
-        per_totimp = (parseFloat(medkwp_totimp) / parseFloat(medkwp_totfat) * 100).toFixed(2)
-        per_totkit = (parseFloat(medkwp_totkit) / parseFloat(medkwp_totfat) * 100).toFixed(2)
-        per_totcom = (parseFloat(medkwp_totcom) / parseFloat(medkwp_totfat) * 100).toFixed(2)
-        per_cercamento = (parseFloat(medkwp_cercamento) / parseFloat(medkwp_totfat) * 100).toFixed(2)
-        per_postecond = (parseFloat(medkwp_postecond) / parseFloat(medkwp_totfat) * 100).toFixed(2)
-        per_ocp = (parseFloat(medkwp_ocp) / parseFloat(medkwp_totfat) * 100).toFixed(2)
+        per_totcop = (parseFloat(medkwp_totcop) / parseFloat(medkwp_totprj) * 100).toFixed(2)
+        per_totint = (parseFloat(medkwp_totint) / parseFloat(medkwp_totprj) * 100).toFixed(2)
+        per_totpro = (parseFloat(medkwp_totpro) / parseFloat(medkwp_totprj) * 100).toFixed(2)
+        per_totges = (parseFloat(medkwp_totges) / parseFloat(medkwp_totprj) * 100).toFixed(2)
+        per_totdes = (parseFloat(medkwp_totdes) / parseFloat(medkwp_totprj) * 100).toFixed(2)
+        per_totali = (parseFloat(medkwp_totali) / parseFloat(medkwp_totprj) * 100).toFixed(2)
+        per_totimp = (parseFloat(medkwp_totimp) / parseFloat(medkwp_totprj) * 100).toFixed(2)
+        per_totkit = (parseFloat(medkwp_totkit) / parseFloat(medkwp_totprj) * 100).toFixed(2)
+        per_totcom = (parseFloat(medkwp_totcom) / parseFloat(medkwp_totprj) * 100).toFixed(2)
+        per_cercamento = (parseFloat(medkwp_cercamento) / parseFloat(medkwp_totprj) * 100).toFixed(2)
+        per_postecond = (parseFloat(medkwp_postecond) / parseFloat(medkwp_totprj) * 100).toFixed(2)
+        per_ocp = (parseFloat(medkwp_ocp) / parseFloat(medkwp_totprj) * 100).toFixed(2)
 
-        var per_deducao = (parseFloat(medkwp_total) / parseFloat(medkwp_totfat) * 100).toFixed(2)
+        var per_deducao = (parseFloat(medkwp_total) / parseFloat(medkwp_totprj) * 100).toFixed(2)
         var per_LL = (100 - per_deducao).toFixed(2)
         //var soma_custoTotal = parseFloat(soma_totcop) + parseFloat(soma_totadm)
 
-        res.render('relatorios/dashboardcustos', { mestitulo: mestitulo,ano:ano,numprj: numprj, soma_kwp: soma_kwp, soma_totcop: soma_totcop, soma_totint: soma_totint, soma_totpro: soma_totpro, soma_totges: soma_totges, soma_totdes: soma_totdes, soma_totali: soma_totali, soma_totimp: soma_totimp, soma_totkit: soma_totkit, soma_totcom: soma_totcom, soma_totao: soma_total, medkwp_totcop: medkwp_totcop, medkwp_totint: medkwp_totint, medkwp_totpro: medkwp_totpro, medkwp_totges: medkwp_totges, medkwp_totdes: medkwp_totdes, medkwp_totali: medkwp_totali, medkwp_totimp: medkwp_totimp, medkwp_totkit: medkwp_totkit, medkwp_totcom: medkwp_totcom, medkwp_totfat: medkwp_totfat, medkwp_total: medkwp_total, per_totcop: per_totcop, per_totint: per_totint, per_totpro: per_totpro, per_totges: per_totges, per_totali: per_totali, per_totimp: per_totimp, per_totdes: per_totdes, per_totkit: per_totkit, per_totcom: per_totcom, per_deducao: per_deducao, per_LL: per_LL, soma_cercamento: soma_cercamento, soma_postecond: soma_postecond, soma_ocp: soma_ocp, medkwp_cercamento: medkwp_cercamento, medkwp_postecond: medkwp_postecond, medkwp_ocp: medkwp_ocp, per_cercamento: per_cercamento, per_postecond: per_postecond, per_ocp: per_ocp, soma_totfat: soma_totfat, soma_totadm: soma_totadm, soma_totliq: soma_totliq, soma_tottrb: soma_tottrb })
+        res.render('relatorios/dashboardcustos', { mestitulo: mestitulo,ano:ano,numprj: numprj, soma_kwp: soma_kwp, soma_totcop: soma_totcop, soma_totint: soma_totint, soma_totpro: soma_totpro, soma_totges: soma_totges, soma_totdes: soma_totdes, soma_totali: soma_totali, soma_totimp: soma_totimp, soma_totkit: soma_totkit, soma_totcom: soma_totcom, soma_totao: soma_total, medkwp_totcop: medkwp_totcop, medkwp_totint: medkwp_totint, medkwp_totpro: medkwp_totpro, medkwp_totges: medkwp_totges, medkwp_totdes: medkwp_totdes, medkwp_totali: medkwp_totali, medkwp_totimp: medkwp_totimp, medkwp_totkit: medkwp_totkit, medkwp_totcom: medkwp_totcom, medkwp_totprj: medkwp_totprj, medkwp_total: medkwp_total, per_totcop: per_totcop, per_totint: per_totint, per_totpro: per_totpro, per_totges: per_totges, per_totali: per_totali, per_totimp: per_totimp, per_totdes: per_totdes, per_totkit: per_totkit, per_totcom: per_totcom, per_deducao: per_deducao, per_LL: per_LL, soma_cercamento: soma_cercamento, soma_postecond: soma_postecond, soma_ocp: soma_ocp, medkwp_cercamento: medkwp_cercamento, medkwp_postecond: medkwp_postecond, medkwp_ocp: medkwp_ocp, per_cercamento: per_cercamento, per_postecond: per_postecond, per_ocp: per_ocp, soma_totprj: soma_totprj, soma_totadm: soma_totadm, soma_totliq: soma_totliq, soma_tottrb: soma_tottrb })
     })
 
 })
