@@ -327,17 +327,17 @@
                     <input type='hidden' name='orcCP' id='orcCP' value='{{projeto.totcop}}'></input>
                     <input type='hidden' id='rlzCP' value='{{realizado.custoPlano}}'></input>
                 </div>
-                -->
-                <div class="container" style="height: 100px;">
-                    <canvas id='chartRL' class='mb-4 mx-auto'></canvas><br>
-                    <input type='hidden' name='orcRL' id='orcRL' value='{{projeto.recLiquida}}'></input>
-                    <input type='hidden' id='rlzRL' value='{{realizado.recLiquida}}'></input>
-                </div>                
+                -->       
                 <div class="container" style='height: 100px'>
                     <canvas id='chartLB' class='mb-4 mx-auto'></canvas>
                     <input type='hidden' id='orcLB' value='{{projeto.lucroBruto}}'></input>
                     <input type='hidden' id='rlzLB' value='{{realizado.lucroBruto}}'></input>
                 </div>
+                <div class="container" style="height: 100px;">
+                    <canvas id='chartCP' class='mb-4 mx-auto'></canvas><br>
+                    <input type='hidden' name='orcCP' id='orcCP' value='{{projeto.custoPlano}}'></input>
+                    <input type='hidden' id='rlzCP' value='{{realizado.custoPlano}}'></input>
+                </div>                         
                 <div class="container" style='height: 100px'>
                     <canvas id='chartLAI' class='mb-4 mx-auto'></canvas>
                     <input type='hidden' id='orcLAI' value='{{projeto.lbaimp}}'></input>
@@ -350,16 +350,16 @@
                 </div>
                 <div class="row"
                     style="margin-top: 30px; height: fit-content; width: 100%; border-radius: 10px; border:  rgba(220, 220, 220, 0.4) solid 1px;">
-                    <label class='contorno-titulo' style="font-size: 20px;font-weight: 500;">Valor Total Faturado: R$ {{projeto.vlrfat}} </label>
+                    <label class='contorno-titulo' style="font-size: 20px;font-weight: 500;">Valor Total Orçado: R$ {{projeto.valor}} </label>
                     <div class="col-md-6">
                         <div class="row">
                             <div class="col-md-7 text-end">
-                                <label class='fw-bold col-form-label col-form-label-sm'>Orçado:
+                                <label class='fw-bold col-form-label col-form-label-sm'>Receita Bruta:
                                 </label>
                             </div>
                             <div class="col-md-5">
                                 <label class='col-form-label col-form-label-sm text-center'>R$
-                                    {{projeto.valor}}</label>
+                                    {{projeto.vlrfat}}</label>
                             </div>
                         </div>
                         <div class="row">
@@ -531,6 +531,8 @@
 
     var corRLFill
     var corRLBorder
+    var corCPFill
+    var corCPBorder
     var corLBFill
     var corLBBorder
     var corLAIFill
@@ -541,9 +543,9 @@
     //var orcCP = document.getElementById('orcCP')
     //var rlzCP = document.getElementById('rlzCP')
     //var cp = [orcCP.value, rlzCP.value]
-    var orcRL = document.getElementById('orcRL')
-    var rlzRL = document.getElementById('rlzRL')
-    var rl = [orcRL.value, rlzRL.value]    
+    var orcCP = document.getElementById('orcCP')
+    var rlzCP = document.getElementById('rlzCP')
+    var cp = [orcCP.value, rlzCP.value]    
 
     var orcLB = document.getElementById('orcLB')
     var rlzLB = document.getElementById('rlzLB')
@@ -558,7 +560,7 @@
     var ll = [orcLL.value, rlzLL.value]
 
     //var ctxCP = document.getElementById('chartCP').getContext('2d')
-    var ctxRL = document.getElementById('chartRL').getContext('2d')
+    var ctxCP = document.getElementById('chartCP').getContext('2d')
     var ctxLB = document.getElementById('chartLB').getContext('2d')
     var ctxLAI = document.getElementById('chartLAI').getContext('2d')
     var ctxLL = document.getElementById('chartLL').getContext('2d')
@@ -568,12 +570,12 @@
     //Automação da cor do bars de acordo com a relação positiva entre orçado e realizado
     //Custo Planejado  
 
-    if (parseFloat(orcRL.value) > parseFloat(rlzRL.value)) {
-        corRLFill = corFill[0]
-        corRLBorder = corBorder[0]
+    if (parseFloat(orcCP.value) > parseFloat(rlzCP.value)) {
+        corCPFill = corFill[0]
+        corCPBorder = corBorder[0]
     } else {
-        corRLFill = corFill[1]
-        corRLBorder = corBorder[1]
+        corCPFill = corFill[1]
+        corCPBorder = corBorder[1]
     }
     //corCPFill = toString(corCPFill)
     //corCPBorder = toString(corCPBorder)
@@ -602,21 +604,21 @@
         corLLBorder = corBorder[1]
     }
 
-    var chartRL = new Chart(ctxRL, {
+    var chartCP = new Chart(ctxCP, {
         type: 'horizontalBar',
         data: {
             labels: ['Orçado', 'Realizado'],
             datasets: [{
-                label: 'Receita Líquida',
-                data: [rl[0], rl[1]],
+                label: 'Custo Realizado',
+                data: [cp[0], cp[1]],
                 backgroundColor: [
                     'rgba(249, 240, 71, 0.2)',
-                    corRLFill,
+                    corCPFill,
                 ],
 
                 borderColor: [
                     'rgba(249, 240, 71, 1)',
-                    corRLBorder,
+                    corCPBorder,
                 ],
                 borderWidth: 1
             }]

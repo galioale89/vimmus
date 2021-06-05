@@ -72,8 +72,7 @@ router.get('/realizar/:id', ehAdmin, (req, res) => {
                Detalhado.findOne({ projeto: projeto._id }).lean().then((detalhe) => {
                     var temCercamento
                     var temPosteCond
-                    //var temEstSolo
-                    var temOcp
+                    var temCentral
                     if (projeto.temCercamento == 'checked') {
                          temCercamento = true
                     } else {
@@ -84,21 +83,21 @@ router.get('/realizar/:id', ehAdmin, (req, res) => {
                     } else {
                          temPosteCond = false
                     }
-                    if (parseFloat(detalhe.valorOcp) > 0) {
-                         temOcp = true
+                    if (projeto.temCentral == 'checked') {
+                         temCentral = true
                     } else {
-                         temOcp = false
+                         temCentral = false
                     }
+
                     //console.log('temCercamento=>' + temCercamento)
                     //console.log('temPosteCond=>' + temPosteCond)
-                    //console.log('temOcp=>' + temOcp)
 
                     if (realizado) {
                          var varCP = false
-                         var varLB = false
+                         var varTI = false
                          var varLAI = false
                          var varLL = false
-                         var varCustoPlano = (realizado.custoPlano - projeto.totcop).toFixed(2)
+                         var varCustoPlano = (realizado.custoPlano - projeto.custoPlano).toFixed(2)
                          if (varCustoPlano > 1) {
                               varCP = false
                          } else {
@@ -106,9 +105,9 @@ router.get('/realizar/:id', ehAdmin, (req, res) => {
                          }
                          var varLucroBruto = (realizado.lucroBruto - projeto.lucroBruto).toFixed(2)
                          if (varLucroBruto > 1) {
-                              varLB = true
+                              varTI = true
                          } else {
-                              varLB = false
+                              varTI = false
                          }
                          var varlbaimp = (realizado.lbaimp - projeto.lbaimp).toFixed(2)
                          if (varlbaimp > 1) {
@@ -122,9 +121,9 @@ router.get('/realizar/:id', ehAdmin, (req, res) => {
                          } else {
                               varLL = false
                          }
-                         res.render('projeto/realizado', { projeto: projeto, realizado: realizado, detalhe: detalhe, varCustoPlano: varCustoPlano, varLucroBruto: varLucroBruto, varlbaimp: varlbaimp, varLucroLiquido: varLucroLiquido, varCustoPlano: varCustoPlano, varLucroBruto: varLucroBruto, varlbaimp: varlbaimp, varLucroLiquido: varLucroLiquido, varLB: varLB, varLL: varLL, varLAI: varLAI, varCP: varCP, temCercamento: temCercamento, temPosteCond: temPosteCond, temOcp: temOcp })
+                         res.render('projeto/realizado', { projeto: projeto, realizado: realizado, detalhe: detalhe, varCustoPlano: varCustoPlano, varLucroBruto: varLucroBruto, varlbaimp: varlbaimp, varLucroLiquido: varLucroLiquido, varCustoPlano: varCustoPlano, varLucroBruto: varLucroBruto, varlbaimp: varlbaimp, varLucroLiquido: varLucroLiquido, varTI: varTI, varLL: varLL, varLAI: varLAI, varCP: varCP, temCercamento: temCercamento, temPosteCond: temPosteCond, temCentral: temCentral })
                     } else {
-                         res.render('projeto/realizado', { projeto: projeto, detalhe: detalhe, temCercamento: temCercamento, temPosteCond: temPosteCond, temOcp: temOcp })
+                         res.render('projeto/realizado', { projeto: projeto, detalhe: detalhe, temCercamento: temCercamento, temPosteCond: temPosteCond, temCentral: temCentral })
                     }
                }).catch((err) => {
                     req.flash('error_msg', 'Falha interna.')
@@ -245,14 +244,14 @@ router.get('/edicao/:id', ehAdmin, (req, res) => {
                     pv = prj_vendedor
                }).catch((err) => {
                     req.flash('error_msg', 'Houve uma falha ao encontrar o vendedor')
-                    res.redirect('/pressoa/consulta')
+                    res.redirect('/pessoa/consulta')
                })
 
                Pessoa.findOne({ _id: projeto.funres }).lean().then((projeto_funres) => {
                     pr = projeto_funres
                }).catch((err) => {
                     req.flash('error_msg', 'Houve uma falha ao encontrar o vendedor')
-                    res.redirect('/pressoa/consulta')
+                    res.redirect('/pessoa/consulta')
                })
 
                Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {
@@ -350,34 +349,49 @@ router.post("/novo", ehAdmin, (req, res) => {
      }).catch(() => {
           var erros = []
           var sucesso = []
-          var valor
-          var vlrequ
-          var vlrkit
+          var valor = 0
+          var vlrequ = 0
+          var vlrkit = 0
 
           //--Rotina do cadastro dos detalhes
           var unidadeEqu = 0
+          var unidadeMod = 0
+          var unidadeInv = 0
           var unidadeEst = 0
           var unidadeCer = 0
+          var unidadeCen = 0
           var unidadePos = 0
           var unidadeDis = 0
           var unidadeDPS = 0
+          var unidadeSB = 0
           var unidadeCab = 0
           var unidadeOcp = 0
           var vlrUniEqu = 0
           var vlrUniEst = 0
+          var vlrUniMod = 0
+          var vlrUniInv = 0
           var vlrUniCer = 0
+          var vlrUniCen = 0
           var vlrUniPos = 0
           var vlrUniDis = 0
           var vlrUniDPS = 0
+          var vlrUniSB = 0
           var vlrUniCab = 0
           var vlrUniOcp = 0
           var valorEqu = 0
+          var valorMod = 0
+          var valorInv = 0
           var valorEst = 0
-          var valorCer = 0
-          var valorPos = 0
+          var valorMod = 0
+          var valorInv = 0
+          var valorCab = 0
           var valorDis = 0
           var valorDPS = 0
-          var valorCab = 0
+          var valorSB = 0
+          var valorCer = 0
+          var valorCen = 0
+          var valorPos = 0
+
           var valorOcp = 0
 
           var checkUni = 'unckeched'
@@ -395,6 +409,36 @@ router.post("/novo", ehAdmin, (req, res) => {
                     checkUni = 'checked'
                }
           }
+          //Valida valor Módulo Detalhado
+          //console.log('req.body.valorMod =>' + req.body.valorMod)
+          if (req.body.valorMod != '') {
+               unidadeMod = 0
+               vlrUniMod = 0
+               valorMod = req.body.valorMod
+          } else {
+               if (req.body.unidadeMod != '' && req.body.vlrUniMod != '') {
+                    unidadeMod = req.body.unidadeMod
+                    vlrUniMod = req.body.vlrUniMod
+                    valorMod = parseFloat(unidadeMod) * parseFloat(vlrUniMod)
+                    checkUni = 'checked'
+               }
+          }
+          //console.log('unidadeMod=>' + unidadeMod)
+          //console.log('vlrUniMod=>' + vlrUniMod)
+          //console.log('valorMod=>' + valorMod)
+          //Valida valor Inversor Detalhado
+          if (req.body.valorInv != '') {
+               unidadeInv = 0
+               vlrUniInv = 0
+               valorInv = req.body.valorInv
+          } else {
+               if (req.body.unidadeInv != '' && req.body.vlrUniInv != '') {
+                    unidadeInv = req.body.unidadeInv
+                    vlrUniInv = req.body.vlrUniInv
+                    valorInv = parseFloat(unidadeInv) * parseFloat(vlrUniInv)
+                    checkUni = 'checked'
+               }
+          }
           //Valida valor Estrutura Detalhado
           if (req.body.valorEst != '') {
                unidadeEst = 0
@@ -408,34 +452,17 @@ router.post("/novo", ehAdmin, (req, res) => {
                     checkUni = 'checked'
                }
           }
-          //Valida valor Cercamento Detalhado
-          if (req.body.cercamento != null) {
-               if (req.body.valorCer != '') {
-                    unidadeCer = 0
-                    vlrUniCer = 0
-                    valorCer = req.body.valorCer
-               } else {
-                    if (req.body.unidadeCer != '' && req.body.vlrUniCer != '') {
-                         unidadeCer = req.body.unidadeCer
-                         vlrUniCer = req.body.vlrUniCer
-                         valorCer = parseFloat(unidadeCer) * parseFloat(vlrUniCer)
-                         checkUni = 'checked'
-                    }
-               }
-          }
-          //Valida valor Postes Detalhado
-          if (req.body.poste != null) {
-               if (req.body.valorPos != '') {
-                    unidadePos = 0
-                    vlrUniPos = 0
-                    valorPos = req.body.valorPos
-               } else {
-                    if (req.body.unidadePos != '' && req.body.vlrUniPos != '') {
-                         unidadePos = req.body.unidadePos
-                         vlrUniPos = req.body.vlrUniPos
-                         valorPos = parseFloat(unidadePos) * parseFloat(vlrUniPos)
-                         checkUni = 'checked'
-                    }
+          //Valida valor Cabos Detalhado
+          if (req.body.valorCab != '') {
+               unidadeCab = 0
+               vlrUniCab = 0
+               valorCab = req.body.valorCab
+          } else {
+               if (req.body.unidadeCab != '' && req.body.vlrUniCab != '') {
+                    unidadeCab = req.body.unidadeCab
+                    vlrUniCab = req.body.vlrUniCab
+                    valorCab = parseFloat(unidadeCab) * parseFloat(vlrUniCab)
+                    checkUni = 'checked'
                }
           }
           //Valida valor Disjuntores Detalhado
@@ -464,16 +491,16 @@ router.post("/novo", ehAdmin, (req, res) => {
                     checkUni = 'checked'
                }
           }
-          //Valida valor Cabos Detalhado
-          if (req.body.valorCab != '') {
-               unidadeCab = 0
-               vlrUniCab = 0
-               valorCab = req.body.valorCab
+          //Valida valor StringBox Detalhado
+          if (req.body.valorSB != '') {
+               unidadeSB = 0
+               vlrUniSB = 0
+               valorSB = req.body.valorSB
           } else {
-               if (req.body.unidadeCab != '' && req.body.vlrUniCab != '') {
-                    unidadeCab = req.body.unidadeCab
-                    vlrUniCab = req.body.vlrUniCab
-                    valorCab = parseFloat(unidadeCab) * parseFloat(vlrUniCab)
+               if (req.body.unidadeSB != '' && req.body.vlrUniSB != '') {
+                    unidadeSB = req.body.unidadeSB
+                    vlrUniSB = req.body.vlrUniSB
+                    valorSB = parseFloat(unidadeSB) * parseFloat(vlrUniSB)
                     checkUni = 'checked'
                }
           }
@@ -490,28 +517,76 @@ router.post("/novo", ehAdmin, (req, res) => {
                     checkUni = 'checked'
                }
           }
-          /*
-           //console.log('valorEqu=>'+valorEqu)
-           //console.log('valorEst=>'+valorEst)
-           //console.log('valorCer=>'+valorCer)
-           //console.log('valorPos=>'+valorPos)
-           //console.log('valorDis=>'+valorDis)
-           //console.log('valorDPS=>'+valorDPS)
-           //console.log('valorCab=>'+valorCab)
-           //console.log('valorOcp=>'+valorOcp)
-           */
+          //Valida valor Cercamento Detalhado
+          if (req.body.cercamento != null) {
+               if (req.body.valorCer != '') {
+                    unidadeCer = 0
+                    vlrUniCer = 0
+                    valorCer = req.body.valorCer
+               } else {
+                    if (req.body.unidadeCer != '' && req.body.vlrUniCer != '') {
+                         unidadeCer = req.body.unidadeCer
+                         vlrUniCer = req.body.vlrUniCer
+                         valorCer = parseFloat(unidadeCer) * parseFloat(vlrUniCer)
+                         checkUni = 'checked'
+                    }
+               }
+          }
+          //Valida valor Central Detalhado
+          //console.log('req.body.unidadeCen=>'+req.body.unidadeCen)
+          //console.log('req.body.vlrUniCen=>'+req.body.vlrUniCen)
+          //console.log('req.body.valorCen=>'+req.body.valorCen)
+          if (req.body.central != null) {
+               if (req.body.valorCen != '') {
+                    unidadeCen = 0
+                    vlrUniCen = 0
+                    valorCen = req.body.valorCen
+               } else {
+                    if (req.body.unidadeCen != '' && req.body.vlrUniCen != '') {
+                         unidadeCen = req.body.unidadeCen
+                         vlrUniCen = req.body.vlrUniCen
+                         valorCen = parseFloat(unidadeCen) * parseFloat(vlrUniCen)
+                         checkUni = 'checked'
+                    }
+               }
+          }
+          //console.log('unidadeCen=>'+unidadeCen)
+          //console.log('vlrUniCen=>'+vlrUniCen)
+          //console.log('valorCen=>'+valorCen)          
+          //Valida valor Postes Detalhado
+          if (req.body.poste != null) {
+               if (req.body.valorPos != '') {
+                    unidadePos = 0
+                    vlrUniPos = 0
+                    valorPos = req.body.valorPos
+               } else {
+                    if (req.body.unidadePos != '' && req.body.vlrUniPos != '') {
+                         unidadePos = req.body.unidadePos
+                         vlrUniPos = req.body.vlrUniPos
+                         valorPos = parseFloat(unidadePos) * parseFloat(vlrUniPos)
+                         checkUni = 'checked'
+                    }
+               }
+          }
 
+          //console.log('valorEqu=>'+valorEqu)
+          //console.log('valorEst=>'+valorEst)
+          //console.log('valorCer=>'+valorCer)
+          //console.log('valorPos=>'+valorPos)
+          //console.log('valorDis=>'+valorDis)
+          //console.log('valorDPS=>'+valorDPS)
+          //console.log('valorCab=>'+valorCab)
+          //console.log('valorOcp=>'+valorOcp)
 
-          var vlrTotal = parseFloat(valorEqu) + parseFloat(valorEst) + parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab) + parseFloat(valorOcp)
-          valor = req.body.valor
+          var vlrTotal = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCab) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorSB) + parseFloat(valorOcp) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos)
 
           //Valida valor do equipameento
-          if (parseFloat(valorEqu) != 0) {
+          if (parseFloat(valorEqu) != 0 || parseFloat(valorMod) != 0) {
                vlrequ = vlrTotal
-               vlrkit = parseFloat(valorEqu) + parseFloat(valorEst) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab)
+               vlrkit = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCab) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorSB)
           } else {
-               vlrequ = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab) + parseFloat(valorOcp)
-               vlrkit = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab)
+               vlrequ = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCab) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorSB) + parseFloat(valorOcp) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos)
+               vlrkit = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorDis) + parseFloat(valorDPS) + + parseFloat(valorSB) + parseFloat(valorCab)
           }
 
           //console.log(vlrequ)
@@ -535,19 +610,19 @@ router.post("/novo", ehAdmin, (req, res) => {
                               Cliente.find({ user: _id, sissolar: 'checked' }).lean().then((clientes) => {
                                    res.render("projeto/addprojeto", { erros: erros, regime: regime, pessoas: pessoas, vendedor: vendedor, clientes: clientes })
                               }).catch((err) => {
-                                   req.flash('error_msg', 'houve um erro ao encontrar um cliente')
+                                   req.flash('error_msg', 'Houve um erro ao encontrar um cliente.')
                                    res.redirect('/cliente/consulta')
                               })
                          }).catch((err) => {
-                              req.flash('error_msg', 'Houve um erro ao encontrar a pessoa')
+                              req.flash('error_msg', 'Houve um erro ao encontrar a pessoa.')
                               res.redirect('/configuracao/consultaregime')
                          })
                     }).catch((err) => {
-                         req.flash('error_msg', 'Houve um erro ao encontrar um vendedor')
+                         req.flash('error_msg', 'Houve um erro ao encontrar um vendedor<erro>.')
                          res.redirect('/configuracao/consultaregime')
                     })
                }).catch((err) => {
-                    req.flash('error_msg', 'Houve um erro ao encontrar o regime')
+                    req.flash('error_msg', 'Houve um erro ao encontrar o regime.')
                     res.redirect('/configuracao/consultaregime')
                })
           } else {
@@ -559,11 +634,15 @@ router.post("/novo", ehAdmin, (req, res) => {
                }
                //Validação de check box  
                var cercamento
+               var central
                var poste
                var estsolo
 
                if (req.body.cercamento != null) {
                     cercamento = 'checked'
+               }
+               if (req.body.central != null) {
+                    central = 'checked'
                }
                if (req.body.poste != null) {
                     poste = 'checked'
@@ -617,6 +696,9 @@ router.post("/novo", ehAdmin, (req, res) => {
                     const projeto = {
                          user: _id,
                          nome: req.body.nome,
+                         grupoUsina: req.body.grupoUsina,
+                         classUsina: req.body.classUsina,
+                         tipoUsina: req.body.tipoUsina,
                          cidade: cidade,
                          uf: uf,
                          valor: req.body.valor,
@@ -634,6 +716,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                          funres: req.body.pessoa,
                          cliente: req.body.cliente,
                          temCercamento: cercamento,
+                         temCentral: central,
                          temPosteCond: poste,
                          temEstSolo: estsolo,
                          premissas: req.body.premissas,
@@ -662,33 +745,85 @@ router.post("/novo", ehAdmin, (req, res) => {
                                              Pessoa.find({ funpro: 'checked', user: _id }).lean().then((projetista) => {
                                                   Pessoa.find({ vendedor: true, user: _id }).lean().then((vendedor) => {
 
+                                                       //console.log('projeto=>' + projeto._id)
+                                                       //console.log('vlrTotal=>' + vlrequ)
+                                                       //console.log('checkUni=>' + checkUni)
+                                                       //console.log('unidadeEqu=>' + unidadeEqu)
+                                                       //console.log('unidadeMod=>' + unidadeMod)
+                                                       //console.log('unidadeInv=>' + unidadeInv)
+                                                       //console.log('unidadeEst=>' + unidadeEst)
+                                                       //console.log('unidadeCab=>' + unidadeCab)
+                                                       //console.log('unidadeDis=>' + unidadeDis)
+                                                       //console.log('unidadeDPS=>' + unidadeDPS)
+                                                       //console.log('unidadeSB=>' + unidadeSB)
+                                                       //console.log('unidadeCer=>' + unidadeCer)
+                                                       //console.log('unidadeCen=>' + unidadeCen)
+                                                       //console.log('unidadePos=>' + unidadePos)
+                                                       //console.log('unidadeOcp=>' + unidadeOcp)
+                                                       //console.log('vlrUniEqu=>' + vlrUniEqu)
+                                                       //console.log('vlrUniMod=>' + vlrUniMod)
+                                                       //console.log('vlrUniInv=>' + vlrUniInv)
+                                                       //console.log('vlrUniEst=>' + vlrUniEst)
+                                                       //console.log('vlrUniCab=>' + vlrUniCab)
+                                                       //console.log('vlrUniDis=>' + vlrUniDis)
+                                                       //console.log('vlrUniDPS=>' + vlrUniDPS)
+                                                       //console.log('vlrUniSB=>' + vlrUniSB)
+                                                       //console.log('vlrUniCer=>' + vlrUniCer)
+                                                       //console.log('vlrUniCen=>' + vlrUniCen)
+                                                       //console.log('vlrUniPos=>' + vlrUniPos)
+                                                       //console.log('vlrUniOcp=>' + vlrUniOcp)
+                                                       //console.log('valorEqu=>' + valorEqu)
+                                                       //console.log('valorMod=>' + valorMod)
+                                                       //console.log('valorInv=>' + valorInv)
+                                                       //console.log('valorEst=>' + valorEst)
+                                                       //console.log('valorCab=>' + valorCab)
+                                                       //console.log('valorDis=>' + valorDis)
+                                                       //console.log('valorDPS=>' + valorDPS)
+                                                       //console.log('valorSB=>' + valorSB)
+                                                       //console.log('valorCer=>' + valorCer)
+                                                       //console.log('valorCen=>' + valorCen)
+                                                       //console.log('valorPos=>' + valorPos)
+                                                       //console.log('valorOcp=>' + valorOcp)
+
                                                        const detalhado = {
                                                             projeto: projeto._id,
                                                             vlrTotal: vlrequ,
                                                             checkUni: checkUni,
                                                             unidadeEqu: unidadeEqu,
+                                                            unidadeMod: unidadeMod,
+                                                            unidadeInv: unidadeInv,
                                                             unidadeEst: unidadeEst,
-                                                            unidadeCer: unidadeCer,
-                                                            unidadePos: unidadePos,
+                                                            unidadeCab: unidadeCab,
                                                             unidadeDis: unidadeDis,
                                                             unidadeDPS: unidadeDPS,
-                                                            unidadeCab: unidadeCab,
+                                                            unidadeSB: unidadeSB,
+                                                            unidadeCer: unidadeCer,
+                                                            unidadeCen: unidadeCen,
+                                                            unidadePos: unidadePos,
                                                             unidadeOcp: unidadeOcp,
                                                             vlrUniEqu: vlrUniEqu,
+                                                            vlrUniMod: vlrUniMod,
+                                                            vlrUniInv: vlrUniInv,
                                                             vlrUniEst: vlrUniEst,
-                                                            vlrUniCer: vlrUniCer,
-                                                            vlrUniPos: vlrUniPos,
+                                                            vlrUniCab: vlrUniCab,
                                                             vlrUniDis: vlrUniDis,
                                                             vlrUniDPS: vlrUniDPS,
-                                                            vlrUniCab: vlrUniCab,
+                                                            vlrUniSB: vlrUniSB,
+                                                            vlrUniCer: vlrUniCer,
+                                                            vlrUniCen: vlrUniCen,
+                                                            vlrUniPos: vlrUniPos,
                                                             vlrUniOcp: vlrUniOcp,
                                                             valorEqu: valorEqu,
+                                                            valorMod: valorMod,
+                                                            valorInv: valorInv,
                                                             valorEst: valorEst,
-                                                            valorCer: valorCer,
-                                                            valorPos: valorPos,
+                                                            valorCab: valorCab,
                                                             valorDis: valorDis,
                                                             valorDPS: valorDPS,
-                                                            valorCab: valorCab,
+                                                            valorSB: valorSB,
+                                                            valorCer: valorCer,
+                                                            valorCen: valorCen,
+                                                            valorPos: valorPos,
                                                             valorOcp: valorOcp
                                                        }
                                                        new Detalhado(detalhado).save().then(() => {
@@ -709,40 +844,40 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                  res.redirect('/menu')
                                                             })
                                                        }).catch(() => {
-                                                            req.flash('error_msg', 'Houve um erro ao salvar os detalhes de custos do projeto')
+                                                            req.flash('error_msg', 'Houve um erro ao salvar os detalhes de custos do projeto.')
                                                             res.redirect('/menu')
                                                        })
 
                                                   }).catch((err) => {
-                                                       req.flash('error_msg', 'Houve uma falha ao encontrar um vendedor')
-                                                       res.redirect('/pressoa/consulta')
+                                                       req.flash('error_msg', 'Houve uma falha ao encontrar um vendedor<detalhe>.')
+                                                       res.redirect('/pessoa/consulta')
                                                   })
                                              }).catch((err) => {
-                                                  req.flash('error_msg', 'Houve uma falha ao encontrar o instalador')
-                                                  res.redirect('/pressoa/consulta')
+                                                  req.flash('error_msg', 'Houve uma falha ao encontrar o instalador.')
+                                                  res.redirect('/pessoa/consulta')
                                              })
                                         }).catch((err) => {
-                                             req.flash('error_msg', 'Ocorreu um erro interno<Tributos>')
+                                             req.flash('error_msg', 'Ocorreu um erro interno<Tributos>.')
                                              res.redirect('/menu')
                                         })
                                    }).catch((err) => {
-                                        req.flash('error_msg', 'Ocorreu um erro interno<Configuracao>')
+                                        req.flash('error_msg', 'Ocorreu um erro interno<Configuracao>.')
                                         res.redirect('/menu')
                                    })
                               }).catch((err) => {
-                                   req.flash('error_msg', 'Ocorreu um erro interno<Configuracao>')
+                                   req.flash('error_msg', 'Ocorreu um erro interno<Configuracao>.')
                                    res.redirect('/menu')
                               })
                          }).catch((err) => {
-                              req.flash('error_msg', 'Nenhum projeto encontrado')
+                              req.flash('error_msg', 'Nenhum projeto encontrado.')
                               res.redirect('/menu')
                          })
                     }).catch(() => {
-                         req.flash('error_msg', 'Houve um erro ao criar o projeto')
+                         req.flash('error_msg', 'Houve um erro ao criar o projeto.')
                          res.redirect('/menu')
                     })
                }).catch((err) => {
-                    req.flash('error_msg', 'Houve um erro ao encontrar o vendedor')
+                    req.flash('error_msg', 'Houve um erro ao encontrar o vendedor<projeto>.')
                     res.redirect('/configuracao/consultaregime')
                })
           }
@@ -754,12 +889,12 @@ router.post("/novo", ehAdmin, (req, res) => {
 router.post('/salvar_prereq', ehAdmin, (req, res) => {
      var sucesso = []
      Projeto.findOne({ _id: req.body.id }).then((projeto) => {
-          console.timeLog('req.body.premissas=>' + req.body.premissas)
-          console.timeLog('req.body.requisitos=>' + req.body.requisitos)
+          //console.timeLog('req.body.premissas=>' + req.body.premissas)
+          //console.timeLog('req.body.requisitos=>' + req.body.requisitos)
           projeto.premissas = req.body.premissas
           projeto.requisitos = req.body.requisitos
           projeto.save().then(() => {
-               console.log('salvou projeto')
+               //console.log('salvou projeto')
                Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
                     Realizado.findOne({ projeto: projeto._id }).lean().then((realizado) => {
                          Pessoa.findOne({ _id: projeto.funres }).lean().then((responsavel) => {
@@ -840,8 +975,6 @@ router.post('/edicao', ehAdmin, (req, res) => {
      var erros = []
      var aviso = []
      var sucesso = []
-     var vlrequ
-     var vlrkit
      var pv
      var rp
      var pr
@@ -869,7 +1002,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          pv = prj_vendedor
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve uma falha ao encontrar um vendedor')
-                         res.redirect('/pressoa/consulta')
+                         res.redirect('/pessoa/consulta')
                     })
 
                     Pessoa.findOne({ _id: projeto.funres }).lean().then((pessoa_res) => {
@@ -905,7 +1038,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          res.redirect('/configuracao/consulta')
                     })
                }).catch((err) => {
-                    req.flash('error_msg', 'Houve uma falha ao encontrar os detalhes do projeto')
+                    req.flash('error_msg', 'Houve uma falha ao encontrar os detalhes do projeto<erro>.')
                     res.redirect('/configuracao/consulta')
                })
           }).catch((err) => {
@@ -914,19 +1047,19 @@ router.post('/edicao', ehAdmin, (req, res) => {
           })
 
      } else {
-
           Projeto.findOne({ _id: req.body.id }).then((projeto) => {
 
                Pessoa.findOne({ _id: req.body.vendedor }).then((prj_vendedor) => {
 
                     Detalhado.findOne({ projeto: projeto._id }).then((detalhe) => {
 
-                         //projeto_id = projeto._id
+                         var checkUni = 'unchecked'
 
                          //Validação de check box  
                          var cercamento
                          var poste
                          var estsolo
+                         var central
 
                          projeto.nome = req.body.nome
 
@@ -939,178 +1072,253 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          if (req.body.estsolo != null) {
                               estsolo = 'checked'
                          }
+                         if (req.body.central != null) {
+                              central = 'checked'
+                         }
                          //--Rotina do cadastro dos detalhes
                          var unidadeEqu = 0
+                         var unidadeMod = 0
+                         var unidadeInv = 0
                          var unidadeEst = 0
-                         var unidadeCer = 0
-                         var unidadePos = 0
+                         var unidadeCab = 0
                          var unidadeDis = 0
                          var unidadeDPS = 0
-                         var unidadeCab = 0
+                         var unidadeSB = 0
                          var unidadeOcp = 0
+                         var unidadeCer = 0
+                         var unidadeCen = 0
+                         var unidadePos = 0
                          var vlrUniEqu = 0
+                         var vlrUniMod = 0
+                         var vlrUniInv = 0
                          var vlrUniEst = 0
-                         var vlrUniCer = 0
-                         var vlrUniPos = 0
+                         var vlrUniCab = 0
                          var vlrUniDis = 0
                          var vlrUniDPS = 0
-                         var vlrUniCab = 0
+                         var vlrUniSB = 0
                          var vlrUniOcp = 0
+                         var vlrUniCer = 0
+                         var vlrUniCen = 0
+                         var vlrUniPos = 0
                          var valorEqu = 0
+                         var valorMod = 0
+                         var valorInv = 0
                          var valorEst = 0
-                         var valorCer = 0
-                         var valorPos = 0
+                         var valorCab = 0
                          var valorDis = 0
                          var valorDPS = 0
-                         var valorCab = 0
+                         var valorSB = 0
                          var valorOcp = 0
+                         var valorCer = 0
+                         var valorCen = 0
+                         var valorPos = 0
 
                          //Valida valor Equipamento Detalhado
-                         var checkUni
-                         if (req.body.checkUni == null) {
-                              checkUni = 'unchecked'
-                         } else {
-                              checkUni = 'checked'
-                         }
-                         //console.log('checkUni=>' + checkUni)
-
-                         if (req.body.valorEqu != '' && req.body.checkUni == null) {
-                              unidadeEqu = 0
-                              vlrUniEqu = 0
-                              valorEqu = req.body.valorEqu
-                         } else {
-                              if (req.body.unidadeEqu != '' && req.body.vlrUniEqu != '') {
-                                   unidadeEqu = req.body.unidadeEqu
-                                   vlrUniEqu = req.body.vlrUniEqu
-                                   valorEqu = parseFloat(unidadeEqu) * parseFloat(vlrUniEqu)
+                         if (req.body.valorMod == 0) {
+                              if (req.body.valorEqu != 0 && req.body.unidadeEqu == 0 && req.body.vlrUniEqu == 0) {
+                                   valorEqu = req.body.valorEqu
+                              } else {
+                                   if (req.body.unidadeEqu != 0 && req.body.vlrUniEqu != 0) {
+                                        unidadeEqu = req.body.unidadeEqu
+                                        vlrUniEqu = req.body.vlrUniEqu
+                                        valorEqu = parseFloat(unidadeEqu) * parseFloat(vlrUniEqu)
+                                        checkUni = 'checked'
+                                   }
                               }
                          }
-
-                         if (req.body.valorEst != '' && req.body.checkUni == null) {
-                              unidadeEst = 0
-                              vlrUniEst = 0
+                         //Valida valor Módulo Detalhado
+                         if (req.body.valorMod != 0 && req.body.unidadeMod == 0 && req.body.vlrUniMod == 0) {
+                              valorMod = req.body.valorMod
+                         } else {
+                              if (req.body.unidadeMod != 0 && req.body.vlrUniMod != 0) {
+                                   unidadeMod = req.body.unidadeMod
+                                   vlrUniMod = req.body.vlrUniMod
+                                   valorMod = parseFloat(unidadeMod) * parseFloat(vlrUniMod)
+                                   checkUni = 'checked'
+                              }
+                         }
+                         //Valida valor Inversor Detalhado
+                         if (req.body.valorInv != 0 && req.body.unidadeInv == 0 && req.body.vlrUniInv == 0) {
+                              valorInv = req.body.valorInv
+                         } else {
+                              if (req.body.unidadeInv != 0 && req.body.vlrUniInv != 0) {
+                                   unidadeInv = req.body.unidadeInv
+                                   vlrUniInv = req.body.vlrUniInv
+                                   valorInv = parseFloat(unidadeInv) * parseFloat(vlrUniInv)
+                                   checkUni = 'checked'
+                              }
+                         }
+                         //Valida valor Estrutura Detalhado
+                         if (req.body.valorEst != 0 && req.body.unidadeEst == 0 && req.body.vlrUniEst == 0) {
                               valorEst = req.body.valorEst
                          } else {
-                              if (req.body.unidadeEst != '' && req.body.vlrUniEst != '') {
+                              if (req.body.unidadeEst != 0 && req.body.vlrUniEst != 0) {
                                    unidadeEst = req.body.unidadeEst
                                    vlrUniEst = req.body.vlrUniEst
                                    valorEst = parseFloat(unidadeEst) * parseFloat(vlrUniEst)
-                              }
-                         }
-
-                         //Valida valor Cercamento Detalhado
-                         if (req.body.cercamento != null) {
-                              if (req.body.valorCer != '' && req.body.checkUni == null) {
-                                   unidadeCer = 0
-                                   vlrUniCer = 0
-                                   valorCer = req.body.valorCer
-                              } else {
-                                   if (req.body.unidadeCer != '' && req.body.vlrUniCer != '') {
-                                        unidadeCer = req.body.unidadeCer
-                                        vlrUniCer = req.body.vlrUniCer
-                                        valorCer = parseFloat(unidadeCer) * parseFloat(vlrUniCer)
-                                   }
-                              }
-                         }
-
-                         //Valida valor Postes Detalhado
-                         if (req.body.poste != null) {
-                              if (req.body.valorPos != '' && req.body.checkUni == null) {
-                                   unidadePos = 0
-                                   vlrUniPos = 0
-                                   valorPos = req.body.valorPos
-                              } else {
-                                   if (req.body.unidadePos != '' && req.body.vlrUniPos != '') {
-                                        unidadePos = req.body.unidadePos
-                                        vlrUniPos = req.body.vlrUniPos
-                                        valorPos = parseFloat(unidadePos) * parseFloat(vlrUniPos)
-                                   }
-                              }
-                         }
-                         //Valida valor Disjuntores Detalhado
-                         if (req.body.valorDis != '' && req.body.checkUni == null) {
-                              unidadeDis = 0
-                              vlrUniDis = 0
-                              valorDis = req.body.valorDis
-                         } else {
-                              if (req.body.unidadeDis != '' && req.body.vlrUniDis != '') {
-                                   unidadeDis = req.body.unidadeDis
-                                   vlrUniDis = req.body.vlrUniDis
-                                   valorDis = parseFloat(unidadeDis) * parseFloat(vlrUniDis)
-                              }
-                         }
-                         //Valida valor DPS Detalhado
-                         if (req.body.valorDPS != '' && req.body.checkUni == null) {
-                              unidadeDPS = 0
-                              vlrUniDPS = 0
-                              valorDPS = req.body.valorDPS
-                         } else {
-                              if (req.body.unidadeDPS != '' && req.body.vlrUniDPS != '') {
-                                   unidadeDPS = req.body.unidadeDPS
-                                   vlrUniDPS = req.body.vlrUniDPS
-                                   valorDPS = parseFloat(unidadeDPS) * parseFloat(vlrUniDPS)
+                                   checkUni = 'checked'
                               }
                          }
                          //Valida valor Cabos Detalhado
-                         if (req.body.valorCab != '' && req.body.checkUni == null) {
-                              unidadeCab = 0
-                              vlrUniCab = 0
+                         if (req.body.valorCab != 0 && req.body.unidadeCab == 0 && req.body.vlrUniCab == 0) {
                               valorCab = req.body.valorCab
                          } else {
-                              if (req.body.unidadeCab != '' && req.body.vlrUniCab != '') {
+                              if (req.body.unidadeCab != 0 && req.body.vlrUniCab != 0) {
                                    unidadeCab = req.body.unidadeCab
                                    vlrUniCab = req.body.vlrUniCab
                                    valorCab = parseFloat(unidadeCab) * parseFloat(vlrUniCab)
+                                   checkUni = 'checked'
+                              }
+                         }
+                         //Valida valor Disjuntores Detalhado
+                         if (req.body.valorDis != 0 && req.body.unidadeDis == 0 && req.body.vlrUniDis == 0) {
+                              valorDis = req.body.valorDis
+                         } else {
+                              if (req.body.unidadeDis != 0 && req.body.vlrUniDis != 0) {
+                                   unidadeDis = req.body.unidadeDis
+                                   vlrUniDis = req.body.vlrUniDis
+                                   valorDis = parseFloat(unidadeDis) * parseFloat(vlrUniDis)
+                                   checkUni = 'checked'
+                              }
+                         }
+                         //Valida valor DPS Detalhado
+                         if (req.body.valorDPS != 0 && req.body.unidadeDPS == 0 && req.body.vlrUniDPS == 0) {
+                              valorDPS = req.body.valorDPS
+                         } else {
+                              if (req.body.unidadeDPS != 0 && req.body.vlrUniDPS != 0) {
+                                   unidadeDPS = req.body.unidadeDPS
+                                   vlrUniDPS = req.body.vlrUniDPS
+                                   valorDPS = parseFloat(unidadeDPS) * parseFloat(vlrUniDPS)
+                                   checkUni = 'checked'
+                              }
+                         }
+                         //Valida valor StringBox Detalhado
+                         if (req.body.valorSB != 0 && req.body.unidadeSB == 0 && req.body.vlrUniSB == 0) {
+                              valorSB = req.body.valorSB
+                         } else {
+                              if (req.body.unidadeSB != 0 && req.body.vlrUniSB != 0) {
+                                   unidadeSB = req.body.unidadeSB
+                                   vlrUniSB = req.body.vlrUniSB
+                                   valorSB = parseFloat(unidadeSB) * parseFloat(vlrUniSB)
+                                   checkUni = 'checked'
                               }
                          }
                          //Valida valor Outros Componentes Detalhado
-                         if (req.body.valorOcp != '' && req.body.checkUni == null) {
-                              unidadeOcp = 0
-                              vlrUniOcp = 0
+                         if (req.body.valorOcp != 0 && req.body.unidadeOcp == 0 && req.body.vlrUniOcp == 0) {
                               valorOcp = req.body.valorOcp
                          } else {
-                              if (req.body.unidadeOcp != '' && req.body.vlrUniOcp != '') {
+                              if (req.body.unidadeOcp != 0 && req.body.vlrUniOcp != 0) {
                                    unidadeOcp = req.body.unidadeOcp
                                    vlrUniOcp = req.body.vlrUniOcp
                                    valorOcp = parseFloat(unidadeOcp) * parseFloat(vlrUniOcp)
+                                   checkUni = 'checked'
                               }
                          }
-                         //console.log('valorEqu=>' + valorEqu)
-                         //console.log('valorEst=>' + valorEst)
-                         //console.log('unidadeCer=>' + unidadeCer)
-                         //console.log('unidadePos=>' + unidadePos)
-                         //console.log('vlrUniCer=>' + vlrUniCer)
-                         //console.log('vlrUniPos=>' + vlrUniPos)
-                         //console.log('valorCer=>' + valorCer)
-                         //console.log('valorPos=>' + valorPos)
-                         //console.log('valorDis=>' + valorDis)
-                         //console.log('valorDPS=>' + valorDPS)
-                         //console.log('valorCab=>' + valorCab)
-                         //console.log('valorOcp=>' + valorOcp)
+                         //Valida valor Cercamento Detalhado
+                         if (req.body.cercamento != null) {
+                              if (req.body.valorCer != 0 && req.body.unidadeCer == 0 && req.body.vlrUniCer == 0) {
+                                   valorCer = req.body.valorCer
+                              } else {
+                                   if (req.body.unidadeCer != 0 && req.body.vlrUniCer != 0) {
+                                        unidadeCer = req.body.unidadeCer
+                                        vlrUniCer = req.body.vlrUniCer
+                                        valorCer = parseFloat(unidadeCer) * parseFloat(vlrUniCer)
+                                        checkUni = 'checked'
+                                   }
+                              }
+                         }
+                         //Valida valor Central Detalhado
+                         if (req.body.central != null) {
+                              if (req.body.valorCen != 0 && req.body.unidadeCen == 0 && req.body.vlrUniCen == 0) {
+                                   valorCen = req.body.valorCen
+                              } else {
+                                   if (req.body.unidadeCen != 0 && req.body.vlrUniCen != 0) {
+                                        unidadeCen = req.body.unidadeCen
+                                        vlrUniCen = req.body.vlrUniCen
+                                        valorCen = parseFloat(unidadeCen) * parseFloat(vlrUniCen)
+                                        checkUni = 'checked'
+                                   }
+                              }
+                         }
+                         //Valida valor Postes Detalhado
+                         if (req.body.poste != null) {
+                              if (req.body.valorPos != 0 && req.body.unidadePos == 0 && req.body.vlrUniPos == 0) {
+                                   valorPos = req.body.valorPos
+                              } else {
+                                   if (req.body.unidadePos != 0 && req.body.vlrUniPos != 0) {
+                                        unidadePos = req.body.unidadePos
+                                        vlrUniPos = req.body.vlrUniPos
+                                        valorPos = parseFloat(unidadePos) * parseFloat(vlrUniPos)
+                                        checkUni = 'checked'
+                                   }
+                              }
+                         }
 
-                         var validaequant
-                         var validaequfut
+                         //console.log('checkUni=>' + checkUni)
+                         //console.log('unidadeEqu=>', +unidadeEqu)
+                         //console.log('unidadeMod=>', +unidadeMod)
+                         //console.log('unidadeInv=>', +unidadeInv)
+                         //console.log('unidadeEst=>', +unidadeEst)
+                         //console.log('unidadeCab=>', +unidadeCab)
+                         //console.log('unidadeDis=>', +unidadeDis)
+                         //console.log('unidadeDPS=>', +unidadeDPS)
+                         //console.log('unidadeSB=>', +unidadeSB)
+                         //console.log('unidadeOcp=>', +unidadeOcp)
+                         //console.log('unidadeCer=>', +unidadeCer)
+                         //console.log('unidadeCen=>', +unidadeCen)
+                         //console.log('unidadePos=>', +unidadePos)
+                         //console.log('vlrUniEqu=>', +vlrUniEqu)
+                         //console.log('vlrUniMod=>', +vlrUniMod)
+                         //console.log('vlrUniInv=>', +vlrUniInv)
+                         //console.log('vlrUniEst=>', +vlrUniEst)
+                         //console.log('vlrUniCab=>', +vlrUniCab)
+                         //console.log('vlrUniDis=>', +vlrUniDis)
+                         //console.log('vlrUniDPS=>', +vlrUniDPS)
+                         //console.log('vlrUniSB=>', +vlrUniSB)
+                         //console.log('vlrUniOcp=>', +vlrUniOcp)
+                         //console.log('vlrUniCer=>', +vlrUniCer)
+                         //console.log('vlrUniCen=>', +vlrUniCen)
+                         //console.log('vlrUniPos=>', +vlrUniPos)
+                         //console.log('valorEqu=>', +valorEqu)
+                         //console.log('valorMod=>', +valorMod)
+                         //console.log('valorInv=>', +valorInv)
+                         //console.log('valorEst=>', +valorEst)
+                         //console.log('valorCab=>', +valorCab)
+                         //console.log('valorDis=>', +valorDis)
+                         //console.log('valorDPS=>', +valorDPS)
+                         //console.log('valorSB=>', +valorSB)
+                         //console.log('valorOcp=>', +valorOcp)
+                         //console.log('valorCer=>', +valorCer)
+                         //console.log('valorCen=>', +valorCen)
+                         //console.log('valorPos=>', +valorPos)
 
-                         var vlrTotal = parseFloat(valorEqu) + parseFloat(valorEst) + parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab) + parseFloat(valorOcp)
+                         var validaequant = 0
+                         var validaequfut = 0
+                         var vlrequ = 0
+                         var vlrkit = 0
+
+                         var vlrTotal = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCab) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorSB) + parseFloat(valorOcp) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos)
+                         //console.log('vlrTotal=>' + vlrTotal)
 
                          //Valida valor do equipameento
-                         if (req.body.valorEqu != 0) {
+                         if (parseFloat(valorEqu) != 0 || parseFloat(valorMod) != 0) {
+                              //console.log('valorEqu != 0')
                               vlrequ = vlrTotal
-                              vlrkit = parseFloat(valorEqu) + parseFloat(valorEst) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab)
+                              vlrkit = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCab) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorSB) + parseFloat(valorOcp)
                          } else {
                               //console.log('não tem lançamento manual de kit.')
-                              validaequant = parseFloat(projeto.vlrkit) - (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorDis) + parseFloat(detalhe.valorDPS) + parseFloat(detalhe.valorCab))
+                              validaequant = parseFloat(projeto.vlrkit) - (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorDis) + parseFloat(detalhe.valorDPS) + parseFloat(detalhe.valorSB) + parseFloat(detalhe.valorCab))
                               //console.log('validaequant=>' + validaequant)
-                              validaequfut = parseFloat(req.body.equipamento) - (parseFloat(valorEst) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab))
+                              validaequfut = parseFloat(req.body.equipamento) - (parseFloat(valorEst) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorSB) + parseFloat(valorCab))
                               //console.log('validaequfut=>' + validaequfut)
                               if (parseFloat(validaequant) != parseFloat(validaequfut)) {
                                    //console.log('Os valores dos kits são difentes')
                                    if (req.body.equipamento == projeto.vlrkit) {
-                                        vlrequ = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab) + parseFloat(valorOcp)
+                                        vlrequ = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab) + parseFloat(valorOcp)
                                         vlrkit = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab)
                                    } else {
-                                        vlrequ = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab) + parseFloat(valorOcp)
-                                        vlrkit = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab)
+                                        vlrequ = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab) + parseFloat(valorOcp)
+                                        vlrkit = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorSB) + parseFloat(valorCab)
                                    }
                               } else {
                                    //console.log('Os valores dos kits são iguais')
@@ -1118,37 +1326,49 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                    vlrkit = projeto.vlrkit
                               }
                          }
-                         //console.log('vlrequ=>' + projeto.vlrequ)
-
-                         valor = projeto.valor
+                         //console.log('vlrequ=>' + vlrequ)
+                         //console.log('vlrkit=>' + vlrkit)
 
                          //Definie os valores dos detalhes de custo dos equipamentos do projeto
+
                          detalhe.vlrTotal = vlrequ
                          detalhe.checkUni = checkUni
                          detalhe.unidadeEqu = unidadeEqu
+                         detalhe.unidadeMod = unidadeMod
+                         detalhe.unidadeInv = unidadeInv
                          detalhe.unidadeEst = unidadeEst
-                         detalhe.unidadeCer = unidadeCer
-                         detalhe.unidadePos = unidadePos
+                         detalhe.unidadeCab = unidadeCab
                          detalhe.unidadeDis = unidadeDis
                          detalhe.unidadeDPS = unidadeDPS
-                         detalhe.unidadeCab = unidadeCab
+                         detalhe.unidadeSB = unidadeSB
                          detalhe.unidadeOcp = unidadeOcp
+                         detalhe.unidadeCer = unidadeCer
+                         detalhe.unidadeCen = unidadeCen
+                         detalhe.unidadePos = unidadePos
                          detalhe.vlrUniEqu = vlrUniEqu
+                         detalhe.vlrUniMod = vlrUniMod
+                         detalhe.vlrUniInv = vlrUniInv
                          detalhe.vlrUniEst = vlrUniEst
-                         detalhe.vlrUniCer = vlrUniCer
-                         detalhe.vlrUniPos = vlrUniPos
+                         detalhe.vlrUniCab = vlrUniCab
                          detalhe.vlrUniDis = vlrUniDis
                          detalhe.vlrUniDPS = vlrUniDPS
-                         detalhe.vlrUniCab = vlrUniCab
+                         detalhe.vlrUniSB = vlrUniSB
                          detalhe.vlrUniOcp = vlrUniOcp
+                         detalhe.vlrUniCer = vlrUniCer
+                         detalhe.vlrUniCen = vlrUniCen
+                         detalhe.vlrUniPos = vlrUniPos
                          detalhe.valorEqu = valorEqu
+                         detalhe.valorMod = valorMod
+                         detalhe.valorInv = valorInv
                          detalhe.valorEst = valorEst
-                         detalhe.valorCer = valorCer
-                         detalhe.valorPos = valorPos
+                         detalhe.valorCab = valorCab
                          detalhe.valorDis = valorDis
                          detalhe.valorDPS = valorDPS
-                         detalhe.valorCab = valorCab
+                         detalhe.valorSB = valorSB
                          detalhe.valorOcp = valorOcp
+                         detalhe.valorCer = valorCer
+                         detalhe.valorCen = valorCen
+                         detalhe.valorPos = valorPos
 
                          detalhe.save().then(() => {
                               sucesso.push({ texto: 'Detalhes salvos com sucesso.' })
@@ -1201,9 +1421,10 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          projeto.vlrkit = vlrkit
                          projeto.vlrfat = vlrfat
                          projeto.potencia = req.body.potencia
-                         projeto.percom = vendedor
+                         projeto.vendedor = vendedor
                          projeto.percom = percom
                          projeto.temCercamento = cercamento
+                         projeto.temCentral = central
                          projeto.temPosteCond = poste
                          projeto.temEstSolo = estsolo
 
@@ -1243,7 +1464,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                              pv = prj_vendedor
                                         }).catch((err) => {
                                              req.flash('error_msg', 'Houve uma falha ao encontrar um vendedor')
-                                             res.redirect('/pressoa/consulta')
+                                             res.redirect('/pessoa/consulta')
                                         })
 
 
@@ -1273,7 +1494,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                              res.redirect('/configuracao/consulta')
                                         })
                                    }).catch((err) => {
-                                        req.flash('error_msg', 'Houve uma falha ao encontrar os detalhes do projeto')
+                                        req.flash('error_msg', 'Houve uma falha ao encontrar os detalhes do projeto<salvar>.')
                                         res.redirect('/configuracao/consulta')
                                    })
                               }).catch((err) => {
@@ -1285,7 +1506,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                               res.redirect('/menu')
                          })
                     }).catch((err) => {
-                         req.flash('error_msg', 'Houve uma falha ao encontrar os detalhes do projeto')
+                         req.flash('error_msg', 'Houve uma falha ao encontrar os detalhes do projeto.')
                          res.redirect('/configuracao/consulta')
                     })
                }).catch((err) => {
@@ -1335,19 +1556,19 @@ router.post('/direto', ehAdmin, (req, res) => {
                          pr = projeto_funres
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve uma falha ao encontrar o responsável')
-                         res.redirect('/pressoa/consulta')
+                         res.redirect('/pessoa/consulta')
                     })
                     Pessoa.findOne({ _id: projeto.funins }).lean().then((projeto_funins) => {
                          pi = projeto_funins
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve uma falha ao encontrar o instalador')
-                         res.redirect('/pressoa/consulta')
+                         res.redirect('/pessoa/consulta')
                     })
                     Pessoa.findOne({ _id: projeto.funpro }).lean().then((projeto_funpro) => {
                          pp = projeto_funpro
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve uma falha ao encontrar o projetista')
-                         res.redirect('/pressoa/consulta')
+                         res.redirect('/pessoa/consulta')
                     })
                     //Buscar gestor responsável
                     Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {
@@ -1380,11 +1601,11 @@ router.post('/direto', ehAdmin, (req, res) => {
                               })
                          }).catch((err) => {
                               req.flash('error_msg', 'Houve uma falha ao encontrar o instalador')
-                              res.redirect('/pressoa/consulta')
+                              res.redirect('/pessoa/consulta')
                          })
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve uma falha ao encontrar o responsável')
-                         res.redirect('/pressoa/consulta')
+                         res.redirect('/pessoa/consulta')
                     })
                }).catch((err) => {
                     req.flash('error_msg', 'Não foi possíel encontrar os detalhes do projeto')
@@ -1531,7 +1752,10 @@ router.post('/direto', ehAdmin, (req, res) => {
                                    projeto.vlrcom = vlrcom.toFixed(2)
                               }
 
-                              var totcop = parseFloat(totint) + parseFloat(totpro) + parseFloat(vlrart) + parseFloat(totges) + parseFloat(totdes) + parseFloat(totali)
+                              var custoFix = parseFloat(totint) + parseFloat(totpro) + parseFloat(vlrart) + parseFloat(totges)
+                              var custoVar = parseFloat(totdes) + parseFloat(totali)
+                              var custoEst = parseFloat(detalhe.valorCer) + parseFloat(detalhe.valorPos) + parseFloat(detalhe.valorCen)
+                              var totcop = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
 
                               //console.log('totint=>' + totint)
                               //console.log('totpro=>' + totpro)
@@ -1540,7 +1764,9 @@ router.post('/direto', ehAdmin, (req, res) => {
                               //console.log('detalhe.valorOcp=>' + detalhe.valorOcp)
                               //console.log('detalhe.valorCer=>' + detalhe.valorCer)
                               //console.log('detalhe.valorPos=>' + detalhe.valorPos)
-
+                              projeto.custofix = custoFix.toFixed(2)
+                              projeto.custovar = custoVar.toFixed(2)
+                              projeto.custoest = custoEst.toFixed(2)
                               projeto.totcop = totcop.toFixed(2)
 
                               var rescon = parseFloat(impele) + parseFloat(seguro) + parseFloat(outcer) + parseFloat(outpos)
@@ -1550,7 +1776,7 @@ router.post('/direto', ehAdmin, (req, res) => {
                               var reserva = parseFloat(resger) + parseFloat(rescon)
                               projeto.reserva = reserva.toFixed(2)
 
-                              var custoPlano = parseFloat(totcop) + parseFloat(reserva) + parseFloat(detalhe.valorCer) + parseFloat(detalhe.valorPos) + parseFloat(detalhe.valorOcp)
+                              var custoPlano = parseFloat(totcop) + parseFloat(reserva)
                               projeto.custoPlano = custoPlano.toFixed(2)
 
                               var custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
@@ -1580,12 +1806,12 @@ router.post('/direto', ehAdmin, (req, res) => {
                               var desAdm = 0
                               var lbaimp = 0
                               if (parseFloat(rp.desadm) > 0) {
-                                   if (rp.tipodesp == 'Percentual'){
+                                   if (rp.tipodesp == 'Percentual') {
                                         desAdm = (parseFloat(rp.desadm) * (parseFloat(rp.perdes) / 100)).toFixed(2)
-                                    }else{
+                                   } else {
                                         desAdm = ((parseFloat(rp.desadm) / parseFloat(rp.estkwp)) * parseFloat(projeto.potencia)).toFixed(2)
-                                    }
-                                   console.log('desAdm=>' + desAdm)
+                                   }
+                                   //console.log('desAdm=>' + desAdm)
                                    lbaimp = (parseFloat(lucroBruto) - parseFloat(custoPlano) - parseFloat(desAdm)).toFixed(2)
                                    projeto.desAdm = parseFloat(desAdm).toFixed(2)
                               } else {
@@ -1599,7 +1825,7 @@ router.post('/direto', ehAdmin, (req, res) => {
                                    lbaimp = parseFloat(lbaimp) - parseFloat(vlrcom)
                               }
                               projeto.lbaimp = lbaimp.toFixed(2)
-                              console.log('lbaimp=>' + lbaimp)
+                              //console.log('lbaimp=>' + lbaimp)
 
                               var totalSimples = 0
                               var impostoIRPJ
@@ -1616,7 +1842,7 @@ router.post('/direto', ehAdmin, (req, res) => {
                               var prjLP = rp.prjLP
                               var prjFat = rp.prjFat
 
-                              console.log('rp.regime=>' + rp.regime)
+                              //console.log('rp.regime=>' + rp.regime)
 
                               if (rp.regime == 'Simples') {
                                    //console.log('encontrou regime')
@@ -1705,26 +1931,61 @@ router.post('/direto', ehAdmin, (req, res) => {
                                    totalTributos = parseFloat(totalImposto) + parseFloat(impNFS)
                               }
 
-                              console.log('totalImposto=>' + totalImposto)
+                              //console.log('totalImposto=>' + totalImposto)
                               projeto.totalImposto = parseFloat(totalImposto).toFixed(2)
-                              console.log('totalTributos=>' + totalTributos)
+                              //console.log('totalTributos=>' + totalTributos)
                               projeto.totalTributos = parseFloat(totalTributos).toFixed(2)
 
                               //Lucro Líquido descontados os impostos
                               var lucroLiquido = 0
-                              console.log('lbaimp=>' + lbaimp)
-                              console.log('totalTributos=>' + totalTributos)
+                              //console.log('lbaimp=>' + lbaimp)
+                              //console.log('totalTributos=>' + totalTributos)
                               lucroLiquido = parseFloat(lbaimp) - parseFloat(totalImposto)
                               projeto.lucroLiquido = parseFloat(lucroLiquido).toFixed(2)
-                              console.log('lucroLiquido=>' + lucroLiquido)
+                              //console.log('lucroLiquido=>' + lucroLiquido)
 
                               //Dashboard              
+                              //Participação dos componentes
+                              //Kit
+                              var parKitEqu = parseFloat(detalhe.valorEqu) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parKitEqu = parseFloat(parKitEqu).toFixed(2)
+                              //Módulos
+                              var parModEqu = parseFloat(detalhe.valorMod) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parModEqu = parseFloat(parModEqu).toFixed(2)
+                              //Inversor
+                              var parInvEqu = parseFloat(detalhe.valorInv) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parInvEqu = parseFloat(parInvEqu).toFixed(2)
+                              //Estrutura
+                              var parEstEqu = parseFloat(detalhe.valorEst) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parEstEqu = parseFloat(parEstEqu).toFixed(2)
+                              //Cabos
+                              var parCabEqu = parseFloat(detalhe.valorCab) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parCabEqu = parseFloat(parCabEqu).toFixed(2)
+                              //DPS
+                              var parDpsEqu = parseFloat(detalhe.valorDPS) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parDpsEqu = parseFloat(parDpsEqu).toFixed(2)
+                              //Disjuntores
+                              var parDisEqu = parseFloat(detalhe.valorDis) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parDisEqu = parseFloat(parDisEqu).toFixed(2)
+                              //StringBox
+                              var parSbxEqu = parseFloat(detalhe.valorSB) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parSbxEqu = parseFloat(parSbxEqu).toFixed(2)
+                              //Cercamento
+                              var parCerEqu = parseFloat(detalhe.valorCer) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parCerEqu = parseFloat(parCerEqu).toFixed(2)
+                              //Central
+                              var parCenEqu = parseFloat(detalhe.valorCen) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parCenEqu = parseFloat(parCenEqu).toFixed(2)
+                              //Postes de Condução
+                              var parPosEqu = parseFloat(detalhe.valorPos) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parPosEqu = parseFloat(parPosEqu).toFixed(2)
+
                               //Participação sobre o valor total do projeto
                               var parLiqVlr = parseFloat(lucroLiquido) / parseFloat(projeto.valor) * 100
                               projeto.parLiqVlr = parseFloat(parLiqVlr).toFixed(2)
                               var parKitVlr = parseFloat(projeto.vlrkit) / parseFloat(projeto.valor) * 100
                               projeto.parKitVlr = parseFloat(parKitVlr).toFixed(2)
-                              console.log('parKitVlr=>' + parKitVlr)
+                              //console.log('parKitVlr=>' + parKitVlr)
                               var parIntVlr = parseFloat(totint) / parseFloat(projeto.valor) * 100
                               projeto.parIntVlr = parseFloat(parIntVlr).toFixed(2)
                               var parGesVlr = parseFloat(totges) / parseFloat(projeto.valor) * 100
@@ -1739,68 +2000,68 @@ router.post('/direto', ehAdmin, (req, res) => {
                               projeto.parAliVlr = parseFloat(parAliVlr).toFixed(2)
                               var parResVlr = parseFloat(reserva) / parseFloat(projeto.valor) * 100
                               projeto.parResVlr = parseFloat(parResVlr).toFixed(2)
-                              var parDedVlr = parseFloat(totcop) / parseFloat(projeto.valor) * 100
+                              var parDedVlr = parseFloat(custoPlano) / parseFloat(projeto.valor) * 100
                               projeto.parDedVlr = parseFloat(parDedVlr).toFixed(2)
                               var parISSVlr = parseFloat(impNFS) / parseFloat(projeto.valor) * 100
                               projeto.parISSVlr = parseFloat(parISSVlr).toFixed(2)
                               var parImpVlr = parseFloat(totalImposto) / parseFloat(projeto.valor) * 100
                               projeto.parImpVlr = parseFloat(parImpVlr).toFixed(2)
-                              console.log('parImpVlr=>' + parImpVlr)
+                              //console.log('parImpVlr=>' + parImpVlr)
                               if (vlrcom > 0) {
                                    var parComVlr = parseFloat(vlrcom) / parseFloat(projeto.valor) * 100
                                    projeto.parComVlr = parseFloat(parComVlr).toFixed(2)
-                                   console.log('parComVlr=>' + parComVlr)
+                                   //console.log('parComVlr=>' + parComVlr)
                               }
 
                               //Participação sobre o Faturamento  
                               var parLiqNfs = parseFloat(lucroLiquido) / parseFloat(vlrNFS) * 100
                               projeto.parLiqNfs = parseFloat(parLiqNfs).toFixed(2)
-                              console.log('parLiqNfs=>' + parLiqNfs)
-                              console.log('projeto.fatequ=>' + projeto.fatequ)
+                              //console.log('parLiqNfs=>' + parLiqNfs)
+                              //console.log('projeto.fatequ=>' + projeto.fatequ)
                               var parKitNfs
                               if (projeto.fatequ == true) {
                                    parKitNfs = parseFloat(projeto.vlrkit) / parseFloat(vlrNFS) * 100
-                                   console.log('parKitNfs=>' + parKitNfs)
+                                   //console.log('parKitNfs=>' + parKitNfs)
                                    projeto.parKitNfs = parseFloat(parKitNfs).toFixed(2)
                               } else {
                                    parKitNfs = 0
                                    projeto.parKitNfs = 0
                               }
-                              console.log('parKitNfs=>' + parKitNfs)
+                              //console.log('parKitNfs=>' + parKitNfs)
                               var parIntNfs = parseFloat(totint) / parseFloat(vlrNFS) * 100
                               projeto.parIntNfs = parseFloat(parIntNfs).toFixed(2)
-                              console.log('parIntNfs=>' + parIntNfs)
+                              //console.log('parIntNfs=>' + parIntNfs)
                               var parGesNfs = parseFloat(totges) / parseFloat(vlrNFS) * 100
                               projeto.parGesNfs = parseFloat(parGesNfs).toFixed(2)
-                              console.log('parGesNfs=>' + parGesNfs)
+                              //console.log('parGesNfs=>' + parGesNfs)
                               var parProNfs = parseFloat(totpro) / parseFloat(vlrNFS) * 100
                               projeto.parProNfs = parseFloat(parProNfs).toFixed(2)
-                              console.log('parProNfs=>' + parProNfs)
+                              //console.log('parProNfs=>' + parProNfs)
                               var parArtNfs = parseFloat(vlrart) / parseFloat(vlrNFS) * 100
                               projeto.parArtNfs = parseFloat(parArtNfs).toFixed(2)
-                              console.log('parArtNfs=>' + parArtNfs)
+                              //console.log('parArtNfs=>' + parArtNfs)
                               var parDesNfs = parseFloat(totdes) / parseFloat(vlrNFS) * 100
                               projeto.parDesNfs = parseFloat(parDesNfs).toFixed(2)
-                              console.log('parDesNfs=>' + parDesNfs)
+                              //console.log('parDesNfs=>' + parDesNfs)
                               var parAliNfs = parseFloat(totali) / parseFloat(vlrNFS) * 100
                               projeto.parAliNfs = parseFloat(parAliNfs).toFixed(2)
-                              console.log('parAliNfs=>' + parAliNfs)
+                              //console.log('parAliNfs=>' + parAliNfs)
                               var parResNfs = parseFloat(reserva) / parseFloat(vlrNFS) * 100
                               projeto.parResNfs = parseFloat(parResNfs).toFixed(2)
-                              console.log('parResNfs=>' + parResNfs)
-                              var parDedNfs = parseFloat(totcop) / parseFloat(vlrNFS) * 100
+                              //console.log('parResNfs=>' + parResNfs)
+                              var parDedNfs = parseFloat(custoPlano) / parseFloat(vlrNFS) * 100
                               projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
-                              console.log('parDedNfs=>' + parDedNfs)
+                              //console.log('parDedNfs=>' + parDedNfs)
                               var parISSNfs = parseFloat(impNFS) / parseFloat(vlrNFS) * 100
                               projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)
-                              console.log('parISSNfs=>' + parISSNfs)
+                              //console.log('parISSNfs=>' + parISSNfs)
                               var parImpNfs = (parseFloat(totalImposto) - parseFloat(impNFS)) / parseFloat(vlrNFS) * 100
                               projeto.parImpNfs = parseFloat(parImpNfs).toFixed(2)
-                              console.log('parImpNfs=>' + parImpNfs)
+                              //console.log('parImpNfs=>' + parImpNfs)
                               if (vlrcom > 0) {
                                    var parComNfs = parseFloat(vlrcom) / parseFloat(vlrNFS) * 100
                                    projeto.parComNfs = parseFloat(parComNfs).toFixed(2)
-                                   console.log('parComNfs=>' + parComNfs)
+                                   //console.log('parComNfs=>' + parComNfs)
                               }
 
                               projeto.save().then(() => {
@@ -1820,19 +2081,19 @@ router.post('/direto', ehAdmin, (req, res) => {
                                                   pr = projeto_funres
                                              }).catch((err) => {
                                                   req.flash('error_msg', 'Houve uma falha ao encontrar o responsável')
-                                                  res.redirect('/pressoa/consulta')
+                                                  res.redirect('/pessoa/consulta')
                                              })
                                              Pessoa.findOne({ _id: projeto.funins }).lean().then((projeto_funins) => {
                                                   pi = projeto_funins
                                              }).catch((err) => {
                                                   req.flash('error_msg', 'Houve uma falha ao encontrar o instalador')
-                                                  res.redirect('/pressoa/consulta')
+                                                  res.redirect('/pessoa/consulta')
                                              })
                                              Pessoa.findOne({ _id: projeto.funpro }).lean().then((projeto_funpro) => {
                                                   pp = projeto_funpro
                                              }).catch((err) => {
                                                   req.flash('error_msg', 'Houve uma falha ao encontrar o projetista')
-                                                  res.redirect('/pressoa/consulta')
+                                                  res.redirect('/pessoa/consulta')
                                              })
                                              //Buscar gestor responsável
                                              Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {
@@ -1861,11 +2122,11 @@ router.post('/direto', ehAdmin, (req, res) => {
                                                        })
                                                   }).catch((err) => {
                                                        req.flash('error_msg', 'Houve uma falha ao encontrar o instalador.')
-                                                       res.redirect('/pressoa/consulta')
+                                                       res.redirect('/pessoa/consulta')
                                                   })
                                              }).catch((err) => {
                                                   req.flash('error_msg', 'Houve uma falha ao encontrar o responsável.')
-                                                  res.redirect('/pressoa/consulta')
+                                                  res.redirect('/pessoa/consulta')
                                              })
                                         }).catch((err) => {
                                              req.flash('error_msg', 'Não foi possível encontrar os detalhes do projeto.')
@@ -1936,19 +2197,19 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                          pr = projeto_funres
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve uma falha ao encontrar o responsável')
-                         res.redirect('/pressoa/consulta')
+                         res.redirect('/pessoa/consulta')
                     })
                     Pessoa.findOne({ _id: projeto.funins }).lean().then((projeto_funins) => {
                          pi = projeto_funins
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve uma falha ao encontrar o instalador')
-                         res.redirect('/pressoa/consulta')
+                         res.redirect('/pessoa/consulta')
                     })
                     Pessoa.findOne({ _id: projeto.funpro }).lean().then((projeto_funpro) => {
                          pp = projeto_funpro
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve uma falha ao encontrar o projetista')
-                         res.redirect('/pressoa/consulta')
+                         res.redirect('/pessoa/consulta')
                     })
                     //Buscar gestor responsável
                     Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {
@@ -1981,11 +2242,11 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                               })
                          }).catch((err) => {
                               req.flash('error_msg', 'Houve uma falha ao encontrar o instalador')
-                              res.redirect('/pressoa/consulta')
+                              res.redirect('/pessoa/consulta')
                          })
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve uma falha ao encontrar o responsável')
-                         res.redirect('/pressoa/consulta')
+                         res.redirect('/pessoa/consulta')
                     })
                }).catch((err) => {
                     req.flash('error_msg', 'Não foi possíel encontrar os detalhes do projeto')
@@ -2133,15 +2394,21 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                                    projeto.vlrcom = vlrcom.toFixed(2)
                               }
 
-                              var totcop = parseFloat(totint) + parseFloat(totpro) + parseFloat(vlrart) + parseFloat(totges) + parseFloat(totdes) + parseFloat(totali)
-                              console.log('totint=>' + totint)
-                              console.log('totpro=>' + totpro)
-                              console.log('totges=>' + totges)
-                              console.log('totali=>' + totali)
-                              console.log('detalhe.valorOcp=>' + detalhe.valorOcp)
-                              console.log('detalhe.valorCer=>' + detalhe.valorCer)
-                              console.log('detalhe.valorPos=>' + detalhe.valorPos)
+                              var custoFix = parseFloat(totint) + parseFloat(totpro) + parseFloat(vlrart) + parseFloat(totges)
+                              var custoVar = parseFloat(totdes) + parseFloat(totali)
+                              var custoEst = parseFloat(detalhe.valorCer) + parseFloat(detalhe.valorPos) + parseFloat(detalhe.valorCen)
+                              var totcop = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
 
+                              //console.log('totint=>' + totint)
+                              //console.log('totpro=>' + totpro)
+                              //console.log('totges=>' + totges)
+                              //console.log('totali=>' + totali)
+                              //console.log('detalhe.valorOcp=>' + detalhe.valorOcp)
+                              //console.log('detalhe.valorCer=>' + detalhe.valorCer)
+                              //console.log('detalhe.valorPos=>' + detalhe.valorPos)
+                              projeto.custofix = custoFix.toFixed(2)
+                              projeto.custovar = custoVar.toFixed(2)
+                              projeto.custoest = custoEst.toFixed(2)
                               projeto.totcop = totcop.toFixed(2)
 
                               var rescon = parseFloat(impele) + parseFloat(seguro) + parseFloat(outcer) + parseFloat(outpos)
@@ -2151,21 +2418,21 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                               var reserva = parseFloat(resger) + parseFloat(rescon)
                               projeto.reserva = reserva.toFixed(2)
 
-                              var custoPlano = parseFloat(totcop) + parseFloat(reserva) + parseFloat(detalhe.valorCer) + parseFloat(detalhe.valorPos) + parseFloat(detalhe.valorOcp)
+                              var custoPlano = parseFloat(totcop) + parseFloat(reserva)
                               projeto.custoPlano = custoPlano.toFixed(2)
 
                               var custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
                               projeto.custoTotal = custoTotal.toFixed(2)
 
                               //Definindo o imposto ISS
-                              console.log('regime_prj.alqNFS=>' + regime_prj.alqNFS)
+                              //console.log('regime_prj.alqNFS=>' + regime_prj.alqNFS)
                               var vlrNFS = parseFloat(projeto.vlrfat)
                               var impNFS = parseFloat(vlrNFS) * (parseFloat(regime_prj.alqNFS) / 100)
                               projeto.vlrNFS = vlrNFS.toFixed(2)
                               projeto.impNFS = impNFS.toFixed(2)
 
-                              console.log('impNFS=>' + impNFS)
-                              console.log('projeto.valor=>' + projeto.valor)
+                              //console.log('impNFS=>' + impNFS)
+                              //console.log('projeto.valor=>' + projeto.valor)
 
                               //Definindo o Lucro Bruto
                               var recLiquida = parseFloat(projeto.valor) - parseFloat(impNFS)
@@ -2185,12 +2452,12 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                               var desAdm = 0
                               var lbaimp = 0
                               if (parseFloat(regime_prj.desadm) > 0) {
-                                   if (regime_prj.tipodesp == 'Percentual'){
+                                   if (regime_prj.tipodesp == 'Percentual') {
                                         desAdm = (parseFloat(regime_prj.desadm) * (parseFloat(regime_prj.perdes) / 100)).toFixed(2)
-                                    }else{
+                                   } else {
                                         desAdm = ((parseFloat(regime_prj.desadm) / parseFloat(regime_prj.estkwp)) * parseFloat(projeto.potencia)).toFixed(2)
-                                    }
-                                   console.log('desAdm=>' + desAdm)
+                                   }
+                                   //console.log('desAdm=>' + desAdm)
                                    lbaimp = parseFloat(lucroBruto) - parseFloat(custoPlano) - parseFloat(desAdm)
                                    projeto.desAdm = parseFloat(desAdm).toFixed(2)
                               } else {
@@ -2204,7 +2471,7 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                                    lbaimp = parseFloat(lbaimp) - parseFloat(vlrcom)
                               }
                               projeto.lbaimp = parseFloat(lbaimp).toFixed(2)
-                              console.log('lbaimp=>' + lbaimp)
+                              //console.log('lbaimp=>' + lbaimp)
 
                               var fatadd
                               var fataju
@@ -2222,12 +2489,12 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                               var totalImposto
 
                               if (regime_prj.regime == 'Simples') {
-                                   console.log('entrou simples')
+                                   //console.log('entrou simples')
                                    var alqEfe = ((parseFloat(prjFat) * (parseFloat(regime_prj.alqDAS) / 100)) - (parseFloat(regime_prj.vlrred))) / parseFloat(prjFat)
                                    totalSimples = parseFloat(vlrNFS) * (parseFloat(alqEfe))
-                                   console.log('totalSimples=>' + totalSimples)
+                                   //console.log('totalSimples=>' + totalSimples)
                                    totalImposto = parseFloat(totalSimples).toFixed(2)
-                                   console.log('totalImposto=>' + totalImposto)
+                                   //console.log('totalImposto=>' + totalImposto)
                                    projeto.impostoSimples = parseFloat(totalImposto).toFixed(2)
                               }
 
@@ -2236,13 +2503,13 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                                         //Imposto Adicional de IRPJ
                                         if ((parseFloat(prjLR) / 12) > 20000) {
                                              fatadd = (parseFloat(prjLR) / 12) - 20000
-                                             console.log('fatadd=>' + fatadd)
+                                             //console.log('fatadd=>' + fatadd)
                                              fataju = parseFloat(fatadd) * (parseFloat(regime_prj.alqIRPJAdd) / 100)
-                                             console.log('fataju=>' + fataju)
+                                             //console.log('fataju=>' + fataju)
                                              aux = parseFloat(fatadd) / parseFloat(lbaimp)
-                                             console.log('aux=>' + aux)
+                                             //console.log('aux=>' + aux)
                                              impostoIRPJAdd = parseFloat(fataju) / parseFloat(aux)
-                                             console.log('impostoIRPJAdd=>' + impostoIRPJAdd)
+                                             //console.log('impostoIRPJAdd=>' + impostoIRPJAdd)
                                              projeto.impostoAdd = impostoIRPJAdd.toFixed(2)
                                         }
 
@@ -2309,25 +2576,59 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                               }
                               projeto.impostoICMS = impostoICMS.toFixed(2)
 
-                              console.log('totalImposto=>' + totalImposto)
+                              //console.log('totalImposto=>' + totalImposto)
                               projeto.totalImposto = parseFloat(totalImposto).toFixed(2)
-                              console.log('totalTributos=>' + totalTributos)
+                              //console.log('totalTributos=>' + totalTributos)
                               projeto.totalTributos = parseFloat(totalTributos).toFixed(2)
 
                               //Lucro Líquido descontados os impostos
                               var lucroLiquido = 0
                               lucroLiquido = parseFloat(lbaimp) - parseFloat(totalImposto)
                               projeto.lucroLiquido = parseFloat(lucroLiquido).toFixed(2)
-                              console.log('lucroLiquido=>' + lucroLiquido)
+                              //console.log('lucroLiquido=>' + lucroLiquido)
 
                               //Dashboard              
+                              //Participação dos componentes
+                              //Kit
+                              var parKitEqu = parseFloat(detalhe.valorEqu) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parKitEqu = parseFloat(parKitEqu).toFixed(2)
+                              //Módulos
+                              var parModEqu = parseFloat(detalhe.valorMod) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parModEqu = parseFloat(parModEqu).toFixed(2)
+                              //Inversor
+                              var parInvEqu = parseFloat(detalhe.valorInv) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parInvEqu = parseFloat(parInvEqu).toFixed(2)
+                              //Estrutura
+                              var parEstEqu = parseFloat(detalhe.valorEst) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parEstEqu = parseFloat(parEstEqu).toFixed(2)
+                              //Cabos
+                              var parCabEqu = parseFloat(detalhe.valorCab) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parCabEqu = parseFloat(parCabEqu).toFixed(2)
+                              //DPS
+                              var parDpsEqu = parseFloat(detalhe.valorDPS) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parDpsEqu = parseFloat(parDpsEqu).toFixed(2)
+                              //Disjuntores
+                              var parDisEqu = parseFloat(detalhe.valorDis) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parDisEqu = parseFloat(parDisEqu).toFixed(2)
+                              //StringBox
+                              var parSbxEqu = parseFloat(detalhe.valorSB) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parSbxEqu = parseFloat(parSbxEqu).toFixed(2)
+                              //Cercamento
+                              var parCerEqu = parseFloat(detalhe.valorCer) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parCerEqu = parseFloat(parCerEqu).toFixed(2)
+                              //Central
+                              var parCenEqu = parseFloat(detalhe.valorCen) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parCenEqu = parseFloat(parCenEqu).toFixed(2)
+                              //Postes de Condução
+                              var parPosEqu = parseFloat(detalhe.valorPos) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parPosEqu = parseFloat(parPosEqu).toFixed(2)
 
                               //Participação sobre o valor total do projeto
                               var parLiqVlr = parseFloat(lucroLiquido) / parseFloat(projeto.valor) * 100
                               projeto.parLiqVlr = parseFloat(parLiqVlr).toFixed(2)
                               var parKitVlr = parseFloat(projeto.vlrkit) / parseFloat(projeto.valor) * 100
                               projeto.parKitVlr = parseFloat(parKitVlr).toFixed(2)
-                              console.log('parKitVlr=>' + parKitVlr)
+                              //console.log('parKitVlr=>' + parKitVlr)
                               var parIntVlr = parseFloat(totint) / parseFloat(projeto.valor) * 100
                               projeto.parIntVlr = parseFloat(parIntVlr).toFixed(2)
                               var parGesVlr = parseFloat(totges) / parseFloat(projeto.valor) * 100
@@ -2342,68 +2643,68 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                               projeto.parAliVlr = parseFloat(parAliVlr).toFixed(2)
                               var parResVlr = parseFloat(reserva) / parseFloat(projeto.valor) * 100
                               projeto.parResVlr = parseFloat(parResVlr).toFixed(2)
-                              var parDedVlr = parseFloat(totcop) / parseFloat(projeto.valor) * 100
+                              var parDedVlr = parseFloat(custoPlano) / parseFloat(projeto.valor) * 100
                               projeto.parDedVlr = parseFloat(parDedVlr).toFixed(2)
                               var parISSVlr = parseFloat(impNFS) / parseFloat(projeto.valor) * 100
                               projeto.parISSVlr = parseFloat(parISSVlr).toFixed(2)
                               var parImpVlr = parseFloat(totalImposto) / parseFloat(projeto.valor) * 100
                               projeto.parImpVlr = parseFloat(parImpVlr).toFixed(2)
-                              console.log('parImpVlr=>' + parImpVlr)
+                              //console.log('parImpVlr=>' + parImpVlr)
                               if (vlrcom > 0) {
                                    var parComVlr = parseFloat(vlrcom) / parseFloat(projeto.valor) * 100
                                    projeto.parComVlr = parseFloat(parComVlr).toFixed(2)
-                                   console.log('parComVlr=>' + parComVlr)
+                                   //console.log('parComVlr=>' + parComVlr)
                               }
 
                               //Participação sobre o Faturamento  
                               var parLiqNfs = parseFloat(lucroLiquido) / parseFloat(vlrNFS) * 100
                               projeto.parLiqNfs = parseFloat(parLiqNfs).toFixed(2)
-                              console.log('parLiqNfs=>' + parLiqNfs)
-                              console.log('projeto.fatequ=>' + projeto.fatequ)
+                              //console.log('parLiqNfs=>' + parLiqNfs)
+                              //console.log('projeto.fatequ=>' + projeto.fatequ)
                               var parKitNfs
                               if (projeto.fatequ == true) {
                                    parKitNfs = parseFloat(projeto.vlrkit) / parseFloat(vlrNFS) * 100
-                                   console.log('parKitNfs=>' + parKitNfs)
+                                   //console.log('parKitNfs=>' + parKitNfs)
                                    projeto.parKitNfs = parseFloat(parKitNfs).toFixed(2)
                               } else {
                                    parKitNfs = 0
                                    projeto.parKitNfs = 0
                               }
-                              console.log('parKitNfs=>' + parKitNfs)
+                              //console.log('parKitNfs=>' + parKitNfs)
                               var parIntNfs = parseFloat(totint) / parseFloat(vlrNFS) * 100
                               projeto.parIntNfs = parseFloat(parIntNfs).toFixed(2)
-                              console.log('parIntNfs=>' + parIntNfs)
+                              //console.log('parIntNfs=>' + parIntNfs)
                               var parGesNfs = parseFloat(totges) / parseFloat(vlrNFS) * 100
                               projeto.parGesNfs = parseFloat(parGesNfs).toFixed(2)
-                              console.log('parGesNfs=>' + parGesNfs)
+                              //console.log('parGesNfs=>' + parGesNfs)
                               var parProNfs = parseFloat(totpro) / parseFloat(vlrNFS) * 100
                               projeto.parProNfs = parseFloat(parProNfs).toFixed(2)
-                              console.log('parProNfs=>' + parProNfs)
+                              //console.log('parProNfs=>' + parProNfs)
                               var parArtNfs = parseFloat(vlrart) / parseFloat(vlrNFS) * 100
                               projeto.parArtNfs = parseFloat(parArtNfs).toFixed(2)
-                              console.log('parArtNfs=>' + parArtNfs)
+                              //console.log('parArtNfs=>' + parArtNfs)
                               var parDesNfs = parseFloat(totdes) / parseFloat(vlrNFS) * 100
                               projeto.parDesNfs = parseFloat(parDesNfs).toFixed(2)
-                              console.log('parDesNfs=>' + parDesNfs)
+                              //console.log('parDesNfs=>' + parDesNfs)
                               var parAliNfs = parseFloat(totali) / parseFloat(vlrNFS) * 100
                               projeto.parAliNfs = parseFloat(parAliNfs).toFixed(2)
-                              console.log('parAliNfs=>' + parAliNfs)
+                              //console.log('parAliNfs=>' + parAliNfs)
                               var parResNfs = parseFloat(reserva) / parseFloat(vlrNFS) * 100
                               projeto.parResNfs = parseFloat(parResNfs).toFixed(2)
-                              console.log('parResNfs=>' + parResNfs)
-                              var parDedNfs = parseFloat(totcop) / parseFloat(vlrNFS) * 100
+                              //console.log('parResNfs=>' + parResNfs)
+                              var parDedNfs = parseFloat(custoPlano) / parseFloat(vlrNFS) * 100
                               projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
-                              console.log('parDedNfs=>' + parDedNfs)
+                              //console.log('parDedNfs=>' + parDedNfs)
                               var parISSNfs = parseFloat(impNFS) / parseFloat(vlrNFS) * 100
                               projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)
-                              console.log('parISSNfs=>' + parISSNfs)
+                              //console.log('parISSNfs=>' + parISSNfs)
                               var parImpNfs = (parseFloat(totalImposto) / parseFloat(vlrNFS)) * 100
                               projeto.parImpNfs = parseFloat(parImpNfs).toFixed(2)
-                              console.log('parImpNfs=>' + parImpNfs)
+                              //console.log('parImpNfs=>' + parImpNfs)
                               if (vlrcom > 0) {
                                    var parComNfs = parseFloat(vlrcom) / parseFloat(vlrNFS) * 100
                                    projeto.parComNfs = parseFloat(parComNfs).toFixed(2)
-                                   console.log('parComNfs=>' + parComNfs)
+                                   //console.log('parComNfs=>' + parComNfs)
                               }
 
                               projeto.save().then(() => {
@@ -2490,20 +2791,20 @@ router.post('/realizar', ehAdmin, (req, res) => {
                Realizado.findOne({ projeto: projeto._id }).lean().then((realizado) => {
                     Detalhado.findOne({ projeto: projeto._id }).lean().then((detalhe) => {
                          var varCP = false
-                         var varLB = false
+                         var varTI = false
                          var varLAI = false
                          var varLL = false
-                         var varCustoPlano = (realizado.custoPlano - projeto.totcop).toFixed(2)
+                         var varCustoPlano = (realizado.custoPlano - projeto.custoPlano).toFixed(2)
                          if (varCustoPlano > 1) {
                               varCP = false
                          } else {
                               varCP = true
                          }
-                         var varLucroBruto = (realizado.lucroBruto - projeto.lucroBruto).toFixed(2)
-                         if (varLucroBruto > 1) {
-                              varLB = true
+                         var varTI = (realizado.totalImposto - projeto.totalImposto).toFixed(2)
+                         if (varTotalImposto > 1) {
+                              varTI = true
                          } else {
-                              varLB = false
+                              varTI = false
                          }
                          var varlbaimp = (realizado.lbaimp - projeto.lbaimp).toFixed(2)
                          if (varlbaimp > 1) {
@@ -2517,9 +2818,10 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          } else {
                               varLL = false
                          }
+
                          var temCercamento
                          var temPosteCond
-                         var temOcp
+                         var temCentral
                          if (projeto.temCercamento == 'checked') {
                               temCercamento = true
                          } else {
@@ -2530,14 +2832,13 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          } else {
                               temPosteCond = false
                          }
-
-                         if (parseFloat(detalhe.valorOcp) > 0) {
-                              temOcp = true
+                         if (projeto.temCentral == 'checked') {
+                              temCentral = true
                          } else {
-                              temOcp = false
+                              temCentral = false
                          }
                          sucesso.push({ texto: 'Projeto realizado com sucesso.' })
-                         res.render('projeto/realizado', { sucesso: sucesso, projeto: projeto, realizado: realizado, detalhe: detalhe, varCustoPlano: varCustoPlano, varLucroBruto: varLucroBruto, varlbaimp: varlbaimp, varLucroLiquido: varLucroLiquido, varLB: varLB, varLL: varLL, varLAI: varLAI, varCP: varCP, temCercamento: temCercamento, temPosteCond: temPosteCond, temOcp: temOcp })
+                         res.render('projeto/realizado', { sucesso: sucesso, projeto: projeto, realizado: realizado, detalhe: detalhe, varCustoPlano: varCustoPlano, varLucroBruto: varLucroBruto, varlbaimp: varlbaimp, varLucroLiquido: varLucroLiquido, varTI: varTI, varLL: varLL, varLAI: varLAI, varCP: varCP, temCercamento: temCercamento, temPosteCond: temPosteCond, temCentral: temCentral })
                     }).catch((err) => {
                          req.flash('error_msg', 'Detalhe não encontrado.')
                          res.redirect('/projeto/consulta')
@@ -2567,10 +2868,9 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          })
 
                          var prj_id = projeto._id
-                         var prjCusto = projeto.totcop
+                         var prjCusto = projeto.custoPlano
                          var prjValor = projeto.valor
-                         var projeto_recLiquida = projeto.recLiquida
-                         var projeto_lucroBruto = projeto.lucroBruto
+                         var projeto_totalImposto = projeto.totalImposto
                          var projeto_lbaimp = projeto.lbaimp
                          var projeto_lucroLiquido = projeto.lucroLiquido
 
@@ -2638,46 +2938,46 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               }
                          }
 
-                         var cercamento = 0
-                         var ocp = 0
-                         var postecond = 0
-
-                         console.log('projeto.temCercamento=>' + projeto.temCercamento)
-
-                         console.log('projeto.temPosteCond=>' + projeto.temPosteCond)
-
+                         var valorCer = 0
+                         var valorCen = 0
+                         var valorPos = 0
                          if (projeto.temCercamento == 'checked') {
                               if (req.body.cercamento != '') {
-                                   cercamento = req.body.cercamento
+                                   valorCer = req.body.cercamento
                               }
                          }
-
-                         if (parseFloat(detalhe.valorOcp) > 0) {
-                              if (req.body.ocp != '') {
-                                   ocp = req.body.ocp
-
+                         if (projeto.temCentral == 'checked') {
+                              if (req.body.central != '') {
+                                   valorCen = req.body.central
                               }
                          }
-
                          if (projeto.temPosteCond == 'checked') {
                               if (req.body.postecond != '') {
-                                   postecond = req.body.postecond
+                                   valorPos = req.body.postecond
                               }
                          }
 
-                         //console.log('totint=>' + totint)
-                         //console.log('totges=>' + totges)
-                         //console.log('totpro=>' + totpro)
-                         //console.log('totdes=>' + totdes)
-                         //console.log('totali=>' + totali)
-                         //console.log('totcmb=>' + totcmb)
-                         //console.log('tothtl=>' + tothtl)
-                         //console.log('totali=>' + totali)
-                         //console.log('cercamento=>' + cercamento)
-                         //console.log('ocp=>' + ocp)
-                         //console.log('postecond=>' + postecond)
+                         if ((valorPos == 0 || valorPos == '') && detalhe.valorPos != 0) {
+                              valorPos = detalhe.valorPos
+                         }
+                         if ((valorCer == 0 || valorCer == '') && detalhe.valorCer != 0) {
+                              valorCer = detalhe.valorCer
+                         }
+                         if ((valorCen == 0 || valorCen == '') && detalhe.valorCen != 0) {
+                              valorCen = detalhe.valorCen
+                         }
+                         //console.log('valorPos=>' + valorPos)
+                         //console.log('valorCer=>' + valorCer)
+                         //console.log('valorCen=>' + valorCen)
 
-                         totalPlano = parseFloat(totint) + parseFloat(totges) + parseFloat(totpro) + parseFloat(vlrart) + parseFloat(totali) + parseFloat(totdes) + parseFloat(totcmb) + parseFloat(tothtl) + parseFloat(cercamento) + parseFloat(postecond) + parseFloat(ocp)
+                         var custoFix = parseFloat(totint) + parseFloat(totges) + parseFloat(totpro) + parseFloat(vlrart)
+                         //console.log('custoFix=>' + custoFix)
+                         var custoVar = parseFloat(totali) + parseFloat(totdes) + parseFloat(totcmb) + parseFloat(tothtl)
+                         //console.log('custoVar=>' + custoVar)
+                         var custoEst = parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen)
+                         //console.log('custoEst=>' + custoEst)
+                         totalPlano = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
+                         //console.log('totalPlano=>' + totalPlano)
                          //console.log('totalPlano=>' + totalPlano)
 
                          var vlrequ
@@ -2747,10 +3047,8 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          } else {
                               vlrcom = req.body.vlrcom
                          }
-                         console.log('vlrcom=>' + vlrcom)
 
                          var lbaimp = 0
-                         var desAdm = 0
                          if (parseFloat(projeto.desAdm) > 0) {
                               lbaimp = (parseFloat(prjLucroBruto) - parseFloat(totalPlano) - parseFloat(projeto.desAdm) - parseFloat(vlrcom)).toFixed(2)
                          } else {
@@ -2822,12 +3120,8 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               var prjFat = rp.prjFat
 
                               if (rp.regime == 'Simples') {
-                                   console.log('prjFat=>' + prjFat)
-                                   console.log('rp.alqDAS=>' + rp.alqDAS)
-                                   console.log('rp.vlrred=>' + rp.vlrred)
                                    var alqEfe = ((parseFloat(prjFat) * (parseFloat(rp.alqDAS) / 100)) - (parseFloat(rp.vlrred))) / parseFloat(prjFat)
                                    impSimples = parseFloat(vlrPrjNFS) * (parseFloat(alqEfe))
-                                   console.log('impSimples=>' + impSimples)
                                    totalImposto = parseFloat(impSimples).toFixed(2)
                                    impIRPJ = 0
                                    impIRPJAdd = 0
@@ -2839,32 +3133,21 @@ router.post('/realizar', ehAdmin, (req, res) => {
                                         //Imposto Adicional de IRPJ
                                         if ((parseFloat(prjLR) / 12) > 20000) {
                                              fatadd = (parseFloat(prjLR) / 12) - 20000
-                                             console.log('fatadd=>' + fatadd)
                                              fataju = parseFloat(fatadd) * (parseFloat(rp.alqIRPJAdd) / 100)
-                                             console.log('fataju=>' + fataju)
-                                             console.log('lbaimp=>' + lbaimp)
                                              aux = Math.round(parseFloat(fatadd) / parseFloat(lbaimp))
-                                             console.log('aux=>' + aux)
                                              impIRPJAdd = (parseFloat(fataju) / parseFloat(aux)).toFixed(2)
 
                                         } else {
                                              impIRPJAdd = 0
                                         }
-                                        console.log('impIRPJAdd=>' + impIRPJAdd)
                                         impIRPJ = parseFloat(lbaimp) * (parseFloat(rp.alqIRPJ) / 100)
                                         impIRPJ = impIRPJ.toFixed(2)
-                                        console.log('impIRPJ=>' + impIRPJ)
-
                                         impCSLL = parseFloat(lbaimp) * (parseFloat(rp.alqCSLL) / 100)
                                         impCSLL = impCSLL.toFixed(2)
-                                        console.log('impCSLL=>' + impCSLL)
                                         impPIS = parseFloat(vlrPrjNFS) * 0.5 * (parseFloat(rp.alqPIS) / 100)
                                         impPIS = impPIS.toFixed(2)
-                                        console.log('impPIS=>' + impPIS)
                                         impCOFINS = parseFloat(vlrPrjNFS) * 0.5 * (parseFloat(rp.alqCOFINS) / 100)
                                         impCOFINS = impCOFINS.toFixed(2)
-                                        console.log('impCOFINS=>' + impCOFINS)
-
                                         totalImposto = (parseFloat(impIRPJAdd) + parseFloat(impIRPJ) + parseFloat(impCSLL) + parseFloat(impCOFINS) + parseFloat(impPIS)).toFixed(2)
 
                                    } else {
@@ -2906,17 +3189,11 @@ router.post('/realizar', ehAdmin, (req, res) => {
 
                          var lucroLiquido = (parseFloat(lbaimp) - parseFloat(totalImposto)).toFixed(2)
 
-                         console.log('totalImposto=>' + totalImposto)
-                         console.log('totalTributos=>' + totalTributos)
-                         console.log('lucroLiquido=>' + lucroLiquido)
-
                          //CÁLCULO DAS VARIAÇÕES
                          var varCusto = - (((parseFloat(prjCusto) - parseFloat(totalPlano)) / parseFloat(prjCusto)) * 100)
                          varCusto = varCusto.toFixed(2)
-                         var varRB = - (((parseFloat(projeto_recLiquida) - parseFloat(prjrecLiquida)) / parseFloat(projeto_recLiquida)) * 100)
-                         varRB = varRB.toFixed(2)
-                         var varLB = -(((parseFloat(projeto_lucroBruto) - parseFloat(prjLucroBruto)) / parseFloat(projeto_lucroBruto)) * 100)
-                         varLB = varLB.toFixed(2)
+                         var varTI = - (((parseFloat(projeto_totalImposto) - parseFloat(totalImposto)) / parseFloat(projeto_totalImposto)) * 100)
+                         varTI = varTI.toFixed(2)
                          var varLAI = -(((parseFloat(projeto_lbaimp) - parseFloat(lbaimp)) / parseFloat(projeto_lbaimp)) * 100)
                          varLAI = varLAI.toFixed(2)
                          var varLL = -(((parseFloat(projeto_lucroLiquido) - parseFloat(lucroLiquido)) / parseFloat(projeto_lucroLiquido)) * 100)
@@ -3030,7 +3307,6 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               varLucRlz = false
                          }
 
-
                          //Define data atual
                          var data = new Date()
                          var dia = data.getDate()
@@ -3060,7 +3336,6 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          //Para verificar alguma falha quando salva o registro do realizado
                          //console.log('user=>' + _id)
                          //console.log('projeto=>' + prj_id)
-                         //console.log('foiRealizado=>' + false)
                          //console.log('nome=>' + projeto.nome)
                          //console.log('cliente=>' + projeto.cliente)
                          //console.log('dataini=>' + projeto.dataini)
@@ -3074,9 +3349,9 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          //console.log('totali=>' + totali)
                          //console.log('totdes=>' + totdes)
                          //console.log('tothtl=>' + tothtl)
-                         //console.log('cercamento=>' + cercamento)
-                         //console.log('ocp=>' + ocp)
-                         //console.log('postecond=>' + postecond)
+                         //console.log('cercamento=>' + valorCer)
+                         //console.log('central=>' + valorCen)
+                         //console.log('postecond=>' + valorPos)
                          //console.log('custoPlano=>' + totalPlano)
                          //console.log('vlrequ=>' + vlrequ)
                          //console.log('vlrNFS=>' + vlrPrjNFS)
@@ -3098,7 +3373,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          //console.log('lucroLiquido=>' + lucroLiquido)
 
                          //console.log('varCusto=>' + varCusto)
-                         //console.log('varLB=>' + varLB)
+                         //console.log('varTI=>' + varTI)
                          //console.log('varLAI=>' + varLAI)
                          //console.log('varLL=>' + varLL)
 
@@ -3155,12 +3430,26 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               totdes: totdes,
                               tothtl: tothtl,
                               totcmb: totcmb,
-                              cercamento: cercamento,
-                              postecond: postecond,
-                              ocp: ocp,
+                              valorCer: valorCer,
+                              valorCen: valorCen,
+                              valorPos: valorPos,
+
+                              custofix: custoFix,
+                              custovar: custoVar,
+                              custoest: custoEst,
                               custoPlano: totalPlano,
+                              fatequ: projeto.fatequ,
                               vlrequ: vlrequ,
                               vlrkit: vlrkit,
+                              valorMod: detalhe.valorMod,
+                              valorInv: detalhe.valorInv,
+                              valorEst: detalhe.valorEst,
+                              valorCab: detalhe.valorCab,
+                              valorDis: detalhe.valorDis,
+                              valorDPS: detalhe.valorDPS,
+                              valorSB: detalhe.valorSB,
+                              valorOcp: detalhe.valorOcp,
+
                               vlrNFS: vlrPrjNFS,
                               recLiquida: prjrecLiquida,
                               lucroBruto: prjLucroBruto,
@@ -3183,8 +3472,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               lucroLiquido: lucroLiquido,
 
                               varCusto: varCusto,
-                              varRB: varRB,
-                              varLB: varLB,
+                              varTI: varTI,
                               varLAI: varLAI,
                               varLL: varLL,
 
@@ -3235,20 +3523,20 @@ router.post('/realizar', ehAdmin, (req, res) => {
                                         Realizado.findOne({ projeto: projeto._id }).lean().then((realizado) => {
                                              Detalhado.findOne({ projeto: projeto._id }).lean().then((detalhe) => {
                                                   var varCP = false
-                                                  var varLB = false
+                                                  var varTI = false
                                                   var varLAI = false
                                                   var varLL = false
-                                                  var varCustoPlano = (realizado.custoPlano - projeto.totcop).toFixed(2)
+                                                  var varCustoPlano = (realizado.custoPlano - projeto.custoPlano).toFixed(2)
                                                   if (varCustoPlano > 1) {
                                                        varCP = false
                                                   } else {
                                                        varCP = true
                                                   }
-                                                  var varLucroBruto = (realizado.lucroBruto - projeto.lucroBruto).toFixed(2)
-                                                  if (varLucroBruto > 1) {
-                                                       varLB = true
+                                                  var varTotalImposto = (realizado.totalImposto - projeto.totalImposto).toFixed(2)
+                                                  if (varTotalImposto > 1) {
+                                                       varTI = true
                                                   } else {
-                                                       varLB = false
+                                                       varTI = false
                                                   }
                                                   var varlbaimp = (realizado.lbaimp - projeto.lbaimp).toFixed(2)
                                                   if (varlbaimp > 1) {
@@ -3264,7 +3552,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                                                   }
                                                   var temCercamento
                                                   var temPosteCond
-                                                  var temOcp
+                                                  var temCentral
                                                   if (projeto.temCercamento == 'checked') {
                                                        temCercamento = true
                                                   } else {
@@ -3276,14 +3564,14 @@ router.post('/realizar', ehAdmin, (req, res) => {
                                                        temPosteCond = false
                                                   }
 
-                                                  if (parseFloat(detalhe.valorOcp) > 0) {
-                                                       temOcp = true
+                                                  if (projeto.temCentral == 'checked') {
+                                                       temCentral = true
                                                   } else {
-                                                       temOcp = false
+                                                       temCentral = false
                                                   }
 
                                                   sucesso.push({ texto: 'Projeto realizado com sucesso.' })
-                                                  res.render('projeto/realizado', { sucesso: sucesso, projeto: projeto, realizado: realizado, detalhe: detalhe, varCustoPlano: varCustoPlano, varLucroBruto: varLucroBruto, varlbaimp: varlbaimp, varLucroLiquido: varLucroLiquido, varLB: varLB, varLL: varLL, varLAI: varLAI, varCP: varCP, temCercamento: temCercamento, temPosteCond: temPosteCond, temOcp: temOcp })
+                                                  res.render('projeto/realizado', { sucesso: sucesso, projeto: projeto, realizado: realizado, detalhe: detalhe, varCustoPlano: varCustoPlano, varTotalImposto: varTotalImposto, varlbaimp: varlbaimp, varLucroLiquido: varLucroLiquido, varTI: varTI, varLL: varLL, varLAI: varLAI, varCP: varCP, temCercamento: temCercamento, temPosteCond: temPosteCond, temCentral: temCentral })
                                              }).catch((err) => {
                                                   req.flash('error_msg', 'Nenhum regime encontrado.')
                                                   res.redirect('/menu')
@@ -3475,10 +3763,10 @@ router.get('/confirmafinalizar/:id', ehAdmin, (req, res) => {
                if (realizado.datafim == 0) {
                     erros.push({ texto: 'É necessário preenher a data de entrega para finalizaro projeto. Preencha a data de entrega, calcule o projeto e finalize.' })
                     var varCP = false
-                    var varLB = false
+                    var varTI = false
                     var varLAI = false
                     var varLL = false
-                    var varCustoPlano = (realizado.custoPlano - projeto.totcop).toFixed(2)
+                    var varCustoPlano = (realizado.custoPlano - projeto.custoPlano).toFixed(2)
                     if (varCustoPlano > 1) {
                          varCP = false
                     } else {
@@ -3486,9 +3774,9 @@ router.get('/confirmafinalizar/:id', ehAdmin, (req, res) => {
                     }
                     var varLucroBruto = (realizado.lucroBruto - projeto.lucroBruto).toFixed(2)
                     if (varLucroBruto > 1) {
-                         varLB = true
+                         varTI = true
                     } else {
-                         varLB = false
+                         varTI = false
                     }
                     var varlbaimp = (realizado.lbaimp - projeto.lbaimp).toFixed(2)
                     if (varlbaimp > 1) {
@@ -3502,7 +3790,7 @@ router.get('/confirmafinalizar/:id', ehAdmin, (req, res) => {
                     } else {
                          varLL = false
                     }
-                    res.render('projeto/realizado', { erros: erros, projeto: projeto, realizado: realizado, varCustoPlano: varCustoPlano, varLucroBruto: varLucroBruto, varlbaimp: varlbaimp, varLucroLiquido: varLucroLiquido, varLB: varLB, varLL: varLL, varLAI: varLAI, varCP: varCP })
+                    res.render('projeto/realizado', { erros: erros, projeto: projeto, realizado: realizado, varCustoPlano: varCustoPlano, varLucroBruto: varLucroBruto, varlbaimp: varlbaimp, varLucroLiquido: varLucroLiquido, varTI: varTI, varLL: varLL, varLAI: varLAI, varCP: varCP })
                } else {
                     res.render('projeto/confirmafinalizar', { realizado: realizado })
                }
@@ -3528,10 +3816,10 @@ router.get('/finalizar/:id', ehAdmin, (req, res) => {
                     Projeto.findOne({ _id: realizado.projeto }).lean().then((projeto) => {
                          Detalhado.findOne({ projeto: projeto._id }).lean().then((detalhe) => {
                               var varCP = false
-                              var varLB = false
+                              var varTI = false
                               var varLAI = false
                               var varLL = false
-                              var varCustoPlano = (realizado.custoPlano - projeto.totcop).toFixed(2)
+                              var varCustoPlano = (realizado.custoPlano - projeto.custoPlano).toFixed(2)
                               if (varCustoPlano > 1) {
                                    varCP = false
                               } else {
@@ -3539,9 +3827,9 @@ router.get('/finalizar/:id', ehAdmin, (req, res) => {
                               }
                               var varLucroBruto = (realizado.lucroBruto - projeto.lucroBruto).toFixed(2)
                               if (varLucroBruto > 1) {
-                                   varLB = true
+                                   varTI = true
                               } else {
-                                   varLB = false
+                                   varTI = false
                               }
                               var varlbaimp = (realizado.lbaimp - projeto.lbaimp).toFixed(2)
                               if (varlbaimp > 1) {
@@ -3557,7 +3845,7 @@ router.get('/finalizar/:id', ehAdmin, (req, res) => {
                               }
                               var temCercamento
                               var temPosteCond
-                              var temOcp
+                              var temCentral
                               if (projeto.temCercamento == 'checked') {
                                    temCercamento = true
                               } else {
@@ -3569,13 +3857,13 @@ router.get('/finalizar/:id', ehAdmin, (req, res) => {
                                    temPosteCond = false
                               }
 
-                              if (parseFloat(detalhe.valorOcp) > 0) {
-                                   temOcp = true
+                              if (projeto.temCentral == 'checked') {
+                                   temCentral = true
                               } else {
-                                   temOcp = false
+                                   temCentral = false
                               }
                               sucesso.push({ texto: 'Projeto finalizado com sucesso.' })
-                              res.render('projeto/realizado', { sucesso: sucesso, projeto: projeto, realizado: realizado, detalhe: detalhe, varCustoPlano: varCustoPlano, varLucroBruto: varLucroBruto, varlbaimp: varlbaimp, varLucroLiquido: varLucroLiquido, varLB: varLB, varLL: varLL, varLAI: varLAI, varCP: varCP, temCercamento: temCercamento, temPosteCond: temPosteCond, temOcp: temOcp })
+                              res.render('projeto/realizado', { sucesso: sucesso, projeto: projeto, realizado: realizado, detalhe: detalhe, varCustoPlano: varCustoPlano, varLucroBruto: varLucroBruto, varlbaimp: varlbaimp, varLucroLiquido: varLucroLiquido, varTI: varTI, varLL: varLL, varLAI: varLAI, varCP: varCP, temCercamento: temCercamento, temPosteCond: temPosteCond, temCentral: temCentral })
                          }).catch((err) => {
                               req.flash('error_msg', 'Detalhe não encontrado.')
                               res.redirect('/projeto/consulta')
@@ -3633,7 +3921,7 @@ router.get('/executar/:id', ehAdmin, (req, res) => {
                          pv = prj_vendedor
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve uma falha ao encontrar um vendedor')
-                         res.redirect('/pressoa/consulta')
+                         res.redirect('/pessoa/consulta')
                     })
                     Detalhado.findOne({ projeto: req.params.id }).lean().then((detalhe) => {
                          Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {
@@ -3662,7 +3950,7 @@ router.get('/executar/:id', ehAdmin, (req, res) => {
                               res.redirect('/configuracao/consulta')
                          })
                     }).catch((err) => {
-                         req.flash('error_msg', 'Houve uma falha ao encontrar os detalhes do projeto')
+                         req.flash('error_msg', 'Houve uma falha ao encontrar os detalhes do projeto.')
                          res.redirect('/configuracao/consulta')
                     })
                }).catch((err) => {
@@ -3679,18 +3967,47 @@ router.get('/executar/:id', ehAdmin, (req, res) => {
      })
 })
 
-router.get('/parar/:id', ehAdmin, (req, res) => {
+router.get('/motivoParar/:id', ehAdmin, (req, res) => {
+     const { _id } = req.user
+     Projeto.findOne({ _id: req.params.id, user: _id }).lean().then((projeto) => {
+          var currenTime = new Date()
+          var hoje = currenTime.toLocaleDateString()
+          res.render('projeto/motivoparar', { projeto: projeto, datahoje: hoje })
+     }).catch((err) => {
+          req.flash('error_msg', 'Não foi possível encontrar o projeto')
+          res.redirect('/projeto/consulta')
+     })
+})
+
+router.post('/parar', ehAdmin, (req, res) => {
      var aviso = []
      var pv
      var pr
      var rp
      const { _id } = req.user
 
-     Projeto.findOne({ _id: req.params.id }).then((projeto_para) => {
+     Projeto.findOne({ _id: req.body.id }).then((projeto_para) => {
           projeto_para.executando = false
           projeto_para.parado = true
+          if (projeto_para.tipoParado == '') {
+               projeto_para.tipoParado = req.body.tipoParado
+               projeto_para.motivoParado = req.body.tipoParado + ': ' + req.body.motivoParado
+          } else {
+               if (req.body.cbTipo != null) {
+                    var textoParado = req.body.tipoParado
+                    projeto_para.tipoParado = req.body.tipoParado
+                    projeto_para.motivoParado = textoParado + ': ' + req.body.motivoParado
+               } else {
+                    //console.log('checkbox desmarcado')
+                    //console.log('tipo_para=>' + projeto_para.tipoParado)
+                    //console.log('texto motivo parado=>' + req.body.motivoParado)
+                    projeto_para.motivoParado = projeto_para.tipoParado + ': ' + req.body.motivoParado
+               }
+          }
+
+          projeto_para.dataParado = req.body.dataParado
           projeto_para.save().then(() => {
-               Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
+               Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
                     aviso.push({ texto: 'Projeto parado.' })
                     Regime.findOne({ _id: projeto.regime }).lean().then((regime_projeto) => {
                          rp = regime_projeto
@@ -3708,7 +4025,7 @@ router.get('/parar/:id', ehAdmin, (req, res) => {
                          pv = prj_vendedor
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve uma falha ao encontrar um vendedor')
-                         res.redirect('/pressoa/consulta')
+                         res.redirect('/pessoa/consulta')
                     })
                     Detalhado.findOne({ projeto: req.params.id }).lean().then((detalhe) => {
 
@@ -3786,7 +4103,7 @@ router.get('/homologar/:id', ehAdmin, (req, res) => {
                          pv = prj_vendedor
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve uma falha ao encontrar um vendedor')
-                         res.redirect('/pressoa/consulta')
+                         res.redirect('/pessoa/consulta')
                     })
                     Detalhado.findOne({ projeto: req.params.id }).lean().then((detalhe) => {
                          Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {

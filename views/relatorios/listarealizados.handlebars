@@ -90,24 +90,25 @@
             <div>Usuário: {{nome_usuario}}</div>
             <div>Total de Projetos: {{qtdprj}}</div>
         </div>
+        <div class="row mb-4" style="width: 300px;">
+            <div class='filtro-selecao' style="margin-left: 10px;font-size: 12px;">Datas Filtradas: {{dataInicio}} a
+                {{dataFim}}
+            </div>
+        </div>
     </div>
     <table>
         <tr>
             <th>Projeto</th>
             <th>Cliente</th>
-            <!--
-            <th>Cidade</th>
-            <th>Estado</th>
-            <th>Endereço</th>
-            -->
             <th>Cadastro</th>
             <th>Inicio</th>
             <th>Entrega</th>
-            <th>Faturado</th>
             <th>Total</th>
-            <th>Custos</th>
+            <th>Faturado</th>
+            <th>RO</th>
+            <th>CO</th>
             <th>%</th>
-            <th>Lucro Bruto</th>
+            <th>LAI</th>
             <th>Lucro Líquido</th>
             <th>%</th>
             <th>Tributos</th>
@@ -116,22 +117,18 @@
         {{#each realizado}}
         <tr>
             <td>{{nome}}</td>
-            <td>{{nomecliente}}</td>
-            <!--
-            <td></td>
-            <td></td>
-            <td></td>
-            -->
+            <td>{{cliente}}</td>
             <td>{{data}}</td>
             <td>{{dataini}}</td>
             <td>{{datafim}}</td>
-            <td>R$ {{vlrNFS}}</td>
             <td>R$ {{valor}}</td>
-            <td>R$ {{custoPlano}}</td>
-            <td>{{parDedVlr}}</td>
+            <td>R$ {{vlrNFS}}</td>
             <td>R$ {{lucroBruto}}</td>
+            <td>R$ {{custoPlano}}</td>
+            <td>{{parDedNfs}}</td>
+            <td>R$ {{lbaimp}}</td>
             <td>R$ {{lucroLiquido}}</td>
-            <td>{{parLiqVlr}}</td>
+            <td>{{parLiqNfs}}</td>
             <td>R$ {{totalImposto}}</td>
             <td>{{parImpVlr}}</td>
         </tr>
@@ -140,11 +137,12 @@
         {{/each}}
         <tr style="background-color: rgba(200, 200, 200, 0.8);font-weight: 700;">
             <td style="font-size: 12px;" colspan='5'>Total</td>
-            <td style="font-size: 12px;"> R$ {{soma_vlrnfs}}</td>
             <td style="font-size: 12px;">R$ {{soma_valor}}</td>
+            <td style="font-size: 12px;"> R$ {{soma_vlrnfs}}</td>
+            <td style="font-size: 12px;">R$ {{soma_lb}}</td>
             <td style="font-size: 12px;">R$ {{soma_custo}}</td>
             <td style="font-size: 12px;">{{perMedCusto}}</td>
-            <td style="font-size: 12px;">R$ {{soma_lb}}</td>
+            <td style="font-size: 12px;">R$ {{soma_lbaimp}}</td>
             <td style="font-size: 12px;">R$ {{soma_ll}}</td>
             <td style="font-size: 12px;">{{perMedLL}}</td>
             <td style="font-size: 12px;">R$ {{soma_tributos}}</td>

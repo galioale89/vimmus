@@ -69,7 +69,7 @@
                     dataprev.value = dia1 + '/' + mes1 + '/' + ano1
                 }
             }
-        }else{
+        } else {
             alert('Primeiro escolha a data inicial.')
             data.value = ''
         }
@@ -104,25 +104,29 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Laçar custos detalhados do projeto</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title">Lançar custos detalhados do projeto</h5>
+                        <button type="button" class="btn btn-sm btn-success" data-bs-dismiss="modal"
+                            aria-label="Close">Aplicar</button>
                     </div>
                     <div class="modal-body">
-                        <div class="row">                        
+                        <div class="row">
                             <div class="col-md-4 text-end">
                                 <label class='col-form-label col-form-label-sm fw-bold'>Descrição</label><br>
                                 <div class="row mb-1">
                                     <label class='col-form-label col-form-label-sm fw-bold'>Kit Gerador:</label>
                                 </div>
+                                <hr>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Módulos:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Inversor:</label>
+                                </div>
                                 <div class="row mb-1">
                                     <label class='col-form-label col-form-label-sm fw-bold'>Estrutura:</label>
                                 </div>
                                 <div class="row mb-1">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Cerca:</label>
-                                </div>
-                                <div class="row mb-1">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Postes de Condução de
-                                        Fios:</label>
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Cabos:</label>
                                 </div>
                                 <div class="row mb-1">
                                     <label class='col-form-label col-form-label-sm fw-bold'>Disjuntores:</label>
@@ -131,74 +135,112 @@
                                     <label class='col-form-label col-form-label-sm fw-bold'>DPS:</label>
                                 </div>
                                 <div class="row mb-1">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Cabos:</label>
+                                    <label class='col-form-label col-form-label-sm fw-bold'>String Box:</label>
                                 </div>
                                 <div class="row mb-1">
                                     <label class='col-form-label col-form-label-sm fw-bold'>Outros Componentes:
                                 </div>
+                                <hr>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Cerca:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Central:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Postes de Condução de
+                                        Fios:</label>
+                                </div>
                             </div>
-                            <div class="col-md-1">
+                            <div class="col-md-2">
                                 <label class='col-form-label col-form-label-sm fw-bold'>UN</label><br>
                                 <input type='number' value='{{detalhe.unidadeEqu}}'
                                     class='form-control form-control-sm mb-1' name='unidadeEqu'>
+                                <hr>
+                                <input type='number' value='{{detalhe.unidadeMod}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeMod'>
+                                <input type='number' value='{{detalhe.unidadeInv}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeInv'>
                                 <input type='number' value='{{detalhe.unidadeEst}}'
                                     class='form-control form-control-sm mb-1' name='unidadeEst'>
-                                <input type='number' value='{{detalhe.unidadeCer}}'
-                                    class='form-control form-control-sm mb-1' name='unidadeCer'>
-                                <input type='number' value='{{detalhe.unidadePos}}'
-                                    class='form-control form-control-sm mb-1' name='unidadePos'>
+                                <input type='number' value='{{detalhe.unidadeCab}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeCab'>
                                 <input type='number' value='{{detalhe.unidadeDis}}'
                                     class='form-control form-control-sm mb-1' name='unidadeDis'>
                                 <input type='number' value='{{detalhe.unidadeDPS}}'
                                     class='form-control form-control-sm mb-1' name='unidadeDPS'>
-                                <input type='number' value='{{detalhe.unidadeCab}}'
-                                    class='form-control form-control-sm mb-1' name='unidadeCab'>
+                                <input type='number' value='{{detalhe.unidadeSB}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeSB'>
                                 <input type='number' value='{{detalhe.unidadeOcp}}'
                                     class='form-control form-control-sm mb-1' name='unidadeOcp'>
+                                <hr>
+                                <input type='number' value='{{detalhe.unidadeCer}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeCer'>
+                                <input type='number' value='{{detalhe.unidadeCen}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeCen'>
+                                <input type='number' value='{{detalhe.unidadePos}}'
+                                    class='form-control form-control-sm mb-1' name='unidadePos'>
                             </div>
                             <div class="col-md-3">
                                 <label type='number' class='col-form-label col-form-label-sm fw-bold'>R$
                                     Unitário</label><br>
                                 <input type='number' value='{{detalhe.vlrUniEqu}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniEqu'>
+                                <hr>
+                                <input type='number' value='{{detalhe.vlrUniMod}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniMod'>
+                                <input type='number' value='{{detalhe.vlrUniInv}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniInv'>
                                 <input type='number' value='{{detalhe.vlrUniEst}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniEst'>
-                                <input type='number' value='{{detalhe.vlrUniCer}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCer'>
-                                <input type='number' value='{{detalhe.vlrUniPos}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniPos'>
+                                <input type='number' value='{{detalhe.vlrUniCab}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCab'>
                                 <input type='number' value='{{detalhe.vlrUniDis}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDis'>
                                 <input type='number' value='{{detalhe.vlrUniDPS}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDPS'>
-                                <input type='number' value='{{detalhe.vlrUniCab}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCab'>
+                                <input type='number' value='{{detalhe.vlrUniSB}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniSB'>
                                 <input type='number' value='{{detalhe.vlrUniOcp}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniOcp'>
+                                <hr>
+                                <input type='number' value='{{detalhe.vlrUniCer}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCer'>
+                                <input type='number' value='{{detalhe.vlrUniCen}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCen'>
+                                <input type='number' value='{{detalhe.vlrUniPos}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniPos'>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label class='col-form-label col-form-label-sm fw-bold'>R$ Total</label><br>
                                 <input type='number' value='{{detalhe.valorEqu}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorEqu'>
+                                <hr>
+                                <input type='number' value='{{detalhe.valorMod}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorMod'>
+                                <input type='number' value='{{detalhe.valorInv}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorInv'>
                                 <input type='number' value='{{detalhe.valorEst}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorEst'>
-                                <input type='number' value='{{detalhe.valorCer}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorCer'>
-                                <input type='number' value='{{detalhe.valorPos}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorPos'>
+                                <input type='number' value='{{detalhe.valorCab}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorCab'>
                                 <input type='number' value='{{detalhe.valorDis}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorDis'>
                                 <input type='number' value='{{detalhe.valorDPS}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorDPS'>
-                                <input type='number' value='{{detalhe.valorCab}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorCab'>
+                                <input type='number' value='{{detalhe.valorSB}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorSB'>
                                 <input type='number' value='{{detalhe.valorOcp}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorOcp'>
+                                <hr>
+                                <input type='number' value='{{detalhe.valorCer}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorCer'>
+                                <input type='number' value='{{detalhe.valorCen}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorCen'>
+                                <input type='number' value='{{detalhe.valorPos}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorPos'>
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ok</button>
                     </div>
                 </div>
             </div>
@@ -295,66 +337,128 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-4 text-end mb-3">
+                <div class="row" style="border: 1px solid rgba(70,70,70,0.2);border-radius: 5px;">
+                    <div class="col-md-4 text-end mt-2">
                         <label for="vlrorc" class="fw-bold col-form-label col-form-label-sm mb-2"> Valor Orçado do
                             Projeto:
                         </label><br>
                         <label for="vlreqi" class="fw-bold col-form-label col-form-label-sm mb-1"> Valor Kit Gerador:
                         </label><br>
-                        <label class="fw-bold col-form-label col-form-label-sm"> Faturar Kit Gerador:
-                        </label>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4 mt-2">
                         <input type="number" name="valor" id="valor" class="form-control form-control-sm mb-2"
                             placeholder="R$" aria-placeholder="R$">
                         <input type="number" name="equipamento" id="equipamento"
                             class="form-control form-control-sm mb-2" placeholder="R$" aria-placeholder="R$">
-                        <div class="form-check form-switch">
+                    </div>
+                    <div class="col-md-4 text-center mt-2"
+                        style="border-left: 1px solid rgba(70,70,70,0.2);margin-bottom: 5px;">
+                        <label class="fw-bold col-form-label col-form-label-sm"> Faturar Kit Gerador
+                        </label>
+                        <div class="form-check form-switch" style="margin-left: 60px;">
                             <input name='checkFatura' class="form-check-input" type="checkbox">
                         </div>
                     </div>
+                    <div class="row">
+                        <label class='fw-bold col-form-label col-form-label-sm'>Complementos:</label>
+                        <div class="col-md-2">
+                            <div class="form-check">
+                                <input name='central' class="form-check-input" type="checkbox" style="margin-top: 8px;">
+                                <label class="form-check-label col-form-label col-form-label-sm">
+                                    Central
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-check">
+                                <input name='estsolo' class="form-check-input" type="checkbox" style="margin-top: 8px;">
+                                <label class="form-check-label col-form-label col-form-label-sm">
+                                    Estrutura
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check" style="margin-left: 15px;">
+                                <input name='cercamento' class="form-check-input" type="checkbox"
+                                    style="margin-top: 8px;">
+                                <label class="form-check-label col-form-label col-form-label-sm">
+                                    Cercamento
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input name='poste' class="form-check-input" type="checkbox" style="margin-top: 8px;">
+                                <label class="form-check-label col-form-label col-form-label-sm">
+                                    Postes de Condução
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='row' style="margin-left: 1px;">
+                        <a class="btn btn-sm btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#custosModal"><i
+                                class='bi bi-list-ul'></i> Detalhar Equipamento</a>
+                    </div>
                 </div>
-                <div class="row">
-                    <label class='fw-bold col-form-label col-form-label-sm'>Complementos</label>
-                    <div class="col-md-4">
-                        <div class="form-check">
-                            <input name='estsolo' class="form-check-input" type="checkbox">
-                            <label class="form-check-label col-form-label col-form-label-sm">
-                                Estrutura de Solo
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-check">
-                            <input name='cercamento' class="form-check-input" type="checkbox">
-                            <label class="form-check-label col-form-label col-form-label-sm">
-                                Cercamento
-                            </label>
-                        </div>
+                <div class="row mt-1">
+                    <div class="col-md-2">
+                        <label class="fw-bold col-form-label col-form-label-sm"> Classificação:
+                        </label>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-check">
-                            <input name='poste' class="form-check-input" type="checkbox">
-                            <label class="form-check-label col-form-label col-form-label-sm">
-                                Postes de Condução
-                            </label>
-                        </div>
+                        <select name='classUsina' class='form-select form-select-sm'>
+                            <option>Rural</option>
+                            <option>Rural Residencial</option>
+                            <option>Rural Granja</option>
+                            <option>Rural Irrigação</option>
+                            <option>Residêncial</option>
+                            <option>Indústrial</option>
+                            <option>Comercial</option>
+                            <option>Público</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        <label class="fw-bold col-form-label col-form-label-sm"> Tipo:
+                        </label>
+                    </div>
+                    <div class="col-md-5">
+                        <select name='tipoUsina' class='form-select form-select-sm'>
+                            <option>Solo Concreto</option>
+                            <option>Solo Aço</option>
+                            <option>Telhado Fibrocimento</option>
+                            <option>Telhado Madeira</option>
+                            <option>Telhado Cerâmica</option>
+                            <option>Telhado Gambrel</option>
+                            <option>Laje</option>
+                        </select>
                     </div>
                 </div>
+                <div class="row mt-1 mb-2">
+                    <div class="col-md-2 text-end">
+                        <label class="fw-bold col-form-label col-form-label-sm"> Grupo:
+                        </label>
+                    </div>
+                    <div class="col-md-10">
+                        <select name='grupoUsina' class='form-select form-select-sm'>
+                            <option>Grupo A > 2,3kV</option>
+                            <option>Grupo B1 - Residencial</option>
+                            <option>Grupo B2 - Rural</option>
+                            <option>Grupo B3 - Comercial e Indústria PP</option>
+                            <option>Grupo B4 - IP</option>
+                        </select>
+                    </div>
+
+                </div>
+                <!--
                 <div class="row">
                     <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#custosModal"><i
                             class='bi bi-list-ul'></i> Lançar Custos Detalhados do Orçamento
                     </a>
                 </div>
-                <div class="row mt-2 card" style="height: 150px;">
-                    <div class="col-md-2">
-                        <label class='fw-bold col-form-label col-form-label-sm'>Premissas</span>
-                    </div>
-                    <div class="col-md-9 mb-1">
-                        <textarea name='premissas' class="form-control" rows='3'
-                            style="width: 540px;height: 110px;"></textarea>
-                    </div>
+                -->
+                <div class="row" style="height: 110px;">
+                    <label class='fw-bold col-form-label col-form-label-sm'>Premissas e Restrições</span>
+                        <textarea name='premissas' class="form-control" rows='3'></textarea>
                 </div>
                 <!--
                 <div class="row mt-2">

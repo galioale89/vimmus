@@ -44,6 +44,10 @@ const Realizado = new Schema({
         type: Number,
         require: false
     }, 
+    fatequ: {
+        type: Boolean,
+        require: true
+    },
     vlrNFS: {
         type: Number,
         require: false
@@ -55,7 +59,51 @@ const Realizado = new Schema({
     vlrkit: {
         type: Number,
         require: false
+    },  
+    valorMod: {
+        type: Number,
+        require: false
+    },   
+    valorInv: {
+        type: Number,
+        require: false
     },    
+    valorEst: {
+        type: Number,
+        require: false
+    },
+    valorCab: {
+        type: Number,
+        require: false
+    },
+    valorDis: {
+        type: Number,
+        require: false
+    },
+    valorDPS: {
+        type: Number,
+        require: false
+    },    
+    valorSB: {
+        type: Number,
+        require: false
+    },
+    valorOcp: {
+        type: Number,
+        require: false
+    },
+    valorCer: {
+        type: Number,
+        require: false
+    },
+    valorCen: {
+        type: Number,
+        require: false
+    },    
+    valorPos: {
+        type: Number,
+        require: false
+    },       
     totint: {
         type: Number,
         require: false
@@ -88,18 +136,18 @@ const Realizado = new Schema({
         type: Number,
         require: false
     },    
-    cercamento: {
+    custofix: {
         type: Number,
         require: false
     },
-    postecond: {
+    custovar: {
         type: Number,
         require: false
-    },   
-    ocp: {
+    },
+    custoest: {
         type: Number,
         require: false
-    },      
+    },         
     custoPlano: {
         type: Number,
         require: false
@@ -296,14 +344,10 @@ const Realizado = new Schema({
         type: Number,
         require: true
     },
-    varRB: {
+    varTI: {
         type: Number,
         require: true
     },    
-    varLB: {
-        type: Number,
-        require: true
-    },
     varLAI: {
         type: Number,
         require: true

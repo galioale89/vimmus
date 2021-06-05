@@ -1,0 +1,59 @@
+<script>
+    function limpaTexto(){
+        var texto = document.getElementById('motivoParado')
+        texto.value = ''
+    }
+</script>
+<form method="post" action='/projeto/parar'>
+    <input type="hidden" name='id' value='{{projeto._id}}'>
+    <div class="caixa-confirma">
+        <div class="card-body">
+            <div class="row" style="margin-top: 10px;">
+                <h4 class="text-center mb-4">Você tem certeza que deseja parar este Projeto?</h4><br>
+                <h2 class="text-center">{{projeto.nome}}</h2>
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <h6 class="text-center">Motivo</h6>
+                                <select class='form-select form-select-sm ' name='tipoParado'>
+                                    <option>Clima</option>
+                                    <option>Material</option>
+                                    <option>Mão-de-Obra</option>
+                                    <option>Elétrico</option>
+                                    <option>Embargo</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class='col-form-label col-form-label-sm'>Alterar</label><br>
+                                <input type='checkbox' class='form-check-input' name='cbTipo' style="margin-left: 10px;" onchange="limpaTexto()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <textarea rows='5' placeholder='Observação' name='motivoParado'
+                            class='form-control'>{{projeto.motivoParado}}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <h4 class="text-center mb-4">Data de Parada:</h4>
+                </div>
+                <div class="col-md-6">
+                    <input type='text' class="form-control" name='dataParado' {{#if
+                        projeto.parado}}value='{{projeto.dataParado}}' {{else}}value='{{datahoje}}' {{/if}}>
+                </div>
+            </div>
+            <p style="text-align: center;"> Obs.: As informações dos motivos de parada deverão ser incrementadas aos
+                motivos anteriores. E a data é sempre referente a última parada.
+            </p>
+            <div class="row">
+                <div class='btn-group btn-group-lg gap-2' role='group'>
+                    <button type='submit' class='btn btn-success'>Sim</button>
+                    <a class='btn btn-primary' href='/projeto/edicao/{{projeto._id}}'>Não</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

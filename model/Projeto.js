@@ -2,11 +2,11 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const Projeto = new Schema({
-    user:{
+    user: {
         type: Schema.Types.ObjectId,
         ref: 'usuario',
         require: false,
-    },    
+    },
     nome: {
         type: String,
         require: true
@@ -18,22 +18,30 @@ const Projeto = new Schema({
     uf: {
         type: String,
         require: true
-    },        
-    cliente:{
+    },
+    cliente: {
         type: String,
         require: false
     },
-    nomecliente:{
+    nomecliente: {
+        type: String,
+        require: false
+    },
+    classUsina: {
+        type: String,
+        require: false
+    },
+    grupoUsina: {
+        type: String,
+        require: false
+    },
+    tipoUsina: {
         type: String,
         require: false
     },    
     valor: {
-         type: Number,
-         require: true
-    },
-    recLiquida:{
         type: Number,
-        require: true        
+        require: true
     },
     vlrequ: {
         type: Number,
@@ -42,7 +50,7 @@ const Projeto = new Schema({
     vlrkit: {
         type: Number,
         require: true
-    },    
+    },
     fatequ: {
         type: Boolean,
         require: true
@@ -50,7 +58,7 @@ const Projeto = new Schema({
     vlrfat: {
         type: Number,
         require: true
-    },    
+    },
     potencia: {
         type: String,
         require: false
@@ -59,16 +67,16 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
-    qtdequipe:{
+    qtdequipe: {
         type: Number,
         require: false
-    },    
-    equipe:{
+    },
+    equipe: {
         type: Schema.Types.ObjectId,
         ref: 'equipe',
         require: false
     },
-    tothrs:{
+    tothrs: {
         type: Number,
         require: false
     },
@@ -79,47 +87,47 @@ const Projeto = new Schema({
     trbatr: {
         type: Number,
         require: false
-    },    
+    },
     uniatr: {
         type: Number,
         require: false
-    },        
+    },
     totatr: {
         type: Number,
         require: false
-    },     
+    },
     trbest: {
         type: Number,
         require: false
-    }, 
+    },
     uniest: {
         type: Number,
         require: false
-    }, 
+    },
     totest: {
-         type: Number,
-         require: false
-     },  
+        type: Number,
+        require: false
+    },
     unimod: {
         type: Number,
         require: false
-    },       
+    },
     trbmod: {
         type: Number,
         require: false
-    }, 
+    },
     totmod: {
         type: Number,
         require: false
-    },  
+    },
     trbinv: {
         type: Number,
         require: false
-    }, 
+    },
     uniinv: {
         type: Number,
         require: false
-    },     
+    },
     totinv: {
         type: Number,
         require: false
@@ -127,10 +135,10 @@ const Projeto = new Schema({
     vlrhri: {
         type: Number,
         require: false
-    }, 
+    },
     trbint: {
-      type: Number,
-      require: false  
+        type: Number,
+        require: false
     },
     totint: {
         type: Number,
@@ -199,7 +207,7 @@ const Projeto = new Schema({
     vlrart: {
         type: Number,
         require: false
-    },    
+    },
     uniart: {
         type: Number,
         require: false
@@ -218,8 +226,8 @@ const Projeto = new Schema({
     },
     trbpro: {
         type: Number,
-        require: false  
-      },
+        require: false
+    },
     totpro: {
         type: Number,
         require: false
@@ -227,12 +235,12 @@ const Projeto = new Schema({
     totpro_art: {
         type: Number,
         require: false
-    },    
-    trbesc:{
+    },
+    trbesc: {
         type: Number,
         require: false
     },
-    totesc:{
+    totesc: {
         type: Number,
         require: false
     },
@@ -279,40 +287,40 @@ const Projeto = new Schema({
     vlrhrg: {
         type: Number,
         require: false
-    }, 
+    },
     trbges: {
         type: Number,
-        require: false  
-      },
+        require: false
+    },
     totges: {
         type: Number,
         require: false
     },
-    vlrdia:{
+    vlrdia: {
         type: Number,
         require: false
     },
-    tothtl:{
+    tothtl: {
         type: Number,
         require: false
     },
-    discmb:{
+    discmb: {
         type: Number,
-        require: false     
+        require: false
     },
-    ltocmb:{
+    ltocmb: {
         type: Number,
-        require: false     
+        require: false
     },
-    totcmb:{
+    totcmb: {
         type: Number,
-        require: false     
+        require: false
     },
     vlrali: {
         type: Number,
         require: false
     },
-    totali:{
+    totali: {
         type: Number,
         require: false
     },
@@ -320,9 +328,21 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
+    custofix: {
+        type: Number,
+        require: false
+    },
+    custovar: {
+        type: Number,
+        require: false
+    },
+    custoest: {
+        type: Number,
+        require: false
+    },            
     totcop: {
         type: Number,
-        require: false  
+        require: false
     },
     reserva: {
         type: Number,
@@ -332,35 +352,39 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
-    resger:{
+    resger: {
         type: Number,
         require: false
-    },    
+    },
     conadd: {
         type: Number,
         require: false
     },
-    outcer:{
+    outcer: {
         type: Number,
         require: false
     },
-    outpos:{
+    outpos: {
         type: Number,
         require: false
     },
-    impele:{
+    impele: {
         type: Number,
         require: false
     },
-    seguro:{
+    recLiquida: {
+        type: Number,
+        require: true
+    },
+    seguro: {
         type: Number,
         require: false
     },
-    percom:{
+    percom: {
         type: Number,
         require: false
     },
-    vlrcom:{
+    vlrcom: {
         type: Number,
         require: false
     },
@@ -392,31 +416,31 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
-    totalImposto:{
+    totalImposto: {
         type: Number,
         require: false
     },
-    totalTributos :{
+    totalTributos: {
         type: Number,
         require: false
     },
-    custoPlano:{
+    custoPlano: {
         type: Number,
         require: false
     },
-    custoTotal:{
+    custoTotal: {
         type: Number,
         require: false
     },
-    lbaimp:{
+    lbaimp: {
         type: Number,
         require: false
     },
-    impNFS:{
+    impNFS: {
         type: Number,
         require: false
     },
-    vlrNFS:{
+    vlrNFS: {
         type: Number,
         require: false
     },
@@ -432,132 +456,176 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
-    parLiqVlr:{
+    parLiqVlr: {
         type: Number,
         require: false
     },
-    parKitVlr:{
+    parKitVlr: {
         type: Number,
         require: false
     },
-    parIntVlr:{
-        type: Number,
-        require: false
-    },
-    parGesVlr:{
-        type: Number,
-        require: false
-    },
-    parProVlr:{
-        type: Number,
-        require: false
-    },
-    parArtVlr:{
+    parKitEqu: {
         type: Number,
         require: false
     },    
-    parDesVlr:{
+    parModEqu: {
         type: Number,
         require: false
     },
-    parCmbVlr:{
+    parInvEqu: {
         type: Number,
         require: false
     },
-    parAliVlr:{
+    parEstEqu: {
         type: Number,
         require: false
     },
-    parEstVlr:{
-        type: Number,
-        require: false
-    },     
-    parISSVlr:{
+    parCabEqu: {
         type: Number,
         require: false
     },
-    parImpVlr:{
-        type: Number,
-        require: false
-    },   
-    parResVlr:{
+    parDpsEqu: {
         type: Number,
         require: false
     },
-    parDedVlr:{
+    parDisEqu: {
         type: Number,
         require: false
     },
-    parComVlr:{
+    parSbxEqu: {
         type: Number,
         require: false
     },
-    parLiqNfs:{
-        type: Number,
-        require: false
-    },    
-    parKitNfs:{
-        type: Number,
-        require: false
-    },      
-    parIntNfs:{
-        type: Number,
-        require: false
-    },
-    parGesNfs:{
-        type: Number,
-        require: false
-    },
-    parProNfs:{
-        type: Number,
-        require: false
-    },
-    parArtNfs:{
-        type: Number,
-        require: false
-    },    
-    parDesNfs:{
-        type: Number,
-        require: false
-    },
-    parCmbNfs:{
-        type: Number,
-        require: false
-    },
-    parAliNfs:{
-        type: Number,
-        require: false
-    },
-    parEstNfs:{
+    parCerEqu: {
         type: Number,
         require: false
     },       
-    parISSNfs:{
+    parCenEqu: {
+        type: Number,
+        require: false
+    },       
+    parPosEqu: {
+        type: Number,
+        require: false
+    },                                        
+    parIntVlr: {
         type: Number,
         require: false
     },
-    parImpNfs:{
-        type: Number,
-        require: false
-    }, 
-    parResNfs:{
+    parGesVlr: {
         type: Number,
         require: false
     },
-    parDedNfs:{
+    parProVlr: {
         type: Number,
         require: false
     },
-    parComNfs:{
+    parArtVlr: {
         type: Number,
         require: false
     },
-    configuracao:{
+    parDesVlr: {
+        type: Number,
+        require: false
+    },
+    parCmbVlr: {
+        type: Number,
+        require: false
+    },
+    parAliVlr: {
+        type: Number,
+        require: false
+    },
+    parEstVlr: {
+        type: Number,
+        require: false
+    },
+    parISSVlr: {
+        type: Number,
+        require: false
+    },
+    parImpVlr: {
+        type: Number,
+        require: false
+    },
+    parResVlr: {
+        type: Number,
+        require: false
+    },
+    parDedVlr: {
+        type: Number,
+        require: false
+    },
+    parComVlr: {
+        type: Number,
+        require: false
+    },
+    parLiqNfs: {
+        type: Number,
+        require: false
+    },
+    parKitNfs: {
+        type: Number,
+        require: false
+    },
+    parIntNfs: {
+        type: Number,
+        require: false
+    },
+    parGesNfs: {
+        type: Number,
+        require: false
+    },
+    parProNfs: {
+        type: Number,
+        require: false
+    },
+    parArtNfs: {
+        type: Number,
+        require: false
+    },
+    parDesNfs: {
+        type: Number,
+        require: false
+    },
+    parCmbNfs: {
+        type: Number,
+        require: false
+    },
+    parAliNfs: {
+        type: Number,
+        require: false
+    },
+    parEstNfs: {
+        type: Number,
+        require: false
+    },
+    parISSNfs: {
+        type: Number,
+        require: false
+    },
+    parImpNfs: {
+        type: Number,
+        require: false
+    },
+    parResNfs: {
+        type: Number,
+        require: false
+    },
+    parDedNfs: {
+        type: Number,
+        require: false
+    },
+    parComNfs: {
+        type: Number,
+        require: false
+    },
+    configuracao: {
         type: Schema.Types.ObjectId,
         ref: 'configuracao',
         require: false
     },
-    regime:{
+    regime: {
         type: Schema.Types.ObjectId,
         ref: 'regime',
         require: false
@@ -570,54 +638,58 @@ const Projeto = new Schema({
         type: String,
         require: false
     },
-    vendedor:{ 
-        type: Schema.Types.ObjectId,
-        ref: 'pessoa',
-        require: false
-    },        
-    funres:{ 
+    vendedor: {
         type: Schema.Types.ObjectId,
         ref: 'pessoa',
         require: false
     },
-    funpro:{
-         type: Schema.Types.ObjectId,
-         ref: 'pessoa',
-         require: false 
-    },
-    funins:{
+    funres: {
         type: Schema.Types.ObjectId,
         ref: 'pessoa',
-        require: false 
-   },
-    ehDireto:{
+        require: false
+    },
+    funpro: {
+        type: Schema.Types.ObjectId,
+        ref: 'pessoa',
+        require: false
+    },
+    funins: {
+        type: Schema.Types.ObjectId,
+        ref: 'pessoa',
+        require: false
+    },
+    ehDireto: {
         type: Boolean,
         require: true
     },
-    temCercamento:{
+    temCercamento: {
         type: String,
         require: false
     },
-    temEstSolo:{
-        type: String,
-        require: false
-    },
-    temPosteCond:{
+    temCentral: {
         type: String,
         require: false
     },    
-    foiRealizado:{
+    temEstSolo: {
+        type: String,
+        require: false
+    },
+    temPosteCond: {
+        type: String,
+        require: false
+    },
+    foiRealizado: {
         type: Boolean,
         require: true
     },
     dataIns: {
         type: String,
         require: true
-    },    
+    },
     valDataIns: {
         type: String,
         require: true
-    },        
+    },
     dataini: {
         type: String,
         require: true
@@ -633,7 +705,7 @@ const Projeto = new Schema({
     dataord: {
         type: String,
         require: true
-    },    
+    },
     ultdata: {
         type: String,
         require: false
@@ -641,44 +713,56 @@ const Projeto = new Schema({
     motivo: {
         type: String,
         require: false
-    },          
-    atrasado:{
-        type: Boolean,
-        require: false
-    }, 
-    datafim:{
+    },
+    motivoParado: {
         type: String,
         require: false
     },
-    valDataFim:{
+    tipoParado: {
         type: String,
         require: false
-    },    
+    },
+    dataParado: {
+        type: String,
+        require: false
+    },
+    atrasado: {
+        type: Boolean,
+        require: false
+    },
+    datafim: {
+        type: String,
+        require: false
+    },
+    valDataFim: {
+        type: String,
+        require: false
+    },
     data: {
-       type: String,
-       require: false
+        type: String,
+        require: false
     },
     datareg: {
         type: Number,
         require: false
-     },    
+    },
     datapadrao: {
-       type: Date,
-       default: Date.now()
+        type: Date,
+        default: Date.now()
     },
-    executando:{
+    executando: {
         type: Boolean,
         require: false
     },
-    parado:{
+    parado: {
         type: Boolean,
         require: false
-    },  
-    orcado:{
+    },
+    orcado: {
         type: Boolean,
         require: false
-    }, 
-    homologado:{
+    },
+    homologado: {
         type: Boolean,
         require: false
     }

@@ -1,9 +1,9 @@
 <style>
     #header {
-        background-color: rgb(40, 55, 86);
+        background-color: rgb(126, 138, 163);
         color: white;
         border-width: 4px;
-        border-color: rgb(247, 238, 238);
+        border-color: rgb(126, 138, 163);
         z-index: -1;
         -webkit-box-shadow: 0px 0px 4px 2px #aaaaaa;
         -moz-box-shadow: 0px 0px 4px 2px #aaaaaa;
@@ -66,7 +66,6 @@
                             <div class="row mt-2">
                                 <div class="col-md-4">
                                     <h5 class='text-start'>Status:</h5>
-                                    <h5 class='text-start'>Reserva:</h5>
                                 </div>
                                 <div class="col-md-8">
 
@@ -92,12 +91,11 @@
                                     {{/if}}
                                     {{/if}}
                                     {{/if}}
-                                    <h5 class='text-start mt-2'>R$ {{projeto.reserva}}</h5>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <h5 class='mt-2 text-start'>{{regime.regime}}</h5>
+                            <h5 class='mt-2 text-start'>Reserva: R$ {{projeto.reserva}}</h5>
                         </div>
                         <div class="col-md-4">
                             <div class='btn-group btn-group-sm col-12 gap-2 mx-auto mt-1' role='group'>
@@ -131,7 +129,7 @@
                     <div class="col-md-3 mt-2 text-end">
                         <div class="row mt-5">
                             <label class='fw-bold col-form-label col-form-label-sm'>ISS:</label><br>
-                            <label class='fw-bold col-form-label col-form-label-sm'>Receita Bruta:</label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm'>Receita Liquida:</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>Equipamento:</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>Lucro Bruto:</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>Custo Operacional:</label><br>
@@ -154,7 +152,7 @@
                         <hr>
                         <div class="row">
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.impNFS}}</label><br>
-                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.recBruta}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.recLiquida}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrkit}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.lucroBruto}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{projeto.totcop}}</label><br>
@@ -168,7 +166,7 @@
                     <div class="col-md-3">
                         <div class="row">
                             <div class="col-md-1">
-                                <a href='/gerenciamento/dashboard/{{projeto._id}}'><i class='bi bi-file-bar-graph'></i></a>              
+                                <a href='/gerenciamento/dashboardreal/{{realizado._id}}'><i class='bi bi-file-bar-graph'></i></a>              
                             </div>               
                             <div class="col-md-10">
                                 <label class='fw-bold'>Realizado</label>
@@ -177,7 +175,7 @@
                         <hr>
                         <div class="row">
                             <label class='col-form-label col-form-label-sm'>R$ {{realizado.impISS}}</label><br>
-                            <label class='col-form-label col-form-label-sm'>R$ {{realizado.recBruta}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>R$ {{realizado.recLiquida}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{realizado.vlrkit}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{realizado.lucroBruto}}</label><br>
                             <label class='col-form-label col-form-label-sm'>R$ {{realizado.custoPlano}}</label><br>
@@ -192,15 +190,17 @@
                         <div class="row">
                             <label class='col-form-label col-form-label-sm fw-bold'>Complementos</label><br>
                             <div class="col-md-10 text-start">
-                                <label class='col-form-label col-form-label-sm fw-bold mb-1'>Estrutura</label><br>
-                                <label class='col-form-label col-form-label-sm fw-bold mb-1'>Cercamento</label><br>
-                                <label class='col-form-label col-form-label-sm fw-bold'>Postes de Condução</label>
+                                <label class='col-form-label col-form-label-sm mb-1'>Estrutura</label><br>
+                                <label class='col-form-label col-form-label-sm mb-1'>Cercamento</label><br>
+                                <label class='col-form-label col-form-label-sm mb-1'>Central</label><br>
+                                <label class='col-form-label col-form-label-sm '>Postes de Condução</label>
                             </div>
                             <div class="col-md-2">
                                 <input disabled type='checkbox' class='form-check-input mb-3 mt-2'
                                     {{projeto.temEstSolo}}><br>
                                 <input disabled type='checkbox' class='form-check-input mb-3'
                                     {{projeto.temCercamento}}><br>
+                                <input disabled type='checkbox' class='form-check-input mb-3' {{projeto.temCentral}}>
                                 <input disabled type='checkbox' class='form-check-input' {{projeto.temPosteCond}}>
                             </div>
                         </div>
@@ -209,7 +209,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-md-6">
-                        <label class='fw-bold col-form-label col-form-label-sm'>Premissas</label>
+                        <label class='fw-bold col-form-label col-form-label-sm'>Premissas e Restrições</label>
                         <textarea class='form-control' name='premissas' rows='3'>{{projeto.premissas}}</textarea>
                     </div>
                     <div class="col-md-6">

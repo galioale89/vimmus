@@ -17,7 +17,7 @@
         <div class='modal-dialog modal-xl'>
             <div class='modal-content'>
                 <div class='modal-header'>
-                    <h5 class="modal-title">Participação dos Componentes (Kit Gerador) por kW/p</h5>
+                    <h5 class="modal-title">Participação dos Componentes (Kit Gerador)</h5>
                     <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class='modal-body'>
@@ -87,7 +87,7 @@
                             <div class="sessao-dash textoper" style="margin-left: 5px;">
                                 <label>R$ {{med_totequ}}</label>
                             </div>
-                        </td>                        
+                        </td>
                     </table>
                 </div>
             </div>
@@ -98,7 +98,7 @@
     <div class="row">
         <div class="col-md-2">
             <div class="contorno-titulo text-center" style="height: 100%;width: 100%;">
-                <label class='col-form-label fw-bold' style="font-size: 20px; margin-left: 20%;">Visão Geral</label>
+                <label class='col-form-label fw-bold' style="font-size: 20px; margin-left: 20%;">Análise com Kit</label>
                 <label class='col-form-label col-form-label-sm ' style="font-size: 15px;padding-left: 20%">Projetos
                     Realizados: </label>
                 <label class='col-form-label col-form-label-sm' style="font-size: 15px;">{{numprj}}</label>
@@ -152,57 +152,67 @@
                     <li style="font-size: 14px;">R$ {{medkwp_custoFix}}</li>
                 </div>
                 <div class="col-md-3 text-start">
-                    <li style="font-size: 14px;">{{per_totpro}} %</li>
-                    <li style="font-size: 14px;">{{per_totart}} %</li>
-                    <li style="font-size: 14px;">{{per_totges}} %</li>
-                    <li style="font-size: 14px;">{{per_totint}} %</li>
-                    <li style="font-size: 14px;">{{per_totadm}} %</li>
-                    <li style="font-size: 14px;">{{per_totcom}} %</li>
-                    <li style="font-size: 14px;">{{per_tottrb}} %</li>
-                    <li style="font-size: 14px;">{{per_totcus}} %</li>
-                    
-                </div>                
+                    <li style="font-size: 14px;">{{per_totpro}} % </li>
+                    <li style="font-size: 14px;">{{per_totart}} % </li>
+                    <li style="font-size: 14px;">{{per_totges}} % </li>
+                    <li style="font-size: 14px;">{{per_totint}} % </li>
+                    <li style="font-size: 14px;">{{per_totadm}} % </li>
+                    <li style="font-size: 14px;">{{per_totcom}} % </li>
+                    <li style="font-size: 14px;">{{per_tottrb}} % </li>
+                    <li style="font-size: 14px;">{{per_custoFix}} % </li>
+                </div>
+
             </div>
             <div class="row">
-                <label class='col-form-label fw-bold text-center'>Outros Custos Variáveis</label>
-                <div class="col-md-6 text-end">
+                <label class='col-form-label fw-bold text-center'>Custos Variáveis Adicionais</label>
+                <div class="col-md-5 text-end">
                     <li style="font-size: 14px;">Alimentação:</li>
                     <li style="font-size: 14px;">Deslocamento:</li>
                     <li style="font-size: 14px;">Total:</li>
                 </div>
-                <div class="col-md-6 text-start">
+                <div class="col-md-4 text-start">
                     <li style="font-size: 14px;">R$ {{medkwp_totali}}</li>
                     <li style="font-size: 14px;">R$ {{medkwp_totdes}}</li>
                     <li style="font-size: 14px;">R$ {{medkwp_custoVar}}</li>
                 </div>
+                <div class="col-md-3 text-start">
+                    <li style="font-size: 14px;">{{per_totali}} %</li>
+                    <li style="font-size: 14px;">{{per_totdes}} %</li>
+                    <li style="font-size: 14px;">{{per_custoVar}} %</li>
+                </div>                
             </div>
             <div class="row">
                 <label class='col-form-label fw-bold text-center'>Custos Variáveis Estruturais</label>
-                <div class="col-md-6 text-end">
+                <div class="col-md-5 text-end">
                     <li style="font-size: 14px;">Cercamento:</li>
                     <li style="font-size: 14px;">Central:</li>
                     <li style="font-size: 14px;">Postes:</li>
                     <li style="font-size: 14px;">Total:</li>
                 </div>
-                <div class="col-md-6 text-start">
+                <div class="col-md-4 text-start">
                     <li style="font-size: 14px;">R$ {{medkwp_totcer}}</li>
                     <li style="font-size: 14px;">R$ {{medkwp_totcen}}</li>
                     <li style="font-size: 14px;">R$ {{medkwp_totpos}}</li>
                     <li style="font-size: 14px;">R$ {{medkwp_custoEst}}</li>
                 </div>
+                <div class="col-md-3 text-start">
+                    <li style="font-size: 14px;">{{per_totcer}} %</li>
+                    <li style="font-size: 14px;">{{per_totcen}} %</li>
+                    <li style="font-size: 14px;">{{per_totpos}} %</li>
+                    <li style="font-size: 14px;">{{per_custoEst}} %</li>
+                </div>                
             </div>
             <li class='text-center'><label class='col-form-label fw-bold'>Total Serviços: R$ {{soma_totser}}</label>
             </li>
         </div>
         <div class="col-md-6" style="margin-left: 3%;">
-            <form method='post' action='/relatorios/filtradash'>
+            <form method='post' action='/relatorios/filtradashcomkit'>
                 <div class="row">
-                    <div class="sessao-dash-titulo text-center" style="margin-bottom: 20px;margin-top: 20px;">
+                    <div class="sessao-dash-titulo text-center" style="margin-bottom: 10px;margin-top: 20px;">
                         <label class='col-form-label fw-bold' style="color: white;">{{#if
                             mestitulo}}{{mestitulo}}{{ano}}{{else}}Tudo{{/if}}</label>
                     </div>
-
-                    <div class="col-md-5 mb-3 text-end">
+                    <div class="col-md-5 text-end">
                         <label class='col-form-label fw-bold col-form-label-sm'>Selecione o mês e digite o ano:<label>
                     </div>
                     <div class="col-md-3">
@@ -229,6 +239,9 @@
                         <button type='submit' class='btn btn-primary btn-sm'>Filtrar</button>
                     </div>
                 </div>
+                <div class="text-center">
+                    <label class='col-form-label fw-bold' style="">Faturado/kWp: R$ {{medkwp_totfat}}</label>
+                </div>
                 <div style="height: 250px;padding-right: 5%;">
                     <input id='totfat' type="hidden" value='{{soma_totfat}}'>
                     <input id='totliq' type="hidden" value='{{soma_totliq}}'>
@@ -240,32 +253,36 @@
                     <canvas id='chartTot'></canvas>
                 </div>
             </form>
-            <div class="row mt-2">
+            <div class="row">
                 <div class='row text-center'>
                     <div class="col-md-3 sessao-dash-kit">
                         <li><label class='col-form-label fw-bold' style="">Equipamento</label></li>
+                        <label class='fw-bold' style="font-size: 15px">R$ {{medkwp_totkit}}</label>
                         <li><label class='col-form-label fw-bold' style="font-size: 20px">{{per_kitfat}} %</label></li>
                     </div>
                     <div class="col-md-2 sessao-dash-kit">
                         <li><label class='col-form-label fw-bold' style="">Comissão</label></li>
+                        <label class='fw-bold' style="font-size: 15px">R$ {{medkwp_totcom}}</label>
                         <li><label class='col-form-label fw-bold' style="font-size: 20px">{{per_comfat}} %</label></li>
                     </div>
                     <div class="col-md-2 sessao-dash-kit">
                         <li><label class='col-form-label fw-bold' style="">Custos</label></li>
+                        <label class='fw-bold' style="font-size: 15px">R$ {{medkwp_totcop}}</label>
                         <li><label class='col-form-label fw-bold' style="font-size: 20px">{{per_cusfat}} %</label></li>
                     </div>
                     <div class="col-md-3 sessao-dash-kit">
                         <li><label class='col-form-label fw-bold' style="">Administrativo</label></li>
+                        <label class='fw-bold' style="font-size: 15px">R$ {{medkwp_totadm}}</label>
                         <li><label class='col-form-label fw-bold' style="font-size: 20px">{{per_desfat}} %</label></li>
                     </div>
                     <div class="col-md-2 sessao-dash-kit">
                         <li><label class='col-form-label fw-bold' style="">Tributos</label></li>
+                        <label class='fw-bold' style="font-size: 15px">R$ {{medkwp_tottrb}}</label>
                         <li><label class='col-form-label fw-bold' style="font-size: 20px">{{per_trbfat}} %</label></li>
                     </div>
                 </div>
             </div>
-            <div class="btn-group col-12 gap-2 mt-3" style="width: 97%;">
-                <a data-bs-toggle="modal" data-bs-target="#partComponentes" class='btn btn-sm btn-primary'>Análise Equipamento</a>
+            <div class="btn-group col-12 gap-2 mt-2" style="width: 97%;">
                 <a href='/relatorios/dashboardcustos' class='btn btn-sm btn-primary'>Análise Resultados Geral</a>
                 <a href='/relatorios/dashboardcustoscomkit' class='btn btn-sm btn-primary'>Análise Resultados com Kit</a>
                 <a href='/relatorios/dashboardcustossemkit' class='btn btn-sm btn-primary'>Análise Resultados sem Kit</a>

@@ -13,47 +13,75 @@
   }
 </style>
 
-<div class='row mt-3' style="width: 100%;height: 100%;">
+<div class='row mt-2' style="width: 100%;height: 100%;">
 
   <div class='col-md-2'>
     <div class="menu">
       <div class="menu-interno">
-        <div class='fw-bold col-form-label col-form-label-sm' style="padding-right: 10px;"> Cadastros
+        <div class='fw-bold col-form-label col-form-label-sm fw-bold text-center' style="padding-top: 20%;"> CADASTROS
         </div>
-        <div class="mb-2" style="padding-left: 10px;padding-right: 10px;">
-          <a href="/cliente/novo" class="contorno-menu"><i class='bi bi-person-plus'></i> Cliente</a><br>
-          <a href="/cliente/consulta" class="botaomenu"> <i class='bi bi-search'></i> Buscar</a>
+        <div class="row mb-2">
+          <div class="col-md-9 text-end">
+            <a href="/cliente/novo" class="contorno-menu"><i class='bi bi-person-plus'></i> Cliente</a><br>
+          </div>
+          <div class="col-md-2">
+            <a href="/cliente/consulta" class="botaomenu"> <i class='bi bi-search'></i> </a>
+          </div>
         </div>
-        <div class="mb-2" style="padding-left: 10px;padding-right: 10px;">
-          <a href="/projeto/novo" class="contorno-menu"><i class='bi bi-file-arrow-up'></i> Projetos</a><br>
-          <a href="/projeto/consulta" class="botaomenu"> <i class='bi bi-search'></i> Buscar</a>
+        <div class="row mb-2">
+          <div class="col-md-9 text-end">
+            <a href="/projeto/novo" class="contorno-menu"><i class='bi bi-file-arrow-up'></i> Projetos</a><br>
+          </div>
+          <div class="col-md-2">
+            <a href="/projeto/consulta" class="botaomenu"> <i class='bi bi-search'></i> </a>
+          </div>
         </div>
-        <div class="mb-2" style="padding-left: 10px;padding-right: 10px;">
-          <a href='/pessoa/novo' class="contorno-menu"><i class='bi bi-person-plus'></i> Pessoas</a><br>
-          <a href='/pessoa/consulta' class="botaomenu"><i class='bi bi-search'></i> Buscar</a>
+        <div class="row mb-2">
+          <div class="col-md-9 text-end">
+            <a href='/pessoa/novo' class="contorno-menu"><i class='bi bi-person-plus'></i> Pessoas</a>
+          </div>
+          <div class="col-md-2">
+            <a href='/pessoa/consulta' class="botaomenu"><i class='bi bi-search'></i> </a>
+          </div>
         </div>
-        <div class="" style="padding-left: 5px;padding-right: 5px;">
+        <div class="row mb-2">
+          <div class="col-md-9 text-end">
+            <a href='/componente/cadastro' class="contorno-menu"><i class='bi bi-cart-plus'></i> Componentes</a>
+          </div>
+          <div class="col-md-2">
+            <a href='/estoque/consulta' class="botaomenu"><i class='bi bi-search'></i></a>
+          </div>
+        </div>
+        <div class="mt-1 text-start" style="padding-left: 25px;">
           <a href='/pessoa/consultaequipepadrao' class="contorno-menu"><i class='bi bi-people'></i> Equipes
             Padrão</a><br>
+        </div>        
+        <div class='fw-bold col-form-label col-form-label-sm fw-bold mt-4 text-center' style="font-weight: bolder;">
+          CONFIGURAÇÕES
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-8 text-start" style="padding-left: 30px;">
+            <a href='/configuracao/addregime' class="contorno-menu"><i class='bi bi-calculator'></i> Regime </a><br>
+          </div>
+          <div class="col-md-4 text-start">
+            <a href='/configuracao/consultaregime' class="botaomenu"><i class='bi bi-search'></i></a>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-8 text-start" style="padding-left: 30px;">
+            <a href='/configuracao/novo' class="contorno-menu"><i class='bi bi-clock'></i> Tempo</a><br>
+          </div>
+          <div class="col-md-4 text-start">
+            <a href='/configuracao/consulta' class="botaomenu"><i class='bi bi-search'></i> </a>
+          </div>
         </div>
       </div>
-      <div class="menu-interno mt-1">
-        <div class='fw-bold col-form-label col-form-label-sm' style="padding-right: 10px;"> Configurações
-        </div>
-        <div class="mb-2" style="padding-left: 10px;padding-right: 10px;">
-          <a href='/configuracao/addregime' class="contorno-menu"><i class='bi bi-calculator'></i> Regime</a><br>
-          <a href='/configuracao/consultaregime' class="botaomenu"><i class='bi bi-search'></i> Buscar</a>
-        </div>
-        <div class="" style="padding-left: 10px;padding-right: 10px;">
-          <a href='/configuracao/novo' class="contorno-menu"><i class='bi bi-clock'></i> Tempo</a><br>
-          <a href='/configuracao/consulta' class="botaomenu"><i class='bi bi-search'></i> Buscar</a>
-        </div>
-      </div>
-      <div class="menu-interno mt-2" style="padding-right: 10px;">
+      <div class="menu-interno" style="padding-right: 10px;padding-top: 10%;">
         <div class='fw-bold col-form-label col-form-label-sm' style="padding-right: 10px;">
         </div>
-        <div class=' mt-1 mb-2'>
-          <a href='/relatorios/dashboardcustos' class="contorno-menu"><i class='bi bi-display'></i> Ver Custos</a>
+        <div class='mt-1 mb-2'>
+          <a href='/relatorios/dashboardcustos' class="relatorio titulo-relatorio"><i class='bi bi-display'></i> Ver
+            Custos</a>
         </div>
         <div class="dropend">
           <button class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false">Relatórios <i
@@ -66,47 +94,50 @@
               Abertos</a><br>
           </ul>
         </div>
-      </div>
-      {{#if ehMaster}}
-      <div class="row mt-2" style="padding-right: 10px;">
-        <div class="dropend">
-          <button class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false">Admin <i
-              class="bi bi-caret-right"></i></i>
-          </button>
-          <ul class="dropdown-menu">
-            <a href='/administrador' class='botao-filter'><i class='bi bi-people-fill'></i> Controle Usuários </a>
-          </ul>
+
+        {{#if ehMaster}}
+        <div class="row" style="padding-top: 10%;">
+          <div class="dropend">
+            <button class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false">Admin <i
+                class="bi bi-caret-right"></i></i>
+            </button>
+            <ul class="dropdown-menu">
+              <a href='/administrador' class='botao-filter'><i class='bi bi-people-fill'></i> Controle Usuários </a>
+            </ul>
+          </div>
         </div>
-      </div>
-      {{/if}}
-      <div class="mt-1 mb-4" style="padding-right: 10px;">
-        <a href='/usuario/editar/{{id}}' class="botao-filter"><i class="bi bi-house-fill"></i> Minha Conta</a>
+        {{/if}}
+        <div class="mb-4" style="padding-top: 20%;">
+          <a href='/usuario/editar/{{id}}' class="relatorio titulo-relatorio"><i class="bi bi-house-fill"></i> Minha
+            Conta</a>
+        </div>
       </div>
     </div>
   </div>
-
+  
   <div class='col-md-3'>
-    <div class="row quadro mb-2">
+    <div class="row quadro mb-2" style="margin-left: 1%;">
       <table>
         <tr>
-          <th class='contorno-titulo'>Lucro Liquido Médio Realizado</th>
+          <th class='contorno-titulo' style="font-size: 20px;">Lucro Liquido Médio Realizado</th>
         </tr>
       </table>
       <div class="col-md-6">
         <label class='col-form-label col-form-label-sm'
-          style="margin-left: 20px; text-align: center;font-weight: 500;">Total do Projeto</label>
-        <div class='sessao' style="margin-left: 25px;">
+          style="margin-left: 6%; font-weight: 500;">Total do Projeto</label>
+        <div class='sessao' style="margin-left: 5%;">
           <div class='textoper'>{{perVlrMed}}%</div>
         </div>
       </div>
       <div class="col-md-6">
-        <label class='col-form-label col-form-label-sm' style="width: 100%; text-align: center;font-weight: 500">Faturado</label>
+        <label class='col-form-label col-form-label-sm'
+          style="width: 100%; margin-left: 33% ;font-weight: 500">Faturado</label>
         <div class='sessao'>
           <div class='textoper'>{{perNfsMed}}%</div>
         </div>
       </div>
     </div>
-    <div class='row quadro'>
+    <div class='row quadro' style="margin-left: 1%;">
       <table>
         <tr class="">
           <th style="padding-left: 20%;">Classificação dos Projetos</th>
@@ -187,7 +218,7 @@
       </table>
     </div>
 
-    <div class='quadro-scroll' style="margin-left: 5px;margin-bottom: 40px;">
+    <div class='quadro-scroll' style="margin-left: 5px;">
       <table style="width: 100%">
         <tr class='contorno-titulo'>
           <th>Status</th>
@@ -214,10 +245,10 @@
             {{/if}}
             {{/if}}
           </td>
-          <td>{{nomecliente}}</td>
-          <td>{{nome}}</td>
-          <td>{{dataini}}</td>
-          <td>{{dataprev}}</td>
+          <td style="border: 0.2px solid rgba(126, 138, 163, 0.2)">{{nomecliente}}</td>
+          <td style="border: 0.2px solid rgba(126, 138, 163, 0.2)">{{nome}}</td>
+          <td style="border: 0.2px solid rgba(126, 138, 163, 0.2)">{{dataini}}</td>
+          <td style="border: 0.2px solid rgba(126, 138, 163, 0.2)">{{dataprev}}</td>
           <!--<td>{{cliente}}</td>-->
           <td style="padding-top: 3px; padding-bottom: 3px;">
             <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
@@ -273,7 +304,7 @@
             ticks: {
               min: 0,
             },
-            grid:{
+            grid: {
               drawBorder: false,
             },
           }],
@@ -281,7 +312,7 @@
         legend: {
           display: true,
           position: 'top',
-          align:'center',
+          align: 'center',
         },
       }
     });

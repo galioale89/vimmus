@@ -55,6 +55,11 @@
       top: 6px;
   }
 }
+
+li {
+  list-style-type: none;
+}
+
 #mouse {
   display: block;
   width: 22px;
@@ -179,9 +184,9 @@
 
 .caixa-confirma {
    margin-left: 300px;
-   margin-top: 100px;
-   width: 800px; 
-   height: 300px; 
+   margin-top: 40px;
+   width: 700px; 
+   height: 470px; 
    border: solid 1px; 
    border-color: rgb(201, 193, 193); 
    border-radius: 5px;
@@ -193,6 +198,7 @@
   height: fit-content;
   text-align: center;
 }
+
 a {
     text-decoration: none;
 }
@@ -308,23 +314,33 @@ a {
 }
 .sessao-dash {
   background: rgb(149, 163, 192);
-  border-radius: 100px;
-  width: 100px;
+  border-radius: 50px;
+  width: 200px;
   height: 100px;
+  margin-bottom: 5px;
+  margin-top: 5px;
   box-shadow: 4px 4px 5px rgba(26, 25, 25, 0.77);    
 }
-.sessao-dash-cop {
-  background: rgb(255, 166, 0);
-  border-radius: 100px;
-  width: 100px;
-  height: 100px;
+.sessao-dash-kit {
+  background: rgb(40, 55, 86);
+  border-radius: 20px;
+  width: fit-content;
+  height: fit-content;
+  color: white;
   box-shadow: 4px 4px 5px rgba(26, 25, 25, 0.77);    
 }
-.sessao-dash-gd {
+.sessao-dash-titulo {
   background: rgba(79, 99, 140);
   border-radius: 100px;
-  width: 180px;
-  height: 60px;
+  width: 100%;
+  height: 100%;
+  box-shadow: 4px 4px 5px rgba(26, 25, 25, 0.77);    
+}
+.sessao-dash-dispendio{
+  background: rgba(79, 99, 140);
+  border-radius: 100px;
+  width: 50px;
+  height: fit-content;
   box-shadow: 4px 4px 5px rgba(26, 25, 25, 0.77);    
 }
 
@@ -340,7 +356,7 @@ a {
     border: rgba(200, 200, 200, 0.8) solid 1px;
     border-radius: 5px;
     width: 100%;
-    height: 335px;
+    height: 65%;
     padding: 6px;
     box-shadow: 1px 4px 5px rgba(26, 25, 25, 0.77);
     overflow-y: scroll;
@@ -372,7 +388,8 @@ a {
     width: 100%;
     text-decoration: none;
     border-radius: 5px;
-    color: rgb(40, 55, 86);
+    color: white;
+    padding: 5px;
     font-size: 12px;
   }
 
@@ -380,7 +397,8 @@ a {
     height: 30px;
     font-weight: 700;
     text-decoration: none;
-    color: rgb(40, 55, 86);
+    color: white;
+    font-weight: 800;
   }
   
   .botao-tabela{
@@ -501,13 +519,14 @@ a {
   .menu {
     /*background-color: rgba(238, 236, 236, 0.8);*/
     text-align: center;
-    margin-left: 40px;
+    background-color: rgb(126, 138, 163);
+    margin-left: 25px;
     height: fit-content;
-    width: 75%;
     border-radius: 5px;
     position: static;
     padding-top: 10px;
     padding-bottom: 2px;
+    padding-right: 10px;
     
   }
 
@@ -519,7 +538,6 @@ a {
     border-radius: 5px;
     position: static;
     padding-bottom: 5px;
-    box-shadow: 1px 0px 4px rgba(26, 25, 25, 0.77);
   }
 
   #titulo-inicio {
@@ -623,25 +641,35 @@ a {
   .contorno-menu {
     font-size: 13px;
     border-radius: 5px;
-    background: rgb(40, 55, 86);
-    border: rgb(40, 55, 86) 1px solid;
     padding: 5px;
     text-decoration: none;
-    color: white;
+    color: rgb(40,55,89);
   }
   .contorno-menu:hover {
     color: rgb(40, 55, 86);
+    border: white 1px solid;
+    border-radius: 10px;
     font-weight: 700;
     background-color: white;
+    height: 100%;
   }
 
   .contorno-titulo {
+    font-weight: 700;
     font-size: 14px;
-    font-weight: 600;
     text-align: center;
-    color: white;
+    color: rgb(40,55,89);
     border-radius: 5px;
-    background: linear-gradient(250deg, rgb(40, 55, 86)90%, rgb(11, 19, 58, 1));
+    background: white;
+  }
+
+  .contorno-titulo-dem {
+    font-weight: 700;
+    font-size: 14px;
+    text-align: center;
+    color: rgb(40,55,89);
+    border-radius: 5px;
+    background: rgba(79, 99, 140,0.2);
   }
 
   .contorno-tabela {
@@ -668,7 +696,7 @@ a {
     border: rgb(79, 99, 140) 2px solid;
     padding: 8px;
     border-radius: 5px;
-    font-size: 25px;
     box-shadow: 3px 1px 1px white;
+    font-size: 15px;
   }
   

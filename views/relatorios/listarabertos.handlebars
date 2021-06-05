@@ -91,7 +91,7 @@
             <div>Total de Projetos: {{qtdprj}}</div>
         </div>
     </div>
-    <div class="row mb-4" style="width: 260px;">
+    <div class="row mb-4" style="width: 300px;">
         <div class='filtro-selecao' style="margin-left: 10px;font-size: 12px;">Datas Filtradas: {{dataInicio}} a {{dataFim}}
         </div>
     </div>
@@ -99,13 +99,14 @@
         <tr>
             <th>Projeto</th>
             <th>Cliente</th>
-            <th>Início</th>
-            <th>Previsão</th>
+            <th>Cadastro</th>
+            <th>Inicio</th>
             <th>Total</th>
             <th>Faturado</th>
-            <th>Custos + Reserva</th>
+            <th>RO</th>
+            <th>CO + Reserva</th>
             <th>%</th>
-            <th>Lucro Bruto</th>
+            <th>LAI</th>    
             <th>Lucro Líquido</th>
             <th>%</th>
             <th>Tributos</th>
@@ -115,15 +116,16 @@
         <tr>
             <td>{{nome}}</td>
             <td>{{nomecliente}}</td>
+            <td>{{data}}</td>
             <td>{{dataini}}</td>
-            <td>{{dataprev}}</td>
             <td>R$ {{valor}}</td>
-            <td>R$ {{vlrfat}}</td>
-            <td>R$ {{custoPlano}}</td>
-            <td>{{parDedVlr}}</td>
+            <td>R$ {{vlrNFS}}</td>
             <td>R$ {{lucroBruto}}</td>
+            <td>R$ {{custoPlano}}</td>
+            <td>{{parDedNfs}}</td>
+            <td>R$ {{lbaimp}}</td>       
             <td>R$ {{lucroLiquido}}</td>
-            <td>{{parLiqVlr}}</td>
+            <td>{{parLiqNfs}}</td>
             <td>R$ {{totalImposto}}</td>
             <td>{{parImpVlr}}</td>
         </tr>
@@ -132,11 +134,12 @@
         {{/each}}
         <tr style="background-color: rgba(200, 200, 200, 0.8);font-weight: 700;">
             <td style="font-size: 12px;" colspan='4'>Total</td>
-            <td style="font-size: 12px;"> R$ {{soma_vlrnfs}}</td>
             <td style="font-size: 12px;">R$ {{soma_valor}}</td>
+            <td style="font-size: 12px;"> R$ {{soma_vlrnfs}}</td>
+            <td style="font-size: 12px;">R$ {{soma_lb}}</td>
             <td style="font-size: 12px;">R$ {{soma_custo}}</td>
             <td style="font-size: 12px;">{{perMedCusto}}</td>
-            <td style="font-size: 12px;">R$ {{soma_lb}}</td>
+            <td style="font-size: 12px;">R$ {{soma_lbaimp}}</td>
             <td style="font-size: 12px;">R$ {{soma_ll}}</td>
             <td style="font-size: 12px;">{{perMedLL}}</td>
             <td style="font-size: 12px;">R$ {{soma_tributos}}</td>
