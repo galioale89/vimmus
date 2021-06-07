@@ -165,31 +165,42 @@
             </div>
             <div class="row">
                 <label class='col-form-label fw-bold text-center'>Outros Custos Variáveis</label>
-                <div class="col-md-6 text-end">
+                <div class="col-md-5 text-end">
                     <li style="font-size: 14px;">Alimentação:</li>
                     <li style="font-size: 14px;">Deslocamento:</li>
                     <li style="font-size: 14px;">Total:</li>
                 </div>
-                <div class="col-md-6 text-start">
+                <div class="col-md-4 text-start">
                     <li style="font-size: 14px;">R$ {{medkwp_totali}}</li>
                     <li style="font-size: 14px;">R$ {{medkwp_totdes}}</li>
                     <li style="font-size: 14px;">R$ {{medkwp_custoVar}}</li>
                 </div>
+                <div class="col-md-3 text-start">
+                    <li style="font-size: 14px;">{{per_totali}} %</li>
+                    <li style="font-size: 14px;">{{per_totdes}} %</li>
+                    <li style="font-size: 14px;">{{per_totvar}} %</li>
+                </div>                
             </div>
             <div class="row">
                 <label class='col-form-label fw-bold text-center'>Custos Variáveis Estruturais</label>
-                <div class="col-md-6 text-end">
+                <div class="col-md-5 text-end">
                     <li style="font-size: 14px;">Cercamento:</li>
                     <li style="font-size: 14px;">Central:</li>
                     <li style="font-size: 14px;">Postes:</li>
                     <li style="font-size: 14px;">Total:</li>
                 </div>
-                <div class="col-md-6 text-start">
+                <div class="col-md-4 text-start">
                     <li style="font-size: 14px;">R$ {{medkwp_totcer}}</li>
                     <li style="font-size: 14px;">R$ {{medkwp_totcen}}</li>
                     <li style="font-size: 14px;">R$ {{medkwp_totpos}}</li>
                     <li style="font-size: 14px;">R$ {{medkwp_custoEst}}</li>
                 </div>
+                <div class="col-md-3 text-start">
+                    <li style="font-size: 14px;">{{per_totcer}} %</li>
+                    <li style="font-size: 14px;">{{per_totcen}} %</li>
+                    <li style="font-size: 14px;">{{per_totpos}} %</li>
+                    <li style="font-size: 14px;">{{per_totest}} %</li>
+                </div>                
             </div>
             <li class='text-center'><label class='col-form-label fw-bold'>Total Serviços: R$ {{soma_totser}}</label>
             </li>
