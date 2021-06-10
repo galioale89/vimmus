@@ -3392,6 +3392,7 @@ router.post('/filtradash', ehAdmin, (req, res) => {
         if (isNaN(medkwp_custoFix)) {
             medkwp_custoFix = 0
         }
+        medkwp_cusfat = (parseFloat(soma_totfat) / parseFloat(soma_totkwp)).toFixed(2)
         //Serviço
         medkwp_totint = (parseFloat(soma_totint) / parseFloat(soma_totkwp)).toFixed(2)
         medkwp_totpro = (parseFloat(soma_totpro) / parseFloat(soma_totkwp)).toFixed(2)
@@ -3893,6 +3894,7 @@ router.post('/filtradashcomkit', ehAdmin, (req, res) => {
         if (isNaN(medkwp_custoFix)) {
             medkwp_custoFix = 0
         }
+        medkwp_cusfat = (parseFloat(soma_totfat) / parseFloat(soma_totkwp)).toFixed(2)
         //Serviço
         medkwp_totint = (parseFloat(soma_totint) / parseFloat(soma_totkwp)).toFixed(2)
         medkwp_totpro = (parseFloat(soma_totpro) / parseFloat(soma_totkwp)).toFixed(2)
@@ -4472,6 +4474,7 @@ router.post('/filtradashsemkit', ehAdmin, (req, res) => {
         if (isNaN(medkwp_custoFix)) {
             medkwp_custoFix = 0
         }
+        medkwp_cusfat = (parseFloat(soma_totfat) / parseFloat(soma_totkwp)).toFixed(2)
         //Serviço
         medkwp_totint = (parseFloat(soma_totint) / parseFloat(soma_totkwp)).toFixed(2)
         medkwp_totpro = (parseFloat(soma_totpro) / parseFloat(soma_totkwp)).toFixed(2)
