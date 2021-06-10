@@ -964,34 +964,109 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
 
         //Média Ponderada projetista
         var per_totpro_com = parseFloat(soma_totpro_com) / parseFloat(soma_totfat_com) * 100
+        if (isNaN(per_totpro_com)){
+            per_totpro_com = 0
+        }
         var per_totpro_sem = parseFloat(soma_totpro_sem) / parseFloat(soma_totfat_sem) * 100
+        if (isNaN(per_totpro_sem)){
+            per_totpro_sem = 0
+        }
         var medkwp_totpro_com = parseFloat(soma_totpro_com) / parseFloat(soma_totkwp_com)
+        if (isNaN(medkwp_totpro_com)){
+            medkwp_totpro_com = 0
+        }
         var medkwp_totpro_sem = parseFloat(soma_totpro_sem) / parseFloat(soma_totkwp_sem)
+        if (isNaN(medkwp_totpro_sem)){
+            medkwp_totpro_sem = 0
+        }
         var per_totpro = (((parseFloat(medkwp_totpro_com) * parseFloat(per_totpro_com)) + (parseFloat(medkwp_totpro_sem) * parseFloat(per_totpro_sem))) / (parseFloat(medkwp_totpro_com) + parseFloat(medkwp_totpro_sem))).toFixed(2)
+        if (isNaN(per_totpro)){
+            per_totpro = 0
+        }
         //Média Ponderada ART
         var per_totart_com = parseFloat(soma_totart_com) / parseFloat(soma_totfat_com) * 100
+        if (isNaN(per_totart_com)){
+            per_totart_com = 0
+        }
         var per_totart_sem = parseFloat(soma_totart_sem) / parseFloat(soma_totfat_sem) * 100
+        if (isNaN(per_totart_sem)){
+            per_totart_sem = 0
+        }
         var medkwp_totart_com = parseFloat(soma_totart_com) / parseFloat(soma_totkwp_com)
+        if (isNaN(medkwp_totart_com)){
+            medkwp_totart_com = 0
+        }
         var medkwp_totart_sem = parseFloat(soma_totart_sem) / parseFloat(soma_totkwp_sem)
+        if (isNaN(medkwp_totart_sem)){
+            medkwp_totart_sem = 0
+        }
         var per_totart = (((parseFloat(medkwp_totart_com) * parseFloat(per_totart_com)) + (parseFloat(medkwp_totart_sem) * parseFloat(per_totart_sem))) / (parseFloat(medkwp_totart_com) + parseFloat(medkwp_totart_sem))).toFixed(2)
+        if (isNaN(per_totart)){
+            per_totart = 0
+        }
         //Média Ponderada Gestão
         var per_totges_com = parseFloat(soma_totges_com) / parseFloat(soma_totfat_com) * 100
+        if (isNaN(per_totges_com)){
+            per_totges_com = 0
+        }
         var per_totges_sem = parseFloat(soma_totges_sem) / parseFloat(soma_totfat_sem) * 100
+        if (isNaN(per_totges_sem)){
+            per_totges_sem = 0
+        }
         var medkwp_totges_com = parseFloat(soma_totges_com) / parseFloat(soma_totkwp_com)
+        if (isNaN(medkwp_totges_com)){
+            medkwp_totges_com = 0
+        }
         var medkwp_totges_sem = parseFloat(soma_totges_sem) / parseFloat(soma_totkwp_sem)
+        if (isNaN(medkwp_totges_sem)){
+            medkwp_totges_sem = 0
+        }
         var per_totges = (((parseFloat(medkwp_totges_com) * parseFloat(per_totges_com)) + (parseFloat(medkwp_totges_sem) * parseFloat(per_totges_sem))) / (parseFloat(medkwp_totges_com) + parseFloat(medkwp_totges_sem))).toFixed(2)
+        if (isNaN(per_totges)){
+            per_totges = 0
+        }
         //Média Ponderada instalação
         var per_totint_com = parseFloat(soma_totint_com) / parseFloat(soma_totfat_com) * 100
+        if (isNaN(per_totint_com)){
+            per_totint_com = 0
+        }
         var per_totint_sem = parseFloat(soma_totint_sem) / parseFloat(soma_totfat_sem) * 100
+        if (isNaN(per_totint_sem)){
+            per_totint_sem = 0
+        }
         var medkwp_totint_com = parseFloat(soma_totint_com) / parseFloat(soma_totkwp_com)
+        if (isNaN(medkwp_totint_com)){
+            medkwp_totint_com = 0
+        }
         var medkwp_totint_sem = parseFloat(soma_totint_sem) / parseFloat(soma_totkwp_sem)
+        if (isNaN(medkwp_totint_sem)){
+            medkwp_totint_sem = 0
+        }
         var per_totint = (((parseFloat(medkwp_totint_com) * parseFloat(per_totint_com)) + (parseFloat(medkwp_totint_sem) * parseFloat(per_totint_sem))) / (parseFloat(medkwp_totint_com) + parseFloat(medkwp_totint_sem))).toFixed(2)
+        if (isNaN(per_totint)){
+            per_totint = 0
+        }
         //Média Ponderada Administração
         var per_totadm_com = parseFloat(soma_totadm_com) / parseFloat(soma_totfat_com) * 100
+        if (isNaN(per_totadm_com)){
+            per_totadm_com = 0
+        }
         var per_totadm_sem = parseFloat(soma_totadm_sem) / parseFloat(soma_totfat_sem) * 100
+        if (isNaN(per_totadm_sem)){
+            per_totadm_sem = 0
+        }
         var medkwp_totadm_com = parseFloat(soma_totadm_com) / parseFloat(soma_totkwp_com)
+        if (isNaN(medkwp_totadm_com)){
+            medkwp_totadm_com = 0
+        }
         var medkwp_totadm_sem = parseFloat(soma_totadm_sem) / parseFloat(soma_totkwp_sem)
+        if (isNaN(medkwp_totadm_sem)){
+            medkwp_totadm_sem = 0
+        }
         var per_totadm = (((parseFloat(medkwp_totadm_com) * parseFloat(per_totadm_com)) + (parseFloat(medkwp_totadm_sem) * parseFloat(per_totadm_sem))) / (parseFloat(medkwp_totadm_com) + parseFloat(medkwp_totadm_sem))).toFixed(2)
+        if (isNaN(per_totadm)){
+            per_totadm = 0
+        }
         //Média Ponderada Comissão
         var per_totcom_com = parseFloat(soma_totcom_com) / parseFloat(soma_totfat_com) * 100
         if (isNaN(per_totcom_com)){
@@ -1015,18 +1090,48 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
         }
         //Média Ponderada Tributos
         var per_tottrb_com = parseFloat(soma_tottrb_com) / parseFloat(soma_totfat_com) * 100
+        if (isNaN(per_tottrb_com)){
+            per_tottrb_com = 0
+        }
         var per_tottrb_sem = parseFloat(soma_tottrb_sem) / parseFloat(soma_totfat_sem) * 100
+        if (isNaN(per_tottrb_sem)){
+            per_tottrb_sem = 0
+        }
         var medkwp_tottrb_com = parseFloat(soma_tottrb_com) / parseFloat(soma_totkwp_com)
+        if (isNaN(medkwp_tottrb_com)){
+            medkwp_tottrb_com = 0
+        }
         var medkwp_tottrb_sem = parseFloat(soma_tottrb_sem) / parseFloat(soma_totkwp_sem)
+        if (isNaN(medkwp_tottrb_sem)){
+            medkwp_tottrb_sem = 0
+        }
         var per_tottrb = (((parseFloat(medkwp_tottrb_com) * parseFloat(per_tottrb_com)) + (parseFloat(medkwp_tottrb_sem) * parseFloat(per_tottrb_sem))) / (parseFloat(medkwp_tottrb_com) + parseFloat(medkwp_tottrb_sem))).toFixed(2)
+        if (isNaN(per_tottrb)){
+            per_tottrb = 0
+        }
         //Total Custos
         var custoFix_com = parseFloat(soma_totcus_com) + parseFloat(soma_totadm_com) + parseFloat(soma_totcom_com) + parseFloat(soma_tottrb_com)
         var custoFix_sem = parseFloat(soma_totcus_sem) + parseFloat(soma_totadm_sem) + parseFloat(soma_totcom_sem) + parseFloat(soma_tottrb_sem)
         var per_totcus_com = parseFloat(custoFix_com) / parseFloat(soma_totfat_com) * 100
+        if (isNaN(per_totcus_com)){
+            per_totcus_com = 0
+        }
         var per_totcus_sem = parseFloat(custoFix_sem) / parseFloat(soma_totfat_sem) * 100
+        if (isNaN(per_totcus_sem)){
+            per_totcus_sem = 0
+        }
         var medkwp_totcus_com = parseFloat(custoFix_com) / parseFloat(soma_totkwp_com)
+        if (isNaN(medkwp_totcus_com)){
+            medkwp_totcus_com = 0
+        }
         var medkwp_totcus_sem = parseFloat(custoFix_sem) / parseFloat(soma_totkwp_sem)
+        if (isNaN(medkwp_totcus_sem)){
+            medkwp_totcus_sem = 0
+        }
         var per_totcus = (((parseFloat(medkwp_totcus_com) * parseFloat(per_totcus_com)) + (parseFloat(medkwp_totcus_sem) * parseFloat(per_totcus_sem))) / (parseFloat(medkwp_totcus_com) + parseFloat(medkwp_totcus_sem))).toFixed(2)
+        if (isNaN(per_totcus)){
+            per_totcus = 0
+        }
         //Média Ponderada Custos Variáveis Alimentação
         var per_totali_com = parseFloat(soma_totali_com) / parseFloat(soma_varfat_com) * 100
         if (isNaN(per_totali_com)){
@@ -1071,16 +1176,46 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
         }        
         //Média Ponderada Custos Variáveis Combustível
         var per_totcmb_com = parseFloat(soma_totcmb_com) / parseFloat(soma_varfat_com) * 100
+        if (isNaN(per_totcmb_com)){
+            per_totcmb_com = 0
+        }    
         var per_totcmb_sem = parseFloat(soma_totcmb_sem) / parseFloat(soma_varfat_sem) * 100
+        if (isNaN(per_totcmb_sem)){
+            per_totcmb_sem = 0
+        }    
         var medkwp_totcmb_com = parseFloat(soma_totcmb_com) / parseFloat(soma_varkwp_com)
+        if (isNaN(medkwp_totcmb_com)){
+            medkwp_totcmb_com = 0
+        }    
         var medkwp_totcmb_sem = parseFloat(soma_totcmb_sem) / parseFloat(soma_varkwp_sem)
+        if (isNaN(medkwp_totcmb_sem)){
+            medkwp_totcmb_sem = 0
+        }    
         var per_totcmb = (((parseFloat(medkwp_totcmb_com) * parseFloat(per_totcmb_com)) + (parseFloat(medkwp_totcmb_sem) * parseFloat(per_totcmb_sem))) / (parseFloat(medkwp_totcmb_com) + parseFloat(medkwp_totcmb_sem))).toFixed(2)
+        if (isNaN(per_totcmb)){
+            per_totcmb = 0
+        }    
         //Média Ponderada Custos Variáveis Hotel
         var per_tothtl_com = parseFloat(soma_tothtl_com) / parseFloat(soma_varfat_com) * 100
+        if (isNaN(per_tothtl_com)){
+            per_tothtl_com = 0
+        } 
         var per_tothtl_sem = parseFloat(soma_tothtl_sem) / parseFloat(soma_varfat_sem) * 100
+        if (isNaN(per_tothtl_sem)){
+            per_tothtl_sem = 0
+        } 
         var medkwp_tothtl_com = parseFloat(soma_tothtl_com) / parseFloat(soma_varkwp_com)
+        if (isNaN(medkwp_tothtl_com)){
+            medkwp_tothtl_com = 0
+        } 
         var medkwp_tothtl_sem = parseFloat(soma_tothtl_sem) / parseFloat(soma_varkwp_sem)
+        if (isNaN(medkwp_tothtl_sem)){
+            medkwp_tothtl_sem = 0
+        } 
         var per_tothtl = (((parseFloat(medkwp_tothtl_com) * parseFloat(per_tothtl_com)) + (parseFloat(medkwp_tothtl_sem) * parseFloat(per_tothtl_sem))) / (parseFloat(medkwp_tothtl_com) + parseFloat(medkwp_tothtl_sem))).toFixed(2)
+        if (isNaN(per_tothtl)){
+            per_tothtl = 0
+        } 
         //Total Custos Variáveis
         var custoVar_com = parseFloat(soma_totvar_com)
         var custoVar_sem = parseFloat(soma_totvar_sem)
@@ -2691,34 +2826,109 @@ router.post('/filtradash', ehAdmin, (req, res) => {
 
         //Média Ponderada projetista
         var per_totpro_com = parseFloat(soma_totpro_com) / parseFloat(soma_totfat_com) * 100
+        if (isNaN(per_totpro_com)){
+            per_totpro_com = 0
+        }
         var per_totpro_sem = parseFloat(soma_totpro_sem) / parseFloat(soma_totfat_sem) * 100
+        if (isNaN(per_totpro_sem)){
+            per_totpro_sem = 0
+        }
         var medkwp_totpro_com = parseFloat(soma_totpro_com) / parseFloat(soma_totkwp_com)
+        if (isNaN(medkwp_totpro_com)){
+            medkwp_totpro_com = 0
+        }
         var medkwp_totpro_sem = parseFloat(soma_totpro_sem) / parseFloat(soma_totkwp_sem)
+        if (isNaN(medkwp_totpro_sem)){
+            medkwp_totpro_sem = 0
+        }
         var per_totpro = (((parseFloat(medkwp_totpro_com) * parseFloat(per_totpro_com)) + (parseFloat(medkwp_totpro_sem) * parseFloat(per_totpro_sem))) / (parseFloat(medkwp_totpro_com) + parseFloat(medkwp_totpro_sem))).toFixed(2)
+        if (isNaN(per_totpro)){
+            per_totpro = 0
+        }
         //Média Ponderada ART
         var per_totart_com = parseFloat(soma_totart_com) / parseFloat(soma_totfat_com) * 100
+        if (isNaN(per_totart_com)){
+            per_totart_com = 0
+        }
         var per_totart_sem = parseFloat(soma_totart_sem) / parseFloat(soma_totfat_sem) * 100
+        if (isNaN(per_totart_sem)){
+            per_totart_sem = 0
+        }
         var medkwp_totart_com = parseFloat(soma_totart_com) / parseFloat(soma_totkwp_com)
+        if (isNaN(medkwp_totart_com)){
+            medkwp_totart_com = 0
+        }
         var medkwp_totart_sem = parseFloat(soma_totart_sem) / parseFloat(soma_totkwp_sem)
+        if (isNaN(medkwp_totart_sem)){
+            medkwp_totart_sem = 0
+        }
         var per_totart = (((parseFloat(medkwp_totart_com) * parseFloat(per_totart_com)) + (parseFloat(medkwp_totart_sem) * parseFloat(per_totart_sem))) / (parseFloat(medkwp_totart_com) + parseFloat(medkwp_totart_sem))).toFixed(2)
+        if (isNaN(per_totart)){
+            per_totart = 0
+        }
         //Média Ponderada Gestão
         var per_totges_com = parseFloat(soma_totges_com) / parseFloat(soma_totfat_com) * 100
+        if (isNaN(per_totges_com)){
+            per_totges_com = 0
+        }
         var per_totges_sem = parseFloat(soma_totges_sem) / parseFloat(soma_totfat_sem) * 100
+        if (isNaN(per_totges_sem)){
+            per_totges_sem = 0
+        }
         var medkwp_totges_com = parseFloat(soma_totges_com) / parseFloat(soma_totkwp_com)
+        if (isNaN(medkwp_totges_com)){
+            medkwp_totges_com = 0
+        }
         var medkwp_totges_sem = parseFloat(soma_totges_sem) / parseFloat(soma_totkwp_sem)
+        if (isNaN(medkwp_totges_sem)){
+            medkwp_totges_sem = 0
+        }
         var per_totges = (((parseFloat(medkwp_totges_com) * parseFloat(per_totges_com)) + (parseFloat(medkwp_totges_sem) * parseFloat(per_totges_sem))) / (parseFloat(medkwp_totges_com) + parseFloat(medkwp_totges_sem))).toFixed(2)
+        if (isNaN(per_totges)){
+            per_totges = 0
+        }
         //Média Ponderada instalação
         var per_totint_com = parseFloat(soma_totint_com) / parseFloat(soma_totfat_com) * 100
+        if (isNaN(per_totint_com)){
+            per_totint_com = 0
+        }
         var per_totint_sem = parseFloat(soma_totint_sem) / parseFloat(soma_totfat_sem) * 100
+        if (isNaN(per_totint_sem)){
+            per_totint_sem = 0
+        }
         var medkwp_totint_com = parseFloat(soma_totint_com) / parseFloat(soma_totkwp_com)
+        if (isNaN(medkwp_totint_com)){
+            medkwp_totint_com = 0
+        }
         var medkwp_totint_sem = parseFloat(soma_totint_sem) / parseFloat(soma_totkwp_sem)
+        if (isNaN(medkwp_totint_sem)){
+            medkwp_totint_sem = 0
+        }
         var per_totint = (((parseFloat(medkwp_totint_com) * parseFloat(per_totint_com)) + (parseFloat(medkwp_totint_sem) * parseFloat(per_totint_sem))) / (parseFloat(medkwp_totint_com) + parseFloat(medkwp_totint_sem))).toFixed(2)
+        if (isNaN(per_totint)){
+            per_totint = 0
+        }
         //Média Ponderada Administração
         var per_totadm_com = parseFloat(soma_totadm_com) / parseFloat(soma_totfat_com) * 100
+        if (isNaN(per_totadm_com)){
+            per_totadm_com = 0
+        }
         var per_totadm_sem = parseFloat(soma_totadm_sem) / parseFloat(soma_totfat_sem) * 100
+        if (isNaN(per_totadm_sem)){
+            per_totadm_sem = 0
+        }
         var medkwp_totadm_com = parseFloat(soma_totadm_com) / parseFloat(soma_totkwp_com)
+        if (isNaN(medkwp_totadm_com)){
+            medkwp_totadm_com = 0
+        }
         var medkwp_totadm_sem = parseFloat(soma_totadm_sem) / parseFloat(soma_totkwp_sem)
+        if (isNaN(medkwp_totadm_sem)){
+            medkwp_totadm_sem = 0
+        }
         var per_totadm = (((parseFloat(medkwp_totadm_com) * parseFloat(per_totadm_com)) + (parseFloat(medkwp_totadm_sem) * parseFloat(per_totadm_sem))) / (parseFloat(medkwp_totadm_com) + parseFloat(medkwp_totadm_sem))).toFixed(2)
+        if (isNaN(per_totadm)){
+            per_totadm = 0
+        }
         //Média Ponderada Comissão
         var per_totcom_com = parseFloat(soma_totcom_com) / parseFloat(soma_totfat_com) * 100
         if (isNaN(per_totcom_com)){
@@ -2742,18 +2952,48 @@ router.post('/filtradash', ehAdmin, (req, res) => {
         }
         //Média Ponderada Tributos
         var per_tottrb_com = parseFloat(soma_tottrb_com) / parseFloat(soma_totfat_com) * 100
+        if (isNaN(per_tottrb_com)){
+            per_tottrb_com = 0
+        }
         var per_tottrb_sem = parseFloat(soma_tottrb_sem) / parseFloat(soma_totfat_sem) * 100
+        if (isNaN(per_tottrb_sem)){
+            per_tottrb_sem = 0
+        }
         var medkwp_tottrb_com = parseFloat(soma_tottrb_com) / parseFloat(soma_totkwp_com)
+        if (isNaN(medkwp_tottrb_com)){
+            medkwp_tottrb_com = 0
+        }
         var medkwp_tottrb_sem = parseFloat(soma_tottrb_sem) / parseFloat(soma_totkwp_sem)
+        if (isNaN(medkwp_tottrb_sem)){
+            medkwp_tottrb_sem = 0
+        }
         var per_tottrb = (((parseFloat(medkwp_tottrb_com) * parseFloat(per_tottrb_com)) + (parseFloat(medkwp_tottrb_sem) * parseFloat(per_tottrb_sem))) / (parseFloat(medkwp_tottrb_com) + parseFloat(medkwp_tottrb_sem))).toFixed(2)
+        if (isNaN(per_tottrb)){
+            per_tottrb = 0
+        }
         //Total Custos
         var custoFix_com = parseFloat(soma_totcus_com) + parseFloat(soma_totadm_com) + parseFloat(soma_totcom_com) + parseFloat(soma_tottrb_com)
         var custoFix_sem = parseFloat(soma_totcus_sem) + parseFloat(soma_totadm_sem) + parseFloat(soma_totcom_sem) + parseFloat(soma_tottrb_sem)
         var per_totcus_com = parseFloat(custoFix_com) / parseFloat(soma_totfat_com) * 100
+        if (isNaN(per_totcus_com)){
+            per_totcus_com = 0
+        }
         var per_totcus_sem = parseFloat(custoFix_sem) / parseFloat(soma_totfat_sem) * 100
+        if (isNaN(per_totcus_sem)){
+            per_totcus_sem = 0
+        }
         var medkwp_totcus_com = parseFloat(custoFix_com) / parseFloat(soma_totkwp_com)
+        if (isNaN(medkwp_totcus_com)){
+            medkwp_totcus_com = 0
+        }
         var medkwp_totcus_sem = parseFloat(custoFix_sem) / parseFloat(soma_totkwp_sem)
+        if (isNaN(medkwp_totcus_sem)){
+            medkwp_totcus_sem = 0
+        }
         var per_totcus = (((parseFloat(medkwp_totcus_com) * parseFloat(per_totcus_com)) + (parseFloat(medkwp_totcus_sem) * parseFloat(per_totcus_sem))) / (parseFloat(medkwp_totcus_com) + parseFloat(medkwp_totcus_sem))).toFixed(2)
+        if (isNaN(per_totcus)){
+            per_totcus = 0
+        }
         //Média Ponderada Custos Variáveis Alimentação
         var per_totali_com = parseFloat(soma_totali_com) / parseFloat(soma_varfat_com) * 100
         if (isNaN(per_totali_com)){
@@ -2798,16 +3038,46 @@ router.post('/filtradash', ehAdmin, (req, res) => {
         }        
         //Média Ponderada Custos Variáveis Combustível
         var per_totcmb_com = parseFloat(soma_totcmb_com) / parseFloat(soma_varfat_com) * 100
+        if (isNaN(per_totcmb_com)){
+            per_totcmb_com = 0
+        }    
         var per_totcmb_sem = parseFloat(soma_totcmb_sem) / parseFloat(soma_varfat_sem) * 100
+        if (isNaN(per_totcmb_sem)){
+            per_totcmb_sem = 0
+        }    
         var medkwp_totcmb_com = parseFloat(soma_totcmb_com) / parseFloat(soma_varkwp_com)
+        if (isNaN(medkwp_totcmb_com)){
+            medkwp_totcmb_com = 0
+        }    
         var medkwp_totcmb_sem = parseFloat(soma_totcmb_sem) / parseFloat(soma_varkwp_sem)
+        if (isNaN(medkwp_totcmb_sem)){
+            medkwp_totcmb_sem = 0
+        }    
         var per_totcmb = (((parseFloat(medkwp_totcmb_com) * parseFloat(per_totcmb_com)) + (parseFloat(medkwp_totcmb_sem) * parseFloat(per_totcmb_sem))) / (parseFloat(medkwp_totcmb_com) + parseFloat(medkwp_totcmb_sem))).toFixed(2)
+        if (isNaN(per_totcmb)){
+            per_totcmb = 0
+        }    
         //Média Ponderada Custos Variáveis Hotel
         var per_tothtl_com = parseFloat(soma_tothtl_com) / parseFloat(soma_varfat_com) * 100
+        if (isNaN(per_tothtl_com)){
+            per_tothtl_com = 0
+        } 
         var per_tothtl_sem = parseFloat(soma_tothtl_sem) / parseFloat(soma_varfat_sem) * 100
+        if (isNaN(per_tothtl_sem)){
+            per_tothtl_sem = 0
+        } 
         var medkwp_tothtl_com = parseFloat(soma_tothtl_com) / parseFloat(soma_varkwp_com)
+        if (isNaN(medkwp_tothtl_com)){
+            medkwp_tothtl_com = 0
+        } 
         var medkwp_tothtl_sem = parseFloat(soma_tothtl_sem) / parseFloat(soma_varkwp_sem)
+        if (isNaN(medkwp_tothtl_sem)){
+            medkwp_tothtl_sem = 0
+        } 
         var per_tothtl = (((parseFloat(medkwp_tothtl_com) * parseFloat(per_tothtl_com)) + (parseFloat(medkwp_tothtl_sem) * parseFloat(per_tothtl_sem))) / (parseFloat(medkwp_tothtl_com) + parseFloat(medkwp_tothtl_sem))).toFixed(2)
+        if (isNaN(per_tothtl)){
+            per_tothtl = 0
+        } 
         //Total Custos Variáveis
         var custoVar_com = parseFloat(soma_totvar_com)
         var custoVar_sem = parseFloat(soma_totvar_sem)
