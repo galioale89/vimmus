@@ -1701,9 +1701,13 @@ router.get('/dashboardcustoscomkit', ehAdmin, (req, res) => {
                     soma_totart = (parseFloat(soma_totart) + 0).toFixed(2)
                 }
                 //Tributos
+                if (totalTributos > 0) {
                 soma_tottrb = (parseFloat(soma_tottrb) + parseFloat(totalTributos)).toFixed(2)
+                }
                 //Comissão
+                if (vlrcom > 0) {
                 soma_totcom = (parseFloat(soma_totcom) + parseFloat(vlrcom)).toFixed(2)
+                }
                 //Despesas Administrativas
                 if (desAdm != undefined) {
                     soma_totadm = (parseFloat(soma_totadm) + parseFloat(desAdm)).toFixed(2)
@@ -1818,12 +1822,17 @@ router.get('/dashboardcustoscomkit', ehAdmin, (req, res) => {
 
         //Soma Total Componentes
         soma_totequ = parseFloat(soma_modequ) + parseFloat(soma_invequ) + parseFloat(soma_estequ) + parseFloat(soma_cabequ) + parseFloat(soma_disequ) + parseFloat(soma_dpsequ) + parseFloat(soma_sbxequ) + parseFloat(soma_ocpequ)
+        //Médias
+        medkwp_totfat = (parseFloat(soma_totfat) / parseFloat(soma_totkwp)).toFixed(2)
+        medkwp_totkit = (parseFloat(soma_totkit) / parseFloat(soma_totkwp)).toFixed(2)
+        medkwp_totcop = (parseFloat(soma_totcop) / parseFloat(soma_totkwp)).toFixed(2)        
 
         //Custos Fixos 
         medkwp_custoFix = (parseFloat(soma_custoFix) / parseFloat(soma_totkwp)).toFixed(2)
         if (isNaN(medkwp_custoFix)) {
             medkwp_custoFix = 0
         }
+        medkwp_cusfat = (parseFloat(soma_totfat) / parseFloat(soma_totkwp)).toFixed(2)
         //Serviço
         medkwp_totint = (parseFloat(soma_totint) / parseFloat(soma_totkwp)).toFixed(2)
         medkwp_totpro = (parseFloat(soma_totpro) / parseFloat(soma_totkwp)).toFixed(2)
@@ -2325,14 +2334,13 @@ router.get('/dashboardcustossemkit', ehAdmin, (req, res) => {
         soma_totequ = parseFloat(soma_modequ) + parseFloat(soma_invequ) + parseFloat(soma_estequ) + parseFloat(soma_cabequ) + parseFloat(soma_disequ) + parseFloat(soma_dpsequ) + parseFloat(soma_sbxequ) + parseFloat(soma_ocpequ)
         //Médias
         medkwp_totfat = (parseFloat(soma_totfat) / parseFloat(soma_totkwp)).toFixed(2)
-        medkwp_totkit = (parseFloat(soma_totkit) / parseFloat(soma_totkwp)).toFixed(2)
         medkwp_totcop = (parseFloat(soma_totcop) / parseFloat(soma_totkwp)).toFixed(2)
-
         //Custos Fixos 
         medkwp_custoFix = (parseFloat(soma_custoFix) / parseFloat(soma_totkwp)).toFixed(2)
         if (isNaN(medkwp_custoFix)) {
             medkwp_custoFix = 0
         }
+        medkwp_cusfat = (parseFloat(soma_totfat) / parseFloat(soma_totkwp)).toFixed(2)
         //Serviço
         medkwp_totint = (parseFloat(soma_totint) / parseFloat(soma_totkwp)).toFixed(2)
         medkwp_totpro = (parseFloat(soma_totpro) / parseFloat(soma_totkwp)).toFixed(2)
@@ -2428,7 +2436,7 @@ router.get('/dashboardcustossemkit', ehAdmin, (req, res) => {
             medkwp_totint, medkwp_totpro, medkwp_totges, medkwp_totadm, medkwp_totcom, medkwp_totart,
             medkwp_tottrb, medkwp_custoFix, medkwp_cusfat, medkwp_totdes, medkwp_totali, medkwp_totcmb,
             medkwp_tothtl, medkwp_custoVar, medkwp_varfat, medkwp_totcer, medkwp_totcen, medkwp_totpos,
-            medkwp_totcop, medkwp_custoEst, medkwp_estfat, medkwp_totfat, medkwp_totkit,
+            medkwp_totcop, medkwp_custoEst, medkwp_estfat, medkwp_totfat,
 
             per_totpro, per_totart, per_totges, per_totint, per_totadm, per_totcom, per_tottrb, per_custoFix,
             per_totali, per_totdes, per_tothtl, per_totcmb, per_custoVar, per_totcen, per_totcer, per_totpos, per_custoEst,
@@ -4560,7 +4568,7 @@ router.post('/filtradashsemkit', ehAdmin, (req, res) => {
             medkwp_totint, medkwp_totpro, medkwp_totges, medkwp_totadm, medkwp_totcom, medkwp_totart,
             medkwp_tottrb, medkwp_custoFix, medkwp_cusfat, medkwp_totdes, medkwp_totali, medkwp_custoVar,
             medkwp_varfat, medkwp_totcer, medkwp_totcen, medkwp_totpos, medkwp_totcop,
-            medkwp_custoEst, medkwp_estfat, medkwp_totfat, medkwp_totkit,
+            medkwp_custoEst, medkwp_estfat, medkwp_totfat,
 
             per_totpro, per_totart, per_totges, per_totint, per_totadm, per_totcom, per_tottrb, per_custoFix,
             per_totali, per_totdes, per_custoVar, per_totcen, per_totcer, per_totpos, per_custoEst,
