@@ -1490,8 +1490,6 @@ router.get('/dashboardcustoscomkit', ehAdmin, (req, res) => {
     const { _id } = req.user
 
     var numprj = 0
-    var soma_kitfat = 0
-    var soma_serfat = 0
     var soma_totfat = 0
 
     var soma_totcop = 0
@@ -1676,7 +1674,7 @@ router.get('/dashboardcustoscomkit', ehAdmin, (req, res) => {
                 soma_totkwp = (parseFloat(soma_totkwp) + parseFloat(potencia)).toFixed(2)
                 soma_totcop = (parseFloat(soma_totcop) + parseFloat(custoPlano)).toFixed(2)
                 //Totalizador de Faturamento            
-                soma_kitfat = parseFloat(soma_kitfat) + parseFloat(vlrNFS)
+                soma_totfat = parseFloat(soma_totfat) + parseFloat(vlrNFS)
                 //Totalizador de Kit   
                 soma_totkit = parseFloat(soma_totkit) + parseFloat(vlrkit)
 
@@ -1817,7 +1815,6 @@ router.get('/dashboardcustoscomkit', ehAdmin, (req, res) => {
         soma_custoFix = parseFloat(soma_totint) + parseFloat(soma_totpro) + parseFloat(soma_totart) + parseFloat(soma_totges) + parseFloat(soma_tottrb) + parseFloat(soma_totcom) + parseFloat(soma_totadm)
         soma_custoVar = parseFloat(soma_totali) + parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)
         soma_custoEst = parseFloat(soma_totcer) + parseFloat(soma_totcen) + parseFloat(soma_totpos)
-        soma_totfat = parseFloat(soma_kitfat) + parseFloat(soma_serfat)
 
         //Soma Total Componentes
         soma_totequ = parseFloat(soma_modequ) + parseFloat(soma_invequ) + parseFloat(soma_estequ) + parseFloat(soma_cabequ) + parseFloat(soma_disequ) + parseFloat(soma_dpsequ) + parseFloat(soma_sbxequ) + parseFloat(soma_ocpequ)
@@ -1941,8 +1938,6 @@ router.get('/dashboardcustossemkit', ehAdmin, (req, res) => {
     const { _id } = req.user
 
     var numprj = 0
-    var soma_kitfat = 0
-    var soma_serfat = 0
     var soma_totfat = 0
 
     var soma_totcop = 0
@@ -2183,7 +2178,7 @@ router.get('/dashboardcustossemkit', ehAdmin, (req, res) => {
                 soma_totkwp = (parseFloat(soma_totkwp) + parseFloat(potencia)).toFixed(2)
                 soma_totcop = (parseFloat(soma_totcop) + parseFloat(custoPlano)).toFixed(2)
                 //Totalizador de Faturamento            
-                soma_kitfat = parseFloat(soma_kitfat) + parseFloat(vlrNFS)
+                soma_totfat = parseFloat(soma_totfat) + parseFloat(vlrNFS)
                 //Totalizador de Kit   
                 soma_totkit = parseFloat(soma_totkit) + parseFloat(vlrkit)
 
@@ -2325,7 +2320,6 @@ router.get('/dashboardcustossemkit', ehAdmin, (req, res) => {
         soma_custoFix = parseFloat(soma_totint) + parseFloat(soma_totpro) + parseFloat(soma_totart) + parseFloat(soma_totges) + parseFloat(soma_tottrb) + parseFloat(soma_totcom) + parseFloat(soma_totadm)
         soma_custoVar = parseFloat(soma_totali) + parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)
         soma_custoEst = parseFloat(soma_totcer) + parseFloat(soma_totcen) + parseFloat(soma_totpos)
-        soma_totfat = parseFloat(soma_kitfat) + parseFloat(soma_serfat)
 
         //Soma Total Componentes
         soma_totequ = parseFloat(soma_modequ) + parseFloat(soma_invequ) + parseFloat(soma_estequ) + parseFloat(soma_cabequ) + parseFloat(soma_disequ) + parseFloat(soma_dpsequ) + parseFloat(soma_sbxequ) + parseFloat(soma_ocpequ)
@@ -3559,8 +3553,6 @@ router.post('/filtradashcomkit', ehAdmin, (req, res) => {
     //console.log('datafim=>' + datafim)
 
     var numprj = 0
-    var soma_kitfat = 0
-    var soma_serfat = 0
     var soma_totfat = 0
 
     var soma_totcop = 0
@@ -3743,7 +3735,7 @@ router.post('/filtradashcomkit', ehAdmin, (req, res) => {
                 soma_totkwp = (parseFloat(soma_totkwp) + parseFloat(potencia)).toFixed(2)
                 soma_totcop = (parseFloat(soma_totcop) + parseFloat(custoPlano)).toFixed(2)
                 //Totalizador de Faturamento            
-                soma_kitfat = parseFloat(soma_kitfat) + parseFloat(vlrNFS)
+                soma_totfat = parseFloat(soma_totfat) + parseFloat(vlrNFS)
                 //Totalizador de Kit   
                 soma_totkit = parseFloat(soma_totkit) + parseFloat(vlrkit)
 
@@ -3884,7 +3876,6 @@ router.post('/filtradashcomkit', ehAdmin, (req, res) => {
         soma_custoFix = parseFloat(soma_totint) + parseFloat(soma_totpro) + parseFloat(soma_totart) + parseFloat(soma_totges) + parseFloat(soma_tottrb) + parseFloat(soma_totcom) + parseFloat(soma_totadm)
         soma_custoVar = parseFloat(soma_totali) + parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)
         soma_custoEst = parseFloat(soma_totcer) + parseFloat(soma_totcen) + parseFloat(soma_totpos)
-        soma_totfat = parseFloat(soma_kitfat) + parseFloat(soma_serfat)
 
         //Soma Total Componentes
         soma_totequ = parseFloat(soma_modequ) + parseFloat(soma_invequ) + parseFloat(soma_estequ) + parseFloat(soma_cabequ) + parseFloat(soma_disequ) + parseFloat(soma_dpsequ) + parseFloat(soma_sbxequ) + parseFloat(soma_ocpequ)
@@ -4085,8 +4076,6 @@ router.post('/filtradashsemkit', ehAdmin, (req, res) => {
     //console.log('datafim=>' + datafim)
 
     var numprj = 0
-    var soma_kitfat = 0
-    var soma_serfat = 0
     var soma_totfat = 0
 
     var soma_totcop = 0
@@ -4325,7 +4314,7 @@ router.post('/filtradashsemkit', ehAdmin, (req, res) => {
                 soma_totkwp = (parseFloat(soma_totkwp) + parseFloat(potencia)).toFixed(2)
                 soma_totcop = (parseFloat(soma_totcop) + parseFloat(custoPlano)).toFixed(2)
                 //Totalizador de Faturamento            
-                soma_kitfat = parseFloat(soma_kitfat) + parseFloat(vlrNFS)
+                soma_totfat = parseFloat(soma_totfat) + parseFloat(vlrNFS)
                 //Totalizador de Kit   
                 soma_totkit = parseFloat(soma_totkit) + parseFloat(vlrkit)
 
@@ -4466,7 +4455,6 @@ router.post('/filtradashsemkit', ehAdmin, (req, res) => {
         soma_custoFix = parseFloat(soma_totint) + parseFloat(soma_totpro) + parseFloat(soma_totart) + parseFloat(soma_totges) + parseFloat(soma_tottrb) + parseFloat(soma_totcom) + parseFloat(soma_totadm)
         soma_custoVar = parseFloat(soma_totali) + parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)
         soma_custoEst = parseFloat(soma_totcer) + parseFloat(soma_totcen) + parseFloat(soma_totpos)
-        soma_totfat = parseFloat(soma_kitfat) + parseFloat(soma_serfat)
 
         //Soma Total Componentes
         soma_totequ = parseFloat(soma_modequ) + parseFloat(soma_invequ) + parseFloat(soma_estequ) + parseFloat(soma_cabequ) + parseFloat(soma_disequ) + parseFloat(soma_dpsequ) + parseFloat(soma_sbxequ) + parseFloat(soma_ocpequ)
@@ -4506,7 +4494,7 @@ router.post('/filtradashsemkit', ehAdmin, (req, res) => {
             medkwp_totcen = (parseFloat(soma_totcen) / parseFloat(soma_estkwp)).toFixed(2)
             medkwp_totpos = (parseFloat(soma_totpos) / parseFloat(soma_estkwp)).toFixed(2)
         }
-        
+
         //Custos Fixos
         per_totpro = (parseFloat(medkwp_totpro) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
         per_totart = (parseFloat(medkwp_totart) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
