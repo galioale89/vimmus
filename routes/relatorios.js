@@ -1850,10 +1850,25 @@ router.get('/dashboardcustoscomkit', ehAdmin, (req, res) => {
             medkwp_custoVar = 0
         }
         medkwp_varfat = (parseFloat(soma_varfat) / parseFloat(soma_varkwp)).toFixed(2)
+        if (isNaN(medkwp_varfat)) {
+            medkwp_varfat = 0
+        }
         medkwp_totdes = ((parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)) / parseFloat(soma_varkwp)).toFixed(2)
+        if (isNaN(medkwp_totdes)) {
+            medkwp_totdes = 0
+        }
         medkwp_totali = (parseFloat(soma_totali) / parseFloat(soma_varkwp)).toFixed(2)
+        if (isNaN(medkwp_totdes)) {
+            medkwp_totdes = 0
+        }
         medkwp_tothtl = (parseFloat(soma_tothtl) / parseFloat(soma_varkwp)).toFixed(2)
+        if (isNaN(medkwp_tothtl)) {
+            medkwp_tothtl = 0
+        }
         medkwp_totcmb = (parseFloat(soma_totcmb) / parseFloat(soma_varkwp)).toFixed(2)
+        if (isNaN(medkwp_totcmb)) {
+            medkwp_totcmb = 0
+        }
 
         //Custos Variáveis Estruturais
         if (parseFloat(soma_estkwp) > 0) {
@@ -2358,10 +2373,25 @@ router.get('/dashboardcustossemkit', ehAdmin, (req, res) => {
             medkwp_custoVar = 0
         }
         medkwp_varfat = (parseFloat(soma_varfat) / parseFloat(soma_varkwp)).toFixed(2)
+        if (isNaN(medkwp_varfat)) {
+            medkwp_varfat = 0
+        }
         medkwp_totdes = ((parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)) / parseFloat(soma_varkwp)).toFixed(2)
+        if (isNaN(medkwp_totdes)) {
+            medkwp_totdes = 0
+        }
         medkwp_totali = (parseFloat(soma_totali) / parseFloat(soma_varkwp)).toFixed(2)
+        if (isNaN(medkwp_totdes)) {
+            medkwp_totdes = 0
+        }
         medkwp_tothtl = (parseFloat(soma_tothtl) / parseFloat(soma_varkwp)).toFixed(2)
+        if (isNaN(medkwp_tothtl)) {
+            medkwp_tothtl = 0
+        }
         medkwp_totcmb = (parseFloat(soma_totcmb) / parseFloat(soma_varkwp)).toFixed(2)
+        if (isNaN(medkwp_totcmb)) {
+            medkwp_totcmb = 0
+        }
 
         //Custos Variáveis Estruturais
         if (parseFloat(soma_estkwp) > 0) {
@@ -3912,10 +3942,25 @@ router.post('/filtradashcomkit', ehAdmin, (req, res) => {
             medkwp_custoVar = 0
         }
         medkwp_varfat = (parseFloat(soma_varfat) / parseFloat(soma_varkwp)).toFixed(2)
+        if (isNaN(medkwp_varfat)) {
+            medkwp_varfat = 0
+        }
         medkwp_totdes = ((parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)) / parseFloat(soma_varkwp)).toFixed(2)
+        if (isNaN(medkwp_totdes)) {
+            medkwp_totdes = 0
+        }
         medkwp_totali = (parseFloat(soma_totali) / parseFloat(soma_varkwp)).toFixed(2)
+        if (isNaN(medkwp_totdes)) {
+            medkwp_totdes = 0
+        }
         medkwp_tothtl = (parseFloat(soma_tothtl) / parseFloat(soma_varkwp)).toFixed(2)
+        if (isNaN(medkwp_tothtl)) {
+            medkwp_tothtl = 0
+        }
         medkwp_totcmb = (parseFloat(soma_totcmb) / parseFloat(soma_varkwp)).toFixed(2)
+        if (isNaN(medkwp_totcmb)) {
+            medkwp_totcmb = 0
+        }
 
         //Custos Variáveis Estruturais
         if (parseFloat(soma_estkwp) > 0) {
@@ -4492,10 +4537,25 @@ router.post('/filtradashsemkit', ehAdmin, (req, res) => {
             medkwp_custoVar = 0
         }
         medkwp_varfat = (parseFloat(soma_varfat) / parseFloat(soma_varkwp)).toFixed(2)
+        if (isNaN(medkwp_varfat)) {
+            medkwp_varfat = 0
+        }
         medkwp_totdes = ((parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)) / parseFloat(soma_varkwp)).toFixed(2)
+        if (isNaN(medkwp_totdes)) {
+            medkwp_totdes = 0
+        }
         medkwp_totali = (parseFloat(soma_totali) / parseFloat(soma_varkwp)).toFixed(2)
+        if (isNaN(medkwp_totdes)) {
+            medkwp_totdes = 0
+        }
         medkwp_tothtl = (parseFloat(soma_tothtl) / parseFloat(soma_varkwp)).toFixed(2)
+        if (isNaN(medkwp_tothtl)) {
+            medkwp_tothtl = 0
+        }
         medkwp_totcmb = (parseFloat(soma_totcmb) / parseFloat(soma_varkwp)).toFixed(2)
+        if (isNaN(medkwp_totcmb)) {
+            medkwp_totcmb = 0
+        }
 
         //Custos Variáveis Estruturais
         if (parseFloat(soma_estkwp) > 0) {
