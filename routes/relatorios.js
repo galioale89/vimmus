@@ -3918,6 +3918,10 @@ router.post('/filtradashcomkit', ehAdmin, (req, res) => {
 
         //Soma Total Componentes
         soma_totequ = parseFloat(soma_modequ) + parseFloat(soma_invequ) + parseFloat(soma_estequ) + parseFloat(soma_cabequ) + parseFloat(soma_disequ) + parseFloat(soma_dpsequ) + parseFloat(soma_sbxequ) + parseFloat(soma_ocpequ)
+        //Médias
+        medkwp_totfat = (parseFloat(soma_totfat) / parseFloat(soma_totkwp)).toFixed(2)
+        medkwp_totkit = (parseFloat(soma_totkit) / parseFloat(soma_totkwp)).toFixed(2)
+        medkwp_totcop = (parseFloat(soma_totcop) / parseFloat(soma_totkwp)).toFixed(2) 
 
         //Custos Fixos 
         medkwp_custoFix = (parseFloat(soma_custoFix) / parseFloat(soma_totkwp)).toFixed(2)
@@ -4513,6 +4517,10 @@ router.post('/filtradashsemkit', ehAdmin, (req, res) => {
 
         //Soma Total Componentes
         soma_totequ = parseFloat(soma_modequ) + parseFloat(soma_invequ) + parseFloat(soma_estequ) + parseFloat(soma_cabequ) + parseFloat(soma_disequ) + parseFloat(soma_dpsequ) + parseFloat(soma_sbxequ) + parseFloat(soma_ocpequ)
+        //Médias
+        medkwp_totfat = (parseFloat(soma_totfat) / parseFloat(soma_totkwp)).toFixed(2)
+        medkwp_totkit = (parseFloat(soma_totkit) / parseFloat(soma_totkwp)).toFixed(2)
+        medkwp_totcop = (parseFloat(soma_totcop) / parseFloat(soma_totkwp)).toFixed(2) 
 
         //Custos Fixos 
         medkwp_custoFix = (parseFloat(soma_custoFix) / parseFloat(soma_totkwp)).toFixed(2)
