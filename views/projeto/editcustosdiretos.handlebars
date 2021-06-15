@@ -215,12 +215,12 @@
                                         Registrado:</label><br>
                                     {{/if}}
                                     <label class="fw-bold col-form-label col-form-label-sm">Dias de Obra
-                                        Registrado:</label>
+                                        Registrado: </label>
                                 </div>
                                 <div class="col-md-4">
                                     <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
                                         class="form-control form-control-sm mb-1" name='equipe' id="equipe"
-                                        value='{{projeto.qtdequipe}}' oninput="valida_numequ()">
+                                        value='{{projeto.qtdequipe}}' onmouseout="valida_numequ()">
                                     <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
                                         class="form-control form-control-sm mb-1" name='tothrs' id="tothrs"
                                         value='{{projeto.tothrs}}'>
@@ -384,7 +384,7 @@
                         </div>
                         <div class="row card">
                             <div class="row">
-                                <div class="col-md-6 text-end">
+                                <div class="col-md-7 text-end">
                                     <label class="fw-bold col-form-label col-form-label-sm">Reserva</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Reserva Gerencial:
                                     </label><br>
@@ -396,10 +396,9 @@
                                         Elétrico:</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Seguro:</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Cercamento:</label><br>
-                                    <label class="fw-bold col-form-label col-form-label-sm">Postes de
-                                        Condução:</label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm">Condutores Ponto de Conexão</label><br>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-5">
                                     <label class="fw-bold col-form-label col-form-label-sm">R$
                                         {{projeto.reserva}}</label>
                                     <div class="input-group input-group-sm mb-1">
@@ -464,7 +463,7 @@
                         <a href='/menu' class='btn btn-sm btn-primary'> <i class="bi bi-back"></i> Voltar ao Menu</a>
                     </div>
                 </div>
-                <div class="contorno-titulo mt-2" style="margin-bottom: 10%;">
+                <div class="contorno-titulo-dem mt-2" style="margin-bottom: 10%;">
                     <label class='fw-bold col-form-label col-form-label-lg mt-4'>Demonstrativo</label>
                     <div class="row mt-4">
                         <div class="col-md-7 text-end">
@@ -472,7 +471,7 @@
                             <label class='col-form-label col-form-label-sm'>(-)ISS:</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>(=)Receita Líquida:</label><br>
                             <label class='col-form-label col-form-label-sm'>Custo Kit Gerador: </label><br>
-                            <label class='fw-bold  col-form-label col-form-label-sm'>(=)Lucro Bruto:
+                            <label class='fw-bold  col-form-label col-form-label-sm'>(=)Receita Operacional:
                             </label><br>
                             <label class='col-form-label  col-form-label-sm'>(-)Custo Planejado:</label><br>
                             <label class='col-form-label  col-form-label-sm'>(-)Despesas Administrativas:</label><br>

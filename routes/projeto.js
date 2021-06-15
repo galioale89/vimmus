@@ -353,41 +353,51 @@ router.post("/novo", ehAdmin, (req, res) => {
           var vlrequ = 0
           var vlrkit = 0
 
-          //--Rotina do cadastro dos detalhes
           var unidadeEqu = 0
           var unidadeMod = 0
           var unidadeInv = 0
           var unidadeEst = 0
+          var unidadeCim = 0
+          var unidadeCab = 0
+          var unidadeDisCC = 0
+          var unidadeDPSCC = 0
+          var unidadeDisCA = 0
+          var unidadeDPSCA = 0
+          var unidadeSB = 0
+          var unidadeCCA = 0
+          var unidadeOcp = 0
           var unidadeCer = 0
           var unidadeCen = 0
           var unidadePos = 0
-          var unidadeDis = 0
-          var unidadeDPS = 0
-          var unidadeSB = 0
-          var unidadeCab = 0
-          var unidadeOcp = 0
           var vlrUniEqu = 0
-          var vlrUniEst = 0
           var vlrUniMod = 0
           var vlrUniInv = 0
+          var vlrUniEst = 0
+          var vlrUniCim = 0
+          var vlrUniCab = 0
+          var vlrUniDisCC = 0
+          var vlrUniDPSCC = 0
+          var vlrUniDisCA = 0
+          var vlrUniDPSCA = 0
+          var vlrUniSB = 0
+          var vlrUniCCA = 0
+          var vlrUniOcp = 0
           var vlrUniCer = 0
           var vlrUniCen = 0
           var vlrUniPos = 0
-          var vlrUniDis = 0
-          var vlrUniDPS = 0
-          var vlrUniSB = 0
-          var vlrUniCab = 0
-          var vlrUniOcp = 0
           var valorEqu = 0
           var valorMod = 0
           var valorInv = 0
           var valorEst = 0
-          var valorMod = 0
-          var valorInv = 0
+          var valorCim = 0
           var valorCab = 0
-          var valorDis = 0
-          var valorDPS = 0
+          var valorDisCC = 0
+          var valorDPSCC = 0
+          var valorDisCA = 0
+          var valorDPSCA = 0
           var valorSB = 0
+          var valorCCA = 0
+          var valorOcp = 0
           var valorCer = 0
           var valorCen = 0
           var valorPos = 0
@@ -452,6 +462,19 @@ router.post("/novo", ehAdmin, (req, res) => {
                     checkUni = 'checked'
                }
           }
+          //Valida valor Concretagem
+          if (req.body.valorCim != '') {
+               unidadeCim = 0
+               vlrUniCim = 0
+               valorCim = req.body.valorCim
+          } else {
+               if (req.body.unidadeCim != '' && req.body.vlrUniCim != '') {
+                    unidadeCim = req.body.unidadeCim
+                    vlrUniCim = req.body.vlrUniCim
+                    valorCim = parseFloat(unidadeCim) * parseFloat(vlrUniCim)
+                    checkUni = 'checked'
+               }
+          }
           //Valida valor Cabos Detalhado
           if (req.body.valorCab != '') {
                unidadeCab = 0
@@ -466,28 +489,52 @@ router.post("/novo", ehAdmin, (req, res) => {
                }
           }
           //Valida valor Disjuntores Detalhado
-          if (req.body.valorDis != '') {
-               unidadeDis = 0
-               vlrUniDis = 0
-               valorDis = req.body.valorDis
+          if (req.body.valorDisCC != '') {
+               unidadeDisCC = 0
+               vlrUniDisCC = 0
+               valorDisCC = req.body.valorDisCC
           } else {
-               if (req.body.unidadeDis != '' && req.body.vlrUniDis != '') {
-                    unidadeDis = req.body.unidadeDis
-                    vlrUniDis = req.body.vlrUniDis
-                    valorDis = parseFloat(unidadeDis) * parseFloat(vlrUniDis)
+               if (req.body.unidadeDisCC != '' && req.body.vlrUniDisCC != '') {
+                    unidadeDisCC = req.body.unidadeDisCC
+                    vlrUniDisCC = req.body.vlrUniDisCC
+                    valorDisCC = parseFloat(unidadeDisCC) * parseFloat(vlrUniDisCC)
+                    checkUni = 'checked'
+               }
+          }
+          if (req.body.valorDisCA != '') {
+               unidadeDisCA = 0
+               vlrUniDisCA = 0
+               valorDisCA = req.body.valorDisCA
+          } else {
+               if (req.body.unidadeDisCA != '' && req.body.vlrUniDisCA != '') {
+                    unidadeDisCA = req.body.unidadeDisCA
+                    vlrUniDisCA = req.body.vlrUniDisCA
+                    valorDisCA = parseFloat(unidadeDisCA) * parseFloat(vlrUniDisCA)
                     checkUni = 'checked'
                }
           }
           //Valida valor DPS Detalhado
-          if (req.body.valorDPS != '') {
-               unidadeDPS = 0
-               vlrUniDPS = 0
-               valorDPS = req.body.valorDPS
+          if (req.body.valorDPSCC != '') {
+               unidadeDPSCC = 0
+               vlrUniDPSCC = 0
+               valorDPSCC = req.body.valorDPSCC
           } else {
-               if (req.body.unidadeDPS != '' && req.body.vlrUniDPS != '') {
-                    unidadeDPS = req.body.unidadeDPS
-                    vlrUniDPS = req.body.vlrUniDPS
-                    valorDPS = parseFloat(unidadeDPS) * parseFloat(vlrUniDPS)
+               if (req.body.unidadeDPSCC != '' && req.body.vlrUniDPSCC != '') {
+                    unidadeDPSCC = req.body.unidadeDPSCC
+                    vlrUniDPSCC = req.body.vlrUniDPSCC
+                    valorDPSCC = parseFloat(unidadeDPSCC) * parseFloat(vlrUniDPSCC)
+                    checkUni = 'checked'
+               }
+          }
+          if (req.body.valorDPSCA != '') {
+               unidadeDPSCA = 0
+               vlrUniDPSCA = 0
+               valorDPSCA = req.body.valorDPSCA
+          } else {
+               if (req.body.unidadeDPSCA != '' && req.body.vlrUniDPSCA != '') {
+                    unidadeDPSCA = req.body.unidadeDPSCA
+                    vlrUniDPSCA = req.body.vlrUniDPSCA
+                    valorDPSCA = parseFloat(unidadeDPSCA) * parseFloat(vlrUniDPSCA)
                     checkUni = 'checked'
                }
           }
@@ -501,6 +548,19 @@ router.post("/novo", ehAdmin, (req, res) => {
                     unidadeSB = req.body.unidadeSB
                     vlrUniSB = req.body.vlrUniSB
                     valorSB = parseFloat(unidadeSB) * parseFloat(vlrUniSB)
+                    checkUni = 'checked'
+               }
+          }
+          //Valida valor Caixa Proteção CA Detalhado
+          if (req.body.valorCCA != '') {
+               unidadeCCA = 0
+               vlrUniCCA = 0
+               valorCCA = req.body.valorCCA
+          } else {
+               if (req.body.unidadeCCA != '' && req.body.vlrUniCCA != '') {
+                    unidadeCCA = req.body.unidadeCCA
+                    vlrUniCCA = req.body.vlrUniCCA
+                    valorCCA = parseFloat(unidadeCCA) * parseFloat(vlrUniCCA)
                     checkUni = 'checked'
                }
           }
@@ -571,22 +631,25 @@ router.post("/novo", ehAdmin, (req, res) => {
 
           //console.log('valorEqu=>'+valorEqu)
           //console.log('valorEst=>'+valorEst)
+          //console.log('valorCim=>'+valorCim)
           //console.log('valorCer=>'+valorCer)
           //console.log('valorPos=>'+valorPos)
-          //console.log('valorDis=>'+valorDis)
-          //console.log('valorDPS=>'+valorDPS)
+          //console.log('valorDisCC=>'+valorDisCC)
+          //console.log('valorDPSCC=>'+valorDPSCC)
+          //console.log('valorDisCA=>'+valorDisCA)
+          //console.log('valorDPSCA=>'+valorDPSCA)          
           //console.log('valorCab=>'+valorCab)
           //console.log('valorOcp=>'+valorOcp)
 
-          var vlrTotal = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCab) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorSB) + parseFloat(valorOcp) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos)
+          var vlrTotal = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorOcp) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos)
 
           //Valida valor do equipameento
           if (parseFloat(valorEqu) != 0 || parseFloat(valorMod) != 0) {
                vlrequ = vlrTotal
-               vlrkit = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCab) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorSB)
+               vlrkit = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA)
           } else {
-               vlrequ = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCab) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorSB) + parseFloat(valorOcp) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos)
-               vlrkit = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorDis) + parseFloat(valorDPS) + + parseFloat(valorSB) + parseFloat(valorCab)
+               vlrequ = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorOcp) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos)
+               vlrkit = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorCab)
           }
 
           //console.log(vlrequ)
@@ -776,10 +839,14 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                        //console.log('valorMod=>' + valorMod)
                                                        //console.log('valorInv=>' + valorInv)
                                                        //console.log('valorEst=>' + valorEst)
+                                                       //console.log('valorCim=>' + valorCim)
                                                        //console.log('valorCab=>' + valorCab)
-                                                       //console.log('valorDis=>' + valorDis)
-                                                       //console.log('valorDPS=>' + valorDPS)
+                                                       //console.log('valorDisCC=>' + valorDisCC)
+                                                       //console.log('valorDPSCC=>' + valorDPSCC)
+                                                       //console.log('valorDisCA=>' + valorDisCA)
+                                                       //console.log('valorDPSCA=>' + valorDPSCA)                                                       
                                                        //console.log('valorSB=>' + valorSB)
+                                                       //console.log('valorCCA=>' + valorCCA)
                                                        //console.log('valorCer=>' + valorCer)
                                                        //console.log('valorCen=>' + valorCen)
                                                        //console.log('valorPos=>' + valorPos)
@@ -793,10 +860,14 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                             unidadeMod: unidadeMod,
                                                             unidadeInv: unidadeInv,
                                                             unidadeEst: unidadeEst,
+                                                            unidadeCim: unidadeCim,
                                                             unidadeCab: unidadeCab,
-                                                            unidadeDis: unidadeDis,
-                                                            unidadeDPS: unidadeDPS,
+                                                            unidadeDisCC: unidadeDisCC,
+                                                            unidadeDPSCC: unidadeDPSCC,
+                                                            unidadeDisCA: unidadeDisCA,
+                                                            unidadeDPSCA: unidadeDPSCA,
                                                             unidadeSB: unidadeSB,
+                                                            unidadeCCA: unidadeCCA,
                                                             unidadeCer: unidadeCer,
                                                             unidadeCen: unidadeCen,
                                                             unidadePos: unidadePos,
@@ -805,10 +876,14 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                             vlrUniMod: vlrUniMod,
                                                             vlrUniInv: vlrUniInv,
                                                             vlrUniEst: vlrUniEst,
+                                                            vlrUniCim: vlrUniCim,
                                                             vlrUniCab: vlrUniCab,
-                                                            vlrUniDis: vlrUniDis,
-                                                            vlrUniDPS: vlrUniDPS,
+                                                            vlrUniDisCC: vlrUniDisCC,
+                                                            vlrUniDPSCC: vlrUniDPSCC,
+                                                            vlrUniDisCA: vlrUniDisCA,
+                                                            vlrUniDPSCA: vlrUniDPSCA,
                                                             vlrUniSB: vlrUniSB,
+                                                            vlrUniCCA: vlrUniCCA,
                                                             vlrUniCer: vlrUniCer,
                                                             vlrUniCen: vlrUniCen,
                                                             vlrUniPos: vlrUniPos,
@@ -817,10 +892,14 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                             valorMod: valorMod,
                                                             valorInv: valorInv,
                                                             valorEst: valorEst,
+                                                            valorCim: valorCim,
                                                             valorCab: valorCab,
-                                                            valorDis: valorDis,
-                                                            valorDPS: valorDPS,
+                                                            valorDisCC: valorDisCC,
+                                                            valorDPSCC: valorDPSCC,
+                                                            valorDisCA: valorDisCA,
+                                                            valorDPSCA: valorDPSCA,
                                                             valorSB: valorSB,
+                                                            valorCCA: valorCCA,
                                                             valorCer: valorCer,
                                                             valorCen: valorCen,
                                                             valorPos: valorPos,
@@ -1080,10 +1159,14 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          var unidadeMod = 0
                          var unidadeInv = 0
                          var unidadeEst = 0
+                         var unidadeCim = 0
                          var unidadeCab = 0
-                         var unidadeDis = 0
-                         var unidadeDPS = 0
+                         var unidadeDisCC = 0
+                         var unidadeDPSCC = 0
+                         var unidadeDisCA = 0
+                         var unidadeDPSCA = 0
                          var unidadeSB = 0
+                         var unidadeCCA = 0
                          var unidadeOcp = 0
                          var unidadeCer = 0
                          var unidadeCen = 0
@@ -1092,10 +1175,14 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          var vlrUniMod = 0
                          var vlrUniInv = 0
                          var vlrUniEst = 0
+                         var vlrUniCim = 0
                          var vlrUniCab = 0
-                         var vlrUniDis = 0
-                         var vlrUniDPS = 0
+                         var vlrUniDisCC = 0
+                         var vlrUniDPSCC = 0
+                         var vlrUniDisCA = 0
+                         var vlrUniDPSCA = 0
                          var vlrUniSB = 0
+                         var vlrUniCCA = 0
                          var vlrUniOcp = 0
                          var vlrUniCer = 0
                          var vlrUniCen = 0
@@ -1104,10 +1191,14 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          var valorMod = 0
                          var valorInv = 0
                          var valorEst = 0
+                         var valorCim = 0
                          var valorCab = 0
-                         var valorDis = 0
-                         var valorDPS = 0
+                         var valorDisCC = 0
+                         var valorDPSCC = 0
+                         var valorDisCA = 0
+                         var valorDPSCA = 0
                          var valorSB = 0
+                         var valorCCA = 0
                          var valorOcp = 0
                          var valorCer = 0
                          var valorCen = 0
@@ -1159,11 +1250,26 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                    checkUni = 'checked'
                               }
                          }
+                         //Valida valor Concretagem
+                         if (req.body.valorCim != 0 && req.body.unidadeCim == 0 && req.body.vlrUniCim == 0) {
+                              unidadeCim = 0
+                              vlrUniCim = 0
+                              valorCim = req.body.valorCim
+                         } else {
+                              if (req.body.unidadeCim != '' && req.body.vlrUniCim != '') {
+                                   unidadeCim = req.body.unidadeCim
+                                   vlrUniCim = req.body.vlrUniCim
+                                   valorCim = parseFloat(unidadeCim) * parseFloat(vlrUniCim)
+                                   checkUni = 'checked'
+                              }
+                         }
                          //Valida valor Cabos Detalhado
                          if (req.body.valorCab != 0 && req.body.unidadeCab == 0 && req.body.vlrUniCab == 0) {
+                              unidadeCab = 0
+                              vlrUniCab = 0
                               valorCab = req.body.valorCab
                          } else {
-                              if (req.body.unidadeCab != 0 && req.body.vlrUniCab != 0) {
+                              if (req.body.unidadeCab != '' && req.body.vlrUniCab != '') {
                                    unidadeCab = req.body.unidadeCab
                                    vlrUniCab = req.body.vlrUniCab
                                    valorCab = parseFloat(unidadeCab) * parseFloat(vlrUniCab)
@@ -1171,35 +1277,78 @@ router.post('/edicao', ehAdmin, (req, res) => {
                               }
                          }
                          //Valida valor Disjuntores Detalhado
-                         if (req.body.valorDis != 0 && req.body.unidadeDis == 0 && req.body.vlrUniDis == 0) {
-                              valorDis = req.body.valorDis
+                         if (req.body.valorDisCC != 0 && req.body.unidadeDisCC == 0 && req.body.vlrUniDisCC == 0) {
+                              unidadeDisCC = 0
+                              vlrUniDisCC = 0
+                              valorDisCC = req.body.valorDisCC
                          } else {
-                              if (req.body.unidadeDis != 0 && req.body.vlrUniDis != 0) {
-                                   unidadeDis = req.body.unidadeDis
-                                   vlrUniDis = req.body.vlrUniDis
-                                   valorDis = parseFloat(unidadeDis) * parseFloat(vlrUniDis)
+                              if (req.body.unidadeDisCC != '' && req.body.vlrUniDisCC != '') {
+                                   unidadeDisCC = req.body.unidadeDisCC
+                                   vlrUniDisCC = req.body.vlrUniDisCC
+                                   valorDisCC = parseFloat(unidadeDisCC) * parseFloat(vlrUniDisCC)
+                                   checkUni = 'checked'
+                              }
+                         }
+                         if (req.body.valorDisCA != 0 && req.body.unidadeDisCA == 0 && req.body.vlrUniDisCA == 0) {
+                              unidadeDisCA = 0
+                              vlrUniDisCA = 0
+                              valorDisCA = req.body.valorDisCA
+                         } else {
+                              if (req.body.unidadeDisCA != '' && req.body.vlrUniDisCA != '') {
+                                   unidadeDisCA = req.body.unidadeDisCA
+                                   vlrUniDisCA = req.body.vlrUniDisCA
+                                   valorDisCA = parseFloat(unidadeDisCA) * parseFloat(vlrUniDisCA)
                                    checkUni = 'checked'
                               }
                          }
                          //Valida valor DPS Detalhado
-                         if (req.body.valorDPS != 0 && req.body.unidadeDPS == 0 && req.body.vlrUniDPS == 0) {
-                              valorDPS = req.body.valorDPS
+                         if (req.body.valorDPSCC != 0 && req.body.unidadeDPSCC == 0 && req.body.vlrUniDPSCC == 0) {
+                              unidadeDPSCC = 0
+                              vlrUniDPSCC = 0
+                              valorDPSCC = req.body.valorDPSCC
                          } else {
-                              if (req.body.unidadeDPS != 0 && req.body.vlrUniDPS != 0) {
-                                   unidadeDPS = req.body.unidadeDPS
-                                   vlrUniDPS = req.body.vlrUniDPS
-                                   valorDPS = parseFloat(unidadeDPS) * parseFloat(vlrUniDPS)
+                              if (req.body.unidadeDPSCC != '' && req.body.vlrUniDPSCC != '') {
+                                   unidadeDPSCC = req.body.unidadeDPSCC
+                                   vlrUniDPSCC = req.body.vlrUniDPSCC
+                                   valorDPSCC = parseFloat(unidadeDPSCC) * parseFloat(vlrUniDPSCC)
+                                   checkUni = 'checked'
+                              }
+                         }
+                         if (req.body.valorDPSCA != 0 && req.body.unidadeDPSCA == 0 && req.body.vlrUniDPSCA == 0) {
+                              unidadeDPSCA = 0
+                              vlrUniDPSCA = 0
+                              valorDPSCA = req.body.valorDPSCA
+                         } else {
+                              if (req.body.unidadeDPSCA != '' && req.body.vlrUniDPSCA != '') {
+                                   unidadeDPSCA = req.body.unidadeDPSCA
+                                   vlrUniDPSCA = req.body.vlrUniDPSCA
+                                   valorDPSCA = parseFloat(unidadeDPSCA) * parseFloat(vlrUniDPSCA)
                                    checkUni = 'checked'
                               }
                          }
                          //Valida valor StringBox Detalhado
                          if (req.body.valorSB != 0 && req.body.unidadeSB == 0 && req.body.vlrUniSB == 0) {
+                              unidadeSB = 0
+                              vlrUniSB = 0
                               valorSB = req.body.valorSB
                          } else {
-                              if (req.body.unidadeSB != 0 && req.body.vlrUniSB != 0) {
+                              if (req.body.unidadeSB != '' && req.body.vlrUniSB != '') {
                                    unidadeSB = req.body.unidadeSB
                                    vlrUniSB = req.body.vlrUniSB
                                    valorSB = parseFloat(unidadeSB) * parseFloat(vlrUniSB)
+                                   checkUni = 'checked'
+                              }
+                         }
+                         //Valida valor Caixa Proteção CA Detalhado
+                         if (req.body.valorCCA != 0 && req.body.unidadeCCA == 0 && req.body.vlrUniCCA == 0) {
+                              unidadeCCA = 0
+                              vlrUniCCA = 0
+                              valorCCA = req.body.valorCCA
+                         } else {
+                              if (req.body.unidadeCCA != '' && req.body.vlrUniCCA != '') {
+                                   unidadeCCA = req.body.unidadeCCA
+                                   vlrUniCCA = req.body.vlrUniCCA
+                                   valorCCA = parseFloat(unidadeCCA) * parseFloat(vlrUniCCA)
                                    checkUni = 'checked'
                               }
                          }
@@ -1259,10 +1408,14 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          //console.log('unidadeMod=>', +unidadeMod)
                          //console.log('unidadeInv=>', +unidadeInv)
                          //console.log('unidadeEst=>', +unidadeEst)
+                         //console.log('unidadeCim=>', +unidadeCim)
                          //console.log('unidadeCab=>', +unidadeCab)
-                         //console.log('unidadeDis=>', +unidadeDis)
-                         //console.log('unidadeDPS=>', +unidadeDPS)
+                         //console.log('unidadeDisCC=>', +unidadeDisCC)
+                         //console.log('unidadeDPSCC=>', +unidadeDPSCC)
+                         //console.log('unidadeDisCA=>', +unidadeDisCA)
+                         //console.log('unidadeDPSCA=>', +unidadeDPSCA)
                          //console.log('unidadeSB=>', +unidadeSB)
+                         //console.log('unidadeCCA=>', +unidadeCCA)
                          //console.log('unidadeOcp=>', +unidadeOcp)
                          //console.log('unidadeCer=>', +unidadeCer)
                          //console.log('unidadeCen=>', +unidadeCen)
@@ -1271,10 +1424,14 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          //console.log('vlrUniMod=>', +vlrUniMod)
                          //console.log('vlrUniInv=>', +vlrUniInv)
                          //console.log('vlrUniEst=>', +vlrUniEst)
+                         //console.log('vlrUniCim=>', +vlrUniCim)
                          //console.log('vlrUniCab=>', +vlrUniCab)
-                         //console.log('vlrUniDis=>', +vlrUniDis)
-                         //console.log('vlrUniDPS=>', +vlrUniDPS)
-                         //console.log('vlrUniSB=>', +vlrUniSB)
+                         //console.log('vlrUniDisCC=>', +vlrUniDisCC)
+                         //console.log('vlrUniDPSCC=>', +vlrUniDPSCC)
+                         //console.log('vlrUniDisCA=>', +vlrUniDisCA)
+                         //console.log('vlrUniDPSCA=>', +vlrUniDPSCA)
+                         //console.log('vlrUniSB=>', +vlrUniSB)                         
+                         //console.log('vlrUniCCA=>', +vlrUniCCA)                         
                          //console.log('vlrUniOcp=>', +vlrUniOcp)
                          //console.log('vlrUniCer=>', +vlrUniCer)
                          //console.log('vlrUniCen=>', +vlrUniCen)
@@ -1283,10 +1440,14 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          //console.log('valorMod=>', +valorMod)
                          //console.log('valorInv=>', +valorInv)
                          //console.log('valorEst=>', +valorEst)
+                         //console.log('valorCim=>', +valorCim)
                          //console.log('valorCab=>', +valorCab)
-                         //console.log('valorDis=>', +valorDis)
-                         //console.log('valorDPS=>', +valorDPS)
+                         //console.log('valorDisCC=>', +valorDisCC)
+                         //console.log('valorDPSCC=>', +valorDPSCC)
+                         //console.log('valorDisCA=>', +valorDisCA)
+                         //console.log('valorDPSCA=>', +valorDPSCA)                         
                          //console.log('valorSB=>', +valorSB)
+                         //console.log('valorCCA=>', +valorCCA)
                          //console.log('valorOcp=>', +valorOcp)
                          //console.log('valorCer=>', +valorCer)
                          //console.log('valorCen=>', +valorCen)
@@ -1297,28 +1458,28 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          var vlrequ = 0
                          var vlrkit = 0
 
-                         var vlrTotal = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCab) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorSB) + parseFloat(valorOcp) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos)
+                         var vlrTotal = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorOcp) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos)
                          //console.log('vlrTotal=>' + vlrTotal)
 
                          //Valida valor do equipameento
                          if (parseFloat(valorEqu) != 0 || parseFloat(valorMod) != 0) {
                               //console.log('valorEqu != 0')
                               vlrequ = vlrTotal
-                              vlrkit = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCab) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorSB) + parseFloat(valorOcp)
+                              vlrkit = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorOcp)
                          } else {
                               //console.log('não tem lançamento manual de kit.')
-                              validaequant = parseFloat(projeto.vlrkit) - (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorDis) + parseFloat(detalhe.valorDPS) + parseFloat(detalhe.valorSB) + parseFloat(detalhe.valorCab))
+                              validaequant = parseFloat(projeto.vlrkit) - (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorCim) + parseFloat(detalhe.valorDisCC) + parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDisCA) + parseFloat(detalhe.valorDPSCA) + parseFloat(detalhe.valorSB) + parseFloat(detalhe.valorCCA) + parseFloat(detalhe.valorCab))
                               //console.log('validaequant=>' + validaequant)
-                              validaequfut = parseFloat(req.body.equipamento) - (parseFloat(valorEst) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorSB) + parseFloat(valorCab))
+                              validaequfut = parseFloat(req.body.equipamento) - (parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorCab))
                               //console.log('validaequfut=>' + validaequfut)
                               if (parseFloat(validaequant) != parseFloat(validaequfut)) {
                                    //console.log('Os valores dos kits são difentes')
                                    if (req.body.equipamento == projeto.vlrkit) {
-                                        vlrequ = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab) + parseFloat(valorOcp)
-                                        vlrkit = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab)
+                                        vlrequ = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorCab) + parseFloat(valorOcp)
+                                        vlrkit = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorCab)
                                    } else {
-                                        vlrequ = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorCab) + parseFloat(valorOcp)
-                                        vlrkit = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorDis) + parseFloat(valorDPS) + parseFloat(valorSB) + parseFloat(valorCab)
+                                        vlrequ = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorCab) + parseFloat(valorOcp)
+                                        vlrkit = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorCab)
                                    }
                               } else {
                                    //console.log('Os valores dos kits são iguais')
@@ -1337,10 +1498,14 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          detalhe.unidadeMod = unidadeMod
                          detalhe.unidadeInv = unidadeInv
                          detalhe.unidadeEst = unidadeEst
+                         detalhe.unidadeCim = unidadeCim
                          detalhe.unidadeCab = unidadeCab
-                         detalhe.unidadeDis = unidadeDis
-                         detalhe.unidadeDPS = unidadeDPS
+                         detalhe.unidadeDisCC = unidadeDisCC
+                         detalhe.unidadeDPSCC = unidadeDPSCC
+                         detalhe.unidadeDisCA = unidadeDisCA
+                         detalhe.unidadeDPSCA = unidadeDPSCA
                          detalhe.unidadeSB = unidadeSB
+                         detalhe.unidadeCCA = unidadeCCA
                          detalhe.unidadeOcp = unidadeOcp
                          detalhe.unidadeCer = unidadeCer
                          detalhe.unidadeCen = unidadeCen
@@ -1349,10 +1514,14 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          detalhe.vlrUniMod = vlrUniMod
                          detalhe.vlrUniInv = vlrUniInv
                          detalhe.vlrUniEst = vlrUniEst
+                         detalhe.vlrUniCim = vlrUniCim
                          detalhe.vlrUniCab = vlrUniCab
-                         detalhe.vlrUniDis = vlrUniDis
-                         detalhe.vlrUniDPS = vlrUniDPS
+                         detalhe.vlrUniDisCC = vlrUniDisCC
+                         detalhe.vlrUniDPSCC = vlrUniDPSCC
+                         detalhe.vlrUniDisCA = vlrUniDisCA
+                         detalhe.vlrUniDPSCA = vlrUniDPSCA
                          detalhe.vlrUniSB = vlrUniSB
+                         detalhe.vlrUniCCA = vlrUniCCA
                          detalhe.vlrUniOcp = vlrUniOcp
                          detalhe.vlrUniCer = vlrUniCer
                          detalhe.vlrUniCen = vlrUniCen
@@ -1361,10 +1530,14 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          detalhe.valorMod = valorMod
                          detalhe.valorInv = valorInv
                          detalhe.valorEst = valorEst
+                         detalhe.valorCim = valorCim
                          detalhe.valorCab = valorCab
-                         detalhe.valorDis = valorDis
-                         detalhe.valorDPS = valorDPS
+                         detalhe.valorDisCC = valorDisCC
+                         detalhe.valorDPSCC = valorDPSCC
+                         detalhe.valorDisCA = valorDisCA
+                         detalhe.valorDPSCA = valorDPSCA
                          detalhe.valorSB = valorSB
+                         detalhe.valorCCA = valorCCA
                          detalhe.valorOcp = valorOcp
                          detalhe.valorCer = valorCer
                          detalhe.valorCen = valorCen
@@ -1956,16 +2129,16 @@ router.post('/direto', ehAdmin, (req, res) => {
                               var parInvEqu = parseFloat(detalhe.valorInv) / parseFloat(detalhe.vlrTotal) * 100
                               projeto.parInvEqu = parseFloat(parInvEqu).toFixed(2)
                               //Estrutura
-                              var parEstEqu = parseFloat(detalhe.valorEst) / parseFloat(detalhe.vlrTotal) * 100
+                              var parEstEqu = (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorCim)) / parseFloat(detalhe.vlrTotal) * 100
                               projeto.parEstEqu = parseFloat(parEstEqu).toFixed(2)
                               //Cabos
                               var parCabEqu = parseFloat(detalhe.valorCab) / parseFloat(detalhe.vlrTotal) * 100
                               projeto.parCabEqu = parseFloat(parCabEqu).toFixed(2)
-                              //DPS
-                              var parDpsEqu = parseFloat(detalhe.valorDPS) / parseFloat(detalhe.vlrTotal) * 100
+                              //DPS CC + CA
+                              var parDpsEqu = (parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDPSCA)) / parseFloat(detalhe.vlrTotal) * 100
                               projeto.parDpsEqu = parseFloat(parDpsEqu).toFixed(2)
-                              //Disjuntores
-                              var parDisEqu = parseFloat(detalhe.valorDis) / parseFloat(detalhe.vlrTotal) * 100
+                              //Disjuntores CC + CA
+                              var parDisEqu = (parseFloat(detalhe.valorDisCC) + parseFloat(detalhe.valorDisCA)) / parseFloat(detalhe.vlrTotal) * 100
                               projeto.parDisEqu = parseFloat(parDisEqu).toFixed(2)
                               //StringBox
                               var parSbxEqu = parseFloat(detalhe.valorSB) / parseFloat(detalhe.vlrTotal) * 100
@@ -2273,18 +2446,19 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                               projeto.nomecliente = cliente.nome
                               projeto.qtdequipe = req.body.equipe
                               if (req.body.diastr == '' || req.body.diastr == 0) {
+                                   //console.log('dias de obra igual a zero')
                                    if (req.body.equipe != '' && req.body.equipe > 0) {
                                         var hrsequ = (parseFloat(req.body.equipe) - 1) * 6
                                         if (req.body.trbint != '' && req.body.trbint > 0) {
                                              projeto.qtdequipe = req.body.equipe
                                              var dias = Math.round(parseFloat(req.body.trbint) / parseFloat(hrsequ))
                                              if (dias == 0) { dias = 1 }
+                                             //console.log('dias=>' + dis)
                                              projeto.diastr = dias
-                                        } else {
-                                             projeto.diastr = req.body.diastr
                                         }
                                    }
                               } else {
+                                   //console.log('dias de obra preenchido=>' + req.body.diastr)
                                    projeto.diastr = req.body.diastr
                               }
                               //var vlrDAS = regime.vlrDAS
@@ -2599,16 +2773,16 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                               var parInvEqu = parseFloat(detalhe.valorInv) / parseFloat(detalhe.vlrTotal) * 100
                               projeto.parInvEqu = parseFloat(parInvEqu).toFixed(2)
                               //Estrutura
-                              var parEstEqu = parseFloat(detalhe.valorEst) / parseFloat(detalhe.vlrTotal) * 100
+                              var parEstEqu = (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorCim)) / parseFloat(detalhe.vlrTotal) * 100
                               projeto.parEstEqu = parseFloat(parEstEqu).toFixed(2)
                               //Cabos
                               var parCabEqu = parseFloat(detalhe.valorCab) / parseFloat(detalhe.vlrTotal) * 100
                               projeto.parCabEqu = parseFloat(parCabEqu).toFixed(2)
-                              //DPS
-                              var parDpsEqu = parseFloat(detalhe.valorDPS) / parseFloat(detalhe.vlrTotal) * 100
+                              //DPS CC + CA
+                              var parDpsEqu = (parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDPSCA)) / parseFloat(detalhe.vlrTotal) * 100
                               projeto.parDpsEqu = parseFloat(parDpsEqu).toFixed(2)
-                              //Disjuntores
-                              var parDisEqu = parseFloat(detalhe.valorDis) / parseFloat(detalhe.vlrTotal) * 100
+                              //Disjuntores CC + CA
+                              var parDisEqu = (parseFloat(detalhe.valorDisCC) + parseFloat(detalhe.valorDisCA)) / parseFloat(detalhe.vlrTotal) * 100
                               projeto.parDisEqu = parseFloat(parDisEqu).toFixed(2)
                               //StringBox
                               var parSbxEqu = parseFloat(detalhe.valorSB) / parseFloat(detalhe.vlrTotal) * 100
@@ -3444,9 +3618,13 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               valorMod: detalhe.valorMod,
                               valorInv: detalhe.valorInv,
                               valorEst: detalhe.valorEst,
+                              valorCim: detalhe.valorCim,
                               valorCab: detalhe.valorCab,
-                              valorDis: detalhe.valorDis,
-                              valorDPS: detalhe.valorDPS,
+                              valorDisCC: detalhe.valorDisCC,
+                              valorDPSCC: detalhe.valorDPSCC,
+                              valorDisCA: detalhe.valorDisCA,
+                              valorDPSCA: detalhe.valorDPSCA,
+                              valorCCA: detalhe.valorCCA,
                               valorSB: detalhe.valorSB,
                               valorOcp: detalhe.valorOcp,
 

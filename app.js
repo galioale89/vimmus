@@ -102,6 +102,9 @@ app.get('/quem', (req, res) => {
 app.get('/beneficios', (req, res) => {
   res.render('beneficios')
 })
+app.get('/planilha', (req, res) => {
+  res.render('planilha')
+})
 //Direcionando para página principal
 app.get('/menu', ehAdmin, (req, res) => {
   var perVlr = 0

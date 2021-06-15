@@ -126,13 +126,25 @@
                                     <label class='col-form-label col-form-label-sm fw-bold'>Estrutura:</label>
                                 </div>
                                 <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Concretagem:</label>
+                                </div>
+                                <div class="row mb-1">
                                     <label class='col-form-label col-form-label-sm fw-bold'>Cabos:</label>
                                 </div>
                                 <div class="row mb-1">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Disjuntores:</label>
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Disjuntores CC:</label>
                                 </div>
                                 <div class="row mb-1">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>DPS:</label>
+                                    <label class='col-form-label col-form-label-sm fw-bold'>DPS CC:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Disjuntores CA:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>DPS CA:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Cx. Proteção CA:</label>
                                 </div>
                                 <div class="row mb-1">
                                     <label class='col-form-label col-form-label-sm fw-bold'>String Box:</label>
@@ -151,6 +163,7 @@
                                     <label class='col-form-label col-form-label-sm fw-bold'>Postes de Condução de
                                         Fios:</label>
                                 </div>
+                                <hr>
                             </div>
                             <div class="col-md-2">
                                 <label class='col-form-label col-form-label-sm fw-bold'>UN</label><br>
@@ -163,12 +176,20 @@
                                     class='form-control form-control-sm mb-1' name='unidadeInv'>
                                 <input type='number' value='{{detalhe.unidadeEst}}'
                                     class='form-control form-control-sm mb-1' name='unidadeEst'>
+                                <input type='number' value='{{detalhe.unidadeCim}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeCim'>
                                 <input type='number' value='{{detalhe.unidadeCab}}'
                                     class='form-control form-control-sm mb-1' name='unidadeCab'>
-                                <input type='number' value='{{detalhe.unidadeDis}}'
-                                    class='form-control form-control-sm mb-1' name='unidadeDis'>
-                                <input type='number' value='{{detalhe.unidadeDPS}}'
-                                    class='form-control form-control-sm mb-1' name='unidadeDPS'>
+                                <input type='number' value='{{detalhe.unidadeDisCC}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeDisCC'>
+                                <input type='number' value='{{detalhe.unidadeDPSCC}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeDPSCC'>
+                                <input type='number' value='{{detalhe.unidadeDisCA}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeDisCA'>
+                                <input type='number' value='{{detalhe.unidadeDPSCA}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeDPSCA'>
+                                <input type='number' value='{{detalhe.unidadeCCA}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeCCA'>
                                 <input type='number' value='{{detalhe.unidadeSB}}'
                                     class='form-control form-control-sm mb-1' name='unidadeSB'>
                                 <input type='number' value='{{detalhe.unidadeOcp}}'
@@ -180,6 +201,7 @@
                                     class='form-control form-control-sm mb-1' name='unidadeCen'>
                                 <input type='number' value='{{detalhe.unidadePos}}'
                                     class='form-control form-control-sm mb-1' name='unidadePos'>
+                                <hr>
                             </div>
                             <div class="col-md-3">
                                 <label type='number' class='col-form-label col-form-label-sm fw-bold'>R$
@@ -193,12 +215,20 @@
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniInv'>
                                 <input type='number' value='{{detalhe.vlrUniEst}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniEst'>
+                                <input type='number' value='{{detalhe.vlrUniCim}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCim'>
                                 <input type='number' value='{{detalhe.vlrUniCab}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCab'>
-                                <input type='number' value='{{detalhe.vlrUniDis}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDis'>
-                                <input type='number' value='{{detalhe.vlrUniDPS}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDPS'>
+                                <input type='number' value='{{detalhe.vlrUniDisCC}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDisCC'>
+                                <input type='number' value='{{detalhe.vlrUniDPSCC}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDPSCC'>
+                                <input type='number' value='{{detalhe.vlrUniDisCA}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDisCA'>
+                                <input type='number' value='{{detalhe.vlrUniDPSCA}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDPSCA'>
+                                <input type='number' value='{{detalhe.vlrUniCCA}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCCA'>
                                 <input type='number' value='{{detalhe.vlrUniSB}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniSB'>
                                 <input type='number' value='{{detalhe.vlrUniOcp}}'
@@ -210,6 +240,8 @@
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCen'>
                                 <input type='number' value='{{detalhe.vlrUniPos}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniPos'>
+                                <hr>
+                                <label class="col-form-label fw-bold">Total</label>
                             </div>
                             <div class="col-md-3">
                                 <label class='col-form-label col-form-label-sm fw-bold'>R$ Total</label><br>
@@ -222,12 +254,20 @@
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorInv'>
                                 <input type='number' value='{{detalhe.valorEst}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorEst'>
+                                <input type='number' value='{{detalhe.valorCim}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorCim'>
                                 <input type='number' value='{{detalhe.valorCab}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorCab'>
-                                <input type='number' value='{{detalhe.valorDis}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorDis'>
-                                <input type='number' value='{{detalhe.valorDPS}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorDPS'>
+                                <input type='number' value='{{detalhe.valorDisCC}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorDisCC'>
+                                <input type='number' value='{{detalhe.valorDPSCC}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorDPSCC'>
+                                <input type='number' value='{{detalhe.valorDisCA}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorDisCA'>
+                                <input type='number' value='{{detalhe.valorDPSCA}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorDPSCA'>
+                                <input type='number' value='{{detalhe.valorCCA}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorCCA'>
                                 <input type='number' value='{{detalhe.valorSB}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorSB'>
                                 <input type='number' value='{{detalhe.valorOcp}}'
@@ -239,6 +279,8 @@
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorCen'>
                                 <input type='number' value='{{detalhe.valorPos}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorPos'>
+                                <hr>
+                                <label class="col-form-label fw-bold">R$ {{detalhe.vlrTotal}}</label>
                             </div>
                         </div>
                     </div>

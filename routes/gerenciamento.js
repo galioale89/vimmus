@@ -394,7 +394,7 @@ router.post('/', ehAdmin, (req, res) => {
                         projeto.impNFS = impNFS
                         //console.log('impNFS=>' + impNFS)
                         //console.log('projeto.valor=>' + projeto.valor)
-                        
+
                         //Definindo o Lucro Bruto
                         var recLiquida = parseFloat(projeto.valor) - parseFloat(impNFS)
                         projeto.recLiquida = recLiquida.toFixed(2)
@@ -440,16 +440,16 @@ router.post('/', ehAdmin, (req, res) => {
                         var parInvEqu = parseFloat(detalhe.valorInv) / parseFloat(detalhe.vlrTotal) * 100
                         projeto.parInvEqu = parseFloat(parInvEqu).toFixed(2)
                         //Estrutura
-                        var parEstEqu = parseFloat(detalhe.valorEst) / parseFloat(detalhe.vlrTotal) * 100
+                        var parEstEqu = (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorCim)) / parseFloat(detalhe.vlrTotal) * 100
                         projeto.parEstEqu = parseFloat(parEstEqu).toFixed(2)
                         //Cabos
                         var parCabEqu = parseFloat(detalhe.valorCab) / parseFloat(detalhe.vlrTotal) * 100
                         projeto.parCabEqu = parseFloat(parCabEqu).toFixed(2)
-                        //DPS
-                        var parDpsEqu = parseFloat(detalhe.valorDPS) / parseFloat(detalhe.vlrTotal) * 100
+                        //DPS CC + CA
+                        var parDpsEqu = (parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDPSCA)) / parseFloat(detalhe.vlrTotal) * 100
                         projeto.parDpsEqu = parseFloat(parDpsEqu).toFixed(2)
-                        //Disjuntores
-                        var parDisEqu = parseFloat(detalhe.valorDis) / parseFloat(detalhe.vlrTotal) * 100
+                        //Disjuntores CC + CA
+                        var parDisEqu = (parseFloat(detalhe.valorDisCC) + parseFloat(detalhe.valorDisCA)) / parseFloat(detalhe.vlrTotal) * 100
                         projeto.parDisEqu = parseFloat(parDisEqu).toFixed(2)
                         //StringBox
                         var parSbxEqu = parseFloat(detalhe.valorSB) / parseFloat(detalhe.vlrTotal) * 100
@@ -752,7 +752,7 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                         //console.log('custoPlano=>'+custoPlano)
                         custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
                         projeto.custoTotal = custoTotal.toFixed(2)
-                        console.log('custoTotal=>'+custoTotal)
+                        console.log('custoTotal=>' + custoTotal)
 
                         console.log('projeto.vlrfat=>' + projeto.vlrfat)
                         var vlrNFS = parseFloat(projeto.vlrfat)
@@ -810,20 +810,21 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                         var parInvEqu = parseFloat(detalhe.valorInv) / parseFloat(detalhe.vlrTotal) * 100
                         projeto.parInvEqu = parseFloat(parInvEqu).toFixed(2)
                         //Estrutura
-                        var parEstEqu = parseFloat(detalhe.valorEst) / parseFloat(detalhe.vlrTotal) * 100
+                        var parEstEqu = (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorCim)) / parseFloat(detalhe.vlrTotal) * 100
                         projeto.parEstEqu = parseFloat(parEstEqu).toFixed(2)
                         //Cabos
                         var parCabEqu = parseFloat(detalhe.valorCab) / parseFloat(detalhe.vlrTotal) * 100
                         projeto.parCabEqu = parseFloat(parCabEqu).toFixed(2)
-                        //DPS
-                        var parDpsEqu = parseFloat(detalhe.valorDPS) / parseFloat(detalhe.vlrTotal) * 100
+                        //DPS CC + CA
+                        var parDpsEqu = (parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDPSCA)) / parseFloat(detalhe.vlrTotal) * 100
                         projeto.parDpsEqu = parseFloat(parDpsEqu).toFixed(2)
-                        //Disjuntores
-                        var parDisEqu = parseFloat(detalhe.valorDis) / parseFloat(detalhe.vlrTotal) * 100
+                        //Disjuntores CC + CA
+                        var parDisEqu = (parseFloat(detalhe.valorDisCC) + parseFloat(detalhe.valorDisCA)) / parseFloat(detalhe.vlrTotal) * 100
                         projeto.parDisEqu = parseFloat(parDisEqu).toFixed(2)
                         //StringBox
                         var parSbxEqu = parseFloat(detalhe.valorSB) / parseFloat(detalhe.vlrTotal) * 100
                         projeto.parSbxEqu = parseFloat(parSbxEqu).toFixed(2)
+                        //Inserir Proteção CA
                         //Cercamento
                         var parCerEqu = parseFloat(detalhe.valorCer) / parseFloat(detalhe.vlrTotal) * 100
                         projeto.parCerEqu = parseFloat(parCerEqu).toFixed(2)
@@ -995,26 +996,26 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                 //console.log('impostoICMS=>'+impostoICMS)
 
                 //Validar ICMS
-            if (projeto.fatequ == true) {
-                if (regime.alqICMS != null) {
-                    impostoICMS = parseFloat(projeto.vlrkit) * (1 - (parseFloat(regime.alqICMS) / 100)) * (parseFloat(regime.alqICMS) / 100)
-                    totalTributos = parseFloat(totalImposto) + parseFloat(projeto.impNFS) + parseFloat(impostoICMS)
-                    totalImposto = parseFloat(totalImposto) + parseFloat(impostoICMS)
+                if (projeto.fatequ == true) {
+                    if (regime.alqICMS != null) {
+                        impostoICMS = parseFloat(projeto.vlrkit) * (1 - (parseFloat(regime.alqICMS) / 100)) * (parseFloat(regime.alqICMS) / 100)
+                        totalTributos = parseFloat(totalImposto) + parseFloat(projeto.impNFS) + parseFloat(impostoICMS)
+                        totalImposto = parseFloat(totalImposto) + parseFloat(impostoICMS)
+                    }
+                } else {
+                    impostoICMS = 0
+                    totalTributos = parseFloat(totalImposto) + parseFloat(projeto.impNFS)
                 }
-            } else {
-                impostoICMS = 0
-                totalTributos = parseFloat(totalImposto) + parseFloat(projeto.impNFS)
-            }
-            projeto.impostoICMS = impostoICMS.toFixed(2)
-            //console.log('totalImposto=>' + totalImposto)
-            projeto.totalImposto = parseFloat(totalImposto).toFixed(2)
-            //console.log('totalTributos=>' + totalTributos)
-            projeto.totalTributos = parseFloat(totalTributos).toFixed(2)
+                projeto.impostoICMS = impostoICMS.toFixed(2)
+                //console.log('totalImposto=>' + totalImposto)
+                projeto.totalImposto = parseFloat(totalImposto).toFixed(2)
+                //console.log('totalTributos=>' + totalTributos)
+                projeto.totalTributos = parseFloat(totalTributos).toFixed(2)
 
-            //Lucro Líquido descontados os impostos
-            var lucroLiquido = 0
-            lucroLiquido = parseFloat(projeto.lbaimp) - parseFloat(totalImposto)
-            projeto.lucroLiquido = parseFloat(lucroLiquido).toFixed(2)
+                //Lucro Líquido descontados os impostos
+                var lucroLiquido = 0
+                lucroLiquido = parseFloat(projeto.lbaimp) - parseFloat(totalImposto)
+                projeto.lucroLiquido = parseFloat(lucroLiquido).toFixed(2)
 
                 //Dashboard
                 //Participação sobre o lucro total
