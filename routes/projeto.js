@@ -2446,19 +2446,19 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                               projeto.nomecliente = cliente.nome
                               projeto.qtdequipe = req.body.equipe
                               if (req.body.diastr == '' || req.body.diastr == 0) {
-                                   //console.log('dias de obra igual a zero')
+                                   console.log('dias de obra igual a zero')
                                    if (req.body.equipe != '' && req.body.equipe > 0) {
                                         var hrsequ = (parseFloat(req.body.equipe) - 1) * 6
                                         if (req.body.trbint != '' && req.body.trbint > 0) {
                                              projeto.qtdequipe = req.body.equipe
                                              var dias = Math.round(parseFloat(req.body.trbint) / parseFloat(hrsequ))
                                              if (dias == 0) { dias = 1 }
-                                             //console.log('dias=>' + dis)
+                                             console.log('dias=>' + dis)
                                              projeto.diastr = dias
                                         }
                                    }
                               } else {
-                                   //console.log('dias de obra preenchido=>' + req.body.diastr)
+                                   console.log('dias de obra preenchido=>' + req.body.diastr)
                                    projeto.diastr = req.body.diastr
                               }
                               //var vlrDAS = regime.vlrDAS
@@ -2573,8 +2573,8 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                               var custoEst = parseFloat(detalhe.valorCer) + parseFloat(detalhe.valorPos) + parseFloat(detalhe.valorCen)
                               var totcop = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
 
-                              //console.log('totint=>' + totint)
-                              //console.log('totpro=>' + totpro)
+                              console.log('totint=>' + totint)
+                              console.log('totpro=>' + totpro)
                               //console.log('totges=>' + totges)
                               //console.log('totali=>' + totali)
                               //console.log('detalhe.valorOcp=>' + detalhe.valorOcp)
