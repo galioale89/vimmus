@@ -117,18 +117,11 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h6 class="modal-title">Laçar custos detalhados do projeto</h6>
+                        <h6 class="modal-title">Lançar custos detalhados do projeto</h6>
                         <button type="button" class="btn btn-sm btn-success" data-bs-dismiss="modal">Aplicar</button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="row">
-                                <label class='col-form-label col-form-label-sm col-sm-2'>Lançar Unidade</label>
-                                <div class='form-check form-switch col-sm-4 mt-1'>
-                                    <input class='form-check-input' type='checkbox' name='checkUni'
-                                        {{detalhe.checkUni}}>
-                                </div>
-                            </div>
                             <div class="col-md-4 text-end">
                                 <label class='col-form-label col-form-label-sm fw-bold'>Descrição</label><br>
                                 <div class="row mb-1">
@@ -145,13 +138,25 @@
                                     <label class='col-form-label col-form-label-sm fw-bold'>Estrutura:</label>
                                 </div>
                                 <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Concretagem:</label>
+                                </div>
+                                <div class="row mb-1">
                                     <label class='col-form-label col-form-label-sm fw-bold'>Cabos:</label>
                                 </div>
                                 <div class="row mb-1">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Disjuntores:</label>
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Disjuntores CC:</label>
                                 </div>
                                 <div class="row mb-1">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>DPS:</label>
+                                    <label class='col-form-label col-form-label-sm fw-bold'>DPS CC:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Disjuntores CA:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>DPS CA:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Cx. Proteção CA:</label>
                                 </div>
                                 <div class="row mb-1">
                                     <label class='col-form-label col-form-label-sm fw-bold'>String Box:</label>
@@ -170,99 +175,124 @@
                                     <label class='col-form-label col-form-label-sm fw-bold'>Postes de Condução de
                                         Fios:</label>
                                 </div>
+                                <hr>
                             </div>
                             <div class="col-md-2">
                                 <label class='col-form-label col-form-label-sm fw-bold'>UN</label><br>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.unidadeEqu}}'
+                                <input type='number' value='{{detalhe.unidadeEqu}}'
                                     class='form-control form-control-sm mb-1' name='unidadeEqu'>
                                 <hr>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.unidadeMod}}'
+                                <input type='number' value='{{detalhe.unidadeMod}}'
                                     class='form-control form-control-sm mb-1' name='unidadeMod'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.unidadeInv}}'
+                                <input type='number' value='{{detalhe.unidadeInv}}'
                                     class='form-control form-control-sm mb-1' name='unidadeInv'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.unidadeEst}}'
+                                <input type='number' value='{{detalhe.unidadeEst}}'
                                     class='form-control form-control-sm mb-1' name='unidadeEst'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.unidadeCab}}'
+                                <input type='number' value='{{detalhe.unidadeCim}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeCim'>
+                                <input type='number' value='{{detalhe.unidadeCab}}'
                                     class='form-control form-control-sm mb-1' name='unidadeCab'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.unidadeDis}}'
-                                    class='form-control form-control-sm mb-1' name='unidadeDis'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.unidadeDPS}}'
-                                    class='form-control form-control-sm mb-1' name='unidadeDPS'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.unidadeSB}}'
+                                <input type='number' value='{{detalhe.unidadeDisCC}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeDisCC'>
+                                <input type='number' value='{{detalhe.unidadeDPSCC}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeDPSCC'>
+                                <input type='number' value='{{detalhe.unidadeDisCA}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeDisCA'>
+                                <input type='number' value='{{detalhe.unidadeDPSCA}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeDPSCA'>
+                                <input type='number' value='{{detalhe.unidadeCCA}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeCCA'>
+                                <input type='number' value='{{detalhe.unidadeSB}}'
                                     class='form-control form-control-sm mb-1' name='unidadeSB'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.unidadeOcp}}'
+                                <input type='number' value='{{detalhe.unidadeOcp}}'
                                     class='form-control form-control-sm mb-1' name='unidadeOcp'>
                                 <hr>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.unidadeCer}}'
+                                <input type='number' value='{{detalhe.unidadeCer}}'
                                     class='form-control form-control-sm mb-1' name='unidadeCer'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.unidadeCen}}'
+                                <input type='number' value='{{detalhe.unidadeCen}}'
                                     class='form-control form-control-sm mb-1' name='unidadeCen'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.unidadePos}}'
+                                <input type='number' value='{{detalhe.unidadePos}}'
                                     class='form-control form-control-sm mb-1' name='unidadePos'>
                                 <hr>
                             </div>
                             <div class="col-md-3">
                                 <label type='number' class='col-form-label col-form-label-sm fw-bold'>R$
                                     Unitário</label><br>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.vlrUniEqu}}'
+                                <input type='number' value='{{detalhe.vlrUniEqu}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniEqu'>
                                 <hr>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.vlrUniMod}}'
+                                <input type='number' value='{{detalhe.vlrUniMod}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniMod'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.vlrUniInv}}'
+                                <input type='number' value='{{detalhe.vlrUniInv}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniInv'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.vlrUniEst}}'
+                                <input type='number' value='{{detalhe.vlrUniEst}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniEst'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.vlrUniCab}}'
+                                <input type='number' value='{{detalhe.vlrUniCim}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCim'>
+                                <input type='number' value='{{detalhe.vlrUniCab}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCab'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.vlrUniDis}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDis'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.vlrUniDPS}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDPS'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.vlrUniSB}}'
+                                <input type='number' value='{{detalhe.vlrUniDisCC}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDisCC'>
+                                <input type='number' value='{{detalhe.vlrUniDPSCC}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDPSCC'>
+                                <input type='number' value='{{detalhe.vlrUniDisCA}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDisCA'>
+                                <input type='number' value='{{detalhe.vlrUniDPSCA}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDPSCA'>
+                                <input type='number' value='{{detalhe.vlrUniCCA}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCCA'>
+                                <input type='number' value='{{detalhe.vlrUniSB}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniSB'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.vlrUniOcp}}'
+                                <input type='number' value='{{detalhe.vlrUniOcp}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniOcp'>
                                 <hr>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.vlrUniCer}}'
+                                <input type='number' value='{{detalhe.vlrUniCer}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCer'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.vlrUniCen}}'
+                                <input type='number' value='{{detalhe.vlrUniCen}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCen'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.vlrUniPos}}'
+                                <input type='number' value='{{detalhe.vlrUniPos}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniPos'>
                                 <hr>
-                                <label class='col-form-label fw-bold'>Total</label>
+                                <label class="col-form-label fw-bold">Total</label>
                             </div>
                             <div class="col-md-3">
                                 <label class='col-form-label col-form-label-sm fw-bold'>R$ Total</label><br>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.valorEqu}}'
+                                <input type='number' value='{{detalhe.valorEqu}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorEqu'>
                                 <hr>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.valorMod}}'
+                                <input type='number' value='{{detalhe.valorMod}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorMod'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.valorInv}}'
+                                <input type='number' value='{{detalhe.valorInv}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorInv'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.valorEst}}'
+                                <input type='number' value='{{detalhe.valorEst}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorEst'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.valorCab}}'
+                                <input type='number' value='{{detalhe.valorCim}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorCim'>
+                                <input type='number' value='{{detalhe.valorCab}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorCab'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.valorDis}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorDis'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.valorDPS}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorDPS'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.valorSB}}'
+                                <input type='number' value='{{detalhe.valorDisCC}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorDisCC'>
+                                <input type='number' value='{{detalhe.valorDPSCC}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorDPSCC'>
+                                <input type='number' value='{{detalhe.valorDisCA}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorDisCA'>
+                                <input type='number' value='{{detalhe.valorDPSCA}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorDPSCA'>
+                                <input type='number' value='{{detalhe.valorCCA}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorCCA'>
+                                <input type='number' value='{{detalhe.valorSB}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorSB'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.valorOcp}}'
+                                <input type='number' value='{{detalhe.valorOcp}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorOcp'>
                                 <hr>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.valorCer}}'
+                                <input type='number' value='{{detalhe.valorCer}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorCer'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.valorCen}}'
+                                <input type='number' value='{{detalhe.valorCen}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorCen'>
-                                <input {{#if projeto.foiRealizado}} disabled {{/if}} type='number' value='{{detalhe.valorPos}}'
+                                <input type='number' value='{{detalhe.valorPos}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorPos'>
                                 <hr>
-                                <label class='col-form-label fw-bold'>R$ {{detalhe.vlrTotal}}</label>
+                                <label class="col-form-label fw-bold">R$ {{detalhe.vlrTotal}}</label>
                             </div>
                         </div>
                     </div>
@@ -561,7 +591,9 @@
                                 class='btn btn-sm btn-warning'><i class="bi bi-check"></i> Em Homologação</a>
                             {{else}}
                             {{#if projeto.foiRealizado}}
-                            <a style="color: white; background-color: rgb(19, 2, 172);border-radius: 30px; font-size:14px;padding: 7px"> Projeto Realizado </a>
+                            <a
+                                style="color: white; background-color: rgb(19, 2, 172);border-radius: 30px; font-size:14px;padding: 7px">
+                                Projeto Realizado </a>
                             {{else}}
                             <a href='/projeto/homologar/{{projeto._id}}'
                                 style="color: white; background-color: rgb(252, 137, 7);border-radius: 30px;"
