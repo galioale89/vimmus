@@ -192,7 +192,7 @@
                                 <div class="col-md-4">
                                     <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
                                         class="form-control form-control-sm mb-1" name='equipe' id="equipe"
-                                        value='{{projeto.qtdequipe}}' oninput="valida_numequ()">
+                                        value='{{projeto.qtdequipe}}' onmouseout="valida_numequ()">
                                     <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
                                         class="form-control form-control-sm mb-1" name='tothrs' id="tothrs"
                                         value='{{projeto.tothrs}}'>
@@ -320,8 +320,8 @@
                                 <div class="col-md-2">
                                     <div class='form-check'>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='checkbox'
-                                            class='form-check-input col-sm-2' name='checkIns'>
-                                        <label class='form-check-label col-form-labels'>Alterar</label>
+                                            class='form-check-input col-sm-2 mt-2' name='checkIns'>
+                                        <label class='form-check-label col-form-label col-form-label-sm'>Alterar</label>
                                     </div>
                                 </div>
                             </div>
@@ -348,8 +348,8 @@
                                 <div class="col-md-2">
                                     <div class='form-check'>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='checkbox'
-                                            class='form-check-input' name='checkPro'>
-                                        <label class='form-check-label'>Alterar</label>
+                                            class='form-check-input mt-2' name='checkPro'>
+                                        <label class='form-check-label col-form-label col-form-label-sm'>Alterar</label>
                                     </div>
                                 </div>
                             </div>
@@ -368,7 +368,7 @@
                                         Elétrico:</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Seguro:</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Cercamento:</label><br>
-                                    <label class="fw-bold col-form-label col-form-label-sm">Condutores Ponto de Conexão:</label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm">Condução Ponto de Conexão:</label><br>
                                 </div>
                                 <div class="col-md-5">
                                     <label class="fw-bold col-form-label col-form-label-sm">R$
@@ -443,7 +443,7 @@
                             <label class='col-form-label col-form-label-sm'>(-)ISS:</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>(=)Receita Líquida:</label><br>
                             <label class='col-form-label col-form-label-sm'>Custo Kit Gerador: </label><br>
-                            <label class='fw-bold  col-form-label col-form-label-sm'>(=)Lucro Bruto:
+                            <label class='fw-bold  col-form-label col-form-label-sm'>(=)Receita Operacional:
                             </label><br>
                             <label class='col-form-label  col-form-label-sm'>(-)Custo Planejado:</label><br>
                             <label class='col-form-label  col-form-label-sm'>(-)Despesas Administrativas:</label><br>
