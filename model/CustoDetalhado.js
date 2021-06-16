@@ -28,22 +28,38 @@ const Detalhado = new Schema({
         type: Number,
         require: false
     },
+    unidadeCim: {
+        type: Number,
+        require: false
+    },    
     unidadeCab: {
         type: Number,
         require: false
     },    
-    unidadeDis: {
+    unidadeDisCC: {
         type: Number,
         require: false
     },
-    unidadeDPS: {
+    unidadeDPSCC: {
         type: Number,
         require: false
     },    
+    unidadeDisCA: {
+        type: Number,
+        require: false
+    },
+    unidadeDPSCA: {
+        type: Number,
+        require: false
+    },      
     unidadeSB: {
         type: Number,
         require: false
-    },    
+    }, 
+    unidadeCCA: {
+        type: Number,
+        require: false
+    },        
     unidadeOcp: {
         type: Number,
         require: false
@@ -75,23 +91,39 @@ const Detalhado = new Schema({
     vlrUniEst: {
         type: Number,
         require: false
-    },   
+    },  
+    vlrUniCim: {
+        type: Number,
+        require: false
+    },      
     vlrUniCab: {
         type: Number,
         require: false
     },   
-    vlrUniDis: {
+    vlrUniDisCC: {
         type: Number,
         require: false
     },
-    vlrUniDPS: {
+    vlrUniDPSCC: {
         type: Number,
         require: false
     },     
+    vlrUniDisCA: {
+        type: Number,
+        require: false
+    },
+    vlrUniDPSCA: {
+        type: Number,
+        require: false
+    },         
     vlrUniSB: {
         type: Number,
         require: false
-    },          
+    },  
+    vlrUniCCA: {
+        type: Number,
+        require: false
+    },             
     vlrUniOcp: {
         type: Number,
         require: false
@@ -124,22 +156,38 @@ const Detalhado = new Schema({
         type: Number,
         require: false
     },
+    valorCim: {
+        type: Number,
+        require: false
+    },    
     valorCab: {
         type: Number,
         require: false
     },
-    valorDis: {
+    valorDisCC: {
         type: Number,
         require: false
     },
-    valorDPS: {
+    valorDPSCC: {
         type: Number,
         require: false
     },    
+    valorDisCA: {
+        type: Number,
+        require: false
+    },
+    valorDPSCA: {
+        type: Number,
+        require: false
+    },        
     valorSB: {
         type: Number,
         require: false
     },
+    valorCCA: {
+        type: Number,
+        require: false
+    },    
     valorOcp: {
         type: Number,
         require: false
