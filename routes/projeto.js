@@ -1811,8 +1811,6 @@ router.post('/direto', ehAdmin, (req, res) => {
                                              var dias = Math.round(parseFloat(req.body.trbint) / parseFloat(hrsequ))
                                              if (dias == 0) { dias = 1 }
                                              projeto.diastr = dias
-                                        } else {
-                                             projeto.diastr = req.body.diastr
                                         }
                                    }
                               } else {
