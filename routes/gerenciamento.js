@@ -146,7 +146,13 @@ router.get('/editar/gerenciamento/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-            res.render('projeto/gerenciamento/editgerenciamento', { projeto: projeto, cliente: cliente })
+            var fatura
+            if (projeto.fatequ != null) {
+                fatura = 'checked'
+            } else {
+                fatura = 'uncheked'
+            }
+            res.render('projeto/gerenciamento/editgerenciamento', { projeto: projeto, cliente: cliente, fatura: fatura })
         }).catch((err) => {
             req.flash('error_msg', 'Nenhum cliente encontrado.')
             res.redirect('/cliente/consulta')
@@ -359,7 +365,7 @@ router.post('/', ehAdmin, (req, res) => {
                         var vlrcom = 0
                         //Validando a comissão
                         if (projeto.percom != null) {
-                            vlrcom = parseFloat(projeto.vlrfat) * (parseFloat(projeto.percom) / 100)
+                            vlrcom = parseFloat(projeto.vlrNFS) * (parseFloat(projeto.percom) / 100)
                             projeto.vlrcom = vlrcom.toFixed(2)
                         }
 
@@ -385,18 +391,63 @@ router.post('/', ehAdmin, (req, res) => {
                         //console.log('custoPlano=>' + custoPlano)
                         custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
                         projeto.custoTotal = custoTotal.toFixed(2)
-                        //console.log('custoTotal=>'+custoTotal)
-                        //console.log('projeto.vlrfat=>' + projeto.vlrfat)
-                        var vlrNFS = parseFloat(projeto.vlrfat)
-                        //console.log('regime.alqNFS=>' + regime.alqNFS)
-                        var impNFS = parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)
-                        projeto.vlrNFS = vlrNFS
-                        projeto.impNFS = impNFS
-                        //console.log('impNFS=>' + impNFS)
-                        //console.log('projeto.valor=>' + projeto.valor)
 
+                        //Definindo o imposto ISS
+                        //console.log('regime_prj.alqNFS=>' + regime_prj.alqNFS)
+                        var fatequ
+                        var vlrNFS = 0
+                        var impNFS = 0
+                        var vlrMarkup = 0
+                        var prjValor = 0
+                        if (req.body.markup == '' || req.body.markup == 0) {
+                            console.log('markup igual a zero')
+                            console.log('projeto.vlrnormal=>' + projeto.vlrnormal)
+                            if (req.body.checkFatura != null) {
+                                fatequ = true
+                                vlrNFS = parseFloat(projeto.vlrnormal)
+                            } else {
+                                fatequ = false
+                                vlrNFS = parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)
+                            }
+                            prjValor = parseFloat(projeto.vlrnormal).toFixed(2)
+                            projeto.valor = parseFloat(projeto.vlrnormal).toFixed(2)
+                            projeto.markup = 0
+                        } else {
+                            console.log('custoTotal=>' + custoTotal)
+                            console.log('req.body.markup=>' + req.body.markup)
+                            vlrMarkup = (custoTotal / (1 - (parseFloat(req.body.markup) / 100))).toFixed(2)
+                            console.log('vlrMarkup=>' + vlrMarkup)
+                            if (req.body.checkFatura != null) {
+                                fatequ = true
+                                vlrNFS = parseFloat(vlrMarkup)
+                            } else {
+                                fatequ = false
+                                vlrNFS = parseFloat(vlrMarkup) - parseFloat(projeto.vlrkit)
+                            }
+                            projeto.markup = req.body.markup
+                            projeto.valor = vlrMarkup
+                            prjValor = parseFloat(vlrMarkup).toFixed(2)
+                        }
+                        console.log('vlrNFS=>' + vlrNFS)
+                        console.log('prjValor=>' + prjValor)
+                        //kWp médio
+                        projeto.vrskwp = (parseFloat(prjValor) / parseFloat(projeto.potencia)).toFixed(2)
+                        projeto.fatequ = fatequ
+                        impNFS = parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)
+                        var vlrcom = 0
+                        //Validando a comissão
+                        if (projeto.percom != null) {
+                            vlrcom = parseFloat(vlrNFS) * (parseFloat(projeto.percom) / 100)
+                            projeto.vlrcom = vlrcom.toFixed(2)
+                        }
+
+                        projeto.vlrNFS = vlrNFS.toFixed(2)
+                        projeto.impNFS = impNFS.toFixed(2)
+
+                        console.log('impNFS=>' + impNFS)
+                        console.log('projeto.valor=>' + projeto.valor)
                         //Definindo o Lucro Bruto
-                        var recLiquida = parseFloat(projeto.valor) - parseFloat(impNFS)
+                        var recLiquida = parseFloat(prjValor) - parseFloat(impNFS)
                         projeto.recLiquida = recLiquida.toFixed(2)
 
                         var lucroBruto = parseFloat(recLiquida) - parseFloat(projeto.vlrkit)
@@ -471,7 +522,14 @@ router.post('/', ehAdmin, (req, res) => {
                             Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
 
                                 Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                                    res.render('projeto/gerenciamento/gerenciamento', { sucesso: sucesso, projeto: projeto, cliente: cliente })
+                                    var fatura
+                                    if (req.body.checkFatura != null) {
+                                        fatura = 'checked'
+                                    } else {
+                                        fatura = 'uncheked'
+                                    }
+
+                                    res.render('projeto/gerenciamento/gerenciamento', { sucesso: sucesso, projeto: projeto, cliente: cliente, fatura: fatura })
                                 }).catch((err) => {
                                     req.flash('error_msg', 'Nenhum cliente encontrado.')
                                     res.redirect('/cliente/consulta')
@@ -566,19 +624,6 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                         var equipe = projeto.qtdequipe
                         projeto.qtdequipe = equipe
 
-                        /*
-                        var hrsequ
-                        if (parseFloat(projeto.unimod) > 22 && parseFloat(projeto.uniest) > 7 && parseFloat(projeto.qtdequipe) > 4) {
-                            hrsequ = (parseFloat(equipe) - 2) * 6
-                        } else {
-                            hrsequ = (parseFloat(equipe) -1) * 6
-                        }
-                        var diastr = Math.round(parseFloat(projeto.trbint) / parseFloat(hrsequ))
-                        if (diastr == 0) {
-                            diastr = 1
-                        }
-                        projeto.diastr = diastr
-                        */
                         var diastr = Math.round(parseFloat((projeto.trbmod) + parseFloat(projeto.trbest)) / parseFloat(config.hrstrb))
                         projeto.diastr = diastr
 
@@ -612,10 +657,10 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                         projeto.discmb = discmb
                         projeto.ltocmb = ltocmb
                         projeto.vlrdia = vlrdia
-                        //console.log('vlrali=>'+vlrali)
-                        //console.log('discmb=>'+discmb)
-                        //console.log('ltocmb=>'+ltocmb)
-                        //console.log('vlrdia=>'+vlrdia)
+                        //console.log('vlrali=>' + vlrali)
+                        //console.log('discmb=>' + discmb)
+                        //console.log('ltocmb=>' + ltocmb)
+                        //console.log('vlrdia=>' + vlrdia)
 
                         var tothtl
                         var totcmb
@@ -652,11 +697,11 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                         var tothrs = parseFloat(projeto.trbint) + parseFloat(projeto.trbpro) + parseFloat(projeto.trbges)
                         projeto.tothrs = tothrs
 
-                        //console.log('totcmb=>'+totcmb)
-                        //console.log('tothtl=>'+tothtl)
-                        //console.log('totali=>'+totali)
-                        //console.log('totdes=>'+totdes)
-                        //console.log('tothrs=>'+tothrs)
+                        //console.log('totcmb=>' + totcmb)
+                        //console.log('tothtl=>' + tothtl)
+                        //console.log('totali=>' + totali)
+                        //console.log('totdes=>' + totdes)
+                        //console.log('tothrs=>' + tothrs)
 
                         //Custo de Reserva
                         var resger
@@ -702,12 +747,12 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                         projeto.outcer = outcer
                         projeto.outpos = outpos
 
-                        //console.log('resger=>'+resger)
-                        //console.log('conadd=>'+conadd)
-                        //console.log('impele=>'+impele)
-                        //console.log('seguro=>'+seguro)
-                        //console.log('outcer=>'+outcer)
-                        //console.log('outpos=>'+outpos)
+                        //console.log('resger=>' + resger)
+                        //console.log('conadd=>' + conadd)
+                        //console.log('impele=>' + impele)
+                        //console.log('seguro=>' + seguro)
+                        //console.log('outcer=>' + outcer)
+                        //console.log('outpos=>' + outpos)
 
                         var rescon = parseFloat(impele) + parseFloat(seguro) + parseFloat(outcer) + parseFloat(outpos)
                         rescon = parseFloat(rescon) + parseFloat(conadd)
@@ -715,63 +760,122 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                         var reserva = parseFloat(resger) + parseFloat(rescon)
                         projeto.reserva = reserva.toFixed(2)
 
-                        //console.log('rescon=>'+rescon)
-                        //console.log('reserva=>'+reserva)   
-                        //console.log('projeto.totint=>'+projeto.totint)
-                        //console.log('projeto.totpro=>'+projeto.totpro) 
-                        //console.log('projeto.totges=>'+projeto.totges) 
-                        //console.log('projeto.valorCer=>'+projeto.valorCer)
-                        //console.log('projeto.valorPos=>'+projeto.valorPos)
-                        //console.log('projeto.valorOcp=>'+projeto.valorOcp)
+                        //console.log('rescon=>' + rescon)
+                        //console.log('reserva=>' + reserva)
+                        //console.log('projeto.totint=>' + projeto.totint)
+                        //console.log('projeto.totpro=>' + projeto.totpro)
+                        //console.log('projeto.totges=>' + projeto.totges)
+                        //console.log('projeto.valorCer=>' + projeto.valorCer)
+                        //console.log('projeto.valorPos=>' + projeto.valorPos)
+                        //console.log('projeto.valorOcp=>' + projeto.valorOcp)
+
+                        var valorCer
+                        var valorPos
+                        var valorCen
+                        if (typeof projeto.valorCer == "undefined") {
+                            valorCer = 0
+                        }
+                        if (typeof projeto.valorPos == "undefined") {
+                            valorPos = 0
+                        }
+                        if (typeof projeto.valorCen == "undefined") {
+                            valorCen = 0
+                        }
+                        //console.log('valorCer=>' + valorCer)
+                        //console.log('valorPos=>' + valorPos)
+                        //console.log('valorCen=>' + valorCen)
 
                         var custoFix = parseFloat(projeto.totint) + parseFloat(projeto.totpro) + parseFloat(projeto.vlrart) + parseFloat(projeto.totges)
+                        //console.log('custoFix=>' + custoFix)
                         var custoVar = parseFloat(totdes)
-                        var custoEst = parseFloat(detalhe.valorCer) + parseFloat(detalhe.valorPos) + parseFloat(detalhe.valorCen)
+                        //console.log('custoVar=>' + custoVar)
+                        var custoEst = parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen)
+                        //console.log('custoEst=>' + custoEst)
                         var totcop = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
 
-                        //console.log('totint=>' + totint)
-                        //console.log('totpro=>' + totpro)
-                        //console.log('totges=>' + totges)
-                        //console.log('totali=>' + totali)
-                        //console.log('detalhe.valorOcp=>' + detalhe.valorOcp)
-                        //console.log('detalhe.valorCer=>' + detalhe.valorCer)
-                        //console.log('detalhe.valorPos=>' + detalhe.valorPos)
                         var vlrcom = 0
                         //Validando a comissão
                         if (projeto.percom != null) {
-                            vlrcom = parseFloat(projeto.vlrfat) * (parseFloat(projeto.percom) / 100)
+                            vlrcom = parseFloat(projeto.vlrNFS) * (parseFloat(projeto.percom) / 100)
                             projeto.vlrcom = vlrcom.toFixed(2)
                         }
+
                         projeto.custofix = custoFix.toFixed(2)
                         projeto.custovar = custoVar.toFixed(2)
                         projeto.custoest = custoEst.toFixed(2)
                         projeto.totcop = totcop.toFixed(2)
-                        //console.log('totcop=>'+totcop)
+                        //console.log('totcop=>' + totcop)
                         var custoPlano = parseFloat(totcop) + parseFloat(reserva)
                         projeto.custoPlano = custoPlano.toFixed(2)
-                        //console.log('custoPlano=>'+custoPlano)
+                        //console.log('custoPlano=>' + custoPlano)
                         custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
                         projeto.custoTotal = custoTotal.toFixed(2)
-                        console.log('custoTotal=>' + custoTotal)
+                        //console.log('custoTotal=>' + custoTotal)
 
-                        console.log('projeto.vlrfat=>' + projeto.vlrfat)
-                        var vlrNFS = parseFloat(projeto.vlrfat)
-                        //console.log('regime.alqNFS=>' + regime.alqNFS)
-                        var impNFS = parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)
-                        projeto.vlrNFS = vlrNFS
-                        projeto.impNFS = impNFS
+                        //Definindo o imposto ISS
+                        //console.log('regime_prj.alqNFS=>' + regime_prj.alqNFS)
+                        var fatequ
+                        var vlrNFS = 0
+                        var impNFS = 0
+                        var vlrMarkup = 0
+                        var prjValor = 0
+                        if (req.body.markup == '' || req.body.markup == 0) {
+                            console.log('markup igual a zero')
+                            console.log('projeto.vlrnormal=>' + projeto.vlrnormal)
+                            if (req.body.checkFatura != null) {
+                                fatequ = true
+                                vlrNFS = parseFloat(projeto.vlrnormal)
+                            } else {
+                                fatequ = false
+                                vlrNFS = parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)
+                            }
+                            prjValor = parseFloat(projeto.vlrnormal).toFixed(2)
+                            projeto.valor = parseFloat(projeto.vlrnormal).toFixed(2)
+                            projeto.markup = 0
+                        } else {
+                            console.log('custoTotal=>' + custoTotal)
+                            console.log('req.body.markup=>' + req.body.markup)
+                            vlrMarkup = (custoTotal / (1 - (parseFloat(req.body.markup) / 100))).toFixed(2)
+                            console.log('vlrMarkup=>' + vlrMarkup)
+                            if (req.body.checkFatura != null) {
+                                fatequ = true
+                                vlrNFS = parseFloat(vlrMarkup)
+                            } else {
+                                fatequ = false
+                                vlrNFS = parseFloat(vlrMarkup) - parseFloat(projeto.vlrkit)
+                            }
+                            projeto.markup = req.body.markup
+                            projeto.valor = vlrMarkup
+                            prjValor = parseFloat(vlrMarkup).toFixed(2)
+                        }
+                        console.log('vlrNFS=>' + vlrNFS)
+                        console.log('prjValor=>' + prjValor)
+                        //kWp médio
+                        projeto.vrskwp = (parseFloat(prjValor) / parseFloat(projeto.potencia)).toFixed(2)
+                        projeto.fatequ = fatequ
+                        impNFS = parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)
+                        var vlrcom = 0
+                        //Validando a comissão
+                        if (projeto.percom != null) {
+                            vlrcom = parseFloat(vlrNFS) * (parseFloat(projeto.percom) / 100)
+                            projeto.vlrcom = vlrcom.toFixed(2)
+                        }
+
+                        projeto.vlrNFS = vlrNFS.toFixed(2)
+                        projeto.impNFS = impNFS.toFixed(2)
+
                         console.log('impNFS=>' + impNFS)
                         console.log('projeto.valor=>' + projeto.valor)
 
                         //Definindo o Lucro Bruto
-                        var recLiquida = parseFloat(projeto.valor) - parseFloat(impNFS)
+                        var recLiquida = parseFloat(prjValor) - parseFloat(impNFS)
                         projeto.recLiquida = recLiquida.toFixed(2)
 
                         var lucroBruto = parseFloat(recLiquida) - parseFloat(projeto.vlrkit)
                         projeto.lucroBruto = lucroBruto.toFixed(2)
 
-                        console.log('vlrcom=>' + vlrcom)
-                        console.log('lucroBruto=>' + lucroBruto)
+                        //console.log('vlrcom=>' + vlrcom)
+                        //console.log('lucroBruto=>' + lucroBruto)
 
                         var desAdm = 0
                         var lbaimp = 0
@@ -796,7 +900,7 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                             lbaimp = parseFloat(lbaimp) - parseFloat(vlrcom)
                         }
                         projeto.lbaimp = lbaimp.toFixed(2)
-                        console.log('lbaimp=>' + lbaimp)
+                        //console.log('lbaimp=>' + lbaimp)
 
                         //Dashboard              
                         //Participação dos componentes
@@ -842,7 +946,13 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                             Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
 
                                 Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                                    res.render('projeto/gerenciamento/editgerenciamento', { sucesso: sucesso, projeto: projeto, cliente: cliente })
+                                    var fatura
+                                    if (req.body.checkFatura != null) {
+                                        fatura = 'checked'
+                                    } else {
+                                        fatura = 'uncheked'
+                                    }
+                                    res.render('projeto/gerenciamento/editgerenciamento', { sucesso: sucesso, projeto: projeto, cliente: cliente, fatura: fatura })
                                 }).catch((err) => {
                                     req.flash('error_msg', 'Nenhum cliente encontrado.')
                                     res.redirect('/cliente/consulta')

@@ -125,7 +125,7 @@
                             <div class="col-md-4 text-end">
                                 <label class='col-form-label col-form-label-sm fw-bold'>Descrição</label><br>
                                 <div class="row mb-1">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Kit Gerador:</label>
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Material:</label>
                                 </div>
                                 <hr>
                                 <div class="row mb-1">
@@ -322,10 +322,10 @@
                         </label><br>
                         <label for="cidade" class="fw-bold col-form-label col-form-label-sm mb-2"> Cidade:
                         </label><br>
-                        <label for="vlrorc" class="fw-bold  col-form-label col-form-label-sm mb-2"> Valor
-                            Orçado:</label><br>
-                        <label for="vlreqi" class=" fw-bold col-form-label col-form-label-sm mb-2"> Valor Kit
-                            Gerador: </label><br>
+                        <label for="vlrorc" class="fw-bold  col-form-label col-form-label-sm mb-2"> Total do
+                            Projeto:</label><br>
+                        <label for="vlreqi" class=" fw-bold col-form-label col-form-label-sm mb-2"> Valor Material:
+                        </label><br>
                         <label for="ptnprj" class=" fw-bold col-form-label col-form-label-sm mb-2"> Potência do
                             Projeto:</label>
                         <label class=" fw-bold col-form-label col-form-label-sm mb-2"> Data Instalação: </label>
@@ -371,10 +371,10 @@
 
                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="valor" id="valor"
                             value='{{projeto.valor}}' class="form-control form-control-sm mb-2" placeholder="R$"
-                            aria-placeholder="R$">
+                            aria-placeholder="R$" step='0.010'>
                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="equipamento"
                             id="equipamento" value='{{projeto.vlrkit}}' class="form-control form-control-sm mb-2"
-                            placeholder="R$" aria-placeholder="R$">
+                            placeholder="R$" aria-placeholder="R$" step='0.010'>
                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="potencia" id="potencia"
                             value='{{projeto.potencia}}' class="form-control form-control-sm mb-2" placeholder="kWp"
                             aria-placeholder="R$">
@@ -423,21 +423,29 @@
             <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-2">
-                        <label class="col-form-label col-form-label-sm fw-bold">Classificação:</label>
+                        <label class="col-form-label col-form-label-sm fw-bold text-end">Classificação:</label>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3 text-start">
                         <label class="col-form-label col-form-label-sm">{{projeto.classUsina}}</label>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2 text-end">
                         <label class="col-form-label col-form-label-sm fw-bold">Tipo:</label>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4 text-start">
                         <label class="col-form-label col-form-label-sm">{{projeto.tipoUsina}}</label>
                     </div>
-                    <div class="col-md-1">
+                </div>
+                <div class="row">
+                    <div class="col-md-2 text-end">
+                        <label class="col-form-label col-form-label-sm fw-bold">Tensão:</label>
+                    </div>
+                    <div class="col-md-3 text-start">
+                        <label class="col-form-label col-form-label-sm">{{projeto.tipoConexao}}</label>
+                    </div>
+                    <div class="col-md-2 text-end">
                         <label class="col-form-label col-form-label-sm fw-bold">Grupo:</label>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4 text-start">
                         <label class="col-form-label col-form-label-sm">{{projeto.grupoUsina}}</label>
                     </div>
                 </div>
@@ -524,6 +532,15 @@
                         <label class='col-form-label col-form-label-sm fw-bold'>Complementos</label>
                         <div class="col-md-2">
                             <div class="form-check">
+                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='estsolo'
+                                    class="form-check-input" type="checkbox" style="margin-top: 8px;"
+                                    {{projeto.temEstSolo}}>
+                                <label class="form-check-label col-form-label col-form-label-sm"> Estrutura
+                                </label>
+                            </div>
+                        </div>                        
+                        <div class="col-md-2">
+                            <div class="form-check">
                                 <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='central'
                                     class="form-check-input" type="checkbox" style="margin-top: 8px;"
                                     {{projeto.temCentral}}>
@@ -531,16 +548,7 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-check">
-                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='estsolo'
-                                    class="form-check-input" type="checkbox" style="margin-top: 8px;margin-left: 15px;"
-                                    {{projeto.temEstSolo}}>
-                                <label class="form-check-label col-form-label col-form-label-sm"> Estrutura
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-check">
                                 <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='cercamento'
                                     class="form-check-input" type="checkbox" style="margin-top: 8px;"
@@ -549,13 +557,13 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-5">
                             <div class="form-check">
                                 <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='poste'
-                                    class="form-check-input" type="checkbox" style="margin-top: 8px;"
+                                    class="form-check-input" type="checkbox" style="margin-top: 8px;margin-left: 1%;"
                                     {{projeto.temPosteCond}}>
-                                <label class="form-check-label col-form-label col-form-label-sm">Postes de
-                                    Condução
+                                <label class="form-check-label col-form-label col-form-label-sm" style="margin-left: 1%">Postes de
+                                    Condução de Fios
                                 </label>
                             </div>
                         </div>

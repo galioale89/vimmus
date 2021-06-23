@@ -41,8 +41,19 @@ const Config = new Schema({
     data: {
         type: Date,
         default: Date.now()
+    },
+    vlrhrp:{
+        type: Number,
+        require: false       
+    },
+    vlrhri:{
+        type: Number,
+        require: false       
+    },
+    vlrhrg:{
+        type: Number,
+        require: false    
     }
-
 })
 
 mongoose.model('configuracao', Config)

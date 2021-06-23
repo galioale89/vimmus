@@ -184,15 +184,30 @@
         </div>
 
         <input type="hidden" name="id" value='{{projeto._id}}'>
-        <div class="row mt-1" style="width: 100%;padding-left: 15px; height: 530px;">
+        <div class="row" style="width: 100%;padding-left: 15px; height: 530px;">
             <div class="col-md-8" style="padding-left: 30px;">
-                <div class="row">
-                    <div class="col-md-6 text-end">
-                        <label class="fw-bold col-form-label col-form-label-sm" style="font-size: 20px;">Valor Faturado:</label><br>
+                <div class="row mb-1">
+                    <div class="col-md-6 mt-2">
+                        <div class="row">
+                            <div class="col-md-6 text-end">
+                                <label class="fw-bold col-form-label" style="font-size: 20px;">Valor Faturado:</label>
+                            </div>
+                            <div class="col-md-6 text-start">
+                                <label class='fw-bold col-form-label' style="font-size: 20px;">R$
+                                    {{projeto.vlrNFS}}</label>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-6 text-start">
-                        <label class='fw-bold col-form-label col-form-label-sm' style="font-size: 20px;">R$
-                            {{projeto.vlrNFS}}</label><br>
+                    <div class="col-md-2 text-center">
+                        <label class='col-form-label col-form-label-sm fw-bold'>MarkUp(%): </label><br>
+                        <input class='form-control form-control-sm' type="text" name="markup" value='{{projeto.markup}}'>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="fw-bold col-form-label col-form-label-sm"> Faturar Material?
+                        </label>
+                        <div class="form-check form-switch" style="margin-left: 40px;">
+                            <input name='checkFatura' class="form-check-input" type="checkbox" {{fatura}}>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -348,8 +363,8 @@
                                 <div class="col-md-2">
                                     <div class='form-check'>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='checkbox'
-                                            class='form-check-input col-sm-2' name='checkIns'>
-                                        <label class='form-check-label col-form-labels'>Alterar</label>
+                                            class='form-check-input mt-2' name='checkIns'>
+                                        <label class='form-check-label col-form-label-sm'>Alterar</label>
                                     </div>
                                 </div>
                             </div>
@@ -376,8 +391,8 @@
                                 <div class="col-md-2">
                                     <div class='form-check'>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='checkbox'
-                                            class='form-check-input' name='checkPro'>
-                                        <label class='form-check-label'>Alterar</label>
+                                            class='form-check-input mt-2' name='checkPro'>
+                                        <label class='col-form-label col-form-label-sm'>Alterar</label>
                                     </div>
                                 </div>
                             </div>
@@ -396,7 +411,8 @@
                                         Elétrico:</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Seguro:</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Cercamento:</label><br>
-                                    <label class="fw-bold col-form-label col-form-label-sm">Condução Ponto de Conexão:</label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm">Condução Ponto de
+                                        Conexão:</label><br>
                                 </div>
                                 <div class="col-md-5">
                                     <label class="fw-bold col-form-label col-form-label-sm">R$
@@ -464,7 +480,8 @@
                     </div>
                 </div>
                 <div class="contorno-titulo-dem mt-2" style="margin-bottom: 10%;">
-                    <label class='fw-bold col-form-label col-form-label-lg mt-4'>Demonstrativo</label>
+                    <label class='fw-bold col-form-label col-form-label-lg mt-4'>Demonstrativo</label><br>
+                    <label class='fw-bold col-form-label col-form-label-sm'>{{rp.regime}}</label><br>
                     <div class="row mt-4">
                         <div class="col-md-7 text-end">
                             <label class='fw-bold col-form-label col-form-label-sm'>(+)Total do Projeto:</label><br>
@@ -479,7 +496,8 @@
                                 ({{projeto.percom}}%)</label><br>
                             <label class='fw-bold col-form-label col-form-label-sm'>(=)LAI:</label><br>
                             <label class='col-form-label col-form-label-sm'>(-)Tributos: </label><br>
-                            <label class='fw-bold col-form-label col-form-label-sm' style="margin-bottom: 20%;">(-)Lucro Líquido:
+                            <label class='fw-bold col-form-label col-form-label-sm' style="margin-bottom: 20%;">(-)Lucro
+                                Líquido:
                             </label>
                         </div>
                         <div class="col-md-5 text-start">

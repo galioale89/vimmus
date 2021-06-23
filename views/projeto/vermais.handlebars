@@ -62,13 +62,12 @@
             <div>
                 <div class="mt-2" style="margin-left: 20px;">
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="row mt-2">
-                                <div class="col-md-4">
-                                    <h5 class='text-start'>Status:</h5>
+                        <div class="col-md-2 mt-2">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class='col-form-label fw-bold text-start'>Status:</label>
                                 </div>
-                                <div class="col-md-8">
-
+                                <div class="col-md-4 mt-2">
                                     {{#if realizado.foiRealizado}}
                                     <div style="text-align: left;font-size: 17px;"><i class='bi bi-bookmark-check'
                                             style="color: rgb(40,55,89);"></i></div>
@@ -94,8 +93,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <h5 class='mt-2 text-start'>Reserva: R$ {{projeto.reserva}}</h5>
+                        <div class="col-md-3 mt-2">
+                            <label class='col-form-label fw-bold'>Regime: {{regime.regime}}</label>
+                        </div>                        
+                        <div class="col-md-3 mt-2">
+                            <label class='col-form-label fw-bold'>Reserva: R$ {{projeto.reserva}}</label>
                         </div>
                         <div class="col-md-4">
                             <div class='btn-group btn-group-sm col-12 gap-2 mx-auto mt-1' role='group'>

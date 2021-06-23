@@ -59,7 +59,7 @@
                             </label>
                         </div>
                         <div class="col-md-7">
-                            <input type="text" name="vlrhrp" id='vlrhrp' value='{{projeto.vlrhrp}}'
+                            <input type="text" name="vlrhrp" id='vlrhrp' {{#if projeto.vlrhrp}}value='{{projeto.vlrhrp}}'{{else}}value='{{configuracao.vlrhrp}}'{{/if}}
                                 class='form-control form-control-sm'>
                         </div>
                     </div>

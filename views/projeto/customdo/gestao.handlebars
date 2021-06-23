@@ -60,7 +60,7 @@
                                 </label>
                             </div>
                             <div class="col-md-5">
-                                <input type="text" name="vlrhrg" id='vlrhrg' value='{{projeto.vlrhrg}}'
+                                <input type="text" name="vlrhrg" id='vlrhrg' {{#if projeto.vlrhrg}}value='{{projeto.vlrhrg}}'{{else}}value='{{configuracao.vlrhrg}}'{{/if}}
                                     class='form-control form-control-sm'>
                             </div>
                         </div>

@@ -4,7 +4,7 @@
     }
 </style>
 
-<div class="container mt-3 card">
+<div class="container mt-4 card">
     <label for="minutos" class='fw-bold mt-2 mb-4 text-center'> Edição de Regime Tributário</label>
     <form action='/configuracao/editregime' method='post'>
         <div class="row">
@@ -95,15 +95,24 @@
                 </div>
                 <div class='row'>
                     <div class="row">
-                        <div class="col-md-4 text-end">
-                            <label class="col-form-label col-form-label-sm">Tipo Despesa: </label>
+                        <div class="col-md-3 text-end">
+                            <label class="col-form-label col-form-label-sm mb-2">Tipo Despesa: </label>
                         </div>
-                        <div class="col-md-7 mb-2" style="margin-left: 8px;">
+                        <div class="col-md-4">
                             <select class='form-select form-select-sm' name='tipodesp'>
                                 <option>Percentual</option>
                                 <option>kWp Médios</option>
                             </select>
                         </div>
+                        <div class='col-md-3'>
+                            <label class='col-form-label col-form-label-sm'>{{regime.tipodesp}}</label>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-check form-switch">
+                                <input name='alteraTipo' class="form-check-input mt-2" type="checkbox">
+                                <label class='form-check-label col-form-label-sm'>Alterar</label>
+                            </div>
+                        </div>                        
                     </div>
 
                     <div class="col-md-4 text-end">

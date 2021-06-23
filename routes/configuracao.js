@@ -23,8 +23,8 @@ router.get('/addregime', ehAdmin, (req, res) => {
 })
 
 router.get('/consulta', ehAdmin, (req, res) => {
-    const {_id} = req.user
-    Configuracao.find({user: _id}).sort({ data: 'desc' }).lean().then((configuracoes) => {
+    const { _id } = req.user
+    Configuracao.find({ user: _id }).sort({ data: 'desc' }).lean().then((configuracoes) => {
         res.render('configuracao/findconfiguracao', { configuracoes: configuracoes })
     }).catch((err) => {
         req.flash('error_msg', 'Nenhum projeto encontrado')
@@ -33,8 +33,8 @@ router.get('/consulta', ehAdmin, (req, res) => {
 })
 
 router.get('/consultaregime', ehAdmin, (req, res) => {
-    const {_id} = req.user
-    Regime.find({user: _id}).sort({ data: 'desc' }).lean().then((regime) => {
+    const { _id } = req.user
+    Regime.find({ user: _id }).sort({ data: 'desc' }).lean().then((regime) => {
         res.render('configuracao/findregime', { regime: regime })
     }).catch((err) => {
         req.flash('error_msg', 'Nenhum regime encontrado')
@@ -63,7 +63,7 @@ router.get('/editregime/:id', ehAdmin, (req, res) => {
 router.get('/removeconfiguracao/:id', ehAdmin, (req, res) => {
     Configuracao.findOneAndRemove({ _id: req.params.id }).then(() => {
         req.flash('success_msg', 'Configuracao removida com sucesso')
-        res.redirect('/configuracao/consultaregime')
+        res.redirect('/configuracao/consulta')
     }).catch(() => {
         req.flash('error_msg', 'Não foi possível remover a configuração.')
         res.redirect('/configurcao/consultaregime')
@@ -81,7 +81,7 @@ router.get('/removeregime/:id', ehAdmin, (req, res) => {
 })
 
 router.post('/addregime', ehAdmin, (req, res) => {
-    const {_id} = req.user
+    const { _id } = req.user
     var proje
 
     var erros = []
@@ -161,10 +161,10 @@ router.post('/addregime', ehAdmin, (req, res) => {
             prjLP: req.body.prjLP,
             alqINSS: req.body.alqINSS,
             vlrDAS: req.body.vlrDAS,
-            tipodes: req.body.tipodes,
+            tipodesp: req.body.tipodesp,
             desadm: req.body.desadm,
-            perdesp: req.body.perdesp,
-            estkwp: req.body.estkwp
+            perdes: req.body.perdes,
+            estkwp: req.body.estkwp,
         }
 
         new Regime(regime).save().then(() => {
@@ -179,25 +179,25 @@ router.post('/addregime', ehAdmin, (req, res) => {
 })
 
 router.post('/novo', ehAdmin, (req, res) => {
-    const {_id} = req.user
+    const { _id } = req.user
     if (req.body.hrstrb == '') {
         erros.push({ texto: 'É necessário preencher as horas trabalhadas dos instaladores.' })
-    }  
+    }
     if (req.body.slug == '') {
         erros.push({ texto: 'É necessário preencher o nome da configuração de tempo.' })
-    }  
+    }
     if (req.body.minatr == '') {
         erros.push({ texto: 'É necessário preencher os minutos para o aterramento.' })
-    }  
+    }
     if (req.body.minest == '') {
         erros.push({ texto: 'É necessário preencher os minutos para a instalação das estruturas.' })
-    }  
+    }
     if (req.body.minmod == '') {
         erros.push({ texto: 'É necessário preencher os minutos para a instalação dos módulos.' })
-    }  
+    }
     if (req.body.mininv == '') {
         erros.push({ texto: 'É necessário preencher os minutos para a instalação dos inversores.' })
-    }                          
+    }
     const configuracao = {
         user: _id,
         slug: req.body.slug,
@@ -207,15 +207,13 @@ router.post('/novo', ehAdmin, (req, res) => {
         minmod: req.body.minmod,
         mininv: req.body.mininv,
         hrstrb: req.body.hrstrb,
-        /*
-        minart: req.body.minart,
-        minmem: req.body.minmem,
-        minsit: req.body.minsit,
-        minuni: req.body.minuni,
-        mindis: req.body.mindis,
-        minate: req.body.minate,
-        */
-        medkmh: req.body.medkmh
+        vlrhrp: req.body.vlrhrp,
+        vlrhrg: req.body.vlrhrg,
+        vlrhri: req.body.vlrhri,
+        medkmh: req.body.medkmh,
+        vlrhrp: req.body.vlrhrp,
+        vlrhrg: req.body.vlrhrg,
+        vlrhri: req.body.vlrhri,
     }
 
     new Configuracao(configuracao).save().then(() => {
@@ -228,7 +226,7 @@ router.post('/novo', ehAdmin, (req, res) => {
 })
 
 router.post('/editconfiguracao/', ehAdmin, (req, res) => {
-    
+
     Configuracao.findOne({ _id: req.body.id }).then((configuracao) => {
         configuracao.slug = req.body.slug
         configuracao.potencia = req.body.potencia
@@ -238,6 +236,9 @@ router.post('/editconfiguracao/', ehAdmin, (req, res) => {
         configuracao.mininv = req.body.mininv
         configuracao.hrstrb = req.body.hrstrb
         configuracao.medkmh = req.body.medkmh
+        configuracao.vlrhrp = req.body.vlrhrp
+        configuracao.vlrhrg = req.body.vlrhrg
+        configuracao.vlrhri = req.body.vlrhri
 
         configuracao.save().then(() => {
             req.flash('success_msg', 'Configuração salva com sucesso')
@@ -253,7 +254,7 @@ router.post('/editconfiguracao/', ehAdmin, (req, res) => {
 })
 
 router.post('/editregime/', ehAdmin, (req, res) => {
-    
+
     var erros = []
 
     if (req.body.alqNFS == '') {
@@ -310,7 +311,7 @@ router.post('/editregime/', ehAdmin, (req, res) => {
     if (erros.length > 0) {
 
         Regime.findOne({ _id: req.body.id }).then((regime) => {
-            res.render('configuracao/editregime', { erros: erros, regime:regime})
+            res.render('configuracao/editregime', { erros: erros, regime: regime })
         }).catch((err) => {
             req.flash('error_msg', 'Houve um erro ao encontrar o regime.')
             res.redirect('/configuracao/consultaregime')
@@ -322,7 +323,7 @@ router.post('/editregime/', ehAdmin, (req, res) => {
             regime.nome = req.body.nome
             regime.regime = req.body.regime
             regime.tipo = req.body.tipo
-            
+
             if (req.body.alqDAS == '' || parseFloat(req.body.alqDAS) == 0) {
                 regime.alqDAS = 0
             } else {
@@ -334,7 +335,7 @@ router.post('/editregime/', ehAdmin, (req, res) => {
             } else {
                 regime.alqNFS = req.body.alqNFS
             }
-            
+
             if (req.body.alqICMS == '' || parseFloat(req.body.alqICMS) == 0) {
                 regime.alqICMS = 0
             } else {
@@ -352,7 +353,7 @@ router.post('/editregime/', ehAdmin, (req, res) => {
             } else {
                 regime.alqIRPJAdd = req.body.alqIRPJAdd
             }
-            
+
             if (req.body.alqCSLL == '' || parseFloat(req.body.alqCSLL) == 0) {
                 regime.alqCSLL = 0
             } else {
@@ -370,50 +371,52 @@ router.post('/editregime/', ehAdmin, (req, res) => {
             } else {
                 regime.alqCOFINS = req.body.alqCOFINS
             }
-            
+
             if (req.body.vlrred == '' || parseFloat(req.body.vlrred) == 0) {
                 regime.vlrred = 0
             } else {
                 regime.vlrred = req.body.vlrred
             }
-            
+
             if (req.body.prjFat == '' || parseFloat(req.body.prjFat) == 0) {
                 regime.prjFat = 0
             } else {
                 regime.prjFat = req.body.prjFat
             }
-            
+
             if (req.body.prjLR == '' || parseFloat(req.body.prjLR) == 0) {
                 regime.prjLR = 0
             } else {
                 regime.prjLR = req.body.prjLR
             }
-            
+
             if (req.body.prjLP == '' || parseFloat(req.body.prjLP) == 0) {
                 regime.prjLP = 0
             } else {
                 regime.prjLP = req.body.prjLP
             }
             
-            regime.tipodesp = req.body.tipodesp
+            if (req.body.alteraTipo != null) {
+                regime.tipodesp = req.body.tipodesp
+            }
 
             if (req.body.desadm == '' || parseFloat(req.body.desadm) == 0) {
                 regime.desadm = 0
             } else {
                 regime.desadm = req.body.desadm
-            }            
-            
+            }
+
             if (req.body.perdes == '' || parseFloat(req.body.perdes) == 0) {
                 regime.perdes = 0
             } else {
                 regime.perdes = req.body.perdes
-            }            
-              
+            }
+
             if (req.body.estkwp == '' || parseFloat(req.body.estkwp) == 0) {
                 regime.estkwp = 0
             } else {
                 regime.estkwp = req.body.estkwp
-            }             
+            }
 
             regime.save().then(() => {
                 req.flash('success_msg', 'Regime alterado com sucesso')

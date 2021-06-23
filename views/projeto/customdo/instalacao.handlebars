@@ -70,8 +70,8 @@
                                 </label>
                             </div>
                             <div class="col-md-5">
-                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text" name="vlrhri"
-                                    id='vlrhri' value='{{projeto.vlrhri}}' class='form-control form-control-sm'>
+                                <input type="text" name="vlrhri"
+                                    id='vlrhri' {{#if projeto.vlrhri}}value='{{projeto.vlrhri}}'{{else}}value='{{configuracao.vlrhri}}'{{/if}} class='form-control form-control-sm'>
                             </div>
                         </div>
                     </div>

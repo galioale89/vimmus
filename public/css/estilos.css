@@ -297,37 +297,37 @@ a {
 }
 
 .sessao {
-    background: rgba(79, 99, 140);
+    border: rgba(79, 99, 140) solid 5px ;
     border-radius: 100px;
     width: 100px;
     height: 100px;
     margin-left: 20px;
-    box-shadow: 4px 4px 5px rgba(26, 25, 25, 0.77);    
+    box-shadow: 1px 1px 2px rgba(26, 25, 25, 0.77);    
 }
 
 .sessao-dash-total {
-  background: rgba(79, 99, 140);
+  border: rgba(79, 99, 140) solid 2px;
   border-radius: 100px;
   width: 100px;
   height: 100px;
-  box-shadow: 4px 4px 5px rgba(26, 25, 25, 0.77);    
+  box-shadow: 1px 1px 2px rgba(26, 25, 25, 0.77);    
 }
 .sessao-dash {
-  background: rgb(149, 163, 192);
+  border: rgb(149, 163, 192) solid 5px;
   border-radius: 50px;
   width: 200px;
   height: 100px;
   margin-bottom: 5px;
   margin-top: 5px;
-  box-shadow: 4px 4px 5px rgba(26, 25, 25, 0.77);    
+  box-shadow: 1px 1px 2px rgba(26, 25, 25, 0.77);    
 }
 .sessao-dash-kit {
-  background: rgb(40, 55, 86);
+  border: rgb(40, 55, 86) solid 2px;
   border-radius: 20px;
   width: fit-content;
   height: fit-content;
-  color: white;
-  box-shadow: 4px 4px 5px rgba(26, 25, 25, 0.77);    
+  color: rgb(40, 55, 86);
+  box-shadow: 1px 1px 2px rgba(26, 25, 25, 0.77);    
 }
 .sessao-dash-titulo {
   background: rgba(79, 99, 140);
@@ -349,14 +349,14 @@ a {
     padding-top: 25px;
     font-size: 30px;
     font-weight: 500;
-    color: white;
+    color: rgb(40,55,89);
 }
 
 .quadro-scroll {
     border: rgba(200, 200, 200, 0.8) solid 1px;
     border-radius: 5px;
     width: 100%;
-    height: 65%;
+    height: 85%;
     padding: 6px;
     box-shadow: 1px 4px 5px rgba(26, 25, 25, 0.77);
     overflow-y: scroll;
@@ -388,16 +388,15 @@ a {
     width: 100%;
     text-decoration: none;
     border-radius: 5px;
-    color: white;
+    color: rgb(40,55,89);
     padding: 5px;
     font-size: 12px;
   }
 
   .botaomenu:hover {
     height: 30px;
-    font-weight: 700;
+    font-weight: bold;
     text-decoration: none;
-    color: white;
     font-weight: 800;
   }
   
@@ -517,9 +516,8 @@ a {
   }
 
   .menu {
-    /*background-color: rgba(238, 236, 236, 0.8);*/
     text-align: center;
-    background-color: rgb(126, 138, 163);
+    border: rgb(126, 138, 163) solid 2px;
     margin-left: 25px;
     height: fit-content;
     border-radius: 5px;
@@ -640,6 +638,7 @@ a {
   }
   .contorno-menu {
     font-size: 13px;
+    font-weight: bold;
     border-radius: 5px;
     padding: 5px;
     text-decoration: none;

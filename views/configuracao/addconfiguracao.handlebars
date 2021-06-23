@@ -1,6 +1,6 @@
 <style type='text/css'>
     .tamanhodiv {
-        width: 40%;
+        width: 70%;
     }
 </style>
 
@@ -8,43 +8,64 @@
     <label for="minutos" class='fw-bold mt-2'> <i class="bi bi-wrench"></i> Configurações básicas</label>
     <br>
     <form action='/configuracao/novo' method='post'>
-        <div class="row mb-2 text-end">
-            <div class="col-md-2">
-                <label for='slug' class='fw-bold col-form-label col-form-label-sm'> Apelido: </label><br>
-                <label for='potencia' class='fw-bold col-form-label col-form-label-sm'> Potência: </label>
+        <div class="row mb-4 text-end">
+            <div class="col-md-4">
+                <label for='slug' class='fw-bold col-form-label col-form-label-sm'> Nome da Configuração: </label><br>
             </div>
             <div class="col-md-5">
                 <input id='slug' type='text' name='slug' value='{{configuracoes.slug}}'
                     class='form-control form-control-sm'>
-                <input id='potenia' type='text' name='potencia' value='{{configuracoes.potencia}}'
-                    class='form-control form-control-sm'>
             </div>
         </div>
-        <div class="container col card">
-            <label class='fw-bold col-form-label col-form-label-sm'>Instalação (por minutos)</label>
-            <hr>
-            <div class='row mb-2 text-end'>
-                <div class="col-md-5">
-                    <label class='fw-bold col-form-label col-form-label-sm mb-1'> Aterramento: </label><br>
-                    <label class='fw-bold col-form-label col-form-label-sm mb-1'> Estrutura: </label><br>
-                    <label class='fw-bold col-form-label col-form-label-sm mb-1'> Módulos: </label><br>
-                    <label class='fw-bold col-form-label col-form-label-sm mb-1'> Inversores: </label><br>
-                    <label class='fw-bold col-form-label col-form-label-sm mb-1'> Horas Efetivas Instalador</label>
-                    <label class='fw-bold col-form-label col-form-label-sm mb-1'> Média veículo litros/km:</label>
+        <div class="row">
+            <div class="col-md-6 text-center">
+                <label class='fw-bold col-form-label col-form-label-sm'>Instalação (por minutos)</label>
+                <hr>
+                <div class='row mb-2 text-end'>
+                    <div class="col-md-6">
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Aterramento: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Estrutura: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Módulos: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Inversores: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Horas Efetivas
+                            Instalador</label>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Média veículo
+                            litros/km:</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input type='number' id='minatr' name='minatr' value='{{configuracoes.minatr}}'
+                            class='form-control form-control-sm mb-1'>
+                        <input type='number' id='minest' name='minest' value='{{configuracoes.minest}}'
+                            class='form-control form-control-sm mb-1'>
+                        <input type='number' id='minmod' name='minmod' value='{{configuracoes.minmod}}'
+                            class='form-control form-control-sm mb-1'>
+                        <input type='number' id='mininv' name='mininv' value='{{configuracoes.mininv}}'
+                            class='form-control form-control-sm mb-1'>
+                        <input type='text' id='hrstrb' name='hrstrb' value='{{configuracoes.hrstrb}}'
+                            class='form-control form-control-sm mt-1'>
+                        <input type='number' id='medkmh' name='medkmh' value='{{configuracoes.medkmh}}'
+                            class='form-control form-control-sm mt-1'>
+                    </div>
                 </div>
-                <div class="col-md-5">
-                    <input type='number' id='minatr' name='minatr' value='{{configuracoes.minatr}}'
-                        class='form-control form-control-sm mb-1'>
-                    <input type='number' id='minest' name='minest' value='{{configuracoes.minest}}'
-                        class='form-control form-control-sm mb-1'>
-                    <input type='number' id='minmod' name='minmod' value='{{configuracoes.minmod}}'
-                        class='form-control form-control-sm mb-1'>
-                    <input type='number' id='mininv' name='mininv' value='{{configuracoes.mininv}}'
-                        class='form-control form-control-sm mb-1'>
-                    <input type='text' id='hrstrb' name='hrstrb' value='{{configuracoes.hrstrb}}'
-                        class='form-control form-control-sm mt-1'>                        
-                    <input type='number' id='medkmh' name='medkmh' value='{{configuracoes.medkmh}}'
-                        class='form-control form-control-sm mt-1'>
+            </div>
+
+            <div class="col-md-6 text-center">
+                <label class='fw-bold col-form-label col-form-label-sm'>Custo Hora/R$</label>
+                <hr>
+                <div class='row mb-2 text-end'>
+                    <div class="col-md-6">
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Projetista:</label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Gestor: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Instalador:</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input type='number' id='vlrhrp' name='vlrhrp' value='{{configuracoes.vlrhrp}}'
+                            class='form-control form-control-sm'>
+                        <input type='number' id='vlrhrg' name='vlrhrg' value='{{configuracoes.vlrhrg}}'
+                            class='form-control form-control-sm mt-1'>
+                        <input type='number' id='vlrhri' name='vlrhri' value='{{configuracoes.vlrhri}}'
+                            class='form-control form-control-sm mt-1'>
+                    </div>
                 </div>
             </div>
         </div>

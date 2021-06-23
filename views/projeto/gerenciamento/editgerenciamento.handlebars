@@ -19,9 +19,9 @@
     }
 </style>
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
-        <div style="width: 100%;">
-            <h5 class="header">{{cliente.nome}} </h5>
-        </div>
+    <div style="width: 100%;">
+        <h5 class="header">{{cliente.nome}} </h5>
+    </div>
     <form action='/gerenciamento/editar/gerenciamento/' method='post'>
         <input type='hidden' name='id' value='{{projeto._id}}'></input>
 
@@ -30,26 +30,29 @@
                     class="bi bi-house"></i>Projeto</a>
             <a href="/customdo/editar/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i
                     class="bi bi-pencil"></i> Projetista</a>
-            <a href="/customdo/editar/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i> Gestão</a>
+            <a href="/customdo/editar/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
+                Gestão</a>
             <a href="/customdo/editar/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                    class="bi bi-tools"></i> Instalação</a>                
+                    class="bi bi-tools"></i> Instalação</a>
             <a href="/gerenciamento/editar/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i
                     class="bi bi-puzzle"></i> Gerenciamento</a>
             <a href="/gerenciamento/editar/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i
                     class="bi bi-calculator"></i> Tributos</a>
         </div>
-        <div class="row mt-2 mb-2">
+        <div class="row mt-2">
             <div class="col-md-7">
                 <div class="row">
                     <div class="col-md-6 card">
                         <div class="row mt-3 text-end">
                             <label class="fw-bold col-sm-5 col-form-label col-form-label-sm">Equipe: </label>
-                            <div class="col-sm-6 mb-1" style="border:rgba(68, 96, 238,0.5) 1px solid;border-radius: 5px;">
-                                    <label class="col-form-label col-form-label-sm">{{projeto.qtdequipe}}</label>
+                            <div class="col-sm-6 mb-1"
+                                style="border:rgba(68, 96, 238,0.5) 1px solid;border-radius: 5px;">
+                                <label class="col-form-label col-form-label-sm">{{projeto.qtdequipe}}</label>
                             </div>
                             <label for="tothrs" class="fw-bold col-sm-5 col-form-label col-form-label-sm">Horas Projeto:
                             </label>
-                            <div class="col-sm-6 mb-1" style="border:rgba(68, 96, 238,0.5) 1px solid;border-radius: 5px;">
+                            <div class="col-sm-6 mb-1"
+                                style="border:rgba(68, 96, 238,0.5) 1px solid;border-radius: 5px;">
                                 <label class="col-form-label col-form-label-sm"> {{projeto.tothrs}} </label>
                             </div>
                             <label for="diastr" class="fw-bold col-sm-5 col-form-label col-form-label-sm">Dias de Obras:
@@ -67,7 +70,8 @@
                             <label for="unidade" class="col-sm-5 col-form-label col-form-label-sm">Distância</label>
                             <div class="col-sm-5">
                                 <div class="input-group input-group-sm mb-1">
-                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text" name="discmb" value='{{projeto.discmb}}' class="form-control">
+                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text" name="discmb"
+                                        value='{{projeto.discmb}}' class="form-control">
                                 </div>
                             </div>
 
@@ -75,7 +79,8 @@
                                 Litro Combustível</label>
                             <div class="col-sm-5">
                                 <div class="input-group input-group-sm mb-1">
-                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text" name="ltocmb" value='{{projeto.ltocmb}}' class="form-control">
+                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text" name="ltocmb"
+                                        value='{{projeto.ltocmb}}' class="form-control">
                                 </div>
                             </div>
 
@@ -102,7 +107,8 @@
                             </label>
                             <div class="col-sm-5">
                                 <div class="input-group input-group-sm mb-1">
-                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text" name="vlrali" value='{{projeto.vlrali}}' class="form-control">
+                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text" name="vlrali"
+                                        value='{{projeto.vlrali}}' class="form-control">
                                 </div>
                             </div>
 
@@ -124,7 +130,8 @@
                             </label>
                             <div class="col-md-5">
                                 <div class="input-group input-group-sm mb-1">
-                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="vlrdia" value='{{projeto.vlrdia}}' class="form-control">
+                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="vlrdia"
+                                        value='{{projeto.vlrdia}}' class="form-control">
                                 </div>
                             </div>
 
@@ -150,14 +157,41 @@
                     </div>
                 </div>
                 <div class="row mt-3">
-                    <button {{#if projeto.orcado}}{{else}}disabled{{/if}} type="submit" class="btn btn-sm btn-success" name="aplicar"> <i
-                            class="bi bi-check-circle"></i> Aplicar</button>
+                    <button {{#if projeto.orcado}}{{else}}disabled{{/if}} type="submit" class="btn btn-sm btn-success"
+                        name="aplicar"> <i class="bi bi-check-circle"></i> Aplicar</button>
                 </div>
             </div>
             <div class="col-md-5">
-                <label class="fw-bold col-md-6 col-form-label col-form-label-sm">Orçado do Projeto: R$
-                    {{projeto.valor}}</label>
-                <div class="row text-center mt-2">
+                <div class="row">
+                    <div class="col-md-6 text-center mt-3">
+                        <label class="fw-bold col-form-label col-form-label-sm" style="font-size: 15px;">Total do Projeto:</label>
+                        <label class='fw-bold col-form-label col-form-label-sm' style="font-size: 15px;">R$
+                            {{projeto.valor}}</label>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6 text-center">
+                                <label class="fw-bold col-form-label col-form-label-sm">MarkUp(%)</label>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <label class="fw-bold col-form-label col-form-label-sm">Faturar Material?</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 text-center">
+                                <input class='form-control form-control-sm' type="text" name="markup"
+                                    value='{{projeto.markup}}'>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check form-switch text-center" style="margin-left: 40px;">
+                                    <input name='checkFatura' class="form-check-input" type="checkbox" {{fatura}}>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row text-center">
                     <label class="fw-bold col-md-6 col-form-label col-form-label-sm">Reserva</label>
                     <div class="col">
                         <label class="fw-bold col-md-5 col-form-label col-form-label-sm">R$
@@ -170,7 +204,8 @@
                         <div class="col">
                             <div class="input-group input-group-sm mb-1">
                                 <span class="input-group-text">$</span>
-                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" class="form-control form-control-sm" id="resger" name="resger"
+                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
+                                    class="form-control form-control-sm" id="resger" name="resger"
                                     value='{{projeto.resger}}' aria-label="R$ ">
                                 <span class="input-group-text">.00</span>
                             </div>
@@ -191,7 +226,8 @@
                         <div class="col">
                             <div class="input-group input-group-sm mb-1">
                                 <span class="input-group-text">$</span>
-                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" class="form-control form-control-sm" id="conadd" name="conadd"
+                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
+                                    class="form-control form-control-sm" id="conadd" name="conadd"
                                     value='{{projeto.conadd}}' aria-label="R$ ">
                                 <span class="input-group-text">.00</span>
                             </div>
@@ -204,7 +240,8 @@
                         <div class="col">
                             <div class="input-group input-group-sm mb-1">
                                 <span class="input-group-text">$</span>
-                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" class="form-control form-control-sm" id="impele" name="impele"
+                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
+                                    class="form-control form-control-sm" id="impele" name="impele"
                                     value='{{projeto.impele}}' aria-label="R$ ">
                                 <span class="input-group-text">.00</span>
                             </div>
@@ -216,7 +253,8 @@
                         <div class="col">
                             <div class="input-group input-group-sm mb-1">
                                 <span class="input-group-text">$</span>
-                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" class="form-control form-control-sm" id="seguro" name="seguro"
+                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
+                                    class="form-control form-control-sm" id="seguro" name="seguro"
                                     value='{{projeto.seguro}}' aria-label="R$ ">
                                 <span class="input-group-text">.00</span>
                             </div>
@@ -228,7 +266,8 @@
                         <div class="col">
                             <div class="input-group input-group-sm mb-1">
                                 <span class="input-group-text">$</span>
-                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" class="form-control form-control-sm" id="outcer" name="outcer"
+                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
+                                    class="form-control form-control-sm" id="outcer" name="outcer"
                                     value='{{projeto.outcer}}' aria-label="R$ ">
                                 <span class="input-group-text">.00</span>
                             </div>
@@ -236,12 +275,14 @@
                     </div>
 
                     <div class="row text-end">
-                        <label class="fw-bold col-sm-6 col-form-label col-form-label-sm">Condutores Ponto de Conexão:</label>
+                        <label class="fw-bold col-sm-6 col-form-label col-form-label-sm">Condutores Ponto de
+                            Conexão:</label>
                         <div class="col">
 
                             <div class="input-group input-group-sm mb-1">
                                 <span class="input-group-text">$</span>
-                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" class="form-control form-control-sm" id="outpos" name="outpos"
+                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
+                                    class="form-control form-control-sm" id="outpos" name="outpos"
                                     value='{{projeto.outpos}}' aria-label="R$ ">
                                 <span class="input-group-text">.00</span>
                             </div>
@@ -250,7 +291,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row" style="margin-bottom: 3%;">
             <div class="col-md-4 card" style="background-color: rgba(79, 99, 140);color: white;">
                 <label for="int" class="fw-bold col-form-label col-form-label-sm">INSTALAÇÃO</label>
                 <div class="row">
