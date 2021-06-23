@@ -1,3 +1,4 @@
+const { Decimal128 } = require('bson')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
@@ -31,6 +32,10 @@ const Projeto = new Schema({
         type: String,
         require: false
     },
+    tipoConexao:{
+        type: String,
+        require: false
+    },
     grupoUsina: {
         type: String,
         require: false
@@ -40,7 +45,7 @@ const Projeto = new Schema({
         require: false
     },    
     valor: {
-        type: Number,
+        type: Decimal128,
         require: true
     },
     vlrequ: {
@@ -55,7 +60,7 @@ const Projeto = new Schema({
         type: Boolean,
         require: true
     },
-    vlrfat: {
+    vlrnormal: {
         type: Number,
         require: true
     },
@@ -441,6 +446,10 @@ const Projeto = new Schema({
         require: false
     },
     vlrNFS: {
+        type: Number,
+        require: false
+    },
+    markup:{
         type: Number,
         require: false
     },
