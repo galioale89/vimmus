@@ -405,9 +405,11 @@ router.post('/', ehAdmin, (req, res) => {
                             if (req.body.checkFatura != null) {
                                 fatequ = true
                                 vlrNFS = parseFloat(projeto.vlrnormal)
+                                impNFS = 0
                             } else {
                                 fatequ = false
                                 vlrNFS = parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)
+                                impNFS = parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)
                             }
                             prjValor = parseFloat(projeto.vlrnormal).toFixed(2)
                             projeto.valor = parseFloat(projeto.vlrnormal).toFixed(2)
@@ -420,9 +422,11 @@ router.post('/', ehAdmin, (req, res) => {
                             if (req.body.checkFatura != null) {
                                 fatequ = true
                                 vlrNFS = parseFloat(vlrMarkup)
+                                impNFS = 0
                             } else {
                                 fatequ = false
                                 vlrNFS = parseFloat(vlrMarkup) - parseFloat(projeto.vlrkit)
+                                impNFS = parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)
                             }
                             projeto.markup = req.body.markup
                             projeto.valor = vlrMarkup
@@ -433,7 +437,7 @@ router.post('/', ehAdmin, (req, res) => {
                         //kWp médio
                         projeto.vrskwp = (parseFloat(prjValor) / parseFloat(projeto.potencia)).toFixed(2)
                         projeto.fatequ = fatequ
-                        impNFS = parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)
+                        
                         var vlrcom = 0
                         //Validando a comissão
                         if (projeto.percom != null) {
@@ -825,9 +829,11 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                             if (req.body.checkFatura != null) {
                                 fatequ = true
                                 vlrNFS = parseFloat(projeto.vlrnormal)
+                                impNFS = 0
                             } else {
                                 fatequ = false
                                 vlrNFS = parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)
+                                impNFS = parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)
                             }
                             prjValor = parseFloat(projeto.vlrnormal).toFixed(2)
                             projeto.valor = parseFloat(projeto.vlrnormal).toFixed(2)
@@ -840,9 +846,11 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                             if (req.body.checkFatura != null) {
                                 fatequ = true
                                 vlrNFS = parseFloat(vlrMarkup)
+                                impNFS = 0
                             } else {
                                 fatequ = false
                                 vlrNFS = parseFloat(vlrMarkup) - parseFloat(projeto.vlrkit)
+                                impNFS = parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)
                             }
                             projeto.markup = req.body.markup
                             projeto.valor = vlrMarkup
@@ -853,7 +861,7 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                         //kWp médio
                         projeto.vrskwp = (parseFloat(prjValor) / parseFloat(projeto.potencia)).toFixed(2)
                         projeto.fatequ = fatequ
-                        impNFS = parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)
+                        
                         var vlrcom = 0
                         //Validando a comissão
                         if (projeto.percom != null) {
@@ -1108,7 +1116,7 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                 //Validar ICMS
                 if (projeto.fatequ == true) {
                     if (regime.alqICMS != null) {
-                        impostoICMS = parseFloat(projeto.vlrkit) * (1 - (parseFloat(regime.alqICMS) / 100)) * (parseFloat(regime.alqICMS) / 100)
+                        impostoICMS = (parseFloat(prjValor)) * (parseFloat(regime.alqICMS) / 100)
                         totalTributos = parseFloat(totalImposto) + parseFloat(projeto.impNFS) + parseFloat(impostoICMS)
                         totalImposto = parseFloat(totalImposto) + parseFloat(impostoICMS)
                     }
@@ -1174,7 +1182,12 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                 var parDedVlr = parseFloat(projeto.custoPlano) / parseFloat(projeto.valor) * 100
                 projeto.parDedVlr = parDedVlr.toFixed(2)
                 //console.log('parDedVlr=>' + parDedVlr)
-                var parISSVlr = parseFloat(projeto.impNFS) / parseFloat(projeto.valor) * 100
+                var parISSVlr
+                if (projeto.impNFS > 0){
+                parISSVlr = parseFloat(projeto.impNFS) / parseFloat(projeto.valor) * 100
+                }else{
+                    parISSVlr = 0 
+                }
                 projeto.parISSVlr = parISSVlr.toFixed(2)
                 //console.log('parISSVlr=>' + parISSVlr)
                 var parImpVlr = (parseFloat(totalImposto) / parseFloat(projeto.valor)) * 100
@@ -1231,7 +1244,13 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                 var parDedNfs = parseFloat(projeto.custoPlano) / parseFloat(projeto.vlrNFS) * 100
                 projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
                 //console.log('parDedNfs=>' + parDedNfs)
-                var parISSNfs = parseFloat(projeto.impNFS) / parseFloat(projeto.vlrNFS) * 100
+                var parISSNfs
+                if (projeto.impNFS > 0){
+                    parISSNfs = parseFloat(projeto.impNFS) / parseFloat(projeto.vlrNFS) * 100
+                }else{
+                    parISSNfs = 0
+                }
+                
                 projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)
                 //console.log('parISSNfs=>' + parISSNfs)
                 var parImpNfs = (parseFloat(totalImposto) / parseFloat(projeto.vlrNFS)) * 100
@@ -1387,7 +1406,7 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
             //Validar ICMS
             if (projeto.fatequ == true) {
                 if (regime.alqICMS != null) {
-                    impostoICMS = parseFloat(projeto.vlrkit) * (1 - (parseFloat(regime.alqICMS) / 100)) * (parseFloat(regime.alqICMS) / 100)
+                    impostoICMS = (parseFloat(prjValor)) * (parseFloat(regime.alqICMS) / 100)
                     totalTributos = parseFloat(totalImposto) + parseFloat(projeto.impNFS) + parseFloat(impostoICMS)
                     totalImposto = parseFloat(totalImposto) + parseFloat(impostoICMS)
                 }
@@ -1438,7 +1457,13 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
             }
             var parDedVlr = parseFloat(projeto.custoPlano) / parseFloat(projeto.valor) * 100
             projeto.parDedVlr = parDedVlr.toFixed(2)
-            var parISSVlr = parseFloat(projeto.impNFS) / parseFloat(projeto.valor) * 100
+            var parISSVlr
+            if (projeto.impNFS > 0){
+                parISSVlr = parseFloat(projeto.impNFS) / parseFloat(projeto.valor) * 100
+            }else{
+                parISSVlr = 0
+            }
+            
             projeto.parISSVlr = parISSVlr.toFixed(2)
             var parImpVlr = (parseFloat(totalImposto) / parseFloat(projeto.valor)) * 100
             projeto.parImpVlr = parImpVlr.toFixed(2)
