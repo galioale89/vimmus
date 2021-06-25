@@ -137,6 +137,30 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
+    unistb:{
+        type: Number,
+        require: false
+    },
+    trbstb:{
+        type: Number,
+        require: false
+    },
+    totstb:{
+        type: Number,
+        require: false
+    },       
+    unipnl:{
+        type: Number,
+        require: false
+    },
+    trbpnl:{
+        type: Number,
+        require: false
+    },
+    totpnl:{
+        type: Number,
+        require: false
+    },       
     vlrhri: {
         type: Number,
         require: false
@@ -225,6 +249,30 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
+    unistb: {
+        type: Number,
+        require: false
+    },    
+    trbstb: {
+        type: Number,
+        require: false
+    },
+    totstb: {
+        type: Number,
+        require: false
+    },        
+    unipnl: {
+        type: Number,
+        require: false
+    },    
+    trbpnl:{
+        type: Number,
+        require: false
+    },
+    totpnl:{
+        type: Number,
+        require: false
+    },    
     vlrhrp: {
         type: Number,
         require: false

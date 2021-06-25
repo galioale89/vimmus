@@ -98,37 +98,38 @@
     <div class="row">
         <div class="col-md-2">
             <div class="contorno-titulo text-center" style="height: 100%;width: 100%;">
-                <label class='col-form-label fw-bold' style="font-size: 20px; margin-left: 20%;">Análise sem Kit</label>
-                <label class='col-form-label col-form-label-sm ' style="font-size: 15px;padding-left: 20%">Projetos
-                    Realizados: </label>
-                <label class='col-form-label col-form-label-sm' style="font-size: 15px;">{{numprj}}</label>
+                <label class='col-form-label fw-bold' style="font-size: 20px; margin-left: 8%;">Análise sem Kit</label>
+                <div class="text-center">
+                    <label style="font-size: 18px;margin-left: 2%;">Projetos Realizados: </label><br>
+                    <label style="font-size: 18px;margin-left: 2%;">{{numprj}}</label>
+                </div>
 
-                <div class='sessao-dash' style="margin-left: 10%;">
+                <div class='sessao-dash' style="margin-left: 3%;">
                     <li><label class='col-form-label col-form-label-sm' style="">kWp Instalados</label>
                     </li>
                     <li><label class='col-form-label col-form-label-sm' style="font-size: 25px;">{{soma_totkwp}}</label>
                     </li>
                 </div>
-                <div class='sessao-dash' style="margin-left: 10%;">
+                <div class='sessao-dash' style="margin-left: 3%;">
                     <li><label class='col-form-label col-form-label-sm' style="">Projetos
                             Vendidos</label></li>
                     <li><label class='col-form-label col-form-label-sm' style="font-size: 25px;">R$
                             {{soma_totprj}}</label></li>
                 </div>
-                <div class='sessao-dash' style="margin-left: 10%;">
+                <div class='sessao-dash' style="margin-left: 3%;">
                     <label class='col-form-label col-form-label-sm' style="">Lucro Líquido</label></li>
                     <li><label class='col-form-label col-form-label-sm' style="font-size: 25px;">
                             {{per_totliq}} %</label></li>
                 </div>
-                <div class='sessao-dash' style="margin-left: 10%;">
+                <div class='sessao-dash' style="margin-left: 3%;">
                     <li><label class='col-form-label col-form-label-sm' style="">Dispêndio</label></li>
                     <li><label class='col-form-label col-form-label-sm' style="font-size: 25px;">
                             {{per_dispendio}} %</label></li>
                 </div>
             </div>
         </div>
-        <div class="col-md-3 mt-3 contorno-texto" style="margin-left: 3%;">
-            <li><label class='col-form-label fw-bold'>R$ Média Por kWp</label></li>
+        <div class="col-md-3 mt-2 text-center">
+            <li><label class='col-form-label fw-bold'>Participação dos Custos por kWp Faturado</label></li>
             <div class="row">
                 <label class='col-form-label fw-bold text-center'>Custos Fixos e Variáveis</label>
                 <div class="col-md-5 text-end">
@@ -205,10 +206,10 @@
             <li class='text-center'><label class='col-form-label fw-bold'>Total Serviços: R$ {{soma_totser}}</label>
             </li>
         </div>
-        <div class="col-md-6" style="margin-left: 3%;">
+        <div class="col-md-7">
             <form method='post' action='/relatorios/filtradashsemkit'>
                 <div class="row">
-                    <div class="sessao-dash-titulo text-center" style="margin-bottom: 10px;margin-top: 20px;">
+                    <div class="sessao-dash-titulo text-center" style="margin-bottom: 10px;margin-top: 0.5%;">
                         <label class='col-form-label fw-bold' style="color: white;">{{#if
                             mestitulo}}{{mestitulo}}{{ano}}{{else}}Tudo{{/if}}</label>
                     </div>
@@ -256,32 +257,33 @@
             <div class="row">
                 <div class='row text-center'>
                     <div class="col-md-3 sessao-dash-kit">
-                        <li><label class='col-form-label fw-bold' style="">Comissão</label></li>
+                        <li><label style="">Comissão</label></li>
                         <label class='fw-bold' style="font-size: 15px">R$ {{medkwp_totcom}}</label>
                         <li><label class='col-form-label fw-bold' style="font-size: 20px">{{per_comfat}} %</label></li>
                     </div>
                     <div class="col-md-3 sessao-dash-kit">
-                        <li><label class='col-form-label fw-bold' style="">Custos</label></li>
+                        <li><label  style="">Custos</label></li>
                         <label class='fw-bold' style="font-size: 15px">R$ {{medkwp_totcop}}</label>
                         <li><label class='col-form-label fw-bold' style="font-size: 20px">{{per_cusfat}} %</label></li>
                     </div>
                     <div class="col-md-3 sessao-dash-kit">
-                        <li><label class='col-form-label fw-bold' style="">Administrativo</label></li>
+                        <li><label  style="">Administrativo</label></li>
                         <label class='fw-bold' style="font-size: 15px">R$ {{medkwp_totadm}}</label>
                         <li><label class='col-form-label fw-bold' style="font-size: 20px">{{per_desfat}} %</label></li>
                     </div>
                     <div class="col-md-3 sessao-dash-kit">
-                        <li><label class='col-form-label fw-bold' style="">Tributos</label></li>
+                        <li><label  style="">Tributos</label></li>
                         <label class='fw-bold' style="font-size: 15px">R$ {{medkwp_tottrb}}</label>
                         <li><label class='col-form-label fw-bold' style="font-size: 20px">{{per_trbfat}} %</label></li>
                     </div>
                 </div>
-                <div class="btn-group col-12 gap-2 mt-2" style="width: 97%;">
-                    <a href='/relatorios/dashboardcustos' class='btn btn-sm btn-primary'>Análise Resultados Geral</a>
-                    <a href='/relatorios/dashboardcustoscomkit' class='btn btn-sm btn-primary'>Análise Resultados com
-                        Kit</a>
-                    <a href='/relatorios/dashboardcustossemkit' class='btn btn-sm btn-primary'>Análise Resultados sem
-                        Kit</a>
+                <div class="row mt-1 text-center">
+                    <label class='col-form-label fw-bold'>Análise dos Resultados</label>
+                    <div class="btn-group col-12 gap-2" style="width: 97%;">
+                        <a href='/relatorios/dashboardcustos' class='btn btn-sm btn-primary'>Geral</a>
+                        <a href='/relatorios/dashboardcustoscomkit' class='btn btn-sm btn-primary'>Com Kit</a>
+                        <a href='/relatorios/dashboardcustossemkit' class='btn btn-sm btn-primary'>Sem Kit</a>
+                    </div>
                 </div>
             </div>
         </div>

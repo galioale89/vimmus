@@ -1,6 +1,6 @@
 <style>
     .icone {
-        font-size: 30px;
+        font-size: 25px;
         color: rgb(2, 38, 78);
     }
 </style>
@@ -290,10 +290,11 @@
         <!-- Modal -->
 
         <div class="row">
-            <div class="row">
-                <h5><i class="bi bi-box-arrow-in-right icone"></i> Cadastro de Projeto</h5>
-                <hr>
-            </div>
+
+            <label style='font-weight: bold;font-size:20px'><i class="bi bi-box-arrow-in-right icone"></i> Cadastro de
+                Projeto</label>
+            <hr>
+
             <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-5 text-end">
@@ -313,6 +314,7 @@
                         <label for="inputState" class="fw-bold col-form-label col-form-label-sm mb-2">Custos:
                         </label><br>
                         <label class='fw-bold col-form-label col-form-label-sm mb-2'>Regime Tributário: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Configuração: </label><br>
                         <label class='fw-bold col-form-label col-form-label-sm mb-2'>Gestor Responsável:</label><br>
                         <label class='col-form-label col-form-label-sm fw-bold mb-2'>Data Inicio Projeto:</label><br>
                         <label class='col-form-label col-form-label-sm fw-bold mb-2'>Data Previsão de Entrega:</label>
@@ -352,14 +354,21 @@
                             {{#each regime}}
                             <option value="{{_id}}">{{nome}}</option>
                             {{else}}
-                            <option value=''>Nenhuma configuração encontrada</option>
+                            <option value=''>Nenhum regime encontrado.</option>
                             {{/each}}
                         </select>
-                        <select name='pessoa' class="form-select form-select-sm mb-2">
+                        <select name='configuracao' class="form-select form-select-sm mb-2">
+                            {{#each configuracao}}
+                            <option value="{{_id}}">{{slug}}</option>
+                            {{else}}
+                            <option value=''>Nenhuma configuração encontrada.</option>
+                            {{/each}}
+                        </select>
+                        <select name='gestor' class="form-select form-select-sm mb-2">
                             {{#each pessoas}}
                             <option value="{{_id}}">{{nome}}</option>
                             {{else}}
-                            <option value=''>Nenhuma configuração encontrada</option>
+                            <option value=''>Nenhum gestor encontrado</option>
                             {{/each}}
                         </select>
                         <!--
@@ -410,7 +419,7 @@
                                     Estrutura
                                 </label>
                             </div>
-                        </div>                        
+                        </div>
                         <div class="col-md-2">
                             <div class="form-check">
                                 <input name='central' class="form-check-input" type="checkbox" style="margin-top: 8px;">
@@ -430,8 +439,10 @@
                         </div>
                         <div class="col-md-5">
                             <div class="form-check">
-                                <input name='poste' class="form-check-input" type="checkbox" style="margin-top: 8px;margin-left: 10%;">
-                                <label class="form-check-label col-form-label col-form-label-sm" style="margin-left: 5%;">
+                                <input name='poste' class="form-check-input" type="checkbox"
+                                    style="margin-top: 8px;margin-left: 10%;">
+                                <label class="form-check-label col-form-label col-form-label-sm"
+                                    style="margin-left: 5%;">
                                     Postes de Condução
                                 </label>
                             </div>
@@ -510,9 +521,15 @@
                     </a>
                 </div>
                 -->
-                <div class="row" style="height: 110px;">
-                    <label class='fw-bold col-form-label col-form-label-sm'>Premissas e Restrições</span>
-                        <textarea name='premissas' class="form-control" rows='3'></textarea>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class='fw-bold col-form-label col-form-label-sm'>Premissas e Restrições</label>
+                            <textarea name='premissas' class="form-control" rows='4'></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label class='fw-bold col-form-label col-form-label-sm'>Requisitos</label>
+                            <textarea name='requisitos' class="form-control" rows='4'></textarea>
+                    </div>
                 </div>
                 <!--
                 <div class="row mt-2">

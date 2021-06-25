@@ -240,6 +240,9 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
      if (!req.body.uniatr || req.body.uniatr == null || typeof req.body.uniatr == undefined) {
           erros.push({ texto: 'Preencer o valor de unidades do aterramento.' })
      }
+     if (!req.body.unistb || req.body.unistb == null || typeof req.body.unistb == undefined) {
+          erros.push({ texto: 'Preencer o valor de unidades de string box.' })
+     }
      if (!req.body.vlrhri || req.body.vlrhri == null) {
           erros.push({ texto: 'Preencer o valor R$/hora dos instaladores.' })
      }
@@ -272,38 +275,80 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
 
                Configuracao.findOne({ _id: projeto.configuracao }).then((config) => {
 
+                    var trbpnl
+                    var totpnl
                     var trbatr = Math.round(parseFloat(req.body.uniatr) * (parseFloat(config.minatr) / 60))
-                    var trbest = Math.round(parseFloat(req.body.uniest) * (parseFloat(config.minest) / 60))
-                    var trbmod = Math.round(parseFloat(req.body.unimod) * (parseFloat(config.minmod) / 60))
-                    var trbinv = Math.round(parseFloat(req.body.uniinv) * (parseFloat(config.mininv) / 60))
+
+                    if (req.body.unipnl != '' || req.body.unipnl != 0) {
+                         trbpnl = Math.round(parseFloat(req.body.unipnl) * (parseFloat(config.minpnl) / 60))
+                    } else {
+                         trbpnl = 0
+                    }
 
                     var totatr = Math.round(parseFloat(trbatr) * parseFloat(req.body.vlrhri))
-                    var totest = Math.round(parseFloat(trbest) * parseFloat(req.body.vlrhri) * 2)
-                    var totmod = Math.round(parseFloat(trbmod) * parseFloat(req.body.vlrhri) * 2)
+
+                    if (parseFloat(req.body.unimod) > 13 && parseFloat(req.body.uniest) > 3 && parseFloat(projeto.qtdequipe) > 5) {
+                         var trbest = Math.round(parseFloat(req.body.uniest) * (parseFloat(config.minest) * 2 / (parseFloat(projeto.qtdequipe) - 2) / 60))
+                         var trbmod = Math.round(parseFloat(req.body.unimod) * (parseFloat(config.minmod) * 2 / (parseFloat(projeto.qtdequipe) - 2) / 60))
+                         totest = (parseFloat(trbest) * parseFloat(req.body.vlrhri) * (parseFloat(projeto.qtdequipe) - 2)).toFixed(2)
+                         totmod = (parseFloat(trbmod) * parseFloat(req.body.vlrhri) * (parseFloat(projeto.qtdequipe) - 2)).toFixed(2)
+                    } else {
+                         var trbest = Math.round(parseFloat(req.body.uniest) * (parseFloat(config.minest) / 60))
+                         var trbmod = Math.round(parseFloat(req.body.unimod) * (parseFloat(config.minmod) / 60))
+                         if (projeto.qtdequipe > 3) {
+                              var insadd = (parseFloat(projeto.qtdequipe) - 3)
+                              console.log('insadd=>' + insadd)
+
+                              totest = ((parseFloat(trbest) * parseFloat(req.body.vlrhri) * 2) + (parseFloat(trbest) * parseFloat(req.body.vlrhri) * insadd)).toFixed(2)
+                              totmod = ((parseFloat(trbmod) * parseFloat(req.body.vlrhri) * 2) + (parseFloat(trbmod) * parseFloat(req.body.vlrhri) * insadd)).toFixed(2)
+                         } else {
+                              totest = (parseFloat(trbest) * parseFloat(req.body.vlrhri) * 2).toFixed(2)
+                              totmod = (parseFloat(trbmod) * parseFloat(req.body.vlrhri) * 2).toFixed(2)
+                         }
+                    }
+                    var trbinv = Math.round(parseFloat(req.body.uniinv) * (parseFloat(config.mininv) / 60))
                     var totinv = Math.round(parseFloat(trbinv) * parseFloat(req.body.vlrhri))
 
-                    var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr)).toFixed(2)
+                    var trbstb = Math.round(parseFloat(req.body.unistb) * (parseFloat(config.minstb) / 60))
+                    var totstb = Math.round(parseFloat(trbstb) * parseFloat(req.body.vlrhri))
 
-                    var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr))
+                    if (req.body.unipnl != '' || req.body.unipnl != 0) {
+                         trbpnl = Math.round(parseFloat(req.body.unipnl) * (parseFloat(config.minpnl) / 60))
+                         totpnl = Math.round(parseFloat(trbpnl) * parseFloat(req.body.vlrhri))
+                    } else {
+                         trbpnl = 0
+                         totpnl = 0
+                    }
 
+                    var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr) + parseFloat(totstb) + parseFloat(totpnl)).toFixed(2)
+                    
+                    var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr) + parseFloat(trbstb) + parseFloat(trbpnl))
+                    
                     var sucesso = []
 
                     projeto.qtdequipe = 3
                     projeto.vlrhri = req.body.vlrhri
-                    projeto.uniatr = req.body.uniatr
-                    projeto.trbatr = trbatr
                     projeto.uniest = req.body.uniest
-                    projeto.trbest = trbest
+                    projeto.uniatr = req.body.uniatr
                     projeto.unimod = req.body.unimod
-                    projeto.trbmod = trbmod
                     projeto.uniinv = req.body.uniinv
+                    projeto.unistb = req.body.unistb
+                    projeto.unipnl = req.body.unipnl
+                    projeto.trbest = trbest
+                    projeto.trbatr = trbatr
+                    projeto.trbmod = trbmod
                     projeto.trbinv = trbinv
+                    projeto.trbint = trbint
+                    projeto.trbstb = trbstb
+                    projeto.trbpnl = trbpnl
                     projeto.totest = totest
                     projeto.totmod = totmod
-                    projeto.totatr = totatr
                     projeto.totinv = totinv
+                    projeto.totatr = totatr
+                    projeto.totstb = totstb
+                    projeto.totpnl = totpnl
                     projeto.totint = totint
-                    projeto.trbint = trbint
+
                     if (req.body.pinome == null) {
                          projeto.funins = req.body.funins
                     }
@@ -323,8 +368,6 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                     //console.log('totest=>'+totint)
                     //console.log('trbint=>'+trbint)
                     //console.log('funins=>'+req.body.funins)
-
-
 
                     projeto.save().then(() => {
                          sucesso.push({ texto: 'Custo de instalação aplicado com sucesso' })
@@ -667,11 +710,12 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
 
           Projeto.findOne({ _id: req.body.id }).then((projeto) => {
 
+               console.log('projeto.configuracao=>'+projeto.configuracao)
+
                Configuracao.findOne({ _id: projeto.configuracao }).then((config) => {
-
-                    //projeto_id = projeto._id
-
+                    
                     //Edição dos Custos de Instalação
+                    console.log('encontrou')
                     console.log('config.minatr=>' + config.minatr)
                     console.log('config.minest=>' + config.minest)
                     console.log('config.minmod=>' + config.minmod)
@@ -703,8 +747,19 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                     var trbinv = Math.round(parseFloat(req.body.uniinv) * (parseFloat(config.mininv) / 60))
                     var totinv = Math.round(parseFloat(trbinv) * parseFloat(req.body.vlrhri))
 
-                    var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr)).toFixed(2)
-                    var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr))
+                    var trbstb = Math.round(parseFloat(req.body.unistb) * (parseFloat(config.minstb) / 60))
+                    var totstb = Math.round(parseFloat(trbstb) * parseFloat(req.body.vlrhri))
+
+                    if (req.body.unipnl != '' || req.body.unipnl != 0) {
+                         trbpnl = Math.round(parseFloat(req.body.unipnl) * (parseFloat(config.minpnl) / 60))
+                         totpnl = Math.round(parseFloat(trbpnl) * parseFloat(req.body.vlrhri))
+                    } else {
+                         trbpnl = 0
+                         totpnl = 0
+                    }
+                    var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr) + parseFloat(totstb) + parseFloat(totpnl)).toFixed(2)
+
+                    var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr) + parseFloat(trbstb) + parseFloat(trbpnl))
                     /*
                     tothrs = parseFloat(trbint)
                     if (projeto.trbpro != null) {
@@ -732,20 +787,26 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                     console.log('trbint=>' + trbint)
 
                     projeto.vlrhri = req.body.vlrhri
-                    projeto.uniatr = req.body.uniatr
-                    projeto.trbatr = trbatr
                     projeto.uniest = req.body.uniest
-                    projeto.trbest = trbest
+                    projeto.uniatr = req.body.uniatr
                     projeto.unimod = req.body.unimod
-                    projeto.trbmod = trbmod
                     projeto.uniinv = req.body.uniinv
+                    projeto.unistb = req.body.unistb
+                    projeto.unipnl = req.body.unipnl
+                    projeto.trbest = trbest
+                    projeto.trbatr = trbatr
+                    projeto.trbmod = trbmod
                     projeto.trbinv = trbinv
+                    projeto.trbint = trbint
+                    projeto.trbstb = trbstb
+                    projeto.trbpnl = trbpnl
                     projeto.totest = totest
                     projeto.totmod = totmod
                     projeto.totinv = totinv
                     projeto.totatr = totatr
+                    projeto.totstb = totstb
+                    projeto.totpnl = totpnl
                     projeto.totint = totint
-                    projeto.trbint = trbint
 
                     if (req.body.checkIns != null) {
                          projeto.funins = req.body.funins

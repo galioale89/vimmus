@@ -38,10 +38,10 @@
     </div>
 
     <div class="btn-group  col-12 mx-auto">
-        <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"></i>
-            Projetista</a>
         <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
             Gestão</a>
+        <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"></i>
+            Projetista</a>
         <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"></i>
             Instalação</a>
         <a href="/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i class="bi bi-puzzle"></i>
@@ -295,7 +295,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row" style="margin-bottom: 3%;">
             <div class="col-md-4 card" style="background-color: rgba(79, 99, 140);color: white;">
                 <label for="int" class="fw-bold col-form-label col-form-label-sm">INSTALAÇÃO</label>
                 <div class="row">
@@ -340,22 +340,23 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 card" style="background-color: rgba(79, 99, 140);color: white;">
-                <label for="ges" class="fw-bold col-sm-5 col-form-label col-form-label-sm">GESTÃO</label>
+
+            <div class="col-md-4" style="background-color: rgba(79, 99, 140);color: white;">
+                <label class="fw-bold col-sm-5 col-form-label col-form-label-sm">GESTÃO</label>
                 <div class="row">
                     <div class="col-md-5">
-                        <label for="trbges" class="col-form-label col-form-label-sm">Horas Trabalhadas:</label>
+                        <label class="col-form-label col-form-label-sm">Horas Trabalhadas:</label>
                     </div>
                     <div class="col-md-6">
-                        <label for="trbges" class="col-form-label col-form-label-sm">{{projeto.trbges}}</label>
+                        <label class="col-form-label col-form-label-sm">{{projeto.trbges}}</label>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-5">
-                        <label for="totges" class="fw-bold col-form-label col-form-label-sm">Custo Total:</label>
+                        <label class="fw-bold col-form-label col-form-label-sm">Custo Total:</label>
                     </div>
                     <div class="col-md-6">
-                        <label for="totges" class="fw-bold col-form-label col-form-label-sm">R$
+                        <label class="fw-bold col-form-label col-form-label-sm">R$
                             {{projeto.totges}}</label>
                     </div>
                 </div>

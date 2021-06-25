@@ -34,7 +34,19 @@ const Config = new Schema({
         type: Number,
         require: true
     },
+    minstb: {
+        type: Number,
+        require: true
+    },  
+    minpnl: {
+        type: Number,
+        require: true
+    },      
     medkmh: {
+        type: Number,
+        require: false
+    },
+    markup:{
         type: Number,
         require: false
     },
@@ -53,7 +65,7 @@ const Config = new Schema({
     vlrhrg:{
         type: Number,
         require: false    
-    }
+    },
 })
 
 mongoose.model('configuracao', Config)

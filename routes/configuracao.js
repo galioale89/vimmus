@@ -198,22 +198,27 @@ router.post('/novo', ehAdmin, (req, res) => {
     if (req.body.mininv == '') {
         erros.push({ texto: 'É necessário preencher os minutos para a instalação dos inversores.' })
     }
+    if (req.body.minstb == '') {
+        erros.push({ texto: 'É necessário preencher os minutos para a instalação do string box.' })
+    }    
+    if (req.body.minpnl == '') {
+        erros.push({ texto: 'É necessário preencher os minutos para a instalação do painél elétrico.' })
+    }        
     const configuracao = {
         user: _id,
         slug: req.body.slug,
-        potencia: req.body.potencia,
         minatr: req.body.minatr,
         minest: req.body.minest,
         minmod: req.body.minmod,
         mininv: req.body.mininv,
+        minstb: req.body.minstb,
+        minpnl: req.body.minpnl,
+        vlrhrp: req.body.vlrhrp,
+        vlrhrg: req.body.vlrhrg,
+        vlrhri: req.body.vlrhri,
         hrstrb: req.body.hrstrb,
-        vlrhrp: req.body.vlrhrp,
-        vlrhrg: req.body.vlrhrg,
-        vlrhri: req.body.vlrhri,
         medkmh: req.body.medkmh,
-        vlrhrp: req.body.vlrhrp,
-        vlrhrg: req.body.vlrhrg,
-        vlrhri: req.body.vlrhri,
+        markup: req.body.markup
     }
 
     new Configuracao(configuracao).save().then(() => {
@@ -226,22 +231,41 @@ router.post('/novo', ehAdmin, (req, res) => {
 })
 
 router.post('/editconfiguracao/', ehAdmin, (req, res) => {
-
+    
+    /*
+    console.log('_id=>'+req.body.id)
+    console.log('req.body.slug=>'+ req.body.slug)
+    console.log('req.body.minatr=>'+req.body.minatr)
+    console.log('req.body.minest=>'+req.body.minest)
+    console.log('req.body.minmod=>'+req.body.minmod)
+    console.log('req.body.mininv=>'+req.body.mininv)
+    console.log('req.body.minstb=>'+req.body.minstb)
+    console.log('req.body.minpnl=>'+req.body.minpnl)
+    console.log('req.body.vlrhrp=>'+req.body.vlrhrp)
+    console.log('req.body.vlrhrg=>'+req.body.vlrhrg)
+    console.log('req.body.vlrhri=>'+req.body.vlrhri)
+    console.log('req.body.hrstrb=>'+req.body.hrstrb)
+    console.log('req.body.medkmh=>'+req.body.medkmh)  
+    */
+   
     Configuracao.findOne({ _id: req.body.id }).then((configuracao) => {
-        configuracao.slug = req.body.slug
-        configuracao.potencia = req.body.potencia
+    
+        configuracao.slug = req.body.slug       
         configuracao.minatr = req.body.minatr
         configuracao.minest = req.body.minest
         configuracao.minmod = req.body.minmod
         configuracao.mininv = req.body.mininv
-        configuracao.hrstrb = req.body.hrstrb
-        configuracao.medkmh = req.body.medkmh
-        configuracao.vlrhrp = req.body.vlrhrp
-        configuracao.vlrhrg = req.body.vlrhrg
+        configuracao.minstb = req.body.minstb
+        configuracao.minpnl = req.body.minpnl  
+        configuracao.vlrhrp = req.body.vlrhrp       
+        configuracao.vlrhrg = req.body.vlrhrg    
         configuracao.vlrhri = req.body.vlrhri
+        configuracao.hrstrb = req.body.hrstrb
+        configuracao.medkmh = req.body.medkmh       
+        configuracao.markup = req.body.markup 
 
         configuracao.save().then(() => {
-            req.flash('success_msg', 'Configuração salva com sucesso')
+            req.flash('success_msg', 'Configuração salva com sucesso.')
             res.redirect('/configuracao/consulta')
         }).catch((err) => {
             req.flash('error_msg', 'Houve um erro ao salvar a configuração.')

@@ -15,7 +15,7 @@
     }
 
     .ativo {
-       background-color: rgb(10, 30, 68);
+        background-color: rgb(10, 30, 68);
     }
 
 
@@ -29,17 +29,17 @@
     }
 </style>
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
-        <div style="width: 100%;">
-            <h5 class="header">{{cliente.nome}} </h5>
-        </div>
+    <div style="width: 100%;">
+        <h5 class="header">{{cliente.nome}} </h5>
+    </div>
 
     <div class="btn-group  col-12 mx-auto">
-        <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"></i>
-            Projetista</a>
         <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i class="bi bi-gear"></i>
             Gestão</a>
+        <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"></i>
+            Projetista</a>
         <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"></i>
-            Instalação</a>            
+            Instalação</a>
         <a href="/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-puzzle"></i>
             Gerenciamento</a>
         <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-calculator"></i>
@@ -60,8 +60,9 @@
                                 </label>
                             </div>
                             <div class="col-md-5">
-                                <input type="text" name="vlrhrg" id='vlrhrg' {{#if projeto.vlrhrg}}value='{{projeto.vlrhrg}}'{{else}}value='{{configuracao.vlrhrg}}'{{/if}}
-                                    class='form-control form-control-sm'>
+                                <input type="text" name="vlrhrg" id='vlrhrg' {{#if
+                                    projeto.vlrhrg}}value='{{projeto.vlrhrg}}' {{else}}value='{{configuracao.vlrhrg}}'
+                                    {{/if}} class='form-control form-control-sm'>
                             </div>
                         </div>
                     </div>
@@ -234,8 +235,9 @@
             </div>
             <div class="col md-4">
                 <div class="row mt-2">
-                        <button type="submit" style='margin-left: 10px;width: 92%' class="btn btn-sm btn-success" name="aplicar">
-                            <i class="bi bi-check-circle"></i>Aplicar</button>
+                    <button type="submit" style='margin-left: 10px;width: 92%' class="btn btn-sm btn-success"
+                        name="aplicar">
+                        <i class="bi bi-check-circle"></i>Aplicar</button>
                 </div>
                 <div class="caixa text-center mt-2">
                     <h4 style="margin-top: 20px;"> Totais </h4>

@@ -29,9 +29,9 @@
     }
 </style>
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
-        <div style="width: 100%;">
-            <h5 class="header">{{cliente.nome}} </h5>
-        </div>
+    <div style="width: 100%;">
+        <h5 class="header">{{cliente.nome}} </h5>
+    </div>
     <form action='/customdo/editar/projetista' method="post">
 
         <input type='hidden' name='id' value='{{projeto._id}}'>
@@ -39,14 +39,14 @@
         <div class='btn-group col-12 mx-auto'>
             <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'> <i
                     class="bi bi-house"></i>Projeto</a>
+            <a href="/customdo/editar/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
+                Gestão</a>
             <a href="/customdo/editar/projetista/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i
                     class="bi bi-pencil"></i>
                 Projetista</a>
-            <a href="/customdo/editar/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
-                Gestão</a>
             <a href="/customdo/editar/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i
                     class="bi bi-tools"></i>
-                Instalação</a>                
+                Instalação</a>
             <a href="/gerenciamento/editar/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i
                     class="bi bi-puzzle"></i>
                 Gerenciamento</a>
@@ -300,8 +300,8 @@
                 </div>
 
                 <div class="col md-4 mt-2">
-                        <button type="submit" class="btn btn-sm btn-success" style='width: 96%;' name="aplicar" {{#if
-                            projeto.orcado}}{{else}}disabled{{/if}}> <i class="bi bi-check-circle"></i> Aplicar</button>
+                    <button type="submit" class="btn btn-sm btn-success" style='width: 96%;' name="aplicar" {{#if
+                        projeto.orcado}}{{else}}disabled{{/if}}> <i class="bi bi-check-circle"></i> Aplicar</button>
                     <div class="caixa text-center mt-2">
                         <h4 style="margin-top: 30px"> Totais </h4>
                         <hr>

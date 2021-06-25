@@ -5,7 +5,7 @@
 </style>
 
 <div class="container mt-4 card tamanhodiv">
-    <label for="minutos" class='fw-bold mt-2'> <i class="bi bi-wrench"></i> Configurações básicas</label>
+    <label for="minutos" class='fw-bold mt-2'> <i class="bi bi-wrench"></i> Configurações básicas de tempo e custos</label>
     <br>
     <form action='/configuracao/novo' method='post'>
         <div class="row mb-4 text-end">
@@ -27,10 +27,8 @@
                         <label class='fw-bold col-form-label col-form-label-sm mb-1'> Estrutura: </label><br>
                         <label class='fw-bold col-form-label col-form-label-sm mb-1'> Módulos: </label><br>
                         <label class='fw-bold col-form-label col-form-label-sm mb-1'> Inversores: </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Horas Efetivas
-                            Instalador</label>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Média veículo
-                            litros/km:</label>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> String Box: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Painél Elétrico: </label><br>
                     </div>
                     <div class="col-md-6">
                         <input type='number' id='minatr' name='minatr' value='{{configuracoes.minatr}}'
@@ -41,10 +39,10 @@
                             class='form-control form-control-sm mb-1'>
                         <input type='number' id='mininv' name='mininv' value='{{configuracoes.mininv}}'
                             class='form-control form-control-sm mb-1'>
-                        <input type='text' id='hrstrb' name='hrstrb' value='{{configuracoes.hrstrb}}'
-                            class='form-control form-control-sm mt-1'>
-                        <input type='number' id='medkmh' name='medkmh' value='{{configuracoes.medkmh}}'
-                            class='form-control form-control-sm mt-1'>
+                        <input type='number' id='minstb' name='minstb' value='{{configuracoes.minstb}}'
+                            class='form-control form-control-sm mb-1'>
+                        <input type='number' id='minpnl' name='minpnl' value='{{configuracoes.minpnl}}'
+                            class='form-control form-control-sm mb-1'>
                     </div>
                 </div>
             </div>
@@ -67,11 +65,26 @@
                             class='form-control form-control-sm mt-1'>
                     </div>
                 </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6 text-end">
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> MarkUp(%)</label>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Média veículo litros/km:</label>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Horas Efetivas Instalador:</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input type='number' id='markup' name='markup' value='{{configuracoes.markup}}'
+                            class='form-control form-control-sm mt-1'>                        
+                        <input type='number' id='medkmh' name='medkmh' value='{{configuracoes.medkmh}}'
+                            class='form-control form-control-sm mt-1'>
+                        <input type='text' id='hrstrb' name='hrstrb' value='{{configuracoes.hrstrb}}'
+                            class='form-control form-control-sm mt-1'>
+                    </div>
+                </div>               
             </div>
         </div>
         <div class="row mt-2">
             <button type='submit' style="width: 100%;" class='btn btn-success tamanhodiv'> Aplicar </button>
         </div>
     </form>
-
 </div>

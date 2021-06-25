@@ -343,7 +343,7 @@ router.get('/dashboardcustosversus', ehAdmin, (req, res) => {
                 //console.log('valorMod=>' + valorMod)
                 if (valorMod != undefined) {
                     soma_modequ_com = (parseFloat(soma_modequ_com) + parseFloat(valorMod)).toFixed(2)
-                }
+                }         
                 //console.log('soma_modequ=>' + soma_modequ)
                 //console.log('valorInv=>' + valorInv)
                 if (valorInv != undefined) {
@@ -666,6 +666,7 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
     var soma_totpos_com = 0
     var soma_totpos_sem = 0
     //----------------------------------------
+    var ticketkwp = 0
 
 
     Realizado.find({ user: _id }).lean().then((realizado) => {
@@ -1428,7 +1429,7 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
         medkwp_totcen = (parseFloat(soma_totcen) / parseFloat(soma_estkwp)).toFixed(2)
         medkwp_totpos = (parseFloat(soma_totpos) / parseFloat(soma_estkwp)).toFixed(2)
         //Médias de total faturado por kit e por serviços
-        soma_totser = parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)
+        soma_totser = (parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)).toFixed(2)
 
         //medkwp_serfat = parseFloat(soma_serfat) / parseFloat(soma_serkwp)
         per_totliq = ((parseFloat(soma_totliq) / parseFloat(soma_totfat)) * 100).toFixed(2)
@@ -1458,9 +1459,12 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
         per_sbxequ = ((parseFloat(soma_sbxequ) / parseFloat(soma_totequ)) * 100).toFixed(2)
         per_ocpequ = ((parseFloat(soma_ocpequ) / parseFloat(soma_totequ)) * 100).toFixed(2)
 
+        //ticket médio de kwp instalados
+        ticketwkp = (parseFloat(soma_totkwp) / parseFloat(numprj)).toFixed(2)
+
         res.render('relatorios/dashboardcustos', {
             soma_totkwp, soma_varkwp, soma_estkwp,
-            soma_totfat, soma_totcop,
+            soma_totfat, soma_totcop, ticketkwp,
 
             soma_totint, soma_totpro, soma_totges, soma_totadm, soma_totcom, soma_tottrb, soma_totart,
             soma_custoFix, soma_totdes, soma_totali, soma_totcmb, soma_tothtl, soma_custoVar,
@@ -1901,7 +1905,7 @@ router.get('/dashboardcustoscomkit', ehAdmin, (req, res) => {
         per_custoEst = (parseFloat(medkwp_custoEst) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
 
         //Médias de total faturado por kit e por serviços
-        soma_totser = parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)
+        soma_totser = (parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)).toFixed(2)
         //Lucro Liquido x Gastos
         per_totliq = ((parseFloat(soma_totliq) / parseFloat(soma_totfat)) * 100).toFixed(2)
         per_dispendio = (100 - parseFloat(per_totliq)).toFixed(2)
@@ -2423,7 +2427,7 @@ router.get('/dashboardcustossemkit', ehAdmin, (req, res) => {
         per_custoEst = (parseFloat(medkwp_custoEst) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
 
         //Médias de total faturado por kit e por serviços
-        soma_totser = parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)
+        soma_totser = (parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)).toFixed(2)
         //Lucro Liquido x Gastos
         per_totliq = ((parseFloat(soma_totliq) / parseFloat(soma_totfat)) * 100).toFixed(2)
         per_dispendio = (100 - parseFloat(per_totliq)).toFixed(2)
@@ -3453,7 +3457,7 @@ router.post('/filtradash', ehAdmin, (req, res) => {
         medkwp_totcen = (parseFloat(soma_totcen) / parseFloat(soma_estkwp)).toFixed(2)
         medkwp_totpos = (parseFloat(soma_totpos) / parseFloat(soma_estkwp)).toFixed(2)
         //Médias de total faturado por kit e por serviços
-        soma_totser = parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)
+        soma_totser = (parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)).toFixed(2)
 
         //medkwp_serfat = parseFloat(soma_serfat) / parseFloat(soma_serkwp)
         per_totliq = ((parseFloat(soma_totliq) / parseFloat(soma_totfat)) * 100).toFixed(2)
@@ -3997,7 +4001,7 @@ router.post('/filtradashcomkit', ehAdmin, (req, res) => {
         per_custoEst = (parseFloat(medkwp_custoEst) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
 
         //Médias de total faturado por kit e por serviços
-        soma_totser = parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)
+        soma_totser = (parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)).toFixed(2)
         //Lucro Liquido x Gastos
         per_totliq = ((parseFloat(soma_totliq) / parseFloat(soma_totfat)) * 100).toFixed(2)
         per_dispendio = (100 - parseFloat(per_totliq)).toFixed(2)
@@ -4596,7 +4600,7 @@ router.post('/filtradashsemkit', ehAdmin, (req, res) => {
         per_custoEst = (parseFloat(medkwp_custoEst) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
 
         //Médias de total faturado por kit e por serviços
-        soma_totser = parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)
+        soma_totser = (parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)).toFixed(2)
         //Lucro Liquido x Gastos
         per_totliq = ((parseFloat(soma_totliq) / parseFloat(soma_totfat)) * 100).toFixed(2)
         per_dispendio = (100 - parseFloat(per_totliq)).toFixed(2)

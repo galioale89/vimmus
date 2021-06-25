@@ -74,7 +74,7 @@ router.get('/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         Regime.findOne({ _id: projeto.regime }).lean().then((regime) => {
-            Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+            Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {                
                 res.render('projeto/gerenciamento/gerenciamento', { projeto: projeto, cliente: cliente, regime: regime })
             }).catch((err) => {
                 req.flash('error_msg', 'Nenhum cliente encontrado.')
@@ -147,7 +147,7 @@ router.get('/editar/gerenciamento/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
             var fatura
-            if (projeto.fatequ != null) {
+            if (projeto.fatequ == true) {
                 fatura = 'checked'
             } else {
                 fatura = 'uncheked'
@@ -523,7 +523,7 @@ router.post('/', ehAdmin, (req, res) => {
 
                                 Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
                                     var fatura
-                                    if (req.body.checkFatura != null) {
+                                    if (req.body.checkFatura != null || projeto.fatequ == true) {
                                         fatura = 'checked'
                                     } else {
                                         fatura = 'uncheked'
