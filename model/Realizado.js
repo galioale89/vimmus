@@ -72,22 +72,42 @@ const Realizado = new Schema({
         type: Number,
         require: false
     },
+    valorCim: {
+        type: Number,
+        require: false
+    },    
     valorCab: {
         type: Number,
         require: false
     },
-    valorDis: {
-        type: Number,
-        require: false
-    },
-    valorDPS: {
+    valorEbt: {
         type: Number,
         require: false
     },    
+    valorDisCC: {
+        type: Number,
+        require: false
+    },
+    valorDPSCC: {
+        type: Number,
+        require: false
+    },    
+    valorDisCA: {
+        type: Number,
+        require: false
+    },
+    valorDPSCA: {
+        type: Number,
+        require: false
+    },     
     valorSB: {
         type: Number,
         require: false
     },
+    valorCCA: {
+        type: Number,
+        require: false
+    },    
     valorOcp: {
         type: Number,
         require: false

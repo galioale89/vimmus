@@ -207,7 +207,19 @@ const Detalhado = new Schema({
     vlrTotal: {
         type: Number,
         require: false
-    }
+    },
+    unidadeEbt:{
+        type: Number,
+        require: false
+    },
+    vlrUniEbt:{
+        type: Number,
+        require: false
+    }, 
+    valorEbt:{
+        type: Number,
+        require: false
+    },        
 })
 
 mongoose.model('custoDetalhado', Detalhado)

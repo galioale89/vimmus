@@ -500,6 +500,9 @@ router.post('/', ehAdmin, (req, res) => {
                         //Cabos
                         var parCabEqu = parseFloat(detalhe.valorCab) / parseFloat(detalhe.vlrTotal) * 100
                         projeto.parCabEqu = parseFloat(parCabEqu).toFixed(2)
+                        //Armazenagem
+                        var parEbtEqu = parseFloat(detalhe.valorEbt) / parseFloat(detalhe.vlrTotal) * 100
+                        projeto.parEbtEqu = parseFloat(parEbtEqu).toFixed(2)                        
                         //DPS CC + CA
                         var parDpsEqu = (parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDPSCA)) / parseFloat(detalhe.vlrTotal) * 100
                         projeto.parDpsEqu = parseFloat(parDpsEqu).toFixed(2)
@@ -927,6 +930,9 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                         //Cabos
                         var parCabEqu = parseFloat(detalhe.valorCab) / parseFloat(detalhe.vlrTotal) * 100
                         projeto.parCabEqu = parseFloat(parCabEqu).toFixed(2)
+                        //Armazenagem
+                        var parEbtEqu = parseFloat(detalhe.valorEbt) / parseFloat(detalhe.vlrTotal) * 100
+                        projeto.parEbtEqu = parseFloat(parEbtEqu).toFixed(2)                        
                         //DPS CC + CA
                         var parDpsEqu = (parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDPSCA)) / parseFloat(detalhe.vlrTotal) * 100
                         projeto.parDpsEqu = parseFloat(parDpsEqu).toFixed(2)

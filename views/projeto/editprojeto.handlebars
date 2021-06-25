@@ -131,7 +131,7 @@
                             <div class="col-md-4 text-end">
                                 <label class='col-form-label col-form-label-sm fw-bold'>Descrição</label><br>
                                 <div class="row mb-1">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Material:</label>
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Kit Gerador:</label>
                                 </div>
                                 <hr>
                                 <div class="row mb-1">
@@ -145,6 +145,9 @@
                                 </div>
                                 <div class="row mb-1">
                                     <label class='col-form-label col-form-label-sm fw-bold'>Concretagem:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Estação de Baterias:</label>
                                 </div>
                                 <div class="row mb-1">
                                     <label class='col-form-label col-form-label-sm fw-bold'>Cabos:</label>
@@ -196,6 +199,8 @@
                                     class='form-control form-control-sm mb-1' name='unidadeEst'>
                                 <input type='number' value='{{detalhe.unidadeCim}}'
                                     class='form-control form-control-sm mb-1' name='unidadeCim'>
+                                <input type='number' value='{{detalhe.unidadeEbt}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeEbt'>
                                 <input type='number' value='{{detalhe.unidadeCab}}'
                                     class='form-control form-control-sm mb-1' name='unidadeCab'>
                                 <input type='number' value='{{detalhe.unidadeDisCC}}'
@@ -235,6 +240,8 @@
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniEst'>
                                 <input type='number' value='{{detalhe.vlrUniCim}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCim'>
+                                <input type='number' value='{{detalhe.vlrUniEbt}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniEbt'>
                                 <input type='number' value='{{detalhe.vlrUniCab}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCab'>
                                 <input type='number' value='{{detalhe.vlrUniDisCC}}'
@@ -274,6 +281,8 @@
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorEst'>
                                 <input type='number' value='{{detalhe.valorCim}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorCim'>
+                                <input type='number' value='{{detalhe.valorEbt}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorEbt'>
                                 <input type='number' value='{{detalhe.valorCab}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorCab'>
                                 <input type='number' value='{{detalhe.valorDisCC}}'
@@ -311,7 +320,7 @@
             <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu ativo'> <i
                     class="bi bi-house"></i>Projeto</a>
             <a href="/customdo/editar/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
-                Gestão</a>                    
+                Gestão</a>
             <a href="/customdo/editar/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i
                     class="bi bi-pencil"></i> Projetista</a>
             <a href="/customdo/editar/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i
@@ -336,7 +345,8 @@
                         </label><br>
                         <label for="vlrorc" class="fw-bold  col-form-label col-form-label-sm mb-2"> Total do Projeto:
                         </label><br>
-                        <label for="vlreqi" class=" fw-bold col-form-label col-form-label-sm mb-2"> Valor Material: </label><br>
+                        <label for="vlreqi" class=" fw-bold col-form-label col-form-label-sm mb-2"> Valor Material:
+                        </label><br>
                         <label for="ptnprj" class=" fw-bold col-form-label col-form-label-sm mb-2"> Potência do
                             Projeto:</label>
                         <label class=" fw-bold col-form-label col-form-label-sm mb-2"> Data de Instalação:</label>
@@ -548,7 +558,7 @@
                                 <label class="form-check-label col-form-label col-form-label-sm"> Estrutura
                                 </label>
                             </div>
-                        </div>                        
+                        </div>
                         <div class="col-md-2">
                             <div class="form-check">
                                 <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='central'
@@ -572,7 +582,8 @@
                                 <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='poste'
                                     class="form-check-input" type="checkbox" style="margin-top: 8px;margin-left: 1%"
                                     {{projeto.temPosteCond}}>
-                                <label class="form-check-label col-form-label col-form-label-sm" style="margin-left: 1%">Postes de
+                                <label class="form-check-label col-form-label col-form-label-sm"
+                                    style="margin-left: 1%">Postes de
                                     Condução
                                 </label>
                             </div>

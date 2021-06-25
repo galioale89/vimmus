@@ -370,6 +370,7 @@ router.post("/novo", ehAdmin, (req, res) => {
           var unidadeEst = 0
           var unidadeCim = 0
           var unidadeCab = 0
+          var unidadeEbt = 0
           var unidadeDisCC = 0
           var unidadeDPSCC = 0
           var unidadeDisCA = 0
@@ -386,6 +387,7 @@ router.post("/novo", ehAdmin, (req, res) => {
           var vlrUniEst = 0
           var vlrUniCim = 0
           var vlrUniCab = 0
+          var vlrUniEbt = 0
           var vlrUniDisCC = 0
           var vlrUniDPSCC = 0
           var vlrUniDisCA = 0
@@ -402,6 +404,7 @@ router.post("/novo", ehAdmin, (req, res) => {
           var valorEst = 0
           var valorCim = 0
           var valorCab = 0
+          var valorEbt = 0
           var valorDisCC = 0
           var valorDPSCC = 0
           var valorDisCA = 0
@@ -497,6 +500,19 @@ router.post("/novo", ehAdmin, (req, res) => {
                     vlrUniCab = req.body.vlrUniCab
                     valorCab = parseFloat(unidadeCab) * parseFloat(vlrUniCab)
                     checkUni = 'checked'
+               }
+          }
+          //Valida valor Armazenagem Detalhado
+          if (req.body.valorEbt != '') {
+               unidadeEbt = 0
+               vlrUniEbt = 0
+               valorEbt = req.body.valorEbt
+          } else {
+               if (req.body.unidadeEbt != '' && req.body.vlrUniEbt != '') {
+                    unidadeEbt = req.body.unidadeEbt
+                    vlrUniEbt = req.body.vlrUniEbt
+                    valorEbt = parseFloat(unidadeEbt) * parseFloat(vlrUniEbt)
+                    checkEbt = 'checked'
                }
           }
           //Valida valor Disjuntores Detalhado
@@ -652,15 +668,15 @@ router.post("/novo", ehAdmin, (req, res) => {
           //console.log('valorCab=>'+valorCab)
           //console.log('valorOcp=>'+valorOcp)
 
-          var vlrTotal = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorOcp) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos)
+          var vlrTotal = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorOcp) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos)
 
           //Valida valor do equipameento
           if (parseFloat(valorEqu) != 0 || parseFloat(valorMod) != 0) {
                vlrequ = vlrTotal
-               vlrkit = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA)
+               vlrkit = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA)
           } else {
-               vlrequ = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorOcp) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos)
-               vlrkit = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorCab)
+               vlrequ = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorOcp) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos)
+               vlrkit = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorCab) + parseFloat(valorEbt)
           }
 
           //console.log(vlrequ)
@@ -896,6 +912,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                  unidadeEst: unidadeEst,
                                                                  unidadeCim: unidadeCim,
                                                                  unidadeCab: unidadeCab,
+                                                                 unidadeEbt: unidadeEbt,
                                                                  unidadeDisCC: unidadeDisCC,
                                                                  unidadeDPSCC: unidadeDPSCC,
                                                                  unidadeDisCA: unidadeDisCA,
@@ -912,6 +929,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                  vlrUniEst: vlrUniEst,
                                                                  vlrUniCim: vlrUniCim,
                                                                  vlrUniCab: vlrUniCab,
+                                                                 vlrUniEbt: vlrUniEbt,
                                                                  vlrUniDisCC: vlrUniDisCC,
                                                                  vlrUniDPSCC: vlrUniDPSCC,
                                                                  vlrUniDisCA: vlrUniDisCA,
@@ -928,6 +946,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                  valorEst: valorEst,
                                                                  valorCim: valorCim,
                                                                  valorCab: valorCab,
+                                                                 valorEbt: valorEbt,
                                                                  valorDisCC: valorDisCC,
                                                                  valorDPSCC: valorDPSCC,
                                                                  valorDisCA: valorDisCA,
@@ -1168,6 +1187,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          var unidadeEst = 0
                          var unidadeCim = 0
                          var unidadeCab = 0
+                         var unidadeEbt = 0
                          var unidadeDisCC = 0
                          var unidadeDPSCC = 0
                          var unidadeDisCA = 0
@@ -1184,6 +1204,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          var vlrUniEst = 0
                          var vlrUniCim = 0
                          var vlrUniCab = 0
+                         var vlrUniEbt = 0
                          var vlrUniDisCC = 0
                          var vlrUniDPSCC = 0
                          var vlrUniDisCA = 0
@@ -1200,6 +1221,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          var valorEst = 0
                          var valorCim = 0
                          var valorCab = 0
+                         var valorEbt = 0
                          var valorDisCC = 0
                          var valorDPSCC = 0
                          var valorDisCA = 0
@@ -1280,6 +1302,19 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                    unidadeCab = req.body.unidadeCab
                                    vlrUniCab = req.body.vlrUniCab
                                    valorCab = parseFloat(unidadeCab) * parseFloat(vlrUniCab)
+                                   checkUni = 'checked'
+                              }
+                         }
+                         //Valida valor Armazenagem Detalhado
+                         if (req.body.valorEbt != 0 && req.body.unidadeEbt == 0 && req.body.vlrUniEbt == 0) {
+                              unidadeEbt = 0
+                              vlrUniEbt = 0
+                              valorEbt = req.body.valorEbt
+                         } else {
+                              if (req.body.unidadeEbt != '' && req.body.vlrUniEbt != '') {
+                                   unidadeEbt = req.body.unidadeEbt
+                                   vlrUniEbt = req.body.vlrUniEbt
+                                   valorEbt = parseFloat(unidadeEbt) * parseFloat(vlrUniEbt)
                                    checkUni = 'checked'
                               }
                          }
@@ -1465,28 +1500,28 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          var vlrequ = 0
                          var vlrkit = 0
 
-                         var vlrTotal = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorOcp) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos)
+                         var vlrTotal = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorOcp) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos)
                          //console.log('vlrTotal=>' + vlrTotal)
 
                          //Valida valor do equipameento
                          if (parseFloat(valorEqu) != 0 || parseFloat(valorMod) != 0) {
                               //console.log('valorEqu != 0')
                               vlrequ = vlrTotal
-                              vlrkit = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorOcp)
+                              vlrkit = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorOcp)
                          } else {
                               //console.log('não tem lançamento manual de kit.')
-                              validaequant = parseFloat(projeto.vlrkit) - (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorCim) + parseFloat(detalhe.valorDisCC) + parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDisCA) + parseFloat(detalhe.valorDPSCA) + parseFloat(detalhe.valorSB) + parseFloat(detalhe.valorCCA) + parseFloat(detalhe.valorCab))
+                              validaequant = parseFloat(projeto.vlrkit) - (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorCim) + parseFloat(detalhe.valorDisCC) + parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDisCA) + parseFloat(detalhe.valorDPSCA) + parseFloat(detalhe.valorSB) + parseFloat(detalhe.valorCCA) + parseFloat(detalhe.valorCab) + parseFloat(detalhe.valorEbt))
                               //console.log('validaequant=>' + validaequant)
-                              validaequfut = parseFloat(req.body.equipamento) - (parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorCab))
+                              validaequfut = parseFloat(req.body.equipamento) - (parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorCab) + parseFloat(valorEbt))
                               //console.log('validaequfut=>' + validaequfut)
                               if (parseFloat(validaequant) != parseFloat(validaequfut)) {
                                    //console.log('Os valores dos kits são difentes')
                                    if (req.body.equipamento == projeto.vlrkit) {
-                                        vlrequ = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorCab) + parseFloat(valorOcp)
-                                        vlrkit = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorCab)
+                                        vlrequ = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorOcp)
+                                        vlrkit = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorCab) + parseFloat(valorEbt)
                                    } else {
-                                        vlrequ = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorCab) + parseFloat(valorOcp)
-                                        vlrkit = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorCab)
+                                        vlrequ = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorOcp)
+                                        vlrkit = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorCab) + parseFloat(valorEbt)
                                    }
                               } else {
                                    //console.log('Os valores dos kits são iguais')
@@ -1507,6 +1542,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          detalhe.unidadeEst = unidadeEst
                          detalhe.unidadeCim = unidadeCim
                          detalhe.unidadeCab = unidadeCab
+                         detalhe.unidadeEbt = unidadeEbt
                          detalhe.unidadeDisCC = unidadeDisCC
                          detalhe.unidadeDPSCC = unidadeDPSCC
                          detalhe.unidadeDisCA = unidadeDisCA
@@ -1523,6 +1559,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          detalhe.vlrUniEst = vlrUniEst
                          detalhe.vlrUniCim = vlrUniCim
                          detalhe.vlrUniCab = vlrUniCab
+                         detalhe.vlrUniEbt = vlrUniEbt
                          detalhe.vlrUniDisCC = vlrUniDisCC
                          detalhe.vlrUniDPSCC = vlrUniDPSCC
                          detalhe.vlrUniDisCA = vlrUniDisCA
@@ -1539,6 +1576,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                          detalhe.valorEst = valorEst
                          detalhe.valorCim = valorCim
                          detalhe.valorCab = valorCab
+                         detalhe.valorEbt = valorEbt
                          detalhe.valorDisCC = valorDisCC
                          detalhe.valorDPSCC = valorDPSCC
                          detalhe.valorDisCA = valorDisCA
@@ -1582,9 +1620,9 @@ router.post('/edicao', ehAdmin, (req, res) => {
 
                          var vlrNFS = 0
                          if (projeto.fatequ == true) {
-                              vlrNFS = parseFloat(req.body.valor)
+                              vlrNFS = (parseFloat(req.body.valor)).toFixed(2)
                          } else {
-                              vlrNFS = parseFloat(req.body.valor) - parseFloat(vlrkit)
+                              vlrNFS = (parseFloat(req.body.valor) - parseFloat(vlrkit)).toFixed(2)
                          }
 
                          if (req.body.checkLocal != null && req.body.uf != '' && req.body.cidade != '') {
@@ -1983,12 +2021,12 @@ router.post('/direto', ehAdmin, (req, res) => {
                                    console.log('projeto.vlrnormal=>' + projeto.vlrnormal)
                                    if (req.body.checkFatura != null) {
                                         fatequ = true
-                                        vlrNFS = parseFloat(projeto.vlrnormal)
+                                        vlrNFS = parseFloat(projeto.vlrnormal).toFixed(2)
                                         impNFS = 0
                                    } else {
                                         fatequ = false
-                                        vlrNFS = parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)
-                                        impNFS = parseFloat(vlrNFS) * (parseFloat(rp.alqNFS) / 100)
+                                        vlrNFS = (parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)).toFixed(2)
+                                        impNFS = (parseFloat(vlrNFS) * (parseFloat(rp.alqNFS) / 100)).toFixed(2)
                                    }
                                    prjValor = parseFloat(projeto.vlrnormal).toFixed(2)
                                    projeto.valor = parseFloat(projeto.vlrnormal).toFixed(2)
@@ -2000,12 +2038,12 @@ router.post('/direto', ehAdmin, (req, res) => {
                                    console.log('vlrMarkup=>' + vlrMarkup)
                                    if (req.body.checkFatura != null) {
                                         fatequ = true
-                                        vlrNFS = parseFloat(vlrMarkup)
+                                        vlrNFS = parseFloat(vlrMarkup).toFixed(2)
                                         impNFS = 0
                                    } else {
                                         fatequ = false
-                                        vlrNFS = parseFloat(vlrMarkup) - parseFloat(projeto.vlrkit)
-                                        impNFS = parseFloat(vlrNFS) * (parseFloat(rp.alqNFS) / 100)
+                                        vlrNFS = (parseFloat(vlrMarkup) - parseFloat(projeto.vlrkit)).toFixed(2)
+                                        impNFS = (parseFloat(vlrNFS) * (parseFloat(rp.alqNFS) / 100)).toFixed(2)
                                    }
                                    projeto.markup = req.body.markup
                                    projeto.valor = vlrMarkup
@@ -2200,6 +2238,9 @@ router.post('/direto', ehAdmin, (req, res) => {
                               //Cabos
                               var parCabEqu = parseFloat(detalhe.valorCab) / parseFloat(detalhe.vlrTotal) * 100
                               projeto.parCabEqu = parseFloat(parCabEqu).toFixed(2)
+                              //Armazenagem
+                              var parEbtEqu = parseFloat(detalhe.valorEbt) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parEbtEqu = parseFloat(parEbtEqu).toFixed(2)
                               //DPS CC + CA
                               var parDpsEqu = (parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDPSCA)) / parseFloat(detalhe.vlrTotal) * 100
                               projeto.parDpsEqu = parseFloat(parDpsEqu).toFixed(2)
@@ -2688,12 +2729,12 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                                    //console.log('projeto.vlrnormal=>'+projeto.vlrnormal)
                                    if (req.body.checkFatura != null) {
                                         fatequ = true
-                                        vlrNFS = parseFloat(projeto.vlrnormal)
+                                        vlrNFS = parseFloat(projeto.vlrnormal).toFixed(2)
                                         impNFS = 0
                                    } else {
                                         fatequ = false
-                                        vlrNFS = parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)
-                                        impNFS = parseFloat(vlrNFS) * (parseFloat(regime_prj.alqNFS) / 100)
+                                        vlrNFS = (parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)).toFixed(2)
+                                        impNFS = (parseFloat(vlrNFS) * (parseFloat(regime_prj.alqNFS) / 100)).toFixed(2)
                                    }
                                    prjValor = parseFloat(projeto.vlrnormal).toFixed(2)
                                    projeto.valor = parseFloat(projeto.vlrnormal).toFixed(2)
@@ -2705,12 +2746,12 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                                    //console.log('vlrMarkup=>' + vlrMarkup)
                                    if (req.body.checkFatura != null) {
                                         fatequ = true
-                                        vlrNFS = parseFloat(vlrMarkup)
+                                        vlrNFS = parseFloat(vlrMarkup).toFixed(2)
                                         impNFS = 0
                                    } else {
                                         fatequ = false
-                                        vlrNFS = parseFloat(vlrMarkup) - parseFloat(projeto.vlrkit)
-                                        impNFS = parseFloat(vlrNFS) * (parseFloat(regime_prj.alqNFS) / 100)
+                                        vlrNFS = (parseFloat(vlrMarkup) - parseFloat(projeto.vlrkit)).toFixed(2)
+                                        impNFS = (parseFloat(vlrNFS) * (parseFloat(regime_prj.alqNFS) / 100)).toFixed(2)
                                    }
                                    projeto.markup = req.body.markup
                                    projeto.valor = vlrMarkup
@@ -2902,6 +2943,9 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                               //Cabos
                               var parCabEqu = parseFloat(detalhe.valorCab) / parseFloat(detalhe.vlrTotal) * 100
                               projeto.parCabEqu = parseFloat(parCabEqu).toFixed(2)
+                              //Armazenagem
+                              var parEbtEqu = parseFloat(detalhe.valorEbt) / parseFloat(detalhe.vlrTotal) * 100
+                              projeto.parEbtEqu = parseFloat(parEbtEqu).toFixed(2)
                               //DPS CC + CA
                               var parDpsEqu = (parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDPSCA)) / parseFloat(detalhe.vlrTotal) * 100
                               projeto.parDpsEqu = parseFloat(parDpsEqu).toFixed(2)
@@ -3310,9 +3354,9 @@ router.post('/realizar', ehAdmin, (req, res) => {
                          }
 
                          if (projeto.fatequ == true) {
-                              vlrPrjNFS = parseFloat(projeto.valor)
+                              vlrPrjNFS = parseFloat(projeto.valor).toFixed(2)
                          } else {
-                              vlrPrjNFS = parseFloat(projeto.valor) - parseFloat(vlrkit)
+                              vlrPrjNFS = (parseFloat(projeto.valor) - parseFloat(vlrkit)).toFixed(2)
                          }
 
                          //console.log('vlrequ=>' + vlrequ)
@@ -3775,6 +3819,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               valorEst: detalhe.valorEst,
                               valorCim: detalhe.valorCim,
                               valorCab: detalhe.valorCab,
+                              valorEbt: detalhe.valorEbt,
                               valorDisCC: detalhe.valorDisCC,
                               valorDPSCC: detalhe.valorDPSCC,
                               valorDisCA: detalhe.valorDisCA,

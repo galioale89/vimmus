@@ -541,6 +541,10 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
+    parEbtEqu: {
+        type: Number,
+        require: false
+    },    
     parDpsEqu: {
         type: Number,
         require: false
