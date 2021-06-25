@@ -768,7 +768,11 @@ router.post("/novo", ehAdmin, (req, res) => {
                               console.log('config.id=>' + config._id)
                               console.log('config.markup=>' + config.markup)
                               if (req.body.valor == '' || req.body.valor == 0 || req.body.valor == null) {
-                                   valorProjeto = (parseFloat(req.body.equipamento) / (1 - (parseFloat(config.markup) / 100))).toFixed(2)
+                                   if (req.body.equipamento != '' || req.body.equipamento != 0) {
+                                        valorProjeto = (parseFloat(req.body.equipamento) / (1 - (parseFloat(config.markup) / 100))).toFixed(2)
+                                   } else {
+                                        valorProjeto = 0
+                                   }
                               } else {
                                    valorProjeto = req.body.valor
                               }
@@ -780,7 +784,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                    fatequ = false
                                    vlrNFS = parseFloat(valorProjeto) - parseFloat(vlrkit)
                               }
-                              console.log('cliente.nome=>'+cliente.nome)
+                              console.log('cliente.nome=>' + cliente.nome)
                               const projeto = {
                                    user: _id,
                                    nome: req.body.nome,
@@ -951,7 +955,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                                 } else {
                                                                                      res.render('projeto/custosdiretos', { projeto: projeto, sucesso: sucesso, configuracao: configuracao, rp: rp, vendedor: vendedor, instalador, projetista, cliente: cliente, fatura: fatura })
                                                                                 }
-                                                                                console.log('fatura=>'+fatura)
+                                                                                console.log('fatura=>' + fatura)
                                                                            }).catch(() => {
                                                                                 req.flash('error_msg', 'Houve um erro ao encontrar o gestor.')
                                                                                 res.redirect('/menu')
