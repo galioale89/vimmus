@@ -120,9 +120,9 @@
                         <label class='col-form-label col-form-label-sm col-sm-5 fw-bold'>Data Entrega:</label>
                         <div class="col-md-7">
                             <input name='valDataFim' id='valDataFim' type='date' class='form-control form-control-sm'
-                                onchange="mascara_datafim()" value={{projeto.valDataFim}} {{#if realizado.foiRealizado}}
-                                disabled {{/if}}>
-                            <input type='hidden' id='datafim' value=''>
+                                onchange="mascara_datafim()" value='{{projeto.valDataFim}}' {{#if
+                                realizado.foiRealizado}} disabled {{/if}}>
+                            <input type='hidden' id='datafim' name='datafim' value=''>
                         </div>
                     </div>
                 </div>
@@ -158,7 +158,7 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-2" style="width: 100%;">
+        <div class="row mt-2">
             <input type='hidden' name='id' value='{{projeto._id}}'>
             <div class="col-md-6">
                 <div class="row">
@@ -320,12 +320,14 @@
                             for='totalTributos'>R${{realizado.totalTributos}}</label>
                     </div>
                 </div>
-                <div class="row mt-4">
-                    <div class="col-md-6 text-end">
-                        <label style="font-size: 30px;font-weight: bold;">Lucro Líquido</label>
-                    </div>
-                    <div class="col-md-6 text-center">
-                        <label style="font-size: 30px;font-weight: bold">R$ {{realizado.lucroLiquido}}</label>
+                <div class="card">
+                    <div class="row" style="margin-top: 10%;margin-bottom: 10%;">
+                        <div class="col-md-6 text-end">
+                            <label style="font-size: 30px;font-weight: bold;">Lucro Líquido:</label>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <label style="font-size: 30px;font-weight: bold">R$ {{realizado.lucroLiquido}}</label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -363,257 +365,132 @@
                     <input type='hidden' id='orcLL' value='{{projeto.lucroLiquido}}'></input>
                     <input type='hidden' id='rlzLL' value='{{realizado.lucroLiquido}}'></input>
                 </div>
-                <div class="row"
-                    style="height: fit-content; width: 100%; border-radius: 10px; border:  rgba(220, 220, 220, 0.4) solid 1px;">
-                    <label class='contorno-titulo mb-1 mt-1 fw-bold' style="font-size: 17px;font-weight: 500;">Valor
-                        Total Orçado: R$
-                        {{projeto.valor}} </label>
-                    <div class="col-md-6 text-center">
-                        <label class='fw-bold' style="font-size: 15px;font-weight: 500;">Orçado</label>
-                        <div class="row">
-                            <div class="col-md-7 text-end">
-                                <label class='col-form-label col-form-label-sm'>Materiais: </label>
-                            </div>
-                            <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm text-center'>R$
-                                    {{projeto.vlrkit}}</label>
-                            </div>
+                <div class="card mt-2">
+                    <div class="row">
+                        <label class='text-center mb-2 fw-bold' style="font-size: 17px;font-weight: 500;margin-top: 2.5%;">Valor Total Orçado: R$
+                            {{projeto.valor}} </label>
+                        <div class="col-md-4 text-end">
+                            <label class='fw-bold' style="font-size: 15px;font-weight: 500;">Descrição</label>
+                            <hr>
+                            <label class='col-form-label col-form-label-sm'>Materiais: </label><br>
+                            <label class='col-form-label col-form-label-sm'>ISS: </label><br>
+                            <label class='col-form-label col-form-label-sm'>RO: </label><br>
+                            <label class='col-form-label col-form-label-sm'>Reserva: </label><br>
+                            <label class='col-form-label col-form-label-sm'>Custo Planejado:
+                            </label><br>
+                            <label class="col-form-label col-form-label-sm">Despesas Adm.: </label><br>
+                            <label class="col-form-label col-form-label-sm">Comissão: </label><br>
+                            <label class='col-form-label col-form-label-sm'>LAI: </label><br>
+                            <label class='col-form-label col-form-label-sm'>Tributos:
+                            </label><br>
+                            <label class='col-form-label col-form-label-sm'>Lucro Líquido: </label><br>
                         </div>
-                        <div class="row">
-                            <div class="col-md-7 text-end">
-                                <label class='col-form-label col-form-label-sm'>ISS: </label>
-                            </div>
-                            <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm text-center'>R$
-                                    {{projeto.impNFS}}</label>
-                            </div>
+                        <div class="col-md-4 text-center">
+                            <label class='fw-bold' style="font-size: 15px;font-weight: 500;">Orçado</label>
+                            <hr>
+                            <label class='col-form-label col-form-label-sm text-center'>R$
+                                {{projeto.vlrkit}}</label><br>
+                            <label class='col-form-label col-form-label-sm text-center'>R$
+                                {{projeto.impNFS}}</label><br>
+                            <label class='col-form-label col-form-label-sm text-center'>R$
+                                {{projeto.lucroBruto}}</label><br>
+                            <label class='col-form-label col-form-label-sm text-center'>R$
+                                {{projeto.reserva}}</label><br>
+                            <label class='col-form-label col-form-label-sm text-center'>R$
+                                {{projeto.totcop}}</label><br>
+                            <label class='col-form-label col-form-label-sm' for='desAdm'>R$
+                                {{projeto.desAdm}}</label><br>
+                            <label class='col-form-label col-form-label-sm' for='comissao'>R$
+                                {{projeto.vlrcom}}</label><br>
+                            <label class='col-form-label col-form-label-sm text-center'>R$
+                                {{projeto.lbaimp}}</label><br>
+                            <label class='col-form-label col-form-label-sm text-center'>R$
+                                {{projeto.totalImposto}}</label><br>
+                            <label class='col-form-label col-form-label-sm text-center'>R$
+                                {{projeto.lucroLiquido}}</label><br>
                         </div>
-                        <div class="row">
-                            <div class="col-md-7 text-end">
-                                <label class='col-form-label col-form-label-sm'>RO: </label>
-                            </div>
-                            <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm text-center'>R$
-                                    {{projeto.lucroBruto}}</label>
-                            </div>
+                        <div class="col-md-4 text-center">
+                            <label class='fw-bold' style="font-size: 15px;font-weight: 500;">Realizado</label>
+                            <hr>
+                            <label class='col-form-label col-form-label-sm text-center'>R$
+                                {{realizado.vlrkit}}</label><br>
+                            <label class='col-form-label col-form-label-sm text-center'>R$
+                                {{realizado.impISS}}</label><br>
+                            <label class='col-form-label col-form-label-sm text-center'>R$
+                                {{realizado.lucroBruto}}</label><br>
+                            <label class='col-form-label col-form-label-sm text-center'>R$
+                                {{realizado.reserva}}</label><br>
+                            <label class='col-form-label col-form-label-sm text-center'>R$
+                                {{realizado.custoPlano}}</label><br>
+                            <label class='col-form-label col-form-label-sm' for='desAdm'>R$
+                                {{realizado.desAdm}}</label><br>
+                            <label class='col-form-label col-form-label-sm' for='comissao'>R$
+                                {{realizado.vlrcom}}</label><br>
+                            <label class='col-form-label col-form-label-sm text-center'>R$
+                                {{realizado.lbaimp}}</label><br>
+                            <label class='col-form-label col-form-label-sm text-center'>R$
+                                {{realizado.totalImposto}}</label><br>
+                            <label class='col-form-label col-form-label-sm text-center'>R$
+                                {{realizado.lucroLiquido}}</label><br>
                         </div>
-                        <div class="row">
-                            <div class="col-md-7 text-end">
-                                <label class='col-form-label col-form-label-sm'>Reserva: </label>
-                            </div>
-                            <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm text-center'>R$
-                                    {{projeto.reserva}}</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-7 text-end">
-                                <label class='col-form-label col-form-label-sm'>Custo Planejado:
-                                </label>
-                            </div>
-                            <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm text-center'>R$
-                                    {{projeto.totcop}}</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-7 text-end">
-                                <label class="col-form-label col-form-label-sm">Despesas Adm.: </label>
-                            </div>
-                            <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm' for='desAdm'>R$
-                                    {{projeto.desAdm}}</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-7 text-end">
-                                <label class="col-form-label col-form-label-sm">Comissão: </label>
-                            </div>
-                            <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm' for='comissao'>R$
-                                    {{projeto.vlrcom}}</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-7 text-end">
-                                <label class='col-form-label col-form-label-sm'>LAI: </label>
-                            </div>
-                            <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm text-center'>R$
-                                    {{projeto.lbaimp}}</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-7 text-end">
-                                <label class='col-form-label col-form-label-sm'>Tributos:
-                                </label>
-                            </div>
-                            <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm text-center'>R$
-                                    {{projeto.totalImposto}}</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-7 text-end">
-                                <label class='col-form-label col-form-label-sm'>Lucro Líquido: </label>
-                            </div>
-                            <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm text-center'>R$
-                                    {{projeto.lucroLiquido}}</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 text-center">
-                        <label class='fw-bold' style="font-size: 15px;font-weight: 500;">Realizado</label>
-                        <div class="row">
-                            <div class="col-md-7 text-end">
-                                <label class='col-form-label col-form-label-sm'>Materiais: </label>
-                            </div>
-                            <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm text-center'>R$
-                                    {{realizado.vlrkit}}</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-7 text-end">
-                                <label class='col-form-label col-form-label-sm'>ISS: </label>
-                            </div>
-                            <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm text-center'>R$
-                                    {{realizado.impISS}}</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-7 text-end">
-                                <label class='col-form-label col-form-label-sm'>RO: </label>
-                            </div>
-                            <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm text-center'>R$
-                                    {{realizado.lucroBruto}}</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-7 text-end">
-                                <label class='col-form-label col-form-label-sm'>Reserva: </label>
-                            </div>
-                            <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm text-center'>R$
-                                    {{realizado.reserva}}</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-7 text-end">
-                                <label class='col-form-label col-form-label-sm'>Custo Planejado:
-                                </label>
-                            </div>
-                            <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm text-center'>R$
-                                    {{realizado.custoPlano}}</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-7 text-end">
-                                <label class="col-form-label col-form-label-sm">Despesas Adm.: </label>
-                            </div>
-                            <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm' for='desAdm'>R$
-                                    {{realizado.desAdm}}</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-7 text-end">
-                                <label class="col-form-label col-form-label-sm">Comissão: </label>
-                            </div>
-                            <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm' for='comissao'>R$
-                                    {{realizado.vlrcom}}</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-7 text-end">
-                                <label class='col-form-label col-form-label-sm'>LAI: </label>
-                            </div>
-                            <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm text-center'>R$
-                                    {{realizado.lbaimp}}</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-7 text-end">
-                                <label class='col-form-label col-form-label-sm'>Tributos:
-                                </label>
-                            </div>
-                            <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm text-center'>R$
-                                    {{realizado.totalImposto}}</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-7 text-end">
-                                <label class='col-form-label col-form-label-sm'>Lucro Líquido: </label>
-                            </div>
-                            <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm text-center'>R$
-                                    {{realizado.lucroLiquido}}</label>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
             </div>
         </div>
-        <div style="height: 360px">
-            <div class="row">
-                <label class='contorno-titulo'
-                    style="font-size: 20px;font-weight: 500;width: 88%;padding: 10px;margin-left: 8%;">Variações entre
-                    Realizado e
-                    Orçado
-                </label>
-            </div>
-            <div class="row" style="padding: 10px;margin-left: 60px;">
-                <div class="col-md-6">
-                    <div style="margin-bottom: 5px;" {{#if varCP}}class='row quadro-positivo'
-                        {{else}}class='row quadro-negativo' {{/if}}>
-                        <div class="col-md-6">
-                            <h6>Custo Operacional</h6>
-                            <div>R$ {{varCustoPlano}}</div>
-                        </div>
-                        <div class="col-md-6">
-                            <h6>Variação</h6>
-                            <div>{{realizado.varCusto}} %</div>
-                        </div>
-                    </div>
-                    <div {{#if varTI}} class='row quadro-negativo' {{else}}class='row quadro-positivo' {{/if}}>
-                        <div class="col-md-6">
-                            <h6>Total Impostos</h6>
-                            <div>R$ {{varTotalImposto}}</div>
-                        </div>
-                        <div class="col-md-6">
-                            <h6>Variação</h6>
-                            <div>{{realizado.varTI}} %</div>
-                        </div>
-                    </div>
+        <div class="mt-2" style="height: 310px">
+            <div class="card">
+                <div class="row">
+                    <label class='contorno-titulo'
+                        style="font-size: 20px;font-weight: 500;width: 88%;padding: 10px;margin-left: 8%;">Variações
+                        entre
+                        Realizado e Orçado
+                    </label>
                 </div>
-                <div class="col-md-6">
-                    <div style="margin-bottom: 5px;" {{#if varLAI}}class='row quadro-positivo'
-                        {{else}}class='row quadro-negativo' {{/if}}>
-                        <div class="col-md-6">
-                            <h6>Lucro Antes dos Impostos</h6>
-                            <div>R$ {{varlbaimp}}</div>
+                <div class="row" style="padding: 10px;margin-left: 60px;">
+                    <div class="col-md-6">
+                        <div style="margin-bottom: 5px;" {{#if varCP}}class='row quadro-positivo'
+                            {{else}}class='row quadro-negativo' {{/if}}>
+                            <div class="col-md-6">
+                                <h6>Custo Operacional</h6>
+                                <div>R$ {{varCustoPlano}}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Variação</h6>
+                                <div>{{realizado.varCusto}} %</div>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <h6>Variação</h6>
-                            <div>{{realizado.varLAI}} %</div>
+                        <div {{#if varTI}} class='row quadro-negativo' {{else}}class='row quadro-positivo' {{/if}}>
+                            <div class="col-md-6">
+                                <h6>Total Impostos</h6>
+                                <div>R$ {{varTotalImposto}}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Variação</h6>
+                                <div>{{realizado.varTI}} %</div>
+                            </div>
                         </div>
                     </div>
-                    <div {{#if varLL}}class='row quadro-positivo' {{else}}class='row quadro-negativo' {{/if}}>
-                        <div class="col-md-6">
-                            <h6>Lucro Líquido</h6>
-                            <div>R$ {{varLucroLiquido}}</div>
+                    <div class="col-md-6">
+                        <div style="margin-bottom: 5px;" {{#if varLAI}}class='row quadro-positivo'
+                            {{else}}class='row quadro-negativo' {{/if}}>
+                            <div class="col-md-6">
+                                <h6>Lucro Antes dos Impostos</h6>
+                                <div>R$ {{varlbaimp}}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Variação</h6>
+                                <div>{{realizado.varLAI}} %</div>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <h6>Variação</h6>
-                            <div>{{realizado.varLL}} %</div>
+                        <div {{#if varLL}}class='row quadro-positivo' {{else}}class='row quadro-negativo' {{/if}}>
+                            <div class="col-md-6">
+                                <h6>Lucro Líquido</h6>
+                                <div>R$ {{varLucroLiquido}}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Variação</h6>
+                                <div>{{realizado.varLL}} %</div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,433 @@
+<script>
+    function infoPlano() {
+        alert('O planejamento do projeto de implantação de uma usina considera: Escopo, Cronogrma, Custo, Aquisições, Recursos, Qualidade, Riscos e Comunicação.')
+
+    }
+    function infoPrj() {
+        alert('O projeto elétrico contempla: Memorial Descritivo, Art e Diagramas.')
+
+    }
+</script>
+<form action="/gerenciamento/salvacronograma" method='post'>
+    <!-- Modal -->
+    <div class="modal fade" id="custosModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Indicadores de Desempenho de Custo do Projeto Sobre o Cronograma</h5>
+                    <button type="button" class="btn btn-sm btn-success" data-bs-dismiss="modal"
+                        aria-label="Close">Aplicar</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 text-end">
+                            <label class='col-form-label col-form-label-sm'>% de Conclusão do Projeto</label><br>
+                            <label class='col-form-label col-form-label-sm mt-1'>Quanto Já Gastei:</label><br>
+                        </div>
+                        <div class="col-md-4 text-start">
+                            <input type="number" class='form-control form-control-sm' step="0.010" name='perConclusao'
+                                value='{{projeto.perConclusao}}'>
+                            <input type="number" class='form-control form-control-sm mt-1' step="0.010"
+                                name='actualCost' value='{{projeto.actualCost}}'>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6 text-end">
+                            <label class='col-form-label col-form-label-sm'>R$ Total Projeto</label><br>
+                            <label class='col-form-label col-form-label-sm'>Tempo Estimado em Horas:</label><br>
+                            <label class='col-form-label col-form-label-sm'>Quanto Falta em R$:</label><br>
+                            <label class='col-form-label col-form-label-sm'>Quanto Falta em Horas:</label><br>
+                        </div>
+                        <div class="col-md-6 text-start">
+                            <label class='col-form-label col-form-label-sm'>{{projeto.valor}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>{{projeto.hrsprj}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>{{projeto.etc}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>{{projeto.spi}}</label><br>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 text-end">
+                            <label class='col-form-label col-form-label-sm'>CPI: </label><br>
+                            <label class='col-form-label col-form-label-sm'>TCPI: </label><br>
+                            <label class='col-form-label col-form-label-sm'>TSPI: </label><br>
+                        </div>
+                        <div class="col-md-6">
+                            <label class='col-form-label col-form-label-sm'>{{projeto.cpi}} </label><br>
+                            <label class='col-form-label col-form-label-sm'>{{projeto.tcpi}}</label><br>
+                            <label class='col-form-label col-form-label-sm'>{{projeto.tspi}}</label><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8">
+                <label style='font-weight: bold;font-size:20px'><i class="bi bi-calendar-range"></i> Cronograma do
+                    Projeto</label>
+            </div>
+            <div class="col-md-4 text-end">
+                <div class='btn-group gap-2'>
+                    <button type="submit" class="btn btn-sm btn-success"><i class="bi bi-check-circle"></i> Aplicar
+                    </button>
+                    <a class='btn btn-sm btn-primary' data-bs-toggle="modal" data-bs-target="#custosModal"><i
+                            class="bi bi-compass"></i> Indicadores</a>
+                    {{#if projeto.ehDireto}}
+                    <a href='/projeto/direto/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
+                            class="bi bi-arrow-return-left"></i></a>
+                    {{else}}
+                    <a href='/gerenciamento/editar/gerenciamento/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
+                            class="bi bi-arrow-return-left"></i></a>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+        <hr>
+
+        <input type="hidden" value='{{projeto._id}}' name='idprojeto'>
+        <input type="hidden" value='{{projeto.orcado}}' name='orcado'>
+        <input type="hidden" value='{{projeto.executando}}' name='executando'>
+        <div class="row fw-bold">
+            <div class="col-md-4 text-end">
+                <label class='col-form-label'>Atividades</label>
+            </div>
+            <div class="col-md-2 text-center">
+                <label class='col-form-label'>Data Inicial</label>
+            </div>
+            <div class="col-md-2 text-center">
+                <label class='col-form-label'>Data Final</label>
+            </div>
+            {{#if projeto.orcado}}
+            {{else}}
+            <div class="col-md-1">
+                <label class='col-form-label'>Finalizou?</label>
+            </div>
+            <div class="col-md-2 text-center">
+                <label class='col-form-label'>Data Finalização</label>
+            </div>
+            <div class="col-md-1 text-center">
+                <label class='col-form-label'>Atrasou</label>
+            </div>
+            {{/if}}
+        </div>
+        <div class="row text-end fw-bold">
+            <div class="col-md-4">
+                <label class='col-form-label col-form-label-sm mt-1'>Planejamento</label><i class='bi bi-info-circle'
+                    onmousemove="infoPlano()">:</i><br>
+                <label class='col-form-label col-form-label-sm mt-1'>Criação dos Projetos Elétricos</label><i
+                    class='bi bi-info-circle' onmousemove="infoPrj()">:</i><br>
+                <label class='col-form-label col-form-label-sm mt-1'>Aterramento:</label><br>
+                <label class='col-form-label col-form-label-sm mt-1'>Instalação das Estruturas:</label><br>
+                <label class='col-form-label col-form-label-sm mt-1'>Instalação dos Módulos:</label><br>
+                <label class='col-form-label col-form-label-sm mt-1'>Instalação e Configuração dos
+                    Inversores:</label><br>
+                <label class='col-form-label col-form-label-sm mt-1'>Instalação da Estação de Armazenameto:</label><br>
+                <label class='col-form-label col-form-label-sm mt-1'>Instalação da String Box:</label><br>
+                <label class='col-form-label col-form-label-sm mt-1'>Instalação do Painél Elétrico:</label><br>
+                <label class='col-form-label col-form-label-sm mt-1'>Vistoria final da instalação:</label><br>
+            </div>
+            <div class="col-md-2">
+                <input type="date" class='form-control form-control-sm mt-1' name='dateplaini' {{#if
+                    cronograma.dateplaini}}value='{{cronograma.dateplaini}}' {{else}}value='{{projeto.valDataIni}}'
+                    {{/if}} {{#if projeto.orcado}}{{else}}disabled{{/if}}>
+                <input type="date" class='form-control form-control-sm mt-1' name='dateprjini'
+                    value='{{cronograma.dateprjini}}' {{#if projeto.orcado}}{{else}}disabled{{/if}}>
+                <input type="date" class='form-control form-control-sm mt-1' name='dateateini'
+                    value='{{cronograma.dateateini}}' {{#if projeto.orcado}}{{else}}disabled{{/if}}>
+                <input type="date" class='form-control form-control-sm mt-1' name='dateestini'
+                    value='{{cronograma.dateestini}}' {{#if projeto.orcado}}{{else}}disabled{{/if}}>
+                <input type="date" class='form-control form-control-sm mt-1' name='datemodini'
+                    value='{{cronograma.datemodini}}' {{#if projeto.orcado}}{{else}}disabled{{/if}}>
+                <input type="date" class='form-control form-control-sm mt-1' name='dateinvini'
+                    value='{{cronograma.dateinvini}}' {{#if projeto.orcado}}{{else}}disabled{{/if}}>
+                <input type="date" class='form-control form-control-sm mt-1' name='dateeaeini'
+                    value='{{cronograma.dateeaeini}}' {{#if projeto.orcado}}{{else}}disabled{{/if}}>
+                <input type="date" class='form-control form-control-sm mt-1' name='datestbini'
+                    value='{{cronograma.datestbini}}' {{#if projeto.orcado}}{{else}}disabled{{/if}}>
+                <input type="date" class='form-control form-control-sm mt-1' name='datepnlini'
+                    value='{{cronograma.datepnlini}}' {{#if projeto.orcado}}{{else}}disabled{{/if}}>
+                <input type="date" class='form-control form-control-sm mt-1' name='datevisini'
+                    value='{{cronograma.datevisini}}' {{#if projeto.orcado}}{{else}}disabled{{/if}}>
+            </div>
+            <div class="col-md-2">
+                <input type="date" class='form-control form-control-sm mt-1' name='dateplafim'
+                    value='{{cronograma.dateplafim}}' {{#if projeto.orcado}}{{else}}disabled{{/if}}>
+                <input type="date" class='form-control form-control-sm mt-1' name='dateprjfim'
+                    value='{{cronograma.dateprjfim}}' {{#if projeto.orcado}}{{else}}disabled{{/if}}>
+                <input type="date" class='form-control form-control-sm mt-1' name='dateatefim'
+                    value='{{cronograma.dateatefim}}' {{#if projeto.orcado}}{{else}}disabled{{/if}}>
+                <input type="date" class='form-control form-control-sm mt-1' name='dateestfim'
+                    value='{{cronograma.dateestfim}}' {{#if projeto.orcado}}{{else}}disabled{{/if}}>
+                <input type="date" class='form-control form-control-sm mt-1' name='datemodfim'
+                    value='{{cronograma.datemodfim}}' {{#if projeto.orcado}}{{else}}disabled{{/if}}>
+                <input type="date" class='form-control form-control-sm mt-1' name='dateinvfim'
+                    value='{{cronograma.dateinvfim}}' {{#if projeto.orcado}}{{else}}disabled{{/if}}>
+                <input type="date" class='form-control form-control-sm mt-1' name='dateeaefim'
+                    value='{{cronograma.dateeaefim}}' {{#if projeto.orcado}}{{else}}disabled{{/if}}>
+                <input type="date" class='form-control form-control-sm mt-1' name='datestbfim'
+                    value='{{cronograma.datestbfim}}' {{#if projeto.orcado}}{{else}}disabled{{/if}}>
+                <input type="date" class='form-control form-control-sm mt-1' name='datepnlfim'
+                    value='{{cronograma.datepnlfim}}' {{#if projeto.orcado}}{{else}}disabled{{/if}}>
+                <input type="date" class='form-control form-control-sm mt-1' name='datevisfim'
+                    value='{{cronograma.datevisfim}}' {{#if projeto.orcado}}{{else}}disabled{{/if}}>
+                <input type="hidden" class='form-control form-control-sm mt-1' name='dateVisFimHidden'
+                    value='{{cronograma.datevisfim}}'>
+            </div>
+            <div class="col-md-1 text-center">
+                {{#if projeto.orcado}}
+                {{else}}
+                <input type="checkbox" class='form-check-input' style='margin-top: 15%' disabled name='checkPla'
+                    {{cronograma.checkPla}}><br>
+                {{/if}}
+                {{#if projeto.orcado}}
+                {{else}}
+                <input type="checkbox" class='form-check-input' style='margin-top: 25%' disabled name='checkPrj'
+                    {{cronograma.checkPrj}}><br>
+                {{/if}}
+                {{#if projeto.orcado}}
+                {{else}}
+                <input type="checkbox" class='form-check-input' style='margin-top: 26%' disabled name='checkAte'
+                    {{cronograma.checkAte}}><br>
+                {{/if}}
+                {{#if projeto.orcado}}
+                {{else}}
+                <input type="checkbox" class='form-check-input' style='margin-top: 28%' disabled name='checkEst'
+                    {{cronograma.checkEst}}><br>
+                {{/if}}
+                {{#if projeto.orcado}}
+                {{else}}
+                <input type="checkbox" class='form-check-input' style='margin-top: 28%' disabled name='checkMod'
+                    {{cronograma.checkMod}}><br>
+                {{/if}}
+                {{#if projeto.orcado}}
+                {{else}}
+                <input type="checkbox" class='form-check-input' style='margin-top: 25%' disabled name='checkInv'
+                    {{cronograma.checkInv}}><br>
+                {{/if}}
+                {{#if projeto.orcado}}
+                {{else}}
+                <input type="checkbox" class='form-check-input' style='margin-top: 28%' disabled name='checkEae'
+                    {{cronograma.checkEae}}><br>
+                {{/if}}
+                {{#if projeto.orcado}}
+                {{else}}
+                <input type="checkbox" class='form-check-input' style='margin-top: 25%' disabled name='checkStb'
+                    {{cronograma.checkStb}}><br>
+                {{/if}}
+                {{#if projeto.orcado}}
+                {{else}}
+                <input type="checkbox" class='form-check-input' style='margin-top: 25%' disabled name='checkPnl'
+                    {{cronograma.checkPnl}}><br>
+                {{/if}}
+                {{#if projeto.orcado}}
+                {{else}}
+                <input type="checkbox" class='form-check-input' style='margin-top: 30%' disabled name='checkVis'
+                    {{cronograma.checkVis}}><br>
+                {{/if}}
+            </div>
+            <div class="col-md-3">
+                <div class="row">
+                    <div class="col-md-8">
+                        {{#if projeto.orcado}}
+                        {{else}}
+                        <input type="date" class='form-control form-control-sm mt-1' name='datepla'
+                            value='{{cronograma.datepla}}' {{#if projeto.homologado}}disabled{{/if}}>
+                        {{/if}}
+                    </div>
+                    <div class="col-md-4">
+                        {{#if cronograma.atrasouPla}}
+                        <div class='text-center'
+                            style="border: rgb(199,199,199) solid 1px;border-radius: 10px;margin-top: 5px;"><i
+                                class='bi bi-exclamation-triangle' style="font-size: 12px;"></i></div>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{#if projeto.orcado}}
+                        {{else}}
+                        <input type="date" class='form-control form-control-sm mt-1' name='dateprj'
+                            value='{{cronograma.dateprj}}' {{#if projeto.homologado}}disabled{{/if}}>
+                        {{/if}}
+                    </div>
+                    <div class="col-md-4">
+                        {{#if cronograma.atrasouPrj}}
+                        <div class='text-center'
+                            style="border: rgb(199,199,199) solid 1px;border-radius: 10px;margin-top: 5px;"><i
+                                class='bi bi-exclamation-triangle' style="font-size: 12px;"></i></div>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{#if projeto.orcado}}
+                        {{else}}
+                        <input type="date" class='form-control form-control-sm mt-1' name='dateate'
+                            value='{{cronograma.dateate}}' {{#if projeto.homologado}}disabled{{/if}}>
+                        {{/if}}
+                    </div>
+                    <div class="col-md-4">
+                        {{#if cronograma.atrasouAte}}
+                        <div class='text-center'
+                            style="border: rgb(199,199,199) solid 1px;border-radius: 10px;margin-top: 5px;"><i
+                                class='bi bi-exclamation-triangle' style="font-size: 12px;"></i></div>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{#if projeto.orcado}}
+                        {{else}}
+                        <input type="date" class='form-control form-control-sm mt-1' name='dateest'
+                            value='{{cronograma.dateest}}' {{#if projeto.homologado}}disabled{{/if}}>
+                        {{/if}}
+                    </div>
+                    <div class="col-md-4">
+                        {{#if cronograma.atrasouEst}}
+                        <div class='text-center'
+                            style="border: rgb(199,199,199) solid 1px;border-radius: 10px;margin-top: 5px;"><i
+                                class='bi bi-exclamation-triangle' style="font-size: 12px;"></i></div>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{#if projeto.orcado}}
+                        {{else}}
+                        <input type="date" class='form-control form-control-sm mt-1' name='datemod'
+                            value='{{cronograma.datemod}}' {{#if projeto.homologado}}disabled{{/if}}>
+                        {{/if}}
+                    </div>
+                    <div class="col-md-4">
+                        {{#if cronograma.atrasouMod}}
+                        <div class='text-center'
+                            style="border: rgb(199,199,199) solid 1px;border-radius: 10px;margin-top: 5px;"><i
+                                class='bi bi-exclamation-triangle' style="font-size: 12px;"></i></div>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{#if projeto.orcado}}
+                        {{else}}
+                        <input type="date" class='form-control form-control-sm mt-1' name='dateinv'
+                            value='{{cronograma.dateinv}}' {{#if projeto.homologado}}disabled{{/if}}>
+                        {{/if}}
+                    </div>
+                    <div class="col-md-4">
+                        {{#if cronograma.atrasouInv}}
+                        <div class='text-center'
+                            style="border: rgb(199,199,199) solid 1px;border-radius: 10px;margin-top: 5px;"><i
+                                class='bi bi-exclamation-triangle' style="font-size: 12px;"></i></div>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{#if projeto.orcado}}
+                        {{else}}
+                        <input type="date" class='form-control form-control-sm mt-1' name='dateeae'
+                            value='{{cronograma.dateeae}}' {{#if projeto.homologado}}disabled{{/if}}>
+                        {{/if}}
+                    </div>
+                    <div class="col-md-4">
+                        {{#if cronograma.atrasouEae}}
+                        <div class='text-center'
+                            style="border: rgb(199,199,199) solid 1px;border-radius: 10px;margin-top: 5px;"><i
+                                class='bi bi-exclamation-triangle' style="font-size: 12px;"></i></div>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{#if projeto.orcado}}
+                        {{else}}
+                        <input type="date" class='form-control form-control-sm mt-1' name='datestb'
+                            value='{{cronograma.datestb}}' {{#if projeto.homologado}}disabled{{/if}}>
+                        {{/if}}
+                    </div>
+                    <div class="col-md-4">
+                        {{#if cronograma.atrasouStb}}
+                        <div class='text-center'
+                            style="border: rgb(199,199,199) solid 1px;border-radius: 10px;margin-top: 5px;"><i
+                                class='bi bi-exclamation-triangle' style="font-size: 12px;"></i></div>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{#if projeto.orcado}}
+                        {{else}}
+                        <input type="date" class='form-control form-control-sm mt-1' name='datepnl'
+                            value='{{cronograma.datepnl}}' {{#if projeto.homologado}}disabled{{/if}}>
+                        {{/if}}
+                    </div>
+                    <div class="col-md-4">
+                        {{#if cronograma.atrasouPnl}}
+                        <div class='text-center'
+                            style="border: rgb(199,199,199) solid 1px;border-radius: 10px;margin-top: 5px;"><i
+                                class='bi bi-exclamation-triangle' style="font-size: 12px;"></i></div>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{#if projeto.orcado}}
+                        {{else}}
+                        <input type="date" class='form-control form-control-sm mt-1' name='datevis'
+                            value='{{cronograma.datevis}}' {{#if projeto.homologado}}disabled{{/if}}>
+                        {{/if}}
+                        <input type="hidden" class='form-control form-control-sm mt-1' name='dateVisHidden'
+                            value='{{cronograma.datevis}}'>
+                    </div>
+                    <div class="col-md-4">
+                        {{#if cronograma.atrasouVis}}
+                        <div class='text-center'
+                            style="border: rgb(199,199,199) solid 1px;border-radius: 10px;margin-top: 5px;"><i
+                                class='bi bi-exclamation-triangle' style="font-size: 12px;"></i></div>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-6 text-end">
+                <label class='col-form-label col-form-label-sm fw-bold'>Data de Entrega(Turn Key):</label>
+            </div>
+            <div class="col-md-2">
+                <input type="date" class='form-control form-control-sm' name='datepnlini' {{#if
+                    projeto.orcado}}{{else}}disabled{{/if}} {{#if
+                    cronograma.dateentrega}}value='{{cronograma.dateentrega}}' {{else}}value='{{projeto.valDataPrev}}'
+                    {{/if}}>
+                <input type="hidden" class='form-control form-control-sm' name='dateEntregaHidden' {{#if
+                    cronograma.dateentrega}}value='{{cronograma.dateentrega}}' {{else}}value='{{projeto.valDataPrev}}'
+                    {{/if}}>
+            </div>
+            <div class='col-md-1'>
+            </div>
+            {{#if projeto.orcado}}
+            {{else}}
+            <div class="col-md-3">
+                <div class="row">
+                    <div class="col-md-8">
+                        <input type="date" class='form-control form-control-sm' name='dateEntregaReal'
+                            value='{{cronograma.dateEntregaReal}}' {{#if projeto.homologado}}disabled{{/if}}>
+                    </div>
+                    <div class="col-md-4">
+                        {{#if projeto.atrasado}}
+                        <div class='text-center'
+                            style="border: rgb(199,199,199) solid 1px;border-radius: 10px;margin-top: 2px;"><i
+                                class='bi bi-exclamation-triangle' style="font-size: 12px;"></i></div>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</form>

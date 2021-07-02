@@ -406,31 +406,35 @@
                     </div>
                 </div>
                 <div class="card mb-2">
-                    <div class="row mb-1" style="margin-left: 5px;">
-                        <div class="col-md-2 mt-1">
-                            <label class='col-form-label col-form-label-sm fw-bold'>Data Inicio:</label>
-                        </div>
-                        <div class="col-md-2 mt-1">
-                            <label class='col-form-label col-form-label-sm'>{{projeto.dataini}}</label>
-                        </div>
-                        <div class="col-md-3 mt-1 text-end">
-                            <label class="fw-bold col-form-label col-form-label-sm"> Previsão de Entrega:
-                            </label>
-                        </div>
-                        <div class="col-md-5 mt-1" style="padding-right: 6%;">
-                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='form-control form-control-sm'
-                                type='date' name='valDataPrev' id='valDataPrev' value='{{projeto.valDataPrev}}'
-                                onchange="mascara_dataprev()">
-                            <input type="hidden" id='dataprev' value=''>
-                        </div>
-                        <div class="row mt-1">
+                    <div class="row mb-1 mt-1" style="margin-left: 5px;">
+                        <div class="row">
                             <div class="col-md-2">
-                                <label class='col-form-label col-form-label-sm fw-bold'>Motivo:</label>
+                                <label class='col-form-label col-form-label-sm fw-bold'>Data Inicio:</label>
+                            </div>
+                            <div class="col-md-2">
+                                <label class='col-form-label col-form-label-sm'>{{projeto.dataini}}</label>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="fw-bold col-form-label col-form-label-sm">Entrega:
+                                </label>
+                            </div>
+                            <div class="col-md-4" style="padding-right: 6%;">
+                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}}
+                                    class='form-control form-control-sm' type='date' name='valDataPrev' id='valDataPrev'
+                                    value='{{projeto.valDataPrev}}' onchange="mascara_dataprev()">
+                                <input type="hidden" id='dataprev' name='dataprev' value=''>
+                            </div>
+                            <div class="col-md-2">
                                 <div class='form-check'>
                                     <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='mt-2 form-check-input'
                                         type='checkbox' name='checkDatPrev'>
                                     <label class='form-check-label col-form-label col-form-label-sm'>Alterar</label>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <div class="col-md-2 mt-4">
+                                <label class='col-form-label col-form-label-sm fw-bold'>Motivo:</label>
                             </div>
                             <div class="col-md-10">
                                 <textarea {{#if projeto.orcado}}{{else}}disabled{{/if}} name='motivo'
@@ -528,7 +532,7 @@
                             </div>
                         </div>
 
-                        <label class='col-form-label col-form-label-sm mb-2'>{{rp.regime}}</label>
+                        <label class='col-form-label col-form-label-sm mb-2'>{{rp.nome}}</label>
                         <div class="row">
                             <div class="col-md-10">
                                 <select {{#if projeto.orcado}}{{else}}disabled{{/if}} name='regime'
@@ -598,7 +602,7 @@
                         </a>
                     </div>
                     <div class="row mt-1" style="width: 100%;">
-                        <div class="row mt-2" style="width: 100%;margin-left: 5px;">
+                        <div class="row" style="width: 100%;margin-left: 5px;">
                             <div class='btn-group col-12 gap-2'>
                                 <button {{#if projeto.orcado}}{{else}}disabled{{/if}} type="submit"
                                     class="btn btn-sm btn-success" name="aplicar" style="border-radius: 30px;"> <i

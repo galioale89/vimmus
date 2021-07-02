@@ -3,7 +3,11 @@
         width: 70%;
     }
 </style>
-
+<script>
+    function infoEstrutura() {
+        alert('Essa atividade considera a concreatagem das pilastras, a montagem das bases e a fixação dos suportes.')
+    }    
+</script>
 <div class="container mt-4 card tamanhodiv">
     <label for="minutos" class='fw-bold mt-2'> <i class="bi bi-wrench"></i> Configurações básicas de tempo e custos</label>
     <br>
@@ -25,7 +29,7 @@
                 <div class='row mb-2 text-end'>
                     <div class="col-md-6">
                         <label class='fw-bold col-form-label col-form-label-sm mb-1'> Aterramento: </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Estrutura: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Estrutura: <i class='bi bi-info-circle' onmousemove="infoEstrutura()"></i></label><br>
                         <label class='fw-bold col-form-label col-form-label-sm mb-1'> Módulos: </label><br>
                         <label class='fw-bold col-form-label col-form-label-sm mb-1'> Inversores: </label><br>
                         <label class='fw-bold col-form-label col-form-label-sm mb-1'> String Box: </label><br>

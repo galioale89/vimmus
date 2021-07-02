@@ -12,14 +12,15 @@
             <input type='hidden' name='id' value='{{regime._id}}'>
             <div class="col-md-6">
                 <div class="card">
-                    <div class="row mb-2" style="margin-left: 2px;">
-                        <div class="row mt-2">
-                            <label for='slug' class='fw-bold col-sm-2 col-form-label col-form-label-sm'> Nome: </label>
-                            <div class="col-md-4">
-                                <input id='nome' name='nome' value='{{regime.nome}}'
-                                    class='form-control form-control-sm'>
-                            </div>
+                    <div class="row mt-4">
+                        <div class="col-md-2 text-end">
+                            <label for='slug' class='fw-bold col-form-label col-form-label-sm'> Nome: </label>
                         </div>
+                        <div class="col-md-9">
+                            <input id='nome' name='nome' value='{{regime.nome}}' style="margin-left: 7px;" class='form-control form-control-sm'>
+                        </div>
+                    </div>                    
+                    <div class="row mb-2" style="margin-left: 2px;">
                         <div class="row mt-2">
                             <div class="col-md-6">
                                 <div class="row">
@@ -115,7 +116,7 @@
                     <div class="col-md-8">
                         <input class="form-control form-control-sm mb-2" name='desadm'
                             placeholder="Valor mensal das despesas fixas e variáveis somadas." value={{regime.desadm}}>
-                        <input class="form-control form-control-sm mb-2" name='perdes'
+                        <input class="form-control form-control-sm mb-2" name='perdesp'
                             placeholder="Percentual (%) das despesas por projeto." value={{regime.perdes}}>
                         <input class="form-control form-control-sm" name='estkwp'
                             placeholder="Estimativa dos kWp mensais." value={{regime.estkwp}}>

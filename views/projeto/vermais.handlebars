@@ -37,6 +37,11 @@
                                 <label class='col-form-label col-form-label-sm'>{{projeto.datafim}}</label>
                             </div>
                         </div>
+                            <div class="row">
+                                {{#if projeto.atrasado}}
+                                 <div><label style="size: 5px;">Atrasado </label> <i class='bi bi-exclamation-triangle'></i></div>
+                                {{/if}}
+                            </div>                        
 
                     </div>
                     <div class="col-md-6">
@@ -51,7 +56,7 @@
                             <div class="col-md-6 text-start">
                                 <label class='col-form-label col-form-label-sm'>{{responsavel.nome}}</label><br>
                                 <label class='col-form-label col-form-label-sm'>R$ {{projeto.valor}}</label><br>
-                                <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrfat}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrNFS}}</label><br>
                                 <label class='col-form-label col-form-label-sm'>{{projeto.tothrs}} h</label><br>
                                 <label class='col-form-label col-form-label-sm'>{{projeto.diastr}} dia(s)</label><br>
                             </div>
@@ -104,7 +109,7 @@
                                 <a href='/projeto/consulta/' class='botao ativado'><i
                                         class="bi bi-arrow-left-circle icone"></i></a>
                                 {{#if projeto.foiRealizado}}
-                                <a class='desativado'><i class="bi bi-pen icone"></i></a>
+                                <a href='/projeto/edicao/{{projeto._id}}' class='desativado'><i class="bi bi-pen icone"></i></a>
                                 {{else}}
                                 <a href='/projeto/edicao/{{projeto._id}}' class='botao ativado'><i
                                         class="bi bi-pen icone"></i></a>

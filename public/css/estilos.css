@@ -173,7 +173,14 @@ li {
   border: rgb(0, 76, 255) 3px solid;
 }
 
-
+#atrasado{
+  width: 25px;
+  height: 25px;
+  border-radius: 25px;
+  background-color: rgba(199, 199, 199, 0.6);
+  border: rgb(153, 152, 152) 1px solid;
+  box-shadow: 3px 1px 5px rgba(200,200,200,0.8);
+}
 .formulario {        
     width: fit-content;
     padding: 17px;
@@ -295,12 +302,40 @@ a {
     height: 100%;
     margin-left: 100px;
 }
+.sessao-status-aberto {
+  border: rgba(255, 255, 0, 0.2) solid 8px ;
+  border-radius: 100px;
+  width: 50px;
+  height: 50px;
+  box-shadow: 1px 1px 2px rgba(26, 25, 25, 0.77);   
+}
+.sessao-status-parado {
+  border: rgba(245, 22, 22, 0.2) solid 8px ;
+  border-radius: 100px;
+  width: 50px;
+  height: 50px;
+  box-shadow: 1px 1px 2px rgba(26, 25, 25, 0.77);   
+}
+.sessao-status-execucao {
+  border: rgba(0, 255, 67,0.2) solid 8px ;
+  border-radius: 100px;
+  width: 50px;
+  height: 50px;
+  box-shadow: 1px 1px 2px rgba(26, 25, 25, 0.77);   
+}
+.sessao-status-homo {
+  border: rgba(255, 136, 0, 0.2) solid 8px ;
+  border-radius: 100px;
+  width: 50px;
+  height: 50px;
+  box-shadow: 1px 1px 2px rgba(26, 25, 25, 0.77);   
+}
 
 .sessao {
-    border: rgba(79, 99, 140) solid 5px ;
+    border: rgba(79, 99, 140) solid 10px ;
     border-radius: 100px;
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     margin-left: 20px;
     box-shadow: 1px 1px 2px rgba(26, 25, 25, 0.77);    
 }
@@ -347,16 +382,24 @@ a {
 .textoper {
     text-align: center;
     padding-top: 25px;
-    font-size: 30px;
-    font-weight: 500;
+    font-size: 25px;
+    font-weight: bold;
     color: rgb(40,55,89);
+}
+
+.textmll {
+  text-align: center;
+  padding-top: 25px;
+  font-size: 30px;
+  font-weight: bold;
+  color: rgb(40,55,89);
 }
 
 .quadro-scroll {
     border: rgba(200, 200, 200, 0.8) solid 1px;
     border-radius: 5px;
     width: 100%;
-    height: 85%;
+    height: 83%;
     padding: 6px;
     box-shadow: 1px 4px 5px rgba(26, 25, 25, 0.77);
     overflow-y: scroll;
@@ -677,7 +720,6 @@ a {
     text-align: center;
     color: rgb(40,55,89);
     border-radius: 10px;
-    background: rgba(238, 241, 34, 0.5);
   }
 
   .contorno-tabela-botao {

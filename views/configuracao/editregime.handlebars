@@ -4,21 +4,23 @@
     }
 </style>
 
-<div class="container mt-4 card">
+<div class="container mt-2 card">
     <label for="minutos" class='fw-bold mt-2 mb-4 text-center'> Edição de Regime Tributário</label>
     <form action='/configuracao/editregime' method='post'>
         <div class="row">
             <input type='hidden' name='id' value='{{regime._id}}'>
             <div class="col-md-6">
                 <div class="card">
-                    <div class="row mb-2" style="margin-left: 2px;">
-                        <div class="row mt-2">
-                            <label for='slug' class='fw-bold col-sm-2 col-form-label col-form-label-sm'> Nome: </label>
-                            <div class="col-md-4">
-                                <input id='nome' name='nome' value='{{regime.nome}}'
-                                    class='form-control form-control-sm'>
-                            </div>
+                    <div class="row mt-4">
+                        <div class="col-md-2 text-end">
+                            <label for='slug' class='fw-bold col-form-label col-form-label-sm'> Nome: </label>
                         </div>
+                        <div class="col-md-9">
+                            <input id='nome' name='nome' value='{{regime.nome}}' style="margin-left: 7px;"
+                                class='form-control form-control-sm'>
+                        </div>
+                    </div>
+                    <div class="row mb-2" style="margin-left: 2px;">
                         <div class="row mt-2">
                             <div class="col-md-6">
                                 <div class="row">
@@ -112,7 +114,7 @@
                                 <input name='alteraTipo' class="form-check-input mt-2" type="checkbox">
                                 <label class='form-check-label col-form-label-sm'>Alterar</label>
                             </div>
-                        </div>                        
+                        </div>
                     </div>
 
                     <div class="col-md-4 text-end">

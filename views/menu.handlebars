@@ -13,13 +13,12 @@
   }
 </style>
 
-<div class='row mt-2' style="width: 100%;height: 100%;">
-
+<div class='row mt-1' style="width: 100%;height: 100%;margin-bottom: 3%;">
   <div class='col-md-2'>
     <div class="menu">
+      <img src='logoVimmus.jpeg' height="75" width="100" style="padding-left: 10%;"/>
       <div class="menu-interno">
-        <div class='fw-bold col-form-label col-form-label-sm fw-bold text-center' style="padding-top: 20%;"> CADASTROS
-        </div>
+        <div class='fw-bold col-form-label col-form-label-sm fw-bold text-center'> CADASTROS</div>
         <div class="row mb-2">
           <div class="col-md-9 text-end">
             <a href="/cliente/novo" class="contorno-menu"><i class='bi bi-person-plus'></i> Cliente</a><br>
@@ -82,8 +81,8 @@
         <div class='fw-bold col-form-label col-form-label-sm' style="padding-right: 10px;">
         </div>
         <div class='mt-1 mb-2'>
-          <a href='/relatorios/dashboardcustos' class="relatorio titulo-relatorio"><i class='bi bi-display'></i> Ver
-            Custos</a>
+          <a href='/relatorios/dashboardcustos' class="relatorio titulo-relatorio"><i class='bi bi-display'></i>
+            Indicadores</a>
         </div>
         <div class="dropend">
           <button class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false">Relatórios <i
@@ -109,7 +108,7 @@
           </div>
         </div>
         {{/if}}
-        <div class="mb-4" style="padding-top: 20%;">
+        <div class="mb-4" style="padding-top: 10%;">
           <a href='/usuario/editar/{{id}}' class="relatorio titulo-relatorio"><i class="bi bi-house-fill"></i> Minha
             Conta</a>
         </div>
@@ -132,30 +131,30 @@
         <canvas id='chartPrj' class='mt-2 mb-1'></canvas>
       </div>
       -->
-      <div class="contorno-titulo text-center mt-2" style="width: 100%; padding-bottom: 10px;">
-        <div style="font-size: 20px;">
+      <div class="contorno-titulo text-center mt-4" style="width: 100%; padding-bottom: 10px;">
+        <div style="font-size: 21px;">
           Total de Projetos
         </div>
         <div class="row text-center">
           <div style="width: 150px;margin-left: 25%;font-size: 50px;">{{numprj}}</div>
         </div>
-        <div style="text-align: center;font-size: 20px;" class='mt-2'>
+        <div style="text-align: center;font-size: 18px;" class='mt-1'>
           Projetos Realizados
         </div>
         <div class="row">
           <div class="col-md-6">
-            <div style="width: 100px;margin-left: 25px;" class='contorno-texto'> {{numprjrlz}} </div>
+            <div style="width: 100px;margin-left: 18px;" class='contorno-texto'> {{numprjrlz}} </div>
           </div>
           <div class="col-md-6">
             <div style="width: 100px;" class='contorno-texto'> {{perRealizado}}% </div>
           </div>
         </div>
-        <div style="text-align: center;font-size: 20px;" class='mt-2'>
+        <div style="text-align: center;font-size: 18px;" class='mt-1'>
           Projetos Entregues
         </div>
         <div class="row">
           <div class="col-md-6">
-            <div style="width: 100px;margin-left: 25px" class='contorno-texto'>{{qtdEntregue}}</div>
+            <div style="width: 100px;margin-left: 18px" class='contorno-texto'>{{qtdEntregue}}</div>
           </div>
           <div class="col-md-6">
             <div style="width: 100px" class='contorno-texto'>{{perEntregue}}%</div>
@@ -163,52 +162,44 @@
         </div>
       </div>
     </div>
-    <div class="row mb-2 mt-4" style="margin-left: 1%;">
-      <table>
-        <tr>
-          <th class='contorno-titulo' style="font-size: 18px;">Lucro Liquido Médio Realizado</th>
-        </tr>
-      </table>
-      <div class="col-md-6">
-        <label class='col-form-label col-form-label-sm' style="margin-left: 6%; font-weight: 500;">Total do
-          Projeto</label>
-        <div class='sessao' style="margin-left: 5%;">
-          <div class='textoper'>{{perVlrMed}}%</div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <label class='col-form-label col-form-label-sm'
-          style="width: 100%; margin-left: 33% ;font-weight: 500">Faturado</label>
-        <div class='sessao'>
-          <div class='textoper'>{{perNfsMed}}%</div>
+    <hr>
+    <div class="row mb-2">
+      <div class='contorno-titulo' style="font-size: 21px;">Margem de Lucro Liquido Médio Faturado</th>
+        <div class="sessao mt-2" style="margin-left: 32%;">
+          <div class='textmll'>{{perNfsMed}}%</div>
         </div>
       </div>
     </div>
   </div>
 
+
   <div class='col-md-7'>
-    <div class='contorno-tabela' style="width: 100%;">
-      <table style="width: 100%;margin-bottom: 5px;margin-top: 5px;" align="center">
+    <div style="width: 100%;">
+      <table style="width: 100%;margin-bottom: 5px;margin-top: 5px;">
         <tr>
-          <td style="background-color:  rgba(255, 255, 0, 0.2);text-align: center;">
-            <label class='col-form-label col-form-label-sm'
-              style="border-bottom: rgb(0, 0, 0) 1px solid;">Aberto</label><br>
-            <label class='col-form-label col-form-label-sm'> {{qtdAberto}}</label>
+          <td style="background-color: rgba(255, 255, 0, 0.2);text-align: center;">
+            <label style="font-size: 20px;font-weight: bold;">Aberto</label>
+            <div class='sessao-status-aberto mb-2' style="margin-left: 30%;">
+              <label style="font-size: 20px;font-weight: bold;">{{qtdAberto}}</label>
+            </div>
           </td>
           <td style="background-color:rgba(0, 255, 67,0.2);text-align: center;border-left: white 5px solid;">
-            <label class='col-form-label col-form-label-sm' style="border-bottom: rgb(0, 0, 0) 1px solid;">Em
-              execução</label><br>
-            <label class='col-form-label col-form-label-sm'> {{qtdExecucao}}</label>
+            <label style="font-size: 20px;font-weight: bold;">Em execução</label>
+            <div class='sessao-status-execucao mb-2' style="margin-left: 40%;">
+              <label style="font-size: 20px;font-weight: bold;">{{qtdExecucao}}</label>
+            </div>
           </td>
-          <td style="background-color:  rgba(255, 0, 0, 0.2);text-align: center;border-left: white 5px solid;">
-            <label class='col-form-label col-form-label-sm'
-              style="border-bottom: rgb(0, 0, 0) 1px solid;">Parado</label><br>
-            <label class='col-form-label col-form-label-sm'> {{qtdParado}}</label>
+          <td style="background-color:  rgba(245, 22, 22, 0.2);text-align: center;border-left: white 5px solid;">
+            <label style="font-size: 20px;font-weight: bold;">Parado</label>
+            <div class='sessao-status-parado mb-2' style="margin-left: 32%;">
+              <label style="font-size: 20px;font-weight: bold;">{{qtdParado}}</label>
+            </div>
           </td>
           <td style="background-color:  rgba(255, 136, 0, 0.2);text-align: center;border-left: white 5px solid;">
-            <label class='col-form-label col-form-label-sm'
-              style="border-bottom: rgb(0, 0, 0) 1px solid;">Homologação</label><br>
-            <label class='col-form-label col-form-label-sm'> {{qtdHomologado}}</label>
+            <label style="font-size: 20px;font-weight: bold;">Homologação</label>
+            <div class='sessao-status-homo mb-2' style="margin-left: 40%;">
+              <label style="font-size: 20px;font-weight: bold;">{{qtdHomologado}}</label>
+            </div>
           </td>
         </tr>
       </table>
@@ -216,7 +207,7 @@
 
     <div class='quadro-scroll' style="margin-left: 5px;">
       <table style="width: 100%">
-        <tr class='contorno-titulo'>
+        <tr class='contorno-titulo' style='border-bottom: rgba(40,55,89,0.1) solid 1px;'>
           <th>Status</th>
           <th>Cliente</th>
           <th>Projetos</th>
@@ -227,6 +218,9 @@
         {{#each dataord}}
         <tr>
           <td>
+            {{#if atrasado}}
+            <div id='atrasado'><i class='bi bi-exclamation-triangle' style="margin-left: 6px;font-size: 12px;"></i></div>
+            {{else}}            
             {{#if executando}}
             <div id='execucao'></div>
             {{else}}
@@ -240,11 +234,12 @@
             {{/if}}
             {{/if}}
             {{/if}}
+            {{/if}}
           </td>
-          <td style="border: 0.2px solid rgba(126, 138, 163, 0.2)">{{nomecliente}}</td>
-          <td style="border: 0.2px solid rgba(126, 138, 163, 0.2)">{{nome}}</td>
-          <td style="border: 0.2px solid rgba(126, 138, 163, 0.2)">{{dataini}}</td>
-          <td style="border: 0.2px solid rgba(126, 138, 163, 0.2)">{{dataprev}}</td>
+          <td>{{nomecliente}}</td>
+          <td>{{nome}}</td>
+          <td>{{dataini}}</td>
+          <td>{{dataprev}}</td>
           <!--<td>{{cliente}}</td>-->
           <td style="padding-top: 3px; padding-bottom: 3px;">
             <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
@@ -266,50 +261,51 @@
       </table>
     </div>
   </div>
+</div>
 
-  <script type='text/javascript'>
-    var numprj = document.getElementById('numprj')
-    var numprjrlz = document.getElementById('numprjrlz')
-    var numprjnrl = document.getElementById('numprjnrl')
-    var ctxPrj = document.getElementById('chartPrj').getContext('2d');
-    var chartPrj = new Chart(ctxPrj, {
-      type: 'doughnut',
-      data: {
-        labels: ['Realizados', 'Não Realizados'],
-        datasets: [{
-          data: [numprjrlz.value, numprjnrl.value],
-          backgroundColor: [
-            'rgba(37, 139, 33, 0.2)',
-            'rgba(50, 140, 230, 0.2)',
-          ],
-          borderColor: [
-            'rgba(37, 139, 33, 1)',
-            'rgba(50, 140, 230, 1)',
-          ],
-          borderWidth: 1,
-        }]
+<script type='text/javascript'>
+  var numprj = document.getElementById('numprj')
+  var numprjrlz = document.getElementById('numprjrlz')
+  var numprjnrl = document.getElementById('numprjnrl')
+  var ctxPrj = document.getElementById('chartPrj').getContext('2d');
+  var chartPrj = new Chart(ctxPrj, {
+    type: 'doughnut',
+    data: {
+      labels: ['Realizados', 'Não Realizados'],
+      datasets: [{
+        data: [numprjrlz.value, numprjnrl.value],
+        backgroundColor: [
+          'rgba(37, 139, 33, 0.2)',
+          'rgba(50, 140, 230, 0.2)',
+        ],
+        borderColor: [
+          'rgba(37, 139, 33, 1)',
+          'rgba(50, 140, 230, 1)',
+        ],
+        borderWidth: 1,
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      responsive: true,
+      scales: {
+        y: [{
+          scaleLabel: {
+            display: false,
+          },
+          ticks: {
+            min: 0,
+          },
+          grid: {
+            drawBorder: false,
+          },
+        }],
       },
-      options: {
-        maintainAspectRatio: false,
-        responsive: true,
-        scales: {
-          y: [{
-            scaleLabel: {
-              display: false,
-            },
-            ticks: {
-              min: 0,
-            },
-            grid: {
-              drawBorder: false,
-            },
-          }],
-        },
-        legend: {
-          display: true,
-          position: 'top',
-          align: 'center',
-        },
-      }
-    });
-  </script>
+      legend: {
+        display: true,
+        position: 'top',
+        align: 'center',
+      },
+    }
+  });
+</script>

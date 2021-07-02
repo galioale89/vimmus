@@ -21,8 +21,9 @@ const Projeto = new Schema({
         require: true
     },
     cliente: {
-        type: String,
-        require: false
+        type: Schema.Types.ObjectId,
+        ref: 'cliente',
+        require: false,
     },
     nomecliente: {
         type: String,
@@ -719,6 +720,16 @@ const Projeto = new Schema({
         ref: 'pessoa',
         require: false
     },
+    funinv: {
+        type: Schema.Types.ObjectId,
+        ref: 'pessoa',
+        require: false
+    },    
+    funate: {
+        type: Schema.Types.ObjectId,
+        ref: 'pessoa',
+        require: false
+    },       
     ehDireto: {
         type: Boolean,
         require: true
@@ -752,6 +763,10 @@ const Projeto = new Schema({
         require: true
     },
     dataini: {
+        type: String,
+        require: true
+    },
+    valDataIni:{
         type: String,
         require: true
     },
@@ -826,7 +841,39 @@ const Projeto = new Schema({
     homologado: {
         type: Boolean,
         require: false
-    }
+    },
+    hrsprj: {
+        type: Number,
+        require: false
+    },
+    perConclusao: {
+        type: Number,
+        require: false
+    },   
+    actualCost:{
+        type: Number,
+        require: false
+    } ,
+    etc: {
+        type: Number,
+        require: false
+    }, 
+    cpi: {
+        type: Number,
+        require: false
+    },  
+    tcpi: {
+        type: Number,
+        require: false
+    }, 
+    spi: {
+        type: Number,
+        require: false
+    },
+    tspi: {
+        type: Number,
+        require: false
+    },                            
 })
 
 mongoose.model('projeto', Projeto)

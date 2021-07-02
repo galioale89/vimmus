@@ -125,7 +125,7 @@
                             <div class="col-md-4 text-end">
                                 <label class='col-form-label col-form-label-sm fw-bold'>Descrição</label><br>
                                 <div class="row mb-1">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Material:</label>
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Kit Gerador:</label>
                                 </div>
                                 <hr>
                                 <div class="row mb-1">
@@ -139,6 +139,9 @@
                                 </div>
                                 <div class="row mb-1">
                                     <label class='col-form-label col-form-label-sm fw-bold'>Concretagem:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Estação de Baterias:</label>
                                 </div>
                                 <div class="row mb-1">
                                     <label class='col-form-label col-form-label-sm fw-bold'>Cabos:</label>
@@ -190,6 +193,8 @@
                                     class='form-control form-control-sm mb-1' name='unidadeEst'>
                                 <input type='number' value='{{detalhe.unidadeCim}}'
                                     class='form-control form-control-sm mb-1' name='unidadeCim'>
+                                <input type='number' value='{{detalhe.unidadeEbt}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeEbt'>
                                 <input type='number' value='{{detalhe.unidadeCab}}'
                                     class='form-control form-control-sm mb-1' name='unidadeCab'>
                                 <input type='number' value='{{detalhe.unidadeDisCC}}'
@@ -229,6 +234,8 @@
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniEst'>
                                 <input type='number' value='{{detalhe.vlrUniCim}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCim'>
+                                <input type='number' value='{{detalhe.vlrUniEbt}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniEbt'>
                                 <input type='number' value='{{detalhe.vlrUniCab}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCab'>
                                 <input type='number' value='{{detalhe.vlrUniDisCC}}'
@@ -268,6 +275,8 @@
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorEst'>
                                 <input type='number' value='{{detalhe.valorCim}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorCim'>
+                                <input type='number' value='{{detalhe.valorEbt}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorEbt'>
                                 <input type='number' value='{{detalhe.valorCab}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorCab'>
                                 <input type='number' value='{{detalhe.valorDisCC}}'
@@ -386,31 +395,35 @@
                     </div>
                 </div>
                 <div class="card mb-2">
-                    <div class="row mb-1" style="margin-left: 5px;">
-                        <div class="col-md-2 mt-1">
-                            <label class='col-form-label col-form-label-sm fw-bold'>Data Inicio:</label>
-                        </div>
-                        <div class="col-md-3 mt-1">
-                            <label class='col-form-label col-form-label-sm'>{{projeto.dataini}}</label>
-                        </div>
-                        <div class="col-md-3 mt-1">
-                            <label class="fw-bold col-form-label col-form-label-sm"> Previsão de Entrega:
-                            </label>
-                        </div>
-                        <div class="col-md-4 mt-1" style="padding-right: 6%;">
-                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='form-control form-control-sm'
-                                type='date' name='valDataPrev' id='valDataPrev' value='{{projeto.valDataPrev}}'
-                                onchange="mascara_dataprev()">
-                            <input type="hidden" id='dataprev' value=''>
-                        </div>
-                        <div class="row mt-1">
+                    <div class="row mb-1 mt-1" style="margin-left: 5px;">
+                        <div class="row">
                             <div class="col-md-2">
-                                <label class='col-form-label col-form-label-sm fw-bold'>Motivo:</label>
+                                <label class='col-form-label col-form-label-sm fw-bold'>Data Inicio:</label>
+                            </div>
+                            <div class="col-md-2">
+                                <label class='col-form-label col-form-label-sm'>{{projeto.dataini}}</label>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="fw-bold col-form-label col-form-label-sm">Entrega:
+                                </label>
+                            </div>
+                            <div class="col-md-4" style="padding-right: 6%;">
+                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}}
+                                    class='form-control form-control-sm' type='date' name='valDataPrev' id='valDataPrev'
+                                    value='{{projeto.valDataPrev}}' onchange="mascara_dataprev()">
+                                <input type="hidden" id='dataprev' name='dataprev' value=''>
+                            </div>
+                            <div class="col-md-2">
                                 <div class='form-check'>
                                     <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='mt-2 form-check-input'
                                         type='checkbox' name='checkDatPrev'>
                                     <label class='form-check-label col-form-label col-form-label-sm'>Alterar</label>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <div class="col-md-2 mt-4">
+                                <label class='col-form-label col-form-label-sm fw-bold'>Motivo:</label>
                             </div>
                             <div class="col-md-10">
                                 <textarea {{#if projeto.orcado}}{{else}}disabled{{/if}} name='motivo'
@@ -538,7 +551,7 @@
                                 <label class="form-check-label col-form-label col-form-label-sm"> Estrutura
                                 </label>
                             </div>
-                        </div>                        
+                        </div>
                         <div class="col-md-2">
                             <div class="form-check">
                                 <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='central'
@@ -562,7 +575,8 @@
                                 <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='poste'
                                     class="form-check-input" type="checkbox" style="margin-top: 8px;margin-left: 1%;"
                                     {{projeto.temPosteCond}}>
-                                <label class="form-check-label col-form-label col-form-label-sm" style="margin-left: 1%">Postes de
+                                <label class="form-check-label col-form-label col-form-label-sm"
+                                    style="margin-left: 1%">Postes de
                                     Condução de Fios
                                 </label>
                             </div>
@@ -609,7 +623,8 @@
                             {{/if}}
                             {{/if}}
                             <a {{#if projeto.homologado}}href='/projeto/realizar/{{projeto._id}}'
-                                {{else}}style='opacity: 0.5;pointer-events:none;border-radius: 30px;' {{/if}}
+                                {{else}}
+                                {{#if projeto.foiRealizado}}href='/projeto/realizar/{{projeto._id}}'{{else}}style='opacity: 0.5;pointer-events:none;border-radius: 30px;'{{/if}}{{/if}}
                                 class='btn btn-sm btn-success' style="border-radius: 30px;"><i
                                     class="bi bi-check2-circle"></i> Realizar</a>
                             <a href='/gerenciamento/dashboard/{{projeto._id}}' class='btn btn-sm btn-primary'

@@ -35,6 +35,12 @@
         box-shadow: 1px 4px 5px rgba(26, 25, 25, 0.77);
     }
 </style>
+<script>
+    function infoEstrutura() {
+        alert('Essa atividade considera a concreatagem das pilastras, a montagem das bases e a fixação dos suportes.')
+
+    }    
+</script>
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
     <div style="width: 100%;">
         <h5 class="header">{{cliente.nome}} </h5>
@@ -180,7 +186,7 @@
                         <div class="row">
                             <div class="col-md-3 text-end">
                                 <label for="estrutura"
-                                    class="fw-bold col-form-label col-form-label-sm mb-4">Estrutura:</label>
+                                    class="fw-bold col-form-label col-form-label-sm mb-4">Estrutura:<i class='bi bi-info-circle' onmousemove="infoEstrutura()" ></i></label>
                             </div>
                             <div class="col">
                                 <div class="input-group input-group-sm mb-1">
@@ -205,7 +211,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-3 text-end">
-                                <label for="estrutura" class="fw-bold col-form-label col-form-label-sm mb-4">Módulos e
+                                <label class="fw-bold col-form-label col-form-label-sm mb-4">Módulos e
                                     Conexões:</label>
                             </div>
                             <div class="col">
@@ -231,7 +237,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-3 text-end">
-                                <label for="estrutura" class="fw-bold col-form-label col-form-label-sm">Inversor
+                                <label class="fw-bold col-form-label col-form-label-sm">Inversor
                                     (Instal/Config): <br> </label>
                             </div>
                             <div class="col">

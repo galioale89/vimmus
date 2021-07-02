@@ -6,6 +6,9 @@
             equipe.value = ''
         }
     }
+    function infoGestao() {
+        alert('Considere o número de horas dedicados ao planejamento do projeto.')
+    }    
 </script>
 <form action='/projeto/direto/' method='post' class=''>
     <!-- Modal Consulta Alíquotas-->
@@ -243,7 +246,7 @@
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Projetista:</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Valor
                                         ART:</label><br>
-                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Gestão:</label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Gestão:</label><i class='bi bi-info-circle' onmousemove="infoGesao()"></i><br>
                                     <label
                                         class="fw-bold col-form-label col-form-label-sm mb-1">Deslocamento:</label><br>
                                     <label
@@ -308,6 +311,11 @@
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='number' name='trbpro'
                                             class='form-control form-control-sm' value='{{projeto.trbpro}}'>
                                     </div>
+                                    <div class="row mt-1" style='margin-right: 1px;'><input type="hidden"></div>
+                                    <div class="row" style='margin-top: 85%'>
+                                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='number' name='trbges'
+                                            class='form-control form-control-sm' value='{{projeto.trbges}}'>
+                                    </div>                                    
                                 </div>
                             </div>
                         </div>
@@ -453,8 +461,11 @@
                             class="btn btn-sm btn-success"><i class="bi bi-check-circle"></i> Aplicar</button>
                         <a class="btn btn-sm btn-primary" data-bs-toggle='modal' data-bs-target="#consultaAliquota"><i
                                 class="bi bi-calculator"></i> Ver Tributos</a>
-                        <a href='/menu' class='btn btn-sm btn-primary'> <i class="bi bi-back"></i> Voltar ao Menu</a>
-                    </div>
+                        {{#if projeto.totint}}        
+                        <a href='/gerenciamento/cronograma/{{projeto._id}}' class="btn btn-sm btn-primary"><i class="bi bi-calendar-range"></i> Cronograma</a>
+                        {{/if}}
+                        <a href='/menu' class='btn btn-sm btn-primary'> <i class="bi bi-arrow-return-left"></i></a>
+                    </div>                    
                 </div>
                 <div class="contorno-titulo-dem mt-2" style="margin-bottom: 10%;font-size: 20px;">
                     <label class='fw-bold col-form-label mt-4'>Demonstrativo</label><br>

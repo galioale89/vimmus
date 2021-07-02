@@ -5,6 +5,8 @@ require('../app')
 require('../model/Regime')
 require('../model/Cliente')
 require('../model/CustoDetalhado')
+require('../model/Cronograma')
+
 
 const mongoose = require('mongoose')
 const Projeto = mongoose.model('projeto')
@@ -13,6 +15,9 @@ const Regime = mongoose.model('regime')
 const Realizado = mongoose.model('realizado')
 const Cliente = mongoose.model('cliente')
 const Detalhado = mongoose.model('custoDetalhado')
+const Cronograma = mongoose.model('cronograma')
+const comparaDatas = require('../resources/comparaDatas')
+
 
 const { ehAdmin } = require('../helpers/ehAdmin')
 
@@ -70,12 +75,18 @@ router.get('/dashboardrealliquido/:id', ehAdmin, (req, res) => {
     })
 })
 
-router.get('/:id', ehAdmin, (req, res) => {
+router.get('/gerenciamento/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
+    var fatura
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         Regime.findOne({ _id: projeto.regime }).lean().then((regime) => {
-            Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {                
-                res.render('projeto/gerenciamento/gerenciamento', { projeto: projeto, cliente: cliente, regime: regime })
+            Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                if (projeto.fatequ == true) {
+                    fatura = 'checked'
+                } else {
+                    fatura = 'unchecked'
+                }
+                res.render('projeto/gerenciamento/gerenciamento', { projeto: projeto, cliente: cliente, regime: regime, fatura })
             }).catch((err) => {
                 req.flash('error_msg', 'Nenhum cliente encontrado.')
                 res.redirect('/cliente/consulta')
@@ -152,7 +163,7 @@ router.get('/editar/gerenciamento/:id', ehAdmin, (req, res) => {
             } else {
                 fatura = 'uncheked'
             }
-            res.render('projeto/gerenciamento/editgerenciamento', { projeto: projeto, cliente: cliente, fatura: fatura })
+            res.render('projeto/gerenciamento/editgerenciamento', { projeto: projeto, cliente: cliente, fatura })
         }).catch((err) => {
             req.flash('error_msg', 'Nenhum cliente encontrado.')
             res.redirect('/cliente/consulta')
@@ -163,7 +174,21 @@ router.get('/editar/gerenciamento/:id', ehAdmin, (req, res) => {
     })
 })
 
-router.post('/', ehAdmin, (req, res) => {
+router.get('/cronograma/:id', ehAdmin, (req, res) => {
+    Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
+        Cronograma.findOne({ projeto: req.params.id }).lean().then((cronograma) => {
+            res.render('projeto/gerenciamento/cronograma', { projeto, cronograma })
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi possível encontrar o cronograma.')
+            res.redirect('/menu')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar o projeto.')
+        res.redirect('/menu')
+    })
+})
+
+router.post('/gerenciamento/', ehAdmin, (req, res) => {
     const { _id } = req.user
     var erros = []
     /*
@@ -294,6 +319,8 @@ router.post('/', ehAdmin, (req, res) => {
 
                         var tothrs = parseFloat(projeto.trbint) + parseFloat(projeto.trbpro) + parseFloat(projeto.trbges)
                         projeto.tothrs = tothrs
+                        var hrsprj = parseFloat(projeto.trbmod) + parseFloat(projeto.trbest) + parseFloat(projeto.trbpro) + parseFloat(projeto.trbges)
+                        projeto.hrsprj = hrsprj
 
                         //console.log('totcmb=>' + totcmb)
                         //console.log('tothtl=>' + tothtl)
@@ -400,8 +427,8 @@ router.post('/', ehAdmin, (req, res) => {
                         var vlrMarkup = 0
                         var prjValor = 0
                         if (req.body.markup == '' || req.body.markup == 0) {
-                            console.log('markup igual a zero')
-                            console.log('projeto.vlrnormal=>' + projeto.vlrnormal)
+                            //console.log('markup igual a zero')
+                            //console.log('projeto.vlrnormal=>' + projeto.vlrnormal)
                             if (req.body.checkFatura != null) {
                                 fatequ = true
                                 vlrNFS = parseFloat(projeto.vlrnormal)
@@ -415,10 +442,10 @@ router.post('/', ehAdmin, (req, res) => {
                             projeto.valor = parseFloat(projeto.vlrnormal).toFixed(2)
                             projeto.markup = 0
                         } else {
-                            console.log('custoTotal=>' + custoTotal)
-                            console.log('req.body.markup=>' + req.body.markup)
+                            //console.log('custoTotal=>' + custoTotal)
+                            //console.log('req.body.markup=>' + req.body.markup)
                             vlrMarkup = (custoTotal / (1 - (parseFloat(req.body.markup) / 100))).toFixed(2)
-                            console.log('vlrMarkup=>' + vlrMarkup)
+                            //console.log('vlrMarkup=>' + vlrMarkup)
                             if (req.body.checkFatura != null) {
                                 fatequ = true
                                 vlrNFS = parseFloat(vlrMarkup)
@@ -432,12 +459,12 @@ router.post('/', ehAdmin, (req, res) => {
                             projeto.valor = vlrMarkup
                             prjValor = parseFloat(vlrMarkup).toFixed(2)
                         }
-                        console.log('vlrNFS=>' + vlrNFS)
-                        console.log('prjValor=>' + prjValor)
+                        //console.log('vlrNFS=>' + vlrNFS)
+                        //console.log('prjValor=>' + prjValor)
                         //kWp médio
                         projeto.vrskwp = (parseFloat(prjValor) / parseFloat(projeto.potencia)).toFixed(2)
                         projeto.fatequ = fatequ
-                        
+
                         var vlrcom = 0
                         //Validando a comissão
                         if (projeto.percom != null) {
@@ -448,8 +475,8 @@ router.post('/', ehAdmin, (req, res) => {
                         projeto.vlrNFS = vlrNFS.toFixed(2)
                         projeto.impNFS = impNFS.toFixed(2)
 
-                        console.log('impNFS=>' + impNFS)
-                        console.log('projeto.valor=>' + projeto.valor)
+                        //console.log('impNFS=>' + impNFS)
+                        //console.log('projeto.valor=>' + projeto.valor)
                         //Definindo o Lucro Bruto
                         var recLiquida = parseFloat(prjValor) - parseFloat(impNFS)
                         projeto.recLiquida = recLiquida.toFixed(2)
@@ -502,7 +529,7 @@ router.post('/', ehAdmin, (req, res) => {
                         projeto.parCabEqu = parseFloat(parCabEqu).toFixed(2)
                         //Armazenagem
                         var parEbtEqu = parseFloat(detalhe.valorEbt) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parEbtEqu = parseFloat(parEbtEqu).toFixed(2)                        
+                        projeto.parEbtEqu = parseFloat(parEbtEqu).toFixed(2)
                         //DPS CC + CA
                         var parDpsEqu = (parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDPSCA)) / parseFloat(detalhe.vlrTotal) * 100
                         projeto.parDpsEqu = parseFloat(parDpsEqu).toFixed(2)
@@ -703,6 +730,8 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
 
                         var tothrs = parseFloat(projeto.trbint) + parseFloat(projeto.trbpro) + parseFloat(projeto.trbges)
                         projeto.tothrs = tothrs
+                        var hrsprj = parseFloat(projeto.trbmod) + parseFloat(projeto.trbest) + parseFloat(projeto.trbpro) + parseFloat(projeto.trbges)
+                        projeto.hrsprj = hrsprj
 
                         //console.log('totcmb=>' + totcmb)
                         //console.log('tothtl=>' + tothtl)
@@ -827,8 +856,8 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                         var vlrMarkup = 0
                         var prjValor = 0
                         if (req.body.markup == '' || req.body.markup == 0) {
-                            console.log('markup igual a zero')
-                            console.log('projeto.vlrnormal=>' + projeto.vlrnormal)
+                            //console.log('markup igual a zero')
+                            //console.log('projeto.vlrnormal=>' + projeto.vlrnormal)
                             if (req.body.checkFatura != null) {
                                 fatequ = true
                                 vlrNFS = parseFloat(projeto.vlrnormal)
@@ -842,10 +871,10 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                             projeto.valor = parseFloat(projeto.vlrnormal).toFixed(2)
                             projeto.markup = 0
                         } else {
-                            console.log('custoTotal=>' + custoTotal)
-                            console.log('req.body.markup=>' + req.body.markup)
+                            //console.log('custoTotal=>' + custoTotal)
+                            //console.log('req.body.markup=>' + req.body.markup)
                             vlrMarkup = (custoTotal / (1 - (parseFloat(req.body.markup) / 100))).toFixed(2)
-                            console.log('vlrMarkup=>' + vlrMarkup)
+                            //console.log('vlrMarkup=>' + vlrMarkup)
                             if (req.body.checkFatura != null) {
                                 fatequ = true
                                 vlrNFS = parseFloat(vlrMarkup)
@@ -859,12 +888,12 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                             projeto.valor = vlrMarkup
                             prjValor = parseFloat(vlrMarkup).toFixed(2)
                         }
-                        console.log('vlrNFS=>' + vlrNFS)
-                        console.log('prjValor=>' + prjValor)
+                        //console.log('vlrNFS=>' + vlrNFS)
+                        //console.log('prjValor=>' + prjValor)
                         //kWp médio
                         projeto.vrskwp = (parseFloat(prjValor) / parseFloat(projeto.potencia)).toFixed(2)
                         projeto.fatequ = fatequ
-                        
+
                         var vlrcom = 0
                         //Validando a comissão
                         if (projeto.percom != null) {
@@ -875,8 +904,8 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                         projeto.vlrNFS = vlrNFS.toFixed(2)
                         projeto.impNFS = impNFS.toFixed(2)
 
-                        console.log('impNFS=>' + impNFS)
-                        console.log('projeto.valor=>' + projeto.valor)
+                        //console.log('impNFS=>' + impNFS)
+                        //console.log('projeto.valor=>' + projeto.valor)
 
                         //Definindo o Lucro Bruto
                         var recLiquida = parseFloat(prjValor) - parseFloat(impNFS)
@@ -932,7 +961,7 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                         projeto.parCabEqu = parseFloat(parCabEqu).toFixed(2)
                         //Armazenagem
                         var parEbtEqu = parseFloat(detalhe.valorEbt) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parEbtEqu = parseFloat(parEbtEqu).toFixed(2)                        
+                        projeto.parEbtEqu = parseFloat(parEbtEqu).toFixed(2)
                         //DPS CC + CA
                         var parDpsEqu = (parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDPSCA)) / parseFloat(detalhe.vlrTotal) * 100
                         projeto.parDpsEqu = parseFloat(parDpsEqu).toFixed(2)
@@ -1122,7 +1151,7 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                 //Validar ICMS
                 if (projeto.fatequ == true) {
                     if (regime.alqICMS != null) {
-                        impostoICMS = (parseFloat(prjValor)) * (parseFloat(regime.alqICMS) / 100)
+                        impostoICMS = (parseFloat(projeto.vlrNFS)) * (parseFloat(regime.alqICMS) / 100)
                         totalTributos = parseFloat(totalImposto) + parseFloat(projeto.impNFS) + parseFloat(impostoICMS)
                         totalImposto = parseFloat(totalImposto) + parseFloat(impostoICMS)
                     }
@@ -1189,10 +1218,10 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                 projeto.parDedVlr = parDedVlr.toFixed(2)
                 //console.log('parDedVlr=>' + parDedVlr)
                 var parISSVlr
-                if (projeto.impNFS > 0){
-                parISSVlr = parseFloat(projeto.impNFS) / parseFloat(projeto.valor) * 100
-                }else{
-                    parISSVlr = 0 
+                if (projeto.impNFS > 0) {
+                    parISSVlr = parseFloat(projeto.impNFS) / parseFloat(projeto.valor) * 100
+                } else {
+                    parISSVlr = 0
                 }
                 projeto.parISSVlr = parISSVlr.toFixed(2)
                 //console.log('parISSVlr=>' + parISSVlr)
@@ -1251,12 +1280,12 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                 projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
                 //console.log('parDedNfs=>' + parDedNfs)
                 var parISSNfs
-                if (projeto.impNFS > 0){
+                if (projeto.impNFS > 0) {
                     parISSNfs = parseFloat(projeto.impNFS) / parseFloat(projeto.vlrNFS) * 100
-                }else{
+                } else {
                     parISSNfs = 0
                 }
-                
+
                 projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)
                 //console.log('parISSNfs=>' + parISSNfs)
                 var parImpNfs = (parseFloat(totalImposto) / parseFloat(projeto.vlrNFS)) * 100
@@ -1353,9 +1382,22 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
             if (regime.regime == 'Simples') {
                 //console.log('Regime=>Simples')
                 var alqEfe = ((parseFloat(prjFat) * (parseFloat(regime.alqDAS) / 100)) - (parseFloat(regime.vlrred))) / parseFloat(prjFat)
+                //console.log('alqEfe=>'+alqEfe)
                 var totalSimples = parseFloat(projeto.vlrNFS) * (parseFloat(alqEfe))
+                //console.log('totalSimples=>'+totalSimples)
                 totalImposto = parseFloat(totalSimples).toFixed(2)
+                //console.log('totalImposto=>'+totalImposto)
                 projeto.impostoSimples = parseFloat(totalImposto).toFixed(2)
+                impostoIRPJAdd = 0
+                projeto.impostoAdd = 0
+                impostoIRPJ = 0
+                projeto.impostoIRPJ = 0
+                impostoCSLL = 0
+                projeto.impostoCSLL = 0
+                impostoCOFINS = 0
+                projeto.impostoCOFINS = 0
+                impostoPIS = 0
+                projeto.impostoPIS = 0
             } else {
                 if (regime.regime == 'Lucro Real') {
                     if ((parseFloat(prjLR) / 12) > 20000) {
@@ -1410,9 +1452,11 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
                 }
             }
             //Validar ICMS
+            //console.log('projeto.fatequ=>'+projeto.fatequ)
+            //console.log('regime.alqICMS=>'+regime.alqICMS)
             if (projeto.fatequ == true) {
                 if (regime.alqICMS != null) {
-                    impostoICMS = (parseFloat(prjValor)) * (parseFloat(regime.alqICMS) / 100)
+                    impostoICMS = (parseFloat(projeto.vlrNFS)) * (parseFloat(regime.alqICMS) / 100)
                     totalTributos = parseFloat(totalImposto) + parseFloat(projeto.impNFS) + parseFloat(impostoICMS)
                     totalImposto = parseFloat(totalImposto) + parseFloat(impostoICMS)
                 }
@@ -1464,12 +1508,12 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
             var parDedVlr = parseFloat(projeto.custoPlano) / parseFloat(projeto.valor) * 100
             projeto.parDedVlr = parDedVlr.toFixed(2)
             var parISSVlr
-            if (projeto.impNFS > 0){
+            if (projeto.impNFS > 0) {
                 parISSVlr = parseFloat(projeto.impNFS) / parseFloat(projeto.valor) * 100
-            }else{
+            } else {
                 parISSVlr = 0
             }
-            
+
             projeto.parISSVlr = parISSVlr.toFixed(2)
             var parImpVlr = (parseFloat(totalImposto) / parseFloat(projeto.valor)) * 100
             projeto.parImpVlr = parImpVlr.toFixed(2)
@@ -1561,6 +1605,311 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
             req.flash('error_msg', 'Não foi possível encontrar o regime.')
             res.redirect('/configuracao/consultaregime')
         })
+    })
+})
+
+router.post('/salvacronograma/', ehAdmin, (req, res) => {
+
+    var erros = ''
+    var sucesso = ''
+    var cronogramaNovo
+    const { _id } = req.user
+
+    var checkPla = 'unchecked'
+    var checkAte = 'unchecked'
+    var checkPrj = 'unchecked'
+    var checkEst = 'unchecked'
+    var checkMod = 'unchecked'
+    var checkInv = 'unchecked'
+    var checkEae = 'unchecked'
+    var checkStb = 'unchecked'
+    var checkPnl = 'unchecked'
+    var checkVis = 'unchecked'
+
+    if ((typeof req.body.datepla != 'undefined') && (req.body.datepla != '')) {
+        checkPla = 'checked'
+    }
+    if ((typeof req.body.dateate != 'undefined') && (req.body.dateate != '')) {
+        checkAte = 'checked'
+    }
+    if ((typeof req.body.dateprj != 'undefined') && (req.body.dateprj != '')) {
+        checkPrj = 'checked'
+    }
+    if ((typeof req.body.dateest != 'undefined') && (req.body.dateest != '')) {
+        checkEst = 'checked'
+    }
+    if ((typeof req.body.datemod != 'undefined') && (req.body.datemod != '')) {
+        checkMod = 'checked'
+    }
+    if ((typeof req.body.dateinv != 'undefined') && (req.body.dateinv != '')) {
+        checkInv = 'checked'
+    }
+    if ((typeof req.body.dateeae != 'undefined') && (req.body.dateeae != '')) {
+        checkEae = 'checked'
+    }
+    if ((typeof req.body.datestb != 'undefined') && (req.body.datestb != '')) {
+        checkStb = 'checked'
+    }
+    if ((typeof req.body.datepnl != 'undefined') && (req.body.datepnl != '')) {
+        checkPnl = 'checked'
+    }
+    if ((typeof req.body.datevis != 'undefined') && (req.body.datevis != '')) {
+        checkVis = 'checked'
+    }
+
+    Projeto.findOne({ _id: req.body.idprojeto }).then((prj_entrega) => {
+        if (req.body.orcado == 'true') {
+            if (req.body.datevisfim != '' && typeof req.body.datevisfim != 'undefined' && req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined') {
+                if (comparaDatas(req.body.dateentrega, req.body.datevisfim)) {
+                    erros = erros + 'É necessário que a data de entrega prevista do projeto seja maior ou igual a data de finalização da vistoria.'
+                } else {
+                    Cronograma.findOne({ projeto: req.body.idprojeto }).then((cronograma_orc) => {
+                        if (cronograma_orc != null) {
+                            cronograma_orc.remove()
+                        }
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Cronograma não encontrado.')
+                        res.redirect('/projeto/consulta')
+                    })
+                    cronogramaNovo = {
+                        user: _id,
+                        projeto: req.body.idprojeto,
+                        dateplaini: req.body.dateplaini,
+                        dateateini: req.body.dateateini,
+                        dateprjini: req.body.dateprjini,
+                        dateestini: req.body.dateestini,
+                        datemodini: req.body.datemodini,
+                        dateinvini: req.body.dateinvini,
+                        dateeaeini: req.body.dateeaeini,
+                        datestbini: req.body.datestbini,
+                        datepnlini: req.body.datepnlini,
+                        datevisini: req.body.datevisini,
+                        dateplafim: req.body.dateplafim,
+                        dateatefim: req.body.dateatefim,
+                        dateprjfim: req.body.dateprjfim,
+                        dateestfim: req.body.dateestfim,
+                        datemodfim: req.body.datemodfim,
+                        dateinvfim: req.body.dateinvfim,
+                        dateeaefim: req.body.dateeaefim,
+                        datestbfim: req.body.datestbfim,
+                        datepnlfim: req.body.datepnlfim,
+                        datevisfim: req.body.datevisfim,
+                        dateentrega: req.body.dateentrega,
+                    }
+                }
+            } else {
+
+                Cronograma.findOne({ projeto: req.body.idprojeto }).then((cronograma_orc) => {
+                    if (cronograma_orc != null) {
+                        cronograma_orc.remove()
+                    }
+                }).catch((err) => {
+                    req.flash('error_msg', 'Cronograma não encontrado.')
+                    res.redirect('/projeto/consulta')
+                })
+                cronogramaNovo = {
+                    user: _id,
+                    projeto: req.body.idprojeto,
+                    dateplaini: req.body.dateplaini,
+                    dateateini: req.body.dateateini,
+                    dateprjini: req.body.dateprjini,
+                    dateestini: req.body.dateestini,
+                    datemodini: req.body.datemodini,
+                    dateinvini: req.body.dateinvini,
+                    dateeaeini: req.body.dateeaeini,
+                    datestbini: req.body.datestbini,
+                    datepnlini: req.body.datepnlini,
+                    datevisini: req.body.datevisini,
+                    dateplafim: req.body.dateplafim,
+                    dateatefim: req.body.dateatefim,
+                    dateprjfim: req.body.dateprjfim,
+                    dateestfim: req.body.dateestfim,
+                    datemodfim: req.body.datemodfim,
+                    dateinvfim: req.body.dateinvfim,
+                    dateeaefim: req.body.dateeaefim,
+                    datestbfim: req.body.datestbfim,
+                    datepnlfim: req.body.datepnlfim,
+                    dateisfim: req.body.datevisfim,
+                    dateentrega: req.body.dateentrega,
+                }
+            }
+            new Cronograma(cronogramaNovo).save().then(() => {
+                sucesso = sucesso + 'Cronograma salvo com sucesso. '
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível salvar o cronograma.')
+                res.redirect('/menu')
+            })
+        } else {
+            if (req.body.executando == 'true') {
+                Cronograma.findOne({ projeto: req.body.idprojeto }).then((cronograma) => {
+                    cronograma.checkPla = checkPla
+                    cronograma.checkAte = checkAte
+                    cronograma.checkPrj = checkPrj
+                    cronograma.checkAte = checkAte
+                    cronograma.checkEst = checkEst
+                    cronograma.checkMod = checkMod
+                    cronograma.checkInv = checkInv
+                    cronograma.checkEae = checkEae
+                    cronograma.checkStb = checkStb
+                    cronograma.checkPnl = checkPnl
+                    cronograma.checkVis = checkVis
+                    cronograma.datepla = req.body.datepla
+                    cronograma.dateate = req.body.dateate
+                    cronograma.dateprj = req.body.dateprj
+                    cronograma.dateest = req.body.dateest
+                    cronograma.datemod = req.body.datemod
+                    cronograma.dateinv = req.body.dateinv
+                    cronograma.dateeae = req.body.dateeae
+                    cronograma.datestb = req.body.datestb
+                    cronograma.datepnl = req.body.datepnl
+                    cronograma.datevis = req.body.datevis
+
+                    //---Validar as datas de realização com data estimada do fim da entrega--//
+                    if (req.body.datepla != '' && typeof req.body.datepla != 'undefined') {
+                        cronograma.atrasouPla = comparaDatas(cronograma.dateplafim, req.body.datepla)
+                    }
+                    if (req.body.dateprj != '' && typeof req.body.dateprj != 'undefined') {
+                        cronograma.atrasouPrj = comparaDatas(cronograma.dateprjfim, req.body.dateprj)
+                    }
+                    if (req.body.dateate != '' && typeof req.body.dateate != 'undefined') {
+                        cronograma.atrasouAte = comparaDatas(cronograma.dateatefim, req.body.dateate)
+                    }
+                    if (req.body.dateest != '' && typeof req.body.dateest != 'undefined') {
+                        cronograma.atrasouEst = comparaDatas(cronograma.dateestfim, req.body.dateest)
+                    }
+
+                    if (req.body.datemod != '' && typeof req.body.datemod != 'undefined') {
+                        cronograma.atrasouMod = comparaDatas(cronograma.datemodfim, req.body.datemod)
+                    }
+
+                    if (req.body.dateinv != '' && typeof req.body.dateinv != 'undefined') {
+                        cronograma.atrasouInv = comparaDatas(cronograma.dateinvfim, req.body.dateinv)
+                    }
+
+                    if (req.body.dateeae != '' && typeof req.body.dateeae != 'undefined') {
+                        cronograma.atrasouEae = comparaDatas(cronograma.dateeaefim, req.body.dateeae)
+                    }
+
+                    if (req.body.datestb != '' && typeof req.body.datestb != 'undefined') {
+                        cronograma.atrasouStb = comparaDatas(cronograma.datestbfim, req.body.datestb)
+                    }
+
+                    if (req.body.datepnl != '' && typeof req.body.datepnl != 'undefined') {
+                        cronograma.atrasouPnl = comparaDatas(cronograma.datepnlfim, req.body.datepnl)
+                    }
+                    if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
+                        cronograma.atrasouVis = comparaDatas(cronograma.datevisfim, req.body.datevis)
+                    }
+
+                    if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
+                        if (req.body.dateEntregaReal != '' && typeof req.body.dateEntregaReal != 'undifined') {
+                            if (comparaDatas(req.body.dateEntregaReal, req.body.datevis)) {
+                                erros = erros + 'A data de entrega de finalização do projeto deve ser maior ou igual a data de finalização da vistoria.'
+                            } else {
+                                cronograma.dateEntregaReal = req.body.dateEntregaReal
+                            }
+                        }
+                    }
+                    cronograma.save().then(() => {
+                        console.log('salvou o cronograma.')
+                        sucesso = sucesso + 'Cronograma salvo com sucesso. '
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Não foi possível salvar o cronograma.')
+                        res.redirect('/menu')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi possível encontrar o cronograma.')
+                    res.redirect('/menu')
+                })
+            }
+        }
+        var dataentrega
+        var ano
+        var mes
+        var dia
+        var dataEntregaReal
+        if (req.body.executando == 'true') {
+            if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
+                if (req.body.dateEntregaReal != '' && typeof req.body.dateEntregaReal != 'undifined') {
+                    if (comparaDatas(req.body.dateEntregaReal, req.body.datevis)) {
+                        erros = erros + 'Não foi possível salvar a nova data de entrega de finalização. '
+                        console.log(erros)
+                    } else {
+                        dataEntregaReal = req.body.dateEntregaReal
+                        ano = dataEntregaReal.substring(0, 4)
+                        mes = dataEntregaReal.substring(5, 7)
+                        dia = dataEntregaReal.substring(8, 11)
+                        dataEntregaReal = dia + '/' + mes + '/' + ano
+                        prj_entrega.datafim = dataEntregaReal
+                        prj_entrega.valDataFim = req.body.dateEntregaReal
+                        prj_entrega.atrasado = comparaDatas(req.body.dateEntregaHidden, req.body.dateEntregaReal)
+                    }
+                }
+            }
+        } else {
+            if (req.body.orcado == true) {
+                dataentrega = req.body.dateEntrega
+                ano = dataentrega.substring(0, 4)
+                mes = dataentrega.substring(5, 7)
+                dia = dataentrega.substring(8, 11)
+                dataentrega = dia + '/' + mes + '/' + ano
+                prj_entrega.dataprev = dataentrega
+                prj_entrega.dataord = ano + mes + dia
+                prj_entrega.valDataPrev = req.body.dateentrega
+            }
+        }
+        //------Validação do percentual de conclusão do projeto----//
+        if (req.body.perConclusao != '' && typeof req.body.perConclusao != 'undefined' && req.body.perConclusao != 0) {
+            var perConclusao = 0
+            var ev = 0
+            var ac = 0
+            var cpi = 0
+            var tcpi = 0
+            var spi = 0
+            var eac = 0
+            var etc = 0
+            perConclusao = req.body.perConclusao
+            ev = parseFloat(prj_entrega.valor) * (parseFloat(perConclusao) / 100)
+            if (req.body.actualCost != '' && typeof req.body.actualCost != 'undefined' && req.body.actualCost != 0) {
+                ac = req.body.actualCost
+            } else {
+                ac = ev
+            }
+            cpi = parseFloat(ev) / parseFloat(ac)
+            tcpi = (parseFloat(prj_entrega.valor) - parseFloat(ev)) / (parseFloat(prj_entrega.valor) - parseFloat(ac))
+            eac = parseFloat(prj_entrega.valor) / parseFloat(cpi)
+            etc = parseFloat(eac) - parseFloat(ac)
+            spi = parseFloat(prj_entrega.hrsprj) * (parseFloat(perConclusao) / 100)
+            prj_entrega.perConclusao = perConclusao
+            prj_entrega.actualCost = parseFloat(req.body.actualCost).toFixed(2)
+            prj_entrega.cpi = parseFloat(cpi).toFixed(4)
+            prj_entrega.tcpi = parseFloat(tcpi).toFixed(4)
+            prj_entrega.etc = parseFloat(etc).toFixed(2)
+            prj_entrega.spi = parseFloat(spi).toFixed(2)
+            prj_entrega.tspi = 1
+        } else {
+            prj_entrega.perConclusao = 0
+            prj_entrega.etc = prj_entrega.valor
+            prj_entrega.actualCost = 0
+            prj_entrega.cpi = 1
+            prj_entrega.tcpi = 1
+            prj_entrega.spi = 1
+            prj_entrega.tspi = 1
+        }
+        //---------------------------------------------------------//
+
+        prj_entrega.save().then(() => {
+            console.log('salvou o projeto')
+            req.flash('error_msg', erros)
+            req.flash('success_msg', sucesso)
+            res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi possível salvar o projeto.')
+            res.redirect('/menu')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar o projeto.')
+        res.redirect('/menu')
     })
 })
 

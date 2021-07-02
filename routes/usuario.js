@@ -9,16 +9,6 @@ const nodemailer = require('nodemailer')
 const bcrypt = require("bcryptjs")
 const passport = require("passport")
 
-/*
-//Configurando envio de SMS
-const Vonage = require('@vonage/server-sdk')
-
-const vonage = new Vonage({
-  apiKey: "db9a4e8d",
-  apiSecret: "JAONfDZDLw5t3Uqh"
-})
-*/
-
 //Configurando envio de e-mail
 const transporter = nodemailer.createTransport({ // Configura os parâmetros de conexão com servidor.
     host: 'smtp.umbler.com',
@@ -116,12 +106,6 @@ router.post('/enviar', (req, res) => {
                     //text: 'Nome: ' + req.body.nome + ';' + 'Celular: ' + req.body.celular + ';' + 'E-mail: '+ req.body.email
                     text: texto
                 }
-                /*
-                //Parâmentros do SMS
-                const from = "Vonage APIs"
-                const to = "5549991832978"
-                const text = texto
-                */
 
                 Usuario.findOne({ email: req.body.email }).then((usuario_email) => {
                     if (usuario_email) {
@@ -159,7 +143,7 @@ router.post('/enviar', (req, res) => {
                                         if (err) {
                                             return //console.log(err)
                                         }
-                                        ////console.log(info)
+                                        //console.log(info)
                                     })
                                     res.redirect("/menu")
                                 }).catch((err) => {
@@ -168,22 +152,6 @@ router.post('/enviar', (req, res) => {
                                 })
                             })
                         })
-
-                        /*
-                        //Enviando SMS
-                        vonage.message.sendSms(from, to, text, (err, responseData) => {
-                            if (err) {
-                                ////console.log(err);
-                            } else {
-                                if(responseData.messages[0]['status'] === "0") {
-                                    ////console.log("Message sent successfully.");
-                                } else {
-                                    ////console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
-                                }
-                            }
-                        })    
-                        
-                        */
                         res.render('index', { sucesso: sucesso })
                     }
                 }).catch((err) => {
@@ -252,7 +220,6 @@ router.post('/salvacontato', (req, res) => {
         })
     }
 })
-
 //Autenticando usuario
 router.get("/login", (req, res) => {
     res.render("usuario/login")
@@ -309,15 +276,15 @@ router.post("/editregistro", ehAdmin, (req, res) => {
 
                 Usuario.findOne({ _id: req.body.id }).then((usuario) => {
 
-                    ////console.log('req.body.nome=>'+req.body.nome)
-                    ////console.log('razao=>'+req.body.razao)
-                    ////console.log('fantasia=>'+req.body.fantasia)
-                    ////console.log('cnpj=>'+req.body.cnpj)
-                    ////console.log('endereco=>'+req.body.endereco)
-                    ////console.log('cidade=>'+req.body.cidade)
-                    ////console.log('uf=>'+req.body.uf)
-                    ////console.log('telefone=>'+req.body.telefone)
-                    ////console.log('req.body.usuario=>'+req.body.usuario)
+                    //console.log('req.body.nome=>'+req.body.nome)
+                    //console.log('razao=>'+req.body.razao)
+                    //console.log('fantasia=>'+req.body.fantasia)
+                    //console.log('cnpj=>'+req.body.cnpj)
+                    //console.log('endereco=>'+req.body.endereco)
+                    //console.log('cidade=>'+req.body.cidade)
+                    //console.log('uf=>'+req.body.uf)
+                    //console.log('telefone=>'+req.body.telefone)
+                    //console.log('req.body.usuario=>'+req.body.usuario)
                     var cidade = 0
                     var uf = 0
 
@@ -413,15 +380,15 @@ router.post("/editregistro", ehAdmin, (req, res) => {
 
                     Usuario.findOne({ _id: req.body.id }).then((usuario) => {
 
-                        ////console.log('req.body.nome=>'+req.body.nome)
-                        ////console.log('razao=>'+req.body.razao)
-                        ////console.log('fantasia=>'+req.body.fantasia)
-                        ////console.log('cnpj=>'+req.body.cnpj)
-                        ////console.log('endereco=>'+req.body.endereco)
-                        ////console.log('cidade=>'+req.body.cidade)
-                        ////console.log('uf=>'+req.body.uf)
-                        ////console.log('telefone=>'+req.body.telefone)
-                        ////console.log('req.body.usuario=>'+req.body.usuario)
+                        //console.log('req.body.nome=>'+req.body.nome)
+                        //console.log('razao=>'+req.body.razao)
+                        //console.log('fantasia=>'+req.body.fantasia)
+                        //console.log('cnpj=>'+req.body.cnpj)
+                        //console.log('endereco=>'+req.body.endereco)
+                        //console.log('cidade=>'+req.body.cidade)
+                        //console.log('uf=>'+req.body.uf)
+                        //console.log('telefone=>'+req.body.telefone)
+                        //console.log('req.body.usuario=>'+req.body.usuario)
                         var cidade = 0
                         var uf = 0
 

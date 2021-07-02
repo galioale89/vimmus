@@ -9,7 +9,6 @@
     function mascara_dataini() {
         var data = document.getElementById('valDataIni')
         var dataini = document.getElementById('dataini')
-        var dataord = document.getElementById('dataord')
 
         var novadata = data.value
         novadata = novadata.replace(novadata.substring(4, 5), "")
@@ -32,7 +31,6 @@
                 data.value = ''
                 alert('Data maior que o dia de hoje.')
             } else {
-                dataord.value = ano1 + mes1 + dia1
                 dataini.value = dia1 + '/' + mes1 + '/' + ano1
             }
         }
@@ -41,6 +39,7 @@
         var data = document.getElementById('valDataPrev')
         var dataprev = document.getElementById('dataprev')
         var dataini = document.getElementById('valDataIni')
+        var dataord = document.getElementById('dataord')
 
         var novadata = data.value
         novadata = novadata.replace(novadata.substring(4, 5), "")
@@ -66,6 +65,7 @@
                     data.value = ''
                     alert('Data deve ser maior que data inicial.')
                 } else {
+                    dataord.value = ano1 + mes1 + dia1
                     dataprev.value = dia1 + '/' + mes1 + '/' + ano1
                 }
             }

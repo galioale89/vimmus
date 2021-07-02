@@ -138,8 +138,8 @@ router.post("/editregistro", ehMaster, (req, res) => {
 
     Usuarios.findOne({ usuario: req.body.usuario }).then((usuario_existe) => {
         if (usuario_existe == null) {
-            console.log('Usuário não existe.')
-            console.log('existe: usuario_existe=>'+usuario_existe)
+            //console.log('Usuário não existe.')
+            //console.log('existe: usuario_existe=>'+usuario_existe)
             if ((req.body.senha != '' && req.body.senharep == '') || (req.body.senha == '' && req.body.senharep != '')) {
                 if (!req.body.senha || typeof req.body.senha == undefined || req.body.senha == true) {
                     erros.push({ texto: "Senha Inválida" })
@@ -306,9 +306,9 @@ router.post("/editregistro", ehMaster, (req, res) => {
             }
         } else {
             Usuarios.findOne({ _id: req.body.id }).lean().then((usuario_atual) => {
-                console.log('Usuário existe.')
-                console.log('atual: usuario_existe=>'+usuario_existe.usuario)
-                console.log('usuario_atual=>'+usuario_atual.usuario)
+                //console.log('Usuário existe.')
+                //console.log('atual: usuario_existe=>'+usuario_existe.usuario)
+                //console.log('usuario_atual=>'+usuario_atual.usuario)
                 if (usuario_existe.usuario != usuario_atual.usuario) {
                     erros.push({ texto: 'Me desculpe, este nome de usuario já existe. Por favor tente outro.' })
                     const { ehAdmin } = req.user
