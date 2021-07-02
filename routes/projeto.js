@@ -38,8 +38,8 @@ const nexmo = new Nexmo({
      apiSecret: "JAONfDZDLw5t3Uqh"
 })
 */
-const TextMessageService = require('../node_modules/comtele-sdk').TextMessageService
-const apiKey = "8dbd4fb5-79af-45d6-a0b7-583a3c2c7d30"
+//const TextMessageService = require('comtele-sdk').TextMessageService
+//const apiKey = "8dbd4fb5-79af-45d6-a0b7-583a3c2c7d30"
 
 
 router.use(express.static('/imagens'))
