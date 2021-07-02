@@ -400,7 +400,7 @@
                 <label class='col-form-label col-form-label-sm fw-bold'>Data de Entrega(Turn Key):</label>
             </div>
             <div class="col-md-2">
-                <input type="date" class='form-control form-control-sm' name='datepnlini' {{#if
+                <input type="date" class='form-control form-control-sm' name='dateentrega' {{#if
                     projeto.orcado}}{{else}}disabled{{/if}} {{#if
                     cronograma.dateentrega}}value='{{cronograma.dateentrega}}' {{else}}value='{{projeto.valDataPrev}}'
                     {{/if}}>
