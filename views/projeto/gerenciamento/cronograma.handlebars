@@ -396,9 +396,19 @@
         </div>
         <hr>
         <div class="row">
+            {{#if projeto.homologado}}
+            <div class='col-md-3 fw-bold'>
+                <label class="col-form-label col-form-label-sm">Vistoria Distribuidora : {{projeto.dataVisto}}</label>
+            </div>
+            <div class="col-md-3 text-end">
+                <label class='col-form-label col-form-label-sm fw-bold'>Data de Entrega(Turn Key):</label>
+            </div>
+            {{else}}
             <div class="col-md-6 text-end">
                 <label class='col-form-label col-form-label-sm fw-bold'>Data de Entrega(Turn Key):</label>
             </div>
+            {{/if}}
+            
             <div class="col-md-2">
                 <input type="date" class='form-control form-control-sm' name='dateentrega' {{#if
                     projeto.orcado}}{{else}}disabled{{/if}} {{#if
