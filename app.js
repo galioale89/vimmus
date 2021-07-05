@@ -129,6 +129,9 @@ app.get('/menu', ehAdmin, (req, res) => {
       }
       var perVlrMed = (parseFloat(somaLL) / parseFloat(somaVT) * 100).toFixed(1)
       var perNfsMed = (parseFloat(somaLL) / parseFloat(somaVF) * 100).toFixed(1)
+      if (isNaN(perNfsMed)){
+        perNfsMed = 0
+      }
       const { _id } = req.user
       aviso.push({texto: 'Para todos os campos de valor utilizar ponto para separar os decimais e não usar ponto para separar os milhares.'})
       Projeto.find({ foiRealizado: false, user: _id }).sort({ dataord: 'asc' }).lean().then((dataord) => {
@@ -154,6 +157,12 @@ app.get('/menu', ehAdmin, (req, res) => {
                       } else {
                         ehMaster = false
                       }
+                      if (isNaN(perRealizado)){
+                        perRealizado = 0
+                      }
+                      if (isNaN(perEntregue)){
+                        perEntregue = 0
+                      }                      
                       var totLista = parseFloat(qtdAberto) + parseFloat(qtdExecucao) + parseFloat(qtdParado) + parseFloat(qtdHomologado)
 
                       Configuracao.findOne({ user: _id, slug: 'Padrão' }).then((config) => {
