@@ -166,6 +166,7 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
             //console.log('É manual')
             const equipe = {
                 projeto: req.body.id,
+                user: _id,
                 nome_projeto: projeto.nome,
                 ins0: req.body.ins0,
                 ins1: req.body.ins1,
@@ -260,6 +261,7 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
             Equipe.findOne({ _id: req.body.id_equipe }).lean().then((equipe) => {
                 const equipe_nova = {
                     projeto: req.body.id,
+                    user: _id,
                     nome_projeto: projeto.nome,
                     ins0: equipe.ins0,
                     ins1: equipe.ins1,
@@ -650,6 +652,7 @@ router.get('/consulta', ehAdmin, (req, res) => {
 router.get('/vermais/:id', ehAdmin, (req, res) => {
     var qtdins_equipe = 0
     var nome_projetos = []
+    var np = []
     const { _id } = req.user
     Pessoa.findOne({ _id: req.params.id, user: _id }).lean().then((pessoa) => {
         //console.log(pessoa.nome)
@@ -657,17 +660,28 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
             Projeto.find({ funins: pessoa._id, user: _id }).sort({ dataord: 'desc' }).lean().then((prjins) => {
                 Projeto.find({ funpro: pessoa._id, user: _id }).sort({ dataord: 'desc' }).lean().then((prjpro) => {
                     Projeto.find({ vendedor: pessoa._id, user: _id }).sort({ dataord: 'desc' }).lean().then((prjven) => {
-                        Equipe.find({ $or: [{ ins0: pessoa.nome }, { ins1: pessoa.nome }, { ins2: pessoa.nome }, { ins3: pessoa.nome }, { ins4: pessoa.nome }, { ins5: pessoa.nome }], user: _id }).lean().then((equipe) => {
+                        console.log('user=>' + _id)
+                        console.log('pessoa.nome=>' + pessoa.nome)
+                        Equipe.find({ user: _id, $or: [{ ins0: pessoa.nome }, { ins1: pessoa.nome }, { ins2: pessoa.nome }, { ins3: pessoa.nome }, { ins4: pessoa.nome }, { ins5: pessoa.nome }] }).lean().then((equipe) => {
+                            console.log('equipe=>'+equipe)
                             equipe.forEach(element => {
                                 const { nome_projeto } = element
+                                const { projeto } = element
+                                console.log('nome_projeto=>'+ nome_projeto)
                                 //console.log(nome_projeto)
-                                if (nome_projeto != undefined) {
-                                    qtdins_equipe = qtdins_equipe + 1
-                                    nome_projetos.push({ nome: nome_projeto })
+                                if (typeof nome_projeto != 'undefined') {
+                                    //Projeto.findOne({ _id: projeto }).then((prj) => {
+                                        qtdins_equipe = qtdins_equipe + 1
+                                        nome_projetos.push({ projeto: projeto, nome: nome_projeto })
+                                        console.log('qtdins_equipe=>'+qtdins_equipe)
+                                        console.log('nome_projetos=>'+nome_projetos)
+                                    //}).catch((err) => {
+                                    //    req.flash('error_msg', 'Projeto não encontrado')
+                                    //    res.redirect('/pessoa/consulta')
+                                    //})
                                 }
+                                
                             })
-                            //console.log(qtdins_equipe)
-                            //console.log(nome_projetos)
                             var qtdven = prjven.length
                             var qtdres = prjres.length
                             var qtdins = prjins.length
