@@ -395,9 +395,9 @@
                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="equipamento"
                             id="equipamento" value='{{projeto.vlrkit}}' class="form-control form-control-sm mb-2"
                             placeholder="R$" aria-placeholder="R$" step='0.010'>
-                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text" name="potencia" id="potencia"
+                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="potencia" id="potencia"
                             value='{{projeto.potencia}}' class="form-control form-control-sm mb-2" placeholder="kWp"
-                            aria-placeholder="R$">
+                            aria-placeholder="R$" step='0.010'>
                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='form-control form-control-sm'
                             type='date' name='valDataIns' id='valDataIns' value='{{projeto.valDataIns}}'
                             onchange="mascara_datains()">

@@ -1,0 +1,328 @@
+<div style="width: 95%">
+    <form method='post' action='/relatorios/aplicar'>
+        <div class="row" style="padding-top: 10px;padding-left: 100px;">
+            <div class="col-md-3">
+                <label class='col-form-label fw-bold'>Selecione o filtro para o dashboard:</label>
+            </div>
+            <div class="col-md-2 mt-2">
+                <div class="form-check" onchange="selecionar()">
+                    <input class="form-check-input" type="radio" name="select" id="selectFat" {{checkFat}}>
+                    <label class="form-check-label">
+                        Faturamento
+                    </label>
+
+                </div>
+            </div>
+            <div class="col-md-2 mt-2">
+                <div class="form-check" onchange="selecionar()">
+                    <input class="form-check-input" type="radio" name="select" id="selectKwp" {{checkKwp}}>
+                    <label class="form-check-label">
+                        Potência
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-2 mt-2">
+                <div class="form-check" onchange="selecionar()">
+                    <input class="form-check-input" type="radio" name="select" id="selectQtd" {{checkQtd}}>
+                    <label class="form-check-label">
+                        Quantidade
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-2 mt-2">
+                <input type='hidden' name='selecionado' id='selecionado' value=''>
+                <button type='submit' class='btn btn-sm btn-primary'>Aplicar</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-8" style="padding-left: 50px;">
+                        <div class="text-center fw-bold" style="padding: 10px">
+                            <label style="font-size: 16px;">Classificação</label>
+                        </div>
+
+                        <div style="height: 200px;">
+                            <input type='hidden' id='qtdrural' value='{{qtdrural}}'>
+                            <input type='hidden' id='qtdresid' value='{{qtdresid}}'>
+                            <input type='hidden' id='qtdcomer' value='{{qtdcomer}}'>
+                            <input type='hidden' id='qtdindus' value='{{qtdindus}}'>
+                            <input type='hidden' id='kwprural' value='{{kwprural}}'>
+                            <input type='hidden' id='kwpresid' value='{{kwpresid}}'>
+                            <input type='hidden' id='kwpcomer' value='{{kwpcomer}}'>
+                            <input type='hidden' id='kwpindus' value='{{kwpindus}}'>
+                            <input type='hidden' id='fatrural' value='{{fatrural}}'>
+                            <input type='hidden' id='fatresid' value='{{fatresid}}'>
+                            <input type='hidden' id='fatcomer' value='{{fatcomer}}'>
+                            <input type='hidden' id='fatindus' value='{{fatindus}}'>
+                            <canvas id='chartClass' class='mt-1 mb-1'></canvas>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="text-center fw-bold" style="padding: 10px">
+                            <label style="font-size: 16px;">Tipo</label>
+                        </div>
+
+                        <div style="height: 200px;">
+                            <input type='hidden' id='qtdsolo' value='{{qtdsolo}}'>
+                            <input type='hidden' id='qtdtelhado' value='{{qtdtelhado}}'>
+                            <input type='hidden' id='kwpsolo' value='{{kwpsolo}}'>
+                            <input type='hidden' id='kwptelhado' value='{{kwptelhado}}'>
+                            <input type='hidden' id='fatsolo' value='{{fatsolo}}'>
+                            <input type='hidden' id='fattelhado' value='{{fattelhado}}'>
+                            <canvas id='chartTipo' class='mt-1 mb-1'></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="text-center fw-bold" style="margin-left: 90px;">
+                        <label style="font-size: 16px;">Tensão</label>
+                    </div>
+                    <div style="margin-left: 90px;">
+                        <div style="height: 200px;">
+                            <input type='hidden' id='qtdmono' value='{{qtdmono}}'>
+                            <input type='hidden' id='qtdbifa' value='{{qtdbifa}}'>
+                            <input type='hidden' id='qtdtrif' value='{{qtdtrif}}'>
+                            <input type='hidden' id='kwpmono' value='{{kwpmono}}'>
+                            <input type='hidden' id='kwpbifa' value='{{kwpbifa}}'>
+                            <input type='hidden' id='kwptrif' value='{{kwptrif}}'>
+                            <input type='hidden' id='fatmono' value='{{fatmono}}'>
+                            <input type='hidden' id='fatbifa' value='{{fatbifa}}'>
+                            <input type='hidden' id='fattrif' value='{{fattrif}}'>
+                            <canvas id='chartTensao' class='mt-1 mb-1'></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div>
+                    <div class="text-center fw-bold" style="padding-top: 30px">
+                        <label style="font-size: 20px;">Niveis de Potencia Instalada</label>
+                    </div>
+
+                    <div style="height: 400px;">
+                        <input type='hidden' id='fatnivel1' value='{{fatnivel1}}'>
+                        <input type='hidden' id='fatnivel2' value='{{fatnivel2}}'>
+                        <input type='hidden' id='fatnivel3' value='{{fatnivel3}}'>
+                        <input type='hidden' id='fatnivel4' value='{{fatnivel4}}'>
+                        <input type='hidden' id='fatnivel5' value='{{fatnivel5}}'>
+                        <input type='hidden' id='fatnivel6' value='{{fatnivel6}}'>
+                        <input type='hidden' id='qtdnivel1' value='{{qtdnivel1}}'>
+                        <input type='hidden' id='qtdnivel2' value='{{qtdnivel2}}'>
+                        <input type='hidden' id='qtdnivel3' value='{{qtdnivel3}}'>
+                        <input type='hidden' id='qtdnivel4' value='{{qtdnivel4}}'>
+                        <input type='hidden' id='qtdnivel5' value='{{qtdnivel5}}'>
+                        <input type='hidden' id='qtdnivel6' value='{{qtdnivel6}}'>
+                        <input type='hidden' id='kwpnivel1' value='{{kwpnivel1}}'>
+                        <input type='hidden' id='kwpnivel2' value='{{kwpnivel2}}'>
+                        <input type='hidden' id='kwpnivel3' value='{{kwpnivel3}}'>
+                        <input type='hidden' id='kwpnivel4' value='{{kwpnivel4}}'>
+                        <input type='hidden' id='kwpnivel5' value='{{kwpnivel5}}'>
+                        <input type='hidden' id='kwpnivel6' value='{{kwpnivel6}}'>
+                        <canvas id='chartNivel' class='mt-1 mb-1'></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script type='text/javascript'>
+    function selecionar() {
+        var selectQtd = document.getElementById('selectQtd')
+        var selectKwp = document.getElementById('selectKwp')
+        var selectFat = document.getElementById('selectFat')
+        var selecionado = document.getElementById('selecionado')
+        if (selectQtd.checked) {
+            selecionado.value = 'quantidade'
+        } else {
+            if (selectFat.checked) {
+                selecionado.value = 'faturamento'
+            } else {
+                selecionado.value = 'potencia'
+            }
+        }
+    }
+
+    var selectQtd = document.getElementById('selectQtd')
+    var selectKwp = document.getElementById('selectKwp')
+    var selectFat = document.getElementById('selectFat')
+
+    if (selectQtd.checked) {
+        var rural = document.getElementById('qtdrural')
+        var residencial = document.getElementById('qtdresid')
+        var comercial = document.getElementById('qtdcomer')
+        var industrial = document.getElementById('qtdindus')
+        var solo = document.getElementById('qtdsolo')
+        var telhado = document.getElementById('qtdtelhado')
+        var monofasico = document.getElementById('qtdmono')
+        var bifasico = document.getElementById('qtdbifa')
+        var trifasico = document.getElementById('qtdtrif')
+        var nivel1 = document.getElementById('qtdnivel1')
+        var nivel2 = document.getElementById('qtdnivel2')
+        var nivel3 = document.getElementById('qtdnivel3')
+        var nivel4 = document.getElementById('qtdnivel4')
+        var nivel5 = document.getElementById('qtdnivel5')
+        var nivel6 = document.getElementById('qtdnivel6')
+    } else {
+        if (selectFat.checked) {
+            var rural = document.getElementById('fatrural')
+            var residencial = document.getElementById('fatresid')
+            var comercial = document.getElementById('fatcomer')
+            var industrial = document.getElementById('fatindus')
+            var solo = document.getElementById('fatsolo')
+            var telhado = document.getElementById('fattelhado')
+            var monofasico = document.getElementById('fatmono')
+            var bifasico = document.getElementById('fatbifa')
+            var trifasico = document.getElementById('fattrif')
+            var nivel1 = document.getElementById('fatnivel1')
+            var nivel2 = document.getElementById('fatnivel2')
+            var nivel3 = document.getElementById('fatnivel3')
+            var nivel4 = document.getElementById('fatnivel4')
+            var nivel5 = document.getElementById('fatnivel5')
+            var nivel6 = document.getElementById('fatnivel6')
+        } else {
+            var rural = document.getElementById('kwprural')
+            var residencial = document.getElementById('kwpresid')
+            var comercial = document.getElementById('kwpcomer')
+            var industrial = document.getElementById('kwpindus')
+            var solo = document.getElementById('kwpsolo')
+            var telhado = document.getElementById('kwptelhado')
+            var monofasico = document.getElementById('kwpmono')
+            var bifasico = document.getElementById('kwpbifa')
+            var trifasico = document.getElementById('kwptrif')
+            var nivel1 = document.getElementById('kwpnivel1')
+            var nivel2 = document.getElementById('kwpnivel2')
+            var nivel3 = document.getElementById('kwpnivel3')
+            var nivel4 = document.getElementById('kwpnivel4')
+            var nivel5 = document.getElementById('kwpnivel5')
+            var nivel6 = document.getElementById('kwpnivel6')
+        }
+    }
+
+    var ctxClass = document.getElementById('chartClass').getContext('2d');
+    var chartClass = new Chart(ctxClass, {
+        type: 'doughnut',
+        data: {
+            labels: ['Rural', 'Residêncial', 'Comercial', 'Industrial'],
+            datasets: [{
+                data: [rural.value, residencial.value, comercial.value, industrial.value],
+                backgroundColor: [
+                    'rgba(37, 139, 33, 0.2)',
+                    'rgba(50, 140, 230, 0.2)',
+                    'rgba(100, 40, 230, 0.2)',
+                    'rgba(200, 50, 60, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(37, 139, 33, 1)',
+                    'rgba(50, 140, 230, 1)',
+                    'rgba(100, 40, 230, 1)',
+                    'rgba(200, 50, 60, 1)',
+                ],
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+        }
+    });
+
+    var ctxTipo = document.getElementById('chartTipo').getContext('2d');
+    var chartTipo = new Chart(ctxTipo, {
+        type: 'doughnut',
+        data: {
+            labels: ['Solo', 'Telhado'],
+            datasets: [{
+                data: [solo.value, telhado.value],
+                backgroundColor: [
+                    'rgba(37, 139, 33, 0.2)',
+                    'rgba(50, 140, 230, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(37, 139, 33, 1)',
+                    'rgba(50, 140, 230, 1)',
+                ],
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+        }
+    });
+
+    var ctxTensao = document.getElementById('chartTensao').getContext('2d');
+    var chartTensao = new Chart(ctxTensao, {
+        type: 'doughnut',
+        data: {
+            labels: ['Monofásico', 'Bifásico', 'Trifásico'],
+            datasets: [{
+                data: [monofasico.value, bifasico.value, trifasico.value],
+                backgroundColor: [
+                    'rgba(37, 139, 33, 0.2)',
+                    'rgba(50, 140, 230, 0.2)',
+                    'rgba(100, 40, 230, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(37, 139, 33, 1)',
+                    'rgba(50, 140, 230, 1)',
+                    'rgba(100, 40, 230, 1)',
+                ],
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+        }
+    });
+
+    var ctxNivel = document.getElementById('chartNivel').getContext('2d');
+    var chartNivel = new Chart(ctxNivel, {
+        type: 'horizontalBar',
+        data: {
+            labels: ['0-10', '11-30', '31-50', '51-100', '101-150', '151-200'],
+            datasets: [{
+                label: '',
+                data: [nivel1.value, nivel2.value, nivel3.value, nivel4.value, nivel5.value, nivel6.value],
+                backgroundColor: [
+                    'rgba(37, 139, 33, 0.2)',
+                    'rgba(50, 140, 230, 0.2)',
+                    'rgba(100, 40, 230, 0.2)',
+                    'rgba(200, 50, 60, 0.2)',
+                    'rgba(50, 50, 50, 0.2)',
+                    'rgba(30, 70, 150, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(37, 139, 33, 1)',
+                    'rgba(50, 140, 230, 1)',
+                    'rgba(100, 40, 230, 1)',
+                    'rgba(200, 50, 60, 1)',
+                    'rgba(50, 50, 50, 1)',
+                    'rgba(30, 70, 150, 1)',
+                ],
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                    }
+                }]
+            },
+            legend: {
+                labels: {
+                    usePointStyle: true,
+                    boxWidth: 0
+                }
+            },
+        }
+    });
+
+</script>

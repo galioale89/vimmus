@@ -343,7 +343,7 @@ router.get('/dashboardcustosversus', ehAdmin, (req, res) => {
                 //console.log('valorMod=>' + valorMod)
                 if (valorMod != undefined) {
                     soma_modequ_com = (parseFloat(soma_modequ_com) + parseFloat(valorMod)).toFixed(2)
-                }         
+                }
                 //console.log('soma_modequ=>' + soma_modequ)
                 //console.log('valorInv=>' + valorInv)
                 if (valorInv != undefined) {
@@ -1706,11 +1706,11 @@ router.get('/dashboardcustoscomkit', ehAdmin, (req, res) => {
                 }
                 //Tributos
                 if (totalTributos > 0) {
-                soma_tottrb = (parseFloat(soma_tottrb) + parseFloat(totalTributos)).toFixed(2)
+                    soma_tottrb = (parseFloat(soma_tottrb) + parseFloat(totalTributos)).toFixed(2)
                 }
                 //Comissão
                 if (vlrcom > 0) {
-                soma_totcom = (parseFloat(soma_totcom) + parseFloat(vlrcom)).toFixed(2)
+                    soma_totcom = (parseFloat(soma_totcom) + parseFloat(vlrcom)).toFixed(2)
                 }
                 //Despesas Administrativas
                 if (desAdm != undefined) {
@@ -1829,7 +1829,7 @@ router.get('/dashboardcustoscomkit', ehAdmin, (req, res) => {
         //Médias
         medkwp_totfat = (parseFloat(soma_totfat) / parseFloat(soma_totkwp)).toFixed(2)
         medkwp_totkit = (parseFloat(soma_totkit) / parseFloat(soma_totkwp)).toFixed(2)
-        medkwp_totcop = (parseFloat(soma_totcop) / parseFloat(soma_totkwp)).toFixed(2)        
+        medkwp_totcop = (parseFloat(soma_totcop) / parseFloat(soma_totkwp)).toFixed(2)
 
         //Custos Fixos 
         medkwp_custoFix = (parseFloat(soma_custoFix) / parseFloat(soma_totkwp)).toFixed(2)
@@ -2482,6 +2482,561 @@ router.get('/dashboardcustossemkit', ehAdmin, (req, res) => {
             med_modequ, med_invequ, med_estequ, med_cabequ, med_dpsequ, med_disequ, med_sbxequ, med_ocpequ, med_totequ
         })
     })
+})
+
+router.get('/dashboardbi', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    var checkKwp
+    var checkQtd
+    var checkFat
+    var fatrural = 0
+    var fatresid = 0
+    var fatcomer = 0
+    var fatindus = 0
+    var fatmono = 0
+    var fatbifa = 0
+    var fattrif = 0
+    var fatnivel1 = 0
+    var fatnivel2 = 0
+    var fatnivel3 = 0
+    var fatnivel4 = 0
+    var fatnivel5 = 0
+    var fatnivel6 = 0
+    var fatsolo = 0
+    var fattelhado = 0
+
+    checkFat = 'checked'
+    checkKwp = 'unchecked'
+    checkQtd = 'unchecked'
+    Projetos.find({ user: _id, $or: [{ 'classUsina': 'Rural' }, { 'classUsina': 'Rural Residencial' }, { 'classUsina': 'Rural Granja' }, { 'classUsina': 'Rural Irrigação' }] }).then((rural) => {
+        for (i = 0; i < rural.length; i++) {
+            fatrural = fatrural + parseFloat(rural[i].vlrNFS)
+        }
+        Projetos.find({ user: _id, classUsina: 'Residencial' }).then((residencial) => {
+            for (i = 0; i < residencial.length; i++) {
+                fatresid = fatresid + parseFloat(residencial[i].vlrNFS)
+            }
+            Projetos.find({ user: _id, classUsina: 'Comercial' }).then((comercial) => {
+                for (i = 0; i < comercial.length; i++) {
+                    fatcomer = fatcomer + parseFloat(comercial[i].vlrNFS)
+                }
+                Projetos.find({ user: _id, classUsina: 'Industrial' }).then((industrial) => {
+                    for (i = 0; i < industrial.length; i++) {
+                        fatindus = fatindus + parseFloat(industrial[i].vlrNFS)
+                    }
+                    Projetos.find({ user: _id, $or: [{ 'tipoUsina': 'Solo Concreto' }, { 'tipoUsina': 'Solo Metal' }, { 'tipoUsina': 'Laje' }] }).then((solo) => {
+                        for (i = 0; i < solo.length; i++) {
+                            fatsolo = fatsolo + parseFloat(solo[i].vlrNFS)
+                        }
+                        Projetos.find({ user: _id, $or: [{ 'tipoUsina': 'Telhado Fibrocimento' }, { 'tipoUsina': 'Telhado Madeira' }, { 'tipoUsina': 'Telhado Cerâmica' }, { 'tipoUsina': 'Telhado Gambrel' }] }).then((telhado) => {
+                            for (i = 0; i < telhado.length; i++) {
+                                fattelhado = fattelhado + parseFloat(telhado[i].vlrNFS)
+                            }
+                            Projetos.find({ user: _id, $or: [{ 'tipoConexao': 'Monofásico 127V' }, { 'tipoConexao': 'Monofásico 220V' }] }).then((monofasico) => {
+                                for (i = 0; i < monofasico.length; i++) {
+                                    fatmono = fatmono + parseFloat(monofasico[i].vlrNFS)
+                                }
+                                Projetos.find({ user: _id, tipoConexao: 'Bifásico 220V' }).then((bifasico) => {
+                                    for (i = 0; i < bifasico.length; i++) {
+                                        fatbifa = fatbifa + parseFloat(bifasico[i].vlrNFS)
+                                    }
+                                    Projetos.find({ user: _id, $or: [{ 'tipoConexao': 'Trifásico 220V' }, { 'tipoConexao': 'Trifásico 380V' }] }).then((trifasico) => {
+                                        for (i = 0; i < trifasico.length; i++) {
+                                            fattrif = fattrif + parseFloat(trifasico[i].vlrNFS)
+                                        }
+                                        Projetos.find({ user: _id, 'potencia': { $lte: 10 } }).then((nivel1) => {
+                                            for (i = 0; i < nivel1.length; i++) {
+                                                fatnivel1 = fatnivel1 + parseFloat(nivel1[i].vlrNFS)
+                                            }
+                                            Projetos.find({ user: _id, 'potencia': { $lte: 30, $gte: 11 } }).then((nivel2) => {
+                                                for (i = 0; i < nivel2.length; i++) {
+                                                    fatnivel2 = fatnivel2 + parseFloat(nivel2[i].vlrNFS)
+                                                }
+                                                Projetos.find({ user: _id, 'potencia': { $lte: 50, $gte: 31 } }).then((nivel3) => {
+                                                    for (i = 0; i < nivel3.length; i++) {
+                                                        fatnivel3 = fatnivel3 + parseFloat(nivel3[i].vlrNFS)
+                                                    }
+                                                    Projetos.find({ user: _id, 'potencia': { $lte: 100, $gte: 51 } }).then((nivel4) => {
+                                                        for (i = 0; i < nivel4.length; i++) {
+                                                            fatnivel4 = fatnivel4 + parseFloat(nivel4[i].vlrNFS)
+                                                        }
+                                                        Projetos.find({ user: _id, 'potencia': { $lte: 150, $gte: 101 } }).then((nivel5) => {
+                                                            for (i = 0; i < nivel5.length; i++) {
+                                                                fatnivel5 = fatnivel5 + parseFloat(nivel5[i].vlrNFS)
+                                                            }
+                                                            Projetos.find({ user: _id, 'potencia': { $lte: 200, $gte: 151 } }).then((nivel6) => {
+                                                                for (i = 0; i < nivel6.length; i++) {
+                                                                    fatnivel6 = fatnivel6 + parseFloat(nivel6[i].vlrNFS)
+                                                                }
+                                                                res.render('relatorios/dashboardbi', { checkFat, checkKwp, checkQtd, fatrural, fatresid, fatcomer, fatindus, fatsolo, fattelhado, fatmono, fatbifa, fattrif, fatnivel1, fatnivel2, fatnivel3, fatnivel4, fatnivel5, fatnivel6 })
+                                                            }).catch((err) => {
+                                                                req.flash('error_msg', 'Falha ao encontrar usinas nivel 6.')
+                                                                res.redirect('/relatorios/dashboardbi')
+                                                            })
+                                                        }).catch((err) => {
+                                                            req.flash('error_msg', 'Falha ao encontrar usinas nivel 5.')
+                                                            res.redirect('/relatorios/dashboardbi')
+                                                        })
+                                                    }).catch((err) => {
+                                                        req.flash('error_msg', 'Falha ao encontrar usinas nivel 4.')
+                                                        res.redirect('/relatorios/dashboardbi')
+                                                    })
+                                                }).catch((err) => {
+                                                    req.flash('error_msg', 'Falha ao encontrar usinas nivel 3.')
+                                                    res.redirect('/relatorios/dashboardbi')
+                                                })
+                                            }).catch((err) => {
+                                                req.flash('error_msg', 'Falha ao encontrar usinas nivel 2.')
+                                                res.redirect('/relatorios/dashboardbi')
+                                            })
+                                        }).catch((err) => {
+                                            req.flash('error_msg', 'Falha ao encontrar usinas nivel 1.')
+                                            res.redirect('/relatorios/dashboardbi')
+                                        })
+                                    }).catch((err) => {
+                                        req.flash('error_msg', 'Falha ao encontrar usinas trifásicas.')
+                                        res.redirect('/relatorios/dashboardbi')
+                                    })
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Falha ao encontrar usinas bifásicas.')
+                                    res.redirect('/relatorios/dashboardbi')
+                                })
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Falha ao encontrar usinas monofásicas.')
+                                res.redirect('/relatorios/dashboardbi')
+                            })
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Falha ao encontrar usinas telhado.')
+                            res.redirect('/relatorios/dashboardbi')
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Falha ao encontrar usinas solo.')
+                        res.redirect('/relatorios/dashboardbi')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Falha ao encontrar usinas industriais.')
+                    res.redirect('/relatorios/dashboardbi')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Falha ao encontrar usinas comerciais.')
+                res.redirect('/relatorios/dashboardbi')
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha ao encontrar usinas residenciais.')
+            res.redirect('/relatorios/dashboardbi')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Falha ao encontrar usinas rurais.')
+        res.redirect('/relatorios/dashboardbi')
+    })
+})
+
+router.post('/aplicar', ehAdmin, (req, res) => {
+    const { _id } = req.user
+
+    var checkKwp
+    var checkQtd
+    var checkFat
+    var fatrural = 0
+    var fatresid = 0
+    var fatcomer = 0
+    var fatindus = 0
+    var fatmono = 0
+    var fatbifa = 0
+    var fattrif = 0
+    var fatnivel1 = 0
+    var fatnivel2 = 0
+    var fatnivel3 = 0
+    var fatnivel4 = 0
+    var fatnivel5 = 0
+    var fatnivel6 = 0
+    var qtdrural = 0
+    var qtdresid = 0
+    var qtdcomer = 0
+    var qtdindus = 0
+    var qtdmono = 0
+    var qtdbifa = 0
+    var qtdtrif = 0
+    var qtdnivel1 = 0
+    var qtdnivel2 = 0
+    var qtdnivel3 = 0
+    var qtdnivel4 = 0
+    var qtdnivel5 = 0
+    var qtdnivel6 = 0
+    var kwprural = 0
+    var kwpresid = 0
+    var kwpcomer = 0
+    var kwpindus = 0
+    var kwpmono = 0
+    var kwpbifa = 0
+    var kwptrif = 0
+    var kwpnivel1 = 0
+    var kwpnivel2 = 0
+    var kwpnivel3 = 0
+    var kwpnivel4 = 0
+    var kwpnivel5 = 0
+    var kwpnivel6 = 0
+    var fatsolo = 0
+    var fattelhado = 0
+    var qtdsolo = 0
+    var qtdtelhado = 0
+    var kwpsolo = 0
+    var kwptelhado = 0
+
+    var selecionado = req.body.selecionado
+    console.log(selecionado)
+
+    if (selecionado == 'faturamento') {
+        checkFat = 'checked'
+        checkKwp = 'unchecked'
+        checkQtd = 'unchecked'
+        Projetos.find({ user: _id, $or: [{ 'classUsina': 'Rural' }, { 'classUsina': 'Rural Residencial' }, { 'classUsina': 'Rural Granja' }, { 'classUsina': 'Rural Irrigação' }] }).then((rural) => {
+            for (i = 0; i < rural.length; i++) {
+                fatrural = fatrural + parseFloat(rural[i].vlrNFS)
+            }
+            Projetos.find({ user: _id, classUsina: 'Residencial' }).then((residencial) => {
+                for (i = 0; i < residencial.length; i++) {
+                    fatresid = fatresid + parseFloat(residencial[i].vlrNFS)
+                }
+                Projetos.find({ user: _id, classUsina: 'Comercial' }).then((comercial) => {
+                    for (i = 0; i < comercial.length; i++) {
+                        fatcomer = fatcomer + parseFloat(comercial[i].vlrNFS)
+                    }
+                    Projetos.find({ user: _id, classUsina: 'Industrial' }).then((industrial) => {
+                        for (i = 0; i < industrial.length; i++) {
+                            fatindus = fatindus + parseFloat(industrial[i].vlrNFS)
+                        }
+                        Projetos.find({ user: _id, $or: [{ 'tipoUsina': 'Solo Concreto' }, { 'tipoUsina': 'Solo Metal' }, { 'tipoUsina': 'Laje' }] }).then((solo) => {
+                            for (i = 0; i < solo.length; i++) {
+                                fatsolo = fatsolo + parseFloat(solo[i].vlrNFS)
+                            }
+                            Projetos.find({ user: _id, $or: [{ 'tipoUsina': 'Telhado Fibrocimento' }, { 'tipoUsina': 'Telhado Madeira' }, { 'tipoUsina': 'Telhado Cerâmica' }, { 'tipoUsina': 'Telhado Gambrel' }] }).then((telhado) => {
+                                for (i = 0; i < telhado.length; i++) {
+                                    fattelhado = fattelhado + parseFloat(telhado[i].vlrNFS)
+                                }
+                                Projetos.find({ user: _id, $or: [{ 'tipoConexao': 'Monofásico 127V' }, { 'tipoConexao': 'Monofásico 220V' }] }).then((monofasico) => {
+                                    for (i = 0; i < monofasico.length; i++) {
+                                        fatmono = fatmono + parseFloat(monofasico[i].vlrNFS)
+                                    }
+                                    Projetos.find({ user: _id, tipoConexao: 'Bifásico 220V' }).then((bifasico) => {
+                                        for (i = 0; i < bifasico.length; i++) {
+                                            fatbifa = fatbifa + parseFloat(bifasico[i].vlrNFS)
+                                        }
+                                        Projetos.find({ user: _id, $or: [{ 'tipoConexao': 'Trifásico 220V' }, { 'tipoConexao': 'Trifásico 380V' }] }).then((trifasico) => {
+                                            for (i = 0; i < trifasico.length; i++) {
+                                                fattrif = fattrif + parseFloat(trifasico[i].vlrNFS)
+                                            }
+                                            Projetos.find({ user: _id, 'potencia': { $lte: 10 } }).then((nivel1) => {
+                                                for (i = 0; i < nivel1.length; i++) {
+                                                    fatnivel1 = fatnivel1 + parseFloat(nivel1[i].vlrNFS)
+                                                }
+                                                Projetos.find({ user: _id, 'potencia': { $lte: 30, $gte: 11 } }).then((nivel2) => {
+                                                    for (i = 0; i < nivel2.length; i++) {
+                                                        fatnivel2 = fatnivel2 + parseFloat(nivel2[i].vlrNFS)
+                                                    }
+                                                    Projetos.find({ user: _id, 'potencia': { $lte: 50, $gte: 31 } }).then((nivel3) => {
+                                                        for (i = 0; i < nivel3.length; i++) {
+                                                            fatnivel3 = fatnivel3 + parseFloat(nivel3[i].vlrNFS)
+                                                        }
+                                                        Projetos.find({ user: _id, 'potencia': { $lte: 100, $gte: 51 } }).then((nivel4) => {
+                                                            for (i = 0; i < nivel4.length; i++) {
+                                                                fatnivel4 = fatnivel4 + parseFloat(nivel4[i].vlrNFS)
+                                                            }
+                                                            Projetos.find({ user: _id, 'potencia': { $lte: 150, $gte: 101 } }).then((nivel5) => {
+                                                                for (i = 0; i < nivel5.length; i++) {
+                                                                    fatnivel5 = fatnivel5 + parseFloat(nivel5[i].vlrNFS)
+                                                                }
+                                                                Projetos.find({ user: _id, 'potencia': { $lte: 200, $gte: 151 } }).then((nivel6) => {
+                                                                    for (i = 0; i < nivel6.length; i++) {
+                                                                        fatnivel6 = fatnivel6 + parseFloat(nivel6[i].vlrNFS)
+                                                                    }
+                                                                    res.render('relatorios/dashboardbi', { checkFat, checkKwp, checkQtd, fatrural, fatresid, fatcomer, fatindus, fatsolo, fattelhado, fatmono, fatbifa, fattrif, fatnivel1, fatnivel2, fatnivel3, fatnivel4, fatnivel5, fatnivel6 })
+                                                                }).catch((err) => {
+                                                                    req.flash('error_msg', 'Falha ao encontrar usinas nivel 6.')
+                                                                    res.redirect('/relatorios/dashboardbi')
+                                                                })
+                                                            }).catch((err) => {
+                                                                req.flash('error_msg', 'Falha ao encontrar usinas nivel 5.')
+                                                                res.redirect('/relatorios/dashboardbi')
+                                                            })
+                                                        }).catch((err) => {
+                                                            req.flash('error_msg', 'Falha ao encontrar usinas nivel 4.')
+                                                            res.redirect('/relatorios/dashboardbi')
+                                                        })
+                                                    }).catch((err) => {
+                                                        req.flash('error_msg', 'Falha ao encontrar usinas nivel 3.')
+                                                        res.redirect('/relatorios/dashboardbi')
+                                                    })
+                                                }).catch((err) => {
+                                                    req.flash('error_msg', 'Falha ao encontrar usinas nivel 2.')
+                                                    res.redirect('/relatorios/dashboardbi')
+                                                })
+                                            }).catch((err) => {
+                                                req.flash('error_msg', 'Falha ao encontrar usinas nivel 1.')
+                                                res.redirect('/relatorios/dashboardbi')
+                                            })
+                                        }).catch((err) => {
+                                            req.flash('error_msg', 'Falha ao encontrar usinas trifásicas.')
+                                            res.redirect('/relatorios/dashboardbi')
+                                        })
+                                    }).catch((err) => {
+                                        req.flash('error_msg', 'Falha ao encontrar usinas bifásicas.')
+                                        res.redirect('/relatorios/dashboardbi')
+                                    })
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Falha ao encontrar usinas monofásicas.')
+                                    res.redirect('/relatorios/dashboardbi')
+                                })
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Falha ao encontrar usinas telhado.')
+                                res.redirect('/relatorios/dashboardbi')
+                            })
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Falha ao encontrar usinas solo.')
+                            res.redirect('/relatorios/dashboardbi')
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Falha ao encontrar usinas industriais.')
+                        res.redirect('/relatorios/dashboardbi')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Falha ao encontrar usinas comerciais.')
+                    res.redirect('/relatorios/dashboardbi')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Falha ao encontrar usinas residenciais.')
+                res.redirect('/relatorios/dashboardbi')
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha ao encontrar usinas rurais.')
+            res.redirect('/relatorios/dashboardbi')
+        })
+
+    } else {
+        if (selecionado == 'quantidade') {
+            checkQtd = 'checked'
+            checkKwp = 'unchecked'
+            checkFat = 'unchecked'
+            Projetos.find({ user: _id, $or: [{ 'classUsina': 'Rural' }, { 'classUsina': 'Rural Residencial' }, { 'classUsina': 'Rural Granja' }, { 'classUsina': 'Rural Irrigação' }] }).then((rural) => {
+                qtdrural = rural.length
+                Projetos.find({ user: _id, classUsina: 'Residencial' }).then((residencial) => {
+                    qtdresid = residencial.length
+                    Projetos.find({ user: _id, classUsina: 'Comercial' }).then((comercial) => {
+                        qtdcomer = comercial.length
+                        Projetos.find({ user: _id, classUsina: 'Industrial' }).then((industrial) => {
+                            qtdindus = industrial.length
+                            Projetos.find({ user: _id, $or: [{ 'tipoUsina': 'Solo Concreto' }, { 'tipoUsina': 'Solo Metal' }, { 'tipoUsina': 'Laje' }] }).then((solo) => {
+                                qtdsolo = solo.length
+                                Projetos.find({ user: _id, $or: [{ 'tipoUsina': 'Telhado Fibrocimento' }, { 'tipoUsina': 'Telhado Madeira' }, { 'tipoUsina': 'Telhado Cerâmica' }, { 'tipoUsina': 'Telhado Gambrel' }] }).then((telhado) => {
+                                    qtdtelhado = telhado.length
+                                    Projetos.find({ user: _id, $or: [{ 'tipoConexao': 'Monofásico 127V' }, { 'tipoConexao': 'Monofásico 220V' }] }).then((monofasico) => {
+                                        qtdmono = monofasico.length
+                                        Projetos.find({ user: _id, tipoConexao: 'Bifásico 220V' }).then((bifasico) => {
+                                            qtdbifa = bifasico.length
+                                            Projetos.find({ user: _id, $or: [{ 'tipoConexao': 'Trifásico 220V' }, { 'tipoConexao': 'Trifásico 380V' }] }).then((trifasico) => {
+                                                qtdtrif = trifasico.length
+                                                Projetos.find({ user: _id, 'potencia': { $lte: 10 } }).then((nivel1) => {
+                                                    qtdnivel1 = nivel1.length
+                                                    Projetos.find({ user: _id, 'potencia': { $lte: 30, $gte: 11 } }).then((nivel2) => {
+                                                        qtdnivel2 = nivel2.length
+                                                        Projetos.find({ user: _id, 'potencia': { $lte: 50, $gte: 31 } }).then((nivel3) => {
+                                                            qtdnivel3 = nivel3.length
+                                                            Projetos.find({ user: _id, 'potencia': { $lte: 100, $gte: 51 } }).then((nivel4) => {
+                                                                qtdnivel4 = nivel4.length
+                                                                Projetos.find({ user: _id, 'potencia': { $lte: 150, $gte: 101 } }).then((nivel5) => {
+                                                                    qtdnivel5 = nivel5.length
+                                                                    Projetos.find({ user: _id, 'potencia': { $lte: 200, $gte: 151 } }).then((nivel6) => {
+                                                                        qtdnivel6 = nivel6.length
+                                                                        res.render('relatorios/dashboardbi', { checkFat, checkKwp, checkQtd, qtdrural, qtdresid, qtdcomer, qtdindus, qtdsolo, qtdtelhado, qtdmono, qtdbifa, qtdtrif, qtdnivel1, qtdnivel2, qtdnivel3, qtdnivel4, qtdnivel5, qtdnivel6 })
+                                                                    }).catch((err) => {
+                                                                        req.flash('error_msg', 'Falha ao encontrar usinas nivel 6.')
+                                                                        res.redirect('/relatorios/dashboardbi')
+                                                                    })
+                                                                }).catch((err) => {
+                                                                    req.flash('error_msg', 'Falha ao encontrar usinas nivel 5.')
+                                                                    res.redirect('/relatorios/dashboardbi')
+                                                                })
+                                                            }).catch((err) => {
+                                                                req.flash('error_msg', 'Falha ao encontrar usinas nivel 4.')
+                                                                res.redirect('/relatorios/dashboardbi')
+                                                            })
+                                                        }).catch((err) => {
+                                                            req.flash('error_msg', 'Falha ao encontrar usinas nivel 3.')
+                                                            res.redirect('/relatorios/dashboardbi')
+                                                        })
+                                                    }).catch((err) => {
+                                                        req.flash('error_msg', 'Falha ao encontrar usinas nivel 2.')
+                                                        res.redirect('/relatorios/dashboardbi')
+                                                    })
+                                                }).catch((err) => {
+                                                    req.flash('error_msg', 'Falha ao encontrar usinas nivel 1.')
+                                                    res.redirect('/relatorios/dashboardbi')
+                                                })
+                                            }).catch((err) => {
+                                                req.flash('error_msg', 'Falha ao encontrar usinas trifásicas.')
+                                                res.redirect('/relatorios/dashboardbi')
+                                            })
+                                        }).catch((err) => {
+                                            req.flash('error_msg', 'Falha ao encontrar usinas bifásicas.')
+                                            res.redirect('/relatorios/dashboardbi')
+                                        })
+                                    }).catch((err) => {
+                                        req.flash('error_msg', 'Falha ao encontrar usinas monofásicas.')
+                                        res.redirect('/relatorios/dashboardbi')
+                                    })
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Falha ao encontrar usinas telhado.')
+                                    res.redirect('/relatorios/dashboardbi')
+                                })
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Falha ao encontrar usinas solo.')
+                                res.redirect('/relatorios/dashboardbi')
+                            })
+
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Falha ao encontrar usinas industriais.')
+                            res.redirect('/relatorios/dashboardbi')
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Falha ao encontrar usinas comerciais.')
+                        res.redirect('/relatorios/dashboardbi')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Falha ao encontrar usinas residenciais.')
+                    res.redirect('/relatorios/dashboardbi')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Falha ao encontrar usinas rurais.')
+                res.redirect('/relatorios/dashboardbi')
+            })
+        } else {
+            checkKwp = 'checked'
+            checkFat = 'unchecked'
+            checkQtd = 'unchecked'
+            Projetos.find({ user: _id, $or: [{ 'classUsina': 'Rural' }, { 'classUsina': 'Rural Residencial' }, { 'classUsina': 'Rural Granja' }, { 'classUsina': 'Rural Irrigação' }] }).then((rural) => {
+                for (i = 0; i < rural.length; i++) {
+                    kwprural = kwprural + parseFloat(rural[i].potencia)
+                }
+                Projetos.find({ user: _id, classUsina: 'Residencial' }).then((residencial) => {
+                    for (i = 0; i < residencial.length; i++) {
+                        kwpresid = kwpresid + parseFloat(residencial[i].potencia)
+                    }
+                    Projetos.find({ user: _id, classUsina: 'Comercial' }).then((comercial) => {
+                        for (i = 0; i < comercial.length; i++) {
+                            kwpcomer = kwpcomer + parseFloat(comercial[i].potencia)
+                        }
+                        Projetos.find({ user: _id, classUsina: 'Industrial' }).then((industrial) => {
+                            for (i = 0; i < industrial.length; i++) {
+                                kwpindus = kwpindus + parseFloat(industrial[i].potencia)
+                            }
+                            Projetos.find({ user: _id, $or: [{ 'tipoUsina': 'Solo Concreto' }, { 'tipoUsina': 'Solo Metal' }, { 'tipoUsina': 'Laje' }] }).then((solo) => {
+                                for (i = 0; i < solo.length; i++) {
+                                    kwpsolo = kwpsolo + parseFloat(solo[i].potencia)
+                                }
+                                Projetos.find({ user: _id, $or: [{ 'tipoUsina': 'Telhado Fibrocimento' }, { 'tipoUsina': 'Telhado Madeira' }, { 'tipoUsina': 'Telhado Cerâmica' }, { 'tipoUsina': 'Telhado Gambrel' }] }).then((telhado) => {
+                                    for (i = 0; i < telhado.length; i++) {
+                                        kwptelhado = kwptelhado + parseFloat(telhado[i].potencia)
+                                    }
+                                    Projetos.find({ user: _id, $or: [{ 'tipoConexao': 'Monofásico 127V' }, { 'tipoConexao': 'Monofásico 220V' }] }).then((monofasico) => {
+                                        for (i = 0; i < monofasico.length; i++) {
+                                            kwpmono = kwpmono + parseFloat(monofasico[i].potencia)
+                                        }
+                                        Projetos.find({ user: _id, tipoConexao: 'Bifásico 220V' }).then((bifasico) => {
+                                            for (i = 0; i < bifasico.length; i++) {
+                                                kwpbifa = kwpbifa + parseFloat(bifasico[i].potencia)
+                                            }
+                                            Projetos.find({ user: _id, $or: [{ 'tipoConexao': 'Trifásico 220V' }, { 'tipoConexao': 'Trifásico 380V' }] }).then((trifasico) => {
+                                                for (i = 0; i < trifasico.length; i++) {
+                                                    kwptrif = kwptrif + parseFloat(trifasico[i].potencia)
+                                                }
+                                                Projetos.find({ user: _id, 'potencia': { $lte: 10 } }).then((nivel1) => {
+                                                    for (i = 0; i < nivel1.length; i++) {
+                                                        kwpnivel1 = kwpnivel1 + parseFloat(nivel1[i].potencia)
+                                                    }
+                                                    Projetos.find({ user: _id, 'potencia': { $lte: 30, $gte: 11 } }).then((nivel2) => {
+                                                        for (i = 0; i < nivel2.length; i++) {
+                                                            kwpnivel2 = kwpnivel2 + parseFloat(nivel2[i].potencia)
+                                                        }
+                                                        Projetos.find({ user: _id, 'potencia': { $lte: 50, $gte: 31 } }).then((nivel3) => {
+                                                            for (i = 0; i < nivel3.length; i++) {
+                                                                kwpnivel3 = kwpnivel3 + parseFloat(nivel3[i].potencia)
+                                                            }
+                                                            Projetos.find({ user: _id, 'potencia': { $lte: 100, $gte: 51 } }).then((nivel4) => {
+                                                                for (i = 0; i < nivel4.length; i++) {
+                                                                    kwpnivel4 = kwpnivel4 + parseFloat(nivel4[i].potencia)
+                                                                }
+                                                                Projetos.find({ user: _id, 'potencia': { $lte: 150, $gte: 101 } }).then((nivel5) => {
+                                                                    for (i = 0; i < nivel5.length; i++) {
+                                                                        kwpnivel5 = kwpnivel5 + parseFloat(nivel5[i].potencia)
+                                                                    }
+                                                                    Projetos.find({ user: _id, 'potencia': { $lte: 200, $gte: 151 } }).then((nivel6) => {
+                                                                        for (i = 0; i < nivel6.length; i++) {
+                                                                            kwpnivel6 = kwpnivel6 + parseFloat(nivel6[i].potencia)
+                                                                        }
+                                                                        res.render('relatorios/dashboardbi', { checkFat, checkKwp, checkQtd, kwprural, kwpresid, kwpcomer, kwpindus, kwpsolo, kwptelhado, kwpmono, kwpbifa, kwptrif, kwpnivel1, kwpnivel2, kwpnivel3, kwpnivel4, kwpnivel5, kwpnivel6 })
+                                                                    }).catch((err) => {
+                                                                        req.flash('error_msg', 'Falha ao encontrar usinas nivel 6.')
+                                                                        res.redirect('/relatorios/dashboardbi')
+                                                                    })
+                                                                }).catch((err) => {
+                                                                    req.flash('error_msg', 'Falha ao encontrar usinas nivel 5.')
+                                                                    res.redirect('/relatorios/dashboardbi')
+                                                                })
+                                                            }).catch((err) => {
+                                                                req.flash('error_msg', 'Falha ao encontrar usinas nivel 4.')
+                                                                res.redirect('/relatorios/dashboardbi')
+                                                            })
+                                                        }).catch((err) => {
+                                                            req.flash('error_msg', 'Falha ao encontrar usinas nivel 3.')
+                                                            res.redirect('/relatorios/dashboardbi')
+                                                        })
+                                                    }).catch((err) => {
+                                                        req.flash('error_msg', 'Falha ao encontrar usinas nivel 2.')
+                                                        res.redirect('/relatorios/dashboardbi')
+                                                    })
+                                                }).catch((err) => {
+                                                    req.flash('error_msg', 'Falha ao encontrar usinas nivel 1.')
+                                                    res.redirect('/relatorios/dashboardbi')
+                                                })
+                                            }).catch((err) => {
+                                                req.flash('error_msg', 'Falha ao encontrar usinas trifásicas.')
+                                                res.redirect('/relatorios/dashboardbi')
+                                            })
+                                        }).catch((err) => {
+                                            req.flash('error_msg', 'Falha ao encontrar usinas bifásicas.')
+                                            res.redirect('/relatorios/dashboardbi')
+                                        })
+                                    }).catch((err) => {
+                                        req.flash('error_msg', 'Falha ao encontrar usinas monofásicas.')
+                                        res.redirect('/relatorios/dashboardbi')
+                                    })
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Falha ao encontrar usinas telhado.')
+                                    res.redirect('/relatorios/dashboardbi')
+                                })
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Falha ao encontrar usinas solo.')
+                                res.redirect('/relatorios/dashboardbi')
+                            })
+
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Falha ao encontrar usinas industriais.')
+                            res.redirect('/relatorios/dashboardbi')
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Falha ao encontrar usinas comerciais.')
+                        res.redirect('/relatorios/dashboardbi')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Falha ao encontrar usinas residenciais.')
+                    res.redirect('/relatorios/dashboardbi')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Falha ao encontrar usinas rurais.')
+                res.redirect('/relatorios/dashboardbi')
+            })
+        }
+    }
 })
 
 router.post('/filtradash', ehAdmin, (req, res) => {
@@ -3925,7 +4480,7 @@ router.post('/filtradashcomkit', ehAdmin, (req, res) => {
         //Médias
         medkwp_totfat = (parseFloat(soma_totfat) / parseFloat(soma_totkwp)).toFixed(2)
         medkwp_totkit = (parseFloat(soma_totkit) / parseFloat(soma_totkwp)).toFixed(2)
-        medkwp_totcop = (parseFloat(soma_totcop) / parseFloat(soma_totkwp)).toFixed(2) 
+        medkwp_totcop = (parseFloat(soma_totcop) / parseFloat(soma_totkwp)).toFixed(2)
 
         //Custos Fixos 
         medkwp_custoFix = (parseFloat(soma_custoFix) / parseFloat(soma_totkwp)).toFixed(2)
@@ -4524,7 +5079,7 @@ router.post('/filtradashsemkit', ehAdmin, (req, res) => {
         //Médias
         medkwp_totfat = (parseFloat(soma_totfat) / parseFloat(soma_totkwp)).toFixed(2)
         medkwp_totkit = (parseFloat(soma_totkit) / parseFloat(soma_totkwp)).toFixed(2)
-        medkwp_totcop = (parseFloat(soma_totcop) / parseFloat(soma_totkwp)).toFixed(2) 
+        medkwp_totcop = (parseFloat(soma_totcop) / parseFloat(soma_totkwp)).toFixed(2)
 
         //Custos Fixos 
         medkwp_custoFix = (parseFloat(soma_custoFix) / parseFloat(soma_totkwp)).toFixed(2)

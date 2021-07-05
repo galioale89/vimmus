@@ -66,7 +66,7 @@ const Projeto = new Schema({
         require: true
     },
     potencia: {
-        type: String,
+        type: Number,
         require: false
     },
     vrskwp: {
@@ -821,6 +821,10 @@ const Projeto = new Schema({
     datareg: {
         type: Number,
         require: false
+    },
+    dataVisto:{
+        type: String,
+        require: false,
     },
     datapadrao: {
         type: Date,

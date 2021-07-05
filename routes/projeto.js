@@ -704,6 +704,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                erros.push({ texto: 'O valor do orçamento deve ser maior que o valor do equipamento.' })
           }
           */
+         console.log(req.body.dataini)
           //------------------------------------------------------------------
           if (req.body.dataini == '' || req.body.dataprev == '') {
                erros.push({ texto: 'É necessário informar as data de inicio e de previsão de entrega do projeto.' })
@@ -736,7 +737,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                })
           } else {
                //Define variável booleana de acordo com o tipo do custo
-               if (req.body.tipocusto == 'Diretos') {
+               if (req.body.tipocusto == 'Próprio') {
                     tipocusto = true
                } else {
                     tipocusto = false
@@ -984,7 +985,6 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                       projeto: projeto._id,
                                                                       dateplaini: req.body.valDataIni,
                                                                       dateentrega: req.body.valDataPrev,
-
                                                                  }
                                                                  new Cronograma(cronograma).save().then(() => {
                                                                       Configuracao.findOne({ _id: req.body.configuracao }).lean().then((configuracao) => {
@@ -4205,14 +4205,15 @@ router.post('/parar', ehAdmin, (req, res) => {
 
 router.get('/homologar/:id', ehAdmin, (req, res) => {
      var aviso
-     const { fantasia } = req.user
+     //const { fantasia } = req.user
+     var redirect = '/projeto/edicao/' + req.params.id
      Cronograma.findOne({ projeto: req.params.id }).then((cronograma) => {
           console.log('cronograma.dateEntregaReal=>' + cronograma.dateEntregaReal)
           if (cronograma.dateEntregaReal != '' && typeof cronograma.dateEntregaReal != 'undefined') {
                Projeto.findOne({ _id: req.params.id }).then((projeto) => {
                     console.log('')
                     Cliente.findOne({ _id: projeto.cliente }).then((cliente) => {
-                         var redirect = '/projeto/edicao/' + req.params.id
+                         
                          var date = new Date()
                          var dia = parseFloat(date.getDate())
                          if (dia < 10) {
@@ -4224,9 +4225,8 @@ router.get('/homologar/:id', ehAdmin, (req, res) => {
                          }
                          var hoje = dia + '/' + mes + '/' + date.getFullYear()
                          //Parâmentros do SMS
-                         const from = "VIMMUS"
-                         const to = '55' + cliente.celular
-                         const mensagem = 'Ola tudo bem? Aqui e da: ' + fantasia + '. Seu projeto entro em fase de homologacao no dia: ' + hoje + '. Em breve entraremos em contato. Abraco e ate logo!'
+                         //const to = '55' + cliente.celular
+                         //const mensagem = 'Ola tudo bem? Aqui e da: ' + fantasia + '. Seu projeto entro em fase de homologacao no dia: ' + hoje + '. Em breve entraremos em contato. Abraco e ate logo!'
                          //Enviando SMS                              
                          //var textMessageService = new TextMessageService(apiKey)
                          //textMessageService.send('Vimmus', mensagem, [to], result => {
@@ -4235,11 +4235,13 @@ router.get('/homologar/:id', ehAdmin, (req, res) => {
                          //         req.flash('error_msg', 'Falha interna. Não foi possível enviar a mensagem.')
                          //          res.redirect(redirect)
                          //     } else {
+                         console.log('hoje=>'+hoje)
+                         projeto.dataVisto = hoje
                          projeto.executando = false
                          projeto.parado = false
                          projeto.orcado = false
                          projeto.homologado = true
-                         prj_sms.save().then(() => {
+                         projeto.save().then(() => {
                               aviso = 'Projeto em homologação!'
                               req.flash('success_msg', aviso)
                               res.redirect(redirect)

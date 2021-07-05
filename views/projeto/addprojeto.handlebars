@@ -342,8 +342,8 @@
                         </select>
                         <select id="cidade" name='cidade' class='form-select form-select-sm mb-2'>
                         </select>
-                        <input type="text" name="potencia" id="potencia" class="form-control form-control-sm mb-2"
-                            placeholder="kWp" aria-placeholder="R$">
+                        <input type="number" name="potencia" id="potencia" class="form-control form-control-sm mb-2"
+                            placeholder="kWp" aria-placeholder="R$" step='0.010'>
                         <select name='vendedor' class="form-select form-select-sm mb-2">
                             {{#each vendedor}}
                             <option value="{{_id}}">{{nome}}</option>
@@ -356,8 +356,8 @@
                             placeholder="%">     
                         -->
                         <select id="inputState" name='tipocusto' class="form-select form-select-sm mb-2">
-                            <option>Diretos</option>
-                            <option>Por Hora</option>
+                            <option>Próprio</option>
+                            <option>Terceirizado</option>
                         </select>
                         <select name='regime' class="form-select form-select-sm mb-2">
                             {{#each regime}}
@@ -473,7 +473,7 @@
                             <option>Rural Residencial</option>
                             <option>Rural Granja</option>
                             <option>Rural Irrigação</option>
-                            <option>Residêncial</option>
+                            <option>Residencial</option>
                             <option>Indústrial</option>
                             <option>Comercial</option>
                             <option>Público</option>
@@ -486,7 +486,7 @@
                     <div class="col-md-5">
                         <select name='tipoUsina' class='form-select form-select-sm'>
                             <option>Solo Concreto</option>
-                            <option>Solo Aço</option>
+                            <option>Solo Metal</option>
                             <option>Telhado Fibrocimento</option>
                             <option>Telhado Madeira</option>
                             <option>Telhado Cerâmica</option>

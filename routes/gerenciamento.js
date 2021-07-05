@@ -1612,7 +1612,6 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
 
     var erros = ''
     var sucesso = ''
-    var cronogramaNovo
     const { _id } = req.user
 
     var checkPla = 'unchecked'
@@ -1658,19 +1657,20 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
     }
 
     Projeto.findOne({ _id: req.body.idprojeto }).then((prj_entrega) => {
+        var cronogramaNovo
         if (req.body.orcado == 'true') {
+            Cronograma.findOne({ projeto: req.body.idprojeto }).then((cronograma_orc) => {
+                if (cronograma_orc != null) {
+                    cronograma_orc.remove()
+                }
+            }).catch((err) => {
+                req.flash('error_msg', 'Cronograma não encontrado.')
+                res.redirect('/projeto/consulta')
+            })
             if (req.body.datevisfim != '' && typeof req.body.datevisfim != 'undefined' && req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined') {
                 if (comparaDatas(req.body.dateentrega, req.body.datevisfim)) {
                     erros = erros + 'É necessário que a data de entrega prevista do projeto seja maior ou igual a data de finalização da vistoria.'
                 } else {
-                    Cronograma.findOne({ projeto: req.body.idprojeto }).then((cronograma_orc) => {
-                        if (cronograma_orc != null) {
-                            cronograma_orc.remove()
-                        }
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Cronograma não encontrado.')
-                        res.redirect('/projeto/consulta')
-                    })
                     cronogramaNovo = {
                         user: _id,
                         projeto: req.body.idprojeto,
@@ -1698,15 +1698,6 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                     }
                 }
             } else {
-
-                Cronograma.findOne({ projeto: req.body.idprojeto }).then((cronograma_orc) => {
-                    if (cronograma_orc != null) {
-                        cronograma_orc.remove()
-                    }
-                }).catch((err) => {
-                    req.flash('error_msg', 'Cronograma não encontrado.')
-                    res.redirect('/projeto/consulta')
-                })
                 cronogramaNovo = {
                     user: _id,
                     projeto: req.body.idprojeto,

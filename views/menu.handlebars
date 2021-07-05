@@ -9,7 +9,7 @@
   }
 
   th {
-    padding: 5px;
+    padding: 5px;F
   }
 </style>
 
@@ -80,19 +80,22 @@
       <div class="menu-interno" style="padding-right: 10px;padding-top: 10%;">
         <div class='fw-bold col-form-label col-form-label-sm' style="padding-right: 10px;">
         </div>
-        <div class='mt-1 mb-2'>
-          <a href='/relatorios/dashboardcustos' class="relatorio titulo-relatorio"><i class='bi bi-display'></i>
-            Indicadores</a>
-        </div>
-        <div class="dropend">
-          <button class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false">Relatórios <i
+        <div class="dropend mt-1 mb-1">
+          <button class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false"><i class='bi bi-clipboard-data'></i> Indicadores <i
               class="bi bi-caret-right"></i>
           </button>
           <ul class="dropdown-menu">
-            <a href='/relatorios/listarealizados' class="botao-filter"><i class="bi bi-book"></i> Lista
-              Realizados</a><br>
-            <a href='/relatorios/listarabertos' class="botao-filter"><i class='bi bi-book'></i> Lista
-              Abertos</a><br>
+            <a href='/relatorios/dashboardcustos' class="botao-filter"> Custos</a><br>
+            <a href='/relatorios/dashboardbi' class="botao-filter"> Estatísticas</a><br>
+          </ul>
+        </div>        
+        <div class="dropend">
+          <button class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-book"></i> Relatórios <i
+              class="bi bi-caret-right"></i>
+          </button>
+          <ul class="dropdown-menu">
+            <a href='/relatorios/listarealizados' class="botao-filter"> Lista Realizados</a><br>
+            <a href='/relatorios/listarabertos' class="botao-filter"> Lista Abertos</a><br>
           </ul>
         </div>
 
@@ -118,19 +121,6 @@
 
   <div class='col-md-3'>
     <div class='row' style="margin-left: 1%;">
-      <!--
-      <table>
-        <tr class="">
-          <th style="padding-left: 20%;">Classificação dos Projetos</th>
-        </tr>
-      </table>
-      <div style="height: 290px;width: 100%;padding-bottom: 5%;">
-        <input type='hidden' id='numprj' value='{{numprj}}'>
-        <input type='hidden' id='numprjrlz' value='{{numprjrlz}}'>
-        <input type='hidden' id='numprjnrl' value='{{numprjnrl}}'>
-        <canvas id='chartPrj' class='mt-2 mb-1'></canvas>
-      </div>
-      -->
       <div class="contorno-titulo text-center mt-4" style="width: 100%; padding-bottom: 10px;">
         <div style="font-size: 21px;">
           Total de Projetos
@@ -171,8 +161,6 @@
       </div>
     </div>
   </div>
-
-
   <div class='col-md-7'>
     <div style="width: 100%;">
       <table style="width: 100%;margin-bottom: 5px;margin-top: 5px;">
@@ -262,50 +250,3 @@
     </div>
   </div>
 </div>
-
-<script type='text/javascript'>
-  var numprj = document.getElementById('numprj')
-  var numprjrlz = document.getElementById('numprjrlz')
-  var numprjnrl = document.getElementById('numprjnrl')
-  var ctxPrj = document.getElementById('chartPrj').getContext('2d');
-  var chartPrj = new Chart(ctxPrj, {
-    type: 'doughnut',
-    data: {
-      labels: ['Realizados', 'Não Realizados'],
-      datasets: [{
-        data: [numprjrlz.value, numprjnrl.value],
-        backgroundColor: [
-          'rgba(37, 139, 33, 0.2)',
-          'rgba(50, 140, 230, 0.2)',
-        ],
-        borderColor: [
-          'rgba(37, 139, 33, 1)',
-          'rgba(50, 140, 230, 1)',
-        ],
-        borderWidth: 1,
-      }]
-    },
-    options: {
-      maintainAspectRatio: false,
-      responsive: true,
-      scales: {
-        y: [{
-          scaleLabel: {
-            display: false,
-          },
-          ticks: {
-            min: 0,
-          },
-          grid: {
-            drawBorder: false,
-          },
-        }],
-      },
-      legend: {
-        display: true,
-        position: 'top',
-        align: 'center',
-      },
-    }
-  });
-</script>

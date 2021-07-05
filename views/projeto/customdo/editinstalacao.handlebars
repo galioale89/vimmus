@@ -89,7 +89,7 @@
                         </div>
                         <div class="col-md-8">
                             <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text" name="vlrhri" id='vlrhri'
-                                value='{{projeto.vlrhri}}' class='form-control form-control-sm'>
+                                {{#if projeto.vlrhri}}value='{{projeto.vlrhri}}' {{else}}value='{{configuracao.vlrhri}}'{{/if}}>
                         </div>
                     </div>
                 </div>
