@@ -9,14 +9,15 @@
   }
 
   th {
-    padding: 5px;F
+    padding: 5px;
+    F
   }
 </style>
 
 <div class='row mt-1' style="width: 100%;height: 100%;margin-bottom: 3%;">
   <div class='col-md-2'>
     <div class="menu">
-      <img src='logovimmus.png' height="75" width="100" style="padding-left: 10%;"/>
+      <img src='logovimmus.png' height="75" width="100" style="padding-left: 10%;" />
       <div class="menu-interno">
         <div class='fw-bold col-form-label col-form-label-sm fw-bold text-center'> CADASTROS</div>
         <div class="row mb-2">
@@ -57,7 +58,7 @@
           <a href='/pessoa/consultaequipepadrao' class="contorno-menu"><i class='bi bi-people'></i> Equipes
             Padrão</a><br>
         </div>
-        <div class='fw-bold col-form-label col-form-label-sm fw-bold mt-4 text-center' style="font-weight: bolder;">
+        <div class='fw-bold col-form-label col-form-label-sm fw-bold mt-2 text-center' style="font-weight: bolder;">
           CONFIGURAÇÕES
         </div>
         <div class="row mb-2">
@@ -77,30 +78,33 @@
           </div>
         </div>
       </div>
-      <div class="menu-interno" style="padding-right: 10px;padding-top: 10%;">
-        <div class='fw-bold col-form-label col-form-label-sm' style="padding-right: 10px;">
-        </div>
-        <div class="dropend mt-1 mb-1">
-          <button class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false"><i class='bi bi-clipboard-data'></i> Indicadores <i
-              class="bi bi-caret-right"></i>
+      <div class="menu-interno" style="padding-right: 10px;">
+        <a href='/gerenciamento/cenarios' class="relatorio titulo-relatorio"><i class='bi bi-columns'></i> Análise de Cenários</a>
+        <div class="dropend mt-1">
+          <button class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false"><i
+              class='bi bi-clipboard-data'></i> Indicadores <i class="bi bi-caret-right"></i>
           </button>
           <ul class="dropdown-menu">
             <a href='/relatorios/dashboardcustos' class="botao-filter"> Custos</a><br>
             <a href='/relatorios/dashboardbi' class="botao-filter"> Estatísticas</a><br>
           </ul>
-        </div>        
-        <div class="dropend">
-          <button class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-book"></i> Relatórios <i
-              class="bi bi-caret-right"></i>
+        </div>
+        <div class="dropend mt-1">
+          <button class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false"><i
+              class="bi bi-book"></i> Relatórios <i class="bi bi-caret-right"></i>
           </button>
           <ul class="dropdown-menu">
             <a href='/relatorios/listarealizados' class="botao-filter"> Lista Realizados</a><br>
             <a href='/relatorios/listarabertos' class="botao-filter"> Lista Abertos</a><br>
           </ul>
         </div>
+        <div class="mt-1">
+          <a href='/usuario/editar/{{id}}' class="relatorio titulo-relatorio"><i class="bi bi-house-fill"></i> Minha
+            Conta</a>
+        </div>
 
         {{#if ehMaster}}
-        <div class="row" style="padding-top: 10%;">
+        <div class="row mt-1" >
           <div class="dropend">
             <button class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false">Admin <i
                 class="bi bi-caret-right"></i></i>
@@ -110,11 +114,7 @@
             </ul>
           </div>
         </div>
-        {{/if}}
-        <div class="mb-4" style="padding-top: 10%;">
-          <a href='/usuario/editar/{{id}}' class="relatorio titulo-relatorio"><i class="bi bi-house-fill"></i> Minha
-            Conta</a>
-        </div>
+        {{/if}}        
       </div>
     </div>
   </div>
@@ -207,8 +207,9 @@
         <tr>
           <td>
             {{#if atrasado}}
-            <div id='atrasado'><i class='bi bi-exclamation-triangle' style="margin-left: 6px;font-size: 12px;"></i></div>
-            {{else}}            
+            <div id='atrasado'><i class='bi bi-exclamation-triangle' style="margin-left: 6px;font-size: 12px;"></i>
+            </div>
+            {{else}}
             {{#if executando}}
             <div id='execucao'></div>
             {{else}}
