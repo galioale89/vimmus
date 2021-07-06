@@ -1,0 +1,88 @@
+<style>
+    table {
+        border: 1px solid black;
+        text-align: center;
+        width: 100%;
+    }
+
+    tr {
+        border: 1px solid black;
+        text-align: center;
+    }
+
+    th {
+        border: 1px solid black;
+        text-align: center;
+    }
+
+    td {
+        border: 1px solid black;
+        text-align: center;
+    }
+    input{
+        font-size: 14px;
+        text-align: center;
+    }
+    label{
+        font-size: 14px;
+        padding: 5px;
+    }
+</style>
+<div class="container">
+<h5 style="padding-top: 5%;">Análise de Cenários</h5>
+<div style="padding: 10px">
+    <form method="post" action='/gerenciamento/aplicarcenario'>
+       <div>
+           <label >Potência Nominal da Usina(kWp):</label >
+           <input type="number" step='0.010' name='kwpsis' value='{{kwpsis}}'>
+           <label >Espaço(m²):</label >
+           <input type="number" step='0.010' name='area' value='{{area}}'>
+       </div>
+        <table>
+            <tr>
+                <th rowspan="2">Cenário</th>
+                <th colspan="3">Módulos</th>
+                <th colspan="2">Área</th>
+            </tr>
+            <tr>
+                <th>Potencia (W)</th>
+                <th colspan="2">Tamanho (c x l)</th>
+                <th>Quantidade Máxima</th>
+                <th>Potência Máxima (kWp)</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td><input type="number" step='0.010' name='modkwp1' value='{{modkwp1}}'></td>
+                <td><label >Comprimento: </label ><input type="number" step='0.010' name='modtmc1' value="{{modtmc1}}">
+                <td><label >Largura: </label ><input type="number" step='0.010' name='modtml1' value='{{modtml1}}'></td>
+                <td>{{qtdmax1}}</td>
+                <td>{{kwpmax1}}</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td><input type="number" step='0.010' name='modkwp2' value='{{modkwp2}}'></td>
+                <td><label >Comprimento: </label ><input type="number" step='0.010' name='modtmc2' value='{{modtmc2}}'>
+                <td><label >Largura: </label ><input type="number" step='0.010' name='modtml2' value='{{modtml2}}'></td>
+                <td>{{qtdmax2}}</td>
+                <td>{{kwpmax2}}</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td><input type="number" step='0.010' name='modkwp3' value='{{modkwp3}}'></td>
+                <td><label >Comprimento: </label ><input type="number" step='0.010' name='modtmc3' value='{{modtmc3}}'>
+                <td><label >Largura: </label ><input type="number" step='0.010' name='modtml3' value='{{modtml3}}'></td>
+                <td>{{qtdmax3}}</td>
+                <td>{{kwpmax3}}</td>
+            </tr>
+        </table>
+        <div style="text-align: center;margin-top: 20px">
+            <button type="submit" style="width: 300px;" class="btn btn-sm btn-success">Aplicar</button>
+        </div>
+        <div class="">
+            <label >{{texto1}}</label ><br>
+            <label >{{texto2}}</label ><br>
+            <label >{{texto3}}</label >
+        </div>
+    </form>
+    </div>
+</div>

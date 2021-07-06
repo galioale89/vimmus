@@ -188,6 +188,56 @@ router.get('/cronograma/:id', ehAdmin, (req, res) => {
     })
 })
 
+router.get('/cenarios/', ehAdmin, (req, res) => {
+    res.render('projeto/gerenciamento/cenarios')
+})
+
+router.post('/aplicarcenario/', ehAdmin, (req, res) => {
+    var modtam1 = 0
+    var modtam2 = 0
+    var modtam3 = 0
+    var qtdmax1 = 0
+    var qtdmax2 = 0
+    var qtdmax3 = 0
+    var kwpmax1 = 0
+    var kwpmax2 = 0
+    var kwpmax3 = 0
+    var aviso1 = false
+    var aviso2 = false
+    var aviso3 = false
+    var area = req.body.area
+
+    modtam1 = parseFloat(req.body.modtmc1) * parseFloat(req.body.modtml1)
+    modtam2 = parseFloat(req.body.modtmc2) * parseFloat(req.body.modtml2)
+    modtam3 = parseFloat(req.body.modtmc3) * parseFloat(req.body.modtml3)
+    qtdmax1 = Math.round(parseFloat(area) / parseFloat(modtam1))
+    qtdmax2 = Math.round(parseFloat(area) / parseFloat(modtam2))
+    qtdmax3 = Math.round(parseFloat(area) / parseFloat(modtam3))
+    kwpmax1 = (parseFloat(qtdmax1) * parseFloat(req.body.modkwp1)) / parseFloat(1000)
+    kwpmax2 = (parseFloat(qtdmax2) * parseFloat(req.body.modkwp2)) / parseFloat(1000)
+    kwpmax3 = (parseFloat(qtdmax3) * parseFloat(req.body.modkwp3)) / parseFloat(1000)
+    if (parseFloat(kwpmax1) > parseFloat(req.body.kwpsis)) {
+        aviso1 = true
+        var texto1 = 'A potência do sistema do cenário 1 é maior que a potência nominal definida para o sistema.'
+    }
+    if (parseFloat(kwpmax2) > parseFloat(req.body.kwpsis)) {
+        aviso2 = true 
+        var texto2 = 'A potência do sistema do cenário 2 é maior que a potência nominal definida para o sistema.'
+    }
+    if (parseFloat(kwpmax3) > parseFloat(req.body.kwpsis)) {
+        aviso3 = true 
+        var texto3 = 'A potência do sistema do cenário 3 é maior que a potência nominal definida para o sistema.'
+    }
+    
+    res.render('projeto/gerenciamento/cenarios', {
+        modkwp1: req.body.modkwp1, modqtd1: req.body.modqtd1, modtmc1: req.body.modtmc1, modtml1: req.body.modtml1,
+        modkwp2: req.body.modkwp2, modqtd2: req.body.modqtd2, modtmc2: req.body.modtmc2, modtml2: req.body.modtml2, 
+        modkwp3: req.body.modkwp3, modqtd3: req.body.modqtd3, modtmc3: req.body.modtmc3, modtml3: req.body.modtml3, 
+        kwpmax1, kwpmax2, kwpmax3, qtdmax1, qtdmax2, qtdmax3, kwpmax1, kwpmax2, kwpmax3, kwpsis: req.body.kwpsis, 
+        area, texto1, texto2, texto3
+    })
+})
+
 router.post('/gerenciamento/', ehAdmin, (req, res) => {
     const { _id } = req.user
     var erros = []
