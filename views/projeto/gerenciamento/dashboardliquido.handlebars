@@ -1,177 +1,183 @@
-<div class="row mt-1" style="width: 95%; margin-left: 30px;">
-    <div class="col-md-2">
-        <div class="row mt-2">
-            <div class="btn-group col-12 gap-2">
-                {{#if projeto.foiRealizado}}
-                {{else}}
-                <a href='/projeto/edicao/{{projeto._id}}' class='btn btn-primary btn-sm'> Editar </a>
-                {{/if}}
-                <a href='/projeto/vermais/{{projeto._id}}' class='btn btn-primary btn-sm'> Ver Mais </a>
+<div class="row mt-1" style="padding: 10px;width: 100%;">
+
+    <div class="row mt-1" style="text-align: center;padding-left: 3%;">
+        <div class="col" style="font-size: 20px;">
+            <div class="text-white" style="padding:10px; border-radius: 80px;background-color: rgb(71, 114, 207);">
+                <h5 class='fw-bold'>Lucro Líquido</h5>
+                <label class='col-form-label' class='text-center mt-2'>R$ {{projeto.lucroLiquido}}</label
+                    class='col-form-label'>
             </div>
         </div>
-        <div class="row text-center" style="padding:5px; border-radius: 5px;">
-            <div class="card text-white mb-2"
-                style="padding:10px; border-radius: 80px;background-color: rgb(71, 114, 207);">
-                <h5 class='fw-bold mt-2'>Lucro Líquido</h5>
-                <h4 class='text-center mt-2'>R$ {{projeto.lucroLiquido}}</h4>
-            </div>
-
+        <div class="col">
             <a href='/gerenciamento/dashboard/{{projeto._id}}' style='text-decoration: none;'>
-                <div class="row text-center">
-                    <div class="card text-white mb-2"
-                        style="border-radius: 80px;background-color: rgba(71, 135, 207, 1);">
-                        <div class="fw-bold text-center">Valor Total <br>
-                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.valor}}</label>
-                        </div>
-                        <h2 class="text-center card-title">{{projeto.parLiqVlr}} %</h2>
+                <div class="text-white" style="border-radius: 80px;background-color: rgba(71, 135, 207, 1);">
+                    <div class="fw-bold text-center">Valor Total <br>
+                        <label class='col-form-label col-form-label-sm'>R$ {{projeto.valor}}</label>
                     </div>
+                    <h2 class="text-center card-title">{{projeto.parLiqVlr}} %</h2>
                 </div>
             </a>
+        </div>
+        <div class="col">
             <a href='/gerenciamento/dashboardliquido/{{projeto._id}}' style='text-decoration: none;'>
-                <div class="row text-center mb-2">
-                    <div class="card text-white" style="border-radius: 80px;background-color: rgba(41, 8, 159);">
-                        <div class="fw-bold">Valor Faturado <br>
-                            <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrNFS}}</label>
-                        </div>
-                        <h2 class="text-center card-title">{{projeto.parLiqNfs}} %</h2>
+
+                <div class="text-white" style="border-radius: 80px;background-color: rgba(41, 8, 159);">
+                    <div class="fw-bold text-center">Valor Faturado <br>
+                        <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrNFS}}</label>
                     </div>
+                    <h2 class="text-center card-title">{{projeto.parLiqNfs}} %</h2>
                 </div>
             </a>
-            {{#if projeto.reserva}}
-            <div class="">
-                <div class="card text-white mb-1" style="background-color: rgb(32, 255, 62);">
-                    <div class="fw-bold">Reserva</div>
-                    <h4>R$ {{projeto.reserva}}</h4>
-                </div>
-            </div>
-            {{/if}}
+        </div>
+        <div class="col mt-3">
             {{#if projeto.desAdm}}
-            <div class="">
-                <div class="card text-white mb-1" style="background-color: rgba(194, 189, 188, 1)">
-                    <div class="fw-bold">Despesas Administrativas</div>
-                    <h4>R$ {{projeto.desAdm}}</h4>
-                </div>
+            <div class="text-white" style="background-color: rgba(194, 189, 188, 1)">
+                <div class="fw-bold">Despesas Administrativas</div>
+                <label class='col-form-label'>R$ {{projeto.desAdm}}</label>
             </div>
             {{/if}}
         </div>
-
-        <div class='row mt-1'>
-            <div style="height: 60px; border-radius: 5px; border:rgba(220,220,220,1) solid 1px;">
-                <div class="row">
-                    <div class="col-md-6 text-end">
-                        <label class='fw-bold col-form-label col-form-label-sm'>Preço/kWp: </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm'>kWp: </label>
-                    </div>
-                    <div class="col-md-5">
-                        <label class='col-form-label col-form-label-sm'>R$ {{projeto.vrskwp}}</label><br>
-                        <label class='col-form-label col-form-label-sm'>{{projeto.potencia}}</label>
-                    </div>
-                </div>
+        {{#if projeto.reserva}}
+        <div class="col mt-3">
+            <div class="text-white mb-1" style="background-color: rgb(32, 255, 62);">
+                <div class="fw-bold">Reserva</div>
+                <label class='col-form-label'>R$ {{projeto.reserva}}</label>
             </div>
         </div>
-    </div>
-
-    <div class="col-md-5">
-        <h5 class='fw-bold mt-1'>Participação sobre o Total Faturado</h5>
-        <div style="height: 500px;">
-            <canvas id='chartLL' class='mb-4' style="width: 100px; height: 100px;"></canvas>
-        </div>
-        <input id='parLiqNfs' name='parLiqNfs' type="hidden" value={{projeto.parLiqNfs}}>
-        <input id='parKitNfs' name='parKitNfs' type="hidden" value={{projeto.parKitNfs}}>
-        <input id='parDedNfs' name='parDedNfs' type="hidden" value={{projeto.parDedNfs}}>
-        <input id='parImpNfs' name='parImpNfs' type="hidden" value={{projeto.parImpNfs}}>
-        <input id='parISSNfs' name='parISSNfs' type="hidden" value={{projeto.parISSNfs}}>
-        <input id='parComNfs' name='parComNfs' type="hidden" value={{projeto.parComNfs}}>
-
-        <div class="row text-center mt-2" style="height: 310px;">
-            <div class="col-md-6">
-                <div class='card text-white mb-3' style=" background-color: rgba(190, 190, 190, 1); max-width: 22rem;">
-                    <div class="fw-bold card-header">Deduções</div>
-                    <h4>R$ {{projeto.totcop}}</h4>
-                </div>
-                <div class="card text-white" style="max-width: 22rem; background-color: rgba(255, 49, 53, 1);">
-                    <div class="fw-bold card-header">Tributos</div>
-                    <h4>R$ {{projeto.totalImposto}}</h4>
-
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card text-white mb-3" style="background-color:rgba(255, 161, 8, 1); max-width: 22rem;">
-                    <div class="fw-bold card-header">Comissão</div>
-                    <h4>R$ {{projeto.vlrcom}}</h4>
-                </div>
-                <div class="card text-white" style="max-width: 22rem; background-color: rgba(255, 49, 53, 1);">
-                    <div class="fw-bold card-header">ISS</div>
-                    <h4>R$ {{projeto.impNFS}}</h4>
-                </div>
-            </div>
-            {{#if projeto.fatequ}}
-            <div class="col-6 mx-auto">
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(249, 240, 71, 1);">
-                    <div class="fw-bold card-header">Equipamento</div>
-                    <h4>R$ {{projeto.vlrkit}}</h4>
-                </div>
-            </div>
+        {{/if}}
+        <div class="col-md-1" style="margin-top: 1%;">
+            {{#if projeto.foiRealizado}}
+            {{else}}
+            <a href='/projeto/edicao/{{projeto._id}}' class='btn btn-primary btn-sm'> Editar </a><br>
             {{/if}}
+            <a href='/projeto/vermais/{{projeto._id}}' class='btn btn-primary btn-sm mt-1'> Ver Mais </a>
         </div>
     </div>
-    <div class="col-md-5">
-        <h5 class='fw-bold mt-2'>Participação das Deduções sobre o Total Faturado</h5>
-        <div style="height: 500px;">
-            <canvas id='chartDes' style="width: 200px; height: 200px;"></canvas>
-        </div>
-        <input type='hidden' id='parIntNfs' value='{{projeto.parIntNfs}}'>
-        <input type='hidden' id='parGesNfs' value='{{projeto.parGesNfs}}'>
-        <input type='hidden' id='parProNfs' value='{{projeto.parProNfs}}'>
-        <input type='hidden' id='parArtNfs' value='{{projeto.parArtNfs}}'>
-        <input type='hidden' id='parDesNfs' value='{{projeto.parDesNfs}}'>
-        <input type='hidden' id='parCmbNfs' value='{{projeto.parCmbNfs}}'>
-        <input type='hidden' id='parEstNfs' value='{{projeto.parEstNfs}}'>
-        <input type='hidden' id='parAliNfs' value='{{projeto.parAliNfs}}'>
-        <input type='hidden' id='parResNfs' value='{{projeto.parResNfs}}'>
-        <div class="row text-center mt-2">
-            <div class="col-md-6">
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(70, 70, 70, 1);">
-                    <div class="fw-bold card-header">Instalação</div>
-                    <h4>R$ {{projeto.totint}}</h4>
+    <div class="row mt-1" style="text-align: center;">
+        <div class="col-md-6">
+            <label class='col-form-label fw-bold mt-1'>Participação sobre o Total do Projeto</label>
+            <div style="height: 250px;">
+                <canvas id='chartLL' class='mb-4'></canvas>
+            </div>
+            <input id='parLiqNfs' name='parLiqNfs' type="hidden" value={{projeto.parLiqNfs}}>
+            <input id='parKitNfs' name='parKitNfs' type="hidden" value={{projeto.parKitNfs}}>
+            <input id='parDedNfs' name='parDedNfs' type="hidden" value={{projeto.parDedNfs}}>
+            <input id='parImpNfs' name='parImpNfs' type="hidden" value={{projeto.parImpNfs}}>
+            <input id='parISSNfs' name='parISSNfs' type="hidden" value={{projeto.parISSNfs}}>
+            <input id='parComNfs' name='parComNfs' type="hidden" value={{projeto.parComNfs}}>
+
+            <div class="row text-center" style="font-size: 14px;padding: 20px">
+                <div class="col">
+                    <div class="text-white" style="background-color:  rgba(249, 240, 71, 1);">
+                        <div class="fw-bold card-header">Equipamento</div>
+                        <label class='col-form-label'>R$ {{projeto.vlrkit}}</label>
+                    </div>
                 </div>
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(110, 110, 110, 1);">
-                    <div class="fw-bold card-header">Projetista</div>
-                    <h4>R$ {{projeto.totpro}}</h4>
+                <div class="col">
+                    <div class='text-white' style=" background-color: rgba(194, 189, 188, 1);">
+                        <div class="fw-bold card-header">Deduções</div>
+                        <label class='col-form-label'>R$ {{projeto.totcop}}</label>
+                    </div>
                 </div>
-                {{#if projeto.parDesNfs}}
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(150, 150, 150, 1);">
-                    <div class="fw-bold card-header">Deslocamento</div>
-                    <h4>R$ {{projeto.totdes}}</h4>
+                {{#if projeto.vlrcom}}
+                <div class="col">
+                    <div class="text-white" style="background-color:rgba(255, 161, 8, 1);">
+                        <div class="fw-bold card-header">Comissão</div>
+                        <label class='col-form-label'>R$ {{projeto.vlrcom}}</label>
+                    </div>
                 </div>
                 {{/if}}
+            </div>
+            <div class="row text-center"
+                style="font-size: 14px;padding-bottom: 20px;padding-left: 20px; padding-right: 20px">
+                <div class="col">
+                    <div class="text-white" style="background-color: rgba(255, 49, 53, 1);">
+                        <div class="fw-bold card-header">ISS</div>
+                        <label class='col-form-label'>R$ {{projeto.impNFS}}</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="text-white" style="background-color: rgba(255, 49, 53, 1);">
+                        <div class="fw-bold card-header">Tributos</div>
+                        <label class='col-form-label'>R$ {{projeto.totalImposto}}</label>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <label class='col-form-label fw-bold mt-1'>Participação das Deduções sobre o Total do Projeto</label>
+            <div style="height: 250px;">
+                <canvas id='chartDes'></canvas>
+            </div>
+            <input type='hidden' id='parIntNfs' value='{{projeto.parIntNfs}}'>
+            <input type='hidden' id='parGesNfs' value='{{projeto.parGesNfs}}'>
+            <input type='hidden' id='parProNfs' value='{{projeto.parProNfs}}'>
+            <input type='hidden' id='parArtNfs' value='{{projeto.parArtNfs}}'>
+            <input type='hidden' id='parDesNfs' value='{{projeto.parDesNfs}}'>
+            <input type='hidden' id='parCmbNfs' value='{{projeto.parCmbNfs}}'>
+            <input type='hidden' id='parEstNfs' value='{{projeto.parEstNfs}}'>
+            <input type='hidden' id='parAliNfs' value='{{projeto.parAliNfs}}'>
+            <input type='hidden' id='parResNfs' value='{{projeto.parResNfs}}'>
+
+            <div class="row text-center" style="font-size: 14px;padding: 20px">
+                <div class="col">
+                    <div class="text-white" style=" background-color: rgba(70, 70, 70, 1);">
+                        <div class="fw-bold card-header">Instalação</div>
+                        <label class='col-form-label'>R$ {{projeto.totint}}</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="text-white" style=" background-color: rgba(110, 110, 110, 1);">
+                        <div class="fw-bold card-header">Projetista</div>
+                        <label class='col-form-label'>R$ {{projeto.totpro}}</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="text-white" style=" background-color: rgba(90, 90, 90, 1);">
+                        <div class="fw-bold card-header">Gestão</div>
+                        <label class='col-form-label'>R$ {{projeto.totges}}</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="text-white" style=" background-color: rgba(130, 130, 130, 1);">
+                        <div class="fw-bold card-header">Valor ART</div>
+                        <label class='col-form-label'>R$ {{projeto.vlrart}}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row text-center"
+                style="font-size: 14px;padding-bottom: 20px;padding-left: 20px; padding-right: 20px">
                 {{#if projeto.parEstNfs}}
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(190, 190, 190, 1);">
-                    <div class="fw-bold card-header">Estadia</div>
-                    <h4>R$ {{projeto.tothtl}}</h4>
-                </div>
-                {{/if}}
-            </div>
-            <div class="col-md-6">
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(90, 90, 90, 1);">
-                    <div class="fw-bold card-header">Gestão</div>
-                    <h4>R$ {{projeto.totges}}</h4>
-                </div>
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(130, 130, 130, 1);">
-                    <div class="fw-bold card-header">Valor ART</div>
-                    <h4>R$ {{projeto.vlrart}}</h4>
-                </div>
-                {{#if projeto.parCmbNfs}}
-                <div class="card text-white mb-3" style="max-width: 22rem; background-color: rgba(170, 170, 170, 1);">
-                    <div class="fw-bold card-header">Combustível</div>
-                    <h4>R$ {{projeto.totcmb}}</h4>
+                <div class="col">
+                    <div class="text-white" style=" background-color: rgba(190, 190, 190, 1);">
+                        <div class="fw-bold card-header">Estadia</div>
+                        <label class='col-form-label'>R$ {{projeto.tothtl}}</label>
+                    </div>
                 </div>
                 {{/if}}
                 {{#if projeto.parAliNfs}}
-                <div class="card text-white mb-3"
-                    style="max-width: 22rem; px;background-color: rgba(210, 210, 210, 1);">
-                    <div class="fw-bold card-header">Alimentação</div>
-                    <h4>R$ {{projeto.totali}}</h4>
+                <div class="col">
+                    <div class="text-white" style="background-color: rgba(210, 210, 210, 1);">
+                        <div class="fw-bold card-header">Alimentação</div>
+                        <label class='col-form-label'>R$ {{projeto.totali}}</label>
+                    </div>
+                </div>
+                {{/if}}
+                {{#if projeto.parDesNfs}}
+                <div class="col">
+                    <div class="text-white" style=" background-color: rgba(150, 150, 150, 1);">
+                        <div class="fw-bold card-header">Deslocamento</div>
+                        <label class='col-form-label'>R$ {{projeto.totdes}}</label>
+                    </div>
+                </div>
+                {{/if}}
+                {{#if projeto.parCmbNfs}}
+                <div class="col">
+                    <div class="text-white" style=" background-color: rgba(170, 170, 170, 1);">
+                        <div class="fw-bold card-header">Combustível</div>
+                        <label class='col-form-label'>R$ {{projeto.totcmb}}</label>
+                    </div>
                 </div>
                 {{/if}}
             </div>
