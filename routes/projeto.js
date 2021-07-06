@@ -737,7 +737,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                })
           } else {
                //Define variável booleana de acordo com o tipo do custo
-               if (req.body.tipocusto == 'Próprio') {
+               if (req.body.tipocusto == 'Terceirizado') {
                     tipocusto = true
                } else {
                     tipocusto = false
@@ -996,7 +996,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                                      } else {
                                                                                           fatura = 'uncheked'
                                                                                      }
-                                                                                     if (req.body.tipocusto == 'Por Hora') {
+                                                                                     if (req.body.tipocusto == 'Próprio') {
                                                                                           res.render("projeto/customdo/gestao", { projeto: projeto, sucesso: sucesso, configuracao: configuracao, gestao: gestao, cliente: cliente })
                                                                                      } else {
                                                                                           res.render('projeto/custosdiretos', { projeto: projeto, sucesso: sucesso, configuracao: configuracao, rp: rp, vendedor: vendedor, instalador, projetista, cliente: cliente, fatura: fatura })
