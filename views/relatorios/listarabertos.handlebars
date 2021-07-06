@@ -101,15 +101,15 @@
             <th>Cliente</th>
             <th>Cadastro</th>
             <th>Inicio</th>
-            <th>Total</th>
-            <th>Faturado</th>
-            <th>RO</th>
-            <th>CO + Reserva</th>
+            <th>Total R$</th>
+            <th>Faturado R$</th>
+            <th>RO R$</th>
+            <th>CO + Reserva R$</th>
             <th>%</th>
             <th>LAI</th>    
-            <th>Lucro Líquido</th>
+            <th>Lucro Líquido R$</th>
             <th>%</th>
-            <th>Tributos</th>
+            <th>Tributos R$</th>
             <th>%</th>
         </tr>
         {{#each projetos}}
@@ -118,16 +118,16 @@
             <td>{{nomecliente}}</td>
             <td>{{data}}</td>
             <td>{{dataini}}</td>
-            <td>R$ {{valor}}</td>
-            <td>R$ {{vlrNFS}}</td>
-            <td>R$ {{lucroBruto}}</td>
-            <td>R$ {{custoPlano}}</td>
+            <td>{{valor}}</td>
+            <td>{{vlrNFS}}</td>
+            <td>{{lucroBruto}}</td>
+            <td>{{custoPlano}}</td>
             <td>{{parDedNfs}}</td>
-            <td>R$ {{lbaimp}}</td>       
-            <td>R$ {{lucroLiquido}}</td>
+            <td>{{lbaimp}}</td>       
+            <td>{{lucroLiquido}}</td>
             <td>{{parLiqNfs}}</td>
-            <td>R$ {{totalImposto}}</td>
-            <td>{{parImpVlr}}</td>
+            <td>{{totalImposto}}</td>
+            <td>{{parImpNfs}}</td>
         </tr>
         {{else}}
         <h6>Nenhum projeto esta aberto.</h6>

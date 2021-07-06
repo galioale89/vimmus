@@ -103,15 +103,15 @@
             <th>Cadastro</th>
             <th>Inicio</th>
             <th>Entrega</th>
-            <th>Total</th>
-            <th>Faturado</th>
-            <th>RO</th>
-            <th>CO</th>
+            <th>Total R$</th>
+            <th>Faturado R$</th>
+            <th>RO R$</th>
+            <th>CO R$</th>
             <th>%</th>
-            <th>LAI</th>
-            <th>Lucro Líquido</th>
+            <th>LAI R$</th>
+            <th>Lucro Líquido R$</th>
             <th>%</th>
-            <th>Tributos</th>
+            <th>Tributos R$</th>
             <th>%</th>
         </tr>
         {{#each realizado}}
@@ -121,16 +121,16 @@
             <td>{{data}}</td>
             <td>{{dataini}}</td>
             <td>{{datafim}}</td>
-            <td>R$ {{valor}}</td>
-            <td>R$ {{vlrNFS}}</td>
-            <td>R$ {{lucroBruto}}</td>
-            <td>R$ {{custoPlano}}</td>
+            <td>{{valor}}</td>
+            <td>{{vlrNFS}}</td>
+            <td>{{lucroBruto}}</td>
+            <td>{{custoPlano}}</td>
             <td>{{parDedNfs}}</td>
-            <td>R$ {{lbaimp}}</td>
-            <td>R$ {{lucroLiquido}}</td>
+            <td>{{lbaimp}}</td>
+            <td>{{lucroLiquido}}</td>
             <td>{{parLiqNfs}}</td>
-            <td>R$ {{totalImposto}}</td>
-            <td>{{parImpVlr}}</td>
+            <td>{{totalImposto}}</td>
+            <td>{{parImpNfs}}</td>
         </tr>
         {{else}}
         <h6>Nenhum projeto foi realizado.</h6>
