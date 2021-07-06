@@ -259,6 +259,7 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
             })
         } else {
             Equipe.findOne({ _id: req.body.id_equipe }).lean().then((equipe) => {
+                console.log('equipe padrão')
                 const equipe_nova = {
                     projeto: req.body.id,
                     user: _id,
@@ -271,13 +272,13 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
                     ins5: equipe.ins5
                 }
 
-                //console.log('id=>' + equipe._id)
-                //console.log('ins0=>' + equipe.ins0)
-                //console.log('ins1=>' + equipe.ins1)
-                //console.log('ins2=>' + equipe.ins2)
-                //console.log('ins3=>' + equipe.ins3)
-                //console.log('ins4=>' + equipe.ins4)
-                //console.log('ins5=>' + equipe.ins5)
+                console.log('id=>' + equipe._id)
+                console.log('ins0=>' + equipe.ins0)
+                console.log('ins1=>' + equipe.ins1)
+                console.log('ins2=>' + equipe.ins2)
+                console.log('ins3=>' + equipe.ins3)
+                console.log('ins4=>' + equipe.ins4)
+                console.log('ins5=>' + equipe.ins5)
 
 
                 new Equipe(equipe_nova).save().then(() => {
@@ -294,7 +295,7 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
                         const { ins3 } = equipe
                         const { ins4 } = equipe
                         const { ins5 } = equipe
-                        ////console.log(ins0, ins1, ins2)
+                        console.log(ins0, ins1, ins2, ins3, ins4, ins5)
 
                         for (var i = 0; i < instaladores.length; i++) {
                             const { nome } = instaladores[i]
@@ -345,7 +346,7 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
                             projeto_salva.qtdequipe = ins_dentro.length
                             projeto_salva.save().then(() => {
                                 var texto = qtdins + ' no projeto.'
-                                //////console.log(qtdins)
+                                console.log(qtdins)
                                 sucesso.push({ texto: texto })
                                 res.render('mdo/editformaequipe_first', { sucesso: sucesso, projeto: projeto, fora: ins_fora, dentro: ins_dentro })
                             }).catch((err) => {

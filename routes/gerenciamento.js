@@ -1901,6 +1901,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
         }
         //------Validação do percentual de conclusão do projeto----//
         if (req.body.perConclusao != '' && typeof req.body.perConclusao != 'undefined' && req.body.perConclusao != 0) {
+            console.log('tem percentual')
             var perConclusao = 0
             var ev = 0
             var ac = 0
@@ -1909,7 +1910,11 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
             var spi = 0
             var eac = 0
             var etc = 0
+            var texto
             perConclusao = req.body.perConclusao
+            if (perConclusao == 100){
+                texto = 'Projeto Concluído'
+            }
             ev = parseFloat(prj_entrega.valor) * (parseFloat(perConclusao) / 100)
             if (req.body.actualCost != '' && typeof req.body.actualCost != 'undefined' && req.body.actualCost != 0) {
                 ac = req.body.actualCost
@@ -1918,14 +1923,21 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
             }
             cpi = parseFloat(ev) / parseFloat(ac)
             tcpi = (parseFloat(prj_entrega.valor) - parseFloat(ev)) / (parseFloat(prj_entrega.valor) - parseFloat(ac))
+            if (isNaN(tcpi)){
+                tcpi = 1
+            }
             eac = parseFloat(prj_entrega.valor) / parseFloat(cpi)
             etc = parseFloat(eac) - parseFloat(ac)
-            spi = parseFloat(prj_entrega.hrsprj) * (parseFloat(perConclusao) / 100)
+            spi = parseFloat(prj_entrega.hrsprj) * (1- (parseFloat(perConclusao) / 100))
+            if (isNaN(spi)){
+                spi = 0
+            }
             prj_entrega.perConclusao = perConclusao
             prj_entrega.actualCost = parseFloat(req.body.actualCost).toFixed(2)
             prj_entrega.cpi = parseFloat(cpi).toFixed(4)
             prj_entrega.tcpi = parseFloat(tcpi).toFixed(4)
             prj_entrega.etc = parseFloat(etc).toFixed(2)
+            prj_entrega.eac = parseFloat(eac).toFixed(2)
             prj_entrega.spi = parseFloat(spi).toFixed(2)
             prj_entrega.tspi = 1
         } else {

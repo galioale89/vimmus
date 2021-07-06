@@ -862,6 +862,10 @@ const Projeto = new Schema({
         type: Number,
         require: false
     }, 
+    eac: {
+        type: Number,
+        require: false
+    }, 
     cpi: {
         type: Number,
         require: false

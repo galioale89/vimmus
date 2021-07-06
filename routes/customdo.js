@@ -168,27 +168,38 @@ router.get('/editar/gestao/:id', ehAdmin, (req, res) => {
 router.get('/editar/instalacao/:id', ehAdmin, (req, res) => {
      const { _id } = req.user
      var pi
+     var vlrhri
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
-          projeto_id = projeto._id
-          Pessoa.findOne({ _id: projeto.funins }).lean().then((pessoa_ins) => {
-               pi = pessoa_ins
-          }).catch((err) => {
-               req.flash('error_msg', 'Houve uma falha ao encontrar o instalador')
-               res.redirect('/pessoa/consulta')
-          })
-          Pessoa.find({ funins: 'checked', user: _id }).lean().then((instalador) => {
-               Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                    res.render('projeto/customdo/editinstalacao', { projeto: projeto, instalador: instalador, pi: pi, cliente: cliente })
+          Configuracao.findOne({_id: projeto.configuracao}).lean().then((configuracao) => {
+               if (typeof projeto.vlrhri == 'undefined') {
+                    vlrhri = false
+               } else {
+                    vlrhri = true
+               }
+               console.log('vlrhri=>' + vlrhri)
+               Pessoa.findOne({ _id: projeto.funins }).lean().then((pessoa_ins) => {
+                    pi = pessoa_ins
                }).catch((err) => {
-                    req.flash('error_msg', 'Nenhum cliente encontrado.')
+                    req.flash('error_msg', 'Houve uma falha ao encontrar o instalador')
+                    res.redirect('/pessoa/consulta')
+               })
+               Pessoa.find({ funins: 'checked', user: _id }).lean().then((instalador) => {
+                    Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                         res.render('projeto/customdo/editinstalacao', { projeto, instalador, pi, cliente, configuracao, vlrhri })
+                    }).catch((err) => {
+                         req.flash('error_msg', 'Nenhum cliente encontrado.')
+                         res.redirect('/pessoa/consulta')
+                    })
+               }).catch((err) => {
+                    req.flash('error_msg', 'Houve uma falha ao encontrar um instalador.')
                     res.redirect('/pessoa/consulta')
                })
           }).catch((err) => {
-               req.flash('error_msg', 'Houve uma falha ao encontrar um instalador')
-               res.redirect('/pessoa/consulta')
+               req.flash('error_msg', 'Houve uma falha ao encontrar a configuracação.')
+               res.redirect('/projeto/consulta')
           })
      }).catch((err) => {
-          req.flash('error_msg', 'Houve uma falha ao encontrar o projeto')
+          req.flash('error_msg', 'Houve uma falha ao encontrar o projeto.')
           res.redirect('/projeto/consulta')
      })
 
@@ -321,9 +332,9 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                     }
 
                     var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr) + parseFloat(totstb) + parseFloat(totpnl)).toFixed(2)
-                    
+
                     var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr) + parseFloat(trbstb) + parseFloat(trbpnl))
-                    
+
                     var sucesso = []
 
                     projeto.qtdequipe = 3
@@ -710,10 +721,10 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
 
           Projeto.findOne({ _id: req.body.id }).then((projeto) => {
 
-               console.log('projeto.configuracao=>'+projeto.configuracao)
+               console.log('projeto.configuracao=>' + projeto.configuracao)
 
                Configuracao.findOne({ _id: projeto.configuracao }).then((config) => {
-                    
+
                     //Edição dos Custos de Instalação
                     console.log('encontrou')
                     console.log('config.minatr=>' + config.minatr)

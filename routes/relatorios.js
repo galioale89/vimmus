@@ -2528,7 +2528,7 @@ router.get('/dashboardbi', ehAdmin, (req, res) => {
                         for (i = 0; i < solo.length; i++) {
                             fatsolo = fatsolo + parseFloat(solo[i].vlrNFS)
                         }
-                        Projetos.find({ user: _id, $or: [{ 'tipoUsina': 'Telhado Fibrocimento' }, { 'tipoUsina': 'Telhado Madeira' }, { 'tipoUsina': 'Telhado Cerâmica' }, { 'tipoUsina': 'Telhado Gambrel' }] }).then((telhado) => {
+                        Projetos.find({ user: _id, $or: [{ 'tipoUsina': 'Telhado Fibrocimento' }, { 'tipoUsina': 'Telhado Madeira' }, { 'tipoUsina': 'Telhado Cerâmica' }, { 'tipoUsina': 'Telhado Gambrel' }, { 'tipoUsina': 'Telhado Metálico' }] }).then((telhado) => {
                             for (i = 0; i < telhado.length; i++) {
                                 fattelhado = fattelhado + parseFloat(telhado[i].vlrNFS)
                             }
