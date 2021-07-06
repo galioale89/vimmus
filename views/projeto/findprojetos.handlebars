@@ -26,12 +26,17 @@
                 <hr style="color: white;">
                 <div class="row" style="margin-left: 10px">
                     <div class="col-md-3">
-                        <label class='col-form-label col-form-label-sm' style="color: white;">Tipo de
-                            Projeto</label>
-                        <select class='form-select form-select-sm' name='direto'>
+                        <label class='col-form-label col-form-label-sm' style="color: white;">Classificação</label>
+                        <select class='form-select form-select-sm' name='classificacao'>
                             <option>Todos</option>
-                            <option>Direto</option>
-                            <option>Por Hora</option>
+                            <option>Rural</option>
+                            <option>Rural Residencial</option>
+                            <option>Rural Granja</option>
+                            <option>Rural Irrigação</option>
+                            <option>Residencial</option>
+                            <option>Industrial</option>
+                            <option>Comercial</option>
+                            <option>Público</option>
                         </select>
                     </div>
                     <div class='col-md-3'>
@@ -40,6 +45,7 @@
                             <option>Todos</option>
                             <option>Sim</option>
                             <option>Não</option>
+
                         </select>
                     </div>
                     <div class='col-md-3'>
@@ -60,7 +66,7 @@
             </form>
         </div>
         <div class="row mb-4">
-            <div class='filtro-selecao' style="margin-left: 30px;">Tipo de Projeto: {{filDireto}}</div>
+            <div class='filtro-selecao' style="margin-left: 30px;">Classificação: {{classificacao}}</div>
             <div class='filtro-selecao'>Realizado: {{filReal}}</div>
             {{#if pr.nome}}
             <div class='filtro-selecao'>Responsável: {{pr.nome}}</div>
