@@ -704,7 +704,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                erros.push({ texto: 'O valor do orçamento deve ser maior que o valor do equipamento.' })
           }
           */
-         console.log(req.body.dataini)
+         //console.log(req.body.dataini)
           //------------------------------------------------------------------
           if (req.body.dataini == '' || req.body.dataprev == '') {
                erros.push({ texto: 'É necessário informar as data de inicio e de previsão de entrega do projeto.' })
@@ -1506,8 +1506,8 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                         vlrkit = projeto.vlrkit
                                    }
                               }
-                              console.log('vlrequ=>' + vlrequ)
-                              console.log('vlrkit=>' + vlrkit)
+                              //console.log('vlrequ=>' + vlrequ)
+                              //console.log('vlrkit=>' + vlrkit)
 
                               //Definie os valores dos detalhes de custo dos equipamentos do projeto
 
@@ -2343,7 +2343,7 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                     Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
 
                          Regime.findOne({ _id: projeto.regime }).lean().then((regime_prj) => {
-                              console.log('entrou')
+                              //console.log('entrou')
                               //Valida informações para o cálculo dos impostos e lucros
                               //--> cálculo automático dos dias de obra
                               projeto.nomecliente = cliente.nome
@@ -3018,6 +3018,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               } else {
                                    totali = projeto.totali
                               }
+                              //console.log('projeto.ehDireto=>'+projeto.ehDireto)
                               if (projeto.ehDireto == true) {
                                    tothtl = 0
                                    totcmb = 0
@@ -3046,6 +3047,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                                         }
                                    }
                               }
+                              //console.log('totdes=>'+totdes)
 
                               var valorCer = 0
                               var valorCen = 0
@@ -3075,19 +3077,17 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               if ((valorCen == 0 || valorCen == '') && detalhe.valorCen != 0) {
                                    valorCen = detalhe.valorCen
                               }
-                              //console.log('valorPos=>' + valorPos)
-                              //console.log('valorCer=>' + valorCer)
-                              //console.log('valorCen=>' + valorCen)
-
+                              
                               var custoFix = parseFloat(totint) + parseFloat(totges) + parseFloat(totpro) + parseFloat(vlrart)
-                              //console.log('custoFix=>' + custoFix)
-                              var custoVar = parseFloat(totali) + parseFloat(totdes) + parseFloat(totcmb) + parseFloat(tothtl)
-                              //console.log('custoVar=>' + custoVar)
+                              var custoVar
+                              if (projeto.ehDireto == true){
+                                   custoVar = parseFloat(totali) + parseFloat(totdes)
+                              }else{
+                                   custoVar = parseFloat(totali) + parseFloat(totcmb) + parseFloat(tothtl)
+                              }
+                              
                               var custoEst = parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen)
-                              //console.log('custoEst=>' + custoEst)
                               totalPlano = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
-                              //console.log('totalPlano=>' + totalPlano)
-                              //console.log('totalPlano=>' + totalPlano)
 
                               var vlrequ
                               var impISSNfs
@@ -4094,7 +4094,7 @@ router.get('/executar/:id', ehAdmin, (req, res) => {
                               //Enviando SMS                              
                               //var textMessageService = new TextMessageService(apiKey)
                               //textMessageService.send('Vimmus', mensagem, [to], result => {
-                              //     console.log(result)
+                              //     //console.log(result)
                               //     if (result == false) {
                               //         req.flash('error_msg', 'Falha interna. Não foi possível enviar a mensagem.')
                               //          res.redirect(redirect)
@@ -4208,10 +4208,10 @@ router.get('/homologar/:id', ehAdmin, (req, res) => {
      //const { fantasia } = req.user
      var redirect = '/projeto/edicao/' + req.params.id
      Cronograma.findOne({ projeto: req.params.id }).then((cronograma) => {
-          console.log('cronograma.dateEntregaReal=>' + cronograma.dateEntregaReal)
+          //console.log('cronograma.dateEntregaReal=>' + cronograma.dateEntregaReal)
           if (cronograma.dateEntregaReal != '' && typeof cronograma.dateEntregaReal != 'undefined') {
                Projeto.findOne({ _id: req.params.id }).then((projeto) => {
-                    console.log('')
+                    //console.log('')
                     Cliente.findOne({ _id: projeto.cliente }).then((cliente) => {
                          
                          var date = new Date()
@@ -4230,12 +4230,12 @@ router.get('/homologar/:id', ehAdmin, (req, res) => {
                          //Enviando SMS                              
                          //var textMessageService = new TextMessageService(apiKey)
                          //textMessageService.send('Vimmus', mensagem, [to], result => {
-                         //     console.log(result)
+                         //     //console.log(result)
                          //     if (result == false) {
                          //         req.flash('error_msg', 'Falha interna. Não foi possível enviar a mensagem.')
                          //          res.redirect(redirect)
                          //     } else {
-                         console.log('hoje=>'+hoje)
+                         //console.log('hoje=>'+hoje)
                          projeto.dataVisto = hoje
                          projeto.executando = false
                          projeto.parado = false
