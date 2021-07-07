@@ -1715,12 +1715,15 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.body.idprojeto }).then((prj_entrega) => {
         Cronograma.findOne({ projeto: req.body.idprojeto }).then((cronograma) => {
             if (req.body.orcado == 'true') {
-                console.log('entrou')
+                dataentrega = req.body.dateEntrega
+                ano = dataentrega.substring(0, 4)
+                mes = dataentrega.substring(5, 7)
+                dia = dataentrega.substring(8, 11)
+                dataentrega = dia + '/' + mes + '/' + ano                
                 prj_entrega.dataprev = dataentrega
                 prj_entrega.dataord = ano + mes + dia
                 prj_entrega.valDataPrev = req.body.dateentrega
                 prj_entrega.save().then(() => {
-                    console.log('salvou o projeto.')
                     cronograma.dateplaini = req.body.dateplaini
                     cronograma.dateateini = req.body.dateateini
                     cronograma.dateprjini = req.body.dateprjini
@@ -1743,13 +1746,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                     cronograma.datevisfim = req.body.datevisfim
                     cronograma.dateentrega = req.body.dateentrega
                     cronograma.save().then(() => {
-                        console.log('salvou o cronograma.')
                         sucesso = sucesso + 'Cronograma salvo com sucesso. '
-                        dataentrega = req.body.dateEntrega
-                        ano = dataentrega.substring(0, 4)
-                        mes = dataentrega.substring(5, 7)
-                        dia = dataentrega.substring(8, 11)
-                        dataentrega = dia + '/' + mes + '/' + ano
                         req.flash('error_msg', erros)
                         req.flash('success_msg', sucesso)
                         res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
