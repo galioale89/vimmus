@@ -1387,7 +1387,7 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
         }
 
         soma_custoFix = parseFloat(soma_totint) + parseFloat(soma_totpro) + parseFloat(soma_totart) + parseFloat(soma_totges) + parseFloat(soma_tottrb) + parseFloat(soma_totcom) + parseFloat(soma_totadm)
-        soma_custoVar = parseFloat(soma_totali) + parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)
+        soma_custoVar = parseFloat(soma_totali) + parseFloat(soma_totdes)
         soma_custoEst = parseFloat(soma_totcer) + parseFloat(soma_totcen) + parseFloat(soma_totpos)
         soma_totfat = parseFloat(soma_kitfat) + parseFloat(soma_serfat)
 
