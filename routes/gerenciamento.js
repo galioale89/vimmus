@@ -1711,132 +1711,56 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
         checkVis = 'checked'
     }
 
-
-    /*
-    var cronogramaNovo
-    if (req.body.orcado == 'true') {
-        Cronograma.findOne({ projeto: req.body.idprojeto }).then((cronograma_orc) => {
-            if (cronograma_orc != null) {
-                cronograma_orc.remove()
-            }
-        }).catch((err) => {
-            req.flash('error_msg', 'Cronograma não encontrado.')
-            res.redirect('/projeto/consulta')
-        })
-        if (req.body.datevisfim != '' && typeof req.body.datevisfim != 'undefined' && req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined') {
-            if (comparaDatas(req.body.dateentrega, req.body.datevisfim)) {
-                erros = erros + 'É necessário que a data de entrega prevista do projeto seja maior ou igual a data de finalização da vistoria.'
-            } else {
-                cronogramaNovo = {
-                    user: _id,
-                    projeto: req.body.idprojeto,
-                    dateplaini: req.body.dateplaini,
-                    dateateini: req.body.dateateini,
-                    dateprjini: req.body.dateprjini,
-                    dateestini: req.body.dateestini,
-                    datemodini: req.body.datemodini,
-                    dateinvini: req.body.dateinvini,
-                    dateeaeini: req.body.dateeaeini,
-                    datestbini: req.body.datestbini,
-                    datepnlini: req.body.datepnlini,
-                    datevisini: req.body.datevisini,
-                    dateplafim: req.body.dateplafim,
-                    dateatefim: req.body.dateatefim,
-                    dateprjfim: req.body.dateprjfim,
-                    dateestfim: req.body.dateestfim,
-                    datemodfim: req.body.datemodfim,
-                    dateinvfim: req.body.dateinvfim,
-                    dateeaefim: req.body.dateeaefim,
-                    datestbfim: req.body.datestbfim,
-                    datepnlfim: req.body.datepnlfim,
-                    datevisfim: req.body.datevisfim,
-                    dateentrega: req.body.dateentrega,
-                }
-            }
-        } else {
-            cronogramaNovo = {
-                user: _id,
-                projeto: req.body.idprojeto,
-                dateplaini: req.body.dateplaini,
-                dateateini: req.body.dateateini,
-                dateprjini: req.body.dateprjini,
-                dateestini: req.body.dateestini,
-                datemodini: req.body.datemodini,
-                dateinvini: req.body.dateinvini,
-                dateeaeini: req.body.dateeaeini,
-                datestbini: req.body.datestbini,
-                datepnlini: req.body.datepnlini,
-                datevisini: req.body.datevisini,
-                dateplafim: req.body.dateplafim,
-                dateatefim: req.body.dateatefim,
-                dateprjfim: req.body.dateprjfim,
-                dateestfim: req.body.dateestfim,
-                datemodfim: req.body.datemodfim,
-                dateinvfim: req.body.dateinvfim,
-                dateeaefim: req.body.dateeaefim,
-                datestbfim: req.body.datestbfim,
-                datepnlfim: req.body.datepnlfim,
-                dateisfim: req.body.datevisfim,
-                dateentrega: req.body.dateentrega,
-            }
-        }
-        new Cronograma(cronogramaNovo).save().then(() => {
-            sucesso = sucesso + 'Cronograma salvo com sucesso. '
-        }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível salvar o cronograma.')
-            res.redirect('/menu')
-        })
-    */
+    console.log('req.body.orcado=>' + req.body.orcado)
     Projeto.findOne({ _id: req.body.idprojeto }).then((prj_entrega) => {
         Cronograma.findOne({ projeto: req.body.idprojeto }).then((cronograma) => {
-            if (req.body.orcado == true) {
-                cronograma.dateplaini = req.body.dateplaini
-                cronograma.dateateini = req.body.dateateini
-                cronograma.dateprjini = req.body.dateprjini
-                cronograma.dateestini = req.body.dateestini
-                cronograma.datemodini = req.body.datemodini
-                cronograma.dateinvini = req.body.dateinvini
-                cronograma.dateeaeini = req.body.dateeaeini
-                cronograma.datestbini = req.body.datestbini
-                cronograma.datepnlini = req.body.datepnlini
-                cronograma.datevisini = req.body.datevisini
-                cronograma.dateplafim = req.body.dateplafim
-                cronograma.dateatefim = req.body.dateatefim
-                cronograma.dateprjfim = req.body.dateprjfim
-                cronograma.dateestfim = req.body.dateestfim
-                cronograma.datemodfim = req.body.datemodfim
-                cronograma.dateinvfim = req.body.dateinvfim
-                cronograma.dateeaefim = req.body.dateeaefim
-                cronograma.datestbfim = req.body.datestbfim
-                cronograma.datepnlfim = req.body.datepnlfim
-                cronograma.datevisfim = req.body.datevisfim
-                cronograma.dateentrega = req.body.dateentrega
-
-                cronograma.save().then(() => {
-                    console.log('salvou o cronograma.')
-                    sucesso = sucesso + 'Cronograma salvo com sucesso. '
-                    dataentrega = req.body.dateEntrega
-                    ano = dataentrega.substring(0, 4)
-                    mes = dataentrega.substring(5, 7)
-                    dia = dataentrega.substring(8, 11)
-                    dataentrega = dia + '/' + mes + '/' + ano
-                    prj_entrega.dataprev = dataentrega
-                    prj_entrega.dataord = ano + mes + dia
-                    prj_entrega.valDataPrev = req.body.dateentrega
-                    prj_entrega.save().then(() => {
-                        console.log('salvou o projeto')
+            if (req.body.orcado == 'true') {
+                console.log('entrou')
+                prj_entrega.dataprev = dataentrega
+                prj_entrega.dataord = ano + mes + dia
+                prj_entrega.valDataPrev = req.body.dateentrega
+                prj_entrega.save().then(() => {
+                    console.log('salvou o projeto.')
+                    cronograma.dateplaini = req.body.dateplaini
+                    cronograma.dateateini = req.body.dateateini
+                    cronograma.dateprjini = req.body.dateprjini
+                    cronograma.dateestini = req.body.dateestini
+                    cronograma.datemodini = req.body.datemodini
+                    cronograma.dateinvini = req.body.dateinvini
+                    cronograma.dateeaeini = req.body.dateeaeini
+                    cronograma.datestbini = req.body.datestbini
+                    cronograma.datepnlini = req.body.datepnlini
+                    cronograma.datevisini = req.body.datevisini
+                    cronograma.dateplafim = req.body.dateplafim
+                    cronograma.dateatefim = req.body.dateatefim
+                    cronograma.dateprjfim = req.body.dateprjfim
+                    cronograma.dateestfim = req.body.dateestfim
+                    cronograma.datemodfim = req.body.datemodfim
+                    cronograma.dateinvfim = req.body.dateinvfim
+                    cronograma.dateeaefim = req.body.dateeaefim
+                    cronograma.datestbfim = req.body.datestbfim
+                    cronograma.datepnlfim = req.body.datepnlfim
+                    cronograma.datevisfim = req.body.datevisfim
+                    cronograma.dateentrega = req.body.dateentrega
+                    cronograma.save().then(() => {
+                        console.log('salvou o cronograma.')
+                        sucesso = sucesso + 'Cronograma salvo com sucesso. '
+                        dataentrega = req.body.dateEntrega
+                        ano = dataentrega.substring(0, 4)
+                        mes = dataentrega.substring(5, 7)
+                        dia = dataentrega.substring(8, 11)
+                        dataentrega = dia + '/' + mes + '/' + ano
                         req.flash('error_msg', erros)
                         req.flash('success_msg', sucesso)
                         res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
                     }).catch((err) => {
-                        req.flash('error_msg', 'Não foi possível salvar o projeto.')
+                        req.flash('error_msg', 'Não foi possível salvar o cronograma.')
                         res.redirect('/menu')
                     })
                 }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possível salvar o cronograma.')
+                    req.flash('error_msg', 'Não foi possível salvar o projeto.')
                     res.redirect('/menu')
                 })
-
             } else {
                 if (req.body.executando == 'true') {
                     var atrasou = false
@@ -2055,7 +1979,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
         }
         //---------------------------------------------------------//
         projeto.save().then(() => {
-            console.log('salvou o projeto')
+            console.log('salvou o projeto indicadores financeiros')
             req.flash('error_msg', erros)
             req.flash('success_msg', sucesso)
             res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
