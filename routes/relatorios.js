@@ -1416,7 +1416,7 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
             medkwp_custoVar = 0
         }
         medkwp_varfat = (parseFloat(soma_varfat) / parseFloat(soma_varkwp)).toFixed(2)
-        medkwp_totdes = ((parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)) / parseFloat(soma_varkwp)).toFixed(2)
+        medkwp_totdes = (parseFloat(soma_totdes) / parseFloat(soma_varkwp)).toFixed(2)
         medkwp_totali = (parseFloat(soma_totali) / parseFloat(soma_varkwp)).toFixed(2)
         medkwp_tothtl = (parseFloat(soma_tothtl) / parseFloat(soma_varkwp)).toFixed(2)
         medkwp_totcmb = (parseFloat(soma_totcmb) / parseFloat(soma_varkwp)).toFixed(2)
