@@ -1825,11 +1825,10 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
             console.log('atrasou=>' + atrasou)
 
             if (req.body.orcado == 'true') {
-                console.log('req.body.datevisfim=>'+req.body.datevisfim)
                 if (req.body.datevisfim == '' || typeof req.body.datevisfim == 'undefined') {
-                    console.log('Data final de vistoria igual vazio')
+                    console.log('prj_entrega.valDataPrev=>'+prj_entrega.valDataPrev)
                     console.log('req.body.dateentrega=>'+req.body.dateentrega)
-                    if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && (req.body.dateentrega != prj_entrega.datafim)) {
+                    if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && (req.body.dateentrega != prj_entrega.valDataPrev)) {
                         erros = erros + 'A data de entrega poderá ser alterada quando data final da vistoria estiver preenchida.'
                         req.flash('error_msg', erros)
                         res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
