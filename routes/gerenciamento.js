@@ -1668,6 +1668,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
     var mes
     var dia
     var dataEntregaReal
+    var atrasou = false
 
     var checkPla = 'unchecked'
     var checkAte = 'unchecked'
@@ -1711,19 +1712,179 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
         checkVis = 'checked'
     }
 
-    console.log('req.body.orcado=>' + req.body.orcado)
     Projeto.findOne({ _id: req.body.idprojeto }).then((prj_entrega) => {
         Cronograma.findOne({ projeto: req.body.idprojeto }).then((cronograma) => {
+            if (req.body.perConclusao != '' && typeof req.body.perConclusao != 'undefined' && req.body.perConclusao != 0) {
+                console.log('tem percentual')
+                var perConclusao = 0
+                var ev = 0
+                var ac = 0
+                var cpi = 0
+                var tcpi = 0
+                var spi = 0
+                var eac = 0
+                var etc = 0
+                var texto
+                perConclusao = req.body.perConclusao
+                if (perConclusao == 100) {
+                    texto = 'Projeto Concluído'
+                }
+                ev = parseFloat(prj_entrega.valor) * (parseFloat(perConclusao) / 100)
+                if (req.body.actualCost != '' && typeof req.body.actualCost != 'undefined' && req.body.actualCost != 0) {
+                    ac = req.body.actualCost
+                } else {
+                    ac = ev
+                }
+                cpi = parseFloat(ev) / parseFloat(ac)
+                tcpi = (parseFloat(prj_entrega.valor) - parseFloat(ev)) / (parseFloat(prj_entrega.valor) - parseFloat(ac))
+                if (isNaN(tcpi)) {
+                    tcpi = 1
+                }
+                eac = parseFloat(prj_entrega.valor) / parseFloat(cpi)
+                etc = parseFloat(eac) - parseFloat(ac)
+                spi = parseFloat(prj_entrega.hrsprj) * (1 - (parseFloat(perConclusao) / 100))
+                if (isNaN(spi)) {
+                    spi = 0
+                }
+                prj_entrega.perConclusao = perConclusao
+                prj_entrega.actualCost = parseFloat(req.body.actualCost).toFixed(2)
+                prj_entrega.cpi = parseFloat(cpi).toFixed(4)
+                prj_entrega.tcpi = parseFloat(tcpi).toFixed(4)
+                prj_entrega.etc = parseFloat(etc).toFixed(2)
+                prj_entrega.eac = parseFloat(eac).toFixed(2)
+                prj_entrega.spi = parseFloat(spi).toFixed(2)
+                prj_entrega.tspi = 1
+            } else {
+                prj_entrega.perConclusao = 0
+                prj_entrega.etc = prj_entrega.valor
+                prj_entrega.actualCost = 0
+                prj_entrega.cpi = 1
+                prj_entrega.tcpi = 1
+                prj_entrega.spi = 1
+                prj_entrega.tspi = 1
+            }
+
+            if (req.body.executando == 'true') {
+                if (req.body.datepla != '' && typeof req.body.datepla != 'undefined') {
+                    atrasou = comparaDatas(cronograma.dateplafim, req.body.datepla)
+                }
+                if (req.body.dateprj != '' && typeof req.body.dateprj != 'undefined') {
+                    atrasou = comparaDatas(cronograma.dateprjfim, req.body.dateprj)
+                }
+
+                if (req.body.dateate != '' && typeof req.body.dateate != 'undefined') {
+                    atrasou = comparaDatas(cronograma.dateatefim, req.body.dateate)
+                }
+
+                if (req.body.dateest != '' && typeof req.body.dateest != 'undefined') {
+                    atrasou = comparaDatas(cronograma.dateestfim, req.body.dateest)
+                }
+
+                if (req.body.datemod != '' && typeof req.body.datemod != 'undefined') {
+                    atrasou = comparaDatas(cronograma.datemodfim, req.body.datemod)
+                }
+
+                if (req.body.dateinv != '' && typeof req.body.dateinv != 'undefined') {
+                    atrasou = comparaDatas(cronograma.dateinvfim, req.body.dateinv)
+                }
+
+                if (req.body.dateeae != '' && typeof req.body.dateeae != 'undefined') {
+                    atrasou = comparaDatas(cronograma.dateeaefim, req.body.dateeae)
+                }
+
+                if (req.body.datestb != '' && typeof req.body.datestb != 'undefined') {
+                    atrasou = comparaDatas(cronograma.datestbfim, req.body.datestb)
+                }
+
+                if (req.body.datepnl != '' && typeof req.body.datepnl != 'undefined') {
+                    atrasou = comparaDatas(cronograma.datepnlfim, req.body.datepnl)
+                }
+
+                if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
+                    atrasou = comparaDatas(cronograma.datevisfim, req.body.datevis)
+                }
+
+                if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
+                    if (req.body.dateEntregaReal != '' && typeof req.body.dateEntregaReal != 'undifined') {
+                        if (comparaDatas(req.body.dateEntregaReal, req.body.datevis)) {
+                            erros = erros + 'Não foi possível salvar a nova data de entrega de finalização. '
+                        } else {
+                            dataEntregaReal = req.body.dateEntregaReal
+                            ano = dataEntregaReal.substring(0, 4)
+                            mes = dataEntregaReal.substring(5, 7)
+                            dia = dataEntregaReal.substring(8, 11)
+                            dataEntregaReal = dia + '/' + mes + '/' + ano
+                            prj_entrega.datafim = dataEntregaReal
+                            prj_entrega.valDataFim = req.body.dateEntregaReal
+                            atrasou = comparaDatas(req.body.dateEntregaHidden, req.body.dateEntregaReal)
+                        }
+                    }
+                }
+            }
+
+            console.log('atrasou=>' + atrasou)
+
             if (req.body.orcado == 'true') {
-                dataentrega = req.body.dateEntrega
-                ano = dataentrega.substring(0, 4)
-                mes = dataentrega.substring(5, 7)
-                dia = dataentrega.substring(8, 11)
-                dataentrega = dia + '/' + mes + '/' + ano                
-                prj_entrega.dataprev = dataentrega
-                prj_entrega.dataord = ano + mes + dia
-                prj_entrega.valDataPrev = req.body.dateentrega
-                prj_entrega.save().then(() => {
+                console.log('req.body.datevisfim=>'+req.body.datevisfim)
+                if (req.body.datevisfim == '' || typeof req.body.datevisfim == 'undefined') {
+                    console.log('Data final de vistoria igual vazio')
+                    console.log('req.body.dateentrega=>'+req.body.dateentrega)
+                    if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && (req.body.dateentrega != prj_entrega.datafim)) {
+                        erros = erros + 'A data de entrega poderá ser alterada quando data final da vistoria estiver preenchida.'
+                        req.flash('error_msg', erros)
+                        res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
+                    }
+                }else{
+                    if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && comparaDatas(req.body.dateentrega, req.body.datevisfim)) {
+                        dataentrega = req.body.dateentrega
+                        ano = dataentrega.substring(0, 4)
+                        mes = dataentrega.substring(5, 7)
+                        dia = dataentrega.substring(8, 11)
+                        dataentrega = dia + '/' + mes + '/' + ano
+                        console.log('dataentrega=>' + dataentrega)
+                        prj_entrega.dataprev = dataentrega
+                        prj_entrega.dataord = ano + mes + dia
+                        prj_entrega.valDataPrev = req.body.dateentrega
+                    }
+                }
+            }
+            prj_entrega.atrasado = atrasou
+            prj_entrega.save().then(() => {
+                console.log('salvou projeto')
+                if (req.body.executando == 'true') {
+                    //---Validar as datas de realização com data estimada do fim da entrega--//
+                    if (req.body.datepla != '' && typeof req.body.datepla != 'undefined') {
+                        cronograma.atrasouPla = comparaDatas(cronograma.dateplafim, req.body.datepla)
+                    }
+                    if (req.body.dateprj != '' && typeof req.body.dateprj != 'undefined') {
+                        cronograma.atrasouPrj = comparaDatas(cronograma.dateprjfim, req.body.dateprj)
+                    }
+                    if (req.body.dateate != '' && typeof req.body.dateate != 'undefined') {
+                        cronograma.atrasouAte = comparaDatas(cronograma.dateatefim, req.body.dateate)
+                    }
+                    if (req.body.dateest != '' && typeof req.body.dateest != 'undefined') {
+                        cronograma.atrasouEst = comparaDatas(cronograma.dateestfim, req.body.dateest)
+                    }
+                    if (req.body.datemod != '' && typeof req.body.datemod != 'undefined') {
+                        cronograma.atrasouMod = comparaDatas(cronograma.datemodfim, req.body.datemod)
+                    }
+                    if (req.body.dateinv != '' && typeof req.body.dateinv != 'undefined') {
+                        cronograma.atrasouInv = comparaDatas(cronograma.dateinvfim, req.body.dateinv)
+                    }
+                    if (req.body.dateeae != '' && typeof req.body.dateeae != 'undefined') {
+                        cronograma.atrasouEae = comparaDatas(cronograma.dateeaefim, req.body.dateeae)
+                    }
+                    if (req.body.datestb != '' && typeof req.body.datestb != 'undefined') {
+                        cronograma.atrasouStb = comparaDatas(cronograma.datestbfim, req.body.datestb)
+                    }
+                    if (req.body.datepnl != '' && typeof req.body.datepnl != 'undefined') {
+                        cronograma.atrasouPnl = comparaDatas(cronograma.datepnlfim, req.body.datepnl)
+                    }
+                    if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
+                        cronograma.atrasouVis = comparaDatas(cronograma.datevisfim, req.body.datevis)
+                    }
+                }
+                if (req.body.orcado == 'true') {
                     cronograma.dateplaini = req.body.dateplaini
                     cronograma.dateateini = req.body.dateateini
                     cronograma.dateprjini = req.body.dateprjini
@@ -1744,140 +1905,42 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                     cronograma.datestbfim = req.body.datestbfim
                     cronograma.datepnlfim = req.body.datepnlfim
                     cronograma.datevisfim = req.body.datevisfim
-                    cronograma.dateentrega = req.body.dateentrega
-                    cronograma.save().then(() => {
-                        sucesso = sucesso + 'Cronograma salvo com sucesso. '
-                        req.flash('error_msg', erros)
-                        req.flash('success_msg', sucesso)
-                        res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Não foi possível salvar o cronograma.')
-                        res.redirect('/menu')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possível salvar o projeto.')
-                    res.redirect('/menu')
-                })
-            } else {
+
+                    if (req.body.datevisfim != '' && typeof req.body.datevisfim != 'undefined') {
+                        if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && comparaDatas(req.body.dateentrega, req.body.datevisfim)) {
+                            erros = erros + 'A data de entrega deve ser maior ou igual a data final da vistoria.'
+                            req.flash('error_msg', erros)
+                            res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
+                        } else {
+                            cronograma.dateentrega = req.body.dateentrega
+                        }
+                    }
+
+                }
                 if (req.body.executando == 'true') {
-                    var atrasou = false
-                    if (req.body.datepla != '' && typeof req.body.datepla != 'undefined') {
-                        atrasou = comparaDatas(cronograma.dateplafim, req.body.datepla)
-                    }
-                    if (req.body.dateprj != '' && typeof req.body.dateprj != 'undefined') {
-                        atrasou = comparaDatas(cronograma.dateprjfim, req.body.dateprj)
-                    }
+                    cronograma.checkPla = checkPla
+                    cronograma.checkAte = checkAte
+                    cronograma.checkPrj = checkPrj
+                    cronograma.checkAte = checkAte
+                    cronograma.checkEst = checkEst
+                    cronograma.checkMod = checkMod
+                    cronograma.checkInv = checkInv
+                    cronograma.checkEae = checkEae
+                    cronograma.checkStb = checkStb
+                    cronograma.checkPnl = checkPnl
+                    cronograma.checkVis = checkVis
+                    cronograma.datepla = req.body.datepla
+                    cronograma.dateate = req.body.dateate
+                    cronograma.dateprj = req.body.dateprj
+                    cronograma.dateest = req.body.dateest
+                    cronograma.datemod = req.body.datemod
+                    cronograma.dateinv = req.body.dateinv
+                    cronograma.dateeae = req.body.dateeae
+                    cronograma.datestb = req.body.datestb
+                    cronograma.datepnl = req.body.datepnl
+                    cronograma.datevis = req.body.datevis
 
-                    if (req.body.dateate != '' && typeof req.body.dateate != 'undefined') {
-                        atrasou = comparaDatas(cronograma.dateatefim, req.body.dateate)
-                    }
-
-                    if (req.body.dateest != '' && typeof req.body.dateest != 'undefined') {
-                        atrasou = comparaDatas(cronograma.dateestfim, req.body.dateest)
-                    }
-
-                    if (req.body.datemod != '' && typeof req.body.datemod != 'undefined') {
-                        atrasou = comparaDatas(cronograma.datemodfim, req.body.datemod)
-                    }
-
-                    if (req.body.dateinv != '' && typeof req.body.dateinv != 'undefined') {
-                        atrasou = comparaDatas(cronograma.dateinvfim, req.body.dateinv)
-                    }
-
-                    if (req.body.dateeae != '' && typeof req.body.dateeae != 'undefined') {
-                        atrasou = comparaDatas(cronograma.dateeaefim, req.body.dateeae)
-                    }
-
-                    if (req.body.datestb != '' && typeof req.body.datestb != 'undefined') {
-                        atrasou = comparaDatas(cronograma.datestbfim, req.body.datestb)
-                    }
-
-                    if (req.body.datepnl != '' && typeof req.body.datepnl != 'undefined') {
-                        atrasou = comparaDatas(cronograma.datepnlfim, req.body.datepnl)
-                    }
-
-                    if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
-                        atrasou = comparaDatas(cronograma.datevisfim, req.body.datevis)
-                    }
-
-                    if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
-                        if (req.body.dateEntregaReal != '' && typeof req.body.dateEntregaReal != 'undifined') {
-                            if (comparaDatas(req.body.dateEntregaReal, req.body.datevis)) {
-                                erros = erros + 'Não foi possível salvar a nova data de entrega de finalização. '
-                            } else {
-                                dataEntregaReal = req.body.dateEntregaReal
-                                ano = dataEntregaReal.substring(0, 4)
-                                mes = dataEntregaReal.substring(5, 7)
-                                dia = dataEntregaReal.substring(8, 11)
-                                dataEntregaReal = dia + '/' + mes + '/' + ano
-                                prj_entrega.datafim = dataEntregaReal
-                                prj_entrega.valDataFim = req.body.dateEntregaReal
-                                atrasou = comparaDatas(req.body.dateEntregaHidden, req.body.dateEntregaReal)
-                            }
-                        }
-                    }
-
-                    prj_entrega.atrasado = atrasou
-                    prj_entrega.save().then(() => {
-                        cronograma.checkPla = checkPla
-                        cronograma.checkAte = checkAte
-                        cronograma.checkPrj = checkPrj
-                        cronograma.checkAte = checkAte
-                        cronograma.checkEst = checkEst
-                        cronograma.checkMod = checkMod
-                        cronograma.checkInv = checkInv
-                        cronograma.checkEae = checkEae
-                        cronograma.checkStb = checkStb
-                        cronograma.checkPnl = checkPnl
-                        cronograma.checkVis = checkVis
-                        cronograma.datepla = req.body.datepla
-                        cronograma.dateate = req.body.dateate
-                        cronograma.dateprj = req.body.dateprj
-                        cronograma.dateest = req.body.dateest
-                        cronograma.datemod = req.body.datemod
-                        cronograma.dateinv = req.body.dateinv
-                        cronograma.dateeae = req.body.dateeae
-                        cronograma.datestb = req.body.datestb
-                        cronograma.datepnl = req.body.datepnl
-                        cronograma.datevis = req.body.datevis
-
-                        //---Validar as datas de realização com data estimada do fim da entrega--//
-                        if (req.body.datepla != '' && typeof req.body.datepla != 'undefined') {
-                            cronograma.atrasouPla = comparaDatas(cronograma.dateplafim, req.body.datepla)
-                        }
-                        if (req.body.dateprj != '' && typeof req.body.dateprj != 'undefined') {
-                            cronograma.atrasadoPrj = comparaDatas(cronograma.dateprjfim, req.body.dateprj)
-                        }
-                        if (req.body.dateate != '' && typeof req.body.dateate != 'undefined') {
-                            cronograma.atrasouAte = comparaDatas(cronograma.dateatefim, req.body.dateate)
-                        }
-                        if (req.body.dateest != '' && typeof req.body.dateest != 'undefined') {
-                            cronograma.atrasouEst = comparaDatas(cronograma.dateestfim, req.body.dateest)
-                        }
-
-                        if (req.body.datemod != '' && typeof req.body.datemod != 'undefined') {
-                            cronograma.atrasouMod = comparaDatas(cronograma.datemodfim, req.body.datemod)
-                        }
-
-                        if (req.body.dateinv != '' && typeof req.body.dateinv != 'undefined') {
-                            cronograma.atrasouInv = comparaDatas(cronograma.dateinvfim, req.body.dateinv)
-                        }
-
-                        if (req.body.dateeae != '' && typeof req.body.dateeae != 'undefined') {
-                            cronograma.atrasouEae = comparaDatas(cronograma.dateeaefim, req.body.dateeae)
-                        }
-
-                        if (req.body.datestb != '' && typeof req.body.datestb != 'undefined') {
-                            cronograma.atrasouStb = comparaDatas(cronograma.datestbfim, req.body.datestb)
-                        }
-
-                        if (req.body.datepnl != '' && typeof req.body.datepnl != 'undefined') {
-                            cronograma.atrasouPnl = comparaDatas(cronograma.datepnlfim, req.body.datepnl)
-                        }
-                        if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
-                            cronograma.atrasouVis = comparaDatas(cronograma.datevisfim, req.body.datevis)
-                        }
-
+                    if (req.body.executando == 'true') {
                         if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
                             if (req.body.dateEntregaReal != '' && typeof req.body.dateEntregaReal != 'undifined') {
                                 if (comparaDatas(req.body.dateEntregaReal, req.body.datevis)) {
@@ -1887,99 +1950,23 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                                 }
                             }
                         }
-                        cronograma.save().then(() => {
-                            sucesso = sucesso + 'Cronograma salvo com sucesso. '
-                            req.flash('error_msg', erros)
-                            req.flash('success_msg', sucesso)
-                            res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Não foi possível salvar o cronograma.')
-                            res.redirect('/menu')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Não foi possível salvar o projeto.')
-                        res.redirect('/menu')
-                    })
-
+                    }
                 }
-            }
-        }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível encontrar o cronograma salvo.')
-            res.redirect('/menu')
-        })
-        /*
-        atrasou = comparaDatas(cronograma.datevisfim, req.body.datevis)
-        atrasou = comparaDatas(cronograma.datepnlfim, req.body.datepnl)
-        atrasou = comparaDatas(cronograma.datestbfim, req.body.datestb)
-        atrasou = comparaDatas(cronograma.dateeaefim, req.body.dateeae)
-        atrasou = comparaDatas(cronograma.dateinvfim, req.body.dateinv)
-        atrasou = comparaDatas(cronograma.datemodfim, req.body.datemod)
-        atrasou = comparaDatas(cronograma.dateestfim, req.body.dateest)
-        atrasou = comparaDatas(cronograma.dateatefim, req.body.dateate)
-        atrasou = comparaDatas(cronograma.dateprjfim, req.body.dateprj)
-        atrasou = comparaDatas(cronograma.dateplafim, req.body.datepla)
-        */
-    }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar o projeto.')
-        res.redirect('/menu')
-    })
-    //------Validação do percentual de conclusão do projeto----//
-    Projeto.findOne({ _id: req.body.idprojeto }).then((projeto) => {
-        if (req.body.perConclusao != '' && typeof req.body.perConclusao != 'undefined' && req.body.perConclusao != 0) {
-            console.log('tem percentual')
-            var perConclusao = 0
-            var ev = 0
-            var ac = 0
-            var cpi = 0
-            var tcpi = 0
-            var spi = 0
-            var eac = 0
-            var etc = 0
-            var texto
-            perConclusao = req.body.perConclusao
-            if (perConclusao == 100) {
-                texto = 'Projeto Concluído'
-            }
-            ev = parseFloat(projeto.valor) * (parseFloat(perConclusao) / 100)
-            if (req.body.actualCost != '' && typeof req.body.actualCost != 'undefined' && req.body.actualCost != 0) {
-                ac = req.body.actualCost
-            } else {
-                ac = ev
-            }
-            cpi = parseFloat(ev) / parseFloat(ac)
-            tcpi = (parseFloat(projeto.valor) - parseFloat(ev)) / (parseFloat(projeto.valor) - parseFloat(ac))
-            if (isNaN(tcpi)) {
-                tcpi = 1
-            }
-            eac = parseFloat(projeto.valor) / parseFloat(cpi)
-            etc = parseFloat(eac) - parseFloat(ac)
-            spi = parseFloat(projeto.hrsprj) * (1 - (parseFloat(perConclusao) / 100))
-            if (isNaN(spi)) {
-                spi = 0
-            }
-            projeto.perConclusao = perConclusao
-            projeto.actualCost = parseFloat(req.body.actualCost).toFixed(2)
-            projeto.cpi = parseFloat(cpi).toFixed(4)
-            projeto.tcpi = parseFloat(tcpi).toFixed(4)
-            projeto.etc = parseFloat(etc).toFixed(2)
-            projeto.eac = parseFloat(eac).toFixed(2)
-            projeto.spi = parseFloat(spi).toFixed(2)
-            projeto.tspi = 1
-        } else {
-            projeto.perConclusao = 0
-            projeto.etc = projeto.valor
-            projeto.actualCost = 0
-            projeto.cpi = 1
-            projeto.tcpi = 1
-            projeto.spi = 1
-            projeto.tspi = 1
-        }
-        //---------------------------------------------------------//
-        projeto.save().then(() => {
-            console.log('salvou o projeto indicadores financeiros')
-            req.flash('error_msg', erros)
-            req.flash('success_msg', sucesso)
-            res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
+
+                cronograma.save().then(() => {
+                    sucesso = sucesso + 'Cronograma salvo com sucesso. '
+                    req.flash('error_msg', erros)
+                    req.flash('success_msg', sucesso)
+                    res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
+
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi possível salvar o cronograma.')
+                    res.redirect('/menu')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar o cronograma salvo.')
+                res.redirect('/menu')
+            })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível salvar o projeto.')
             res.redirect('/menu')
