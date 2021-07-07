@@ -3,23 +3,31 @@
         width: 700px;
     }
 </style>
-
+<script>
+    function info_despesas(){
+        alert('As despesas administrativas consideram também as despesas comerciais e financieras. Neste campos deverá preencher com os gasto mensais, por exemplo, refernete a aluguel, luz, água, telefone, combustível para visitas, pró-labore, folha fixa das secretárias e vendedores, empréstimos, juros, tarifas, reservas, entre outros. Aqui pode ou não considerar as remunerações dos recursos de custo operacionais.')
+    }
+    function info_simples(){
+        alert('O valor do campo <Projeção de Faturamento Simples> deverá ser preenchido com o valor de faturamento estimado para o ano corrente. Assim, os campos <Fator de Redução> e <DAS> deverão acompanhar  a faixa de faturamento que a projeção da sua empresa está inserida nos Anexos do Simples Nacional.')
+    }
+</script>
 <div class="container mt-2 card">
-    <label for="minutos" class='fw-bold mt-2'> Cadastro de Regime Tributário</label>
+    <label for="minutos" class='fw-bold mt-2 text-center'> Cadastro de Regime Tributário</label>
     <br>
     <form action='/configuracao/addregime' method='post'>
-        <div class="row">
+        <div class="row" style="margin-bottom: 4px;">
             <input type='hidden' name='id' value='{{regime._id}}'>
             <div class="col-md-6">
                 <div class="card">
-                    <div class="row mt-4">
+                    <div class="row mt-2">
                         <div class="col-md-2 text-end">
                             <label for='slug' class='fw-bold col-form-label col-form-label-sm'> Nome: </label>
                         </div>
                         <div class="col-md-9">
-                            <input id='nome' name='nome' value='{{regime.nome}}' style="margin-left: 7px;" class='form-control form-control-sm'>
+                            <input id='nome' name='nome' value='{{regime.nome}}' style="margin-left: 7px;"
+                                class='form-control form-control-sm'>
                         </div>
-                    </div>                    
+                    </div>
                     <div class="row mb-2" style="margin-left: 2px;">
                         <div class="row mt-2">
                             <div class="col-md-6">
@@ -108,16 +116,16 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4 text-end">
-                        <label class='col-form-label col-form-label-sm mb-2'>Despesas Administrativas:</label><br>
+                    <div class="col-md-5 text-end">
+                        <label class='col-form-label col-form-label-sm mb-2'>Despesas Administrativas<i class='bi bi-info-circle' onmousemove="info_despesas()"></i>:</label><br>
                         <label class='col-form-label col-form-label-sm mb-2'>Percentual Despesas:</label><br>
                         <label class='col-form-label col-form-label-sm'>Média kWp:</label>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-5">
                         <input class="form-control form-control-sm mb-2" name='desadm'
-                            placeholder="Valor mensal das despesas fixas e variáveis somadas." value={{regime.desadm}}>
+                            placeholder="Valor mensal das despesas." value={{regime.desadm}}>
                         <input class="form-control form-control-sm mb-2" name='perdesp'
-                            placeholder="Percentual (%) das despesas por projeto." value={{regime.perdes}}>
+                            placeholder="Percentual (%) por projeto." value={{regime.perdes}}>
                         <input class="form-control form-control-sm" name='estkwp'
                             placeholder="Estimativa dos kWp mensais." value={{regime.estkwp}}>
                     </div>
@@ -128,7 +136,7 @@
                     <label class='fw-bold col-form-label col-form-label-sm'>Parâmetros </label>
                     <div class="row">
                         <div class="col-md-7">
-                            <label class='col-form-label col-form-label-sm fw-bold'>Simples</label><br>
+                            <label class='col-form-label col-form-label-sm fw-bold'>Simples <i class="bi bi-info-circle" onmousemove='info_simples()'></i> </label><br>
                             <label class='col-form-label col-form-label-sm mb-1'> Fator de Redução: </label><br>
                             <label class='col-form-label col-form-label-sm mb-1'> Projeção de Faturamento:</label><br>
                             <hr>
@@ -159,6 +167,9 @@
                         <div class="row mt-4">
                             <button type='submit' class='btn btn-sm btn-success mx-auto mb-3'> Aplicar </button>
                         </div>
+                        <label style="color: red;">Para o sistema calcular os tributos do projeto é necessário inserir
+                            <br>
+                            as alíquotas de acordo com seu Regime Tributário.</label>
                     </div>
                 </div>
             </div>

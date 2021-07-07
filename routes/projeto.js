@@ -704,7 +704,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                erros.push({ texto: 'O valor do orçamento deve ser maior que o valor do equipamento.' })
           }
           */
-         //console.log(req.body.dataini)
+          //console.log(req.body.dataini)
           //------------------------------------------------------------------
           if (req.body.dataini == '' || req.body.dataprev == '') {
                erros.push({ texto: 'É necessário informar as data de inicio e de previsão de entrega do projeto.' })
@@ -3077,15 +3077,15 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               if ((valorCen == 0 || valorCen == '') && detalhe.valorCen != 0) {
                                    valorCen = detalhe.valorCen
                               }
-                              
+
                               var custoFix = parseFloat(totint) + parseFloat(totges) + parseFloat(totpro) + parseFloat(vlrart)
                               var custoVar
-                              if (projeto.ehDireto == true){
-                                   custoVar = parseFloat(totali) + parseFloat(totdes)
-                              }else{
-                                   custoVar = parseFloat(totali) + parseFloat(totcmb) + parseFloat(tothtl)
+                              if (projeto.ehDireto == true) {
+                                   custoVar = (parseFloat(totali) + parseFloat(totdes)).toFixed(2)
+                              } else {
+                                   custoVar = (parseFloat(totali) + parseFloat(totcmb) + parseFloat(tothtl)).toFixed(2)
                               }
-                              
+
                               var custoEst = parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen)
                               totalPlano = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
 
@@ -4206,14 +4206,14 @@ router.post('/parar', ehAdmin, (req, res) => {
 router.get('/homologar/:id', ehAdmin, (req, res) => {
      var aviso
      //const { fantasia } = req.user
-     var redirect = '/projeto/edicao/' + req.params.id
+     var redirect
      Cronograma.findOne({ projeto: req.params.id }).then((cronograma) => {
           //console.log('cronograma.dateEntregaReal=>' + cronograma.dateEntregaReal)
           if (cronograma.dateEntregaReal != '' && typeof cronograma.dateEntregaReal != 'undefined') {
                Projeto.findOne({ _id: req.params.id }).then((projeto) => {
                     //console.log('')
                     Cliente.findOne({ _id: projeto.cliente }).then((cliente) => {
-                         
+
                          var date = new Date()
                          var dia = parseFloat(date.getDate())
                          if (dia < 10) {
@@ -4236,14 +4236,36 @@ router.get('/homologar/:id', ehAdmin, (req, res) => {
                          //          res.redirect(redirect)
                          //     } else {
                          //console.log('hoje=>'+hoje)
-                         projeto.dataVisto = hoje
-                         projeto.executando = false
-                         projeto.parado = false
-                         projeto.orcado = false
-                         projeto.homologado = true
-                         projeto.save().then(() => {
+                         var valida = new Date()
+                         valida.setDate(date.getDate() + 7)
+                         var validaano = valida.getFullYear()
+                         var validames = valida.getMonth() + parseFloat(1)
+                         if (validames < 10) {
+                              validames = '0' + validames
+                         }
+                         var validadia = valida.getDate()
+                         if (validadia < 10) {
+                              validadia = '0' + validadia
+                         }
+                         var validaHoje = validaano + '-' + validames + '-' + validadia
+                         console.log('projeto.valDataFim=>' + projeto.valDataFim)
+                         console.log('validaHoje=>' + validaHoje)
+                         if (comparaDatas(projeto.valDataFim, validaHoje)) {
+                              var dataValida = validadia + '/' + validames + '/' + validaano
+                              redirect = '/gerenciamento/cronograma/' + req.params.id
+                              texto = 'Data de entrega de finalização deve ser maior ou igual que '+ dataValida + '.'
+                         } else {
                               aviso = 'Projeto em homologação!'
+                              redirect = '/projeto/edicao/' + req.params.id
+                              projeto.dataVisto = hoje
+                              projeto.executando = false
+                              projeto.parado = false
+                              projeto.orcado = false
+                              projeto.homologado = true
+                         }
+                         projeto.save().then(() => {
                               req.flash('success_msg', aviso)
+                              req.flash('error_msg', texto)
                               res.redirect(redirect)
                          }).catch((err) => {
                               req.flash('error_msg', 'Não foi possível salvar o projeto.')

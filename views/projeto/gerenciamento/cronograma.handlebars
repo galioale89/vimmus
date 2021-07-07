@@ -238,8 +238,8 @@
                         {{#if projeto.orcado}}
                         {{else}}
                         <input type="date" class='form-control form-control-sm mt-1' name='datepla'
-                            value='{{cronograma.datepla}}' {{#if projeto.homologado}}disabled{{/if}}>
-                        {{/if}}
+                            value='{{cronograma.datepla}}' {{#if projeto.homologado}}disabled{{/if}} {{#if projeto.foiRealizado}}disabled{{/if}}>
+                        {{/if}} 
                     </div>
                     <div class="col-md-4">
                         {{#if cronograma.atrasouPla}}
@@ -254,7 +254,7 @@
                         {{#if projeto.orcado}}
                         {{else}}
                         <input type="date" class='form-control form-control-sm mt-1' name='dateprj'
-                            value='{{cronograma.dateprj}}' {{#if projeto.homologado}}disabled{{/if}}>
+                            value='{{cronograma.dateprj}}' {{#if projeto.homologado}}disabled{{/if}} {{#if projeto.foiRealizado}}disabled{{/if}}>
                         {{/if}}
                     </div>
                     <div class="col-md-4">
@@ -270,7 +270,7 @@
                         {{#if projeto.orcado}}
                         {{else}}
                         <input type="date" class='form-control form-control-sm mt-1' name='dateate'
-                            value='{{cronograma.dateate}}' {{#if projeto.homologado}}disabled{{/if}}>
+                            value='{{cronograma.dateate}}' {{#if projeto.homologado}}disabled{{/if}} {{#if projeto.foiRealizado}}disabled{{/if}}>
                         {{/if}}
                     </div>
                     <div class="col-md-4">
@@ -286,7 +286,7 @@
                         {{#if projeto.orcado}}
                         {{else}}
                         <input type="date" class='form-control form-control-sm mt-1' name='dateest'
-                            value='{{cronograma.dateest}}' {{#if projeto.homologado}}disabled{{/if}}>
+                            value='{{cronograma.dateest}}' {{#if projeto.homologado}}disabled{{/if}} {{#if projeto.foiRealizado}}disabled{{/if}}>
                         {{/if}}
                     </div>
                     <div class="col-md-4">
@@ -302,7 +302,7 @@
                         {{#if projeto.orcado}}
                         {{else}}
                         <input type="date" class='form-control form-control-sm mt-1' name='datemod'
-                            value='{{cronograma.datemod}}' {{#if projeto.homologado}}disabled{{/if}}>
+                            value='{{cronograma.datemod}}' {{#if projeto.homologado}}disabled{{/if}} {{#if projeto.foiRealizado}}disabled{{/if}}>
                         {{/if}}
                     </div>
                     <div class="col-md-4">
@@ -318,7 +318,7 @@
                         {{#if projeto.orcado}}
                         {{else}}
                         <input type="date" class='form-control form-control-sm mt-1' name='dateinv'
-                            value='{{cronograma.dateinv}}' {{#if projeto.homologado}}disabled{{/if}}>
+                            value='{{cronograma.dateinv}}' {{#if projeto.homologado}}disabled{{/if}} {{#if projeto.foiRealizado}}disabled{{/if}}>
                         {{/if}}
                     </div>
                     <div class="col-md-4">
@@ -334,7 +334,7 @@
                         {{#if projeto.orcado}}
                         {{else}}
                         <input type="date" class='form-control form-control-sm mt-1' name='dateeae'
-                            value='{{cronograma.dateeae}}' {{#if projeto.homologado}}disabled{{/if}}>
+                            value='{{cronograma.dateeae}}' {{#if projeto.homologado}}disabled{{/if}} {{#if projeto.foiRealizado}}disabled{{/if}}>
                         {{/if}}
                     </div>
                     <div class="col-md-4">
@@ -350,7 +350,7 @@
                         {{#if projeto.orcado}}
                         {{else}}
                         <input type="date" class='form-control form-control-sm mt-1' name='datestb'
-                            value='{{cronograma.datestb}}' {{#if projeto.homologado}}disabled{{/if}}>
+                            value='{{cronograma.datestb}}' {{#if projeto.homologado}}disabled{{/if}} {{#if projeto.foiRealizado}}disabled{{/if}}>
                         {{/if}}
                     </div>
                     <div class="col-md-4">
@@ -366,7 +366,7 @@
                         {{#if projeto.orcado}}
                         {{else}}
                         <input type="date" class='form-control form-control-sm mt-1' name='datepnl'
-                            value='{{cronograma.datepnl}}' {{#if projeto.homologado}}disabled{{/if}}>
+                            value='{{cronograma.datepnl}}' {{#if projeto.homologado}}disabled{{/if}} {{#if projeto.foiRealizado}}disabled{{/if}}>
                         {{/if}}
                     </div>
                     <div class="col-md-4">
@@ -382,7 +382,7 @@
                         {{#if projeto.orcado}}
                         {{else}}
                         <input type="date" class='form-control form-control-sm mt-1' name='datevis'
-                            value='{{cronograma.datevis}}' {{#if projeto.homologado}}disabled{{/if}}>
+                            value='{{cronograma.datevis}}' {{#if projeto.homologado}}disabled{{/if}} {{#if projeto.foiRealizado}}disabled{{/if}}> 
                         {{/if}}
                         <input type="hidden" class='form-control form-control-sm mt-1' name='dateVisHidden'
                             value='{{cronograma.datevis}}'>
@@ -429,7 +429,7 @@
                 <div class="row">
                     <div class="col-md-8">
                         <input type="date" class='form-control form-control-sm' name='dateEntregaReal'
-                            value='{{cronograma.dateEntregaReal}}' {{#if projeto.homologado}}disabled{{/if}}>
+                            value='{{cronograma.dateEntregaReal}}' {{#if projeto.homologado}}disabled{{/if}} {{#if projeto.foiRealizado}}disabled{{/if}}>
                     </div>
                     <div class="col-md-4">
                         {{#if projeto.atrasado}}

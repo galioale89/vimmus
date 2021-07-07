@@ -3,9 +3,17 @@
         width: 700px;
     }
 </style>
+<script>
+    function info_despesas(){
+        alert('As despesas administrativas consideram também as despesas comerciais e financieras. Neste campos deverá preencher com os gasto mensais, por exemplo, refernete a aluguel, luz, água, telefone, combustível para visitas, pró-labore, folha fixa das secretárias e vendedores, empréstimos, juros, tarifas, reservas, entre outros. Aqui pode ou não considerar as remunerações dos recursos de custo operacionais.')
+    }
+    function info_simples(){
+        alert('O valor do campo <Projeção de Faturamento Simples> deverá ser preenchido com o valor de faturamento estimado para o ano corrente. Assim, os campos <Fator de Redução> e <DAS> deverão acompanhar  a faixa de faturamento que a projeção da sua empresa está inserida nos Anexos do Simples Nacional.')
+    }
+</script>
 
 <div class="container mt-2 card">
-    <label for="minutos" class='fw-bold mt-2 mb-4 text-center'> Edição de Regime Tributário</label>
+    <label for="minutos" class='fw-bold mt-2 mb-2 text-center'> Edição de Regime Tributário</label>
     <form action='/configuracao/editregime' method='post'>
         <div class="row">
             <input type='hidden' name='id' value='{{regime._id}}'>
@@ -117,16 +125,16 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4 text-end">
-                        <label class='col-form-label col-form-label-sm mb-2'>Despesas Administrativas:</label><br>
+                    <div class="col-md-5 text-end">
+                        <label class='col-form-label col-form-label-sm mb-3'>Despesas Administrativas <i class='bi bi-info-circle' onmousemove="info_despesas()"></i>:</label><br>
                         <label class='col-form-label col-form-label-sm mb-2'>Percentual Despesas:</label><br>
                         <label class='col-form-label col-form-label-sm'>Média kWp:</label>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-5">
                         <input class="form-control form-control-sm mb-2" name='desadm'
-                            placeholder="Valor mensal das despesas fixas e variáveis somadas." value={{regime.desadm}}>
+                            placeholder="Valor mensal das despesas." value={{regime.desadm}}>
                         <input class="form-control form-control-sm mb-2" name='perdes'
-                            placeholder="Percentual (%) das despesas por projeto." value={{regime.perdes}}>
+                            placeholder="Percentual (%) por projeto." value={{regime.perdes}}>
                         <input class="form-control form-control-sm" name='estkwp'
                             placeholder="Estimativa dos kWp mensais." value={{regime.estkwp}}>
                     </div>
@@ -137,7 +145,7 @@
                     <label class='fw-bold col-form-label col-form-label-sm'>Parâmetros </label>
                     <div class="row">
                         <div class="col-md-7">
-                            <label class='col-form-label col-form-label-sm fw-bold'>Simples</label><br>
+                            <label class='col-form-label col-form-label-sm fw-bold'>Simples <i class="bi bi-info-circle" onmousemove='info_simples()'></i></label><br>
                             <label class='col-form-label col-form-label-sm mb-1'> Fator de Redução: </label><br>
                             <label class='col-form-label col-form-label-sm mb-1'> Projeção de Faturamento:</label><br>
                             <hr>
@@ -168,6 +176,8 @@
                         <div class="row mt-4">
                             <button type='submit' class='btn btn-sm btn-success mx-auto mb-3'> Aplicar </button>
                         </div>
+                        <label style="color: red;">Para o sistema calcular os tributos do projeto é necessário inserir <br>
+                                                     as alíquotas de acordo com seu Regime Tributário.</label>
                     </div>
                 </div>
             </div>
