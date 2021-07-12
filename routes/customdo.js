@@ -300,7 +300,7 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                     var totstb = Math.round(parseFloat(trbstb) * parseFloat(req.body.vlrhri))
                     var totpnl = 0
                     var trbpnl = 0
-                    console.log('projeto.temPainel=>'+projeto.temPainel)
+                    //console.log('projeto.temPainel=>'+projeto.temPainel)
                     if (projeto.temPainel == 'checked') {
                          if (req.body.unipnl != '' || req.body.unipnl != 0) {
                               trbpnl = Math.round(parseFloat(req.body.unipnl) * (parseFloat(config.minpnl) / 60))
@@ -315,7 +315,7 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                     }
                     var toteae = 0
                     var trbeae = 0
-                    console.log('projeto.temArmazenamento=>'+projeto.temArmazenamento)
+                    //console.log('projeto.temArmazenamento=>'+projeto.temArmazenamento)
                     if (projeto.temArmazenamento == 'checked') {
                          if (req.body.unieae != '' || req.body.unieae != 0) {
                               trbeae = Math.round(parseFloat(req.body.unieae) * (parseFloat(config.mineae) / 60))
@@ -328,10 +328,10 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                          trbeae = 0
                          toteae = 0
                     }                    
-                    console.log('trbeae=>'+trbeae)
-                    console.log('toteae=>'+toteae)
-                    console.log('trbpnl=>'+trbpnl)
-                    console.log('totpnl=>'+totpnl)                    
+                    //console.log('trbeae=>'+trbeae)
+                    //console.log('toteae=>'+toteae)
+                    //console.log('trbpnl=>'+trbpnl)
+                    //console.log('totpnl=>'+totpnl)                    
                     var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr) + parseFloat(totstb) + parseFloat(totpnl)+ parseFloat(toteae)).toFixed(2)
                     var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr) + parseFloat(trbstb) + parseFloat(trbpnl)+ parseFloat(trbeae)) 
 
@@ -727,7 +727,7 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                     //console.log('projeto.temPainel=>' + projeto.temPainel)
                     var totpnl = 0
                     var trbpnl = 0
-                    console.log('projeto.temPainel=>'+projeto.temPainel)
+                    //console.log('projeto.temPainel=>'+projeto.temPainel)
                     if (projeto.temPainel == 'checked') {
                          if (req.body.unipnl != '' || req.body.unipnl != 0) {
                               trbpnl = Math.round(parseFloat(req.body.unipnl) * (parseFloat(config.minpnl) / 60))
@@ -742,7 +742,7 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                     }                   
                     var toteae = 0
                     var trbeae = 0
-                    console.log('projeto.temArmazenamento=>'+projeto.temArmazenamento)
+                    //console.log('projeto.temArmazenamento=>'+projeto.temArmazenamento)
                     if (projeto.temArmazenamento == 'checked') {
                          if (req.body.unieae != '' || req.body.unieae != 0) {
                               trbeae = Math.round(parseFloat(req.body.unieae) * (parseFloat(config.mineae) / 60))
@@ -755,10 +755,10 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                          trbeae = 0
                          toteae = 0
                     }                    
-                    console.log('trbeae=>'+trbeae)
-                    console.log('toteae=>'+toteae)
-                    console.log('trbpnl=>'+trbpnl)
-                    console.log('totpnl=>'+totpnl)      
+                    //console.log('trbeae=>'+trbeae)
+                    //console.log('toteae=>'+toteae)
+                    //console.log('trbpnl=>'+trbpnl)
+                    //console.log('totpnl=>'+totpnl)      
                     var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr) + parseFloat(totstb) + parseFloat(totpnl)+ parseFloat(toteae)).toFixed(2)
                     var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr) + parseFloat(trbstb) + parseFloat(trbpnl)+ parseFloat(trbeae)) 
 
