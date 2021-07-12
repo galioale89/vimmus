@@ -1465,17 +1465,23 @@ router.post('/aplicarcenario/', ehAdmin, (req, res) => {
     kwpmax1 = (parseFloat(qtdmax1) * parseFloat(req.body.modkwp1)) / parseFloat(1000)
     kwpmax2 = (parseFloat(qtdmax2) * parseFloat(req.body.modkwp2)) / parseFloat(1000)
     kwpmax3 = (parseFloat(qtdmax3) * parseFloat(req.body.modkwp3)) / parseFloat(1000)
-    if (parseFloat(kwpmax1) > parseFloat(req.body.kwpsis)) {
-        aviso1 = true
-        var texto1 = 'A potência do sistema do cenário 1 é maior que a potência nominal definida para o sistema.'
+    var texto1
+    var texto2
+    var texto3
+    if (parseFloat(kwpmax1) < parseFloat(req.body.kwpsis)) {
+        texto1 = 'A potência nominal do sistema é maior que a potência do cenário 1.'
+    }else{
+        texto1 = 'Cenário 1 compatível com o espaço disponível para a instalação da UFV.'
     }
-    if (parseFloat(kwpmax2) > parseFloat(req.body.kwpsis)) {
-        aviso2 = true
-        var texto2 = 'A potência do sistema do cenário 2 é maior que a potência nominal definida para o sistema.'
+    if (parseFloat(kwpmax2) < parseFloat(req.body.kwpsis)) {
+        texto2 = 'A potência nominal do sistema é maior que a potência do cenário 2.'
+    }else{
+        texto2 = 'Cenário 2 compatível com o espaço disponível para a instalação da UFV.'
     }
-    if (parseFloat(kwpmax3) > parseFloat(req.body.kwpsis)) {
-        aviso3 = true
-        var texto3 = 'A potência do sistema do cenário 3 é maior que a potência nominal definida para o sistema.'
+    if (parseFloat(kwpmax3) < parseFloat(req.body.kwpsis)) {
+        texto3 = 'A potência nominal do sistema é maior que a potência do cenário 3.'
+    }else{
+        texto3 = 'Cenário 3 compatível com o espaço disponível para a instalação da UFV.'
     }
 
     res.render('projeto/gerenciamento/cenarios', {
