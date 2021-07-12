@@ -170,13 +170,13 @@ router.get('/editar/instalacao/:id', ehAdmin, (req, res) => {
      var pi
      var vlrhri
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
-          Configuracao.findOne({_id: projeto.configuracao}).lean().then((configuracao) => {
+          Configuracao.findOne({ _id: projeto.configuracao }).lean().then((configuracao) => {
                if (typeof projeto.vlrhri == 'undefined') {
                     vlrhri = false
                } else {
                     vlrhri = true
                }
-               console.log('vlrhri=>' + vlrhri)
+               //console.log('vlrhri=>' + vlrhri)
                Pessoa.findOne({ _id: projeto.funins }).lean().then((pessoa_ins) => {
                     pi = pessoa_ins
                }).catch((err) => {
@@ -237,49 +237,31 @@ router.get('/editar/projetista/:id', ehAdmin, (req, res) => {
 
 router.post('/instalacao/', ehAdmin, (req, res) => {
      const { _id } = req.user
-     var erros = []
+     var erros = ''
+     var sucesso = ''
 
      if (!req.body.uniest || req.body.uniest == "" || typeof req.body.uniest == undefined) {
-          erros.push({ texto: 'Preencer o valor de unidades dos equipamentos.' })
+          erros = erros +'Preencer o valor de unidades dos equipamentos.'
      }
      if (!req.body.unimod || req.body.unimod == null || typeof req.body.unimod == undefined) {
-          erros.push({ texto: 'Preencer o valor de unidades dos modulos.' })
+          erros = erros +'Preencer o valor de unidades dos modulos.'
      }
      if (!req.body.uniinv || req.body.uniinv == null || typeof req.body.uniinv == undefined) {
-          erros.push({ texto: 'Preencer o valor de unidades dos inversores.' })
+          erros = erros +'Preencer o valor de unidades dos inversores.'
      }
      if (!req.body.uniatr || req.body.uniatr == null || typeof req.body.uniatr == undefined) {
-          erros.push({ texto: 'Preencer o valor de unidades do aterramento.' })
+          erros = erros +'Preencer o valor de unidades do aterramento.'
      }
      if (!req.body.unistb || req.body.unistb == null || typeof req.body.unistb == undefined) {
-          erros.push({ texto: 'Preencer o valor de unidades de string box.' })
+          erros = erros +'Preencer o valor de unidades de string box.'
      }
      if (!req.body.vlrhri || req.body.vlrhri == null) {
-          erros.push({ texto: 'Preencer o valor R$/hora dos instaladores.' })
+          erros = erros +'Preencer o valor R$/hora dos instaladores.'
      }
 
-     if (erros.length > 0) {
-          Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
-               Pessoa.find({ funins: 'checked', user: _id }).lean(); then((instalador) => {
-                    Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                         Configuracao.findOne({ _id: projeto.configuracao }).lean().then((configuracao) => {
-                              res.render('projeto/customdo/instalacao', { erros: erros, projeto: projeto, instalador: instalador, cliente: cliente, configuracao: configuracao })
-                         }).catch((err) => {
-                              req.flash('error_msg', 'Nenhuma configuracao encontrada.')
-                              res.redirect('/pessoa/consulta')
-                         })
-                    }).catch((err) => {
-                         req.flash('error_msg', 'Nenhum cliente encontrado.')
-                         res.redirect('/pessoa/consulta')
-                    })
-               }).catch((err) => {
-                    req.flash('error_msg', 'Houve um erro interno.')
-                    res.redirect('/projeto/consulta')
-               })
-          }).catch((err) => {
-               req.flash('error_msg', 'Houve um erro interno.')
-               res.redirect('/projeto/consulta')
-          })
+     if (erros != '') {
+          req.flash('error_msg', erros)
+          res.redirect('/customdo/instalacao/'+ req.body.id)
      } else {
 
           Projeto.findOne({ _id: req.body.id }).then((projeto) => {
@@ -289,12 +271,6 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                     var trbpnl
                     var totpnl
                     var trbatr = Math.round(parseFloat(req.body.uniatr) * (parseFloat(config.minatr) / 60))
-
-                    if (req.body.unipnl != '' || req.body.unipnl != 0) {
-                         trbpnl = Math.round(parseFloat(req.body.unipnl) * (parseFloat(config.minpnl) / 60))
-                    } else {
-                         trbpnl = 0
-                    }
 
                     var totatr = Math.round(parseFloat(trbatr) * parseFloat(req.body.vlrhri))
 
@@ -308,7 +284,7 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                          var trbmod = Math.round(parseFloat(req.body.unimod) * (parseFloat(config.minmod) / 60))
                          if (projeto.qtdequipe > 3) {
                               var insadd = (parseFloat(projeto.qtdequipe) - 3)
-                              console.log('insadd=>' + insadd)
+                              //console.log('insadd=>' + insadd)
 
                               totest = ((parseFloat(trbest) * parseFloat(req.body.vlrhri) * 2) + (parseFloat(trbest) * parseFloat(req.body.vlrhri) * insadd)).toFixed(2)
                               totmod = ((parseFloat(trbmod) * parseFloat(req.body.vlrhri) * 2) + (parseFloat(trbmod) * parseFloat(req.body.vlrhri) * insadd)).toFixed(2)
@@ -322,20 +298,42 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
 
                     var trbstb = Math.round(parseFloat(req.body.unistb) * (parseFloat(config.minstb) / 60))
                     var totstb = Math.round(parseFloat(trbstb) * parseFloat(req.body.vlrhri))
-
-                    if (req.body.unipnl != '' || req.body.unipnl != 0) {
-                         trbpnl = Math.round(parseFloat(req.body.unipnl) * (parseFloat(config.minpnl) / 60))
-                         totpnl = Math.round(parseFloat(trbpnl) * parseFloat(req.body.vlrhri))
+                    var totpnl = 0
+                    var trbpnl = 0
+                    console.log('projeto.temPainel=>'+projeto.temPainel)
+                    if (projeto.temPainel == 'checked') {
+                         if (req.body.unipnl != '' || req.body.unipnl != 0) {
+                              trbpnl = Math.round(parseFloat(req.body.unipnl) * (parseFloat(config.minpnl) / 60))
+                              totpnl = Math.round(parseFloat(trbpnl) * parseFloat(req.body.vlrhri))
+                         } else {
+                              trbpnl = 0
+                              totpnl = 0
+                         }
                     } else {
                          trbpnl = 0
                          totpnl = 0
                     }
-
-                    var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr) + parseFloat(totstb) + parseFloat(totpnl)).toFixed(2)
-
-                    var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr) + parseFloat(trbstb) + parseFloat(trbpnl))
-
-                    var sucesso = []
+                    var toteae = 0
+                    var trbeae = 0
+                    console.log('projeto.temArmazenamento=>'+projeto.temArmazenamento)
+                    if (projeto.temArmazenamento == 'checked') {
+                         if (req.body.unieae != '' || req.body.unieae != 0) {
+                              trbeae = Math.round(parseFloat(req.body.unieae) * (parseFloat(config.mineae) / 60))
+                              toteae = Math.round(parseFloat(trbeae) * parseFloat(req.body.vlrhri))
+                         } else {
+                              trbeae = 0
+                              toteae = 0
+                         }
+                    } else {
+                         trbeae = 0
+                         toteae = 0
+                    }                    
+                    console.log('trbeae=>'+trbeae)
+                    console.log('toteae=>'+toteae)
+                    console.log('trbpnl=>'+trbpnl)
+                    console.log('totpnl=>'+totpnl)                    
+                    var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr) + parseFloat(totstb) + parseFloat(totpnl)+ parseFloat(toteae)).toFixed(2)
+                    var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr) + parseFloat(trbstb) + parseFloat(trbpnl)+ parseFloat(trbeae)) 
 
                     projeto.qtdequipe = 3
                     projeto.vlrhri = req.body.vlrhri
@@ -345,6 +343,7 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                     projeto.uniinv = req.body.uniinv
                     projeto.unistb = req.body.unistb
                     projeto.unipnl = req.body.unipnl
+                    projeto.unieae = req.body.unieae
                     projeto.trbest = trbest
                     projeto.trbatr = trbatr
                     projeto.trbmod = trbmod
@@ -352,17 +351,20 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                     projeto.trbint = trbint
                     projeto.trbstb = trbstb
                     projeto.trbpnl = trbpnl
+                    projeto.trbeae = trbeae
                     projeto.totest = totest
                     projeto.totmod = totmod
                     projeto.totinv = totinv
                     projeto.totatr = totatr
                     projeto.totstb = totstb
                     projeto.totpnl = totpnl
+                    projeto.toteae = toteae
                     projeto.totint = totint
 
-                    if (req.body.pinome == null) {
+                    if (req.body.checkIns != null) {
                          projeto.funins = req.body.funins
                     }
+
                     //console.log('vlrhri=>'+req.body.vlrhri)
                     //console.log('uniatr=>'+req.body.uniatr)
                     //console.log('trbatr=>'+trbatr)
@@ -381,38 +383,22 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                     //console.log('funins=>'+req.body.funins)
 
                     projeto.save().then(() => {
-                         sucesso.push({ texto: 'Custo de instalação aplicado com sucesso' })
-                         Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
-                              Pessoa.findOne({ _id: projeto.funins }).lean().then((pessoa_funins) => {
-                                   pi = pessoa_funins
-                              }).catch((err) => {
-                                   req.flash('error_msg', 'Hove uma falha interna')
-                                   res.redirect('/pessoa/consulta')
-                              })
-                              Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                                   res.render('projeto/customdo/instalacao', { sucesso: sucesso, projeto: projeto, pi: pi, cliente: cliente })
-                              }).catch((err) => {
-                                   req.flash('error_msg', 'Nenhum cliente encontrado.')
-                                   res.redirect('/pessoa/consulta')
-                              })
-
-                         }).catch((err) => {
-                              req.flash('error_msg', 'Hove uma falha interna')
-                              res.redirect('/projeto/consulta')
-                         })
+                         sucesso = 'Custo de instalação aplicado com sucesso.'
+                         req.flash('success_msg', sucesso)
+                         res.redirect('/customdo/instalacao/' + req.body.id)
                     }).catch((err) => {
                          req.flash('error_msg', 'Falha ao aplicar os custos do projeto')
-                         res.redirect('/projeto/consulta')
+                         res.redirect('/customdo/instalacao/' + req.body.id)
                     })
 
                }).catch((err) => {
                     req.flash('error_msg', 'Falha ao encontrar as configurações')
-                    res.redirect('/configuracao/consulta')
+                    res.redirect('/customdo/instalacao/' + req.body.id)
                })
 
           }).catch((err) => {
                req.flash('error_msg', 'Falha ao encontrar o projeto')
-               res.redirect('/projeto/consulta')
+               res.redirect('/customdo/instalacao/' + req.body.id)
           })
      }
 
@@ -672,64 +658,41 @@ router.post('/gestao/', ehAdmin, (req, res) => {
 
 router.post('/editar/instalacao/', ehAdmin, (req, res) => {
      const { _id } = req.user
-     var erros = []
-     var sucesso = []
+     var erros = ''
+     var sucesso = ''
 
      if (!req.body.uniest || req.body.uniest == "" || typeof req.body.uniest == undefined) {
-          erros.push({ texto: 'Preencer o valor de unidades dos equipamentos' })
+          erros = erros + 'Preencer o valor de unidades dos equipamentos.'
      }
      if (!req.body.unimod || req.body.unimod == null || typeof req.body.unimod == undefined) {
-          erros.push({ texto: 'Preencer o valor de unidades dos modulos' })
+          erros = erros + 'Preencer o valor de unidades dos modulos.'
      }
      if (!req.body.uniinv || req.body.uniinv == null || typeof req.body.uniinv == undefined) {
-          erros.push({ texto: 'Preencer o valor de unidades dos inversores' })
+          erros = erros + 'Preencer o valor de unidades dos inversores.'
      }
      if (!req.body.uniatr || req.body.uniatr == null || typeof req.body.uniatr == undefined) {
-          erros.push({ texto: 'Preencer o valor de unidades do aterramento.' })
+          erros = erros + 'Preencer o valor de unidades do aterramento.'
      }
      if (!req.body.vlrhri || req.body.vlrhri == null) {
-          erros.push({ texto: 'Preencer o valor R$/hora dos instaladores' })
+          erros = erros + 'Preencer o valor R$/hora dos instaladores.'
      }
-     console.log('erros.length=>' + erros.length)
-     if (erros.length > 0) {
-          Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
-
-               Pessoa.findOne({ _id: projeto.funins }).lean().then((pessoa_funins) => {
-                    pi = pessoa_funins
-               }).catch((err) => {
-                    req.flash('error_msg', 'Hove uma falha interna')
-                    res.redirect('/pessoa/consulta')
-               })
-
-               Pessoa.find({ funins: 'checked', user: _id }).lean().then((instalador) => {
-                    Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                         res.render('projeto/customdo/editinstalacao', { erros: erros, projeto: projeto, instalador: instalador, pp: pp, cliente: cliente })
-                    }).catch((err) => {
-                         req.flash('error_msg', 'Nenhum cliente encontrado.')
-                         res.redirect('/pessoa/consulta')
-                    })
-               }).catch((err) => {
-                    req.flash('error_msg', 'Houve um erro interno.')
-                    res.redirect('/projeto/consulta')
-               })
-          }).catch((err) => {
-               req.flash('error_msg', 'Houve um erro interno.')
-               res.redirect('/projeto/consulta')
-          })
+     if (erros != '') {
+          req.flash('error_msg', erros)
+          res.redirect('/customdo/editar/instalacao/' + req.body.id)
      } else {
-          console.log('req.body.id=>' + req.body.id)
+          //console.log('req.body.id=>' + req.body.id)
 
           Projeto.findOne({ _id: req.body.id }).then((projeto) => {
 
-               console.log('projeto.configuracao=>' + projeto.configuracao)
+               //console.log('projeto.configuracao=>' + projeto.configuracao)
 
                Configuracao.findOne({ _id: projeto.configuracao }).then((config) => {
 
                     //Edição dos Custos de Instalação
-                    console.log('encontrou')
-                    console.log('config.minatr=>' + config.minatr)
-                    console.log('config.minest=>' + config.minest)
-                    console.log('config.minmod=>' + config.minmod)
+                    //console.log('encontrou')
+                    //console.log('config.minatr=>' + config.minatr)
+                    //console.log('config.minest=>' + config.minest)
+                    //console.log('config.minmod=>' + config.minmod)
                     var totest
                     var totmod
                     var trbatr = Math.round(parseFloat(req.body.uniatr) * (parseFloat(config.minatr) / 60))
@@ -745,7 +708,7 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                          var trbmod = Math.round(parseFloat(req.body.unimod) * (parseFloat(config.minmod) / 60))
                          if (projeto.qtdequipe > 3) {
                               var insadd = (parseFloat(projeto.qtdequipe) - 3)
-                              console.log('insadd=>' + insadd)
+                              //console.log('insadd=>' + insadd)
 
                               totest = ((parseFloat(trbest) * parseFloat(req.body.vlrhri) * 2) + (parseFloat(trbest) * parseFloat(req.body.vlrhri) * insadd)).toFixed(2)
                               totmod = ((parseFloat(trbmod) * parseFloat(req.body.vlrhri) * 2) + (parseFloat(trbmod) * parseFloat(req.body.vlrhri) * insadd)).toFixed(2)
@@ -761,16 +724,44 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                     var trbstb = Math.round(parseFloat(req.body.unistb) * (parseFloat(config.minstb) / 60))
                     var totstb = Math.round(parseFloat(trbstb) * parseFloat(req.body.vlrhri))
 
-                    if (req.body.unipnl != '' || req.body.unipnl != 0) {
-                         trbpnl = Math.round(parseFloat(req.body.unipnl) * (parseFloat(config.minpnl) / 60))
-                         totpnl = Math.round(parseFloat(trbpnl) * parseFloat(req.body.vlrhri))
+                    //console.log('projeto.temPainel=>' + projeto.temPainel)
+                    var totpnl = 0
+                    var trbpnl = 0
+                    console.log('projeto.temPainel=>'+projeto.temPainel)
+                    if (projeto.temPainel == 'checked') {
+                         if (req.body.unipnl != '' || req.body.unipnl != 0) {
+                              trbpnl = Math.round(parseFloat(req.body.unipnl) * (parseFloat(config.minpnl) / 60))
+                              totpnl = Math.round(parseFloat(trbpnl) * parseFloat(req.body.vlrhri))
+                         } else {
+                              trbpnl = 0
+                              totpnl = 0
+                         }
                     } else {
                          trbpnl = 0
                          totpnl = 0
-                    }
-                    var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr) + parseFloat(totstb) + parseFloat(totpnl)).toFixed(2)
+                    }                   
+                    var toteae = 0
+                    var trbeae = 0
+                    console.log('projeto.temArmazenamento=>'+projeto.temArmazenamento)
+                    if (projeto.temArmazenamento == 'checked') {
+                         if (req.body.unieae != '' || req.body.unieae != 0) {
+                              trbeae = Math.round(parseFloat(req.body.unieae) * (parseFloat(config.mineae) / 60))
+                              toteae = Math.round(parseFloat(trbeae) * parseFloat(req.body.vlrhri))
+                         } else {
+                              trbeae = 0
+                              toteae = 0
+                         }
+                    } else {
+                         trbeae = 0
+                         toteae = 0
+                    }                    
+                    console.log('trbeae=>'+trbeae)
+                    console.log('toteae=>'+toteae)
+                    console.log('trbpnl=>'+trbpnl)
+                    console.log('totpnl=>'+totpnl)      
+                    var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr) + parseFloat(totstb) + parseFloat(totpnl)+ parseFloat(toteae)).toFixed(2)
+                    var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr) + parseFloat(trbstb) + parseFloat(trbpnl)+ parseFloat(trbeae)) 
 
-                    var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr) + parseFloat(trbstb) + parseFloat(trbpnl))
                     /*
                     tothrs = parseFloat(trbint)
                     if (projeto.trbpro != null) {
@@ -781,21 +772,21 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                     }
                     */
 
-                    console.log('req.body.vlrhri=>' + req.body.vlrhri)
-                    console.log('req.body.uniatr=>' + req.body.uniatr)
-                    console.log('trbatr=>' + trbatr)
-                    console.log('req.body.uniest=>' + req.body.uniest)
-                    console.log('trbest=>' + trbest)
-                    console.log('req.body.unimod=>' + req.body.unimod)
-                    console.log('trbmod=>' + trbmod)
-                    console.log('req.body.uniinv=>' + req.body.uniinv)
-                    console.log('trbinv=>' + trbinv)
-                    console.log('totest=>' + totest)
-                    console.log('totmod=>' + totmod)
-                    console.log('totinv=>' + totinv)
-                    console.log('totatr=>' + totatr)
-                    console.log('totint=>' + totint)
-                    console.log('trbint=>' + trbint)
+                    //console.log('req.body.vlrhri=>' + req.body.vlrhri)
+                    //console.log('req.body.uniatr=>' + req.body.uniatr)
+                    //console.log('trbatr=>' + trbatr)
+                    //console.log('req.body.uniest=>' + req.body.uniest)
+                    //console.log('trbest=>' + trbest)
+                    //console.log('req.body.unimod=>' + req.body.unimod)
+                    //console.log('trbmod=>' + trbmod)
+                    //console.log('req.body.uniinv=>' + req.body.uniinv)
+                    //console.log('trbinv=>' + trbinv)
+                    //console.log('totest=>' + totest)
+                    //console.log('totmod=>' + totmod)
+                    //console.log('totinv=>' + totinv)
+                    //console.log('totatr=>' + totatr)
+                    //console.log('totint=>' + totint)
+                    //console.log('trbint=>' + trbint)
 
                     projeto.vlrhri = req.body.vlrhri
                     projeto.uniest = req.body.uniest
@@ -804,6 +795,7 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                     projeto.uniinv = req.body.uniinv
                     projeto.unistb = req.body.unistb
                     projeto.unipnl = req.body.unipnl
+                    projeto.unieae = req.body.unieae
                     projeto.trbest = trbest
                     projeto.trbatr = trbatr
                     projeto.trbmod = trbmod
@@ -811,12 +803,14 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                     projeto.trbint = trbint
                     projeto.trbstb = trbstb
                     projeto.trbpnl = trbpnl
+                    projeto.trbeae = trbeae
                     projeto.totest = totest
                     projeto.totmod = totmod
                     projeto.totinv = totinv
                     projeto.totatr = totatr
                     projeto.totstb = totstb
                     projeto.totpnl = totpnl
+                    projeto.toteae = toteae
                     projeto.totint = totint
 
                     if (req.body.checkIns != null) {
@@ -824,46 +818,20 @@ router.post('/editar/instalacao/', ehAdmin, (req, res) => {
                     }
 
                     projeto.save().then(() => {
-                         sucesso.push({ texto: 'Custo de instalação aplicado com sucesso. Aplicar o gerenciamento e os tributos' })
-                         var pi
-                         Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
-
-                              Pessoa.findOne({ _id: projeto.funins }).lean().then((pessoa_ins) => {
-                                   pi = pessoa_ins
-                                   console.log('pi=>' + pi)
-                              }).catch((err) => {
-                                   req.flash('error_msg', 'Hove uma falha interna')
-                                   res.redirect('/pessoa/consulta')
-                              })
-
-                              Pessoa.find({ funins: 'checked', user: _id }).lean().then((instalador) => {
-
-                                   Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                                        res.render('projeto/customdo/editinstalacao', { sucesso: sucesso, projeto: projeto, pi: pi, instalador: instalador, cliente: cliente })
-                                   }).catch((err) => {
-                                        req.flash('error_msg', 'Nenhum cliente encontrado.')
-                                        res.redirect('/pessoa/consulta')
-                                   })
-
-                              }).catch((err) => {
-                                   req.flash('error_msg', 'Hove uma falha interna.')
-                                   res.redirect('/pessoa/consulta')
-                              })
-                         }).catch((err) => {
-                              req.flash('error_msg', 'Hove uma falha interna.')
-                              res.redirect('/projeto/consulta')
-                         })
+                         sucesso = 'Custo de instalação aplicado com sucesso. Aplicar o gerenciamento e os tributos.'
+                         req.flash('success_msg', sucesso)
+                         res.redirect('/customdo/editar/instalacao/'+req.body.id)
                     }).catch((err) => {
                          req.flash('error_msg', 'Falha ao aplicar os custos do projeto.')
-                         res.redirect('/projeto/consulta')
+                         res.redirect('/customdo/editar/instalacao/'+req.body.id)
                     })
                }).catch((err) => {
                     req.flash('error_msg', 'Falha ao encontrar a configuração.')
-                    res.redirect('/configuracao/consulta')
+                    res.redirect('/customdo/editar/instalacao/'+req.body.id)
                })
           }).catch((err) => {
                req.flash('error_msg', 'Falha ao encontrar o projeto.')
-               res.redirect('/projeto/consulta')
+               res.redirect('/customdo/editar/instalacao/'+req.body.id)
           })
      }
 
