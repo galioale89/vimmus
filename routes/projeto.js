@@ -343,8 +343,13 @@ router.get('/remover/:id', ehAdmin, (req, res) => {
                     Detalhado.findOneAndRemove({ projeto: req.params.id }).then(() => {
                          Realizado.findOneAndRemove({ projeto: req.params.id }).then(() => {
                               Equipe.findOneAndRemove({ projeto: req.params.id }).then(() => {
-                                   req.flash('success_msg', 'Projeto removido com sucesso')
-                                   res.redirect('/projeto/consulta')
+                                   Cronograma.findOneAndRemove({ projeto: req.params.id }).then(() => {
+                                        req.flash('success_msg', 'Projeto removido com sucesso')
+                                        res.redirect('/projeto/consulta')
+                                   }).catch(() => {
+                                        req.flash('error_msg', 'Não foi possível remover o cronograma do projeto.')
+                                        res.redirect('/projeto/consulta')
+                                   })
                               }).catch(() => {
                                    req.flash('error_msg', 'Não foi possível remover o realizado projeto.')
                                    res.redirect('/projeto/consulta')

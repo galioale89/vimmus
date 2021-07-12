@@ -12,6 +12,10 @@ const Equipe = new Schema({
     ref: 'projeto',
     require: true
   },
+  nome_projeto: {
+    type: String,
+    require: false        
+  },
   ativo:{
     type: Boolean,
     require: false,
@@ -20,10 +24,6 @@ const Equipe = new Schema({
     type: String,
     require: true
   },
-  nome_projeto: {
-    type: String,
-    require: false        
-  },  
   ins0: {
     type: String,
     require: false

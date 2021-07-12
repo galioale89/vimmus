@@ -28,25 +28,6 @@
     }
 </style>
 <script>
-    function valida_celular() {
-        var cel = document.getElementById('celular')
-        if (cel.value.length == 1) {
-            cel.value = '(' + cel.value
-        }
-        if (cel.value.length == 3) {
-            cel.value += ')'
-        }
-        if (cel.value.length == 4) {
-            cel.value += ' '
-        }
-        if (cel.value.length == 6) {
-            cel.value += ' '
-        }
-        if (cel.value.length == 11) {
-            cel.value += '-'
-        }
-    };
-
     function valida_cnpj() {
         var cnpj = document.getElementById('cnpj')
 
@@ -229,7 +210,7 @@
                     <select id='cidade' name='cidade' class='form-select form-select-sm mt-1'></select>
                     {{/if}}
                     <input name="telefone" id="celular" class="form-control form-control-sm mt-1"
-                        value='{{usuario.telefone}}' maxlength="16" autocomplete="off">
+                        value='{{usuario.telefone}}' maxlength="11">
                     <input name="usuario" id="usuario" class="form-control form-control-sm mt-1"
                         value='{{usuario.usuario}}'>
                     <label for="email" class="col-form-label col-form-label-sm">{{usuario.email}}</label>

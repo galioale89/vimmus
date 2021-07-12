@@ -15,25 +15,6 @@
 
     };
 
-    function valida_celular() {
-        var cel = document.getElementById('celular')
-        if (cel.value.length == 1) {
-            cel.value = '(' + cel.value
-        }
-        if (cel.value.length == 3) {
-            cel.value += ')'
-        }
-        if (cel.value.length == 4) {
-            cel.value += ' '
-        }
-        if (cel.value.length == 6) {
-            cel.value += ' '
-        }
-        if (cel.value.length == 11) {
-            cel.value += '-'
-        }
-    };
-
     function preview_foto() {
         var imagem = document.querySelector('input[name=foto]').files[0]
         var preview = document.querySelector('img[name=foto]')
@@ -302,7 +283,7 @@
                             placeholder='__/____' id='data' name='iniati' maxlength="8" onkeyup="mascara_data()"
                             value='{{pessoa.iniati}}'>
                         <input type='text ' name='celular' id='celular' class='form-control form-control-sm mb-1'
-                            maxlength="16" autocomplete="off" onkeyup="valida_celular()" value='{{pessoa.celular}}'>
+                            maxlength="11" placeholder="DDD + Número" value='{{pessoa.celular}}'>
                         <input type='text' name='email' class='form-control form-control-sm mb-1'
                             value='{{pessoa.email}}'>
                     </div>

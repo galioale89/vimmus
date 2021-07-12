@@ -236,6 +236,8 @@ router.get('/dashboardcustosversus', ehAdmin, (req, res) => {
 
     Realizado.find({ user: _id }).lean().then((realizado) => {
 
+        if (realizado != null){
+
         for (i = 0; i < realizado.length; i++) {
 
             const { potencia } = realizado[i]
@@ -492,6 +494,10 @@ router.get('/dashboardcustosversus', ehAdmin, (req, res) => {
         res.render('relatorios/dashboardcustos', {
 
         })
+        }else{
+            req.flash('aviso', 'Ainda não existem projetos realizados para gerar indicadores de custo.')
+            res.redirect('/menu')
+        }
     })
 })
 
