@@ -286,7 +286,7 @@ router.get('/agenda/', ehAdmin, (req, res) => {
     var novembro
     var dezembro
 
-    //console.log('mes=>'+mes)
+    console.log('mes=>'+mes)
 
     switch (mes) {
         case '01': janeiro = 'selected'
@@ -315,7 +315,7 @@ router.get('/agenda/', ehAdmin, (req, res) => {
         break;
     }
 
-    //console.log('julho=>'+julho)
+    console.log('julho=>'+julho)
 
     res.render('projeto/gerenciamento/agenda', {ano, janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro})
 })
@@ -423,11 +423,11 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
     var tarefas31 = []
 
     var dia
-    //console.log('dataini=>' + dataini)
-    //console.log('datafim=>' + datafim)
+    console.log('dataini=>' + dataini)
+    console.log('datafim=>' + datafim)
     Cronograma.find({ 'agendaPlaFim': { $lte: datafim, $gte: dataini }, 'agendaPrjFim': { $lte: datafim, $gte: dataini }, user: _id }).lean().then((cronograma) => {
         cronograma.forEach(element => {
-            //console.log('entrou')
+            console.log('entrou')
             const { dateplaini } = element
             
             const { dateprjini } = element
@@ -454,7 +454,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
             const { projeto } = element
             if ((dateplaini != '' && typeof dateplaini != 'undefined') && (datepla == '' || typeof datepla == 'undefined')) {
                 dia = dateplaini.substring(8, 11)
-                //console.log('dia=>' + dia)
+                console.log('dia=>' + dia)
                 if (dia == '01') {
                     tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
                 }
@@ -552,7 +552,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
             
             if ((dateprjini != '' && typeof dateprjini != 'undefined') && (dateprj == '' || typeof dateprj == 'undefined')) {
                 dia = dateprjini.substring(8, 11)
-                //console.log('dia=>' + dia)
+                console.log('dia=>' + dia)
                 if (dia == '01') {
                     tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
                 }
@@ -650,7 +650,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
 
             if ((dateateini != '' && typeof dateateini != 'undefined') && (dateate == '' || typeof dateate == 'undefined')) {
                 dia = dateateini.substring(8, 11)
-                //console.log('dia=>' + dia)
+                console.log('dia=>' + dia)
                 if (dia == '01') {
                     tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
                 }
@@ -748,7 +748,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
             
             if ((dateestini != '' && typeof dateestini != 'undefined') && (dateest == '' || typeof dateest == 'undefined')) {
                 dia = dateestini.substring(8, 11)
-                //console.log('dia=>' + dia)
+                console.log('dia=>' + dia)
                 if (dia == '01') {
                     tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
                 }
@@ -845,7 +845,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
             }
             if ((dateinvini != '' && typeof dateinvini != 'undefined') && (dateinv == '' || typeof dateinv == 'undefined')) {
                 dia = dateinvini.substring(8, 11)
-                //console.log('dia=>' + dia)
+                console.log('dia=>' + dia)
                 if (dia == '01') {
                     tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
                 }
@@ -942,7 +942,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
             }            
             if ((dateeaeini != '' && typeof dateeaeini != 'undefined') && (dateeae == '' || typeof dateeae == 'undefined')) {
                 dia = dateeaeini.substring(8, 11)
-                //console.log('dia=>' + dia)
+                console.log('dia=>' + dia)
                 if (dia == '01') {
                     tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
                 }
@@ -1039,7 +1039,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
             }   
             if ((datestbini != '' && typeof datestbini != 'undefined') && (datestb == '' || typeof datestb == 'undefined')) {
                 dia = datestbini.substring(8, 11)
-                //console.log('dia=>' + dia)
+                console.log('dia=>' + dia)
                 if (dia == '01') {
                     tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                 }
@@ -1136,7 +1136,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
             }       
             if ((datemodini != '' && typeof datemodini != 'undefined') && (datemod == '' || typeof datemod == 'undefined')) {
                 dia = datemodini.substring(8, 11)
-                //console.log('dia=>' + dia)
+                console.log('dia=>' + dia)
                 if (dia == '01') {
                     tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
                 }
@@ -1233,7 +1233,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
             }            
             if ((datepnlini != '' && typeof datepnlini != 'undefined') && (datepnl == '' || typeof datepnl == 'undefined')) {
                 dia = datepnlini.substring(8, 11)
-                //console.log('dia=>' + dia)
+                console.log('dia=>' + dia)
                 if (dia == '01') {
                     tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
                 }
@@ -1330,7 +1330,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
             }         
             if ((datevisini != '' && typeof datevisini != 'undefined') && (datevis == '' || typeof datevis == 'undefined')) {
                 dia = datevisini.substring(8, 11)
-                //console.log('dia=>' + dia)
+                console.log('dia=>' + dia)
                 if (dia == '01') {
                     tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
                 }
@@ -1426,7 +1426,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                 }
             }                                            
         })
-        //console.log('tarefas11=>' + tarefas11)
+        console.log('tarefas11=>' + tarefas11)
         res.render('projeto/gerenciamento/agenda', {
             tarefas01, tarefas02, tarefas03, tarefas04, tarefas05, tarefas06, tarefas07,
             tarefas08, tarefas09, tarefas10, tarefas11, tarefas12, tarefas13, tarefas14,
@@ -3443,7 +3443,6 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                             realizado.vlrart = 0 
                             realizado.desAdm = 0 
                             realizado.vlrcom = 0 
-                            realizado.potencia = 0 
                             realizado.valor = 0 
                             realizado.vlrNFS = 0 
                             realizado.custoPlano = 0 
@@ -3497,7 +3496,6 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                                 vlrart: 0,
                                 desAdm: 0,
                                 vlrcom: 0,
-                                potencia: 0,
                                 valor: 0,
                                 vlrNFS: 0,
                                 custoPlano: 0,

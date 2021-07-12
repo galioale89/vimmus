@@ -3476,6 +3476,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                                    if (realizado != null) {
                                         realizado.foiRealizado = false
                                         realizado.nome = projeto.nome
+                                        realizado.potencia = projeto.potencia
                                         realizado.cliente = projeto.nomecliente
                                         realizado.dataini = projeto.dataini
                                         realizado.datafim = dataFimPrj
@@ -3580,6 +3581,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
 
                                         realizado.save().then(() => {
                                              projeto.foiRealizado = true
+                                             projeto.homologado = false
                                              projeto.save().then(() => {
                                                   sucesso = sucesso + 'Projeto realizado com sucesso.'
                                                   //console.log('sucesso=>' + sucesso)
