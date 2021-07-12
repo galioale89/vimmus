@@ -1476,7 +1476,7 @@ router.post('/aplicarcenario/', ehAdmin, (req, res) => {
     if (parseFloat(kwpmax2) < parseFloat(req.body.kwpsis)) {
         texto2 = 'A potência nominal do sistema é maior que a potência do cenário 2.'
     }else{
-        texto2 = 'Cenário 2 compatível com o espaço disponível para a instalação da UFV.'
+        texto2 = 'Cenário 2 compatível com o espaço disponível para a instalação da UFV. '
     }
     if (parseFloat(kwpmax3) < parseFloat(req.body.kwpsis)) {
         texto3 = 'A potência nominal do sistema é maior que a potência do cenário 3.'
