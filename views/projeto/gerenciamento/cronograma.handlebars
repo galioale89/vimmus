@@ -728,17 +728,17 @@
         </div>
         <hr>
         <div class="row">
-            {{#if projeto.homologado}}
+            {{#if projeto.orcado}}
+            <div class="col-md-6 text-end">
+                <label class='col-form-label col-form-label-sm fw-bold'>Data de Entrega(Turn Key):</label>
+            </div>            
+            {{/else}}
             <div class='col-md-4 fw-bold'>
                 <label class="col-form-label col-form-label-sm">Solicitação de Vistoria na Distribuidora :
                     {{projeto.dataVisto}}</label>
             </div>
             <div class="col-md-2 text-end">
                 <label class='col-form-label col-form-label-sm fw-bold'>Data Entrega(Turn Key):</label>
-            </div>
-            {{else}}
-            <div class="col-md-6 text-end">
-                <label class='col-form-label col-form-label-sm fw-bold'>Data de Entrega(Turn Key):</label>
             </div>
             {{/if}}
 

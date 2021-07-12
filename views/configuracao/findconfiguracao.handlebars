@@ -19,7 +19,7 @@
 
 <div class="container-sm mt-2">
     <div class="header mb-2">
-        <h5 style="margin-left: 20px; color: white;">Configurações</h5>
+        <h5 style="margin-left: 20px;">Configurações</h5>
     </div>
 
     {{#each configuracoes}}
@@ -33,7 +33,7 @@
                 <label class='fw-bold col-form-label col-form-label-sm'>Minutos | </label>
                 <label class='col-form-label col-form-label-sm'> Aterramento:</label>
                 <label for='minatr' class='col-form-label col-form-label-sm'> {{minatr}}</label>
-                <label class='col-form-label col-form-label-sm' style="margin-left: 10px;"> Estrutura:</label>
+                <label class='col-form-label col-form-label-sm' style="margin-left: 10px;">Estrutura:</i></label>
                 <label for='minest' class='col-form-label col-form-label-sm'> {{minest}}</label>
                 <label class='col-form-label col-form-label-sm' style="margin-left: 10px;"> Módulos: </label>
                 <label for='minmod' class='col-form-label col-form-label-sm'> {{minmod}}</label>
@@ -43,7 +43,7 @@
                 <label for='medkmh' class='col-form-label col-form-label-sm'>{{medkmh}} </label>
             </div>
             <div class="col-md-2 jd-flex justify-content-end">
-                <div class='btn-group btn-group-sm mx-auto col-6' role='group'>
+                <div class='btn-group btn-group-sm mx-auto' role='group'>
                     <a href='/configuracao/editconfiguracao/{{_id}}' class='botao'><i class='bi bi-pen icone'></i>
                     </a>
                     <a href='/configuracao/removeconfiguracao/{{_id}}' class='botao'><i class='bi bi-trash icone'></i>

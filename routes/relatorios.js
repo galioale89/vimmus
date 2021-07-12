@@ -236,268 +236,262 @@ router.get('/dashboardcustosversus', ehAdmin, (req, res) => {
 
     Realizado.find({ user: _id }).lean().then((realizado) => {
 
-        if (realizado != null) {
+        for (i = 0; i < realizado.length; i++) {
 
-            for (i = 0; i < realizado.length; i++) {
+            const { potencia } = realizado[i]
+            const { fatequ } = realizado[i]
+            const { vlrkit } = realizado[i]
+            const { valor } = realizado[i]
+            const { vlrNFS } = realizado[i]
+            const { custoPlano } = realizado[i]
+            const { lucroLiquido } = realizado[i]
 
-                const { potencia } = realizado[i]
-                const { fatequ } = realizado[i]
-                const { vlrkit } = realizado[i]
-                const { valor } = realizado[i]
-                const { vlrNFS } = realizado[i]
-                const { custoPlano } = realizado[i]
-                const { lucroLiquido } = realizado[i]
+            //Custos Fixos
+            //Serviços
+            const { totpro } = realizado[i]
+            const { totges } = realizado[i]
+            const { totint } = realizado[i]
+            const { vlrart } = realizado[i]
+            //Administrativo
+            const { desAdm } = realizado[i]
+            //Comissão
+            const { vlrcom } = realizado[i]
+            //Tributos
+            const { totalTributos } = realizado[i]
+            //Custo Variável
+            const { totdes } = realizado[i]
+            const { totali } = realizado[i]
+            const { totcmb } = realizado[i]
+            const { tothtl } = realizado[i]
+            //Custo Variavel Estrutural
+            const { valorCer } = realizado[i]
+            const { valorCen } = realizado[i]
+            const { valorPos } = realizado[i]
 
-                //Custos Fixos
+            //Percentuais Conmponentes
+            const { valorMod } = realizado[i]
+            const { valorInv } = realizado[i]
+            const { valorEst } = realizado[i]
+            const { valorCab } = realizado[i]
+            const { valorDis } = realizado[i]
+            const { valorDPS } = realizado[i]
+            const { valorSB } = realizado[i]
+            const { valorOcp } = realizado[i]
+
+            if (fatequ == true) {
+
+                numprj_com++
+
+                soma_totkwp_com = (parseFloat(soma_totkwp_com) + parseFloat(potencia)).toFixed(2)
+                soma_totcop_com = (parseFloat(soma_totcop_com) + parseFloat(custoPlano)).toFixed(2)
+                //Totalizador de Faturamento            
+                soma_totfat_com = parseFloat(soma_totfat_com) + parseFloat(vlrNFS)
+                //Totalizador de Kit   
+                soma_totkit_com = parseFloat(soma_totkit_com) + parseFloat(vlrkit)
+
+                //Custos Fixos 
                 //Serviços
-                const { totpro } = realizado[i]
-                const { totges } = realizado[i]
-                const { totint } = realizado[i]
-                const { vlrart } = realizado[i]
-                //Administrativo
-                const { desAdm } = realizado[i]
-                //Comissão
-                const { vlrcom } = realizado[i]
+                soma_totint_com = (parseFloat(soma_totint_com) + parseFloat(totint)).toFixed(2)
+                soma_totpro_com = (parseFloat(soma_totpro_com) + parseFloat(totpro)).toFixed(2)
+                soma_totges_com = (parseFloat(soma_totges_com) + parseFloat(totges)).toFixed(2)
+                soma_totart_com = (parseFloat(soma_totart_com) + parseFloat(vlrart)).toFixed(2)
                 //Tributos
-                const { totalTributos } = realizado[i]
-                //Custo Variável
-                const { totdes } = realizado[i]
-                const { totali } = realizado[i]
-                const { totcmb } = realizado[i]
-                const { tothtl } = realizado[i]
-                //Custo Variavel Estrutural
-                const { valorCer } = realizado[i]
-                const { valorCen } = realizado[i]
-                const { valorPos } = realizado[i]
-
-                //Percentuais Conmponentes
-                const { valorMod } = realizado[i]
-                const { valorInv } = realizado[i]
-                const { valorEst } = realizado[i]
-                const { valorCab } = realizado[i]
-                const { valorDis } = realizado[i]
-                const { valorDPS } = realizado[i]
-                const { valorSB } = realizado[i]
-                const { valorOcp } = realizado[i]
-
-                if (fatequ == true) {
-
-                    numprj_com++
-
-                    soma_totkwp_com = (parseFloat(soma_totkwp_com) + parseFloat(potencia)).toFixed(2)
-                    soma_totcop_com = (parseFloat(soma_totcop_com) + parseFloat(custoPlano)).toFixed(2)
-                    //Totalizador de Faturamento            
-                    soma_totfat_com = parseFloat(soma_totfat_com) + parseFloat(vlrNFS)
-                    //Totalizador de Kit   
-                    soma_totkit_com = parseFloat(soma_totkit_com) + parseFloat(vlrkit)
-
-                    //Custos Fixos 
-                    //Serviços
-                    soma_totint_com = (parseFloat(soma_totint_com) + parseFloat(totint)).toFixed(2)
-                    soma_totpro_com = (parseFloat(soma_totpro_com) + parseFloat(totpro)).toFixed(2)
-                    soma_totges_com = (parseFloat(soma_totges_com) + parseFloat(totges)).toFixed(2)
-                    soma_totart_com = (parseFloat(soma_totart_com) + parseFloat(vlrart)).toFixed(2)
-                    //Tributos
-                    soma_tottrb_com = (parseFloat(soma_tottrb_com) + parseFloat(totalTributos)).toFixed(2)
-                    //Comissão
-                    soma_totcom_com = (parseFloat(soma_totcom_com) + parseFloat(vlrcom)).toFixed(2)
-                    //Despesas Administrativas
-                    if (desAdm != undefined) {
-                        soma_totadm_com = (parseFloat(soma_totadm_com) + parseFloat(desAdm)).toFixed(2)
-                    }
-
-                    //Custos Variáveis
-                    if (totdes > 0 || totali > 0 || totcmb > 0 || tothtl > 0) {
-                        soma_varkwp_com = parseFloat(soma_varkwp_com) + parseFloat(potencia)
-                        //console.log('soma_varkwp=>' + soma_varkwp)
-                        soma_varfat_com = parseFloat(soma_varfat_com) + parseFloat(vlrNFS)
-                    }
-                    soma_totdes_com = (parseFloat(soma_totdes_com) + parseFloat(totdes)).toFixed(2)
-                    soma_totali_com = (parseFloat(soma_totali_com) + parseFloat(totali)).toFixed(2)
-                    //console.log('soma_totali=>' + soma_totali)
-                    soma_totcmb_com = (parseFloat(soma_totcmb_com) + parseFloat(totcmb)).toFixed(2)
-                    soma_tothtl_com = (parseFloat(soma_tothtl_com) + parseFloat(tothtl)).toFixed(2)
-
-                    //Custos Variáveis Estruturais
-                    if (valorCer > 0 || valorCen > 0 || valorPos > 0) {
-                        soma_estkwp_com = parseFloat(soma_estkwp_com) + parseFloat(potencia)
-                        soma_estfat_com = parseFloat(soma_estfat_com) + parseFloat(vlrNFS)
-                    } else {
-                        soma_estkwp_com = parseFloat(soma_estkwp_com) + 0
-                        soma_estfat_com = parseFloat(soma_estfat_com) + 0
-                    }
-                    if (valorCer > 0) {
-                        soma_totcer = (parseFloat(soma_totcer) + parseFloat(valorCer)).toFixed(2)
-                    } else {
-                        soma_totcer = (parseFloat(soma_totcer) + 0).toFixed(2)
-                    }
-                    if (valorCen > 0) {
-                        soma_totcen_com = (parseFloat(soma_totcen_com) + parseFloat(valorCen)).toFixed(2)
-                    }
-                    if (valorPos > 0) {
-                        soma_totpos_com = (parseFloat(soma_totpos_com) + parseFloat(valorPos)).toFixed(2)
-                    }
-
-                    if (parseFloat(valorMod) > 0) {
-                        soma_equkwp_com = parseFloat(soma_equkwp_com) + parseFloat(potencia)
-                    }
-                    //Soma percentuais componentes
-                    //console.log('valorMod=>' + valorMod)
-                    if (valorMod != undefined) {
-                        soma_modequ_com = (parseFloat(soma_modequ_com) + parseFloat(valorMod)).toFixed(2)
-                    }
-                    //console.log('soma_modequ=>' + soma_modequ)
-                    //console.log('valorInv=>' + valorInv)
-                    if (valorInv != undefined) {
-                        soma_invequ_com = (parseFloat(soma_invequ_com) + parseFloat(valorInv)).toFixed(2)
-                    }
-                    //console.log('soma_invequ=>' + soma_invequ)
-                    //console.log('valorCab=>' + valorCab)
-                    if (valorCab != undefined) {
-                        soma_cabequ_com = (parseFloat(soma_cabequ_com) + parseFloat(valorCab)).toFixed(2)
-                    }
-                    //console.log('soma_cabequ=>' + soma_cabequ)
-                    //console.log('valorDis=>' + valorDis)
-                    if (valorDis != undefined) {
-                        soma_disequ_com = (parseFloat(soma_disequ_com) + parseFloat(valorDis)).toFixed(2)
-                    }
-                    //console.log('soma_disequ=>' + soma_disequ)
-                    //console.log('valorDPS=>' + valorDPS)
-                    if (valorDPS != undefined) {
-                        soma_dpsequ_com = (parseFloat(soma_dpsequ_com) + parseFloat(valorDPS)).toFixed(2)
-                    }
-                    //console.log('soma_dpsequ=>' + soma_dpsequ)
-                    //console.log('valorSB=>' + valorSB)
-                    if (valorSB != undefined) {
-                        soma_sbxequ_com = (parseFloat(soma_sbxequ_com) + parseFloat(valorSB)).toFixed(2)
-                    }
-                    //console.log('soma_sbxequ=>' + soma_sbxequ)
-                    //console.log('valorOcp=>' + valorOcp)
-                    if (valorOcp != undefined) {
-                        soma_ocpequ_com = (parseFloat(soma_ocpequ_com) + parseFloat(valorOcp)).toFixed(2)
-                    }
-                    //console.log('soma_ocpequ=>' + soma_ocpequ)
-
-                    //Totais: Projetos Vendidos, Faturamento e Lucro Líquido
-                    soma_totprj_com = (parseFloat(soma_totprj_com) + parseFloat(valor)).toFixed(2)
-                    soma_totliq_com = (parseFloat(soma_totliq_com) + parseFloat(lucroLiquido)).toFixed(2)
-                } else {
-                    numprj_sem++
-
-                    soma_totkwp_sem = (parseFloat(soma_totkwp_sem) + parseFloat(potencia)).toFixed(2)
-                    soma_totcop_sem = (parseFloat(soma_totcop_sem) + parseFloat(custoPlano)).toFixed(2)
-                    //Totalizador de Faturamento            
-                    soma_totfat_sem = parseFloat(soma_totfat_sem) + parseFloat(vlrNFS)
-
-                    //Custos Fixos 
-                    //Serviços
-                    soma_totint_sem = (parseFloat(soma_totint_sem) + parseFloat(totint)).toFixed(2)
-                    soma_totpro_sem = (parseFloat(soma_totpro_sem) + parseFloat(totpro)).toFixed(2)
-                    soma_totges_sem = (parseFloat(soma_totges_sem) + parseFloat(totges)).toFixed(2)
-                    soma_totart_sem = (parseFloat(soma_totart_sem) + parseFloat(vlrart)).toFixed(2)
-                    //Tributos
-                    soma_tottrb_sem = (parseFloat(soma_tottrb_sem) + parseFloat(totalTributos)).toFixed(2)
-                    //Comissão
-                    soma_totcom_sem = (parseFloat(soma_totcom_sem) + parseFloat(vlrcom)).toFixed(2)
-                    //Despesas Administrativas
-                    if (desAdm != undefined) {
-                        soma_totadm_sem = (parseFloat(soma_totadm_sem) + parseFloat(desAdm)).toFixed(2)
-                    }
-
-                    //Custos Variáveis
-                    if (totdes > 0 || totali > 0 || totcmb > 0 || tothtl > 0) {
-                        soma_varkwp_sem = parseFloat(soma_varkwp_sem) + parseFloat(potencia)
-                        //console.log('soma_varkwp=>' + soma_varkwp)
-                        soma_varfat_sem = parseFloat(soma_varfat_sem) + parseFloat(vlrNFS)
-                    }
-                    soma_totdes_sem = (parseFloat(soma_totdes_sem) + parseFloat(totdes)).toFixed(2)
-                    soma_totali_sem = (parseFloat(soma_totali_sem) + parseFloat(totali)).toFixed(2)
-                    //console.log('soma_totali=>' + soma_totali)
-                    soma_totcmb_sem = (parseFloat(soma_totcmb_sem) + parseFloat(totcmb)).toFixed(2)
-                    soma_tothtl_sem = (parseFloat(soma_tothtl_sem) + parseFloat(tothtl)).toFixed(2)
-
-                    //Custos Variáveis Estruturais
-                    if (valorCer > 0 || valorCen > 0 || valorPos > 0) {
-                        soma_estkwp_sem = parseFloat(soma_estkwp_sem) + parseFloat(potencia)
-                        soma_estfat_sem = parseFloat(soma_estfat_sem) + parseFloat(vlrNFS)
-                    } else {
-                        soma_estkwp_sem = parseFloat(soma_estkwp_sem) + 0
-                        soma_estfat_sem = parseFloat(soma_estfat_sem) + 0
-                    }
-                    if (valorCer > 0) {
-                        soma_totcer_sem = (parseFloat(soma_totcer_sem) + parseFloat(valorCer)).toFixed(2)
-                    } else {
-                        soma_totcer_sem = (parseFloat(soma_totcer_sem) + 0).toFixed(2)
-                    }
-                    if (valorCen > 0) {
-                        soma_totcen_sem = (parseFloat(soma_totcen_sem) + parseFloat(valorCen)).toFixed(2)
-                    } else {
-                        soma_totcen_sem = (parseFloat(soma_totcen_sem) + 0).toFixed(2)
-                    }
-                    if (valorPos > 0) {
-                        soma_totpos_sem = (parseFloat(soma_totpos_sem) + parseFloat(valorPos)).toFixed(2)
-                    } else {
-                        soma_totpos_sem = (parseFloat(soma_totpos_sem) + 0).toFixed(2)
-                    }
-
-                    if (parseFloat(valorMod) > 0) {
-                        soma_equkwp_sem = parseFloat(soma_equkwp_sem) + parseFloat(potencia)
-                    }
-                    //Soma percentuais componentes
-                    //console.log('valorMod=>' + valorMod)
-                    if (valorMod != undefined) {
-                        soma_modequ_sem = (parseFloat(soma_modequ_sem) + parseFloat(valorMod)).toFixed(2)
-                    }
-                    //console.log('soma_modequ=>' + soma_modequ)
-                    //console.log('valorInv=>' + valorInv)
-                    if (valorInv != undefined) {
-                        soma_invequ_sem = (parseFloat(soma_invequ_sem) + parseFloat(valorInv)).toFixed(2)
-                    }
-                    //console.log('soma_invequ=>' + soma_invequ)
-                    //console.log('valorCab=>' + valorCab)
-                    if (valorCab != undefined) {
-                        soma_cabequ_sem = (parseFloat(soma_cabequ_sem) + parseFloat(valorCab)).toFixed(2)
-                    }
-                    //console.log('soma_cabequ=>' + soma_cabequ)
-                    //console.log('valorDis=>' + valorDis)
-                    if (valorDis != undefined) {
-                        soma_disequ_sem = (parseFloat(soma_disequ_sem) + parseFloat(valorDis)).toFixed(2)
-                    }
-                    //console.log('soma_disequ=>' + soma_disequ)
-                    //console.log('valorDPS=>' + valorDPS)
-                    if (valorDPS != undefined) {
-                        soma_dpsequ_sem = (parseFloat(soma_dpsequ_sem) + parseFloat(valorDPS)).toFixed(2)
-                    }
-                    //console.log('soma_dpsequ=>' + soma_dpsequ)
-                    //console.log('valorSB=>' + valorSB)
-                    if (valorSB != undefined) {
-                        soma_sbxequ_sem = (parseFloat(soma_sbxequ_sem) + parseFloat(valorSB)).toFixed(2)
-                    }
-                    //console.log('soma_sbxequ=>' + soma_sbxequ)
-                    //console.log('valorOcp=>' + valorOcp)
-                    if (valorOcp != undefined) {
-                        soma_ocpequ_sem = (parseFloat(soma_ocpequ_sem) + parseFloat(valorOcp)).toFixed(2)
-                    }
-                    //console.log('soma_ocpequ=>' + soma_ocpequ)
-
-                    //Totais: Projetos Vendidos, Faturamento e Lucro Líquido
-                    soma_totprj_sem = (parseFloat(soma_totprj_sem) + parseFloat(valor)).toFixed(2)
-                    soma_totliq_sem = (parseFloat(soma_totliq_sem) + parseFloat(lucroLiquido)).toFixed(2)
+                soma_tottrb_com = (parseFloat(soma_tottrb_com) + parseFloat(totalTributos)).toFixed(2)
+                //Comissão
+                soma_totcom_com = (parseFloat(soma_totcom_com) + parseFloat(vlrcom)).toFixed(2)
+                //Despesas Administrativas
+                if (desAdm != undefined) {
+                    soma_totadm_com = (parseFloat(soma_totadm_com) + parseFloat(desAdm)).toFixed(2)
                 }
 
+                //Custos Variáveis
+                if (totdes > 0 || totali > 0 || totcmb > 0 || tothtl > 0) {
+                    soma_varkwp_com = parseFloat(soma_varkwp_com) + parseFloat(potencia)
+                    //console.log('soma_varkwp=>' + soma_varkwp)
+                    soma_varfat_com = parseFloat(soma_varfat_com) + parseFloat(vlrNFS)
+                }
+                soma_totdes_com = (parseFloat(soma_totdes_com) + parseFloat(totdes)).toFixed(2)
+                soma_totali_com = (parseFloat(soma_totali_com) + parseFloat(totali)).toFixed(2)
+                //console.log('soma_totali=>' + soma_totali)
+                soma_totcmb_com = (parseFloat(soma_totcmb_com) + parseFloat(totcmb)).toFixed(2)
+                soma_tothtl_com = (parseFloat(soma_tothtl_com) + parseFloat(tothtl)).toFixed(2)
+
+                //Custos Variáveis Estruturais
+                if (valorCer > 0 || valorCen > 0 || valorPos > 0) {
+                    soma_estkwp_com = parseFloat(soma_estkwp_com) + parseFloat(potencia)
+                    soma_estfat_com = parseFloat(soma_estfat_com) + parseFloat(vlrNFS)
+                } else {
+                    soma_estkwp_com = parseFloat(soma_estkwp_com) + 0
+                    soma_estfat_com = parseFloat(soma_estfat_com) + 0
+                }
+                if (valorCer > 0) {
+                    soma_totcer = (parseFloat(soma_totcer) + parseFloat(valorCer)).toFixed(2)
+                } else {
+                    soma_totcer = (parseFloat(soma_totcer) + 0).toFixed(2)
+                }
+                if (valorCen > 0) {
+                    soma_totcen_com = (parseFloat(soma_totcen_com) + parseFloat(valorCen)).toFixed(2)
+                }
+                if (valorPos > 0) {
+                    soma_totpos_com = (parseFloat(soma_totpos_com) + parseFloat(valorPos)).toFixed(2)
+                }
+
+                if (parseFloat(valorMod) > 0) {
+                    soma_equkwp_com = parseFloat(soma_equkwp_com) + parseFloat(potencia)
+                }
+                //Soma percentuais componentes
+                //console.log('valorMod=>' + valorMod)
+                if (valorMod != undefined) {
+                    soma_modequ_com = (parseFloat(soma_modequ_com) + parseFloat(valorMod)).toFixed(2)
+                }
+                //console.log('soma_modequ=>' + soma_modequ)
+                //console.log('valorInv=>' + valorInv)
+                if (valorInv != undefined) {
+                    soma_invequ_com = (parseFloat(soma_invequ_com) + parseFloat(valorInv)).toFixed(2)
+                }
+                //console.log('soma_invequ=>' + soma_invequ)
+                //console.log('valorCab=>' + valorCab)
+                if (valorCab != undefined) {
+                    soma_cabequ_com = (parseFloat(soma_cabequ_com) + parseFloat(valorCab)).toFixed(2)
+                }
+                //console.log('soma_cabequ=>' + soma_cabequ)
+                //console.log('valorDis=>' + valorDis)
+                if (valorDis != undefined) {
+                    soma_disequ_com = (parseFloat(soma_disequ_com) + parseFloat(valorDis)).toFixed(2)
+                }
+                //console.log('soma_disequ=>' + soma_disequ)
+                //console.log('valorDPS=>' + valorDPS)
+                if (valorDPS != undefined) {
+                    soma_dpsequ_com = (parseFloat(soma_dpsequ_com) + parseFloat(valorDPS)).toFixed(2)
+                }
+                //console.log('soma_dpsequ=>' + soma_dpsequ)
+                //console.log('valorSB=>' + valorSB)
+                if (valorSB != undefined) {
+                    soma_sbxequ_com = (parseFloat(soma_sbxequ_com) + parseFloat(valorSB)).toFixed(2)
+                }
+                //console.log('soma_sbxequ=>' + soma_sbxequ)
+                //console.log('valorOcp=>' + valorOcp)
+                if (valorOcp != undefined) {
+                    soma_ocpequ_com = (parseFloat(soma_ocpequ_com) + parseFloat(valorOcp)).toFixed(2)
+                }
+                //console.log('soma_ocpequ=>' + soma_ocpequ)
+
+                //Totais: Projetos Vendidos, Faturamento e Lucro Líquido
+                soma_totprj_com = (parseFloat(soma_totprj_com) + parseFloat(valor)).toFixed(2)
+                soma_totliq_com = (parseFloat(soma_totliq_com) + parseFloat(lucroLiquido)).toFixed(2)
+            } else {
+                numprj_sem++
+
+                soma_totkwp_sem = (parseFloat(soma_totkwp_sem) + parseFloat(potencia)).toFixed(2)
+                soma_totcop_sem = (parseFloat(soma_totcop_sem) + parseFloat(custoPlano)).toFixed(2)
+                //Totalizador de Faturamento            
+                soma_totfat_sem = parseFloat(soma_totfat_sem) + parseFloat(vlrNFS)
+
+                //Custos Fixos 
+                //Serviços
+                soma_totint_sem = (parseFloat(soma_totint_sem) + parseFloat(totint)).toFixed(2)
+                soma_totpro_sem = (parseFloat(soma_totpro_sem) + parseFloat(totpro)).toFixed(2)
+                soma_totges_sem = (parseFloat(soma_totges_sem) + parseFloat(totges)).toFixed(2)
+                soma_totart_sem = (parseFloat(soma_totart_sem) + parseFloat(vlrart)).toFixed(2)
+                //Tributos
+                soma_tottrb_sem = (parseFloat(soma_tottrb_sem) + parseFloat(totalTributos)).toFixed(2)
+                //Comissão
+                soma_totcom_sem = (parseFloat(soma_totcom_sem) + parseFloat(vlrcom)).toFixed(2)
+                //Despesas Administrativas
+                if (desAdm != undefined) {
+                    soma_totadm_sem = (parseFloat(soma_totadm_sem) + parseFloat(desAdm)).toFixed(2)
+                }
+
+                //Custos Variáveis
+                if (totdes > 0 || totali > 0 || totcmb > 0 || tothtl > 0) {
+                    soma_varkwp_sem = parseFloat(soma_varkwp_sem) + parseFloat(potencia)
+                    //console.log('soma_varkwp=>' + soma_varkwp)
+                    soma_varfat_sem = parseFloat(soma_varfat_sem) + parseFloat(vlrNFS)
+                }
+                soma_totdes_sem = (parseFloat(soma_totdes_sem) + parseFloat(totdes)).toFixed(2)
+                soma_totali_sem = (parseFloat(soma_totali_sem) + parseFloat(totali)).toFixed(2)
+                //console.log('soma_totali=>' + soma_totali)
+                soma_totcmb_sem = (parseFloat(soma_totcmb_sem) + parseFloat(totcmb)).toFixed(2)
+                soma_tothtl_sem = (parseFloat(soma_tothtl_sem) + parseFloat(tothtl)).toFixed(2)
+
+                //Custos Variáveis Estruturais
+                if (valorCer > 0 || valorCen > 0 || valorPos > 0) {
+                    soma_estkwp_sem = parseFloat(soma_estkwp_sem) + parseFloat(potencia)
+                    soma_estfat_sem = parseFloat(soma_estfat_sem) + parseFloat(vlrNFS)
+                } else {
+                    soma_estkwp_sem = parseFloat(soma_estkwp_sem) + 0
+                    soma_estfat_sem = parseFloat(soma_estfat_sem) + 0
+                }
+                if (valorCer > 0) {
+                    soma_totcer_sem = (parseFloat(soma_totcer_sem) + parseFloat(valorCer)).toFixed(2)
+                } else {
+                    soma_totcer_sem = (parseFloat(soma_totcer_sem) + 0).toFixed(2)
+                }
+                if (valorCen > 0) {
+                    soma_totcen_sem = (parseFloat(soma_totcen_sem) + parseFloat(valorCen)).toFixed(2)
+                } else {
+                    soma_totcen_sem = (parseFloat(soma_totcen_sem) + 0).toFixed(2)
+                }
+                if (valorPos > 0) {
+                    soma_totpos_sem = (parseFloat(soma_totpos_sem) + parseFloat(valorPos)).toFixed(2)
+                } else {
+                    soma_totpos_sem = (parseFloat(soma_totpos_sem) + 0).toFixed(2)
+                }
+
+                if (parseFloat(valorMod) > 0) {
+                    soma_equkwp_sem = parseFloat(soma_equkwp_sem) + parseFloat(potencia)
+                }
+                //Soma percentuais componentes
+                //console.log('valorMod=>' + valorMod)
+                if (valorMod != undefined) {
+                    soma_modequ_sem = (parseFloat(soma_modequ_sem) + parseFloat(valorMod)).toFixed(2)
+                }
+                //console.log('soma_modequ=>' + soma_modequ)
+                //console.log('valorInv=>' + valorInv)
+                if (valorInv != undefined) {
+                    soma_invequ_sem = (parseFloat(soma_invequ_sem) + parseFloat(valorInv)).toFixed(2)
+                }
+                //console.log('soma_invequ=>' + soma_invequ)
+                //console.log('valorCab=>' + valorCab)
+                if (valorCab != undefined) {
+                    soma_cabequ_sem = (parseFloat(soma_cabequ_sem) + parseFloat(valorCab)).toFixed(2)
+                }
+                //console.log('soma_cabequ=>' + soma_cabequ)
+                //console.log('valorDis=>' + valorDis)
+                if (valorDis != undefined) {
+                    soma_disequ_sem = (parseFloat(soma_disequ_sem) + parseFloat(valorDis)).toFixed(2)
+                }
+                //console.log('soma_disequ=>' + soma_disequ)
+                //console.log('valorDPS=>' + valorDPS)
+                if (valorDPS != undefined) {
+                    soma_dpsequ_sem = (parseFloat(soma_dpsequ_sem) + parseFloat(valorDPS)).toFixed(2)
+                }
+                //console.log('soma_dpsequ=>' + soma_dpsequ)
+                //console.log('valorSB=>' + valorSB)
+                if (valorSB != undefined) {
+                    soma_sbxequ_sem = (parseFloat(soma_sbxequ_sem) + parseFloat(valorSB)).toFixed(2)
+                }
+                //console.log('soma_sbxequ=>' + soma_sbxequ)
+                //console.log('valorOcp=>' + valorOcp)
+                if (valorOcp != undefined) {
+                    soma_ocpequ_sem = (parseFloat(soma_ocpequ_sem) + parseFloat(valorOcp)).toFixed(2)
+                }
+                //console.log('soma_ocpequ=>' + soma_ocpequ)
+
+                //Totais: Projetos Vendidos, Faturamento e Lucro Líquido
+                soma_totprj_sem = (parseFloat(soma_totprj_sem) + parseFloat(valor)).toFixed(2)
+                soma_totliq_sem = (parseFloat(soma_totliq_sem) + parseFloat(lucroLiquido)).toFixed(2)
             }
-            per_totint = ((parseFloat(soma_totint_com) * parseFloat(soma_totkwp_com)) + (parseFloat(soma_totint_sem) * parseFloat(soma_totkwp_sem))) / ((parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem)))
-            per_totadm = ((parseFloat(soma_totadm_com) * parseFloat(soma_totkwp_com)) + (parseFloat(soma_totadm_sem) * parseFloat(soma_totkwp_sem))) / ((parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem)))
-            per_totali = ((parseFloat(soma_totali_com) * parseFloat(soma_varkwp_com)) + (parseFloat(soma_totali_sem) * parseFloat(soma_varkwp_sem))) / ((parseFloat(soma_varkwp_com) + parseFloat(soma_varkwp_sem)))
 
-
-            res.render('relatorios/dashboardcustos', {
-
-            })
-        } else {
-            req.flash('aviso', 'Ainda não existem projetos realizados para gerar indicadores de custo.')
-            res.redirect('/menu')
         }
+        per_totint = ((parseFloat(soma_totint_com) * parseFloat(soma_totkwp_com)) + (parseFloat(soma_totint_sem) * parseFloat(soma_totkwp_sem))) / ((parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem)))
+        per_totadm = ((parseFloat(soma_totadm_com) * parseFloat(soma_totkwp_com)) + (parseFloat(soma_totadm_sem) * parseFloat(soma_totkwp_sem))) / ((parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem)))
+        per_totali = ((parseFloat(soma_totali_com) * parseFloat(soma_varkwp_com)) + (parseFloat(soma_totali_sem) * parseFloat(soma_varkwp_sem))) / ((parseFloat(soma_varkwp_com) + parseFloat(soma_varkwp_sem)))
+
+
+        res.render('relatorios/dashboardcustos', {
+
+        })
     })
 })
 
@@ -676,841 +670,835 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
 
 
     Realizado.find({ user: _id }).lean().then((realizado) => {
-        if (realizado != null) {
+        var numprj = realizado.length
 
-            var numprj = realizado.length
+        for (i = 0; i < realizado.length; i++) {
 
-            for (i = 0; i < realizado.length; i++) {
+            const { potencia } = realizado[i]
+            const { fatequ } = realizado[i]
+            const { vlrkit } = realizado[i]
+            const { valor } = realizado[i]
+            const { vlrNFS } = realizado[i]
+            const { custoPlano } = realizado[i]
+            const { lucroLiquido } = realizado[i]
 
-                const { potencia } = realizado[i]
-                const { fatequ } = realizado[i]
-                const { vlrkit } = realizado[i]
-                const { valor } = realizado[i]
-                const { vlrNFS } = realizado[i]
-                const { custoPlano } = realizado[i]
-                const { lucroLiquido } = realizado[i]
+            //Custos Fixos
+            const { custofix } = realizado[i]
+            //Serviços
+            const { totpro } = realizado[i]
+            const { totges } = realizado[i]
+            const { totint } = realizado[i]
+            const { vlrart } = realizado[i]
+            //Administrativo
+            const { desAdm } = realizado[i]
+            //Comissão
+            const { vlrcom } = realizado[i]
+            //Tributos
+            const { totalTributos } = realizado[i]
+            //Custo Variável
+            const { custovar } = realizado[i]
+            const { totdes } = realizado[i]
+            const { totali } = realizado[i]
+            const { totcmb } = realizado[i]
+            const { tothtl } = realizado[i]
+            //Custo Variavel Estrutural
+            const { custoest } = realizado[i]
+            const { valorCer } = realizado[i]
+            const { valorCen } = realizado[i]
+            const { valorPos } = realizado[i]
 
-                //Custos Fixos
-                const { custofix } = realizado[i]
-                //Serviços
-                const { totpro } = realizado[i]
-                const { totges } = realizado[i]
-                const { totint } = realizado[i]
-                const { vlrart } = realizado[i]
-                //Administrativo
-                const { desAdm } = realizado[i]
-                //Comissão
-                const { vlrcom } = realizado[i]
-                //Tributos
-                const { totalTributos } = realizado[i]
-                //Custo Variável
-                const { custovar } = realizado[i]
-                const { totdes } = realizado[i]
-                const { totali } = realizado[i]
-                const { totcmb } = realizado[i]
-                const { tothtl } = realizado[i]
-                //Custo Variavel Estrutural
-                const { custoest } = realizado[i]
-                const { valorCer } = realizado[i]
-                const { valorCen } = realizado[i]
-                const { valorPos } = realizado[i]
+            //Percentuais Conmponentes
+            const { valorMod } = realizado[i]
+            const { valorInv } = realizado[i]
+            const { valorEst } = realizado[i]
+            const { valorCab } = realizado[i]
+            const { valorDis } = realizado[i]
+            const { valorDPS } = realizado[i]
+            const { valorSB } = realizado[i]
+            const { valorOcp } = realizado[i]
+            const { foiRealizado } = realizado[i]
 
-                //Percentuais Conmponentes
-                const { valorMod } = realizado[i]
-                const { valorInv } = realizado[i]
-                const { valorEst } = realizado[i]
-                const { valorCab } = realizado[i]
-                const { valorDis } = realizado[i]
-                const { valorDPS } = realizado[i]
-                const { valorSB } = realizado[i]
-                const { valorOcp } = realizado[i]
-                const { foiRealizado } = realizado[i]
+            if (foiRealizado == true) {
 
-                if (foiRealizado == true) {
+                //-------------------------------
+                //Média ponderada da participação do gastos- INÍCIO
+                //-------------------------------
+                if (fatequ == true) {
 
-                    //-------------------------------
-                    //Média ponderada da participação do gastos- INÍCIO
-                    //-------------------------------
-                    if (fatequ == true) {
+                    //numprj_com++
 
-                        //numprj_com++
-
-                        soma_totkwp_com = (parseFloat(soma_totkwp_com) + parseFloat(potencia)).toFixed(2)
-                        soma_totcop_com = (parseFloat(soma_totcop_com) + parseFloat(custoPlano)).toFixed(2)
-                        //Totalizador de Faturamento            
-                        soma_totfat_com = parseFloat(soma_totfat_com) + parseFloat(vlrNFS)
-                        //Totalizador de Kit   
-                        soma_totkit_com = parseFloat(soma_totkit_com) + parseFloat(vlrkit)
-
-                        //Custos Fixos 
-                        if (custofix > 0) {
-                            soma_totcus_com = (parseFloat(soma_totcus_com) + parseFloat(custofix)).toFixed(2)
-                        }
-                        //Serviços
-                        if (totint > 0) {
-                            soma_totint_com = (parseFloat(soma_totint_com) + parseFloat(totint)).toFixed(2)
-                        }
-                        if (totpro > 0) {
-                            soma_totpro_com = (parseFloat(soma_totpro_com) + parseFloat(totpro)).toFixed(2)
-                        }
-                        if (totges > 0) {
-                            soma_totges_com = (parseFloat(soma_totges_com) + parseFloat(totges)).toFixed(2)
-                        }
-                        if (vlrart > 0) {
-                            soma_totart_com = (parseFloat(soma_totart_com) + parseFloat(vlrart)).toFixed(2)
-                        }
-                        //Tributos
-                        if (totalTributos > 0) {
-                            soma_tottrb_com = (parseFloat(soma_tottrb_com) + parseFloat(totalTributos)).toFixed(2)
-                        }
-                        //Comissão
-                        if (vlrcom > 0) {
-                            soma_totcom_com = (parseFloat(soma_totcom_com) + parseFloat(vlrcom)).toFixed(2)
-                        }
-                        //Despesas Administrativas
-                        if (desAdm != undefined) {
-                            soma_totadm_com = (parseFloat(soma_totadm_com) + parseFloat(desAdm)).toFixed(2)
-                        }
-
-                        //Custos Variáveis
-                        if (totdes > 0 || totali > 0 || totcmb > 0 || tothtl > 0) {
-                            soma_varkwp_com = parseFloat(soma_varkwp_com) + parseFloat(potencia)
-                            //console.log('soma_varkwp=>' + soma_varkwp)
-                            soma_varfat_com = parseFloat(soma_varfat_com) + parseFloat(vlrNFS)
-                            soma_totvar_com = (parseFloat(soma_totvar_com) + parseFloat(custovar)).toFixed(2)
-                        }
-
-                        if (totdes > 0) {
-                            soma_totdes_com = (parseFloat(soma_totdes_com) + parseFloat(totdes)).toFixed(2)
-                        }
-                        if (totali > 0) {
-                            soma_totali_com = (parseFloat(soma_totali_com) + parseFloat(totali)).toFixed(2)
-                        }
-                        if (totcmb > 0) {
-                            soma_totcmb_com = (parseFloat(soma_totcmb_com) + parseFloat(totcmb)).toFixed(2)
-                        }
-                        if (tothtl > 0) {
-                            soma_tothtl_com = (parseFloat(soma_tothtl_com) + parseFloat(tothtl)).toFixed(2)
-                        }
-
-                        //Custos Variáveis Estruturais
-                        if (valorCer > 0 || valorCen > 0 || valorPos > 0) {
-                            soma_estkwp_com = parseFloat(soma_estkwp_com) + parseFloat(potencia)
-                            soma_estfat_com = parseFloat(soma_estfat_com) + parseFloat(vlrNFS)
-                            soma_totest_com = (parseFloat(soma_totest_com) + parseFloat(custoest)).toFixed(2)
-                        } else {
-                            soma_totest_com = (parseFloat(soma_totest_com) + 0).toFixed(2)
-                        }
-                        if (valorCer > 0) {
-                            soma_totcer_com = (parseFloat(soma_totcer_com) + parseFloat(valorCer)).toFixed(2)
-                        } else {
-                            soma_totcer_com = (parseFloat(soma_totcer_com) + 0).toFixed(2)
-                        }
-                        if (valorCen > 0) {
-                            soma_totcen_com = (parseFloat(soma_totcen_com) + parseFloat(valorCen)).toFixed(2)
-                        } else {
-                            soma_totcen_com = (parseFloat(soma_totcen_com) + 0).toFixed(2)
-                        }
-                        if (valorPos > 0) {
-                            soma_totpos_com = (parseFloat(soma_totpos_com) + parseFloat(valorPos)).toFixed(2)
-                        } else {
-                            soma_totpos_com = (parseFloat(soma_totpos_com) + 0).toFixed(2)
-                        }
-
-                    } else {
-                        //numprj_sem++
-
-                        soma_totkwp_sem = (parseFloat(soma_totkwp_sem) + parseFloat(potencia)).toFixed(2)
-                        soma_totcop_sem = (parseFloat(soma_totcop_sem) + parseFloat(custoPlano)).toFixed(2)
-                        //Totalizador de Faturamento            
-                        soma_totfat_sem = parseFloat(soma_totfat_sem) + parseFloat(vlrNFS)
-
-                        //Custos Fixos 
-                        soma_totcus_sem = (parseFloat(soma_totcus_sem) + parseFloat(custofix)).toFixed(2)
-                        //Serviços
-                        soma_totint_sem = (parseFloat(soma_totint_sem) + parseFloat(totint)).toFixed(2)
-                        soma_totpro_sem = (parseFloat(soma_totpro_sem) + parseFloat(totpro)).toFixed(2)
-                        soma_totges_sem = (parseFloat(soma_totges_sem) + parseFloat(totges)).toFixed(2)
-                        soma_totart_sem = (parseFloat(soma_totart_sem) + parseFloat(vlrart)).toFixed(2)
-                        //Tributos
-                        soma_tottrb_sem = (parseFloat(soma_tottrb_sem) + parseFloat(totalTributos)).toFixed(2)
-                        //Comissão
-                        soma_totcom_sem = (parseFloat(soma_totcom_sem) + parseFloat(vlrcom)).toFixed(2)
-                        //Despesas Administrativas
-                        if (desAdm != undefined) {
-                            soma_totadm_sem = (parseFloat(soma_totadm_sem) + parseFloat(desAdm)).toFixed(2)
-                        }
-
-                        //Custos Variáveis
-                        if (totdes > 0 || totali > 0 || totcmb > 0 || tothtl > 0) {
-                            soma_varkwp_sem = parseFloat(soma_varkwp_sem) + parseFloat(potencia)
-                            //console.log('soma_varkwp=>' + soma_varkwp)
-                            soma_varfat_sem = parseFloat(soma_varfat_sem) + parseFloat(vlrNFS)
-                            soma_totvar_sem = (parseFloat(soma_totvar_sem) + parseFloat(custovar)).toFixed(2)
-                        }
-
-                        soma_totdes_sem = (parseFloat(soma_totdes_sem) + parseFloat(totdes)).toFixed(2)
-                        soma_totali_sem = (parseFloat(soma_totali_sem) + parseFloat(totali)).toFixed(2)
-                        soma_totcmb_sem = (parseFloat(soma_totcmb_sem) + parseFloat(totcmb)).toFixed(2)
-                        soma_tothtl_sem = (parseFloat(soma_tothtl_sem) + parseFloat(tothtl)).toFixed(2)
-
-                        //Custos Variáveis Estruturais
-                        if (valorCer > 0 || valorCen > 0 || valorPos > 0) {
-                            soma_estkwp_sem = parseFloat(soma_estkwp_sem) + parseFloat(potencia)
-                            soma_estfat_sem = parseFloat(soma_estfat_sem) + parseFloat(vlrNFS)
-                            soma_totest_sem = (parseFloat(soma_totest_sem) + parseFloat(custoest)).toFixed(2)
-                        } else {
-                            soma_totest_sem = (parseFloat(soma_totest_sem) + 0).toFixed(2)
-                        }
-                        if (valorCer > 0) {
-                            soma_totcer_sem = (parseFloat(soma_totcer_sem) + parseFloat(valorCer)).toFixed(2)
-                        } else {
-                            soma_totcer_sem = (parseFloat(soma_totcer_sem) + 0).toFixed(2)
-                        }
-                        if (valorCen > 0) {
-                            soma_totcen_sem = (parseFloat(soma_totcen_sem) + parseFloat(valorCen)).toFixed(2)
-                        } else {
-                            soma_totcen_sem = (parseFloat(soma_totcen_sem) + 0).toFixed(2)
-                        }
-                        if (valorPos > 0) {
-                            soma_totpos_sem = (parseFloat(soma_totpos_sem) + parseFloat(valorPos)).toFixed(2)
-                        } else {
-                            soma_totpos_sem = (parseFloat(soma_totpos_sem) + 0).toFixed(2)
-                        }
-                    }
-
-                    //----------------------------------------
-                    //Média ponderada da paticipação dos gastos- FIM
-                    //----------------------------------------
-
-                    soma_totkwp = (parseFloat(soma_totkwp) + parseFloat(potencia)).toFixed(2)
-                    soma_totcop = (parseFloat(soma_totcop) + parseFloat(custoPlano)).toFixed(2)
+                    soma_totkwp_com = (parseFloat(soma_totkwp_com) + parseFloat(potencia)).toFixed(2)
+                    soma_totcop_com = (parseFloat(soma_totcop_com) + parseFloat(custoPlano)).toFixed(2)
                     //Totalizador de Faturamento            
-                    if (fatequ == true) {
-                        soma_kitfat = parseFloat(soma_kitfat) + parseFloat(vlrNFS)
-                        soma_totkit = parseFloat(soma_totkit) + parseFloat(vlrkit)
-                    } else {
-                        soma_serfat = parseFloat(soma_serfat) + parseFloat(vlrNFS)
-                    }
+                    soma_totfat_com = parseFloat(soma_totfat_com) + parseFloat(vlrNFS)
+                    //Totalizador de Kit   
+                    soma_totkit_com = parseFloat(soma_totkit_com) + parseFloat(vlrkit)
 
                     //Custos Fixos 
+                    if (custofix > 0) {
+                        soma_totcus_com = (parseFloat(soma_totcus_com) + parseFloat(custofix)).toFixed(2)
+                    }
                     //Serviços
                     if (totint > 0) {
-                        soma_totint = (parseFloat(soma_totint) + parseFloat(totint)).toFixed(2)
-                    } else {
-                        soma_totint = (parseFloat(soma_totint) + 0).toFixed(2)
+                        soma_totint_com = (parseFloat(soma_totint_com) + parseFloat(totint)).toFixed(2)
                     }
                     if (totpro > 0) {
-                        soma_totpro = (parseFloat(soma_totpro) + parseFloat(totpro)).toFixed(2)
-                    } else {
-                        soma_totpro = (parseFloat(soma_totpro) + 0).toFixed(2)
+                        soma_totpro_com = (parseFloat(soma_totpro_com) + parseFloat(totpro)).toFixed(2)
                     }
                     if (totges > 0) {
-                        soma_totges = (parseFloat(soma_totges) + parseFloat(totges)).toFixed(2)
-                    } else {
-                        soma_totges = (parseFloat(soma_totges) + 0).toFixed(2)
+                        soma_totges_com = (parseFloat(soma_totges_com) + parseFloat(totges)).toFixed(2)
                     }
                     if (vlrart > 0) {
-                        soma_totart = (parseFloat(soma_totart) + parseFloat(vlrart)).toFixed(2)
-                    } else {
-                        soma_totart = (parseFloat(soma_totart) + 0).toFixed(2)
+                        soma_totart_com = (parseFloat(soma_totart_com) + parseFloat(vlrart)).toFixed(2)
                     }
                     //Tributos
-                    soma_tottrb = (parseFloat(soma_tottrb) + parseFloat(totalTributos)).toFixed(2)
+                    if (totalTributos > 0) {
+                        soma_tottrb_com = (parseFloat(soma_tottrb_com) + parseFloat(totalTributos)).toFixed(2)
+                    }
                     //Comissão
-                    soma_totcom = (parseFloat(soma_totcom) + parseFloat(vlrcom)).toFixed(2)
+                    if (vlrcom > 0) {
+                        soma_totcom_com = (parseFloat(soma_totcom_com) + parseFloat(vlrcom)).toFixed(2)
+                    }
                     //Despesas Administrativas
                     if (desAdm != undefined) {
-                        soma_totadm = (parseFloat(soma_totadm) + parseFloat(desAdm)).toFixed(2)
+                        soma_totadm_com = (parseFloat(soma_totadm_com) + parseFloat(desAdm)).toFixed(2)
                     }
 
                     //Custos Variáveis
                     if (totdes > 0 || totali > 0 || totcmb > 0 || tothtl > 0) {
-                        soma_varkwp = parseFloat(soma_varkwp) + parseFloat(potencia)
+                        soma_varkwp_com = parseFloat(soma_varkwp_com) + parseFloat(potencia)
                         //console.log('soma_varkwp=>' + soma_varkwp)
-                        soma_varfat = parseFloat(soma_varfat) + parseFloat(vlrNFS)
+                        soma_varfat_com = parseFloat(soma_varfat_com) + parseFloat(vlrNFS)
+                        soma_totvar_com = (parseFloat(soma_totvar_com) + parseFloat(custovar)).toFixed(2)
                     }
+
                     if (totdes > 0) {
-                        soma_totdes = (parseFloat(soma_totdes) + parseFloat(totdes)).toFixed(2)
-                    } else {
-                        soma_totdes = (parseFloat(soma_totdes) + 0).toFixed(2)
+                        soma_totdes_com = (parseFloat(soma_totdes_com) + parseFloat(totdes)).toFixed(2)
                     }
                     if (totali > 0) {
-                        soma_totali = (parseFloat(soma_totali) + parseFloat(totali)).toFixed(2)
-                    } else {
-                        soma_totali = (parseFloat(soma_totali) + 0).toFixed(2)
+                        soma_totali_com = (parseFloat(soma_totali_com) + parseFloat(totali)).toFixed(2)
                     }
                     if (totcmb > 0) {
-                        soma_totcmb = (parseFloat(soma_totcmb) + parseFloat(totcmb)).toFixed(2)
-                    } else {
-                        soma_totcmb = (parseFloat(soma_totcmb) + 0).toFixed(2)
+                        soma_totcmb_com = (parseFloat(soma_totcmb_com) + parseFloat(totcmb)).toFixed(2)
                     }
                     if (tothtl > 0) {
-                        soma_tothtl = (parseFloat(soma_tothtl) + parseFloat(tothtl)).toFixed(2)
-                    } else {
-                        soma_tothtl = (parseFloat(soma_tothtl) + 0).toFixed(2)
+                        soma_tothtl_com = (parseFloat(soma_tothtl_com) + parseFloat(tothtl)).toFixed(2)
                     }
 
                     //Custos Variáveis Estruturais
                     if (valorCer > 0 || valorCen > 0 || valorPos > 0) {
-                        soma_estkwp = parseFloat(soma_estkwp) + parseFloat(potencia)
-                        soma_estfat = parseFloat(soma_estfat) + parseFloat(vlrNFS)
+                        soma_estkwp_com = parseFloat(soma_estkwp_com) + parseFloat(potencia)
+                        soma_estfat_com = parseFloat(soma_estfat_com) + parseFloat(vlrNFS)
+                        soma_totest_com = (parseFloat(soma_totest_com) + parseFloat(custoest)).toFixed(2)
                     } else {
-                        soma_estkwp = parseFloat(soma_estkwp) + 0
-                        soma_estfat = parseFloat(soma_estfat) + 0
+                        soma_totest_com = (parseFloat(soma_totest_com) + 0).toFixed(2)
                     }
                     if (valorCer > 0) {
-                        soma_totcer = (parseFloat(soma_totcer) + parseFloat(valorCer)).toFixed(2)
+                        soma_totcer_com = (parseFloat(soma_totcer_com) + parseFloat(valorCer)).toFixed(2)
                     } else {
-                        soma_totcer = (parseFloat(soma_totcer) + 0).toFixed(2)
+                        soma_totcer_com = (parseFloat(soma_totcer_com) + 0).toFixed(2)
                     }
                     if (valorCen > 0) {
-                        soma_totcen = (parseFloat(soma_totcen) + parseFloat(valorCen)).toFixed(2)
+                        soma_totcen_com = (parseFloat(soma_totcen_com) + parseFloat(valorCen)).toFixed(2)
                     } else {
-                        soma_totcen = (parseFloat(soma_totcen) + 0).toFixed(2)
+                        soma_totcen_com = (parseFloat(soma_totcen_com) + 0).toFixed(2)
                     }
                     if (valorPos > 0) {
-                        soma_totpos = (parseFloat(soma_totpos) + parseFloat(valorPos)).toFixed(2)
+                        soma_totpos_com = (parseFloat(soma_totpos_com) + parseFloat(valorPos)).toFixed(2)
                     } else {
-                        soma_totpos = (parseFloat(soma_totpos) + 0).toFixed(2)
+                        soma_totpos_com = (parseFloat(soma_totpos_com) + 0).toFixed(2)
                     }
 
-                    if (parseFloat(valorMod) > 0) {
-                        soma_equkwp = parseFloat(soma_equkwp) + parseFloat(potencia)
-                    }
-                    //console.log('soma_equkwp=>'+soma_equkwp)
-                    //Soma percentuais componentes
-                    //console.log('valorMod=>' + valorMod)
-                    if (valorMod != undefined) {
-                        soma_modequ = (parseFloat(soma_modequ) + parseFloat(valorMod)).toFixed(2)
-                    }
-                    //console.log('soma_modequ=>' + soma_modequ)
-                    //console.log('valorInv=>' + valorInv)
-                    if (valorInv != undefined) {
-                        soma_invequ = (parseFloat(soma_invequ) + parseFloat(valorInv)).toFixed(2)
-                    }
-                    //console.log('soma_invequ=>' + soma_invequ)
-                    //console.log('valorEst=>' + valorEst)
-                    if (valorEst != undefined) {
-                        soma_estequ = (parseFloat(soma_estequ) + parseFloat(valorEst)).toFixed(2)
-                    }
-                    //console.log('soma_estequ=>' + soma_estequ)
-                    //console.log('valorCab=>' + valorCab)
-                    if (valorCab != undefined) {
-                        soma_cabequ = (parseFloat(soma_cabequ) + parseFloat(valorCab)).toFixed(2)
-                    }
-                    //console.log('soma_cabequ=>' + soma_cabequ)
-                    //console.log('valorDis=>' + valorDis)
-                    if (valorDis != undefined) {
-                        soma_disequ = (parseFloat(soma_disequ) + parseFloat(valorDis)).toFixed(2)
-                    }
-                    //console.log('soma_disequ=>' + soma_disequ)
-                    //console.log('valorDPS=>' + valorDPS)
-                    if (valorDPS != undefined) {
-                        soma_dpsequ = (parseFloat(soma_dpsequ) + parseFloat(valorDPS)).toFixed(2)
-                    }
-                    //console.log('soma_dpsequ=>' + soma_dpsequ)
-                    //console.log('valorSB=>' + valorSB)
-                    if (valorSB != undefined) {
-                        soma_sbxequ = (parseFloat(soma_sbxequ) + parseFloat(valorSB)).toFixed(2)
-                    }
-                    //console.log('soma_sbxequ=>' + soma_sbxequ)
-                    //console.log('valorOcp=>' + valorOcp)
-                    if (valorOcp != undefined) {
-                        soma_ocpequ = (parseFloat(soma_ocpequ) + parseFloat(valorOcp)).toFixed(2)
-                    }
-                    //console.log('soma_ocpequ=>' + soma_ocpequ)
+                } else {
+                    //numprj_sem++
 
-                    //Totais: Projetos Vendidos, Faturamento e Lucro Líquido
-                    soma_totprj = (parseFloat(soma_totprj) + parseFloat(valor)).toFixed(2)
-                    soma_totliq = (parseFloat(soma_totliq) + parseFloat(lucroLiquido)).toFixed(2)
+                    soma_totkwp_sem = (parseFloat(soma_totkwp_sem) + parseFloat(potencia)).toFixed(2)
+                    soma_totcop_sem = (parseFloat(soma_totcop_sem) + parseFloat(custoPlano)).toFixed(2)
+                    //Totalizador de Faturamento            
+                    soma_totfat_sem = parseFloat(soma_totfat_sem) + parseFloat(vlrNFS)
 
-                }
+                    //Custos Fixos 
+                    soma_totcus_sem = (parseFloat(soma_totcus_sem) + parseFloat(custofix)).toFixed(2)
+                    //Serviços
+                    soma_totint_sem = (parseFloat(soma_totint_sem) + parseFloat(totint)).toFixed(2)
+                    soma_totpro_sem = (parseFloat(soma_totpro_sem) + parseFloat(totpro)).toFixed(2)
+                    soma_totges_sem = (parseFloat(soma_totges_sem) + parseFloat(totges)).toFixed(2)
+                    soma_totart_sem = (parseFloat(soma_totart_sem) + parseFloat(vlrart)).toFixed(2)
+                    //Tributos
+                    soma_tottrb_sem = (parseFloat(soma_tottrb_sem) + parseFloat(totalTributos)).toFixed(2)
+                    //Comissão
+                    soma_totcom_sem = (parseFloat(soma_totcom_sem) + parseFloat(vlrcom)).toFixed(2)
+                    //Despesas Administrativas
+                    if (desAdm != undefined) {
+                        soma_totadm_sem = (parseFloat(soma_totadm_sem) + parseFloat(desAdm)).toFixed(2)
+                    }
 
-                //Média Ponderada projetista
-                var per_totpro_com = parseFloat(soma_totpro_com) / parseFloat(soma_totfat_com) * 100
-                if (isNaN(per_totpro_com)) {
-                    per_totpro_com = 0
-                }
-                var per_totpro_sem = parseFloat(soma_totpro_sem) / parseFloat(soma_totfat_sem) * 100
-                if (isNaN(per_totpro_sem)) {
-                    per_totpro_sem = 0
-                }
-                var medkwp_totpro_com = parseFloat(soma_totpro_com) / parseFloat(soma_totkwp_com)
-                if (isNaN(medkwp_totpro_com)) {
-                    medkwp_totpro_com = 0
-                }
-                var medkwp_totpro_sem = parseFloat(soma_totpro_sem) / parseFloat(soma_totkwp_sem)
-                if (isNaN(medkwp_totpro_sem)) {
-                    medkwp_totpro_sem = 0
-                }
-                var per_totpro = (((parseFloat(soma_totkwp_com) * parseFloat(per_totpro_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_totpro_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
-                if (isNaN(per_totpro)) {
-                    per_totpro = 0
-                }
-                //Média Ponderada ART
-                var per_totart_com = parseFloat(soma_totart_com) / parseFloat(soma_totfat_com) * 100
-                if (isNaN(per_totart_com)) {
-                    per_totart_com = 0
-                }
-                var per_totart_sem = parseFloat(soma_totart_sem) / parseFloat(soma_totfat_sem) * 100
-                if (isNaN(per_totart_sem)) {
-                    per_totart_sem = 0
-                }
-                var medkwp_totart_com = parseFloat(soma_totart_com) / parseFloat(soma_totkwp_com)
-                if (isNaN(medkwp_totart_com)) {
-                    medkwp_totart_com = 0
-                }
-                var medkwp_totart_sem = parseFloat(soma_totart_sem) / parseFloat(soma_totkwp_sem)
-                if (isNaN(medkwp_totart_sem)) {
-                    medkwp_totart_sem = 0
-                }
-                var per_totart = (((parseFloat(medkwp_totart_com) * parseFloat(per_totart_com)) + (parseFloat(medkwp_totart_sem) * parseFloat(per_totart_sem))) / (parseFloat(medkwp_totart_com) + parseFloat(medkwp_totart_sem))).toFixed(2)
-                if (isNaN(per_totart)) {
-                    per_totart = 0
-                }
-                //Média Ponderada Gestão
-                var per_totges_com = parseFloat(soma_totges_com) / parseFloat(soma_totfat_com) * 100
-                if (isNaN(per_totges_com)) {
-                    per_totges_com = 0
-                }
-                var per_totges_sem = parseFloat(soma_totges_sem) / parseFloat(soma_totfat_sem) * 100
-                if (isNaN(per_totges_sem)) {
-                    per_totges_sem = 0
-                }
-                var medkwp_totges_com = parseFloat(soma_totges_com) / parseFloat(soma_totkwp_com)
-                if (isNaN(medkwp_totges_com)) {
-                    medkwp_totges_com = 0
-                }
-                var medkwp_totges_sem = parseFloat(soma_totges_sem) / parseFloat(soma_totkwp_sem)
-                if (isNaN(medkwp_totges_sem)) {
-                    medkwp_totges_sem = 0
-                }
-                var per_totges = (((parseFloat(soma_totkwp_com) * parseFloat(per_totges_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_totges_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
-                if (isNaN(per_totges)) {
-                    per_totges = 0
-                }
-                //Média Ponderada instalação
-                var per_totint_com = parseFloat(soma_totint_com) / parseFloat(soma_totfat_com) * 100
-                if (isNaN(per_totint_com)) {
-                    per_totint_com = 0
-                }
-                var per_totint_sem = parseFloat(soma_totint_sem) / parseFloat(soma_totfat_sem) * 100
-                if (isNaN(per_totint_sem)) {
-                    per_totint_sem = 0
-                }
-                var medkwp_totint_com = parseFloat(soma_totint_com) / parseFloat(soma_totkwp_com)
-                if (isNaN(medkwp_totint_com)) {
-                    medkwp_totint_com = 0
-                }
-                var medkwp_totint_sem = parseFloat(soma_totint_sem) / parseFloat(soma_totkwp_sem)
-                if (isNaN(medkwp_totint_sem)) {
-                    medkwp_totint_sem = 0
-                }
-                var per_totint = (((parseFloat(soma_totkwp_com) * parseFloat(per_totint_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_totint_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
-                if (isNaN(per_totint)) {
-                    per_totint = 0
-                }
-                //Média Ponderada Administração
-                var per_totadm_com = parseFloat(soma_totadm_com) / parseFloat(soma_totfat_com) * 100
-                if (isNaN(per_totadm_com)) {
-                    per_totadm_com = 0
-                }
-                var per_totadm_sem = parseFloat(soma_totadm_sem) / parseFloat(soma_totfat_sem) * 100
-                if (isNaN(per_totadm_sem)) {
-                    per_totadm_sem = 0
-                }
-                var medkwp_totadm_com = parseFloat(soma_totadm_com) / parseFloat(soma_totkwp_com)
-                if (isNaN(medkwp_totadm_com)) {
-                    medkwp_totadm_com = 0
-                }
-                var medkwp_totadm_sem = parseFloat(soma_totadm_sem) / parseFloat(soma_totkwp_sem)
-                if (isNaN(medkwp_totadm_sem)) {
-                    medkwp_totadm_sem = 0
-                }
-                var per_totadm = (((parseFloat(soma_totkwp_com) * parseFloat(per_totadm_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_totadm_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
-                if (isNaN(per_totadm)) {
-                    per_totadm = 0
-                }
-                //Média Ponderada Comissão
-                var per_totcom_com = parseFloat(soma_totcom_com) / parseFloat(soma_totfat_com) * 100
-                if (isNaN(per_totcom_com)) {
-                    per_totcom_com = 0
-                }
-                var per_totcom_sem = parseFloat(soma_totcom_sem) / parseFloat(soma_totfat_sem) * 100
-                if (isNaN(per_totcom_sem)) {
-                    per_totcom_sem = 0
-                }
-                var medkwp_totcom_com = parseFloat(soma_totcom_com) / parseFloat(soma_totkwp_com)
-                if (isNaN(medkwp_totcom_com)) {
-                    medkwp_totcom_com = 0
-                }
-                var medkwp_totcom_sem = parseFloat(soma_totcom_sem) / parseFloat(soma_totkwp_sem)
-                if (isNaN(medkwp_totcom_sem)) {
-                    medkwp_totcom_sem = 0
-                }
-                var per_totcom = (((parseFloat(soma_totkwp_com) * parseFloat(per_totcom_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_totcom_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
-                if (isNaN(per_totcom)) {
-                    per_totcom = 0
-                }
-                //Média Ponderada Tributos
-                var per_tottrb_com = parseFloat(soma_tottrb_com) / parseFloat(soma_totfat_com) * 100
-                if (isNaN(per_tottrb_com)) {
-                    per_tottrb_com = 0
-                }
-                var per_tottrb_sem = parseFloat(soma_tottrb_sem) / parseFloat(soma_totfat_sem) * 100
-                if (isNaN(per_tottrb_sem)) {
-                    per_tottrb_sem = 0
-                }
-                var medkwp_tottrb_com = parseFloat(soma_tottrb_com) / parseFloat(soma_totkwp_com)
-                if (isNaN(medkwp_tottrb_com)) {
-                    medkwp_tottrb_com = 0
-                }
-                var medkwp_tottrb_sem = parseFloat(soma_tottrb_sem) / parseFloat(soma_totkwp_sem)
-                if (isNaN(medkwp_tottrb_sem)) {
-                    medkwp_tottrb_sem = 0
-                }
-                var per_tottrb = (((parseFloat(soma_totkwp_com) * parseFloat(per_tottrb_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_tottrb_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
-                if (isNaN(per_tottrb)) {
-                    per_tottrb = 0
-                }
-                //Total Custos
-                var custoFix_com = parseFloat(soma_totcus_com) + parseFloat(soma_totadm_com) + parseFloat(soma_totcom_com) + parseFloat(soma_tottrb_com)
-                var custoFix_sem = parseFloat(soma_totcus_sem) + parseFloat(soma_totadm_sem) + parseFloat(soma_totcom_sem) + parseFloat(soma_tottrb_sem)
-                var per_totcus_com = parseFloat(custoFix_com) / parseFloat(soma_totfat_com) * 100
-                if (isNaN(per_totcus_com)) {
-                    per_totcus_com = 0
-                }
-                var per_totcus_sem = parseFloat(custoFix_sem) / parseFloat(soma_totfat_sem) * 100
-                if (isNaN(per_totcus_sem)) {
-                    per_totcus_sem = 0
-                }
-                var medkwp_totcus_com = parseFloat(custoFix_com) / parseFloat(soma_totkwp_com)
-                if (isNaN(medkwp_totcus_com)) {
-                    medkwp_totcus_com = 0
-                }
-                var medkwp_totcus_sem = parseFloat(custoFix_sem) / parseFloat(soma_totkwp_sem)
-                if (isNaN(medkwp_totcus_sem)) {
-                    medkwp_totcus_sem = 0
-                }
-                var per_totcus = (((parseFloat(soma_totkwp_com) * parseFloat(per_totcus_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_totcus_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
-                if (isNaN(per_totcus)) {
-                    per_totcus = 0
-                }
-                //Média Ponderada Custos Variáveis Alimentação
-                var per_totali_com = parseFloat(soma_totali_com) / parseFloat(soma_varfat_com) * 100
-                if (isNaN(per_totali_com)) {
-                    per_totali_com = 0
-                }
-                var per_totali_sem = parseFloat(soma_totali_sem) / parseFloat(soma_varfat_sem) * 100
-                if (isNaN(per_totali_sem)) {
-                    per_totali_sem = 0
-                }
-                var medkwp_totali_com = parseFloat(soma_totali_com) / parseFloat(soma_varkwp_com)
-                if (isNaN(medkwp_totali_com)) {
-                    medkwp_totali_com = 0
-                }
-                var medkwp_totali_sem = parseFloat(soma_totali_sem) / parseFloat(soma_varkwp_sem)
-                if (isNaN(medkwp_totali_sem)) {
-                    medkwp_totali_sem = 0
-                }
-                var per_totali = (((parseFloat(soma_varkwp_com) * parseFloat(per_totali_com)) + (parseFloat(soma_varkwp_sem) * parseFloat(per_totali_sem))) / (parseFloat(soma_varkwp_sem) + parseFloat(soma_varkwp_com))).toFixed(2)
-                if (isNaN(per_totali)) {
-                    per_totali = 0
-                }
-                //Média Ponderada Custos Variáveis Deslocamento
-                var per_totdes_com = parseFloat(soma_totdes_com) / parseFloat(soma_varfat_com) * 100
-                if (isNaN(per_totdes_com)) {
-                    per_totdes_com = 0
-                }
-                var per_totdes_sem = parseFloat(soma_totdes_sem) / parseFloat(soma_varfat_sem) * 100
-                if (isNaN(per_totdes_sem)) {
-                    per_totdes_sem = 0
-                }
-                var medkwp_totdes_com = parseFloat(soma_totdes_com) / parseFloat(soma_varkwp_com)
-                if (isNaN(medkwp_totdes_com)) {
-                    medkwp_totdes_com = 0
-                }
-                var medkwp_totdes_sem = parseFloat(soma_totdes_sem) / parseFloat(soma_varkwp_sem)
-                if (isNaN(medkwp_totdes_sem)) {
-                    medkwp_totdes_sem = 0
-                }
-                var per_totdes = (((parseFloat(soma_varkwp_com) * parseFloat(per_totdes_com)) + (parseFloat(soma_varkwp_sem) * parseFloat(per_totdes_sem))) / (parseFloat(soma_varkwp_com) + parseFloat(soma_varkwp_sem))).toFixed(2)
-                if (isNaN(per_totdes)) {
-                    per_totdes = 0
-                }
-                //Média Ponderada Custos Variáveis Combustível
-                var per_totcmb_com = parseFloat(soma_totcmb_com) / parseFloat(soma_varfat_com) * 100
-                if (isNaN(per_totcmb_com)) {
-                    per_totcmb_com = 0
-                }
-                var per_totcmb_sem = parseFloat(soma_totcmb_sem) / parseFloat(soma_varfat_sem) * 100
-                if (isNaN(per_totcmb_sem)) {
-                    per_totcmb_sem = 0
-                }
-                var medkwp_totcmb_com = parseFloat(soma_totcmb_com) / parseFloat(soma_varkwp_com)
-                if (isNaN(medkwp_totcmb_com)) {
-                    medkwp_totcmb_com = 0
-                }
-                var medkwp_totcmb_sem = parseFloat(soma_totcmb_sem) / parseFloat(soma_varkwp_sem)
-                if (isNaN(medkwp_totcmb_sem)) {
-                    medkwp_totcmb_sem = 0
-                }
-                var per_totcmb = (((parseFloat(soma_varkwp_com) * parseFloat(per_totcmb_com)) + (parseFloat(soma_varkwp_sem) * parseFloat(per_totcmb_sem))) / (parseFloat(soma_varkwp_com) + parseFloat(soma_varkwp_sem))).toFixed(2)
-                if (isNaN(per_totcmb)) {
-                    per_totcmb = 0
-                }
-                //Média Ponderada Custos Variáveis Hotel
-                var per_tothtl_com = parseFloat(soma_tothtl_com) / parseFloat(soma_varfat_com) * 100
-                if (isNaN(per_tothtl_com)) {
-                    per_tothtl_com = 0
-                }
-                var per_tothtl_sem = parseFloat(soma_tothtl_sem) / parseFloat(soma_varfat_sem) * 100
-                if (isNaN(per_tothtl_sem)) {
-                    per_tothtl_sem = 0
-                }
-                var medkwp_tothtl_com = parseFloat(soma_tothtl_com) / parseFloat(soma_varkwp_com)
-                if (isNaN(medkwp_tothtl_com)) {
-                    medkwp_tothtl_com = 0
-                }
-                var medkwp_tothtl_sem = parseFloat(soma_tothtl_sem) / parseFloat(soma_varkwp_sem)
-                if (isNaN(medkwp_tothtl_sem)) {
-                    medkwp_tothtl_sem = 0
-                }
-                var per_tothtl = (((parseFloat(soma_varkwp_com) * parseFloat(per_tothtl_com)) + (parseFloat(soma_varkwp_sem) * parseFloat(per_tothtl_sem))) / (parseFloat(soma_varkwp_com) + parseFloat(soma_varkwp_sem))).toFixed(2)
-                if (isNaN(per_tothtl)) {
-                    per_tothtl = 0
-                }
-                //Total Custos Variáveis
-                var custoVar_com = parseFloat(soma_totvar_com)
-                var custoVar_sem = parseFloat(soma_totvar_sem)
-                var per_totvar_com = parseFloat(custoVar_com) / parseFloat(soma_varfat_com) * 100
-                if (isNaN(per_totvar_com)) {
-                    per_totvar_com = 0
-                }
-                var per_totvar_sem = parseFloat(custoVar_sem) / parseFloat(soma_varfat_sem) * 100
-                if (isNaN(per_totvar_sem)) {
-                    per_totvar_sem = 0
-                }
-                var medkwp_totvar_com = parseFloat(custoVar_com) / parseFloat(soma_varkwp_com)
-                if (isNaN(medkwp_totvar_com)) {
-                    medkwp_totvar_com = 0
-                }
-                var medkwp_totvar_sem = parseFloat(custoVar_sem) / parseFloat(soma_varkwp_sem)
-                if (isNaN(medkwp_totvar_sem)) {
-                    medkwp_totvar_sem = 0
-                }
-                var per_totvar = (((parseFloat(soma_varkwp_com) * parseFloat(per_totvar_com)) + (parseFloat(soma_varkwp_sem) * parseFloat(per_totvar_sem))) / (parseFloat(soma_varkwp_com) + parseFloat(soma_varkwp_sem))).toFixed(2)
-                if (isNaN(per_totvar)) {
-                    per_totvar = 0
-                }
-                //Média Ponderada Variáveis Estruturais Cercamento  
-                var per_totcer_com = parseFloat(soma_totcer_com) / parseFloat(soma_estfat_com) * 100
-                if (isNaN(per_totcer_com)) {
-                    per_totcer_com = 0
-                }
-                var per_totcer_sem = parseFloat(soma_totcer_sem) / parseFloat(soma_estfat_sem) * 100
-                if (isNaN(per_totcer_sem)) {
-                    per_totcer_sem = 0
-                }
-                var medkwp_totcer_com = parseFloat(soma_totcer_com) / parseFloat(soma_estkwp_com)
-                if (isNaN(medkwp_totcer_com)) {
-                    medkwp_totcer_com = 0
-                }
-                var medkwp_totcer_sem = parseFloat(soma_totcer_sem) / parseFloat(soma_estkwp_sem)
-                if (isNaN(medkwp_totcer_sem)) {
-                    medkwp_totcer_sem = 0
-                }
-                var per_totcer = (((parseFloat(soma_estkwp_com) * parseFloat(per_totcer_com)) + (parseFloat(soma_estkwp_sem) * parseFloat(soma_estkwp_com))) / (parseFloat(soma_estkwp_sem) + parseFloat(soma_varkwp_sem))).toFixed(2)
-                if (isNaN(per_totcer)) {
-                    per_totcer = 0
-                }
-                //Média Ponderada Variáveis Estruturais Central
-                var per_totcen_com = parseFloat(soma_totcen_com) / parseFloat(soma_estfat_com) * 100
-                if (isNaN(per_totcen_com)) {
-                    per_totcen_com = 0
-                }
-                var per_totcen_sem = parseFloat(soma_totcen_sem) / parseFloat(soma_estfat_sem) * 100
-                if (isNaN(per_totcen_sem)) {
-                    per_totcen_sem = 0
-                }
-                var medkwp_totcen_com = parseFloat(soma_totcen_com) / parseFloat(soma_estkwp_com)
-                if (isNaN(medkwp_totcen_com)) {
-                    medkwp_totcen_com = 0
-                }
-                var medkwp_totcen_sem = parseFloat(soma_totcen_sem) / parseFloat(soma_estkwp_sem)
-                if (isNaN(medkwp_totcen_sem)) {
-                    medkwp_totcen_sem = 0
-                }
-                var per_totcen = (((parseFloat(soma_estkwp_com) * parseFloat(per_totcen_com)) + (parseFloat(soma_estkwp_sem) * parseFloat(per_totcen_sem))) / (parseFloat(soma_estkwp_com) + parseFloat(soma_estkwp_sem))).toFixed(2)
-                if (isNaN(per_totcen)) {
-                    per_totcen = 0
-                }
-                //Média Ponderada Variáveis Estruturais Postes
-                var per_totpos_com = parseFloat(soma_totpos_com) / parseFloat(soma_estfat_com) * 100
-                if (isNaN(per_totpos_com)) {
-                    per_totpos_com = 0
-                }
-                var per_totpos_sem = parseFloat(soma_totpos_sem) / parseFloat(soma_estfat_sem) * 100
-                if (isNaN(per_totpos_sem)) {
-                    per_totpos_sem = 0
-                }
-                var medkwp_totpos_com = parseFloat(soma_totpos_com) / parseFloat(soma_estkwp_com)
-                if (isNaN(medkwp_totpos_com)) {
-                    medkwp_totpos_com = 0
-                }
-                var medkwp_totpos_sem = parseFloat(soma_totpos_sem) / parseFloat(soma_estkwp_sem)
-                if (isNaN(medkwp_totpos_sem)) {
-                    medkwp_totpos_sem = 0
-                }
-                var per_totpos = (((parseFloat(soma_estkwp_com) * parseFloat(per_totpos_com)) + (parseFloat(soma_estkwp_sem) * parseFloat(per_totpos_sem))) / (parseFloat(soma_estkwp_com) + parseFloat(soma_estkwp_sem))).toFixed(2)
-                if (isNaN(per_totpos)) {
-                    per_totpos = 0
-                }
-                //Total Custos Variáveis Estruturais
-                var custoEst_com = parseFloat(soma_totest_com)
-                if (isNaN(custoEst_com)) {
-                    custoEst_com = 0
-                }
-                var custoEst_sem = parseFloat(soma_totest_sem)
-                if (isNaN(custoEst_sem)) {
-                    custoEst_sem = 0
-                }
-                var per_totest_com = parseFloat(custoEst_com) / parseFloat(soma_estfat_com) * 100
-                if (isNaN(per_totest_com)) {
-                    per_totest_com = 0
-                }
-                var per_totest_sem = parseFloat(custoEst_sem) / parseFloat(soma_estfat_sem) * 100
-                if (isNaN(per_totest_sem)) {
-                    per_totest_sem = 0
-                }
-                var medkwp_totest_com = parseFloat(custoEst_com) / parseFloat(soma_estkwp_com)
-                if (isNaN(medkwp_totest_com)) {
-                    medkwp_totest_com = 0
-                }
-                var medkwp_totest_sem = parseFloat(custoEst_sem) / parseFloat(soma_estkwp_sem)
-                if (isNaN(medkwp_totest_sem)) {
-                    medkwp_totest_sem = 0
-                }
-                var per_totest = (((parseFloat(soma_estkwp_com) * parseFloat(per_totest_com)) + (parseFloat(soma_estkwp_sem) * parseFloat(per_totest_sem))) / (parseFloat(soma_estkwp_com) + parseFloat(soma_estkwp_sem))).toFixed(2)
-                if (isNaN(per_totest)) {
-                    per_totest = 0
+                    //Custos Variáveis
+                    if (totdes > 0 || totali > 0 || totcmb > 0 || tothtl > 0) {
+                        soma_varkwp_sem = parseFloat(soma_varkwp_sem) + parseFloat(potencia)
+                        //console.log('soma_varkwp=>' + soma_varkwp)
+                        soma_varfat_sem = parseFloat(soma_varfat_sem) + parseFloat(vlrNFS)
+                        soma_totvar_sem = (parseFloat(soma_totvar_sem) + parseFloat(custovar)).toFixed(2)
+                    }
+
+                    soma_totdes_sem = (parseFloat(soma_totdes_sem) + parseFloat(totdes)).toFixed(2)
+                    soma_totali_sem = (parseFloat(soma_totali_sem) + parseFloat(totali)).toFixed(2)
+                    soma_totcmb_sem = (parseFloat(soma_totcmb_sem) + parseFloat(totcmb)).toFixed(2)
+                    soma_tothtl_sem = (parseFloat(soma_tothtl_sem) + parseFloat(tothtl)).toFixed(2)
+
+                    //Custos Variáveis Estruturais
+                    if (valorCer > 0 || valorCen > 0 || valorPos > 0) {
+                        soma_estkwp_sem = parseFloat(soma_estkwp_sem) + parseFloat(potencia)
+                        soma_estfat_sem = parseFloat(soma_estfat_sem) + parseFloat(vlrNFS)
+                        soma_totest_sem = (parseFloat(soma_totest_sem) + parseFloat(custoest)).toFixed(2)
+                    } else {
+                        soma_totest_sem = (parseFloat(soma_totest_sem) + 0).toFixed(2)
+                    }
+                    if (valorCer > 0) {
+                        soma_totcer_sem = (parseFloat(soma_totcer_sem) + parseFloat(valorCer)).toFixed(2)
+                    } else {
+                        soma_totcer_sem = (parseFloat(soma_totcer_sem) + 0).toFixed(2)
+                    }
+                    if (valorCen > 0) {
+                        soma_totcen_sem = (parseFloat(soma_totcen_sem) + parseFloat(valorCen)).toFixed(2)
+                    } else {
+                        soma_totcen_sem = (parseFloat(soma_totcen_sem) + 0).toFixed(2)
+                    }
+                    if (valorPos > 0) {
+                        soma_totpos_sem = (parseFloat(soma_totpos_sem) + parseFloat(valorPos)).toFixed(2)
+                    } else {
+                        soma_totpos_sem = (parseFloat(soma_totpos_sem) + 0).toFixed(2)
+                    }
                 }
 
-                soma_custoFix = parseFloat(soma_totint) + parseFloat(soma_totpro) + parseFloat(soma_totart) + parseFloat(soma_totges) + parseFloat(soma_tottrb) + parseFloat(soma_totcom) + parseFloat(soma_totadm)
-                soma_custoVar = parseFloat(soma_totali) + parseFloat(soma_totdes)
-                soma_custoEst = parseFloat(soma_totcer) + parseFloat(soma_totcen) + parseFloat(soma_totpos)
-                soma_totfat = parseFloat(soma_kitfat) + parseFloat(soma_serfat)
+                //----------------------------------------
+                //Média ponderada da paticipação dos gastos- FIM
+                //----------------------------------------
 
-                //Soma Total Componentes
-                soma_totequ = parseFloat(soma_modequ) + parseFloat(soma_invequ) + parseFloat(soma_estequ) + parseFloat(soma_cabequ) + parseFloat(soma_disequ) + parseFloat(soma_dpsequ) + parseFloat(soma_sbxequ) + parseFloat(soma_ocpequ)
+                soma_totkwp = (parseFloat(soma_totkwp) + parseFloat(potencia)).toFixed(2)
+                soma_totcop = (parseFloat(soma_totcop) + parseFloat(custoPlano)).toFixed(2)
+                //Totalizador de Faturamento            
+                if (fatequ == true) {
+                    soma_kitfat = parseFloat(soma_kitfat) + parseFloat(vlrNFS)
+                    soma_totkit = parseFloat(soma_totkit) + parseFloat(vlrkit)
+                } else {
+                    soma_serfat = parseFloat(soma_serfat) + parseFloat(vlrNFS)
+                }
 
                 //Custos Fixos 
-                medkwp_custoFix = (parseFloat(soma_custoFix) / parseFloat(soma_totkwp)).toFixed(2)
-                if (isNaN(medkwp_custoFix)) {
-                    medkwp_custoFix = 0
+                //Serviços
+                if (totint > 0) {
+                    soma_totint = (parseFloat(soma_totint) + parseFloat(totint)).toFixed(2)
+                } else {
+                    soma_totint = (parseFloat(soma_totint) + 0).toFixed(2)
                 }
-                //Serviço
-                medkwp_totint = (parseFloat(soma_totint) / parseFloat(soma_totkwp)).toFixed(2)
-                medkwp_totpro = (parseFloat(soma_totpro) / parseFloat(soma_totkwp)).toFixed(2)
-                medkwp_totges = (parseFloat(soma_totges) / parseFloat(soma_totkwp)).toFixed(2)
-                medkwp_totart = (parseFloat(soma_totart) / parseFloat(soma_totkwp)).toFixed(2)
+                if (totpro > 0) {
+                    soma_totpro = (parseFloat(soma_totpro) + parseFloat(totpro)).toFixed(2)
+                } else {
+                    soma_totpro = (parseFloat(soma_totpro) + 0).toFixed(2)
+                }
+                if (totges > 0) {
+                    soma_totges = (parseFloat(soma_totges) + parseFloat(totges)).toFixed(2)
+                } else {
+                    soma_totges = (parseFloat(soma_totges) + 0).toFixed(2)
+                }
+                if (vlrart > 0) {
+                    soma_totart = (parseFloat(soma_totart) + parseFloat(vlrart)).toFixed(2)
+                } else {
+                    soma_totart = (parseFloat(soma_totart) + 0).toFixed(2)
+                }
                 //Tributos
-                medkwp_tottrb = (parseFloat(soma_tottrb) / parseFloat(soma_totkwp)).toFixed(2)
+                soma_tottrb = (parseFloat(soma_tottrb) + parseFloat(totalTributos)).toFixed(2)
                 //Comissão
-                medkwp_totcom = (parseFloat(soma_totcom) / parseFloat(soma_totkwp)).toFixed(2)
+                soma_totcom = (parseFloat(soma_totcom) + parseFloat(vlrcom)).toFixed(2)
                 //Despesas Administrativas
-                medkwp_totadm = (parseFloat(soma_totadm) / parseFloat(soma_totkwp)).toFixed(2)
+                if (desAdm != undefined) {
+                    soma_totadm = (parseFloat(soma_totadm) + parseFloat(desAdm)).toFixed(2)
+                }
+
                 //Custos Variáveis
-                medkwp_custoVar = (parseFloat(soma_custoVar) / parseFloat(soma_varkwp)).toFixed(2)
-                if (isNaN(medkwp_custoVar)) {
-                    medkwp_custoVar = 0
+                if (totdes > 0 || totali > 0 || totcmb > 0 || tothtl > 0) {
+                    soma_varkwp = parseFloat(soma_varkwp) + parseFloat(potencia)
+                    //console.log('soma_varkwp=>' + soma_varkwp)
+                    soma_varfat = parseFloat(soma_varfat) + parseFloat(vlrNFS)
                 }
-                medkwp_varfat = (parseFloat(soma_varfat) / parseFloat(soma_varkwp)).toFixed(2)
-                medkwp_totdes = (parseFloat(soma_totdes) / parseFloat(soma_varkwp)).toFixed(2)
-                medkwp_totali = (parseFloat(soma_totali) / parseFloat(soma_varkwp)).toFixed(2)
-                medkwp_tothtl = (parseFloat(soma_tothtl) / parseFloat(soma_varkwp)).toFixed(2)
-                medkwp_totcmb = (parseFloat(soma_totcmb) / parseFloat(soma_varkwp)).toFixed(2)
+                if (totdes > 0) {
+                    soma_totdes = (parseFloat(soma_totdes) + parseFloat(totdes)).toFixed(2)
+                } else {
+                    soma_totdes = (parseFloat(soma_totdes) + 0).toFixed(2)
+                }
+                if (totali > 0) {
+                    soma_totali = (parseFloat(soma_totali) + parseFloat(totali)).toFixed(2)
+                } else {
+                    soma_totali = (parseFloat(soma_totali) + 0).toFixed(2)
+                }
+                if (totcmb > 0) {
+                    soma_totcmb = (parseFloat(soma_totcmb) + parseFloat(totcmb)).toFixed(2)
+                } else {
+                    soma_totcmb = (parseFloat(soma_totcmb) + 0).toFixed(2)
+                }
+                if (tothtl > 0) {
+                    soma_tothtl = (parseFloat(soma_tothtl) + parseFloat(tothtl)).toFixed(2)
+                } else {
+                    soma_tothtl = (parseFloat(soma_tothtl) + 0).toFixed(2)
+                }
+
                 //Custos Variáveis Estruturais
-                medkwp_custoEst = (parseFloat(soma_custoEst) / parseFloat(soma_estkwp)).toFixed(2)
-                if (isNaN(medkwp_custoEst)) {
-                    medkwp_custoEst = 0
+                if (valorCer > 0 || valorCen > 0 || valorPos > 0) {
+                    soma_estkwp = parseFloat(soma_estkwp) + parseFloat(potencia)
+                    soma_estfat = parseFloat(soma_estfat) + parseFloat(vlrNFS)
+                } else {
+                    soma_estkwp = parseFloat(soma_estkwp) + 0
+                    soma_estfat = parseFloat(soma_estfat) + 0
                 }
-                medkwp_totcer = (parseFloat(soma_totcer) / parseFloat(soma_estkwp)).toFixed(2)
-                if (isNaN(medkwp_totcer)) {
-                    medkwp_totcer = 0
+                if (valorCer > 0) {
+                    soma_totcer = (parseFloat(soma_totcer) + parseFloat(valorCer)).toFixed(2)
+                } else {
+                    soma_totcer = (parseFloat(soma_totcer) + 0).toFixed(2)
                 }
-                medkwp_totcen = (parseFloat(soma_totcen) / parseFloat(soma_estkwp)).toFixed(2)
-                if (isNaN(medkwp_totcen)) {
-                    medkwp_totcen = 0
+                if (valorCen > 0) {
+                    soma_totcen = (parseFloat(soma_totcen) + parseFloat(valorCen)).toFixed(2)
+                } else {
+                    soma_totcen = (parseFloat(soma_totcen) + 0).toFixed(2)
                 }
-                medkwp_totpos = (parseFloat(soma_totpos) / parseFloat(soma_estkwp)).toFixed(2)
-                if (isNaN(medkwp_totpos)) {
-                    medkwp_totpos = 0
+                if (valorPos > 0) {
+                    soma_totpos = (parseFloat(soma_totpos) + parseFloat(valorPos)).toFixed(2)
+                } else {
+                    soma_totpos = (parseFloat(soma_totpos) + 0).toFixed(2)
                 }
-                //Médias de total faturado por kit e por serviços
-                soma_totser = (parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)).toFixed(2)
 
-                //medkwp_serfat = parseFloat(soma_serfat) / parseFloat(soma_serkwp)
-                per_totliq = ((parseFloat(soma_totliq) / parseFloat(soma_totfat)) * 100).toFixed(2)
-                per_dispendio = (100 - parseFloat(per_totliq)).toFixed(2)
-                per_kitfat = ((parseFloat(soma_totkit) / parseFloat(soma_totfat)) * 100).toFixed(2)
-                per_comfat = ((parseFloat(soma_totcom) / parseFloat(soma_totfat)) * 100).toFixed(2)
-                per_cusfat = ((parseFloat(soma_totcop) / parseFloat(soma_totfat)) * 100).toFixed(2)
-                per_desfat = ((parseFloat(soma_totadm) / parseFloat(soma_totfat)) * 100).toFixed(2)
-                per_trbfat = ((parseFloat(soma_tottrb) / parseFloat(soma_totfat)) * 100).toFixed(2)
-                //Média componentes
-                med_modequ = (parseFloat(soma_modequ) / parseFloat(soma_equkwp)).toFixed(2)
-                med_invequ = (parseFloat(soma_invequ) / parseFloat(soma_equkwp)).toFixed(2)
-                med_estequ = (parseFloat(soma_estequ) / parseFloat(soma_equkwp)).toFixed(2)
-                med_cabequ = (parseFloat(soma_cabequ) / parseFloat(soma_equkwp)).toFixed(2)
-                med_dpsequ = (parseFloat(soma_dpsequ) / parseFloat(soma_equkwp)).toFixed(2)
-                med_disequ = (parseFloat(soma_disequ) / parseFloat(soma_equkwp)).toFixed(2)
-                med_sbxequ = (parseFloat(soma_sbxequ) / parseFloat(soma_equkwp)).toFixed(2)
-                med_ocpequ = (parseFloat(soma_ocpequ) / parseFloat(soma_equkwp)).toFixed(2)
-                med_totequ = (parseFloat(soma_totequ) / parseFloat(soma_equkwp)).toFixed(2)
-                //Percentual componentes
-                per_modequ = ((parseFloat(soma_modequ) / parseFloat(soma_totequ)) * 100).toFixed(2)
-                per_invequ = ((parseFloat(soma_invequ) / parseFloat(soma_totequ)) * 100).toFixed(2)
-                per_estequ = ((parseFloat(soma_estequ) / parseFloat(soma_totequ)) * 100).toFixed(2)
-                per_cabequ = ((parseFloat(soma_cabequ) / parseFloat(soma_totequ)) * 100).toFixed(2)
-                per_disequ = ((parseFloat(soma_disequ) / parseFloat(soma_totequ)) * 100).toFixed(2)
-                per_dpsequ = ((parseFloat(soma_dpsequ) / parseFloat(soma_totequ)) * 100).toFixed(2)
-                per_sbxequ = ((parseFloat(soma_sbxequ) / parseFloat(soma_totequ)) * 100).toFixed(2)
-                per_ocpequ = ((parseFloat(soma_ocpequ) / parseFloat(soma_totequ)) * 100).toFixed(2)
+                if (parseFloat(valorMod) > 0) {
+                    soma_equkwp = parseFloat(soma_equkwp) + parseFloat(potencia)
+                }
+                //console.log('soma_equkwp=>'+soma_equkwp)
+                //Soma percentuais componentes
+                //console.log('valorMod=>' + valorMod)
+                if (valorMod != undefined) {
+                    soma_modequ = (parseFloat(soma_modequ) + parseFloat(valorMod)).toFixed(2)
+                }
+                //console.log('soma_modequ=>' + soma_modequ)
+                //console.log('valorInv=>' + valorInv)
+                if (valorInv != undefined) {
+                    soma_invequ = (parseFloat(soma_invequ) + parseFloat(valorInv)).toFixed(2)
+                }
+                //console.log('soma_invequ=>' + soma_invequ)
+                //console.log('valorEst=>' + valorEst)
+                if (valorEst != undefined) {
+                    soma_estequ = (parseFloat(soma_estequ) + parseFloat(valorEst)).toFixed(2)
+                }
+                //console.log('soma_estequ=>' + soma_estequ)
+                //console.log('valorCab=>' + valorCab)
+                if (valorCab != undefined) {
+                    soma_cabequ = (parseFloat(soma_cabequ) + parseFloat(valorCab)).toFixed(2)
+                }
+                //console.log('soma_cabequ=>' + soma_cabequ)
+                //console.log('valorDis=>' + valorDis)
+                if (valorDis != undefined) {
+                    soma_disequ = (parseFloat(soma_disequ) + parseFloat(valorDis)).toFixed(2)
+                }
+                //console.log('soma_disequ=>' + soma_disequ)
+                //console.log('valorDPS=>' + valorDPS)
+                if (valorDPS != undefined) {
+                    soma_dpsequ = (parseFloat(soma_dpsequ) + parseFloat(valorDPS)).toFixed(2)
+                }
+                //console.log('soma_dpsequ=>' + soma_dpsequ)
+                //console.log('valorSB=>' + valorSB)
+                if (valorSB != undefined) {
+                    soma_sbxequ = (parseFloat(soma_sbxequ) + parseFloat(valorSB)).toFixed(2)
+                }
+                //console.log('soma_sbxequ=>' + soma_sbxequ)
+                //console.log('valorOcp=>' + valorOcp)
+                if (valorOcp != undefined) {
+                    soma_ocpequ = (parseFloat(soma_ocpequ) + parseFloat(valorOcp)).toFixed(2)
+                }
+                //console.log('soma_ocpequ=>' + soma_ocpequ)
 
-                //ticket médio de kwp instalados
-                ticketwkp = (parseFloat(soma_totkwp) / parseFloat(numprj)).toFixed(2)
+                //Totais: Projetos Vendidos, Faturamento e Lucro Líquido
+                soma_totprj = (parseFloat(soma_totprj) + parseFloat(valor)).toFixed(2)
+                soma_totliq = (parseFloat(soma_totliq) + parseFloat(lucroLiquido)).toFixed(2)
 
-                res.render('relatorios/dashboardcustos', {
-                    soma_totkwp, soma_varkwp, soma_estkwp,
-                    soma_totfat, soma_totcop, ticketkwp,
-
-                    soma_totint, soma_totpro, soma_totges, soma_totadm, soma_totcom, soma_tottrb, soma_totart,
-                    soma_custoFix, soma_totdes, soma_totali, soma_totcmb, soma_tothtl, soma_custoVar,
-                    soma_varfat, soma_totcer, soma_totcen, soma_totpos, soma_custoEst, soma_estfat,
-
-                    soma_totkit, soma_totprj, soma_totliq, soma_totser,
-
-                    medkwp_totint, medkwp_totpro, medkwp_totges, medkwp_totadm, medkwp_totcom, medkwp_totart,
-                    medkwp_tottrb, medkwp_custoFix, medkwp_totdes, medkwp_totali, medkwp_tothtl, medkwp_totcmb,
-                    medkwp_custoVar, medkwp_varfat, medkwp_totcer, medkwp_totcen, medkwp_totpos,
-                    medkwp_custoEst,
-
-                    per_totint, per_totpro, per_totart, per_totges, per_totadm, per_tottrb, per_totcom, per_totcus, per_totvar,
-                    per_totali, per_totdes, per_tothtl, per_totcmb, per_totvar,
-                    per_totcer, per_totcen, per_totpos, per_totest,
-
-                    numprj, per_totliq, per_dispendio, per_kitfat, per_comfat, per_cusfat, per_desfat, per_trbfat,
-
-                    soma_modequ, soma_invequ, soma_estequ, soma_cabequ, soma_dpsequ, soma_disequ, soma_sbxequ, soma_ocpequ, soma_totequ,
-                    per_modequ, per_invequ, per_estequ, per_cabequ, per_dpsequ, per_disequ, per_sbxequ, per_ocpequ,
-                    med_modequ, med_invequ, med_estequ, med_cabequ, med_dpsequ, med_disequ, med_sbxequ, med_ocpequ, med_totequ
-                })
             }
-        } else {
-            req.flash('aviso', 'Ainda não existem projetos realizados para gerar indicadores de custo.')
-            res.redirect('/menu')
+
+            //Média Ponderada projetista
+            var per_totpro_com = parseFloat(soma_totpro_com) / parseFloat(soma_totfat_com) * 100
+            if (isNaN(per_totpro_com)) {
+                per_totpro_com = 0
+            }
+            var per_totpro_sem = parseFloat(soma_totpro_sem) / parseFloat(soma_totfat_sem) * 100
+            if (isNaN(per_totpro_sem)) {
+                per_totpro_sem = 0
+            }
+            var medkwp_totpro_com = parseFloat(soma_totpro_com) / parseFloat(soma_totkwp_com)
+            if (isNaN(medkwp_totpro_com)) {
+                medkwp_totpro_com = 0
+            }
+            var medkwp_totpro_sem = parseFloat(soma_totpro_sem) / parseFloat(soma_totkwp_sem)
+            if (isNaN(medkwp_totpro_sem)) {
+                medkwp_totpro_sem = 0
+            }
+            var per_totpro = (((parseFloat(soma_totkwp_com) * parseFloat(per_totpro_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_totpro_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
+            if (isNaN(per_totpro)) {
+                per_totpro = 0
+            }
+            //Média Ponderada ART
+            var per_totart_com = parseFloat(soma_totart_com) / parseFloat(soma_totfat_com) * 100
+            if (isNaN(per_totart_com)) {
+                per_totart_com = 0
+            }
+            var per_totart_sem = parseFloat(soma_totart_sem) / parseFloat(soma_totfat_sem) * 100
+            if (isNaN(per_totart_sem)) {
+                per_totart_sem = 0
+            }
+            var medkwp_totart_com = parseFloat(soma_totart_com) / parseFloat(soma_totkwp_com)
+            if (isNaN(medkwp_totart_com)) {
+                medkwp_totart_com = 0
+            }
+            var medkwp_totart_sem = parseFloat(soma_totart_sem) / parseFloat(soma_totkwp_sem)
+            if (isNaN(medkwp_totart_sem)) {
+                medkwp_totart_sem = 0
+            }
+            var per_totart = (((parseFloat(medkwp_totart_com) * parseFloat(per_totart_com)) + (parseFloat(medkwp_totart_sem) * parseFloat(per_totart_sem))) / (parseFloat(medkwp_totart_com) + parseFloat(medkwp_totart_sem))).toFixed(2)
+            if (isNaN(per_totart)) {
+                per_totart = 0
+            }
+            //Média Ponderada Gestão
+            var per_totges_com = parseFloat(soma_totges_com) / parseFloat(soma_totfat_com) * 100
+            if (isNaN(per_totges_com)) {
+                per_totges_com = 0
+            }
+            var per_totges_sem = parseFloat(soma_totges_sem) / parseFloat(soma_totfat_sem) * 100
+            if (isNaN(per_totges_sem)) {
+                per_totges_sem = 0
+            }
+            var medkwp_totges_com = parseFloat(soma_totges_com) / parseFloat(soma_totkwp_com)
+            if (isNaN(medkwp_totges_com)) {
+                medkwp_totges_com = 0
+            }
+            var medkwp_totges_sem = parseFloat(soma_totges_sem) / parseFloat(soma_totkwp_sem)
+            if (isNaN(medkwp_totges_sem)) {
+                medkwp_totges_sem = 0
+            }
+            var per_totges = (((parseFloat(soma_totkwp_com) * parseFloat(per_totges_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_totges_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
+            if (isNaN(per_totges)) {
+                per_totges = 0
+            }
+            //Média Ponderada instalação
+            var per_totint_com = parseFloat(soma_totint_com) / parseFloat(soma_totfat_com) * 100
+            if (isNaN(per_totint_com)) {
+                per_totint_com = 0
+            }
+            var per_totint_sem = parseFloat(soma_totint_sem) / parseFloat(soma_totfat_sem) * 100
+            if (isNaN(per_totint_sem)) {
+                per_totint_sem = 0
+            }
+            var medkwp_totint_com = parseFloat(soma_totint_com) / parseFloat(soma_totkwp_com)
+            if (isNaN(medkwp_totint_com)) {
+                medkwp_totint_com = 0
+            }
+            var medkwp_totint_sem = parseFloat(soma_totint_sem) / parseFloat(soma_totkwp_sem)
+            if (isNaN(medkwp_totint_sem)) {
+                medkwp_totint_sem = 0
+            }
+            var per_totint = (((parseFloat(soma_totkwp_com) * parseFloat(per_totint_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_totint_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
+            if (isNaN(per_totint)) {
+                per_totint = 0
+            }
+            //Média Ponderada Administração
+            var per_totadm_com = parseFloat(soma_totadm_com) / parseFloat(soma_totfat_com) * 100
+            if (isNaN(per_totadm_com)) {
+                per_totadm_com = 0
+            }
+            var per_totadm_sem = parseFloat(soma_totadm_sem) / parseFloat(soma_totfat_sem) * 100
+            if (isNaN(per_totadm_sem)) {
+                per_totadm_sem = 0
+            }
+            var medkwp_totadm_com = parseFloat(soma_totadm_com) / parseFloat(soma_totkwp_com)
+            if (isNaN(medkwp_totadm_com)) {
+                medkwp_totadm_com = 0
+            }
+            var medkwp_totadm_sem = parseFloat(soma_totadm_sem) / parseFloat(soma_totkwp_sem)
+            if (isNaN(medkwp_totadm_sem)) {
+                medkwp_totadm_sem = 0
+            }
+            var per_totadm = (((parseFloat(soma_totkwp_com) * parseFloat(per_totadm_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_totadm_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
+            if (isNaN(per_totadm)) {
+                per_totadm = 0
+            }
+            //Média Ponderada Comissão
+            var per_totcom_com = parseFloat(soma_totcom_com) / parseFloat(soma_totfat_com) * 100
+            if (isNaN(per_totcom_com)) {
+                per_totcom_com = 0
+            }
+            var per_totcom_sem = parseFloat(soma_totcom_sem) / parseFloat(soma_totfat_sem) * 100
+            if (isNaN(per_totcom_sem)) {
+                per_totcom_sem = 0
+            }
+            var medkwp_totcom_com = parseFloat(soma_totcom_com) / parseFloat(soma_totkwp_com)
+            if (isNaN(medkwp_totcom_com)) {
+                medkwp_totcom_com = 0
+            }
+            var medkwp_totcom_sem = parseFloat(soma_totcom_sem) / parseFloat(soma_totkwp_sem)
+            if (isNaN(medkwp_totcom_sem)) {
+                medkwp_totcom_sem = 0
+            }
+            var per_totcom = (((parseFloat(soma_totkwp_com) * parseFloat(per_totcom_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_totcom_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
+            if (isNaN(per_totcom)) {
+                per_totcom = 0
+            }
+            //Média Ponderada Tributos
+            var per_tottrb_com = parseFloat(soma_tottrb_com) / parseFloat(soma_totfat_com) * 100
+            if (isNaN(per_tottrb_com)) {
+                per_tottrb_com = 0
+            }
+            var per_tottrb_sem = parseFloat(soma_tottrb_sem) / parseFloat(soma_totfat_sem) * 100
+            if (isNaN(per_tottrb_sem)) {
+                per_tottrb_sem = 0
+            }
+            var medkwp_tottrb_com = parseFloat(soma_tottrb_com) / parseFloat(soma_totkwp_com)
+            if (isNaN(medkwp_tottrb_com)) {
+                medkwp_tottrb_com = 0
+            }
+            var medkwp_tottrb_sem = parseFloat(soma_tottrb_sem) / parseFloat(soma_totkwp_sem)
+            if (isNaN(medkwp_tottrb_sem)) {
+                medkwp_tottrb_sem = 0
+            }
+            var per_tottrb = (((parseFloat(soma_totkwp_com) * parseFloat(per_tottrb_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_tottrb_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
+            if (isNaN(per_tottrb)) {
+                per_tottrb = 0
+            }
+            //Total Custos
+            var custoFix_com = parseFloat(soma_totcus_com) + parseFloat(soma_totadm_com) + parseFloat(soma_totcom_com) + parseFloat(soma_tottrb_com)
+            var custoFix_sem = parseFloat(soma_totcus_sem) + parseFloat(soma_totadm_sem) + parseFloat(soma_totcom_sem) + parseFloat(soma_tottrb_sem)
+            var per_totcus_com = parseFloat(custoFix_com) / parseFloat(soma_totfat_com) * 100
+            if (isNaN(per_totcus_com)) {
+                per_totcus_com = 0
+            }
+            var per_totcus_sem = parseFloat(custoFix_sem) / parseFloat(soma_totfat_sem) * 100
+            if (isNaN(per_totcus_sem)) {
+                per_totcus_sem = 0
+            }
+            var medkwp_totcus_com = parseFloat(custoFix_com) / parseFloat(soma_totkwp_com)
+            if (isNaN(medkwp_totcus_com)) {
+                medkwp_totcus_com = 0
+            }
+            var medkwp_totcus_sem = parseFloat(custoFix_sem) / parseFloat(soma_totkwp_sem)
+            if (isNaN(medkwp_totcus_sem)) {
+                medkwp_totcus_sem = 0
+            }
+            var per_totcus = (((parseFloat(soma_totkwp_com) * parseFloat(per_totcus_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_totcus_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
+            if (isNaN(per_totcus)) {
+                per_totcus = 0
+            }
+            //Média Ponderada Custos Variáveis Alimentação
+            var per_totali_com = parseFloat(soma_totali_com) / parseFloat(soma_varfat_com) * 100
+            if (isNaN(per_totali_com)) {
+                per_totali_com = 0
+            }
+            var per_totali_sem = parseFloat(soma_totali_sem) / parseFloat(soma_varfat_sem) * 100
+            if (isNaN(per_totali_sem)) {
+                per_totali_sem = 0
+            }
+            var medkwp_totali_com = parseFloat(soma_totali_com) / parseFloat(soma_varkwp_com)
+            if (isNaN(medkwp_totali_com)) {
+                medkwp_totali_com = 0
+            }
+            var medkwp_totali_sem = parseFloat(soma_totali_sem) / parseFloat(soma_varkwp_sem)
+            if (isNaN(medkwp_totali_sem)) {
+                medkwp_totali_sem = 0
+            }
+            var per_totali = (((parseFloat(soma_varkwp_com) * parseFloat(per_totali_com)) + (parseFloat(soma_varkwp_sem) * parseFloat(per_totali_sem))) / (parseFloat(soma_varkwp_sem) + parseFloat(soma_varkwp_com))).toFixed(2)
+            if (isNaN(per_totali)) {
+                per_totali = 0
+            }
+            //Média Ponderada Custos Variáveis Deslocamento
+            var per_totdes_com = parseFloat(soma_totdes_com) / parseFloat(soma_varfat_com) * 100
+            if (isNaN(per_totdes_com)) {
+                per_totdes_com = 0
+            }
+            var per_totdes_sem = parseFloat(soma_totdes_sem) / parseFloat(soma_varfat_sem) * 100
+            if (isNaN(per_totdes_sem)) {
+                per_totdes_sem = 0
+            }
+            var medkwp_totdes_com = parseFloat(soma_totdes_com) / parseFloat(soma_varkwp_com)
+            if (isNaN(medkwp_totdes_com)) {
+                medkwp_totdes_com = 0
+            }
+            var medkwp_totdes_sem = parseFloat(soma_totdes_sem) / parseFloat(soma_varkwp_sem)
+            if (isNaN(medkwp_totdes_sem)) {
+                medkwp_totdes_sem = 0
+            }
+            var per_totdes = (((parseFloat(soma_varkwp_com) * parseFloat(per_totdes_com)) + (parseFloat(soma_varkwp_sem) * parseFloat(per_totdes_sem))) / (parseFloat(soma_varkwp_com) + parseFloat(soma_varkwp_sem))).toFixed(2)
+            if (isNaN(per_totdes)) {
+                per_totdes = 0
+            }
+            //Média Ponderada Custos Variáveis Combustível
+            var per_totcmb_com = parseFloat(soma_totcmb_com) / parseFloat(soma_varfat_com) * 100
+            if (isNaN(per_totcmb_com)) {
+                per_totcmb_com = 0
+            }
+            var per_totcmb_sem = parseFloat(soma_totcmb_sem) / parseFloat(soma_varfat_sem) * 100
+            if (isNaN(per_totcmb_sem)) {
+                per_totcmb_sem = 0
+            }
+            var medkwp_totcmb_com = parseFloat(soma_totcmb_com) / parseFloat(soma_varkwp_com)
+            if (isNaN(medkwp_totcmb_com)) {
+                medkwp_totcmb_com = 0
+            }
+            var medkwp_totcmb_sem = parseFloat(soma_totcmb_sem) / parseFloat(soma_varkwp_sem)
+            if (isNaN(medkwp_totcmb_sem)) {
+                medkwp_totcmb_sem = 0
+            }
+            var per_totcmb = (((parseFloat(soma_varkwp_com) * parseFloat(per_totcmb_com)) + (parseFloat(soma_varkwp_sem) * parseFloat(per_totcmb_sem))) / (parseFloat(soma_varkwp_com) + parseFloat(soma_varkwp_sem))).toFixed(2)
+            if (isNaN(per_totcmb)) {
+                per_totcmb = 0
+            }
+            //Média Ponderada Custos Variáveis Hotel
+            var per_tothtl_com = parseFloat(soma_tothtl_com) / parseFloat(soma_varfat_com) * 100
+            if (isNaN(per_tothtl_com)) {
+                per_tothtl_com = 0
+            }
+            var per_tothtl_sem = parseFloat(soma_tothtl_sem) / parseFloat(soma_varfat_sem) * 100
+            if (isNaN(per_tothtl_sem)) {
+                per_tothtl_sem = 0
+            }
+            var medkwp_tothtl_com = parseFloat(soma_tothtl_com) / parseFloat(soma_varkwp_com)
+            if (isNaN(medkwp_tothtl_com)) {
+                medkwp_tothtl_com = 0
+            }
+            var medkwp_tothtl_sem = parseFloat(soma_tothtl_sem) / parseFloat(soma_varkwp_sem)
+            if (isNaN(medkwp_tothtl_sem)) {
+                medkwp_tothtl_sem = 0
+            }
+            var per_tothtl = (((parseFloat(soma_varkwp_com) * parseFloat(per_tothtl_com)) + (parseFloat(soma_varkwp_sem) * parseFloat(per_tothtl_sem))) / (parseFloat(soma_varkwp_com) + parseFloat(soma_varkwp_sem))).toFixed(2)
+            if (isNaN(per_tothtl)) {
+                per_tothtl = 0
+            }
+            //Total Custos Variáveis
+            var custoVar_com = parseFloat(soma_totvar_com)
+            var custoVar_sem = parseFloat(soma_totvar_sem)
+            var per_totvar_com = parseFloat(custoVar_com) / parseFloat(soma_varfat_com) * 100
+            if (isNaN(per_totvar_com)) {
+                per_totvar_com = 0
+            }
+            var per_totvar_sem = parseFloat(custoVar_sem) / parseFloat(soma_varfat_sem) * 100
+            if (isNaN(per_totvar_sem)) {
+                per_totvar_sem = 0
+            }
+            var medkwp_totvar_com = parseFloat(custoVar_com) / parseFloat(soma_varkwp_com)
+            if (isNaN(medkwp_totvar_com)) {
+                medkwp_totvar_com = 0
+            }
+            var medkwp_totvar_sem = parseFloat(custoVar_sem) / parseFloat(soma_varkwp_sem)
+            if (isNaN(medkwp_totvar_sem)) {
+                medkwp_totvar_sem = 0
+            }
+            var per_totvar = (((parseFloat(soma_varkwp_com) * parseFloat(per_totvar_com)) + (parseFloat(soma_varkwp_sem) * parseFloat(per_totvar_sem))) / (parseFloat(soma_varkwp_com) + parseFloat(soma_varkwp_sem))).toFixed(2)
+            if (isNaN(per_totvar)) {
+                per_totvar = 0
+            }
+            //Média Ponderada Variáveis Estruturais Cercamento  
+            var per_totcer_com = parseFloat(soma_totcer_com) / parseFloat(soma_estfat_com) * 100
+            if (isNaN(per_totcer_com)) {
+                per_totcer_com = 0
+            }
+            var per_totcer_sem = parseFloat(soma_totcer_sem) / parseFloat(soma_estfat_sem) * 100
+            if (isNaN(per_totcer_sem)) {
+                per_totcer_sem = 0
+            }
+            var medkwp_totcer_com = parseFloat(soma_totcer_com) / parseFloat(soma_estkwp_com)
+            if (isNaN(medkwp_totcer_com)) {
+                medkwp_totcer_com = 0
+            }
+            var medkwp_totcer_sem = parseFloat(soma_totcer_sem) / parseFloat(soma_estkwp_sem)
+            if (isNaN(medkwp_totcer_sem)) {
+                medkwp_totcer_sem = 0
+            }
+            var per_totcer = (((parseFloat(soma_estkwp_com) * parseFloat(per_totcer_com)) + (parseFloat(soma_estkwp_sem) * parseFloat(soma_estkwp_com))) / (parseFloat(soma_estkwp_sem) + parseFloat(soma_varkwp_sem))).toFixed(2)
+            if (isNaN(per_totcer)) {
+                per_totcer = 0
+            }
+            //Média Ponderada Variáveis Estruturais Central
+            var per_totcen_com = parseFloat(soma_totcen_com) / parseFloat(soma_estfat_com) * 100
+            if (isNaN(per_totcen_com)) {
+                per_totcen_com = 0
+            }
+            var per_totcen_sem = parseFloat(soma_totcen_sem) / parseFloat(soma_estfat_sem) * 100
+            if (isNaN(per_totcen_sem)) {
+                per_totcen_sem = 0
+            }
+            var medkwp_totcen_com = parseFloat(soma_totcen_com) / parseFloat(soma_estkwp_com)
+            if (isNaN(medkwp_totcen_com)) {
+                medkwp_totcen_com = 0
+            }
+            var medkwp_totcen_sem = parseFloat(soma_totcen_sem) / parseFloat(soma_estkwp_sem)
+            if (isNaN(medkwp_totcen_sem)) {
+                medkwp_totcen_sem = 0
+            }
+            var per_totcen = (((parseFloat(soma_estkwp_com) * parseFloat(per_totcen_com)) + (parseFloat(soma_estkwp_sem) * parseFloat(per_totcen_sem))) / (parseFloat(soma_estkwp_com) + parseFloat(soma_estkwp_sem))).toFixed(2)
+            if (isNaN(per_totcen)) {
+                per_totcen = 0
+            }
+            //Média Ponderada Variáveis Estruturais Postes
+            var per_totpos_com = parseFloat(soma_totpos_com) / parseFloat(soma_estfat_com) * 100
+            if (isNaN(per_totpos_com)) {
+                per_totpos_com = 0
+            }
+            var per_totpos_sem = parseFloat(soma_totpos_sem) / parseFloat(soma_estfat_sem) * 100
+            if (isNaN(per_totpos_sem)) {
+                per_totpos_sem = 0
+            }
+            var medkwp_totpos_com = parseFloat(soma_totpos_com) / parseFloat(soma_estkwp_com)
+            if (isNaN(medkwp_totpos_com)) {
+                medkwp_totpos_com = 0
+            }
+            var medkwp_totpos_sem = parseFloat(soma_totpos_sem) / parseFloat(soma_estkwp_sem)
+            if (isNaN(medkwp_totpos_sem)) {
+                medkwp_totpos_sem = 0
+            }
+            var per_totpos = (((parseFloat(soma_estkwp_com) * parseFloat(per_totpos_com)) + (parseFloat(soma_estkwp_sem) * parseFloat(per_totpos_sem))) / (parseFloat(soma_estkwp_com) + parseFloat(soma_estkwp_sem))).toFixed(2)
+            if (isNaN(per_totpos)) {
+                per_totpos = 0
+            }
+            //Total Custos Variáveis Estruturais
+            var custoEst_com = parseFloat(soma_totest_com)
+            if (isNaN(custoEst_com)) {
+                custoEst_com = 0
+            }
+            var custoEst_sem = parseFloat(soma_totest_sem)
+            if (isNaN(custoEst_sem)) {
+                custoEst_sem = 0
+            }
+            var per_totest_com = parseFloat(custoEst_com) / parseFloat(soma_estfat_com) * 100
+            if (isNaN(per_totest_com)) {
+                per_totest_com = 0
+            }
+            var per_totest_sem = parseFloat(custoEst_sem) / parseFloat(soma_estfat_sem) * 100
+            if (isNaN(per_totest_sem)) {
+                per_totest_sem = 0
+            }
+            var medkwp_totest_com = parseFloat(custoEst_com) / parseFloat(soma_estkwp_com)
+            if (isNaN(medkwp_totest_com)) {
+                medkwp_totest_com = 0
+            }
+            var medkwp_totest_sem = parseFloat(custoEst_sem) / parseFloat(soma_estkwp_sem)
+            if (isNaN(medkwp_totest_sem)) {
+                medkwp_totest_sem = 0
+            }
+            var per_totest = (((parseFloat(soma_estkwp_com) * parseFloat(per_totest_com)) + (parseFloat(soma_estkwp_sem) * parseFloat(per_totest_sem))) / (parseFloat(soma_estkwp_com) + parseFloat(soma_estkwp_sem))).toFixed(2)
+            if (isNaN(per_totest)) {
+                per_totest = 0
+            }
+
+            soma_custoFix = parseFloat(soma_totint) + parseFloat(soma_totpro) + parseFloat(soma_totart) + parseFloat(soma_totges) + parseFloat(soma_tottrb) + parseFloat(soma_totcom) + parseFloat(soma_totadm)
+            soma_custoVar = parseFloat(soma_totali) + parseFloat(soma_totdes)
+            soma_custoEst = parseFloat(soma_totcer) + parseFloat(soma_totcen) + parseFloat(soma_totpos)
+            soma_totfat = parseFloat(soma_kitfat) + parseFloat(soma_serfat)
+
+            //Soma Total Componentes
+            soma_totequ = parseFloat(soma_modequ) + parseFloat(soma_invequ) + parseFloat(soma_estequ) + parseFloat(soma_cabequ) + parseFloat(soma_disequ) + parseFloat(soma_dpsequ) + parseFloat(soma_sbxequ) + parseFloat(soma_ocpequ)
+
+            //Custos Fixos 
+            medkwp_custoFix = (parseFloat(soma_custoFix) / parseFloat(soma_totkwp)).toFixed(2)
+            if (isNaN(medkwp_custoFix)) {
+                medkwp_custoFix = 0
+            }
+            //Serviço
+            medkwp_totint = (parseFloat(soma_totint) / parseFloat(soma_totkwp)).toFixed(2)
+            medkwp_totpro = (parseFloat(soma_totpro) / parseFloat(soma_totkwp)).toFixed(2)
+            medkwp_totges = (parseFloat(soma_totges) / parseFloat(soma_totkwp)).toFixed(2)
+            medkwp_totart = (parseFloat(soma_totart) / parseFloat(soma_totkwp)).toFixed(2)
+            //Tributos
+            medkwp_tottrb = (parseFloat(soma_tottrb) / parseFloat(soma_totkwp)).toFixed(2)
+            //Comissão
+            medkwp_totcom = (parseFloat(soma_totcom) / parseFloat(soma_totkwp)).toFixed(2)
+            //Despesas Administrativas
+            medkwp_totadm = (parseFloat(soma_totadm) / parseFloat(soma_totkwp)).toFixed(2)
+            //Custos Variáveis
+            medkwp_custoVar = (parseFloat(soma_custoVar) / parseFloat(soma_varkwp)).toFixed(2)
+            if (isNaN(medkwp_custoVar)) {
+                medkwp_custoVar = 0
+            }
+            medkwp_varfat = (parseFloat(soma_varfat) / parseFloat(soma_varkwp)).toFixed(2)
+            medkwp_totdes = (parseFloat(soma_totdes) / parseFloat(soma_varkwp)).toFixed(2)
+            medkwp_totali = (parseFloat(soma_totali) / parseFloat(soma_varkwp)).toFixed(2)
+            medkwp_tothtl = (parseFloat(soma_tothtl) / parseFloat(soma_varkwp)).toFixed(2)
+            medkwp_totcmb = (parseFloat(soma_totcmb) / parseFloat(soma_varkwp)).toFixed(2)
+            //Custos Variáveis Estruturais
+            medkwp_custoEst = (parseFloat(soma_custoEst) / parseFloat(soma_estkwp)).toFixed(2)
+            if (isNaN(medkwp_custoEst)) {
+                medkwp_custoEst = 0
+            }
+            medkwp_totcer = (parseFloat(soma_totcer) / parseFloat(soma_estkwp)).toFixed(2)
+            if (isNaN(medkwp_totcer)) {
+                medkwp_totcer = 0
+            }
+            medkwp_totcen = (parseFloat(soma_totcen) / parseFloat(soma_estkwp)).toFixed(2)
+            if (isNaN(medkwp_totcen)) {
+                medkwp_totcen = 0
+            }
+            medkwp_totpos = (parseFloat(soma_totpos) / parseFloat(soma_estkwp)).toFixed(2)
+            if (isNaN(medkwp_totpos)) {
+                medkwp_totpos = 0
+            }
+            //Médias de total faturado por kit e por serviços
+            soma_totser = (parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)).toFixed(2)
+
+            //medkwp_serfat = parseFloat(soma_serfat) / parseFloat(soma_serkwp)
+            per_totliq = ((parseFloat(soma_totliq) / parseFloat(soma_totfat)) * 100).toFixed(2)
+            per_dispendio = (100 - parseFloat(per_totliq)).toFixed(2)
+            per_kitfat = ((parseFloat(soma_totkit) / parseFloat(soma_totfat)) * 100).toFixed(2)
+            per_comfat = ((parseFloat(soma_totcom) / parseFloat(soma_totfat)) * 100).toFixed(2)
+            per_cusfat = ((parseFloat(soma_totcop) / parseFloat(soma_totfat)) * 100).toFixed(2)
+            per_desfat = ((parseFloat(soma_totadm) / parseFloat(soma_totfat)) * 100).toFixed(2)
+            per_trbfat = ((parseFloat(soma_tottrb) / parseFloat(soma_totfat)) * 100).toFixed(2)
+            //Média componentes
+            med_modequ = (parseFloat(soma_modequ) / parseFloat(soma_equkwp)).toFixed(2)
+            med_invequ = (parseFloat(soma_invequ) / parseFloat(soma_equkwp)).toFixed(2)
+            med_estequ = (parseFloat(soma_estequ) / parseFloat(soma_equkwp)).toFixed(2)
+            med_cabequ = (parseFloat(soma_cabequ) / parseFloat(soma_equkwp)).toFixed(2)
+            med_dpsequ = (parseFloat(soma_dpsequ) / parseFloat(soma_equkwp)).toFixed(2)
+            med_disequ = (parseFloat(soma_disequ) / parseFloat(soma_equkwp)).toFixed(2)
+            med_sbxequ = (parseFloat(soma_sbxequ) / parseFloat(soma_equkwp)).toFixed(2)
+            med_ocpequ = (parseFloat(soma_ocpequ) / parseFloat(soma_equkwp)).toFixed(2)
+            med_totequ = (parseFloat(soma_totequ) / parseFloat(soma_equkwp)).toFixed(2)
+            //Percentual componentes
+            per_modequ = ((parseFloat(soma_modequ) / parseFloat(soma_totequ)) * 100).toFixed(2)
+            per_invequ = ((parseFloat(soma_invequ) / parseFloat(soma_totequ)) * 100).toFixed(2)
+            per_estequ = ((parseFloat(soma_estequ) / parseFloat(soma_totequ)) * 100).toFixed(2)
+            per_cabequ = ((parseFloat(soma_cabequ) / parseFloat(soma_totequ)) * 100).toFixed(2)
+            per_disequ = ((parseFloat(soma_disequ) / parseFloat(soma_totequ)) * 100).toFixed(2)
+            per_dpsequ = ((parseFloat(soma_dpsequ) / parseFloat(soma_totequ)) * 100).toFixed(2)
+            per_sbxequ = ((parseFloat(soma_sbxequ) / parseFloat(soma_totequ)) * 100).toFixed(2)
+            per_ocpequ = ((parseFloat(soma_ocpequ) / parseFloat(soma_totequ)) * 100).toFixed(2)
+
+            //ticket médio de kwp instalados
+            ticketwkp = (parseFloat(soma_totkwp) / parseFloat(numprj)).toFixed(2)
+
+            res.render('relatorios/dashboardcustos', {
+                soma_totkwp, soma_varkwp, soma_estkwp,
+                soma_totfat, soma_totcop, ticketkwp,
+
+                soma_totint, soma_totpro, soma_totges, soma_totadm, soma_totcom, soma_tottrb, soma_totart,
+                soma_custoFix, soma_totdes, soma_totali, soma_totcmb, soma_tothtl, soma_custoVar,
+                soma_varfat, soma_totcer, soma_totcen, soma_totpos, soma_custoEst, soma_estfat,
+
+                soma_totkit, soma_totprj, soma_totliq, soma_totser,
+
+                medkwp_totint, medkwp_totpro, medkwp_totges, medkwp_totadm, medkwp_totcom, medkwp_totart,
+                medkwp_tottrb, medkwp_custoFix, medkwp_totdes, medkwp_totali, medkwp_tothtl, medkwp_totcmb,
+                medkwp_custoVar, medkwp_varfat, medkwp_totcer, medkwp_totcen, medkwp_totpos,
+                medkwp_custoEst,
+
+                per_totint, per_totpro, per_totart, per_totges, per_totadm, per_tottrb, per_totcom, per_totcus, per_totvar,
+                per_totali, per_totdes, per_tothtl, per_totcmb, per_totvar,
+                per_totcer, per_totcen, per_totpos, per_totest,
+
+                numprj, per_totliq, per_dispendio, per_kitfat, per_comfat, per_cusfat, per_desfat, per_trbfat,
+
+                soma_modequ, soma_invequ, soma_estequ, soma_cabequ, soma_dpsequ, soma_disequ, soma_sbxequ, soma_ocpequ, soma_totequ,
+                per_modequ, per_invequ, per_estequ, per_cabequ, per_dpsequ, per_disequ, per_sbxequ, per_ocpequ,
+                med_modequ, med_invequ, med_estequ, med_cabequ, med_dpsequ, med_disequ, med_sbxequ, med_ocpequ, med_totequ
+            })
         }
     })
 
@@ -1848,13 +1836,13 @@ router.get('/dashboardcustoscomkit', ehAdmin, (req, res) => {
                 }
 
             }
-            if (isNaN(soma_totcer)) {
+            if (isNaN (soma_totcer)){
                 soma_totcer = 0
             }
-            if (isNaN(soma_totcen)) {
+            if (isNaN (soma_totcen)){
                 soma_totcen = 0
             }
-            if (isNaN(soma_totpos)) {
+            if (isNaN (soma_totpos)){
                 soma_totpos = 0
             }
 
@@ -2484,13 +2472,13 @@ router.get('/dashboardcustossemkit', ehAdmin, (req, res) => {
                 }
 
             }
-            if (isNaN(soma_totcer)) {
+            if (isNaN (soma_totcer)){
                 soma_totcer = 0
             }
-            if (isNaN(soma_totcen)) {
+            if (isNaN (soma_totcen)){
                 soma_totcen = 0
             }
-            if (isNaN(soma_totpos)) {
+            if (isNaN (soma_totpos)){
                 soma_totpos = 0
             }
             soma_custoFix = parseFloat(soma_totint) + parseFloat(soma_totpro) + parseFloat(soma_totart) + parseFloat(soma_totges) + parseFloat(soma_tottrb) + parseFloat(soma_totcom) + parseFloat(soma_totadm)
@@ -2555,35 +2543,35 @@ router.get('/dashboardcustossemkit', ehAdmin, (req, res) => {
             }
             //Custos Fixos
             per_totpro = (parseFloat(medkwp_totpro) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-            if (isNaN(per_totpro)) {
+            if (isNaN(per_totpro)){
                 per_totpro = 0
             }
             per_totart = (parseFloat(medkwp_totart) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-            if (isNaN(per_totart)) {
+            if (isNaN(per_totart)){
                 per_totart = 0
             }
             per_totges = (parseFloat(medkwp_totges) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-            if (isNaN(per_totges)) {
+            if (isNaN(per_totges)){
                 per_totges = 0
             }
             per_totint = (parseFloat(medkwp_totint) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-            if (isNaN(per_totint)) {
+            if (isNaN(per_totint)){
                 per_totint = 0
             }
             per_totadm = (parseFloat(medkwp_totadm) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-            if (isNaN(per_totadm)) {
+            if (isNaN(per_totadm)){
                 per_totadm = 0
             }
             per_totcom = (parseFloat(medkwp_totcom) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-            if (isNaN(per_totcom)) {
+            if (isNaN(per_totcom)){
                 per_totcom = 0
             }
             per_tottrb = (parseFloat(medkwp_tottrb) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-            if (isNaN(per_tottrb)) {
+            if (isNaN(per_tottrb)){
                 per_tottrb = 0
             }
             per_custoFix = (parseFloat(medkwp_custoFix) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-            if (isNaN(per_custoFix)) {
+            if (isNaN(per_custoFix)){
                 per_custoFix = 0
             }
             //Custos Variáveis
@@ -4056,7 +4044,7 @@ router.post('/filtradash', ehAdmin, (req, res) => {
         var per_totcer_sem = parseFloat(soma_totcer_sem) / parseFloat(soma_estfat_sem) * 100
         if (isNaN(per_totcer_sem)) {
             per_totcer_sem = 0
-        }
+        }   
         var medkwp_totcer_com = parseFloat(soma_totcer_com) / parseFloat(soma_estkwp_com)
         if (isNaN(medkwp_totcer_com)) {
             medkwp_totcer_com = 0
@@ -4068,7 +4056,7 @@ router.post('/filtradash', ehAdmin, (req, res) => {
         var per_totcer = (((parseFloat(medkwp_totcer_com) * parseFloat(per_totcer_com)) + (parseFloat(medkwp_totcer_sem) * parseFloat(per_totcer_sem))) / (parseFloat(medkwp_totcer_com) + parseFloat(medkwp_totcer_sem))).toFixed(2)
         if (isNaN(per_totcer)) {
             per_totcer = 0
-        }
+        }               
         //Média Ponderada Variáveis Estruturais Central
         var per_totcen_com = parseFloat(soma_totcen_com) / parseFloat(soma_estfat_com) * 100
         if (isNaN(per_totcen_com)) {
