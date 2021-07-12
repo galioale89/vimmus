@@ -88,6 +88,7 @@ animation-name: mouse;
 animation-duration: .7s;
 animation-iteration-count: infinite;
 }
+
 [data-anime] {
 opacity: 0;
 transition: 1s;
@@ -129,6 +130,7 @@ position: relative;
 margin-top: 20px;
 z-index:1
 }
+
 #execucao{
 width: 25px;
 height: 25px;
@@ -181,6 +183,7 @@ background-color: rgba(199, 199, 199, 0.6);
 border: rgb(153, 152, 152) 1px solid;
 box-shadow: 3px 1px 5px rgba(200,200,200,0.8);
 }
+
 .formulario {        
 width: fit-content;
 padding: 17px;
@@ -209,6 +212,7 @@ text-align: center;
 a {
 text-decoration: none;
 }
+
 #menu-fixo-user {
 width: 100%;
 z-index: 992;
@@ -302,6 +306,7 @@ position: relative;
 height: 100%;
 margin-left: 100px;
 }
+
 .sessao-status-aberto {
 border: rgba(255, 255, 0, 0.2) solid 8px ;
 border-radius: 100px;
@@ -309,6 +314,7 @@ width: 50px;
 height: 50px;
 box-shadow: 1px 1px 2px rgba(26, 25, 25, 0.77);   
 }
+
 .sessao-status-parado {
 border: rgba(245, 22, 22, 0.2) solid 8px ;
 border-radius: 100px;
@@ -316,6 +322,7 @@ width: 50px;
 height: 50px;
 box-shadow: 1px 1px 2px rgba(26, 25, 25, 0.77);   
 }
+
 .sessao-status-execucao {
 border: rgba(0, 255, 67,0.2) solid 8px ;
 border-radius: 100px;
@@ -323,6 +330,7 @@ width: 50px;
 height: 50px;
 box-shadow: 1px 1px 2px rgba(26, 25, 25, 0.77);   
 }
+
 .sessao-status-homo {
 border: rgba(255, 136, 0, 0.2) solid 8px ;
 border-radius: 100px;
@@ -347,6 +355,7 @@ width: 100px;
 height: 100px;
 box-shadow: 1px 1px 2px rgba(26, 25, 25, 0.77);    
 }
+
 .sessao-dash {
 border: rgb(149, 163, 192) solid 5px;
 border-radius: 50px;
@@ -356,6 +365,7 @@ margin-bottom: 5px;
 margin-top: 5px;
 box-shadow: 1px 1px 2px rgba(26, 25, 25, 0.77);    
 }
+
 .sessao-dash-kit {
 border: rgb(40, 55, 86) solid 2px;
 border-radius: 20px;
@@ -364,6 +374,7 @@ height: fit-content;
 color: rgb(40, 55, 86);
 box-shadow: 1px 1px 2px rgba(26, 25, 25, 0.77);    
 }
+
 .sessao-dash-titulo {
 background: rgba(79, 99, 140);
 border-radius: 100px;
@@ -371,6 +382,7 @@ width: 100%;
 height: 100%;
 box-shadow: 4px 4px 5px rgba(26, 25, 25, 0.77);    
 }
+
 .sessao-dash-dispendio{
 background: rgba(79, 99, 140);
 border-radius: 100px;
@@ -447,31 +459,35 @@ width: 30px;
 height: 30px;
 font-size: 16px;
 }
+
 .ativado-tabela {
 background-color: rgba(79, 99, 140);
 }
+
 .desativado-tabela {
 background-color: rgba(79, 99, 140);
 opacity: 0.5;
-}  
+}
+
 .botao-tabela:hover{
 opacity: 0.5;
 }
+
 .icone-tabela{
 color: white;
 }
 
 .icone {
 color:white;
-padding-left: 7px;
+padding-left: 10px;
 font-size: 20px;
 }
 
 .botao {
 text-shadow: 1px 1px 10px rgb(238, 237, 245);
 border-radius: 50px;
-width: 4px;
-height: 40px;
+width: 45px;
+height: 45px;
 border: solid 2px;
 font-size: 22px;
 border-top-color: rgb(3, 67, 141);
@@ -479,13 +495,13 @@ border-left-color: rgb(3, 67, 141);
 border-right-color: rgb(205, 223, 245);
 border-bottom-color: rgb(205, 223, 245);
 }
+
 .botao:hover {
 border-top-color: rgb(205, 223, 245);
 border-left-color: rgb(205, 223, 245);
 border-right-color: rgb(3, 67, 141);
 border-bottom-color: rgb(3, 67, 141);
 }
-
 
 .ativado {
 background: linear-gradient(135deg, rgb(40, 55, 86), rgb(11, 9, 161));
@@ -511,9 +527,7 @@ height: 45px;
 border: solid 4px;
 font-size: 22px;
 border-color: rgba(31, 27, 255, 0.185);
-;
 }
-
 
 .btnAcesso {
 color: rgba(31, 27, 255, 1);
@@ -566,7 +580,6 @@ position: static;
 padding-top: 10px;
 padding-bottom: 2px;
 padding-right: 10px;
-
 }
 
 .menu-interno {
@@ -584,26 +597,31 @@ font-size: 15px;
 text-decoration: none;
 color: rgb(40,55,89);
 }
+
 #titulo-inicio:hover {
 font-size: 16px;
 text-decoration: none;
 color: rgb(42, 80, 177);
-}  
+}
+
 #titulo-beneficio {
 font-size: 15px;
 text-decoration: none;
 color: rgb(40,55,89);
 }
+
 #titulo-beneficio:hover {
 font-size: 16px;
 text-decoration: none;
 color: rgb(42, 80, 177);
-}  
+}
+
 #titulo-avimmus {
 font-size: 15px;
 text-decoration: none;
 color: rgb(40,55,89);
 }
+
 #titulo-avimmus:hover {
 font-size: 16px;
 text-decoration: none;
@@ -613,12 +631,15 @@ color: rgb(42, 80, 177);
 #titulo-inicio.titulo-mov {
 color: white;
 }
+
 #titulo-beneficio.titulo-mov {
 color: white;
 }
+
 #titulo-avimmus.titulo-mov {
 color: white;
 }
+
 .titulo-nav:hover {
 font-size: 15px;
 text-decoration: none;
@@ -631,6 +652,7 @@ font-size: 15px;
 text-decoration: none;
 color: white;
 }
+
 .titulo:hover {
 font-size: 15px;
 text-decoration: none;
@@ -648,7 +670,6 @@ text-align: center;
 box-shadow: 1px 3px 1px rgba(90, 93, 100, 0.2);
 }
 
-
 .selecao {
 text-decoration: none;
 }
@@ -660,6 +681,7 @@ background-color: rgba(40,70,250);
 color:white;
 padding: 2px;
 }
+
 .filtro-selecao{
 width: fit-content;
 height: fit-content;
@@ -669,12 +691,14 @@ border-radius: 10px;
 margin-left: 5px;
 font-size: 12px;
 }
+
 .contorno {
 color: white;
 border:solid 1px;
 border-radius: 5px;
 background: linear-gradient(35deg, rgb(40, 55, 86)80%, rgb(42, 80, 177));
 }
+
 .contorno-menu {
 font-size: 13px;
 font-weight: bold;
@@ -683,6 +707,7 @@ padding: 5px;
 text-decoration: none;
 color: rgb(40,55,89);
 }
+
 .contorno-menu:hover {
 color: rgb(40, 55, 86);
 border: white 1px solid;
