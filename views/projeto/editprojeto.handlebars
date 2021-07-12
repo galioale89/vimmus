@@ -26,6 +26,27 @@
     }
 </style>
 <script>
+    function validaDataIns() {
+        var valDateIns = document.getElementById('valDataIns')
+        var dateIns = document.getElementById('datains')
+        if (valDataIns.value == '' || typeof valDataIns.value == 'undefined') {
+            if (confirm('Você deseja aplicar a data de hoje como a data de instalação do projeto?')) {
+                var hoje = new Date()
+                var ano = hoje.getFullYear()
+                var mes = hoje.getMonth() + 1
+                if (mes < 10) {
+                    mes = '0' + mes
+                }
+                var dia = hoje.getDate()
+                if (dia < 10) {
+                    dia = '0' + dia
+                }
+                valDataIns.value = ano + '-' + mes + '-' + dia
+                dateIns.value = dia + '/' + mes + '/' + ano
+                alert('Confirmado!Agora salve o projeto e execute novamente para prosseguir.')
+            }
+        }
+    };
 
     function mascara_datains() {
         var data = document.getElementById('valDataIns')
@@ -314,7 +335,7 @@
                 </div>
             </div>
         </div>
-        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='hidden' name='id' value='{{projeto._id}}'>
+        <input type='hidden' name='id' value='{{projeto._id}}'>
 
         <div class='btn-group col-12 mx-auto'>
             <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu ativo'> <i
@@ -414,7 +435,7 @@
                             <div class="col-md-2">
                                 <label class='col-form-label col-form-label-sm'>{{projeto.dataini}}</label>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2 text-end">
                                 <label class="fw-bold col-form-label col-form-label-sm">Entrega:
                                 </label>
                             </div>
@@ -617,10 +638,9 @@
                                 {{else}}
                                 <a {{#if
                                     projeto.homologado}}style='border-radius: 30px;opacity: 0.5;pointer-events:none'
-                                    {{else}} {{#if
-                                    projeto.foiRealizado}}style='opacity: 0.5;pointer-events:none;border-radius: 30px'
+                                    {{else}} {{#if projeto.foiRealizado}}style='opacity: 0.5;pointer-events:none;border-radius: 30px'
                                     {{else}} href='/projeto/executar/{{projeto._id}}' {{/if}} {{/if}}
-                                    style="color:white;border-radius: 30px;" class='btn btn-sm btn-warning'><i
+                                    style="color:white;border-radius: 30px;" class='btn btn-sm btn-success' onmousedown="validaDataIns()"><i
                                         class="bi bi-file-earmark-play"></i> Executar</a>
                                 {{/if}}
                                 {{#if projeto.homologado}}

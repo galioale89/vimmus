@@ -156,6 +156,14 @@ const Realizado = new Schema({
         type: Number,
         require: false
     },    
+    totpnl:{
+        type: Number,
+        require: false
+    },    
+    toteae:{
+        type: Number,
+        require: false
+    },    
     custofix: {
         type: Number,
         require: false

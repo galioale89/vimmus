@@ -12,6 +12,10 @@ const Cronograma = new Schema({
         require: true,
         ref: 'projeto'
     },
+    nome: {
+        type: String,
+        require: true
+    },
     dateplaini: {
         type: String,
         require: true
@@ -55,6 +59,46 @@ const Cronograma = new Schema({
     dateplafim: {
         type: String,
         require: true
+    },
+    agendaPlaFim: {
+        type: Number,
+        require: true        
+    },
+    agendaPrjFim: {
+        type: Number,
+        require: true        
+    },
+    agendaAteFim: {
+        type: Number,
+        require: true        
+    },
+    agendaEstFim: {
+        type: Number,
+        require: true        
+    },
+    agendaModFim: {
+        type: Number,
+        require: true        
+    },
+    agendaInvFim: {
+        type: Number,
+        require: true        
+    },
+    agendaEaeFim: {
+        type: Number,
+        require: true        
+    },
+    agendaStbFim: {
+        type: Number,
+        require: true        
+    },
+    agendaPnlFim: {
+        type: Number,
+        require: true        
+    },
+    agendaVisFim: {
+        type: Number,
+        require: true        
     },
     dateatefim: {
         type: String,
@@ -220,6 +264,58 @@ const Cronograma = new Schema({
         type: Boolean,
         require: true
     },    
+    atrasado:{
+        type: Boolean,
+        require: true
+    },
+    perGes:{
+        type: Number,
+        require: true
+    },
+    perKit:{
+        type: Number,
+        require: true
+    },
+    perIns:{
+        type: Number,
+        require: true
+    },
+    perPro:{
+        type: Number,
+        require: true
+    },
+    perArt:{
+        type: Number,
+        require: true
+    },
+    perAli:{
+        type: Number,
+        require: true
+    },
+    perDes:{
+        type: Number,
+        require: true
+    },
+    perHtl:{
+        type: Number,
+        require: true
+    },
+    perCmb:{
+        type: Number,
+        require: true
+    },
+    perCer:{
+        type: Number,
+        require: true
+    }, 
+    perCen:{
+        type: Number,
+        require: true
+    },
+    perPos:{
+        type: Number,
+        require: true
+    }
 })
 
 mongoose.model('cronograma', Cronograma)

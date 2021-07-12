@@ -161,7 +161,19 @@ const Projeto = new Schema({
     totpnl:{
         type: Number,
         require: false
-    },       
+    },    
+    unieae:{
+        type: Number,
+        require: false
+    },
+    trbeae:{
+        type: Number,
+        require: false
+    },
+    toteae:{
+        type: Number,
+        require: false
+    },        
     vlrhri: {
         type: Number,
         require: false
@@ -746,6 +758,14 @@ const Projeto = new Schema({
         type: String,
         require: false
     },
+    temArmazenamento: {
+        type: String,
+        require: false
+    },
+    temPainel: {
+        type: String,
+        require: false
+    },        
     temPosteCond: {
         type: String,
         require: false

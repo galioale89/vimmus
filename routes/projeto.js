@@ -63,23 +63,28 @@ router.get("/consulta", ehAdmin, (req, res) => {
 router.get('/vermais/:id', ehAdmin, (req, res) => {
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
           Realizado.findOne({ projeto: projeto._id }).lean().then((realizado) => {
-               Pessoa.findOne({ _id: projeto.funres }).lean().then((responsavel) => {
-                    Regime.findOne({ _id: projeto.regime }).lean().then((regime) => {
-                         res.render('projeto/vermais', { projeto: projeto, responsavel: responsavel, regime: regime, realizado: realizado })
+               Pessoa.findOne({ _id: projeto.funins }).lean().then((responsavel) => {
+                    Cliente.findOne({ _id: projeto.cliente }).lean().then((cliente) => {
+                         Regime.findOne({ _id: projeto.regime }).lean().then((regime) => {
+                              res.render('projeto/vermais', { projeto, responsavel, regime, realizado, cliente })
+                         }).catch((err) => {
+                              req.flash('error_msg', 'Nenhum regime encontrado')
+                              res.redirect('/configuracao/consultaregime.')
+                         })
                     }).catch((err) => {
-                         req.flash('error_msg', 'Nenhum regime encontrado')
-                         res.redirect('/configuracao/consultaregime')
+                         req.flash('error_msg', 'Nenhum cliente encontrado.')
+                         res.redirect('/projeto/consulta')
                     })
                }).catch((err) => {
-                    req.flash('error_msg', 'Nenhum responsável encontrado')
+                    req.flash('error_msg', 'Nenhum responsável encontrado.')
                     res.redirect('/pessoa/consulta')
                })
           }).catch((err) => {
-               req.flash('error_msg', 'Projeto não realizado')
+               req.flash('error_msg', 'Projeto não realizado.')
                res.redirect('/pessoa/consulta')
           })
      }).catch((err) => {
-          req.flash('error_msg', 'Nenhum projeto encontrado')
+          req.flash('error_msg', 'Nenhum projeto encontrado.')
           res.redirect('/projeto/consulta')
      })
 })
@@ -121,8 +126,8 @@ router.get('/realizar/:id', ehAdmin, (req, res) => {
                          } else {
                               varCP = true
                          }
-                         var varLucroBruto = (realizado.lucroBruto - projeto.lucroBruto).toFixed(2)
-                         if (varLucroBruto > 1) {
+                         var varTotalImposto = parseFloat(realizado.totalImposto) - parseFloat(projeto.totalImposto).toFixed(2)
+                         if (varTotalImposto > 1) {
                               varTI = true
                          } else {
                               varTI = false
@@ -139,9 +144,9 @@ router.get('/realizar/:id', ehAdmin, (req, res) => {
                          } else {
                               varLL = false
                          }
-                         res.render('projeto/realizado', { projeto: projeto, realizado: realizado, detalhe: detalhe, varCustoPlano: varCustoPlano, varLucroBruto: varLucroBruto, varlbaimp: varlbaimp, varLucroLiquido: varLucroLiquido, varCustoPlano: varCustoPlano, varLucroBruto: varLucroBruto, varlbaimp: varlbaimp, varLucroLiquido: varLucroLiquido, varTI: varTI, varLL: varLL, varLAI: varLAI, varCP: varCP, temCercamento: temCercamento, temPosteCond: temPosteCond, temCentral: temCentral })
+                         res.render('projeto/realizado', { projeto, realizado, detalhe, varCustoPlano, varlbaimp, varLucroLiquido, varCustoPlano, varlbaimp, varLucroLiquido, varTotalImposto, varTI, varLL, varLAI, varCP, temCercamento, temPosteCond, temCentral })
                     } else {
-                         res.render('projeto/realizado', { projeto: projeto, detalhe: detalhe, temCercamento: temCercamento, temPosteCond: temPosteCond, temCentral: temCentral })
+                         res.render('projeto/realizado', { projeto, detalhe, temCercamento, temPosteCond, temCentral })
                     }
                }).catch((err) => {
                     req.flash('error_msg', 'Falha interna.')
@@ -747,6 +752,8 @@ router.post("/novo", ehAdmin, (req, res) => {
                var central
                var poste
                var estsolo
+               var armazenamento
+               var painel
 
                if (req.body.cercamento != null) {
                     cercamento = 'checked'
@@ -759,6 +766,12 @@ router.post("/novo", ehAdmin, (req, res) => {
                }
                if (req.body.estsolo != null) {
                     estsolo = 'checked'
+               }
+               if (req.body.armazenamento != null) {
+                    armazenamento = 'checked'
+               }
+               if (req.body.painel != null) {
+                    painel = 'checked'
                }
                //console.log('vlrNFS=>' + vlrNFS)
                var cidade
@@ -852,6 +865,8 @@ router.post("/novo", ehAdmin, (req, res) => {
                                    temCentral: central,
                                    temPosteCond: poste,
                                    temEstSolo: estsolo,
+                                   temArmazenamento: armazenamento,
+                                   temPainel: painel,
                                    premissas: req.body.premissas,
                                    vrskwp: (parseFloat(valorProjeto) / parseFloat(req.body.potencia)).toFixed(2),
                                    dataini: req.body.dataini,
@@ -983,6 +998,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                  var cronograma = {
                                                                       user: _id,
                                                                       projeto: projeto._id,
+                                                                      nome: projeto.nome,
                                                                       dateplaini: req.body.valDataIni,
                                                                       dateentrega: req.body.valDataPrev,
                                                                  }
@@ -1142,6 +1158,8 @@ router.post('/edicao', ehAdmin, (req, res) => {
                               var poste
                               var estsolo
                               var central
+                              var armazenamento
+                              var painel
 
                               projeto.nome = req.body.nome
 
@@ -1156,6 +1174,12 @@ router.post('/edicao', ehAdmin, (req, res) => {
                               }
                               if (req.body.central != null) {
                                    central = 'checked'
+                              }
+                              if (req.body.armazenamento != null) {
+                                   armazenamento = 'checked'
+                              }
+                              if (req.body.painel != null) {
+                                   painel = 'checked'
                               }
                               //--Rotina do cadastro dos detalhes
                               var unidadeEqu = 0
@@ -1662,9 +1686,11 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                    aviso = 'Aplique as alterações na aba de gerenciamento e de tributos para recalcular o valor da nota de serviço e valor dos tributos estimados.'
                                    //Validando o markup
                               }
+
                               if (req.body.valor != projeto.valor) {
-                                   projeto.markup = 0
+                                   projeto.markup = (((parseFloat(req.body.valor) - parseFloat(vlrkit) - parseFloat(projeto.custoPlano) + parseFloat(projeto.reserva)) / parseFloat(req.body.valor)) * 100).toFixed(2)
                               }
+
 
                               projeto.valor = req.body.valor
                               projeto.vlrnormal = req.body.valor
@@ -1678,6 +1704,8 @@ router.post('/edicao', ehAdmin, (req, res) => {
                               projeto.temCentral = central
                               projeto.temPosteCond = poste
                               projeto.temEstSolo = estsolo
+                              projeto.temArmazenamento = armazenamento
+                              projeto.temPainel = painel
 
                               if (req.body.checkRegime != null) {
                                    projeto.regime = req.body.regime
@@ -1746,552 +1774,553 @@ router.post('/direto', ehAdmin, (req, res) => {
      } else {
 
           Projeto.findOne({ _id: req.body.id }).then((projeto) => {
-
                Detalhado.findOne({ projeto: req.body.id }).then((detalhe) => {
-
                     Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-
                          Regime.findOne({ _id: projeto.regime }).lean().then((rp) => {
+                              Configuracao.findOne({ _id: projeto.configuracao }).then((config) => {
+                                   //projeto_id = projeto._id
+                                   projeto.qtdequipe = req.body.equipe
+                                   projeto.nomecliente = cliente.nome
 
-                              //projeto_id = projeto._id
-                              projeto.qtdequipe = req.body.equipe
-                              projeto.nomecliente = cliente.nome
+                                   if (req.body.diastr == '' || req.body.diastr == 0) {
+                                        if (req.body.equipe != '') {
+                                             var hrsequ = (parseFloat(req.body.equipe) - 1) * 6
+                                             if (req.body.trbint != '' && req.body.trbint > 0) {
+                                                  var dias = Math.round(parseFloat(req.body.trbint) / parseFloat(hrsequ))
+                                                  if (dias == 0) { dias = 1 }
+                                                  projeto.diastr = dias
+                                             } else {
+                                                  projeto.diastr = req.body.diastr
+                                             }
+                                        }
+                                   } else {
+                                        projeto.diastr = req.body.diastr
+                                   }
+                                   //console.log(req.body.equipe)
+                                   //var vlrDAS = regime.vlrDAS
 
-                              if (req.body.diastr == '' || req.body.diastr == 0) {
-                                   if (req.body.equipe != '') {
-                                        var hrsequ = (parseFloat(req.body.equipe) - 1) * 6
-                                        if (req.body.trbint != '' && req.body.trbint > 0) {
-                                             var dias = Math.round(parseFloat(req.body.trbint) / parseFloat(hrsequ))
-                                             if (dias == 0) { dias = 1 }
-                                             projeto.diastr = dias
-                                        } else {
-                                             projeto.diastr = req.body.diastr
+                                   //Determina o valor da horas trabalhadas - individual e total
+                                   var trbger = req.body.tothrs
+                                   var hrsprj = req.body.tothrs
+                                   var trbint = req.body.trbint
+                                   var trbpro = req.body.trbpro
+                                   var trbges = req.body.trbges
+
+                                   var totalHoras = parseFloat(trbint) + parseFloat(trbpro) + parseFloat(trbges)
+                                   if (isNaN(totalHoras)) {
+                                        if (req.body.tothrs == '' || req.body.tothrs == 0) {
+                                             trbger = 0
+                                             hrsprj = 0
+                                        }
+                                   } else {
+                                        if (totalHoras != '' || totalHoras != 0) {
+                                             trbger = totalHoras
+                                             hrsprj = trbger
+                                             projeto.trbint = trbint
+                                             projeto.trbpro = trbpro
+                                             projeto.trbges = trbges
                                         }
                                    }
-                              } else {
-                                   projeto.diastr = req.body.diastr
-                              }
-                              //console.log(req.body.equipe)
-                              //var vlrDAS = regime.vlrDAS
+                                   projeto.tothrs = trbger
+                                   projeto.hrsprj = hrsprj
+                                   //---------------------
 
-                              //Determina o valor da horas trabalhadas - individual e total
-                              var trbger = req.body.tothrs
-                              var hrsprj = req.body.tothrs
-                              var trbint = req.body.trbint
-                              var trbpro = req.body.trbpro
-                              var trbges = req.body.trbges
-
-                              var totalHoras = parseFloat(trbint) + parseFloat(trbpro) + parseFloat(trbges)
-                              if (isNaN(totalHoras)) {
-                                   if (req.body.tothrs == '' || req.body.tothrs == 0) {
-                                        trbger = 0
-                                        hrsprj = 0
-                                   }
-                              } else {
-                                   if (totalHoras != '' || totalHoras != 0) {
-                                        trbger = totalHoras
-                                        hrsprj = trbger
-                                        projeto.trbint = trbint
-                                        projeto.trbpro = trbpro
-                                        projeto.trbges = trbges
-                                   }
-                              }
-                              projeto.tothrs = trbger
-                              projeto.hrsprj = hrsprj
-                              //---------------------
-
-                              //Seta os profissionais
-                              if (req.body.pinome == '') {
-                                   projeto.funins = req.body.funins
-                              } else {
-                                   if (req.body.checkIns != null) {
+                                   //Seta os profissionais
+                                   if (req.body.pinome == '') {
                                         projeto.funins = req.body.funins
+                                   } else {
+                                        if (req.body.checkIns != null) {
+                                             projeto.funins = req.body.funins
+                                        }
                                    }
-                              }
-                              if (req.body.ppnome == '') {
-                                   projeto.funpro = req.body.funpro
-                              } else {
-                                   if (req.body.checkPro != null) {
+                                   if (req.body.ppnome == '') {
                                         projeto.funpro = req.body.funpro
-                                   }
-                              }
-
-                              var resger = req.body.resger
-                              var conadd = req.body.conadd
-                              var impele = req.body.impele
-                              var seguro = req.body.seguro
-
-                              var outcer = req.body.outcer
-                              var outpos = req.body.outpos
-
-                              var totint = req.body.totint
-                              var totpro = req.body.totpro
-                              var totges = req.body.totges
-                              var totali = req.body.totali
-                              var totdes = req.body.totdes
-
-                              if (req.body.resger == '') {
-                                   resger = 0
-                              }
-                              if (req.body.conadd == '') {
-                                   conadd = 0
-                              }
-                              if (req.body.impele == '') {
-                                   impele = 0
-                              }
-                              if (req.body.seguro == '') {
-                                   seguro = 0
-                              }
-                              if (req.body.outcer == '') {
-                                   outcer = 0
-                              }
-                              if (req.body.outpos == '') {
-                                   outpos = 0
-                              }
-                              if (req.body.totali == '') {
-                                   totali = 0
-                              }
-                              if (req.body.totint == '') {
-                                   totint = 0
-                              }
-                              if (req.body.totpro == '') {
-                                   totpro = 0
-                              }
-                              if (req.body.totges == '') {
-                                   totges = 0
-                              }
-                              if (req.body.totdes == '') {
-                                   totdes = 0
-                              }
-
-                              projeto.resger = resger
-                              projeto.conadd = conadd
-                              projeto.impele = impele
-                              projeto.seguro = seguro
-
-                              projeto.outcer = outcer
-                              projeto.outpos = outpos
-
-                              projeto.totali = totali
-                              projeto.totint = totint
-
-                              var vlrart
-                              vlrart = req.body.vlrart
-                              projeto.vlrart = vlrart
-                              projeto.totpro = parseFloat(totpro)
-
-                              projeto.totges = totges
-                              projeto.totdes = totdes
-
-                              var vlrcom = 0
-                              //Validando a comissão
-                              if (projeto.percom != null) {
-                                   vlrcom = parseFloat(projeto.vlrNFS) * (parseFloat(projeto.percom) / 100)
-                                   projeto.vlrcom = vlrcom.toFixed(2)
-                              }
-
-                              var custoFix = parseFloat(totint) + parseFloat(totpro) + parseFloat(vlrart) + parseFloat(totges)
-                              var custoVar = parseFloat(totdes) + parseFloat(totali)
-                              var custoEst = parseFloat(detalhe.valorCer) + parseFloat(detalhe.valorPos) + parseFloat(detalhe.valorCen)
-                              var totcop = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
-
-                              //console.log('totint=>' + totint)
-                              //console.log('totpro=>' + totpro)
-                              //console.log('totges=>' + totges)
-                              //console.log('totali=>' + totali)
-                              //console.log('detalhe.valorOcp=>' + detalhe.valorOcp)
-                              //console.log('detalhe.valorCer=>' + detalhe.valorCer)
-                              //console.log('detalhe.valorPos=>' + detalhe.valorPos)
-                              projeto.custofix = custoFix.toFixed(2)
-                              projeto.custovar = custoVar.toFixed(2)
-                              projeto.custoest = custoEst.toFixed(2)
-                              projeto.totcop = totcop.toFixed(2)
-
-                              var rescon = parseFloat(impele) + parseFloat(seguro) + parseFloat(outcer) + parseFloat(outpos)
-                              rescon = parseFloat(rescon) + parseFloat(conadd)
-                              projeto.rescon = rescon.toFixed(2)
-
-                              var reserva = parseFloat(resger) + parseFloat(rescon)
-                              projeto.reserva = reserva.toFixed(2)
-
-                              var custoPlano = parseFloat(totcop) + parseFloat(reserva)
-                              projeto.custoPlano = custoPlano.toFixed(2)
-
-                              var custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
-                              projeto.custoTotal = custoTotal.toFixed(2)
-
-                              //Definindo o imposto ISS
-                              //console.log('regime_prj.alqNFS=>' + regime_prj.alqNFS)
-                              var vlrNFS = 0
-                              var impNFS = 0
-                              var vlrMarkup = 0
-                              var prjValor = 0
-                              if (req.body.markup == '' || req.body.markup == 0) {
-                                   //console.log('markup igual a zero')
-                                   //console.log('projeto.vlrnormal=>' + projeto.vlrnormal)
-                                   if (req.body.checkFatura != null) {
-                                        fatequ = true
-                                        vlrNFS = parseFloat(projeto.vlrnormal).toFixed(2)
-                                        impNFS = 0
                                    } else {
-                                        fatequ = false
-                                        vlrNFS = (parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)).toFixed(2)
-                                        impNFS = (parseFloat(vlrNFS) * (parseFloat(rp.alqNFS) / 100)).toFixed(2)
+                                        if (req.body.checkPro != null) {
+                                             projeto.funpro = req.body.funpro
+                                        }
                                    }
-                                   prjValor = parseFloat(projeto.vlrnormal).toFixed(2)
-                                   projeto.valor = parseFloat(projeto.vlrnormal).toFixed(2)
-                                   projeto.markup = 0
-                              } else {
+
+                                   var resger = req.body.resger
+                                   var conadd = req.body.conadd
+                                   var impele = req.body.impele
+                                   var seguro = req.body.seguro
+
+                                   var outcer = req.body.outcer
+                                   var outpos = req.body.outpos
+
+                                   var totint = req.body.totint
+                                   var totpro = req.body.totpro
+                                   var totges = req.body.totges
+                                   var totali = req.body.totali
+                                   var totdes = req.body.totdes
+
+                                   if (req.body.resger == '') {
+                                        resger = 0
+                                   }
+                                   if (req.body.conadd == '') {
+                                        conadd = 0
+                                   }
+                                   if (req.body.impele == '') {
+                                        impele = 0
+                                   }
+                                   if (req.body.seguro == '') {
+                                        seguro = 0
+                                   }
+                                   if (req.body.outcer == '') {
+                                        outcer = 0
+                                   }
+                                   if (req.body.outpos == '') {
+                                        outpos = 0
+                                   }
+                                   if (req.body.totali == '') {
+                                        totali = 0
+                                   }
+                                   if (req.body.totint == '') {
+                                        totint = 0
+                                   }
+                                   if (req.body.totpro == '') {
+                                        totpro = 0
+                                   }
+                                   if (req.body.totges == '') {
+                                        totges = 0
+                                   }
+                                   if (req.body.totdes == '') {
+                                        totdes = 0
+                                   }
+
+                                   projeto.resger = resger
+                                   projeto.conadd = conadd
+                                   projeto.impele = impele
+                                   projeto.seguro = seguro
+
+                                   projeto.outcer = outcer
+                                   projeto.outpos = outpos
+
+                                   projeto.totali = totali
+                                   projeto.totint = totint
+
+                                   var vlrart
+                                   vlrart = req.body.vlrart
+                                   projeto.vlrart = vlrart
+                                   projeto.totpro = parseFloat(totpro)
+
+                                   projeto.totges = totges
+                                   projeto.totdes = totdes
+
+                                   var vlrcom = 0
+                                   //Validando a comissão
+                                   if (projeto.percom != null) {
+                                        vlrcom = parseFloat(projeto.vlrNFS) * (parseFloat(projeto.percom) / 100)
+                                        projeto.vlrcom = vlrcom.toFixed(2)
+                                   }
+
+                                   var custoFix = parseFloat(totint) + parseFloat(totpro) + parseFloat(vlrart) + parseFloat(totges)
+                                   var custoVar = parseFloat(totdes) + parseFloat(totali)
+                                   var custoEst = parseFloat(detalhe.valorCer) + parseFloat(detalhe.valorPos) + parseFloat(detalhe.valorCen)
+                                   var totcop = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
+
+                                   //console.log('totint=>' + totint)
+                                   //console.log('totpro=>' + totpro)
+                                   //console.log('totges=>' + totges)
+                                   //console.log('totali=>' + totali)
+                                   //console.log('detalhe.valorOcp=>' + detalhe.valorOcp)
+                                   //console.log('detalhe.valorCer=>' + detalhe.valorCer)
+                                   //console.log('detalhe.valorPos=>' + detalhe.valorPos)
+                                   projeto.custofix = custoFix.toFixed(2)
+                                   projeto.custovar = custoVar.toFixed(2)
+                                   projeto.custoest = custoEst.toFixed(2)
+                                   projeto.totcop = totcop.toFixed(2)
+
+                                   var rescon = parseFloat(impele) + parseFloat(seguro) + parseFloat(outcer) + parseFloat(outpos)
+                                   rescon = parseFloat(rescon) + parseFloat(conadd)
+                                   projeto.rescon = rescon.toFixed(2)
+
+                                   var reserva = parseFloat(resger) + parseFloat(rescon)
+                                   projeto.reserva = reserva.toFixed(2)
+
+                                   var custoPlano = parseFloat(totcop) + parseFloat(reserva)
+                                   projeto.custoPlano = custoPlano.toFixed(2)
+
+                                   var custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
+                                   projeto.custoTotal = custoTotal.toFixed(2)
+
+                                   //Definindo o imposto ISS
+                                   //console.log('regime_prj.alqNFS=>' + regime_prj.alqNFS)
+                                   var vlrNFS = 0
+                                   var impNFS = 0
+                                   var vlrMarkup = 0
+                                   var prjValor = 0
+                                   if (req.body.markup == '' || req.body.markup == 0) {
+                                        //console.log('markup igual a zero')
+                                        //console.log('projeto.vlrnormal=>'+projeto.vlrnormal)
+                                        if (req.body.checkFatura != null) {
+                                             fatequ = true
+                                             vlrNFS = parseFloat(projeto.vlrnormal).toFixed(2)
+                                             impNFS = 0
+                                        } else {
+                                             fatequ = false
+                                             vlrNFS = (parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)).toFixed(2)
+                                             impNFS = (parseFloat(vlrNFS) * (parseFloat(regime_prj.alqNFS) / 100)).toFixed(2)
+                                        }
+                                        vlrMarkup = (parseFloat(custoTotal) - parseFloat(reserva)) / (1 - (parseFloat(config.markup) / 100))
+                                        projeto.valor = parseFloat(vlrMarkup).toFixed(2)
+                                        projeto.markup = config.markup
+                                        prjValor = vlrMarkup
+                                   } else {
+                                        //console.log('custoTotal=>'+custoTotal)
+                                        //console.log('req.body.markup=>'+req.body.markup)
+                                        vlrMarkup = ((parseFloat(custoTotal) - parseFloat(reserva)) / (1 - (parseFloat(req.body.markup) / 100))).toFixed(2)
+                                        //console.log('vlrMarkup=>' + vlrMarkup)
+                                        if (req.body.checkFatura != null) {
+                                             fatequ = true
+                                             vlrNFS = parseFloat(vlrMarkup).toFixed(2)
+                                             impNFS = 0
+                                        } else {
+                                             fatequ = false
+                                             vlrNFS = (parseFloat(vlrMarkup) - parseFloat(projeto.vlrkit)).toFixed(2)
+                                             impNFS = (parseFloat(vlrNFS) * (parseFloat(regime_prj.alqNFS) / 100)).toFixed(2)
+                                        }
+                                        projeto.markup = req.body.markup
+                                        projeto.valor = vlrMarkup
+                                        prjValor = parseFloat(vlrMarkup).toFixed(2)
+                                   }
+                                   //kWp médio
+                                   projeto.vrskwp = (parseFloat(prjValor) / parseFloat(projeto.potencia)).toFixed(2)
+                                   projeto.fatequ = fatequ
+
+                                   var vlrcom = 0
+                                   //Validando a comissão
+                                   if (projeto.percom != null) {
+                                        vlrcom = parseFloat(vlrNFS) * (parseFloat(projeto.percom) / 100)
+                                        projeto.vlrcom = vlrcom.toFixed(2)
+                                   }
+
+                                   projeto.vlrNFS = parseFloat(vlrNFS).toFixed(2)
+                                   projeto.impNFS = parseFloat(impNFS).toFixed(2)
+
+                                   //console.log('impNFS=>' + impNFS)
+
+                                   //Definindo o Lucro Bruto
+                                   var recLiquida = parseFloat(prjValor) - parseFloat(impNFS)
+                                   projeto.recLiquida = parseFloat(recLiquida).toFixed(2)
+
+                                   var lucroBruto = parseFloat(recLiquida) - parseFloat(projeto.vlrkit)
+                                   projeto.lucroBruto = parseFloat(lucroBruto).toFixed(2)
+
+                                   //console.log('vlrNFS=>' + vlrNFS)
+                                   //console.log('vlrcom=>' + vlrcom)
+                                   //console.log('totcop=>' + totcop)
+                                   //console.log('reserva=>' + reserva)
+                                   //console.log('custoPlano=>' + custoPlano)
                                    //console.log('custoTotal=>' + custoTotal)
-                                   //console.log('req.body.markup=>' + req.body.markup)
-                                   vlrMarkup = (custoTotal / (1 - (parseFloat(req.body.markup) / 100))).toFixed(2)
-                                   //console.log('vlrMarkup=>' + vlrMarkup)
-                                   if (req.body.checkFatura != null) {
-                                        fatequ = true
-                                        vlrNFS = parseFloat(vlrMarkup).toFixed(2)
-                                        impNFS = 0
-                                   } else {
-                                        fatequ = false
-                                        vlrNFS = (parseFloat(vlrMarkup) - parseFloat(projeto.vlrkit)).toFixed(2)
-                                        impNFS = (parseFloat(vlrNFS) * (parseFloat(rp.alqNFS) / 100)).toFixed(2)
-                                   }
-                                   projeto.markup = req.body.markup
-                                   projeto.valor = vlrMarkup
-                                   prjValor = parseFloat(vlrMarkup).toFixed(2)
-                              }
-                              //kWp médio
-                              projeto.vrskwp = (parseFloat(prjValor) / parseFloat(projeto.potencia)).toFixed(2)
-                              projeto.fatequ = fatequ
+                                   //console.log('lucroBruto=>' + lucroBruto)
 
-                              var vlrcom = 0
-                              //Validando a comissão
-                              if (projeto.percom != null) {
-                                   vlrcom = parseFloat(vlrNFS) * (parseFloat(projeto.percom) / 100)
-                                   projeto.vlrcom = vlrcom.toFixed(2)
-                              }
-
-                              projeto.vlrNFS = parseFloat(vlrNFS).toFixed(2)
-                              projeto.impNFS = parseFloat(impNFS).toFixed(2)
-
-                              //console.log('impNFS=>' + impNFS)
-
-                              //Definindo o Lucro Bruto
-                              var recLiquida = parseFloat(prjValor) - parseFloat(impNFS)
-                              projeto.recLiquida = parseFloat(recLiquida).toFixed(2)
-
-                              var lucroBruto = parseFloat(recLiquida) - parseFloat(projeto.vlrkit)
-                              projeto.lucroBruto = parseFloat(lucroBruto).toFixed(2)
-
-                              //console.log('vlrNFS=>' + vlrNFS)
-                              //console.log('vlrcom=>' + vlrcom)
-                              //console.log('totcop=>' + totcop)
-                              //console.log('reserva=>' + reserva)
-                              //console.log('custoPlano=>' + custoPlano)
-                              //console.log('custoTotal=>' + custoTotal)
-                              //console.log('lucroBruto=>' + lucroBruto)
-
-                              var desAdm = 0
-                              var lbaimp = 0
-                              if (parseFloat(rp.desadm) > 0) {
-                                   if (rp.tipodesp == 'Percentual') {
-                                        desAdm = (parseFloat(rp.desadm) * (parseFloat(rp.perdes) / 100)).toFixed(2)
-                                   } else {
-                                        desAdm = ((parseFloat(rp.desadm) / parseFloat(rp.estkwp)) * parseFloat(projeto.potencia)).toFixed(2)
-                                   }
-                                   //console.log('desAdm=>' + desAdm)
-                                   lbaimp = (parseFloat(lucroBruto) - parseFloat(custoPlano) - parseFloat(desAdm)).toFixed(2)
-                                   projeto.desAdm = parseFloat(desAdm).toFixed(2)
-                              } else {
-                                   lbaimp = (parseFloat(lbaimp) - parseFloat(custoPlano))
-                                   projeto.desAdm = 0
-                              }
-                              //Deduzindo as comissões do Lucro Antes dos Impostos
-                              if (vlrcom == 0 || vlrcom == '') {
-                                   lbaimp = parseFloat(lbaimp)
-                              } else {
-                                   lbaimp = parseFloat(lbaimp) - parseFloat(vlrcom)
-                              }
-                              projeto.lbaimp = lbaimp.toFixed(2)
-                              //console.log('lbaimp=>' + lbaimp)
-
-                              var totalSimples = 0
-                              var impostoIRPJ
-                              var impostoIRPJAdd
-                              var impostoCSLL
-                              var impostoPIS
-                              var impostoCOFINS
-                              var totalImposto = 0
-
-                              var fatadd
-                              var fataju
-                              var aux
-                              var prjLR = rp.prjLR
-                              var prjLP = rp.prjLP
-                              var prjFat = rp.prjFat
-
-                              //console.log('rp.regime=>' + rp.regime)
-
-                              if (rp.regime == 'Simples') {
-                                   //console.log('encontrou regime')
-                                   //console.log('prjFat=>'+prjFat)
-                                   //console.log('rp.alqDAS=>'+rp.alqDAS)
-                                   //console.log('rp.vlrred=>'+rp.vlrred)
-
-                                   var alqEfe = ((parseFloat(prjFat) * (parseFloat(rp.alqDAS) / 100)) - (parseFloat(rp.vlrred))) / parseFloat(prjFat)
-                                   //console.log('alqEfe=>'+alqEfe)                   
-                                   totalSimples = parseFloat(vlrNFS) * (parseFloat(alqEfe))
-                                   //console.log('totalSimples=>'+totalSimples)
-                                   totalImposto = parseFloat(totalSimples).toFixed()
-                                   projeto.impostoSimples = totalSimples.toFixed(2)
-                              }
-
-                              else {
-                                   if (rp.regime == 'Lucro Real') {
-                                        //Imposto Adicional de IRPJ
-                                        if ((parseFloat(prjLR) / 12) > 20000) {
-                                             fatadd = (parseFloat(prjLR) / 12) - 20000
-                                             //console.log('fatadd=>'+fatadd)
-                                             fataju = parseFloat(fatadd) * (parseFloat(rp.alqIRPJAdd) / 100)
-                                             //console.log('fataju=>'+fataju)
-                                             aux = Math.round(parseFloat(fatadd) / parseFloat(lbaimp))
-                                             //console.log('aux=>'+aux)
-                                             impostoIRPJAdd = parseFloat(fataju) / parseFloat(aux)
-                                             //console.log('impostoIRPJAdd=>'+impostoIRPJAdd)
-                                             projeto.impostoAdd = impostoIRPJAdd.toFixed(2)
-                                        }
-
-                                        impostoIRPJ = parseFloat(lbaimp) * (parseFloat(rp.alqIRPJ) / 100)
-                                        //console.log('impostoIRPJ=>' + impostoIRPJ)
-                                        projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
-
-                                        impostoCSLL = parseFloat(lbaimp) * (parseFloat(rp.alqCSLL) / 100)
-                                        //console.log('impostoIRPJ=>' + impostoIRPJ)
-                                        projeto.impostoCSLL = impostoCSLL.toFixed(2)
-                                        impostoPIS = parseFloat(vlrNFS) * 0.5 * (parseFloat(rp.alqPIS) / 100)
-                                        //console.log('impostoPIS=>' + impostoPIS)
-                                        projeto.impostoPIS = impostoPIS.toFixed(2)
-                                        impostoCOFINS = parseFloat(vlrNFS) * 0.5 * (parseFloat(rp.alqCOFINS) / 100)
-                                        //console.log('impostoCOFINS=>' + impostoCOFINS)
-                                        projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
-                                        if (parseFloat(impostoIRPJAdd) > 0) {
-                                             totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
+                                   var desAdm = 0
+                                   var lbaimp = 0
+                                   if (parseFloat(rp.desadm) > 0) {
+                                        if (rp.tipodesp == 'Percentual') {
+                                             desAdm = (parseFloat(rp.desadm) * (parseFloat(rp.perdes) / 100)).toFixed(2)
                                         } else {
-                                             totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
+                                             desAdm = ((parseFloat(rp.desadm) / parseFloat(rp.estkwp)) * parseFloat(projeto.potencia)).toFixed(2)
                                         }
-                                        //console.log('totalImposto=>' + totalImposto)
+                                        //console.log('desAdm=>' + desAdm)
+                                        lbaimp = (parseFloat(lucroBruto) - parseFloat(custoPlano) - parseFloat(desAdm)).toFixed(2)
+                                        projeto.desAdm = parseFloat(desAdm).toFixed(2)
                                    } else {
-                                        //Imposto adicional de IRPJ
-                                        if (((parseFloat(prjLP) * 0.32) / 3) > 20000) {
-                                             fatadd = ((parseFloat(prjLP) * 0.32) / 3) - 20000
-                                             fataju = parseFloat(fatadd) / 20000
-                                             impostoIRPJAdd = (parseFloat(vlrNFS) * 0.32) * (parseFloat(fataju) / 100) * (parseFloat(rp.alqIRPJAdd) / 100)
-                                             projeto.impostoAdd = impostoIRPJAdd.toFixed(2)
-                                        }
-                                        impostoIRPJ = parseFloat(vlrNFS) * 0.32 * (parseFloat(rp.alqIRPJ) / 100)
-                                        projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
-                                        impostoCSLL = parseFloat(vlrNFS) * 0.32 * (parseFloat(rp.alqCSLL) / 100)
-                                        projeto.impostoCSLL = impostoCSLL.toFixed(2)
-                                        impostoCOFINS = parseFloat(vlrNFS) * (parseFloat(rp.alqCOFINS) / 100)
-                                        projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
-                                        impostoPIS = parseFloat(vlrNFS) * (parseFloat(rp.alqPIS) / 100)
-                                        projeto.impostoPIS = impostoPIS.toFixed(2)
-                                        if (parseFloat(impostoIRPJAdd) > 0) {
-                                             totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
+                                        lbaimp = (parseFloat(lbaimp) - parseFloat(custoPlano))
+                                        projeto.desAdm = 0
+                                   }
+                                   //Deduzindo as comissões do Lucro Antes dos Impostos
+                                   if (vlrcom == 0 || vlrcom == '') {
+                                        lbaimp = parseFloat(lbaimp)
+                                   } else {
+                                        lbaimp = parseFloat(lbaimp) - parseFloat(vlrcom)
+                                   }
+                                   projeto.lbaimp = lbaimp.toFixed(2)
+                                   //console.log('lbaimp=>' + lbaimp)
+
+                                   var totalSimples = 0
+                                   var impostoIRPJ
+                                   var impostoIRPJAdd
+                                   var impostoCSLL
+                                   var impostoPIS
+                                   var impostoCOFINS
+                                   var totalImposto = 0
+
+                                   var fatadd
+                                   var fataju
+                                   var aux
+                                   var prjLR = rp.prjLR
+                                   var prjLP = rp.prjLP
+                                   var prjFat = rp.prjFat
+
+                                   //console.log('rp.regime=>' + rp.regime)
+
+                                   if (rp.regime == 'Simples') {
+                                        //console.log('encontrou regime')
+                                        //console.log('prjFat=>'+prjFat)
+                                        //console.log('rp.alqDAS=>'+rp.alqDAS)
+                                        //console.log('rp.vlrred=>'+rp.vlrred)
+
+                                        var alqEfe = ((parseFloat(prjFat) * (parseFloat(rp.alqDAS) / 100)) - (parseFloat(rp.vlrred))) / parseFloat(prjFat)
+                                        //console.log('alqEfe=>'+alqEfe)                   
+                                        totalSimples = parseFloat(vlrNFS) * (parseFloat(alqEfe))
+                                        //console.log('totalSimples=>'+totalSimples)
+                                        totalImposto = parseFloat(totalSimples).toFixed()
+                                        projeto.impostoSimples = totalSimples.toFixed(2)
+                                   }
+
+                                   else {
+                                        if (rp.regime == 'Lucro Real') {
+                                             //Imposto Adicional de IRPJ
+                                             if ((parseFloat(prjLR) / 12) > 20000) {
+                                                  fatadd = (parseFloat(prjLR) / 12) - 20000
+                                                  //console.log('fatadd=>'+fatadd)
+                                                  fataju = parseFloat(fatadd) * (parseFloat(rp.alqIRPJAdd) / 100)
+                                                  //console.log('fataju=>'+fataju)
+                                                  aux = Math.round(parseFloat(fatadd) / parseFloat(lbaimp))
+                                                  //console.log('aux=>'+aux)
+                                                  impostoIRPJAdd = parseFloat(fataju) / parseFloat(aux)
+                                                  //console.log('impostoIRPJAdd=>'+impostoIRPJAdd)
+                                                  projeto.impostoAdd = impostoIRPJAdd.toFixed(2)
+                                             }
+
+                                             impostoIRPJ = parseFloat(lbaimp) * (parseFloat(rp.alqIRPJ) / 100)
+                                             //console.log('impostoIRPJ=>' + impostoIRPJ)
+                                             projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
+
+                                             impostoCSLL = parseFloat(lbaimp) * (parseFloat(rp.alqCSLL) / 100)
+                                             //console.log('impostoIRPJ=>' + impostoIRPJ)
+                                             projeto.impostoCSLL = impostoCSLL.toFixed(2)
+                                             impostoPIS = parseFloat(vlrNFS) * 0.5 * (parseFloat(rp.alqPIS) / 100)
+                                             //console.log('impostoPIS=>' + impostoPIS)
+                                             projeto.impostoPIS = impostoPIS.toFixed(2)
+                                             impostoCOFINS = parseFloat(vlrNFS) * 0.5 * (parseFloat(rp.alqCOFINS) / 100)
+                                             //console.log('impostoCOFINS=>' + impostoCOFINS)
+                                             projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
+                                             if (parseFloat(impostoIRPJAdd) > 0) {
+                                                  totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
+                                             } else {
+                                                  totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
+                                             }
+                                             //console.log('totalImposto=>' + totalImposto)
                                         } else {
-                                             totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
+                                             //Imposto adicional de IRPJ
+                                             if (((parseFloat(prjLP) * 0.32) / 3) > 20000) {
+                                                  fatadd = ((parseFloat(prjLP) * 0.32) / 3) - 20000
+                                                  fataju = parseFloat(fatadd) / 20000
+                                                  impostoIRPJAdd = (parseFloat(vlrNFS) * 0.32) * (parseFloat(fataju) / 100) * (parseFloat(rp.alqIRPJAdd) / 100)
+                                                  projeto.impostoAdd = impostoIRPJAdd.toFixed(2)
+                                             }
+                                             impostoIRPJ = parseFloat(vlrNFS) * 0.32 * (parseFloat(rp.alqIRPJ) / 100)
+                                             projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
+                                             impostoCSLL = parseFloat(vlrNFS) * 0.32 * (parseFloat(rp.alqCSLL) / 100)
+                                             projeto.impostoCSLL = impostoCSLL.toFixed(2)
+                                             impostoCOFINS = parseFloat(vlrNFS) * (parseFloat(rp.alqCOFINS) / 100)
+                                             projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
+                                             impostoPIS = parseFloat(vlrNFS) * (parseFloat(rp.alqPIS) / 100)
+                                             projeto.impostoPIS = impostoPIS.toFixed(2)
+                                             if (parseFloat(impostoIRPJAdd) > 0) {
+                                                  totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
+                                             } else {
+                                                  totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
+                                             }
                                         }
                                    }
-                              }
 
-                              //Validar ICMS
-                              var impostoICMS
-                              if (projeto.fatequ == true) {
-                                   if (rp.alqICMS != null) {
-                                        impostoICMS = (parseFloat(prjValor)) * (parseFloat(rp.alqICMS) / 100)
+                                   //Validar ICMS
+                                   var impostoICMS
+                                   if (projeto.fatequ == true) {
+                                        if (rp.alqICMS != null) {
+                                             impostoICMS = (parseFloat(prjValor)) * (parseFloat(rp.alqICMS) / 100)
+                                             projeto.impostoICMS = impostoICMS.toFixed(2)
+                                             totalTributos = parseFloat(totalImposto) + parseFloat(impNFS) + parseFloat(impostoICMS)
+                                             totalImposto = parseFloat(totalImposto) + parseFloat(impostoICMS)
+                                        }
+                                   } else {
+                                        impostoICMS = 0
                                         projeto.impostoICMS = impostoICMS.toFixed(2)
-                                        totalTributos = parseFloat(totalImposto) + parseFloat(impNFS) + parseFloat(impostoICMS)
-                                        totalImposto = parseFloat(totalImposto) + parseFloat(impostoICMS)
+                                        totalTributos = parseFloat(totalImposto) + parseFloat(impNFS)
                                    }
-                              } else {
-                                   impostoICMS = 0
-                                   projeto.impostoICMS = impostoICMS.toFixed(2)
-                                   totalTributos = parseFloat(totalImposto) + parseFloat(impNFS)
-                              }
 
-                              //console.log('totalImposto=>' + totalImposto)
-                              projeto.totalImposto = parseFloat(totalImposto).toFixed(2)
-                              //console.log('totalTributos=>' + totalTributos)
-                              projeto.totalTributos = parseFloat(totalTributos).toFixed(2)
+                                   //console.log('totalImposto=>' + totalImposto)
+                                   projeto.totalImposto = parseFloat(totalImposto).toFixed(2)
+                                   //console.log('totalTributos=>' + totalTributos)
+                                   projeto.totalTributos = parseFloat(totalTributos).toFixed(2)
 
-                              //Lucro Líquido descontados os impostos
-                              var lucroLiquido = 0
-                              //console.log('lbaimp=>' + lbaimp)
-                              //console.log('totalTributos=>' + totalTributos)
-                              lucroLiquido = parseFloat(lbaimp) - parseFloat(totalImposto)
-                              projeto.lucroLiquido = parseFloat(lucroLiquido).toFixed(2)
-                              //console.log('lucroLiquido=>' + lucroLiquido)
+                                   //Lucro Líquido descontados os impostos
+                                   var lucroLiquido = 0
+                                   //console.log('lbaimp=>' + lbaimp)
+                                   //console.log('totalTributos=>' + totalTributos)
+                                   lucroLiquido = parseFloat(lbaimp) - parseFloat(totalImposto)
+                                   projeto.lucroLiquido = parseFloat(lucroLiquido).toFixed(2)
+                                   //console.log('lucroLiquido=>' + lucroLiquido)
 
-                              //Dashboard              
-                              //Participação dos componentes
-                              //Kit
-                              var parKitEqu = parseFloat(detalhe.valorEqu) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parKitEqu = parseFloat(parKitEqu).toFixed(2)
-                              //Módulos
-                              var parModEqu = parseFloat(detalhe.valorMod) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parModEqu = parseFloat(parModEqu).toFixed(2)
-                              //Inversor
-                              var parInvEqu = parseFloat(detalhe.valorInv) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parInvEqu = parseFloat(parInvEqu).toFixed(2)
-                              //Estrutura
-                              var parEstEqu = (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorCim)) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parEstEqu = parseFloat(parEstEqu).toFixed(2)
-                              //Cabos
-                              var parCabEqu = parseFloat(detalhe.valorCab) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parCabEqu = parseFloat(parCabEqu).toFixed(2)
-                              //Armazenagem
-                              var parEbtEqu = parseFloat(detalhe.valorEbt) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parEbtEqu = parseFloat(parEbtEqu).toFixed(2)
-                              //DPS CC + CA
-                              var parDpsEqu = (parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDPSCA)) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parDpsEqu = parseFloat(parDpsEqu).toFixed(2)
-                              //Disjuntores CC + CA
-                              var parDisEqu = (parseFloat(detalhe.valorDisCC) + parseFloat(detalhe.valorDisCA)) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parDisEqu = parseFloat(parDisEqu).toFixed(2)
-                              //StringBox
-                              var parSbxEqu = parseFloat(detalhe.valorSB) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parSbxEqu = parseFloat(parSbxEqu).toFixed(2)
-                              //Cercamento
-                              var parCerEqu = parseFloat(detalhe.valorCer) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parCerEqu = parseFloat(parCerEqu).toFixed(2)
-                              //Central
-                              var parCenEqu = parseFloat(detalhe.valorCen) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parCenEqu = parseFloat(parCenEqu).toFixed(2)
-                              //Postes de Condução
-                              var parPosEqu = parseFloat(detalhe.valorPos) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parPosEqu = parseFloat(parPosEqu).toFixed(2)
+                                   //Dashboard              
+                                   //Participação dos componentes
+                                   //Kit
+                                   var parKitEqu = parseFloat(detalhe.valorEqu) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parKitEqu = parseFloat(parKitEqu).toFixed(2)
+                                   //Módulos
+                                   var parModEqu = parseFloat(detalhe.valorMod) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parModEqu = parseFloat(parModEqu).toFixed(2)
+                                   //Inversor
+                                   var parInvEqu = parseFloat(detalhe.valorInv) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parInvEqu = parseFloat(parInvEqu).toFixed(2)
+                                   //Estrutura
+                                   var parEstEqu = (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorCim)) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parEstEqu = parseFloat(parEstEqu).toFixed(2)
+                                   //Cabos
+                                   var parCabEqu = parseFloat(detalhe.valorCab) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parCabEqu = parseFloat(parCabEqu).toFixed(2)
+                                   //Armazenagem
+                                   var parEbtEqu = parseFloat(detalhe.valorEbt) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parEbtEqu = parseFloat(parEbtEqu).toFixed(2)
+                                   //DPS CC + CA
+                                   var parDpsEqu = (parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDPSCA)) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parDpsEqu = parseFloat(parDpsEqu).toFixed(2)
+                                   //Disjuntores CC + CA
+                                   var parDisEqu = (parseFloat(detalhe.valorDisCC) + parseFloat(detalhe.valorDisCA)) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parDisEqu = parseFloat(parDisEqu).toFixed(2)
+                                   //StringBox
+                                   var parSbxEqu = parseFloat(detalhe.valorSB) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parSbxEqu = parseFloat(parSbxEqu).toFixed(2)
+                                   //Cercamento
+                                   var parCerEqu = parseFloat(detalhe.valorCer) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parCerEqu = parseFloat(parCerEqu).toFixed(2)
+                                   //Central
+                                   var parCenEqu = parseFloat(detalhe.valorCen) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parCenEqu = parseFloat(parCenEqu).toFixed(2)
+                                   //Postes de Condução
+                                   var parPosEqu = parseFloat(detalhe.valorPos) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parPosEqu = parseFloat(parPosEqu).toFixed(2)
 
-                              //Participação sobre o valor total do projeto
-                              var parLiqVlr = parseFloat(lucroLiquido) / parseFloat(prjValor) * 100
-                              projeto.parLiqVlr = parseFloat(parLiqVlr).toFixed(2)
-                              //console.log('parLiqVlr=>' + parLiqVlr)
-                              var parKitVlr = parseFloat(projeto.vlrkit) / parseFloat(prjValor) * 100
-                              projeto.parKitVlr = parseFloat(parKitVlr).toFixed(2)
-                              //console.log('parKitVlr=>' + parKitVlr)
-                              var parIntVlr = parseFloat(totint) / parseFloat(prjValor) * 100
-                              projeto.parIntVlr = parseFloat(parIntVlr).toFixed(2)
-                              //console.log('parIntVlr=>' + parIntVlr)
-                              var parGesVlr = parseFloat(totges) / parseFloat(prjValor) * 100
-                              projeto.parGesVlr = parseFloat(parGesVlr).toFixed(2)
-                              //console.log('parGesVlr=>' + parGesVlr)
-                              var parProVlr = parseFloat(totpro) / parseFloat(prjValor) * 100
-                              projeto.parProVlr = parseFloat(parProVlr).toFixed(2)
-                              //console.log('parProVlr=>' + parProVlr)
-                              var parArtVlr = parseFloat(vlrart) / parseFloat(prjValor) * 100
-                              projeto.parArtVlr = parseFloat(parArtVlr).toFixed(2)
-                              //console.log('parArtVlr=>' + parArtVlr)
-                              var parDesVlr = parseFloat(totdes) / parseFloat(prjValor) * 100
-                              projeto.parDesVlr = parseFloat(parDesVlr).toFixed(2)
-                              //console.log('parDesVlr=>' + parDesVlr)
-                              var parAliVlr = parseFloat(totali) / parseFloat(prjValor) * 100
-                              projeto.parAliVlr = parseFloat(parAliVlr).toFixed(2)
-                              //console.log('parAliVlr=>' + parAliVlr)
-                              var parResVlr = parseFloat(reserva) / parseFloat(prjValor) * 100
-                              projeto.parResVlr = parseFloat(parResVlr).toFixed(2)
-                              //console.log('parResVlr=>' + parResVlr)
-                              var parDedVlr = parseFloat(custoPlano) / parseFloat(prjValor) * 100
-                              projeto.parDedVlr = parseFloat(parDedVlr).toFixed(2)
-                              //console.log('parDedVlr=>' + parDedVlr)
-                              var parISSVlr
-                              if (impNFS > 0) {
-                                   parISSVlr = parseFloat(impNFS) / parseFloat(prjValor) * 100
-                              } else {
-                                   parISSVlr = 0
-                              }
-                              projeto.parISSVlr = parseFloat(parISSVlr).toFixed(2)
-                              //console.log('parISSVlr=>' + parISSVlr)
-                              var parImpVlr = parseFloat(totalImposto) / parseFloat(prjValor) * 100
-                              projeto.parImpVlr = parseFloat(parImpVlr).toFixed(2)
-                              //console.log('parImpVlr=>' + parImpVlr)
-                              if (vlrcom > 0) {
-                                   var parComVlr = parseFloat(vlrcom) / parseFloat(prjValor) * 100
-                                   projeto.parComVlr = parseFloat(parComVlr).toFixed(2)
-                                   //console.log('parComVlr=>' + parComVlr)
-                              }
+                                   //Participação sobre o valor total do projeto
+                                   var parLiqVlr = parseFloat(lucroLiquido) / parseFloat(prjValor) * 100
+                                   projeto.parLiqVlr = parseFloat(parLiqVlr).toFixed(2)
+                                   //console.log('parLiqVlr=>' + parLiqVlr)
+                                   var parKitVlr = parseFloat(projeto.vlrkit) / parseFloat(prjValor) * 100
+                                   projeto.parKitVlr = parseFloat(parKitVlr).toFixed(2)
+                                   //console.log('parKitVlr=>' + parKitVlr)
+                                   var parIntVlr = parseFloat(totint) / parseFloat(prjValor) * 100
+                                   projeto.parIntVlr = parseFloat(parIntVlr).toFixed(2)
+                                   //console.log('parIntVlr=>' + parIntVlr)
+                                   var parGesVlr = parseFloat(totges) / parseFloat(prjValor) * 100
+                                   projeto.parGesVlr = parseFloat(parGesVlr).toFixed(2)
+                                   //console.log('parGesVlr=>' + parGesVlr)
+                                   var parProVlr = parseFloat(totpro) / parseFloat(prjValor) * 100
+                                   projeto.parProVlr = parseFloat(parProVlr).toFixed(2)
+                                   //console.log('parProVlr=>' + parProVlr)
+                                   var parArtVlr = parseFloat(vlrart) / parseFloat(prjValor) * 100
+                                   projeto.parArtVlr = parseFloat(parArtVlr).toFixed(2)
+                                   //console.log('parArtVlr=>' + parArtVlr)
+                                   var parDesVlr = parseFloat(totdes) / parseFloat(prjValor) * 100
+                                   projeto.parDesVlr = parseFloat(parDesVlr).toFixed(2)
+                                   //console.log('parDesVlr=>' + parDesVlr)
+                                   var parAliVlr = parseFloat(totali) / parseFloat(prjValor) * 100
+                                   projeto.parAliVlr = parseFloat(parAliVlr).toFixed(2)
+                                   //console.log('parAliVlr=>' + parAliVlr)
+                                   var parResVlr = parseFloat(reserva) / parseFloat(prjValor) * 100
+                                   projeto.parResVlr = parseFloat(parResVlr).toFixed(2)
+                                   //console.log('parResVlr=>' + parResVlr)
+                                   var parDedVlr = parseFloat(custoPlano) / parseFloat(prjValor) * 100
+                                   projeto.parDedVlr = parseFloat(parDedVlr).toFixed(2)
+                                   //console.log('parDedVlr=>' + parDedVlr)
+                                   var parISSVlr
+                                   if (impNFS > 0) {
+                                        parISSVlr = parseFloat(impNFS) / parseFloat(prjValor) * 100
+                                   } else {
+                                        parISSVlr = 0
+                                   }
+                                   projeto.parISSVlr = parseFloat(parISSVlr).toFixed(2)
+                                   //console.log('parISSVlr=>' + parISSVlr)
+                                   var parImpVlr = parseFloat(totalImposto) / parseFloat(prjValor) * 100
+                                   projeto.parImpVlr = parseFloat(parImpVlr).toFixed(2)
+                                   //console.log('parImpVlr=>' + parImpVlr)
+                                   if (vlrcom > 0) {
+                                        var parComVlr = parseFloat(vlrcom) / parseFloat(prjValor) * 100
+                                        projeto.parComVlr = parseFloat(parComVlr).toFixed(2)
+                                        //console.log('parComVlr=>' + parComVlr)
+                                   }
 
-                              //Participação sobre o Faturamento  
-                              var parLiqNfs = parseFloat(lucroLiquido) / parseFloat(vlrNFS) * 100
-                              projeto.parLiqNfs = parseFloat(parLiqNfs).toFixed(2)
-                              //console.log('parLiqNfs=>' + parLiqNfs)
-                              //console.log('projeto.fatequ=>' + projeto.fatequ)
-                              var parKitNfs
-                              if (projeto.fatequ == true) {
-                                   parKitNfs = parseFloat(projeto.vlrkit) / parseFloat(vlrNFS) * 100
+                                   //Participação sobre o Faturamento  
+                                   var parLiqNfs = parseFloat(lucroLiquido) / parseFloat(vlrNFS) * 100
+                                   projeto.parLiqNfs = parseFloat(parLiqNfs).toFixed(2)
+                                   //console.log('parLiqNfs=>' + parLiqNfs)
+                                   //console.log('projeto.fatequ=>' + projeto.fatequ)
+                                   var parKitNfs
+                                   if (projeto.fatequ == true) {
+                                        parKitNfs = parseFloat(projeto.vlrkit) / parseFloat(vlrNFS) * 100
+                                        //console.log('parKitNfs=>' + parKitNfs)
+                                        projeto.parKitNfs = parseFloat(parKitNfs).toFixed(2)
+                                   } else {
+                                        parKitNfs = 0
+                                        projeto.parKitNfs = 0
+                                   }
                                    //console.log('parKitNfs=>' + parKitNfs)
-                                   projeto.parKitNfs = parseFloat(parKitNfs).toFixed(2)
-                              } else {
-                                   parKitNfs = 0
-                                   projeto.parKitNfs = 0
-                              }
-                              //console.log('parKitNfs=>' + parKitNfs)
-                              var parIntNfs = parseFloat(totint) / parseFloat(vlrNFS) * 100
-                              projeto.parIntNfs = parseFloat(parIntNfs).toFixed(2)
-                              //console.log('parIntNfs=>' + parIntNfs)
-                              var parGesNfs = parseFloat(totges) / parseFloat(vlrNFS) * 100
-                              projeto.parGesNfs = parseFloat(parGesNfs).toFixed(2)
-                              //console.log('parGesNfs=>' + parGesNfs)
-                              var parProNfs = parseFloat(totpro) / parseFloat(vlrNFS) * 100
-                              projeto.parProNfs = parseFloat(parProNfs).toFixed(2)
-                              //console.log('parProNfs=>' + parProNfs)
-                              var parArtNfs = parseFloat(vlrart) / parseFloat(vlrNFS) * 100
-                              projeto.parArtNfs = parseFloat(parArtNfs).toFixed(2)
-                              //console.log('parArtNfs=>' + parArtNfs)
-                              var parDesNfs = parseFloat(totdes) / parseFloat(vlrNFS) * 100
-                              projeto.parDesNfs = parseFloat(parDesNfs).toFixed(2)
-                              //console.log('parDesNfs=>' + parDesNfs)
-                              var parAliNfs = parseFloat(totali) / parseFloat(vlrNFS) * 100
-                              projeto.parAliNfs = parseFloat(parAliNfs).toFixed(2)
-                              //console.log('parAliNfs=>' + parAliNfs)
-                              var parResNfs = parseFloat(reserva) / parseFloat(vlrNFS) * 100
-                              projeto.parResNfs = parseFloat(parResNfs).toFixed(2)
-                              //console.log('parResNfs=>' + parResNfs)
-                              var parDedNfs = parseFloat(custoPlano) / parseFloat(vlrNFS) * 100
-                              projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
-                              //console.log('parDedNfs=>' + parDedNfs)
-                              var parISSNfs
-                              if (parISSNfs > 0) {
-                                   parISSNfs = parseFloat(impNFS) / parseFloat(vlrNFS) * 100
-                              } else {
-                                   parISSNfs = 0
-                              }
-                              projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)
-                              //console.log('parISSNfs=>' + parISSNfs)
-                              var parImpNfs = (parseFloat(totalImposto) - parseFloat(impNFS)) / parseFloat(vlrNFS) * 100
-                              projeto.parImpNfs = parseFloat(parImpNfs).toFixed(2)
-                              //console.log('parImpNfs=>' + parImpNfs)
-                              if (vlrcom > 0) {
-                                   var parComNfs = parseFloat(vlrcom) / parseFloat(vlrNFS) * 100
-                                   projeto.parComNfs = parseFloat(parComNfs).toFixed(2)
-                                   //console.log('parComNfs=>' + parComNfs)
-                              }
-                              var fatura
-                              if (req.body.checkFatura != null) {
-                                   fatura = 'checked'
-                              } else {
-                                   fatura = 'uncheked'
-                              }
-                              //console.log('fatura=>'+fatura)                                
+                                   var parIntNfs = parseFloat(totint) / parseFloat(vlrNFS) * 100
+                                   projeto.parIntNfs = parseFloat(parIntNfs).toFixed(2)
+                                   //console.log('parIntNfs=>' + parIntNfs)
+                                   var parGesNfs = parseFloat(totges) / parseFloat(vlrNFS) * 100
+                                   projeto.parGesNfs = parseFloat(parGesNfs).toFixed(2)
+                                   //console.log('parGesNfs=>' + parGesNfs)
+                                   var parProNfs = parseFloat(totpro) / parseFloat(vlrNFS) * 100
+                                   projeto.parProNfs = parseFloat(parProNfs).toFixed(2)
+                                   //console.log('parProNfs=>' + parProNfs)
+                                   var parArtNfs = parseFloat(vlrart) / parseFloat(vlrNFS) * 100
+                                   projeto.parArtNfs = parseFloat(parArtNfs).toFixed(2)
+                                   //console.log('parArtNfs=>' + parArtNfs)
+                                   var parDesNfs = parseFloat(totdes) / parseFloat(vlrNFS) * 100
+                                   projeto.parDesNfs = parseFloat(parDesNfs).toFixed(2)
+                                   //console.log('parDesNfs=>' + parDesNfs)
+                                   var parAliNfs = parseFloat(totali) / parseFloat(vlrNFS) * 100
+                                   projeto.parAliNfs = parseFloat(parAliNfs).toFixed(2)
+                                   //console.log('parAliNfs=>' + parAliNfs)
+                                   var parResNfs = parseFloat(reserva) / parseFloat(vlrNFS) * 100
+                                   projeto.parResNfs = parseFloat(parResNfs).toFixed(2)
+                                   //console.log('parResNfs=>' + parResNfs)
+                                   var parDedNfs = parseFloat(custoPlano) / parseFloat(vlrNFS) * 100
+                                   projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
+                                   //console.log('parDedNfs=>' + parDedNfs)
+                                   var parISSNfs
+                                   if (parISSNfs > 0) {
+                                        parISSNfs = parseFloat(impNFS) / parseFloat(vlrNFS) * 100
+                                   } else {
+                                        parISSNfs = 0
+                                   }
+                                   projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)
+                                   //console.log('parISSNfs=>' + parISSNfs)
+                                   var parImpNfs = (parseFloat(totalImposto) - parseFloat(impNFS)) / parseFloat(vlrNFS) * 100
+                                   projeto.parImpNfs = parseFloat(parImpNfs).toFixed(2)
+                                   //console.log('parImpNfs=>' + parImpNfs)
+                                   if (vlrcom > 0) {
+                                        var parComNfs = parseFloat(vlrcom) / parseFloat(vlrNFS) * 100
+                                        projeto.parComNfs = parseFloat(parComNfs).toFixed(2)
+                                        //console.log('parComNfs=>' + parComNfs)
+                                   }
+                                   var fatura
+                                   if (req.body.checkFatura != null) {
+                                        fatura = 'checked'
+                                   } else {
+                                        fatura = 'uncheked'
+                                   }
+                                   //console.log('fatura=>'+fatura)                                
 
 
-                              projeto.save().then(() => {
-                                   redirect = '/projeto/direto/' + req.body.id
-                                   req.flash('success_msg', 'Projeto Salvo com sucesso')
-                                   res.redirect(redirect)
+                                   projeto.save().then(() => {
+                                        redirect = '/projeto/direto/' + req.body.id
+                                        req.flash('success_msg', 'Projeto Salvo com sucesso')
+                                        res.redirect(redirect)
 
-                              }).catch(() => {
-                                   req.flash('error_msg', 'Houve um erro ao salvar o projeto.')
-                                   res.redirect('/menu')
+                                   }).catch(() => {
+                                        req.flash('error_msg', 'Houve um erro ao salvar o projeto.')
+                                        res.redirect('/menu')
+                                   })
+                              }).catch((err) => {
+                                   req.flash('error_msg', 'Não foi possível encontrar a configuração.')
+                                   res.redirect('/configuracao/consultaregime')
                               })
-
                          }).catch((err) => {
                               req.flash('error_msg', 'Não foi possível encontrar o regime.')
                               res.redirect('/configuracao/consultaregime')
@@ -2343,532 +2372,538 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
                     Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
 
                          Regime.findOne({ _id: projeto.regime }).lean().then((regime_prj) => {
-                              //console.log('entrou')
-                              //Valida informações para o cálculo dos impostos e lucros
-                              //--> cálculo automático dos dias de obra
-                              projeto.nomecliente = cliente.nome
-                              projeto.qtdequipe = req.body.equipe
-                              if (req.body.diastr == '' || req.body.diastr == 0) {
-                                   //console.log('dias de obra igual a zero')
-                                   if (req.body.equipe != '' && req.body.equipe > 0) {
-                                        var hrsequ = (parseFloat(req.body.equipe) - 1) * 6
-                                        if (req.body.trbint != '' && req.body.trbint > 0) {
-                                             projeto.qtdequipe = req.body.equipe
-                                             var dias = Math.round(parseFloat(req.body.trbint) / parseFloat(hrsequ))
-                                             if (dias == 0) { dias = 1 }
-                                             //console.log('dias=>' + dis)
-                                             projeto.diastr = dias
+
+                              Configuracao.findOne({ _id: projeto.configuracao }).then((config) => {
+                                   //console.log('entrou')
+                                   //Valida informações para o cálculo dos impostos e lucros
+                                   //--> cálculo automático dos dias de obra
+                                   projeto.nomecliente = cliente.nome
+                                   projeto.qtdequipe = req.body.equipe
+                                   if (req.body.diastr == '' || req.body.diastr == 0) {
+                                        //console.log('dias de obra igual a zero')
+                                        if (req.body.equipe != '' && req.body.equipe > 0) {
+                                             var hrsequ = (parseFloat(req.body.equipe) - 1) * 6
+                                             if (req.body.trbint != '' && req.body.trbint > 0) {
+                                                  projeto.qtdequipe = req.body.equipe
+                                                  var dias = Math.round(parseFloat(req.body.trbint) / parseFloat(hrsequ))
+                                                  if (dias == 0) { dias = 1 }
+                                                  //console.log('dias=>' + dis)
+                                                  projeto.diastr = dias
+                                             }
+                                        }
+                                   } else {
+                                        //console.log('dias de obra preenchido=>' + req.body.diastr)
+                                        projeto.diastr = req.body.diastr
+                                   }
+                                   //var vlrDAS = regime.vlrDAS
+
+                                   //--> cálculo das horas totais trabalhadas a partir de lançamento manual
+                                   var trbger = req.body.tothrs
+                                   var hrsprj = req.body.tothrs
+                                   var trbint = req.body.trbint
+                                   var trbpro = req.body.trbpro
+                                   var trbges = req.body.trbges
+
+                                   var totalHoras = parseFloat(trbint) + parseFloat(trbpro) + parseFloat(trbges)
+                                   if (isNaN(totalHoras)) {
+                                        if (req.body.tothrs == '' || req.body.tothrs == 0) {
+                                             trbger = 0
+                                             hrsprj = 0
+                                        }
+                                   } else {
+                                        if (totalHoras != '' || totalHoras != 0) {
+                                             trbger = totalHoras
+                                             hrsprj = trbger
+                                             projeto.trbint = trbint
+                                             projeto.trbpro = trbpro
+                                             projeto.trbges = trbges
                                         }
                                    }
-                              } else {
-                                   //console.log('dias de obra preenchido=>' + req.body.diastr)
-                                   projeto.diastr = req.body.diastr
-                              }
-                              //var vlrDAS = regime.vlrDAS
-
-                              //--> cálculo das horas totais trabalhadas a partir de lançamento manual
-                              var trbger = req.body.tothrs
-                              var hrsprj = req.body.tothrs
-                              var trbint = req.body.trbint
-                              var trbpro = req.body.trbpro
-                              var trbges = req.body.trbges
-
-                              var totalHoras = parseFloat(trbint) + parseFloat(trbpro) + parseFloat(trbges)
-                              if (isNaN(totalHoras)) {
-                                   if (req.body.tothrs == '' || req.body.tothrs == 0) {
-                                        trbger = 0
-                                        hrsprj = 0
+                                   projeto.tothrs = trbger
+                                   projeto.hrsprj = hrsprj
+                                   //------------------------------
+                                   //ALTERANDO AS FUNÇÕES DE RESPONSÁVEIS
+                                   if (req.body.pinome == '') {
+                                        projeto.funins = req.body.funins
                                    }
-                              } else {
-                                   if (totalHoras != '' || totalHoras != 0) {
-                                        trbger = totalHoras
-                                        hrsprj = trbger
-                                        projeto.trbint = trbint
-                                        projeto.trbpro = trbpro
-                                        projeto.trbges = trbges
+                                   if (req.body.checkIns != null) {
+                                        projeto.funins = req.body.funins
                                    }
-                              }
-                              projeto.tothrs = trbger
-                              projeto.hrsprj = hrsprj
-                              //------------------------------
-                              //ALTERANDO AS FUNÇÕES DE RESPONSÁVEIS
-                              if (req.body.pinome == '') {
-                                   projeto.funins = req.body.funins
-                              }
-                              if (req.body.checkIns != null) {
-                                   projeto.funins = req.body.funins
-                              }
-                              //}
-                              if (req.body.ppnome == '') {
-                                   projeto.funpro = req.body.funpro
-                              }
-                              if (req.body.checkPro != null) {
-                                   projeto.funpro = req.body.funpro
-                              }
-                              //}
-                              //-----------------------------------
-                              //--> validação das informações de custos e de reservas
-                              var resger = req.body.resger
-                              var conadd = req.body.conadd
-                              var impele = req.body.impele
-                              var seguro = req.body.seguro
-
-                              var outcer = req.body.outcer
-                              var outpos = req.body.outpos
-
-                              var totint = req.body.totint
-                              var totpro = req.body.totpro
-                              var totges = req.body.totges
-                              var totali = req.body.totali
-                              var totdes = req.body.totdes
-
-                              //--> se for vazio salva zero(0)
-                              if (req.body.resger == '') {
-                                   resger = 0
-                              }
-                              if (req.body.conadd == '') {
-                                   conadd = 0
-                              }
-                              if (req.body.impele == '') {
-                                   impele = 0
-                              }
-                              if (req.body.seguro == '') {
-                                   seguro = 0
-                              }
-                              if (req.body.outcer == '') {
-                                   outcer = 0
-                              }
-                              if (req.body.outpos == '') {
-                                   outpos = 0
-                              }
-                              if (req.body.totali == '') {
-                                   totali = 0
-                              }
-                              if (req.body.totint == '') {
-                                   totint = 0
-                              }
-                              if (req.body.totpro == '') {
-                                   totpro = 0
-                              }
-                              if (req.body.totges == '') {
-                                   totges = 0
-                              }
-                              if (req.body.totdes == '') {
-                                   totdes = 0
-                              }
-
-                              projeto.resger = resger
-                              projeto.conadd = conadd
-                              projeto.impele = impele
-                              projeto.seguro = seguro
-
-                              projeto.outcer = outcer
-                              projeto.outpos = outpos
-
-                              projeto.totali = totali
-                              projeto.totint = totint
-
-                              var vlrart
-                              vlrart = req.body.vlrart
-                              projeto.vlrart = vlrart
-                              projeto.totpro = parseFloat(totpro)
-
-                              projeto.totges = totges
-                              projeto.totdes = totdes
-
-                              var custoFix = parseFloat(totint) + parseFloat(totpro) + parseFloat(vlrart) + parseFloat(totges)
-                              var custoVar = parseFloat(totdes) + parseFloat(totali)
-                              var custoEst = parseFloat(detalhe.valorCer) + parseFloat(detalhe.valorPos) + parseFloat(detalhe.valorCen)
-                              var totcop = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
-
-                              //console.log('totint=>' + totint)
-                              //console.log('totpro=>' + totpro)
-                              //console.log('totges=>' + totges)
-                              //console.log('totali=>' + totali)
-                              //console.log('detalhe.valorOcp=>' + detalhe.valorOcp)
-                              //console.log('detalhe.valorCer=>' + detalhe.valorCer)
-                              //console.log('detalhe.valorPos=>' + detalhe.valorPos)
-                              projeto.custofix = custoFix.toFixed(2)
-                              projeto.custovar = custoVar.toFixed(2)
-                              projeto.custoest = custoEst.toFixed(2)
-                              projeto.totcop = totcop.toFixed(2)
-
-                              var rescon = parseFloat(impele) + parseFloat(seguro) + parseFloat(outcer) + parseFloat(outpos)
-                              rescon = parseFloat(rescon) + parseFloat(conadd)
-                              projeto.rescon = rescon.toFixed(2)
-
-                              var reserva = parseFloat(resger) + parseFloat(rescon)
-                              projeto.reserva = reserva.toFixed(2)
-
-                              var custoPlano = parseFloat(totcop) + parseFloat(reserva)
-                              projeto.custoPlano = custoPlano.toFixed(2)
-
-                              var custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
-                              projeto.custoTotal = custoTotal.toFixed(2)
-
-                              //console.log('custoTotal=>'+custoTotal)
-                              //Definindo o imposto ISS
-                              //console.log('regime_prj.alqNFS=>' + regime_prj.alqNFS)
-                              var vlrNFS = 0
-                              var impNFS = 0
-                              var vlrMarkup = 0
-                              var prjValor = 0
-                              if (req.body.markup == '' || req.body.markup == 0) {
-                                   //console.log('markup igual a zero')
-                                   //console.log('projeto.vlrnormal=>'+projeto.vlrnormal)
-                                   if (req.body.checkFatura != null) {
-                                        fatequ = true
-                                        vlrNFS = parseFloat(projeto.vlrnormal).toFixed(2)
-                                        impNFS = 0
-                                   } else {
-                                        fatequ = false
-                                        vlrNFS = (parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)).toFixed(2)
-                                        impNFS = (parseFloat(vlrNFS) * (parseFloat(regime_prj.alqNFS) / 100)).toFixed(2)
+                                   //}
+                                   if (req.body.ppnome == '') {
+                                        projeto.funpro = req.body.funpro
                                    }
-                                   prjValor = parseFloat(projeto.vlrnormal).toFixed(2)
-                                   projeto.valor = parseFloat(projeto.vlrnormal).toFixed(2)
-                                   projeto.markup = 0
-                              } else {
+                                   if (req.body.checkPro != null) {
+                                        projeto.funpro = req.body.funpro
+                                   }
+                                   //}
+                                   //-----------------------------------
+                                   //--> validação das informações de custos e de reservas
+                                   var resger = req.body.resger
+                                   var conadd = req.body.conadd
+                                   var impele = req.body.impele
+                                   var seguro = req.body.seguro
+
+                                   var outcer = req.body.outcer
+                                   var outpos = req.body.outpos
+
+                                   var totint = req.body.totint
+                                   var totpro = req.body.totpro
+                                   var totges = req.body.totges
+                                   var totali = req.body.totali
+                                   var totdes = req.body.totdes
+
+                                   //--> se for vazio salva zero(0)
+                                   if (req.body.resger == '') {
+                                        resger = 0
+                                   }
+                                   if (req.body.conadd == '') {
+                                        conadd = 0
+                                   }
+                                   if (req.body.impele == '') {
+                                        impele = 0
+                                   }
+                                   if (req.body.seguro == '') {
+                                        seguro = 0
+                                   }
+                                   if (req.body.outcer == '') {
+                                        outcer = 0
+                                   }
+                                   if (req.body.outpos == '') {
+                                        outpos = 0
+                                   }
+                                   if (req.body.totali == '') {
+                                        totali = 0
+                                   }
+                                   if (req.body.totint == '') {
+                                        totint = 0
+                                   }
+                                   if (req.body.totpro == '') {
+                                        totpro = 0
+                                   }
+                                   if (req.body.totges == '') {
+                                        totges = 0
+                                   }
+                                   if (req.body.totdes == '') {
+                                        totdes = 0
+                                   }
+
+                                   projeto.resger = resger
+                                   projeto.conadd = conadd
+                                   projeto.impele = impele
+                                   projeto.seguro = seguro
+
+                                   projeto.outcer = outcer
+                                   projeto.outpos = outpos
+
+                                   projeto.totali = totali
+                                   projeto.totint = totint
+
+                                   var vlrart
+                                   vlrart = req.body.vlrart
+                                   projeto.vlrart = vlrart
+                                   projeto.totpro = parseFloat(totpro)
+
+                                   projeto.totges = totges
+                                   projeto.totdes = totdes
+
+                                   var custoFix = parseFloat(totint) + parseFloat(totpro) + parseFloat(vlrart) + parseFloat(totges)
+                                   var custoVar = parseFloat(totdes) + parseFloat(totali)
+                                   var custoEst = parseFloat(detalhe.valorCer) + parseFloat(detalhe.valorPos) + parseFloat(detalhe.valorCen)
+                                   var totcop = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
+
+                                   //console.log('totint=>' + totint)
+                                   //console.log('totpro=>' + totpro)
+                                   //console.log('totges=>' + totges)
+                                   //console.log('totali=>' + totali)
+                                   //console.log('detalhe.valorOcp=>' + detalhe.valorOcp)
+                                   //console.log('detalhe.valorCer=>' + detalhe.valorCer)
+                                   //console.log('detalhe.valorPos=>' + detalhe.valorPos)
+                                   projeto.custofix = custoFix.toFixed(2)
+                                   projeto.custovar = custoVar.toFixed(2)
+                                   projeto.custoest = custoEst.toFixed(2)
+                                   projeto.totcop = totcop.toFixed(2)
+
+                                   var rescon = parseFloat(impele) + parseFloat(seguro) + parseFloat(outcer) + parseFloat(outpos)
+                                   rescon = parseFloat(rescon) + parseFloat(conadd)
+                                   projeto.rescon = rescon.toFixed(2)
+
+                                   var reserva = parseFloat(resger) + parseFloat(rescon)
+                                   projeto.reserva = reserva.toFixed(2)
+
+                                   var custoPlano = parseFloat(totcop) + parseFloat(reserva)
+                                   projeto.custoPlano = custoPlano.toFixed(2)
+
+                                   var custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
+                                   projeto.custoTotal = custoTotal.toFixed(2)
+
                                    //console.log('custoTotal=>'+custoTotal)
-                                   //console.log('req.body.markup=>'+req.body.markup)
-                                   vlrMarkup = (custoTotal / (1 - (parseFloat(req.body.markup) / 100))).toFixed(2)
-                                   //console.log('vlrMarkup=>' + vlrMarkup)
+                                   //Definindo o imposto ISS
+                                   //console.log('regime_prj.alqNFS=>' + regime_prj.alqNFS)
+                                   var vlrNFS = 0
+                                   var impNFS = 0
+                                   var vlrMarkup = 0
+                                   var prjValor = 0
+                                   if (req.body.markup == '' || req.body.markup == 0) {
+                                        //console.log('markup igual a zero')
+                                        //console.log('projeto.vlrnormal=>'+projeto.vlrnormal)
+                                        if (req.body.checkFatura != null) {
+                                             fatequ = true
+                                             vlrNFS = parseFloat(projeto.vlrnormal).toFixed(2)
+                                             impNFS = 0
+                                        } else {
+                                             fatequ = false
+                                             vlrNFS = (parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)).toFixed(2)
+                                             impNFS = (parseFloat(vlrNFS) * (parseFloat(regime_prj.alqNFS) / 100)).toFixed(2)
+                                        }
+                                        vlrMarkup = (parseFloat(custoTotal) - parseFloat(reserva)) / (1 - (parseFloat(config.markup) / 100))
+                                        projeto.valor = parseFloat(vlrMarkup).toFixed(2)
+                                        projeto.markup = config.markup
+                                        prjValor = vlrMarkup
+                                   } else {
+                                        //console.log('custoTotal=>'+custoTotal)
+                                        //console.log('req.body.markup=>'+req.body.markup)
+                                        vlrMarkup = ((parseFloat(custoTotal) - parseFloat(reserva)) / (1 - (parseFloat(req.body.markup) / 100))).toFixed(2)
+                                        //console.log('vlrMarkup=>' + vlrMarkup)
+                                        if (req.body.checkFatura != null) {
+                                             fatequ = true
+                                             vlrNFS = parseFloat(vlrMarkup).toFixed(2)
+                                             impNFS = 0
+                                        } else {
+                                             fatequ = false
+                                             vlrNFS = (parseFloat(vlrMarkup) - parseFloat(projeto.vlrkit)).toFixed(2)
+                                             impNFS = (parseFloat(vlrNFS) * (parseFloat(regime_prj.alqNFS) / 100)).toFixed(2)
+                                        }
+                                        projeto.markup = req.body.markup
+                                        projeto.valor = vlrMarkup
+                                        prjValor = parseFloat(vlrMarkup).toFixed(2)
+                                   }
+                                   //kWp médio
+                                   projeto.vrskwp = (parseFloat(prjValor) / parseFloat(projeto.potencia)).toFixed(2)
+                                   projeto.fatequ = fatequ
+
+                                   var vlrcom = 0
+                                   //Validando a comissão
+                                   //console.log('projeto.percom=>'+projeto.percom)
+                                   if (projeto.percom != null) {
+                                        vlrcom = parseFloat(vlrNFS) * (parseFloat(projeto.percom) / 100)
+                                        projeto.vlrcom = vlrcom.toFixed(2)
+                                   }
+                                   //console.log('prjValor=>'+prjValor)
+                                   //console.log('vlrcom=>'+vlrcom)
+                                   //console.log('impNFS=>' + impNFS)
+                                   //console.log('vlrNFS=>'+vlrNFS)
+                                   //console.log('totcop=>' + totcop)
+                                   //console.log('reserva=>' + reserva)
+                                   //console.log('custoPlano=>' + custoPlano)
+                                   //console.log('custoTotal=>' + custoTotal)                              
+                                   //console.log('projeto.vlrkit=>'+projeto.vlrkit)
+
+                                   projeto.vlrNFS = parseFloat(vlrNFS).toFixed(2)
+                                   projeto.impNFS = parseFloat(impNFS).toFixed(2)
+                                   //console.log('savlou imposto NFS')
+
+                                   //Definindo o Lucro Bruto
+                                   var recLiquida = 0
+                                   var lucroBruto = 0
+                                   recLiquida = parseFloat(prjValor) - parseFloat(impNFS)
+                                   //console.log('recLiquida=>'+recLiquida)
+                                   projeto.recLiquida = parseFloat(recLiquida).toFixed(2)
+                                   lucroBruto = parseFloat(recLiquida) - parseFloat(projeto.vlrkit)
+                                   projeto.lucroBruto = parseFloat(lucroBruto).toFixed(2)
+                                   //console.log('lucroBruto=>'+lucroBruto)
+
+                                   var desAdm = 0
+                                   var lbaimp = 0
+                                   if (parseFloat(regime_prj.desadm) > 0) {
+                                        if (regime_prj.tipodesp == 'Percentual') {
+                                             desAdm = (parseFloat(regime_prj.desadm) * (parseFloat(regime_prj.perdes) / 100)).toFixed(2)
+                                        } else {
+                                             desAdm = ((parseFloat(regime_prj.desadm) / parseFloat(regime_prj.estkwp)) * parseFloat(projeto.potencia)).toFixed(2)
+                                        }
+                                        //console.log('desAdm=>' + desAdm)
+                                        lbaimp = parseFloat(lucroBruto) - parseFloat(custoPlano) - parseFloat(desAdm)
+                                        projeto.desAdm = parseFloat(desAdm).toFixed(2)
+                                   } else {
+                                        lbaimp = parseFloat(lbaimp) - parseFloat(custoPlano)
+                                        projeto.desAdm = 0
+                                   }
+                                   //Deduzindo as comissões do Lucro Antes dos Impostos
+                                   if (vlrcom == 0 || vlrcom == '') {
+                                        lbaimp = parseFloat(lbaimp)
+                                   } else {
+                                        lbaimp = parseFloat(lbaimp) - parseFloat(vlrcom)
+                                   }
+                                   projeto.lbaimp = parseFloat(lbaimp).toFixed(2)
+                                   //console.log('lbaimp=>' + lbaimp)
+
+                                   var fatadd
+                                   var fataju
+                                   var aux
+                                   var prjLR = regime_prj.prjLR
+                                   var prjLP = regime_prj.prjLP
+                                   var prjFat = regime_prj.prjFat
+
+                                   var totalSimples
+                                   var impostoIRPJ
+                                   var impostoIRPJAdd
+                                   var impostoPIS
+                                   var impostoCOFINS
+                                   var totalImposto
+
+                                   if (regime_prj.regime == 'Simples') {
+                                        //console.log('entrou simples')
+                                        var alqEfe = ((parseFloat(prjFat) * (parseFloat(regime_prj.alqDAS) / 100)) - (parseFloat(regime_prj.vlrred))) / parseFloat(prjFat)
+                                        totalSimples = parseFloat(vlrNFS) * (parseFloat(alqEfe))
+                                        //console.log('totalSimples=>' + totalSimples)
+                                        totalImposto = parseFloat(totalSimples).toFixed(2)
+                                        //console.log('totalImposto=>' + totalImposto)
+                                        projeto.impostoSimples = parseFloat(totalImposto).toFixed(2)
+                                   }
+
+                                   else {
+                                        if (regime_prj.regime == 'Lucro Real') {
+                                             //Imposto Adicional de IRPJ
+                                             if ((parseFloat(prjLR) / 12) > 20000) {
+                                                  fatadd = (parseFloat(prjLR) / 12) - 20000
+                                                  //console.log('fatadd=>' + fatadd)
+                                                  fataju = parseFloat(fatadd) * (parseFloat(regime_prj.alqIRPJAdd) / 100)
+                                                  //console.log('fataju=>' + fataju)
+                                                  aux = parseFloat(fatadd) / parseFloat(lbaimp)
+                                                  //console.log('aux=>' + aux)
+                                                  impostoIRPJAdd = parseFloat(fataju) / parseFloat(aux)
+                                                  //console.log('impostoIRPJAdd=>' + impostoIRPJAdd)
+                                                  projeto.impostoAdd = impostoIRPJAdd.toFixed(2)
+                                             }
+
+                                             impostoIRPJ = parseFloat(lbaimp) * (parseFloat(regime_prj.alqIRPJ) / 100)
+                                             projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
+
+                                             impostoCSLL = parseFloat(lbaimp) * (parseFloat(regime_prj.alqCSLL) / 100)
+                                             projeto.impostoCSLL = impostoCSLL.toFixed(2)
+                                             impostoPIS = parseFloat(vlrNFS) * 0.5 * (parseFloat(regime_prj.alqPIS) / 100)
+                                             projeto.impostoPIS = impostoPIS.toFixed(2)
+                                             impostoCOFINS = parseFloat(vlrNFS) * 0.5 * (parseFloat(regime_prj.alqCOFINS) / 100)
+                                             projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
+                                             if (parseFloat(impostoIRPJAdd) > 0) {
+                                                  totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
+                                             } else {
+                                                  totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
+                                             }
+                                             //console.log('IRPJ=>' + impostoIRPJ)
+                                             //console.log('CSLL=>' + impostoCSLL)
+                                             //console.log('COFINS=>' + impostoCOFINS)
+                                             //console.log('PIS=>' + impostoPIS)
+
+                                        } else {
+                                             //Imposto adicional de IRPJ
+                                             if (((parseFloat(prjLP) * 0.32) / 3) > 20000) {
+                                                  fatadd = ((parseFloat(prjLP) * 0.32) / 3) - 20000
+                                                  fataju = parseFloat(fatadd) / 20000
+                                                  impostoIRPJAdd = (parseFloat(vlrNFS) * 0.32) * (parseFloat(fataju) / 100) * (parseFloat(regime_prj.alqIRPJAdd) / 100)
+                                                  projeto.impostoAdd = impostoIRPJAdd.toFixed(2)
+                                             }
+                                             //console.log('Lucro Presumido')
+
+                                             impostoIRPJ = parseFloat(vlrNFS) * 0.32 * (parseFloat(regime_prj.alqIRPJ) / 100)
+                                             projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
+                                             //console.log('IRPJ=>' + impostoIRPJ)
+                                             impostoCSLL = parseFloat(vlrNFS) * 0.32 * (parseFloat(regime_prj.alqCSLL) / 100)
+                                             projeto.impostoCSLL = impostoCSLL.toFixed(2)
+                                             //console.log('CSLL=>' + impostoCSLL)
+                                             impostoCOFINS = parseFloat(vlrNFS) * (parseFloat(regime_prj.alqCOFINS) / 100)
+                                             projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
+                                             //console.log('COFINS=>' + impostoCOFINS)
+                                             impostoPIS = parseFloat(vlrNFS) * (parseFloat(regime_prj.alqPIS) / 100)
+                                             projeto.impostoPIS = impostoPIS.toFixed(2)
+                                             //console.log('PIS=>' + impostoPIS)
+                                             if (parseFloat(impostoIRPJAdd) > 0) {
+                                                  totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
+                                             } else {
+                                                  totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
+                                             }
+                                        }
+                                   }
+
+                                   //Validar ICMS
+                                   var impostoICMS
                                    if (req.body.checkFatura != null) {
-                                        fatequ = true
-                                        vlrNFS = parseFloat(vlrMarkup).toFixed(2)
-                                        impNFS = 0
+                                        if (regime_prj.alqICMS != null) {
+                                             impostoICMS = (parseFloat(prjValor)) * (parseFloat(regime_prj.alqICMS) / 100)
+                                             totalTributos = parseFloat(totalImposto) + parseFloat(impNFS) + parseFloat(impostoICMS)
+                                             totalImposto = parseFloat(totalImposto) + parseFloat(impostoICMS)
+                                        }
                                    } else {
-                                        fatequ = false
-                                        vlrNFS = (parseFloat(vlrMarkup) - parseFloat(projeto.vlrkit)).toFixed(2)
-                                        impNFS = (parseFloat(vlrNFS) * (parseFloat(regime_prj.alqNFS) / 100)).toFixed(2)
+                                        impostoICMS = 0
+                                        totalTributos = parseFloat(totalImposto) + parseFloat(impNFS)
                                    }
-                                   projeto.markup = req.body.markup
-                                   projeto.valor = vlrMarkup
-                                   prjValor = parseFloat(vlrMarkup).toFixed(2)
-                              }
-                              //kWp médio
-                              projeto.vrskwp = (parseFloat(prjValor) / parseFloat(projeto.potencia)).toFixed(2)
-                              projeto.fatequ = fatequ
+                                   projeto.impostoICMS = impostoICMS.toFixed(2)
 
-                              var vlrcom = 0
-                              //Validando a comissão
-                              //console.log('projeto.percom=>'+projeto.percom)
-                              if (projeto.percom != null) {
-                                   vlrcom = parseFloat(vlrNFS) * (parseFloat(projeto.percom) / 100)
-                                   projeto.vlrcom = vlrcom.toFixed(2)
-                              }
-                              //console.log('prjValor=>'+prjValor)
-                              //console.log('vlrcom=>'+vlrcom)
-                              //console.log('impNFS=>' + impNFS)
-                              //console.log('vlrNFS=>'+vlrNFS)
-                              //console.log('totcop=>' + totcop)
-                              //console.log('reserva=>' + reserva)
-                              //console.log('custoPlano=>' + custoPlano)
-                              //console.log('custoTotal=>' + custoTotal)                              
-                              //console.log('projeto.vlrkit=>'+projeto.vlrkit)
-
-                              projeto.vlrNFS = parseFloat(vlrNFS).toFixed(2)
-                              projeto.impNFS = parseFloat(impNFS).toFixed(2)
-                              //console.log('savlou imposto NFS')
-
-                              //Definindo o Lucro Bruto
-                              var recLiquida = 0
-                              var lucroBruto = 0
-                              recLiquida = parseFloat(prjValor) - parseFloat(impNFS)
-                              //console.log('recLiquida=>'+recLiquida)
-                              projeto.recLiquida = parseFloat(recLiquida).toFixed(2)
-                              lucroBruto = parseFloat(recLiquida) - parseFloat(projeto.vlrkit)
-                              projeto.lucroBruto = parseFloat(lucroBruto).toFixed(2)
-                              //console.log('lucroBruto=>'+lucroBruto)
-
-                              var desAdm = 0
-                              var lbaimp = 0
-                              if (parseFloat(regime_prj.desadm) > 0) {
-                                   if (regime_prj.tipodesp == 'Percentual') {
-                                        desAdm = (parseFloat(regime_prj.desadm) * (parseFloat(regime_prj.perdes) / 100)).toFixed(2)
-                                   } else {
-                                        desAdm = ((parseFloat(regime_prj.desadm) / parseFloat(regime_prj.estkwp)) * parseFloat(projeto.potencia)).toFixed(2)
-                                   }
-                                   //console.log('desAdm=>' + desAdm)
-                                   lbaimp = parseFloat(lucroBruto) - parseFloat(custoPlano) - parseFloat(desAdm)
-                                   projeto.desAdm = parseFloat(desAdm).toFixed(2)
-                              } else {
-                                   lbaimp = parseFloat(lbaimp) - parseFloat(custoPlano)
-                                   projeto.desAdm = 0
-                              }
-                              //Deduzindo as comissões do Lucro Antes dos Impostos
-                              if (vlrcom == 0 || vlrcom == '') {
-                                   lbaimp = parseFloat(lbaimp)
-                              } else {
-                                   lbaimp = parseFloat(lbaimp) - parseFloat(vlrcom)
-                              }
-                              projeto.lbaimp = parseFloat(lbaimp).toFixed(2)
-                              //console.log('lbaimp=>' + lbaimp)
-
-                              var fatadd
-                              var fataju
-                              var aux
-                              var prjLR = regime_prj.prjLR
-                              var prjLP = regime_prj.prjLP
-                              var prjFat = regime_prj.prjFat
-
-                              var totalSimples
-                              var impostoIRPJ
-                              var impostoIRPJAdd
-                              var impostoPIS
-                              var impostoCOFINS
-                              var totalImposto
-
-                              if (regime_prj.regime == 'Simples') {
-                                   //console.log('entrou simples')
-                                   var alqEfe = ((parseFloat(prjFat) * (parseFloat(regime_prj.alqDAS) / 100)) - (parseFloat(regime_prj.vlrred))) / parseFloat(prjFat)
-                                   totalSimples = parseFloat(vlrNFS) * (parseFloat(alqEfe))
-                                   //console.log('totalSimples=>' + totalSimples)
-                                   totalImposto = parseFloat(totalSimples).toFixed(2)
                                    //console.log('totalImposto=>' + totalImposto)
-                                   projeto.impostoSimples = parseFloat(totalImposto).toFixed(2)
-                              }
+                                   projeto.totalImposto = parseFloat(totalImposto).toFixed(2)
+                                   //console.log('totalTributos=>' + totalTributos)
+                                   projeto.totalTributos = parseFloat(totalTributos).toFixed(2)
 
-                              else {
-                                   if (regime_prj.regime == 'Lucro Real') {
-                                        //Imposto Adicional de IRPJ
-                                        if ((parseFloat(prjLR) / 12) > 20000) {
-                                             fatadd = (parseFloat(prjLR) / 12) - 20000
-                                             //console.log('fatadd=>' + fatadd)
-                                             fataju = parseFloat(fatadd) * (parseFloat(regime_prj.alqIRPJAdd) / 100)
-                                             //console.log('fataju=>' + fataju)
-                                             aux = parseFloat(fatadd) / parseFloat(lbaimp)
-                                             //console.log('aux=>' + aux)
-                                             impostoIRPJAdd = parseFloat(fataju) / parseFloat(aux)
-                                             //console.log('impostoIRPJAdd=>' + impostoIRPJAdd)
-                                             projeto.impostoAdd = impostoIRPJAdd.toFixed(2)
-                                        }
+                                   //Lucro Líquido descontados os impostos
+                                   var lucroLiquido = 0
+                                   lucroLiquido = parseFloat(lbaimp) - parseFloat(totalImposto)
+                                   projeto.lucroLiquido = parseFloat(lucroLiquido).toFixed(2)
+                                   //console.log('lucroLiquido=>' + lucroLiquido)
 
-                                        impostoIRPJ = parseFloat(lbaimp) * (parseFloat(regime_prj.alqIRPJ) / 100)
-                                        projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
+                                   //Dashboard              
+                                   //Participação dos componentes
+                                   //Kit
+                                   var parKitEqu = parseFloat(detalhe.valorEqu) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parKitEqu = parseFloat(parKitEqu).toFixed(2)
+                                   //Módulos
+                                   var parModEqu = parseFloat(detalhe.valorMod) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parModEqu = parseFloat(parModEqu).toFixed(2)
+                                   //Inversor
+                                   var parInvEqu = parseFloat(detalhe.valorInv) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parInvEqu = parseFloat(parInvEqu).toFixed(2)
+                                   //Estrutura
+                                   var parEstEqu = (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorCim)) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parEstEqu = parseFloat(parEstEqu).toFixed(2)
+                                   //Cabos
+                                   var parCabEqu = parseFloat(detalhe.valorCab) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parCabEqu = parseFloat(parCabEqu).toFixed(2)
+                                   //Armazenagem
+                                   var parEbtEqu = parseFloat(detalhe.valorEbt) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parEbtEqu = parseFloat(parEbtEqu).toFixed(2)
+                                   //DPS CC + CA
+                                   var parDpsEqu = (parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDPSCA)) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parDpsEqu = parseFloat(parDpsEqu).toFixed(2)
+                                   //Disjuntores CC + CA
+                                   var parDisEqu = (parseFloat(detalhe.valorDisCC) + parseFloat(detalhe.valorDisCA)) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parDisEqu = parseFloat(parDisEqu).toFixed(2)
+                                   //StringBox
+                                   var parSbxEqu = parseFloat(detalhe.valorSB) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parSbxEqu = parseFloat(parSbxEqu).toFixed(2)
+                                   //Cercamento
+                                   var parCerEqu = parseFloat(detalhe.valorCer) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parCerEqu = parseFloat(parCerEqu).toFixed(2)
+                                   //Central
+                                   var parCenEqu = parseFloat(detalhe.valorCen) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parCenEqu = parseFloat(parCenEqu).toFixed(2)
+                                   //Postes de Condução
+                                   var parPosEqu = parseFloat(detalhe.valorPos) / parseFloat(detalhe.vlrTotal) * 100
+                                   projeto.parPosEqu = parseFloat(parPosEqu).toFixed(2)
 
-                                        impostoCSLL = parseFloat(lbaimp) * (parseFloat(regime_prj.alqCSLL) / 100)
-                                        projeto.impostoCSLL = impostoCSLL.toFixed(2)
-                                        impostoPIS = parseFloat(vlrNFS) * 0.5 * (parseFloat(regime_prj.alqPIS) / 100)
-                                        projeto.impostoPIS = impostoPIS.toFixed(2)
-                                        impostoCOFINS = parseFloat(vlrNFS) * 0.5 * (parseFloat(regime_prj.alqCOFINS) / 100)
-                                        projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
-                                        if (parseFloat(impostoIRPJAdd) > 0) {
-                                             totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
-                                        } else {
-                                             totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
-                                        }
-                                        //console.log('IRPJ=>' + impostoIRPJ)
-                                        //console.log('CSLL=>' + impostoCSLL)
-                                        //console.log('COFINS=>' + impostoCOFINS)
-                                        //console.log('PIS=>' + impostoPIS)
-
+                                   //console.log('prjValor=>'+prjValor)
+                                   //Participação sobre o valor total do projeto
+                                   var parLiqVlr = parseFloat(lucroLiquido) / parseFloat(prjValor) * 100
+                                   projeto.parLiqVlr = parseFloat(parLiqVlr).toFixed(2)
+                                   var parKitVlr = parseFloat(projeto.vlrkit) / parseFloat(prjValor) * 100
+                                   projeto.parKitVlr = parseFloat(parKitVlr).toFixed(2)
+                                   //console.log('parKitVlr=>' + parKitVlr)
+                                   var parIntVlr = parseFloat(totint) / parseFloat(prjValor) * 100
+                                   projeto.parIntVlr = parseFloat(parIntVlr).toFixed(2)
+                                   var parGesVlr = parseFloat(totges) / parseFloat(prjValor) * 100
+                                   projeto.parGesVlr = parseFloat(parGesVlr).toFixed(2)
+                                   var parProVlr = parseFloat(totpro) / parseFloat(prjValor) * 100
+                                   projeto.parProVlr = parseFloat(parProVlr).toFixed(2)
+                                   var parArtVlr = parseFloat(vlrart) / parseFloat(prjValor) * 100
+                                   projeto.parArtVlr = parseFloat(parArtVlr).toFixed(2)
+                                   var parDesVlr = parseFloat(totdes) / parseFloat(prjValor) * 100
+                                   projeto.parDesVlr = parseFloat(parDesVlr).toFixed(2)
+                                   var parAliVlr = parseFloat(totali) / parseFloat(prjValor) * 100
+                                   projeto.parAliVlr = parseFloat(parAliVlr).toFixed(2)
+                                   var parResVlr = parseFloat(reserva) / parseFloat(prjValor) * 100
+                                   projeto.parResVlr = parseFloat(parResVlr).toFixed(2)
+                                   var parDedVlr = parseFloat(custoPlano) / parseFloat(prjValor) * 100
+                                   projeto.parDedVlr = parseFloat(parDedVlr).toFixed(2)
+                                   var parISSVlr
+                                   if (impNFS > 0) {
+                                        parISSVlr = parseFloat(impNFS) / parseFloat(prjValor) * 100
                                    } else {
-                                        //Imposto adicional de IRPJ
-                                        if (((parseFloat(prjLP) * 0.32) / 3) > 20000) {
-                                             fatadd = ((parseFloat(prjLP) * 0.32) / 3) - 20000
-                                             fataju = parseFloat(fatadd) / 20000
-                                             impostoIRPJAdd = (parseFloat(vlrNFS) * 0.32) * (parseFloat(fataju) / 100) * (parseFloat(regime_prj.alqIRPJAdd) / 100)
-                                             projeto.impostoAdd = impostoIRPJAdd.toFixed(2)
-                                        }
-                                        //console.log('Lucro Presumido')
-
-                                        impostoIRPJ = parseFloat(vlrNFS) * 0.32 * (parseFloat(regime_prj.alqIRPJ) / 100)
-                                        projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
-                                        //console.log('IRPJ=>' + impostoIRPJ)
-                                        impostoCSLL = parseFloat(vlrNFS) * 0.32 * (parseFloat(regime_prj.alqCSLL) / 100)
-                                        projeto.impostoCSLL = impostoCSLL.toFixed(2)
-                                        //console.log('CSLL=>' + impostoCSLL)
-                                        impostoCOFINS = parseFloat(vlrNFS) * (parseFloat(regime_prj.alqCOFINS) / 100)
-                                        projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
-                                        //console.log('COFINS=>' + impostoCOFINS)
-                                        impostoPIS = parseFloat(vlrNFS) * (parseFloat(regime_prj.alqPIS) / 100)
-                                        projeto.impostoPIS = impostoPIS.toFixed(2)
-                                        //console.log('PIS=>' + impostoPIS)
-                                        if (parseFloat(impostoIRPJAdd) > 0) {
-                                             totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
-                                        } else {
-                                             totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
-                                        }
+                                        parISSVlr = 0
                                    }
-                              }
-
-                              //Validar ICMS
-                              var impostoICMS
-                              if (req.body.checkFatura != null) {
-                                   if (regime_prj.alqICMS != null) {
-                                        impostoICMS = (parseFloat(prjValor)) * (parseFloat(regime_prj.alqICMS) / 100)
-                                        totalTributos = parseFloat(totalImposto) + parseFloat(impNFS) + parseFloat(impostoICMS)
-                                        totalImposto = parseFloat(totalImposto) + parseFloat(impostoICMS)
+                                   projeto.parISSVlr = parseFloat(parISSVlr).toFixed(2)
+                                   var parImpVlr = parseFloat(totalImposto) / parseFloat(prjValor) * 100
+                                   projeto.parImpVlr = parseFloat(parImpVlr).toFixed(2)
+                                   //console.log('parImpVlr=>' + parImpVlr)
+                                   if (vlrcom > 0) {
+                                        var parComVlr = parseFloat(vlrcom) / parseFloat(prjValor) * 100
+                                        projeto.parComVlr = parseFloat(parComVlr).toFixed(2)
+                                        //console.log('parComVlr=>' + parComVlr)
                                    }
-                              } else {
-                                   impostoICMS = 0
-                                   totalTributos = parseFloat(totalImposto) + parseFloat(impNFS)
-                              }
-                              projeto.impostoICMS = impostoICMS.toFixed(2)
 
-                              //console.log('totalImposto=>' + totalImposto)
-                              projeto.totalImposto = parseFloat(totalImposto).toFixed(2)
-                              //console.log('totalTributos=>' + totalTributos)
-                              projeto.totalTributos = parseFloat(totalTributos).toFixed(2)
-
-                              //Lucro Líquido descontados os impostos
-                              var lucroLiquido = 0
-                              lucroLiquido = parseFloat(lbaimp) - parseFloat(totalImposto)
-                              projeto.lucroLiquido = parseFloat(lucroLiquido).toFixed(2)
-                              //console.log('lucroLiquido=>' + lucroLiquido)
-
-                              //Dashboard              
-                              //Participação dos componentes
-                              //Kit
-                              var parKitEqu = parseFloat(detalhe.valorEqu) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parKitEqu = parseFloat(parKitEqu).toFixed(2)
-                              //Módulos
-                              var parModEqu = parseFloat(detalhe.valorMod) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parModEqu = parseFloat(parModEqu).toFixed(2)
-                              //Inversor
-                              var parInvEqu = parseFloat(detalhe.valorInv) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parInvEqu = parseFloat(parInvEqu).toFixed(2)
-                              //Estrutura
-                              var parEstEqu = (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorCim)) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parEstEqu = parseFloat(parEstEqu).toFixed(2)
-                              //Cabos
-                              var parCabEqu = parseFloat(detalhe.valorCab) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parCabEqu = parseFloat(parCabEqu).toFixed(2)
-                              //Armazenagem
-                              var parEbtEqu = parseFloat(detalhe.valorEbt) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parEbtEqu = parseFloat(parEbtEqu).toFixed(2)
-                              //DPS CC + CA
-                              var parDpsEqu = (parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDPSCA)) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parDpsEqu = parseFloat(parDpsEqu).toFixed(2)
-                              //Disjuntores CC + CA
-                              var parDisEqu = (parseFloat(detalhe.valorDisCC) + parseFloat(detalhe.valorDisCA)) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parDisEqu = parseFloat(parDisEqu).toFixed(2)
-                              //StringBox
-                              var parSbxEqu = parseFloat(detalhe.valorSB) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parSbxEqu = parseFloat(parSbxEqu).toFixed(2)
-                              //Cercamento
-                              var parCerEqu = parseFloat(detalhe.valorCer) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parCerEqu = parseFloat(parCerEqu).toFixed(2)
-                              //Central
-                              var parCenEqu = parseFloat(detalhe.valorCen) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parCenEqu = parseFloat(parCenEqu).toFixed(2)
-                              //Postes de Condução
-                              var parPosEqu = parseFloat(detalhe.valorPos) / parseFloat(detalhe.vlrTotal) * 100
-                              projeto.parPosEqu = parseFloat(parPosEqu).toFixed(2)
-
-                              //console.log('prjValor=>'+prjValor)
-                              //Participação sobre o valor total do projeto
-                              var parLiqVlr = parseFloat(lucroLiquido) / parseFloat(prjValor) * 100
-                              projeto.parLiqVlr = parseFloat(parLiqVlr).toFixed(2)
-                              var parKitVlr = parseFloat(projeto.vlrkit) / parseFloat(prjValor) * 100
-                              projeto.parKitVlr = parseFloat(parKitVlr).toFixed(2)
-                              //console.log('parKitVlr=>' + parKitVlr)
-                              var parIntVlr = parseFloat(totint) / parseFloat(prjValor) * 100
-                              projeto.parIntVlr = parseFloat(parIntVlr).toFixed(2)
-                              var parGesVlr = parseFloat(totges) / parseFloat(prjValor) * 100
-                              projeto.parGesVlr = parseFloat(parGesVlr).toFixed(2)
-                              var parProVlr = parseFloat(totpro) / parseFloat(prjValor) * 100
-                              projeto.parProVlr = parseFloat(parProVlr).toFixed(2)
-                              var parArtVlr = parseFloat(vlrart) / parseFloat(prjValor) * 100
-                              projeto.parArtVlr = parseFloat(parArtVlr).toFixed(2)
-                              var parDesVlr = parseFloat(totdes) / parseFloat(prjValor) * 100
-                              projeto.parDesVlr = parseFloat(parDesVlr).toFixed(2)
-                              var parAliVlr = parseFloat(totali) / parseFloat(prjValor) * 100
-                              projeto.parAliVlr = parseFloat(parAliVlr).toFixed(2)
-                              var parResVlr = parseFloat(reserva) / parseFloat(prjValor) * 100
-                              projeto.parResVlr = parseFloat(parResVlr).toFixed(2)
-                              var parDedVlr = parseFloat(custoPlano) / parseFloat(prjValor) * 100
-                              projeto.parDedVlr = parseFloat(parDedVlr).toFixed(2)
-                              var parISSVlr
-                              if (impNFS > 0) {
-                                   parISSVlr = parseFloat(impNFS) / parseFloat(prjValor) * 100
-                              } else {
-                                   parISSVlr = 0
-                              }
-                              projeto.parISSVlr = parseFloat(parISSVlr).toFixed(2)
-                              var parImpVlr = parseFloat(totalImposto) / parseFloat(prjValor) * 100
-                              projeto.parImpVlr = parseFloat(parImpVlr).toFixed(2)
-                              //console.log('parImpVlr=>' + parImpVlr)
-                              if (vlrcom > 0) {
-                                   var parComVlr = parseFloat(vlrcom) / parseFloat(prjValor) * 100
-                                   projeto.parComVlr = parseFloat(parComVlr).toFixed(2)
-                                   //console.log('parComVlr=>' + parComVlr)
-                              }
-
-                              //Participação sobre o Faturamento  
-                              var parLiqNfs = parseFloat(lucroLiquido) / parseFloat(vlrNFS) * 100
-                              projeto.parLiqNfs = parseFloat(parLiqNfs).toFixed(2)
-                              //console.log('parLiqNfs=>' + parLiqNfs)
-                              //console.log('projeto.fatequ=>' + projeto.fatequ)
-                              var parKitNfs
-                              if (req.body.checkFatura != null) {
-                                   parKitNfs = parseFloat(projeto.vlrkit) / parseFloat(vlrNFS) * 100
+                                   //Participação sobre o Faturamento  
+                                   var parLiqNfs = parseFloat(lucroLiquido) / parseFloat(vlrNFS) * 100
+                                   projeto.parLiqNfs = parseFloat(parLiqNfs).toFixed(2)
+                                   //console.log('parLiqNfs=>' + parLiqNfs)
+                                   //console.log('projeto.fatequ=>' + projeto.fatequ)
+                                   var parKitNfs
+                                   if (req.body.checkFatura != null) {
+                                        parKitNfs = parseFloat(projeto.vlrkit) / parseFloat(vlrNFS) * 100
+                                        //console.log('parKitNfs=>' + parKitNfs)
+                                        projeto.parKitNfs = parseFloat(parKitNfs).toFixed(2)
+                                   } else {
+                                        parKitNfs = 0
+                                        projeto.parKitNfs = 0
+                                   }
                                    //console.log('parKitNfs=>' + parKitNfs)
-                                   projeto.parKitNfs = parseFloat(parKitNfs).toFixed(2)
-                              } else {
-                                   parKitNfs = 0
-                                   projeto.parKitNfs = 0
-                              }
-                              //console.log('parKitNfs=>' + parKitNfs)
-                              var parIntNfs = parseFloat(totint) / parseFloat(vlrNFS) * 100
-                              projeto.parIntNfs = parseFloat(parIntNfs).toFixed(2)
-                              //console.log('parIntNfs=>' + parIntNfs)
-                              var parGesNfs = parseFloat(totges) / parseFloat(vlrNFS) * 100
-                              projeto.parGesNfs = parseFloat(parGesNfs).toFixed(2)
-                              //console.log('parGesNfs=>' + parGesNfs)
-                              var parProNfs = parseFloat(totpro) / parseFloat(vlrNFS) * 100
-                              projeto.parProNfs = parseFloat(parProNfs).toFixed(2)
-                              //console.log('parProNfs=>' + parProNfs)
-                              var parArtNfs = parseFloat(vlrart) / parseFloat(vlrNFS) * 100
-                              projeto.parArtNfs = parseFloat(parArtNfs).toFixed(2)
-                              //console.log('parArtNfs=>' + parArtNfs)
-                              var parDesNfs = parseFloat(totdes) / parseFloat(vlrNFS) * 100
-                              projeto.parDesNfs = parseFloat(parDesNfs).toFixed(2)
-                              //console.log('parDesNfs=>' + parDesNfs)
-                              var parAliNfs = parseFloat(totali) / parseFloat(vlrNFS) * 100
-                              projeto.parAliNfs = parseFloat(parAliNfs).toFixed(2)
-                              //console.log('parAliNfs=>' + parAliNfs)
-                              var parResNfs = parseFloat(reserva) / parseFloat(vlrNFS) * 100
-                              projeto.parResNfs = parseFloat(parResNfs).toFixed(2)
-                              //console.log('parResNfs=>' + parResNfs)
-                              var parDedNfs = parseFloat(custoPlano) / parseFloat(vlrNFS) * 100
-                              projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
-                              //console.log('parDedNfs=>' + parDedNfs)
-                              var parISSNfs
-                              if (impNFS > 0) {
-                                   parISSNfs = parseFloat(impNFS) / parseFloat(vlrNFS) * 100
-                              } else {
-                                   parISSNfs = 0
-                              }
-                              projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)
-                              //console.log('parISSNfs=>' + parISSNfs)
-                              var parImpNfs = (parseFloat(totalImposto) / parseFloat(vlrNFS)) * 100
-                              projeto.parImpNfs = parseFloat(parImpNfs).toFixed(2)
-                              //console.log('parImpNfs=>' + parImpNfs)
-                              if (vlrcom > 0) {
-                                   var parComNfs = parseFloat(vlrcom) / parseFloat(vlrNFS) * 100
-                                   projeto.parComNfs = parseFloat(parComNfs).toFixed(2)
-                                   //console.log('parComNfs=>' + parComNfs)
-                              }
-                              var fatura
-                              if (req.body.checkFatura != null) {
-                                   fatura = 'checked'
-                              } else {
-                                   fatura = 'uncheked'
-                              }
-                              //console.log('fatura=>'+fatura)                              
+                                   var parIntNfs = parseFloat(totint) / parseFloat(vlrNFS) * 100
+                                   projeto.parIntNfs = parseFloat(parIntNfs).toFixed(2)
+                                   //console.log('parIntNfs=>' + parIntNfs)
+                                   var parGesNfs = parseFloat(totges) / parseFloat(vlrNFS) * 100
+                                   projeto.parGesNfs = parseFloat(parGesNfs).toFixed(2)
+                                   //console.log('parGesNfs=>' + parGesNfs)
+                                   var parProNfs = parseFloat(totpro) / parseFloat(vlrNFS) * 100
+                                   projeto.parProNfs = parseFloat(parProNfs).toFixed(2)
+                                   //console.log('parProNfs=>' + parProNfs)
+                                   var parArtNfs = parseFloat(vlrart) / parseFloat(vlrNFS) * 100
+                                   projeto.parArtNfs = parseFloat(parArtNfs).toFixed(2)
+                                   //console.log('parArtNfs=>' + parArtNfs)
+                                   var parDesNfs = parseFloat(totdes) / parseFloat(vlrNFS) * 100
+                                   projeto.parDesNfs = parseFloat(parDesNfs).toFixed(2)
+                                   //console.log('parDesNfs=>' + parDesNfs)
+                                   var parAliNfs = parseFloat(totali) / parseFloat(vlrNFS) * 100
+                                   projeto.parAliNfs = parseFloat(parAliNfs).toFixed(2)
+                                   //console.log('parAliNfs=>' + parAliNfs)
+                                   var parResNfs = parseFloat(reserva) / parseFloat(vlrNFS) * 100
+                                   projeto.parResNfs = parseFloat(parResNfs).toFixed(2)
+                                   //console.log('parResNfs=>' + parResNfs)
+                                   var parDedNfs = parseFloat(custoPlano) / parseFloat(vlrNFS) * 100
+                                   projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
+                                   //console.log('parDedNfs=>' + parDedNfs)
+                                   var parISSNfs
+                                   if (impNFS > 0) {
+                                        parISSNfs = parseFloat(impNFS) / parseFloat(vlrNFS) * 100
+                                   } else {
+                                        parISSNfs = 0
+                                   }
+                                   projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)
+                                   //console.log('parISSNfs=>' + parISSNfs)
+                                   var parImpNfs = (parseFloat(totalImposto) / parseFloat(vlrNFS)) * 100
+                                   projeto.parImpNfs = parseFloat(parImpNfs).toFixed(2)
+                                   //console.log('parImpNfs=>' + parImpNfs)
+                                   if (vlrcom > 0) {
+                                        var parComNfs = parseFloat(vlrcom) / parseFloat(vlrNFS) * 100
+                                        projeto.parComNfs = parseFloat(parComNfs).toFixed(2)
+                                        //console.log('parComNfs=>' + parComNfs)
+                                   }
+                                   var fatura
+                                   if (req.body.checkFatura != null) {
+                                        fatura = 'checked'
+                                   } else {
+                                        fatura = 'uncheked'
+                                   }
+                                   //console.log('fatura=>'+fatura)                              
 
-                              projeto.save().then(() => {
-                                   redirect = '/projeto/direto/' + req.body.id
-                                   req.flash('success_msg', 'Projeto Salvo com sucesso')
-                                   res.redirect(redirect)
+                                   projeto.save().then(() => {
+                                        redirect = '/projeto/direto/' + req.body.id
+                                        req.flash('success_msg', 'Projeto Salvo com sucesso')
+                                        res.redirect(redirect)
 
-                              }).catch(() => {
-                                   req.flash('error_msg', 'Houve um erro ao salvar o projeto.')
-                                   res.redirect('/menu')
+                                   }).catch(() => {
+                                        req.flash('error_msg', 'Houve um erro ao salvar o projeto.')
+                                        res.redirect('/menu')
+                                   })
+                              }).catch((err) => {
+                                   req.flash('error_msg', 'Não foi possível encontrar a configuração do projeto.')
+                                   res.redirect('/configuracao/consulta')
                               })
-
                          }).catch((err) => {
                               req.flash('error_msg', 'Não foi possível encontrar o regime do projeto.')
                               res.redirect('/configuracao/consulta')
@@ -2890,75 +2925,13 @@ router.post('/editar/direto', ehAdmin, (req, res) => {
 
 router.post('/realizar', ehAdmin, (req, res) => {
      const { _id } = req.user
-     var erros = []
+     var erros = ''
+     var sucesso = ''
 
      if (parseFloat(req.body.orcCP) == 0) {
-          erros.push({ texto: 'Para realizar o projeto é necessário que os custos orçados sejam maiores que zero.' })
-
-          Projeto.findOne({ _id: req.body.id }).then((projeto) => {
-               Realizado.findOne({ projeto: projeto._id }).lean().then((realizado) => {
-                    Detalhado.findOne({ projeto: projeto._id }).lean().then((detalhe) => {
-                         var varCP = false
-                         var varTI = false
-                         var varLAI = false
-                         var varLL = false
-                         var varCustoPlano = (realizado.custoPlano - projeto.custoPlano).toFixed(2)
-                         if (varCustoPlano > 1) {
-                              varCP = false
-                         } else {
-                              varCP = true
-                         }
-                         var varTI = (realizado.totalImposto - projeto.totalImposto).toFixed(2)
-                         if (varTotalImposto > 1) {
-                              varTI = true
-                         } else {
-                              varTI = false
-                         }
-                         var varlbaimp = (realizado.lbaimp - projeto.lbaimp).toFixed(2)
-                         if (varlbaimp > 1) {
-                              varLAI = true
-                         } else {
-                              varLAI = false
-                         }
-                         var varLucroLiquido = (realizado.lucroLiquido - projeto.lucroLiquido).toFixed(2)
-                         if (varLucroLiquido > 1) {
-                              varLL = true
-                         } else {
-                              varLL = false
-                         }
-
-                         var temCercamento
-                         var temPosteCond
-                         var temCentral
-                         if (projeto.temCercamento == 'checked') {
-                              temCercamento = true
-                         } else {
-                              temCercamento = false
-                         }
-                         if (projeto.temPosteCond == 'checked') {
-                              temPosteCond = true
-                         } else {
-                              temPosteCond = false
-                         }
-                         if (projeto.temCentral == 'checked') {
-                              temCentral = true
-                         } else {
-                              temCentral = false
-                         }
-                         sucesso.push({ texto: 'Projeto realizado com sucesso.' })
-                         res.render('projeto/realizado', { sucesso: sucesso, projeto: projeto, realizado: realizado, detalhe: detalhe, varCustoPlano: varCustoPlano, varLucroBruto: varLucroBruto, varlbaimp: varlbaimp, varLucroLiquido: varLucroLiquido, varTI: varTI, varLL: varLL, varLAI: varLAI, varCP: varCP, temCercamento: temCercamento, temPosteCond: temPosteCond, temCentral: temCentral })
-                    }).catch((err) => {
-                         req.flash('error_msg', 'Detalhe não encontrado.')
-                         res.redirect('/projeto/consulta')
-                    })
-               }).catch((err) => {
-                    req.flash('error_msg', 'Realizado não encontrado.')
-                    res.redirect('/projeto/consulta')
-               })
-          }).catch((err) => {
-               req.flash('error_msg', 'Projeto não encontrado.')
-               res.render('projeto/realizado', { projeto: projeto, erros: erros })
-          })
+          erros = 'Para realizar o projeto é necessário que os custos orçados sejam maiores que zero.'
+          req.flash('error_msg', erros)
+          res.redirect('/projetos/realizar/' + req.body.id)
 
      } else {
 
@@ -2967,8 +2940,783 @@ router.post('/realizar', ehAdmin, (req, res) => {
                     Regime.findOne({ _id: projeto.regime }).then((rp) => {
                          Cronograma.findOne({ projeto: projeto._id }).then((cronograma) => {
                               Realizado.findOne({ projeto: req.body.id }).then((realizado) => {
+                                   var prj_id = projeto._id
+                                   var prjCusto = projeto.custoPlano
+                                   var prjValor = projeto.valor
+                                   var projeto_totalImposto = projeto.totalImposto
+                                   var projeto_lbaimp = projeto.lbaimp
+                                   var projeto_lucroLiquido = projeto.lucroLiquido
+
+                                   var totint
+                                   var totges
+                                   var totpro
+                                   var vlrart
+                                   var totali
+                                   var totdes
+                                   var tothtl
+                                   var totcmb
+                                   var totalPlano
+                                   if (req.body.totint != '') {
+                                        totint = req.body.totint
+                                   } else {
+                                        totint = projeto.totint
+                                   }
+                                   //console.log('totint=>' + totint)
+                                   if (req.body.totges != '') {
+                                        totges = req.body.totges
+                                   } else {
+                                        totges = projeto.totges
+                                   }
+                                   if (req.body.totpro != '') {
+                                        totpro = req.body.totpro
+                                   } else {
+                                        totpro = projeto.totpro
+                                   }
+                                   if (req.body.vlrart != '') {
+                                        vlrart = req.body.vlrart
+                                   } else {
+                                        vlrart = projeto.vlrart
+                                   }
+                                   if (req.body.totali != '') {
+                                        totali = req.body.totali
+                                   } else {
+                                        totali = projeto.totali
+                                   }
+                                   //console.log('projeto.ehDireto=>'+projeto.ehDireto)
+                                   if (projeto.ehDireto == true) {
+                                        tothtl = 0
+                                        totcmb = 0
+                                        if (req.body.totdes != '') {
+                                             totdes = req.body.totdes
+                                        } else {
+                                             totdes = projeto.totdes
+                                        }
+                                   } else {
+                                        totdes = projeto.totdes
+
+                                        tothtl = 0
+                                        if (projeto.ehDireto == false) {
+                                             if (req.body.tothtl != '') {
+                                                  tothtl = req.body.tothtl
+                                             } else {
+                                                  tothtl = projeto.tothtl
+                                             }
+                                        }
+                                        totcmb = projeto.totcmb
+                                        if (projeto.ehDireto == false) {
+                                             if (req.body.totcmb != '') {
+                                                  totcmb = req.body.totcmb
+                                             } else {
+                                                  totcmb = projeto.totcmb
+                                             }
+                                        }
+                                   }
+                                   //console.log('totdes=>'+totdes)
+                                   //Definir valores tatais de armazenagem e inslação de painéis elétricos
+                                   var totpnl = 0
+                                   var toteae = 0
+                                   if (projeto.temPainel == 'checked') {
+                                        totpnl = 0
+                                        if (req.body.totpnl != '') {
+                                             totpnl = req.body.totpnl
+                                        } else {
+                                             totpnl = projeto.totpnl
+                                        }
+
+                                   }
+                                   if (projeto.temArmazenamento == 'checked') {
+                                        toteae = 0
+                                        if (req.body.toteae != '') {
+                                             toteae = req.body.toteae
+                                        } else {
+                                             toteae = projeto.toteae
+                                        }
+                                   }
+
+                                   var valorCer = 0
+                                   var valorCen = 0
+                                   var valorPos = 0
+                                   if (projeto.temCercamento == 'checked') {
+                                        if (req.body.cercamento != '') {
+                                             valorCer = req.body.cercamento
+                                        }
+                                   }
+                                   if (projeto.temCentral == 'checked') {
+                                        if (req.body.central != '') {
+                                             valorCen = req.body.central
+                                        }
+                                   }
+                                   if (projeto.temPosteCond == 'checked') {
+                                        if (req.body.postecond != '') {
+                                             valorPos = req.body.postecond
+                                        }
+                                   }
+
+                                   if ((valorPos == 0 || valorPos == '') && detalhe.valorPos != 0) {
+                                        valorPos = detalhe.valorPos
+                                   }
+                                   if ((valorCer == 0 || valorCer == '') && detalhe.valorCer != 0) {
+                                        valorCer = detalhe.valorCer
+                                   }
+                                   if ((valorCen == 0 || valorCen == '') && detalhe.valorCen != 0) {
+                                        valorCen = detalhe.valorCen
+                                   }
+
+                                   var custoFix = parseFloat(totint) + parseFloat(totges) + parseFloat(totpro) + parseFloat(vlrart) + parseFloat(toteae) + parseFloat(totpnl)
+                                   var custoVar
+                                   if (projeto.ehDireto == true) {
+                                        custoVar = (parseFloat(totali) + parseFloat(totdes)).toFixed(2)
+                                   } else {
+                                        custoVar = (parseFloat(totali) + parseFloat(totcmb) + parseFloat(tothtl)).toFixed(2)
+                                   }
+
+                                   var custoEst = parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen)
+                                   totalPlano = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
+
+                                   var vlrequ
+                                   var impISSNfs
+                                   var vlrPrjNFS
+
+                                   if (req.body.vlrequ != '') {
+                                        vlrequ = req.body.vlrequ
+                                        vlrkit = req.body.vlrequ
+                                   } else {
+                                        vlrequ = projeto.vlrequ
+                                        vlrkit = projeto.vlrkit
+                                   }
+
+                                   if (projeto.fatequ == true) {
+                                        vlrPrjNFS = parseFloat(projeto.valor).toFixed(2)
+                                   } else {
+                                        vlrPrjNFS = (parseFloat(projeto.valor) - parseFloat(vlrkit)).toFixed(2)
+                                   }
+
+                                   //console.log('vlrequ=>' + vlrequ)
+                                   //console.log('vlrPrjNFS=>' + vlrPrjNFS)
+
+                                   //-------------------------------------
+                                   var impmanual
+                                   var impISS
+                                   var impostoICMS
+                                   var impICMS
+                                   var impSimples
+                                   var impIRPJ
+                                   var impIRPJAdd
+                                   var impCSLL
+                                   var impPIS
+                                   var impCOFINS
+                                   var totalImposto
+
+                                   if (req.body.impmanual != null) {
+                                        //LANÇAMENTO DIRETO/MANUAL DE IMPOSTOS
+                                        impmanual = 'checked'
+                                        if (req.body.impISS == '' || req.body.impISS == 0 || parseFloat(req.body.impISS) == null) {
+                                             impISS = 0
+                                        } else {
+                                             impISS = req.body.impISS
+                                        }
+                                   } else {
+                                        if (!impISSNfs) {
+                                             if (!projeto.impNFS || projeto.impNFS != '') {
+                                                  impISS = projeto.impNFS
+                                             } else {
+                                                  impISS = 0
+                                             }
+                                        } else {
+                                             impISS = impISSNfs.toFixed(2)
+                                        }
+                                   }
+
+                                   var prjrecLiquida = parseFloat(projeto.valor) - parseFloat(impISS)
+                                   prjrecLiquida = parseFloat(prjrecLiquida).toFixed(2)
+
+                                   var prjLucroBruto = parseFloat(prjrecLiquida) - parseFloat(vlrkit)
+                                   prjLucroBruto = parseFloat(prjLucroBruto).toFixed(2)
+
+                                   //Valida a comissão e calcula o lucroBruto
+                                   var vlrcom
+                                   if (req.body.vlrcom == '') {
+                                        vlrcom = projeto.vlrcom
+                                   } else {
+                                        vlrcom = req.body.vlrcom
+                                   }
+
+                                   var lbaimp = 0
+                                   if (parseFloat(projeto.desAdm) > 0) {
+                                        lbaimp = (parseFloat(prjLucroBruto) - parseFloat(totalPlano) - parseFloat(projeto.desAdm) - parseFloat(vlrcom)).toFixed(2)
+                                   } else {
+                                        lbaimp = (parseFloat(prjLucroBruto) - parseFloat(totalPlano) - parseFloat(vlrcom)).toFixed(2)
+                                   }
+                                   lbaimp = parseFloat(lbaimp).toFixed(2)
+
+                                   if (impmanual == 'checked') {
+                                        //LANÇAMENTO DIRETO/MANUAL DE IMPOSTOS
+                                        if (req.body.impICMS == '') {
+                                             impICMS = 0
+                                        } else {
+                                             impICMS = req.body.impICMS
+                                        }
+                                        if (req.body.impSimples == '') {
+                                             impSimples = 0
+                                        } else {
+                                             impSimples = req.body.impSimples
+                                        }
+                                        if (req.body.impIRPJ == '') {
+                                             impIRPJ = 0
+                                        } else {
+                                             impIRPJ = req.body.impIRPJ
+                                        }
+                                        if (req.body.impIRPJAdd == '') {
+                                             impIRPJAdd = 0
+                                        } else {
+                                             impIRPJAdd = req.body.impIRPJAdd
+                                        }
+                                        if (req.body.impCSLL == '') {
+                                             impCSLL = 0
+                                        } else {
+                                             impCSLL = req.body.impCSLL
+                                        }
+                                        if (req.body.impPIS == '') {
+                                             impPIS = 0
+                                        } else {
+                                             impPIS = req.body.impPIS
+                                        }
+                                        if (req.body.impCOFINS == '') {
+                                             impCOFINS = 0
+                                        } else {
+                                             impCOFINS = req.body.impCOFINS
+                                        }
+                                        if (rp.regime = 'Simples') {
+                                             totalImposto = parseFloat(impSimples).toFixed(2)
+                                        } else {
+                                             totalImposto = (parseFloat(impIRPJ) + parseFloat(impIRPJAdd) + parseFloat(impCSLL) + parseFloat(impPIS) + parseFloat(impCOFINS)).toFixed(2)
+                                        }
+                                        //---------------------
+                                   } else {
+                                        //CÁLCULO AUTOMÁTICO DOS IMPOSTOS
+                                        if (projeto.fatequ == true) {
+                                             if (rp.alqICMS == '' || rp.alqICMS == null) {
+                                                  impICMS = 0
+                                             } else {
+                                                  impostoICMS = (parseFloat(vlrkit) / (1 - (parseFloat(rp.alqICMS) / 100))) * (parseFloat(rp.alqICMS) / 100)
+                                                  impICMS = impostoICMS.toFixed(2)
+                                             }
+                                        } else {
+                                             impICMS = 0
+                                        }
+
+                                        var fatadd
+                                        var fataju
+                                        var aux
+                                        var prjLR = rp.prjLR
+                                        var prjLP = rp.prjLP
+                                        var prjFat = rp.prjFat
+
+                                        if (rp.regime == 'Simples') {
+                                             var alqEfe = ((parseFloat(prjFat) * (parseFloat(rp.alqDAS) / 100)) - (parseFloat(rp.vlrred))) / parseFloat(prjFat)
+                                             impSimples = parseFloat(vlrPrjNFS) * (parseFloat(alqEfe))
+                                             totalImposto = parseFloat(impSimples).toFixed(2)
+                                             impIRPJ = 0
+                                             impIRPJAdd = 0
+                                             impCSLL = 0
+                                             impPIS = 0
+                                             impCOFINS = 0
+                                        } else {
+                                             if (rp.regime == 'Lucro Real') {
+                                                  //Imposto Adicional de IRPJ
+                                                  if ((parseFloat(prjLR) / 12) > 20000) {
+                                                       fatadd = (parseFloat(prjLR) / 12) - 20000
+                                                       fataju = parseFloat(fatadd) * (parseFloat(rp.alqIRPJAdd) / 100)
+                                                       aux = Math.round(parseFloat(fatadd) / parseFloat(lbaimp))
+                                                       impIRPJAdd = (parseFloat(fataju) / parseFloat(aux)).toFixed(2)
+
+                                                  } else {
+                                                       impIRPJAdd = 0
+                                                  }
+                                                  impIRPJ = parseFloat(lbaimp) * (parseFloat(rp.alqIRPJ) / 100)
+                                                  impIRPJ = impIRPJ.toFixed(2)
+                                                  impCSLL = parseFloat(lbaimp) * (parseFloat(rp.alqCSLL) / 100)
+                                                  impCSLL = impCSLL.toFixed(2)
+                                                  impPIS = parseFloat(vlrPrjNFS) * 0.5 * (parseFloat(rp.alqPIS) / 100)
+                                                  impPIS = impPIS.toFixed(2)
+                                                  impCOFINS = parseFloat(vlrPrjNFS) * 0.5 * (parseFloat(rp.alqCOFINS) / 100)
+                                                  impCOFINS = impCOFINS.toFixed(2)
+                                                  totalImposto = (parseFloat(impIRPJAdd) + parseFloat(impIRPJ) + parseFloat(impCSLL) + parseFloat(impCOFINS) + parseFloat(impPIS)).toFixed(2)
+
+                                             } else {
+                                                  //Imposto adicional de IRPJ
+                                                  if (((parseFloat(prjLP) * 0.32) / 3) > 20000) {
+                                                       fatadd = ((parseFloat(prjLP) * 0.32) / 3) - 20000
+                                                       fataju = parseFloat(fatadd) / 20000
+                                                       impIRPJAdd = (parseFloat(vlrPrjNFS) * 0.32) * parseFloat(fataju).toFixed(2) * (parseFloat(rp.alqIRPJAdd) / 100)
+                                                       impIRPJAdd = impIRPJAdd.toFixed(2)
+                                                  } else {
+                                                       impIRPJAdd = 0
+                                                  }
+
+                                                  impIRPJ = parseFloat(vlrPrjNFS) * 0.32 * (parseFloat(rp.alqIRPJ) / 100)
+                                                  impIRPJ = impIRPJ.toFixed(2)
+                                                  impCSLL = parseFloat(vlrPrjNFS) * 0.32 * (parseFloat(rp.alqCSLL) / 100)
+                                                  impCSLL = impCSLL.toFixed(2)
+
+                                                  impCOFINS = parseFloat(vlrPrjNFS) * (parseFloat(rp.alqCOFINS) / 100)
+                                                  impCOFINS = impCOFINS.toFixed(2)
+
+                                                  impPIS = parseFloat(vlrPrjNFS) * (parseFloat(rp.alqPIS) / 100)
+                                                  impPIS = impPIS.toFixed(2)
+
+                                                  totalImposto = (parseFloat(impIRPJAdd) + parseFloat(impIRPJ) + parseFloat(impCSLL) + parseFloat(impCOFINS) + parseFloat(impPIS)).toFixed(2)
+                                             }
+                                        }
+                                   }
+
+                                   //----------------------------
+
+                                   var totalTributos = 0
+                                   if (parseFloat(impICMS) > 0) {
+                                        totalTributos = (parseFloat(totalImposto) + parseFloat(impISS) + parseFloat(impICMS)).toFixed(2)
+                                        totalImposto = (parseFloat(totalImposto) + parseFloat(impICMS)).toFixed(2)
+                                   } else {
+                                        totalTributos = (parseFloat(totalImposto) + parseFloat(impISS)).toFixed(2)
+                                   }
+
+                                   var lucroLiquido = (parseFloat(lbaimp) - parseFloat(totalImposto)).toFixed(2)
+
+                                   //CÁLCULO DAS VARIAÇÕES
+                                   var varCusto = - (((parseFloat(prjCusto) - parseFloat(totalPlano)) / parseFloat(prjCusto)) * 100)
+                                   varCusto = varCusto.toFixed(2)
+                                   var varTI = - (((parseFloat(projeto_totalImposto) - parseFloat(totalImposto)) / parseFloat(projeto_totalImposto)) * 100)
+                                   varTI = varTI.toFixed(2)
+                                   var varLAI = -(((parseFloat(projeto_lbaimp) - parseFloat(lbaimp)) / parseFloat(projeto_lbaimp)) * 100)
+                                   varLAI = varLAI.toFixed(2)
+                                   var varLL = -(((parseFloat(projeto_lucroLiquido) - parseFloat(lucroLiquido)) / parseFloat(projeto_lucroLiquido)) * 100)
+                                   varLL = varLL.toFixed(2)
+
+                                   //CÁLCULO DAS PARTES
+
+                                   var parLiqVlr = (parseFloat(lucroLiquido) / parseFloat(prjValor)) * 100
+                                   parLiqVlr = parLiqVlr.toFixed(2)
+                                   var parKitVlr = (parseFloat(vlrkit) / parseFloat(prjValor)) * 100
+                                   parKitVlr = parKitVlr.toFixed(2)
+                                   var parIntVlr = (parseFloat(totint) / parseFloat(prjValor)) * 100
+                                   parIntVlr = parIntVlr.toFixed(2)
+                                   var parGesVlr = (parseFloat(totges) / parseFloat(prjValor)) * 100
+                                   parGesVlr = parGesVlr.toFixed(2)
+                                   var parProVlr = (parseFloat(totpro) / parseFloat(prjValor)) * 100
+                                   parProVlr = parProVlr.toFixed(2)
+                                   var parArtVlr = (parseFloat(vlrart) / parseFloat(prjValor)) * 100
+                                   parArtVlr = parArtVlr.toFixed(2)
+                                   var parDesVlr = (parseFloat(totdes) / parseFloat(prjValor)) * 100
+                                   parDesVlr = parDesVlr.toFixed(2)
+                                   var parCmbVlr
+                                   if (projeto.ehDireto == false) {
+                                        parCmbVlr = (parseFloat(totcmb) / parseFloat(prjValor)) * 100
+                                   } else {
+                                        parCmbVlr = 0
+                                   }
+                                   parCmbVlr = parCmbVlr.toFixed(2)
+                                   var parAliVlr = (parseFloat(totali) / parseFloat(prjValor)) * 100
+                                   parAliVrl = parAliVlr.toFixed(2)
+                                   var parEstVlr
+                                   if (projeto.ehDireto == false) {
+                                        parEstVlr = (parseFloat(tothtl) / parseFloat(prjValor)) * 100
+                                   } else {
+                                        parEstVlr = 0
+                                   }
+                                   parEstVlr = parEstVlr.toFixed(2)
+                                   var parDedVlr = (parseFloat(totalPlano) / parseFloat(prjValor)) * 100
+                                   parDedVlr = parDedVlr.toFixed(2)
+                                   var parISSVlr
+                                   if (impISS > 0) {
+                                        parISSVlr = (parseFloat(impISS) / parseFloat(prjValor)) * 100
+                                   } else {
+                                        parISSVlr = 0
+                                   }
+
+                                   parISSVlr = parISSVlr.toFixed(2)
+                                   var parImpVlr = (parseFloat(totalImposto) / parseFloat(prjValor)) * 100
+                                   parImpVlr = parImpVlr.toFixed(2)
+                                   var parComVlr = (parseFloat(vlrcom) / parseFloat(projeto.valor)) * 100
+                                   parComVlr = parComVlr.toFixed(2)
+
+                                   var parLiqNfs = (parseFloat(lucroLiquido) / parseFloat(vlrPrjNFS)) * 100
+                                   parLiqNfs = parLiqNfs.toFixed(2)
+                                   if (projeto.fatequ == true) {
+                                        var parKitNfs = (parseFloat(vlrkit) / parseFloat(vlrPrjNFS)) * 100
+                                        parKitNfs = parKitNfs.toFixed(2)
+                                   } else {
+                                        parKitNfs = 0
+                                   }
+                                   var parIntNfs = (parseFloat(totint) / parseFloat(vlrPrjNFS)) * 100
+                                   parIntNfs = parIntNfs.toFixed(2)
+                                   var parGesNfs = (parseFloat(totges) / parseFloat(vlrPrjNFS)) * 100
+                                   parGesNfs = parGesNfs.toFixed(2)
+                                   var parProNfs = (parseFloat(totpro) / parseFloat(vlrPrjNFS)) * 100
+                                   parProNfs = parProNfs.toFixed(2)
+                                   var parArtNfs = (parseFloat(vlrart) / parseFloat(vlrPrjNFS)) * 100
+                                   parArtNfs = parArtNfs.toFixed(2)
+                                   var parDesNfs = (parseFloat(totdes) / parseFloat(vlrPrjNFS)) * 100
+                                   parDesNfs = parDesNfs.toFixed(2)
+                                   var parCmbNfs
+                                   if (projeto.ehDireto == false) {
+                                        parCmbNfs = (parseFloat(totcmb) / parseFloat(vlrPrjNFS)) * 100
+                                   } else {
+                                        parCmbNfs = 0
+                                   }
+                                   parCmbNfs = parCmbNfs.toFixed(2)
+                                   var parAliNfs = (parseFloat(totali) / parseFloat(vlrPrjNFS)) * 100
+                                   parAliNfs = parAliNfs.toFixed(2)
+                                   var parEstNfs
+                                   if (projeto.ehDireto == false) {
+                                        parEstNfs = (parseFloat(tothtl) / parseFloat(vlrPrjNFS)) * 100
+                                   } else {
+                                        parEstNfs = 0
+                                   }
+                                   parEstNfs = parEstNfs.toFixed(2)
+                                   if (parseFloat(totalPlano) > 0) {
+                                        var parDedNfs = (parseFloat(totalPlano) / parseFloat(vlrPrjNFS)) * 100
+                                        parDedNfs = parseFloat(parDedNfs).toFixed(2)
+                                   } else {
+                                        parDedNfs = 0
+                                   }
+                                   var parISSNfs
+                                   if (impISS > 0) {
+                                        parISSNfs = (parseFloat(impISS) / parseFloat(vlrPrjNFS)) * 100
+                                   } else {
+                                        parISSNfs = 0
+                                   }
+
+                                   parISSNfs = parISSNfs.toFixed(2)
+                                   var parImpNfs = (parseFloat(totalImposto) / parseFloat(projeto.vlrNFS)) * 100
+                                   parImpNfs = parImpNfs.toFixed(2)
+                                   var parComNfs = (parseFloat(vlrcom) / parseFloat(vlrPrjNFS)) * 100
+                                   parComNfs = parComNfs.toFixed(2)
+
+                                   //Define percentua do realizado foi maoir ou menor que do orçado
+                                   var parVlrRlz
+                                   var parNfsRlz
+                                   var varLucRlz
+                                   if (parLiqVlr > projeto.parLiqVlr) {
+                                        parVlrRlz = true
+                                   } else {
+                                        parVlrRlz = false
+                                   }
+                                   if (parLiqNfs > projeto.parLiqNfs) {
+                                        parNfsRlz = true
+                                   } else {
+                                        parNfsRlz = false
+                                   }
+                                   if (lucroLiquido > projeto.lucroLiquido) {
+                                        varLucRlz = true
+                                   } else {
+                                        varLucRlz = false
+                                   }
+
+                                   //Define data atual
+                                   var data = new Date()
+                                   var dia = data.getDate()
+                                   if (dia < 10) {
+                                        dia = '0' + dia
+                                   }
+                                   var mes = parseFloat(data.getMonth()) + 1
+                                   if (mes < 10) {
+                                        mes = '0' + mes
+                                   }
+                                   var ano = data.getFullYear()
+
+                                   //validar a data de entrega do projeto
+                                   var datafim = 0
+                                   var dataFimPrj
+                                   var valDataFim
+                                   var datavis = 0
+                                   var ano
+                                   var mes
+                                   var dia
+                                   if (req.body.valDataFim != '' && typeof req.body.valDataFim != 'undefined') {
+                                        //console.log('data diferente de vazio')
+                                        //console.log('req.body.valDataFim=>' + req.body.valDataFim)
+                                        datafim = req.body.valDataFim
+                                        ano = datafim.substring(0, 4)
+                                        mes = datafim.substring(5, 7)
+                                        dia = datafim.substring(8, 11)
+                                        datafim = ano + mes + dia
+                                        dataFimPrj = dia + '/' + mes + '/' + ano
+                                        //console.log('datafim=>' + datafim)
+                                        //console.log('dataFimPrj=>' + dataFimPrj)
+                                        datavis = cronograma.datevis
+                                        ano = datavis.substring(0, 4)
+                                        mes = datavis.substring(5, 7)
+                                        dia = datavis.substring(8, 11)
+                                        datavis = ano + mes + dia
+                                        //console.log('datavis=>' + datavis)
+                                        if (parseFloat(datavis) <= parseFloat(datafim)) {
+                                             //console.log('data final maior que data de vistoria')
+                                             valDataFim = req.body.valDataFim
+                                             projeto.datafim = dataFimPrj
+                                             projeto.valDataFim = valDataFim
+                                             cronograma.dateEntregaReal = valDataFim
+                                             projeto.atrasado = comparaDatas(cronograma.dateentrega, req.body.valDataFim)
+
+                                        } else {
+                                             valDataFim = projeto.valDataFim
+                                             dataFimPrj = projeto.datafim
+                                             erros.push({ texto: 'A data de entrega do projeto deve ser maior ou igual a data de finalização da vistoria.' })
+                                        }
+                                   } else {
+                                        dataFimPrj = 0
+                                        valDataFim = 0
+                                   }
+
+                                   var datareg = ano + mes + dia
                                    if (realizado != null) {
-                                        realizado.remove()
+                                        realizado.foiRealizado = false
+                                        realizado.nome = projeto.nome
+                                        realizado.cliente = projeto.nomecliente
+                                        realizado.dataini = projeto.dataini
+                                        realizado.datafim = dataFimPrj
+                                        realizado.valDataFim = valDataFim
+                                        realizado.valor = projeto.valor
+                                        realizado.data = dia + '/' + mes + '/' + ano
+                                        realizado.datareg = datareg
+                                        realizado.totint = totint
+                                        realizado.totges = totges
+                                        realizado.totpro = totpro
+                                        realizado.vlrart = vlrart
+                                        realizado.totali = totali
+                                        realizado.totdes = totdes
+                                        realizado.tothtl = tothtl
+                                        realizado.totpnl = totpnl
+                                        realizado.toteae = toteae
+                                        realizado.totcmb = totcmb
+                                        realizado.valorCer = valorCer
+                                        realizado.valorCen = valorCen
+                                        realizado.valorPos = valorPos
+
+                                        realizado.custofix = custoFix
+                                        realizado.custovar = custoVar
+                                        realizado.custoest = custoEst
+                                        realizado.custoPlano = totalPlano
+                                        realizado.fatequ = projeto.fatequ
+                                        realizado.vlrequ = vlrequ
+                                        realizado.vlrkit = vlrkit
+                                        realizado.valorMod = detalhe.valorMod
+                                        realizado.valorInv = detalhe.valorInv
+                                        realizado.valorEst = detalhe.valorEst
+                                        realizado.valorCim = detalhe.valorCim
+                                        realizado.valorCab = detalhe.valorCab
+                                        realizado.valorEbt = detalhe.valorEbt
+                                        realizado.valorDisCC = detalhe.valorDisCC
+                                        realizado.valorDPSCC = detalhe.valorDPSCC
+                                        realizado.valorDisCA = detalhe.valorDisCA
+                                        realizado.valorDPSCA = detalhe.valorDPSCA
+                                        realizado.valorCCA = detalhe.valorCCA
+                                        realizado.valorSB = detalhe.valorSB
+                                        realizado.valorOcp = detalhe.valorOcp
+
+                                        realizado.vlrNFS = vlrPrjNFS
+                                        realizado.recLiquida = prjrecLiquida
+                                        realizado.lucroBruto = prjLucroBruto
+                                        realizado.vlrcom = vlrcom
+                                        realizado.desAdm = projeto.desAdm
+                                        realizado.lbaimp = lbaimp
+
+                                        realizado.impmanual = impmanual
+                                        realizado.impISS = impISS
+                                        realizado.impICMS = impICMS
+                                        realizado.impSimples = impSimples
+                                        realizado.impIRPJ = impIRPJ
+                                        realizado.impIRPJAdd = impIRPJAdd
+                                        realizado.impCSLL = impCSLL
+                                        realizado.impPIS = impPIS
+                                        realizado.impCOFINS = impCOFINS
+
+                                        realizado.totalImposto = totalImposto
+                                        realizado.totalTributos = totalTributos
+                                        realizado.lucroLiquido = lucroLiquido
+
+                                        realizado.varCusto = varCusto
+                                        realizado.varTI = varTI
+                                        realizado.varLAI = varLAI
+                                        realizado.varLL = varLL
+
+                                        realizado.parLiqVlr = parLiqVlr
+                                        realizado.parKitVlr = parKitVlr
+                                        realizado.parIntVlr = parIntVlr
+                                        realizado.parGesVlr = parGesVlr
+                                        realizado.parProVlr = parProVlr
+                                        realizado.parArtVlr = parArtVlr
+                                        realizado.parDesVlr = parDesVlr
+                                        realizado.parAliVlr = parAliVlr
+                                        realizado.parCmbVlr = parCmbVlr
+                                        realizado.parEstVlr = parEstVlr
+                                        realizado.parDedVlr = parDedVlr
+                                        realizado.parISSVlr = parISSVlr
+                                        realizado.parImpVlr = parImpVlr
+                                        realizado.parComVlr = parComVlr
+
+                                        realizado.parLiqNfs = parLiqNfs
+                                        realizado.parKitNfs = parKitNfs
+                                        realizado.parIntNfs = parIntNfs
+                                        realizado.parGesNfs = parGesNfs
+                                        realizado.parProNfs = parProNfs
+                                        realizado.parArtNfs = parArtNfs
+                                        realizado.parDesNfs = parDesNfs
+                                        realizado.parAliNfs = parAliNfs
+                                        realizado.parEstNfs = parEstNfs
+                                        realizado.parCmbNfs = parCmbNfs
+                                        realizado.parDedNfs = parDedNfs
+                                        realizado.parISSNfs = parISSNfs
+                                        realizado.parImpNfs = parImpNfs
+                                        realizado.parComNfs = parComNfs
+
+                                        realizado.parNfsRlz = parNfsRlz
+                                        realizado.parVlrRlz = parVlrRlz
+                                        realizado.varLucRlz = varLucRlz
+
+                                        realizado.save().then(() => {
+                                             projeto.foiRealizado = true
+                                             projeto.save().then(() => {
+                                                  sucesso = sucesso + 'Projeto realizado com sucesso.'
+                                                  //console.log('sucesso=>' + sucesso)
+                                                  req.flash('success_msg', sucesso)
+                                                  res.redirect('/projeto/realizar/' + req.body.id)
+                                             }).catch((err) => {
+                                                  req.flash('error_msg', 'Não foi possível salvar o projeto.')
+                                                  res.redirect('/projeto/consulta')
+                                             })
+                                        }).catch((err) => {
+                                             req.flash('error_msg', 'Não foi possível realizar o preojto.')
+                                             res.redirect('/realizar/' + req.body.id)
+                                        })
+                                   } else {
+                                        const realizado = {
+                                             user: _id,
+                                             projeto: prj_id,
+                                             potencia: projeto.potencia,
+                                             foiRealizado: false,
+                                             nome: projeto.nome,
+                                             cliente: projeto.nomecliente,
+                                             dataini: projeto.dataini,
+                                             datafim: dataFimPrj,
+                                             valDataFim: valDataFim,
+                                             valor: projeto.valor,
+                                             data: dia + '/' + mes + '/' + ano,
+                                             datareg: datareg,
+                                             totint: totint,
+                                             totges: totges,
+                                             totpro: totpro,
+                                             vlrart: vlrart,
+                                             totali: totali,
+                                             totdes: totdes,
+                                             tothtl: tothtl,
+                                             totcmb: totcmb,
+                                             valorCer: valorCer,
+                                             valorCen: valorCen,
+                                             valorPos: valorPos,
+
+                                             custofix: custoFix,
+                                             custovar: custoVar,
+                                             custoest: custoEst,
+                                             custoPlano: totalPlano,
+                                             fatequ: projeto.fatequ,
+                                             vlrequ: vlrequ,
+                                             vlrkit: vlrkit,
+                                             valorMod: detalhe.valorMod,
+                                             valorInv: detalhe.valorInv,
+                                             valorEst: detalhe.valorEst,
+                                             valorCim: detalhe.valorCim,
+                                             valorCab: detalhe.valorCab,
+                                             valorEbt: detalhe.valorEbt,
+                                             valorDisCC: detalhe.valorDisCC,
+                                             valorDPSCC: detalhe.valorDPSCC,
+                                             valorDisCA: detalhe.valorDisCA,
+                                             valorDPSCA: detalhe.valorDPSCA,
+                                             valorCCA: detalhe.valorCCA,
+                                             valorSB: detalhe.valorSB,
+                                             valorOcp: detalhe.valorOcp,
+
+                                             vlrNFS: vlrPrjNFS,
+                                             recLiquida: prjrecLiquida,
+                                             lucroBruto: prjLucroBruto,
+                                             vlrcom: vlrcom,
+                                             desAdm: projeto.desAdm,
+                                             lbaimp: lbaimp,
+
+                                             impmanual: impmanual,
+                                             impISS: impISS,
+                                             impICMS: impICMS,
+                                             impSimples: impSimples,
+                                             impIRPJ: impIRPJ,
+                                             impIRPJAdd: impIRPJAdd,
+                                             impCSLL: impCSLL,
+                                             impPIS: impPIS,
+                                             impCOFINS: impCOFINS,
+
+                                             totalImposto: totalImposto,
+                                             totalTributos: totalTributos,
+                                             lucroLiquido: lucroLiquido,
+
+                                             varCusto: varCusto,
+                                             varTI: varTI,
+                                             varLAI: varLAI,
+                                             varLL: varLL,
+
+                                             parLiqVlr: parLiqVlr,
+                                             parKitVlr: parKitVlr,
+                                             parIntVlr: parIntVlr,
+                                             parGesVlr: parGesVlr,
+                                             parProVlr: parProVlr,
+                                             parArtVlr: parArtVlr,
+                                             parDesVlr: parDesVlr,
+                                             parAliVlr: parAliVlr,
+                                             parCmbVlr: parCmbVlr,
+                                             parEstVlr: parEstVlr,
+                                             parDedVlr: parDedVlr,
+                                             parISSVlr: parISSVlr,
+                                             parImpVlr: parImpVlr,
+                                             parComVlr: parComVlr,
+
+                                             parLiqNfs: parLiqNfs,
+                                             parKitNfs: parKitNfs,
+                                             parIntNfs: parIntNfs,
+                                             parGesNfs: parGesNfs,
+                                             parProNfs: parProNfs,
+                                             parArtNfs: parArtNfs,
+                                             parDesNfs: parDesNfs,
+                                             parAliNfs: parAliNfs,
+                                             parEstNfs: parEstNfs,
+                                             parCmbNfs: parCmbNfs,
+                                             parDedNfs: parDedNfs,
+                                             parISSNfs: parISSNfs,
+                                             parImpNfs: parImpNfs,
+                                             parComNfs: parComNfs,
+
+                                             parNfsRlz: parNfsRlz,
+                                             parVlrRlz: parVlrRlz,
+                                             varLucRlz: varLucRlz,
+                                        }
+
+                                        new Realizado(realizado).save().then(() => {
+
+                                             projeto.foiRealizado = true
+                                             projeto.homologado = false
+                                             cronograma.save().then(() => {
+                                                  projeto.save().then(() => {
+                                                       //console.log('sucesso=>' + sucesso)
+                                                       req.flash('success_msg', sucesso)
+                                                       res.redirect('/projeto/realizar/' + req.body.id)
+                                                  }).catch((err) => {
+                                                       req.flash('error_msg', 'Não foi possível salvar o projeto.')
+                                                       res.redirect('/projeto/consulta')
+                                                  })
+                                             }).catch((err) => {
+                                                  req.flash('error_msg', 'Não foi possível salvar o cronograma.')
+                                                  res.redirect('/projeto/consulta')
+                                             })
+                                        }).catch((err) => {
+                                             req.flash('error_msg', 'Não foi posível realizar o projeto.')
+                                             res.redirect('/projeto/consulta')
+                                        })
                                    }
 
                               }).catch((err) => {
@@ -2976,519 +3724,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                                    res.redirect('/projeto/consulta')
                               })
 
-                              var prj_id = projeto._id
-                              var prjCusto = projeto.custoPlano
-                              var prjValor = projeto.valor
-                              var projeto_totalImposto = projeto.totalImposto
-                              var projeto_lbaimp = projeto.lbaimp
-                              var projeto_lucroLiquido = projeto.lucroLiquido
 
-                              var totint
-                              var totges
-                              var totpro
-                              var vlrart
-                              var totali
-                              var totdes
-                              var tothtl
-                              var totcmb
-                              var totalPlano
-
-                              if (req.body.totint != '') {
-                                   totint = req.body.totint
-                              } else {
-                                   totint = projeto.totint
-                              }
-                              if (req.body.totges != '') {
-                                   totges = req.body.totges
-                              } else {
-                                   totges = projeto.totges
-                              }
-                              if (req.body.totpro != '') {
-                                   totpro = req.body.totpro
-                              } else {
-                                   totpro = projeto.totpro
-                              }
-                              if (req.body.vlrart != '') {
-                                   vlrart = req.body.vlrart
-                              } else {
-                                   vlrart = projeto.vlrart
-                              }
-                              if (req.body.totali != '') {
-                                   totali = req.body.totali
-                              } else {
-                                   totali = projeto.totali
-                              }
-                              //console.log('projeto.ehDireto=>'+projeto.ehDireto)
-                              if (projeto.ehDireto == true) {
-                                   tothtl = 0
-                                   totcmb = 0
-                                   if (req.body.totdes != '') {
-                                        totdes = req.body.totdes
-                                   } else {
-                                        totdes = projeto.totdes
-                                   }
-                              } else {
-                                   totdes = projeto.totdes
-
-                                   tothtl = 0
-                                   if (projeto.ehDireto == false) {
-                                        if (req.body.tothtl != '') {
-                                             tothtl = req.body.tothtl
-                                        } else {
-                                             tothtl = projeto.tothtl
-                                        }
-                                   }
-                                   totcmb = projeto.totcmb
-                                   if (projeto.ehDireto == false) {
-                                        if (req.body.totcmb != '') {
-                                             totcmb = req.body.totcmb
-                                        } else {
-                                             totcmb = projeto.totcmb
-                                        }
-                                   }
-                              }
-                              //console.log('totdes=>'+totdes)
-
-                              var valorCer = 0
-                              var valorCen = 0
-                              var valorPos = 0
-                              if (projeto.temCercamento == 'checked') {
-                                   if (req.body.cercamento != '') {
-                                        valorCer = req.body.cercamento
-                                   }
-                              }
-                              if (projeto.temCentral == 'checked') {
-                                   if (req.body.central != '') {
-                                        valorCen = req.body.central
-                                   }
-                              }
-                              if (projeto.temPosteCond == 'checked') {
-                                   if (req.body.postecond != '') {
-                                        valorPos = req.body.postecond
-                                   }
-                              }
-
-                              if ((valorPos == 0 || valorPos == '') && detalhe.valorPos != 0) {
-                                   valorPos = detalhe.valorPos
-                              }
-                              if ((valorCer == 0 || valorCer == '') && detalhe.valorCer != 0) {
-                                   valorCer = detalhe.valorCer
-                              }
-                              if ((valorCen == 0 || valorCen == '') && detalhe.valorCen != 0) {
-                                   valorCen = detalhe.valorCen
-                              }
-
-                              var custoFix = parseFloat(totint) + parseFloat(totges) + parseFloat(totpro) + parseFloat(vlrart)
-                              var custoVar
-                              if (projeto.ehDireto == true) {
-                                   custoVar = (parseFloat(totali) + parseFloat(totdes)).toFixed(2)
-                              } else {
-                                   custoVar = (parseFloat(totali) + parseFloat(totcmb) + parseFloat(tothtl)).toFixed(2)
-                              }
-
-                              var custoEst = parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen)
-                              totalPlano = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
-
-                              var vlrequ
-                              var impISSNfs
-                              var vlrPrjNFS
-
-                              if (req.body.vlrequ != '') {
-                                   vlrequ = req.body.vlrequ
-                                   vlrkit = req.body.vlrequ
-                              } else {
-                                   vlrequ = projeto.vlrequ
-                                   vlrkit = projeto.vlrkit
-                              }
-
-                              if (projeto.fatequ == true) {
-                                   vlrPrjNFS = parseFloat(projeto.valor).toFixed(2)
-                              } else {
-                                   vlrPrjNFS = (parseFloat(projeto.valor) - parseFloat(vlrkit)).toFixed(2)
-                              }
-
-                              //console.log('vlrequ=>' + vlrequ)
-                              //console.log('vlrPrjNFS=>' + vlrPrjNFS)
-
-                              //-------------------------------------
-                              var impmanual
-                              var impISS
-                              var impostoICMS
-                              var impICMS
-                              var impSimples
-                              var impIRPJ
-                              var impIRPJAdd
-                              var impCSLL
-                              var impPIS
-                              var impCOFINS
-                              var totalImposto
-
-                              if (req.body.impmanual != null) {
-                                   //LANÇAMENTO DIRETO/MANUAL DE IMPOSTOS
-                                   impmanual = 'checked'
-                                   if (req.body.impISS == '' || req.body.impISS == 0 || parseFloat(req.body.impISS) == null) {
-                                        impISS = 0
-                                   } else {
-                                        impISS = req.body.impISS
-                                   }
-                              } else {
-                                   if (!impISSNfs) {
-                                        if (!projeto.impNFS || projeto.impNFS != '') {
-                                             impISS = projeto.impNFS
-                                        } else {
-                                             impISS = 0
-                                        }
-                                   } else {
-                                        impISS = impISSNfs.toFixed(2)
-                                   }
-                              }
-
-                              var prjrecLiquida = parseFloat(projeto.valor) - parseFloat(impISS)
-                              prjrecLiquida = parseFloat(prjrecLiquida).toFixed(2)
-
-                              var prjLucroBruto = parseFloat(prjrecLiquida) - parseFloat(vlrkit)
-                              prjLucroBruto = parseFloat(prjLucroBruto).toFixed(2)
-
-                              //Valida a comissão e calcula o lucroBruto
-                              var vlrcom
-                              if (req.body.vlrcom == '') {
-                                   vlrcom = projeto.vlrcom
-                              } else {
-                                   vlrcom = req.body.vlrcom
-                              }
-
-                              var lbaimp = 0
-                              if (parseFloat(projeto.desAdm) > 0) {
-                                   lbaimp = (parseFloat(prjLucroBruto) - parseFloat(totalPlano) - parseFloat(projeto.desAdm) - parseFloat(vlrcom)).toFixed(2)
-                              } else {
-                                   lbaimp = (parseFloat(prjLucroBruto) - parseFloat(totalPlano) - parseFloat(vlrcom)).toFixed(2)
-                              }
-                              lbaimp = parseFloat(lbaimp).toFixed(2)
-
-                              if (impmanual == 'checked') {
-                                   //LANÇAMENTO DIRETO/MANUAL DE IMPOSTOS
-                                   if (req.body.impICMS == '') {
-                                        impICMS = 0
-                                   } else {
-                                        impICMS = req.body.impICMS
-                                   }
-                                   if (req.body.impSimples == '') {
-                                        impSimples = 0
-                                   } else {
-                                        impSimples = req.body.impSimples
-                                   }
-                                   if (req.body.impIRPJ == '') {
-                                        impIRPJ = 0
-                                   } else {
-                                        impIRPJ = req.body.impIRPJ
-                                   }
-                                   if (req.body.impIRPJAdd == '') {
-                                        impIRPJAdd = 0
-                                   } else {
-                                        impIRPJAdd = req.body.impIRPJAdd
-                                   }
-                                   if (req.body.impCSLL == '') {
-                                        impCSLL = 0
-                                   } else {
-                                        impCSLL = req.body.impCSLL
-                                   }
-                                   if (req.body.impPIS == '') {
-                                        impPIS = 0
-                                   } else {
-                                        impPIS = req.body.impPIS
-                                   }
-                                   if (req.body.impCOFINS == '') {
-                                        impCOFINS = 0
-                                   } else {
-                                        impCOFINS = req.body.impCOFINS
-                                   }
-                                   if (rp.regime = 'Simples') {
-                                        totalImposto = parseFloat(impSimples).toFixed(2)
-                                   } else {
-                                        totalImposto = (parseFloat(impIRPJ) + parseFloat(impIRPJAdd) + parseFloat(impCSLL) + parseFloat(impPIS) + parseFloat(impCOFINS)).toFixed(2)
-                                   }
-                                   //---------------------
-                              } else {
-                                   //CÁLCULO AUTOMÁTICO DOS IMPOSTOS
-                                   if (projeto.fatequ == true) {
-                                        if (rp.alqICMS == '' || rp.alqICMS == null) {
-                                             impICMS = 0
-                                        } else {
-                                             impostoICMS = (parseFloat(vlrkit) / (1 - (parseFloat(rp.alqICMS) / 100))) * (parseFloat(rp.alqICMS) / 100)
-                                             impICMS = impostoICMS.toFixed(2)
-                                        }
-                                   } else {
-                                        impICMS = 0
-                                   }
-
-                                   var fatadd
-                                   var fataju
-                                   var aux
-                                   var prjLR = rp.prjLR
-                                   var prjLP = rp.prjLP
-                                   var prjFat = rp.prjFat
-
-                                   if (rp.regime == 'Simples') {
-                                        var alqEfe = ((parseFloat(prjFat) * (parseFloat(rp.alqDAS) / 100)) - (parseFloat(rp.vlrred))) / parseFloat(prjFat)
-                                        impSimples = parseFloat(vlrPrjNFS) * (parseFloat(alqEfe))
-                                        totalImposto = parseFloat(impSimples).toFixed(2)
-                                        impIRPJ = 0
-                                        impIRPJAdd = 0
-                                        impCSLL = 0
-                                        impPIS = 0
-                                        impCOFINS = 0
-                                   } else {
-                                        if (rp.regime == 'Lucro Real') {
-                                             //Imposto Adicional de IRPJ
-                                             if ((parseFloat(prjLR) / 12) > 20000) {
-                                                  fatadd = (parseFloat(prjLR) / 12) - 20000
-                                                  fataju = parseFloat(fatadd) * (parseFloat(rp.alqIRPJAdd) / 100)
-                                                  aux = Math.round(parseFloat(fatadd) / parseFloat(lbaimp))
-                                                  impIRPJAdd = (parseFloat(fataju) / parseFloat(aux)).toFixed(2)
-
-                                             } else {
-                                                  impIRPJAdd = 0
-                                             }
-                                             impIRPJ = parseFloat(lbaimp) * (parseFloat(rp.alqIRPJ) / 100)
-                                             impIRPJ = impIRPJ.toFixed(2)
-                                             impCSLL = parseFloat(lbaimp) * (parseFloat(rp.alqCSLL) / 100)
-                                             impCSLL = impCSLL.toFixed(2)
-                                             impPIS = parseFloat(vlrPrjNFS) * 0.5 * (parseFloat(rp.alqPIS) / 100)
-                                             impPIS = impPIS.toFixed(2)
-                                             impCOFINS = parseFloat(vlrPrjNFS) * 0.5 * (parseFloat(rp.alqCOFINS) / 100)
-                                             impCOFINS = impCOFINS.toFixed(2)
-                                             totalImposto = (parseFloat(impIRPJAdd) + parseFloat(impIRPJ) + parseFloat(impCSLL) + parseFloat(impCOFINS) + parseFloat(impPIS)).toFixed(2)
-
-                                        } else {
-                                             //Imposto adicional de IRPJ
-                                             if (((parseFloat(prjLP) * 0.32) / 3) > 20000) {
-                                                  fatadd = ((parseFloat(prjLP) * 0.32) / 3) - 20000
-                                                  fataju = parseFloat(fatadd) / 20000
-                                                  impIRPJAdd = (parseFloat(vlrPrjNFS) * 0.32) * parseFloat(fataju).toFixed(2) * (parseFloat(rp.alqIRPJAdd) / 100)
-                                                  impIRPJAdd = impIRPJAdd.toFixed(2)
-                                             } else {
-                                                  impIRPJAdd = 0
-                                             }
-
-                                             impIRPJ = parseFloat(vlrPrjNFS) * 0.32 * (parseFloat(rp.alqIRPJ) / 100)
-                                             impIRPJ = impIRPJ.toFixed(2)
-                                             impCSLL = parseFloat(vlrPrjNFS) * 0.32 * (parseFloat(rp.alqCSLL) / 100)
-                                             impCSLL = impCSLL.toFixed(2)
-
-                                             impCOFINS = parseFloat(vlrPrjNFS) * (parseFloat(rp.alqCOFINS) / 100)
-                                             impCOFINS = impCOFINS.toFixed(2)
-
-                                             impPIS = parseFloat(vlrPrjNFS) * (parseFloat(rp.alqPIS) / 100)
-                                             impPIS = impPIS.toFixed(2)
-
-                                             totalImposto = (parseFloat(impIRPJAdd) + parseFloat(impIRPJ) + parseFloat(impCSLL) + parseFloat(impCOFINS) + parseFloat(impPIS)).toFixed(2)
-                                        }
-                                   }
-                              }
-
-                              //----------------------------
-
-                              var totalTributos = 0
-                              if (parseFloat(impICMS) > 0) {
-                                   totalTributos = (parseFloat(totalImposto) + parseFloat(impISS) + parseFloat(impICMS)).toFixed(2)
-                                   totalImposto = (parseFloat(totalImposto) + parseFloat(impICMS)).toFixed(2)
-                              } else {
-                                   totalTributos = (parseFloat(totalImposto) + parseFloat(impISS)).toFixed(2)
-                              }
-
-                              var lucroLiquido = (parseFloat(lbaimp) - parseFloat(totalImposto)).toFixed(2)
-
-                              //CÁLCULO DAS VARIAÇÕES
-                              var varCusto = - (((parseFloat(prjCusto) - parseFloat(totalPlano)) / parseFloat(prjCusto)) * 100)
-                              varCusto = varCusto.toFixed(2)
-                              var varTI = - (((parseFloat(projeto_totalImposto) - parseFloat(totalImposto)) / parseFloat(projeto_totalImposto)) * 100)
-                              varTI = varTI.toFixed(2)
-                              var varLAI = -(((parseFloat(projeto_lbaimp) - parseFloat(lbaimp)) / parseFloat(projeto_lbaimp)) * 100)
-                              varLAI = varLAI.toFixed(2)
-                              var varLL = -(((parseFloat(projeto_lucroLiquido) - parseFloat(lucroLiquido)) / parseFloat(projeto_lucroLiquido)) * 100)
-                              varLL = varLL.toFixed(2)
-
-                              //CÁLCULO DAS PARTES
-
-                              var parLiqVlr = (parseFloat(lucroLiquido) / parseFloat(prjValor)) * 100
-                              parLiqVlr = parLiqVlr.toFixed(2)
-                              var parKitVlr = (parseFloat(vlrkit) / parseFloat(prjValor)) * 100
-                              parKitVlr = parKitVlr.toFixed(2)
-                              var parIntVlr = (parseFloat(totint) / parseFloat(prjValor)) * 100
-                              parIntVlr = parIntVlr.toFixed(2)
-                              var parGesVlr = (parseFloat(totges) / parseFloat(prjValor)) * 100
-                              parGesVlr = parGesVlr.toFixed(2)
-                              var parProVlr = (parseFloat(totpro) / parseFloat(prjValor)) * 100
-                              parProVlr = parProVlr.toFixed(2)
-                              var parArtVlr = (parseFloat(vlrart) / parseFloat(prjValor)) * 100
-                              parArtVlr = parArtVlr.toFixed(2)
-                              var parDesVlr = (parseFloat(totdes) / parseFloat(prjValor)) * 100
-                              parDesVlr = parDesVlr.toFixed(2)
-                              var parCmbVlr
-                              if (projeto.ehDireto == false) {
-                                   parCmbVlr = (parseFloat(totcmb) / parseFloat(prjValor)) * 100
-                              } else {
-                                   parCmbVlr = 0
-                              }
-                              parCmbVlr = parCmbVlr.toFixed(2)
-                              var parAliVlr = (parseFloat(totali) / parseFloat(prjValor)) * 100
-                              parAliVrl = parAliVlr.toFixed(2)
-                              var parEstVlr
-                              if (projeto.ehDireto == false) {
-                                   parEstVlr = (parseFloat(tothtl) / parseFloat(prjValor)) * 100
-                              } else {
-                                   parEstVlr = 0
-                              }
-                              parEstVlr = parEstVlr.toFixed(2)
-                              var parDedVlr = (parseFloat(totalPlano) / parseFloat(prjValor)) * 100
-                              parDedVlr = parDedVlr.toFixed(2)
-                              var parISSVlr
-                              if (impISS > 0) {
-                                   parISSVlr = (parseFloat(impISS) / parseFloat(prjValor)) * 100
-                              } else {
-                                   parISSVlr = 0
-                              }
-
-                              parISSVlr = parISSVlr.toFixed(2)
-                              var parImpVlr = (parseFloat(totalImposto) / parseFloat(prjValor)) * 100
-                              parImpVlr = parImpVlr.toFixed(2)
-                              var parComVlr = (parseFloat(vlrcom) / parseFloat(projeto.valor)) * 100
-                              parComVlr = parComVlr.toFixed(2)
-
-                              var parLiqNfs = (parseFloat(lucroLiquido) / parseFloat(vlrPrjNFS)) * 100
-                              parLiqNfs = parLiqNfs.toFixed(2)
-                              if (projeto.fatequ == true) {
-                                   var parKitNfs = (parseFloat(vlrkit) / parseFloat(vlrPrjNFS)) * 100
-                                   parKitNfs = parKitNfs.toFixed(2)
-                              } else {
-                                   parKitNfs = 0
-                              }
-                              var parIntNfs = (parseFloat(totint) / parseFloat(vlrPrjNFS)) * 100
-                              parIntNfs = parIntNfs.toFixed(2)
-                              var parGesNfs = (parseFloat(totges) / parseFloat(vlrPrjNFS)) * 100
-                              parGesNfs = parGesNfs.toFixed(2)
-                              var parProNfs = (parseFloat(totpro) / parseFloat(vlrPrjNFS)) * 100
-                              parProNfs = parProNfs.toFixed(2)
-                              var parArtNfs = (parseFloat(vlrart) / parseFloat(vlrPrjNFS)) * 100
-                              parArtNfs = parArtNfs.toFixed(2)
-                              var parDesNfs = (parseFloat(totdes) / parseFloat(vlrPrjNFS)) * 100
-                              parDesNfs = parDesNfs.toFixed(2)
-                              var parCmbNfs
-                              if (projeto.ehDireto == false) {
-                                   parCmbNfs = (parseFloat(totcmb) / parseFloat(vlrPrjNFS)) * 100
-                              } else {
-                                   parCmbNfs = 0
-                              }
-                              parCmbNfs = parCmbNfs.toFixed(2)
-                              var parAliNfs = (parseFloat(totali) / parseFloat(vlrPrjNFS)) * 100
-                              parAliNfs = parAliNfs.toFixed(2)
-                              var parEstNfs
-                              if (projeto.ehDireto == false) {
-                                   parEstNfs = (parseFloat(tothtl) / parseFloat(vlrPrjNFS)) * 100
-                              } else {
-                                   parEstNfs = 0
-                              }
-                              parEstNfs = parEstNfs.toFixed(2)
-                              if (parseFloat(totalPlano) > 0) {
-                                   var parDedNfs = (parseFloat(totalPlano) / parseFloat(vlrPrjNFS)) * 100
-                                   parDedNfs = parseFloat(parDedNfs).toFixed(2)
-                              } else {
-                                   parDedNfs = 0
-                              }
-                              var parISSNfs
-                              if (impISS > 0) {
-                                   parISSNfs = (parseFloat(impISS) / parseFloat(vlrPrjNFS)) * 100
-                              } else {
-                                   parISSNfs = 0
-                              }
-
-                              parISSNfs = parISSNfs.toFixed(2)
-                              var parImpNfs = (parseFloat(totalImposto) / parseFloat(projeto.vlrNFS)) * 100
-                              parImpNfs = parImpNfs.toFixed(2)
-                              var parComNfs = (parseFloat(vlrcom) / parseFloat(vlrPrjNFS)) * 100
-                              parComNfs = parComNfs.toFixed(2)
-
-                              //Define percentua do realizado foi maoir ou menor que do orçado
-                              var parVlrRlz
-                              var parNfsRlz
-                              var varLucRlz
-                              if (parLiqVlr > projeto.parLiqVlr) {
-                                   parVlrRlz = true
-                              } else {
-                                   parVlrRlz = false
-                              }
-                              if (parLiqNfs > projeto.parLiqNfs) {
-                                   parNfsRlz = true
-                              } else {
-                                   parNfsRlz = false
-                              }
-                              if (lucroLiquido > projeto.lucroLiquido) {
-                                   varLucRlz = true
-                              } else {
-                                   varLucRlz = false
-                              }
-
-                              //Define data atual
-                              var data = new Date()
-                              var dia = data.getDate()
-                              if (dia < 10) {
-                                   dia = '0' + dia
-                              }
-                              var mes = parseFloat(data.getMonth()) + 1
-                              if (mes < 10) {
-                                   mes = '0' + mes
-                              }
-                              var ano = data.getFullYear()
-
-                              //validar a data de entrega do projeto
-                              var datafim = 0
-                              var dataFimPrj
-                              var valDataFim
-                              var datavis = 0
-                              var ano
-                              var mes
-                              var dia
-                              if (req.body.valDataFim != '' && typeof req.body.valDataFim != 'undefined') {
-                                   //console.log('data diferente de vazio')
-                                   //console.log('req.body.valDataFim=>' + req.body.valDataFim)
-                                   datafim = req.body.valDataFim
-                                   ano = datafim.substring(0, 4)
-                                   mes = datafim.substring(5, 7)
-                                   dia = datafim.substring(8, 11)
-                                   datafim = ano + mes + dia
-                                   dataFimPrj = dia + '/' + mes + '/' + ano
-                                   //console.log('datafim=>' + datafim)
-                                   //console.log('dataFimPrj=>' + dataFimPrj)
-                                   datavis = cronograma.datevis
-                                   ano = datavis.substring(0, 4)
-                                   mes = datavis.substring(5, 7)
-                                   dia = datavis.substring(8, 11)
-                                   datavis = ano + mes + dia
-                                   //console.log('datavis=>' + datavis)
-                                   if (parseFloat(datavis) <= parseFloat(datafim)) {
-                                        //console.log('data final maior que data de vistoria')
-                                        valDataFim = req.body.valDataFim
-                                        projeto.datafim = dataFimPrj
-                                        projeto.valDataFim = valDataFim
-                                        cronograma.dateEntregaReal = valDataFim
-                                        projeto.atrasado = comparaDatas(cronograma.dateentrega, req.body.valDataFim)
-
-                                   } else {
-                                        valDataFim = projeto.valDataFim
-                                        dataFimPrj = projeto.datafim
-                                        erros.push({ texto: 'A data de entrega do projeto deve ser maior ou igual a data de finalização da vistoria.' })
-                                   }
-                              } else {
-                                   dataFimPrj = 0
-                                   valDataFim = 0
-                              }
-                              //console.log('validado!')
-                              //console.log('dataFimPrj=>' + dataFimPrj)
-                              //console.log('valDataFim=>' + valDataFim)
-
-
-
-                              var datareg = ano + mes + dia
                               //Para verificar alguma falha quando salva o registro do realizado
                               //console.log('user=>' + _id)
                               //console.log('projeto=>' + prj_id)
@@ -3563,201 +3799,6 @@ router.post('/realizar', ehAdmin, (req, res) => {
                               //console.log('parNfsRlz=>' + parNfsRlz)
                               //console.log('parVlrRlz=>' + parVlrRlz)
                               //console.log('varLucRlz=>' + varLucRlz)
-
-
-                              const realizado = {
-                                   user: _id,
-                                   projeto: prj_id,
-                                   potencia: projeto.potencia,
-                                   foiRealizado: false,
-                                   nome: projeto.nome,
-                                   cliente: projeto.nomecliente,
-                                   dataini: projeto.dataini,
-                                   datafim: dataFimPrj,
-                                   valDataFim: valDataFim,
-                                   valor: projeto.valor,
-                                   data: dia + '/' + mes + '/' + ano,
-                                   datareg: datareg,
-                                   totint: totint,
-                                   totges: totges,
-                                   totpro: totpro,
-                                   vlrart: vlrart,
-                                   totali: totali,
-                                   totdes: totdes,
-                                   tothtl: tothtl,
-                                   totcmb: totcmb,
-                                   valorCer: valorCer,
-                                   valorCen: valorCen,
-                                   valorPos: valorPos,
-
-                                   custofix: custoFix,
-                                   custovar: custoVar,
-                                   custoest: custoEst,
-                                   custoPlano: totalPlano,
-                                   fatequ: projeto.fatequ,
-                                   vlrequ: vlrequ,
-                                   vlrkit: vlrkit,
-                                   valorMod: detalhe.valorMod,
-                                   valorInv: detalhe.valorInv,
-                                   valorEst: detalhe.valorEst,
-                                   valorCim: detalhe.valorCim,
-                                   valorCab: detalhe.valorCab,
-                                   valorEbt: detalhe.valorEbt,
-                                   valorDisCC: detalhe.valorDisCC,
-                                   valorDPSCC: detalhe.valorDPSCC,
-                                   valorDisCA: detalhe.valorDisCA,
-                                   valorDPSCA: detalhe.valorDPSCA,
-                                   valorCCA: detalhe.valorCCA,
-                                   valorSB: detalhe.valorSB,
-                                   valorOcp: detalhe.valorOcp,
-
-                                   vlrNFS: vlrPrjNFS,
-                                   recLiquida: prjrecLiquida,
-                                   lucroBruto: prjLucroBruto,
-                                   vlrcom: vlrcom,
-                                   desAdm: projeto.desAdm,
-                                   lbaimp: lbaimp,
-
-                                   impmanual: impmanual,
-                                   impISS: impISS,
-                                   impICMS: impICMS,
-                                   impSimples: impSimples,
-                                   impIRPJ: impIRPJ,
-                                   impIRPJAdd: impIRPJAdd,
-                                   impCSLL: impCSLL,
-                                   impPIS: impPIS,
-                                   impCOFINS: impCOFINS,
-
-                                   totalImposto: totalImposto,
-                                   totalTributos: totalTributos,
-                                   lucroLiquido: lucroLiquido,
-
-                                   varCusto: varCusto,
-                                   varTI: varTI,
-                                   varLAI: varLAI,
-                                   varLL: varLL,
-
-                                   parLiqVlr: parLiqVlr,
-                                   parKitVlr: parKitVlr,
-                                   parIntVlr: parIntVlr,
-                                   parGesVlr: parGesVlr,
-                                   parProVlr: parProVlr,
-                                   parArtVlr: parArtVlr,
-                                   parDesVlr: parDesVlr,
-                                   parAliVlr: parAliVlr,
-                                   parCmbVlr: parCmbVlr,
-                                   parEstVlr: parEstVlr,
-                                   parDedVlr: parDedVlr,
-                                   parISSVlr: parISSVlr,
-                                   parImpVlr: parImpVlr,
-                                   parComVlr: parComVlr,
-
-                                   parLiqNfs: parLiqNfs,
-                                   parKitNfs: parKitNfs,
-                                   parIntNfs: parIntNfs,
-                                   parGesNfs: parGesNfs,
-                                   parProNfs: parProNfs,
-                                   parArtNfs: parArtNfs,
-                                   parDesNfs: parDesNfs,
-                                   parAliNfs: parAliNfs,
-                                   parEstNfs: parEstNfs,
-                                   parCmbNfs: parCmbNfs,
-                                   parDedNfs: parDedNfs,
-                                   parISSNfs: parISSNfs,
-                                   parImpNfs: parImpNfs,
-                                   parComNfs: parComNfs,
-
-                                   parNfsRlz: parNfsRlz,
-                                   parVlrRlz: parVlrRlz,
-                                   varLucRlz: varLucRlz,
-
-                              }
-
-                              new Realizado(realizado).save().then(() => {
-                                   var sucesso = []
-
-                                   projeto.foiRealizado = true
-                                   projeto.homologado = false
-                                   cronograma.save().then(() => {
-                                        projeto.save().then(() => {
-                                             Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
-                                                  Realizado.findOne({ projeto: projeto._id }).lean().then((realizado) => {
-                                                       Detalhado.findOne({ projeto: projeto._id }).lean().then((detalhe) => {
-                                                            var varCP = false
-                                                            var varTI = false
-                                                            var varLAI = false
-                                                            var varLL = false
-                                                            var varCustoPlano = (realizado.custoPlano - projeto.custoPlano).toFixed(2)
-                                                            if (varCustoPlano > 1) {
-                                                                 varCP = false
-                                                            } else {
-                                                                 varCP = true
-                                                            }
-                                                            var varTotalImposto = (realizado.totalImposto - projeto.totalImposto).toFixed(2)
-                                                            if (varTotalImposto > 1) {
-                                                                 varTI = true
-                                                            } else {
-                                                                 varTI = false
-                                                            }
-                                                            var varlbaimp = (realizado.lbaimp - projeto.lbaimp).toFixed(2)
-                                                            if (varlbaimp > 1) {
-                                                                 varLAI = true
-                                                            } else {
-                                                                 varLAI = false
-                                                            }
-                                                            var varLucroLiquido = (realizado.lucroLiquido - projeto.lucroLiquido).toFixed(2)
-                                                            if (varLucroLiquido > 1) {
-                                                                 varLL = true
-                                                            } else {
-                                                                 varLL = false
-                                                            }
-                                                            var temCercamento
-                                                            var temPosteCond
-                                                            var temCentral
-                                                            if (projeto.temCercamento == 'checked') {
-                                                                 temCercamento = true
-                                                            } else {
-                                                                 temCercamento = false
-                                                            }
-                                                            if (projeto.temPosteCond == 'checked') {
-                                                                 temPosteCond = true
-                                                            } else {
-                                                                 temPosteCond = false
-                                                            }
-
-                                                            if (projeto.temCentral == 'checked') {
-                                                                 temCentral = true
-                                                            } else {
-                                                                 temCentral = false
-                                                            }
-
-                                                            sucesso.push({ texto: 'Projeto realizado com sucesso.' })
-                                                            res.render('projeto/realizado', { sucesso, erros, projeto, realizado, detalhe, varCustoPlano, varTotalImposto, varlbaimp, varLucroLiquido, varTI, varLL, varLAI, varCP, temCercamento, temPosteCond, temCentral })
-                                                       }).catch((err) => {
-                                                            req.flash('error_msg', 'Nenhum regime encontrado.')
-                                                            res.redirect('/menu')
-                                                       })
-                                                  }).catch((err) => {
-                                                       req.flash('error_msg', 'Detalhe não encontrado.')
-                                                       res.redirect('/projeto/consulta')
-                                                  })
-
-                                             }).catch((err) => {
-                                                  req.flash('error_msg', 'Não foi possível encontrar o projeto.')
-                                                  res.redirect('/projeto/consulta')
-                                             })
-                                        }).catch((err) => {
-                                             req.flash('error_msg', 'Não foi possível salvar o projeto.')
-                                             res.redirect('/projeto/consulta')
-                                        })
-                                   }).catch((err) => {
-                                        req.flash('error_msg', 'Não foi possível salvar o cronograma.')
-                                        res.redirect('/projeto/consulta')
-                                   })
-                              }).catch((err) => {
-                                   req.flash('error_msg', 'Não foi posível realizar o projeto.')
-                                   res.redirect('/projeto/consulta')
-                              })
                          }).catch((err) => {
                               req.flash('error_msg', 'Cronograma não encontrado.')
                               res.redirect('/projeto/consulta')
@@ -3775,7 +3816,6 @@ router.post('/realizar', ehAdmin, (req, res) => {
                res.redirect('/projeto/consulta')
           })
      }
-
 })
 
 router.post('/filtrar', ehAdmin, (req, res) => {
@@ -3924,8 +3964,8 @@ router.get('/confirmafinalizar/:id', ehAdmin, (req, res) => {
                     } else {
                          varCP = true
                     }
-                    var varLucroBruto = (realizado.lucroBruto - projeto.lucroBruto).toFixed(2)
-                    if (varLucroBruto > 1) {
+                    var varTotalImposto = parseFloat(realizado.totalImposto) - parseFloat(projeto.totalImposto).toFixed(2)
+                    if (varTotalImposto > 1) {
                          varTI = true
                     } else {
                          varTI = false
@@ -3942,9 +3982,9 @@ router.get('/confirmafinalizar/:id', ehAdmin, (req, res) => {
                     } else {
                          varLL = false
                     }
-                    res.render('projeto/realizado', { erros: erros, projeto: projeto, realizado: realizado, varCustoPlano: varCustoPlano, varLucroBruto: varLucroBruto, varlbaimp: varlbaimp, varLucroLiquido: varLucroLiquido, varTI: varTI, varLL: varLL, varLAI: varLAI, varCP: varCP })
+                    res.render('projeto/realizado', { erros, projeto, realizado, varCustoPlano, varlbaimp, varLucroLiquido, varTotalImposto, varTI, varLL, varLAI, varCP })
                } else {
-                    res.render('projeto/confirmafinalizar', { realizado: realizado })
+                    res.render('projeto/confirmafinalizar', { realizado })
                }
           }).catch((err) => {
                req.flash('error_msg', 'Não foi possível encontrar o projeto<Projeto>.')
@@ -3977,8 +4017,8 @@ router.get('/finalizar/:id', ehAdmin, (req, res) => {
                               } else {
                                    varCP = true
                               }
-                              var varLucroBruto = (realizado.lucroBruto - projeto.lucroBruto).toFixed(2)
-                              if (varLucroBruto > 1) {
+                              var varTotalImposto = parseFloat(realizado.totalImposto) - parseFloat(projeto.totalImposto).toFixed(2)
+                              if (varTotalImposto > 1) {
                                    varTI = true
                               } else {
                                    varTI = false
@@ -4015,7 +4055,7 @@ router.get('/finalizar/:id', ehAdmin, (req, res) => {
                                    temCentral = false
                               }
                               sucesso.push({ texto: 'Projeto finalizado com sucesso.' })
-                              res.render('projeto/realizado', { sucesso: sucesso, projeto: projeto, realizado: realizado, detalhe: detalhe, varCustoPlano: varCustoPlano, varLucroBruto: varLucroBruto, varlbaimp: varlbaimp, varLucroLiquido: varLucroLiquido, varTI: varTI, varLL: varLL, varLAI: varLAI, varCP: varCP, temCercamento: temCercamento, temPosteCond: temPosteCond, temCentral: temCentral })
+                              res.render('projeto/realizado', { sucesso, projeto, realizado, detalhe, varCustoPlano, varlbaimp, varTotalImposto, varLucroLiquido, varTI, varLL, varLAI, varCP, temCercamento, temPosteCond, temCentral })
                          }).catch((err) => {
                               req.flash('error_msg', 'Detalhe não encontrado.')
                               res.redirect('/projeto/consulta')
@@ -4081,6 +4121,11 @@ router.get('/executar/:id', ehAdmin, (req, res) => {
           msg = msg + validaCronograma(cronograma.datevisfim, aux)
           aux = 'dataentrega'
           msg = msg + validaCronograma(cronograma.dateentrega, aux)
+          /*
+          if (comparaDatas(req.body.valDataIns, req.body.valDataIni) == true){
+               msg = msg + 'Data de inicio das instalações deve ser maior que a data de inicio do projeto.'
+          }
+          */
           //------------------------------------------------------//
           if (msg == '') {
                Projeto.findOne({ _id: req.params.id }).then((prj_sms) => {
@@ -4098,7 +4143,7 @@ router.get('/executar/:id', ehAdmin, (req, res) => {
                               //     if (result == false) {
                               //         req.flash('error_msg', 'Falha interna. Não foi possível enviar a mensagem.')
                               //          res.redirect(redirect)
-                              //     } else {
+                              //     } else {                                
                               prj_sms.executando = true
                               prj_sms.parado = false
                               prj_sms.orcado = false
@@ -4205,6 +4250,7 @@ router.post('/parar', ehAdmin, (req, res) => {
 
 router.get('/homologar/:id', ehAdmin, (req, res) => {
      var aviso
+     var texto
      //const { fantasia } = req.user
      var redirect
      Cronograma.findOne({ projeto: req.params.id }).then((cronograma) => {
@@ -4248,12 +4294,12 @@ router.get('/homologar/:id', ehAdmin, (req, res) => {
                               validadia = '0' + validadia
                          }
                          var validaHoje = validaano + '-' + validames + '-' + validadia
-                         console.log('projeto.valDataFim=>' + projeto.valDataFim)
-                         console.log('validaHoje=>' + validaHoje)
+                         //console.log('projeto.valDataFim=>' + projeto.valDataFim)
+                         //console.log('validaHoje=>' + validaHoje)
                          if (comparaDatas(projeto.valDataFim, validaHoje)) {
                               var dataValida = validadia + '/' + validames + '/' + validaano
                               redirect = '/gerenciamento/cronograma/' + req.params.id
-                              texto = 'Data de entrega de finalização deve ser maior ou igual que '+ dataValida + '.'
+                              texto = 'Data de entrega de finalização deve ser maior ou igual que ' + dataValida + '.'
                          } else {
                               aviso = 'Projeto em homologação!'
                               redirect = '/projeto/edicao/' + req.params.id

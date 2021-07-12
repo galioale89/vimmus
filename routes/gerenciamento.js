@@ -17,6 +17,7 @@ const Cliente = mongoose.model('cliente')
 const Detalhado = mongoose.model('custoDetalhado')
 const Cronograma = mongoose.model('cronograma')
 const comparaDatas = require('../resources/comparaDatas')
+const dataBusca = require('../resources/dataBusca')
 
 
 const { ehAdmin } = require('../helpers/ehAdmin')
@@ -177,7 +178,75 @@ router.get('/editar/gerenciamento/:id', ehAdmin, (req, res) => {
 router.get('/cronograma/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         Cronograma.findOne({ projeto: req.params.id }).lean().then((cronograma) => {
-            res.render('projeto/gerenciamento/cronograma', { projeto, cronograma })
+            Realizado.findOne({ projeto: req.params.id }).lean().then((realizado) => {
+                var evPerGes = (parseFloat(projeto.totges)) * (parseFloat(cronograma.perGes) / 100)
+                if (isNaN(evPerGes)) {
+                    evPerGes = 0
+                }
+                var evPerKit = (parseFloat(projeto.vlrkit)) * (parseFloat(cronograma.perKit) / 100)
+                if (isNaN(evPerKit)) {
+                    evPerKit = 0
+                }
+                var evPerIns = (parseFloat(projeto.totint)) * (parseFloat(cronograma.perIns) / 100)
+                if (isNaN(evPerIns)) {
+                    evPerIns = 0
+                }
+                var evPerPro = (parseFloat(projeto.totpro)) * (parseFloat(cronograma.perPro) / 100)
+                if (isNaN(evPerPro)) {
+                    evPerPro = 0
+                }
+                var evPerArt = (parseFloat(projeto.vlrart)) * (parseFloat(cronograma.perArt) / 100)
+                if (isNaN(evPerArt)) {
+                    evPerArt = 0
+                }
+                var evPerAli = (parseFloat(projeto.totali)) * (parseFloat(cronograma.perAli) / 100)
+                if (isNaN(evPerAli)) {
+                    evPerAli = 0
+                }
+                var evPerDes = (parseFloat(projeto.totdes)) * (parseFloat(cronograma.perDes) / 100)
+                if (isNaN(evPerDes)) {
+                    evPerDes = 0
+                }
+                var evPerHtl = (parseFloat(projeto.tothtl)) * (parseFloat(cronograma.perHtl) / 100)
+                if (isNaN(evPerHtl)) {
+                    evPerHtl = 0
+                }
+                var evPerCmb = (parseFloat(projeto.totcmb)) * (parseFloat(cronograma.perCmb) / 100)
+                if (isNaN(evPerCmb)) {
+                    evPerCmb = 0
+                }
+                var evPerCer = (parseFloat(projeto.totcer)) * (parseFloat(cronograma.perCer) / 100)
+                if (isNaN(evPerCer)) {
+                    evPerCer = 0
+                }
+                var evPerCen = (parseFloat(projeto.totcen)) * (parseFloat(cronograma.perCen) / 100)
+                if (isNaN(evPerCen)) {
+                    evPerCen = 0
+                }
+                var evPerPos = (parseFloat(projeto.totpos)) * (parseFloat(cronograma.perPos) / 100)
+                if (isNaN(evPerPos)) {
+                    evPerPos = 0
+                }
+                var cpi
+                var tcpi
+                if (projeto.cpi < 1) {
+                    cpi = false
+                } else {
+                    cpi = true
+                }
+                if (projeto.tcpi < 1) {
+                    tcpi = true
+                } else {
+                    tcpi = false
+                }
+                res.render('projeto/gerenciamento/cronograma', {
+                    projeto, cronograma, realizado, cpi, tcpi,
+                    evPerGes, evPerKit, evPerIns, evPerPro, evPerArt, evPerAli, evPerDes, evPerHtl, evPerCmb, evPerCer, evPerCen, evPerPos
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar o realizado.')
+                res.redirect('/menu')
+            })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar o cronograma.')
             res.redirect('/menu')
@@ -190,6 +259,1186 @@ router.get('/cronograma/:id', ehAdmin, (req, res) => {
 
 router.get('/cenarios/', ehAdmin, (req, res) => {
     res.render('projeto/gerenciamento/cenarios')
+})
+
+router.get('/agenda/', ehAdmin, (req, res) => {
+    var dataini
+    var dataini
+    var hoje = new Date()
+    var ano = hoje.getFullYear()
+    var mes = parseFloat(hoje.getMonth()) + 1
+    if (mes < 10) {
+        mes = '0' + mes
+    }
+    dataini = ano + mes + '01'
+    datafim = ano + mes + '31'
+
+    var janeiro
+    var fevereiro
+    var marco
+    var abril
+    var maio
+    var junho
+    var julho
+    var agosto
+    var setembro
+    var outubro
+    var novembro
+    var dezembro
+
+    console.log('mes=>'+mes)
+
+    switch (mes) {
+        case '01': janeiro = 'selected'
+        break;
+        case '02': fevereiro = 'selected'
+        break;
+        case '03': marco = 'selected'
+        break;
+        case '04': abril = 'selected'
+        break;
+        case '05': maio = 'selected'
+        break;
+        case '06': junho = 'selected'
+        break;
+        case '07': julho = 'selected'
+        break;
+        case '08': agosto = 'selected'
+        break;
+        case '09': setembro = 'selected'
+        break;
+        case '10': outubro = 'selected'
+        break;
+        case '11': novembro = 'selected'
+        break;
+        case '12': dezembro = 'selected'
+        break;
+    }
+
+    console.log('julho=>'+julho)
+
+    res.render('projeto/gerenciamento/agenda', {ano, janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro})
+})
+
+router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    var ano = req.body.mesano
+
+    switch (req.body.messel) {
+        case 'Janeiro':
+            dataini = ano + '01' + '01'
+            datafim = ano + '01' + '31'
+            mestitulo = 'Janeiro de '
+            break;
+        case 'Fevereiro':
+            dataini = ano + '02' + '01'
+            datafim = ano + '02' + '28'
+            mestitulo = 'Fevereiro de '
+            break;
+        case 'Março':
+            dataini = ano + '03' + '01'
+            datafim = ano + '03' + '31'
+            mestitulo = 'Março /'
+            break;
+        case 'Abril':
+            dataini = ano + '04' + '01'
+            datafim = ano + '04' + '30'
+            mestitulo = 'Abril de '
+            break;
+        case 'Maio':
+            dataini = ano + '05' + '01'
+            datafim = ano + '05' + '31'
+            mestitulo = 'Maio de '
+            break;
+        case 'Junho':
+            dataini = ano + '06' + '01'
+            datafim = ano + '06' + '30'
+            mestitulo = 'Junho de '
+            break;
+        case 'Julho':
+            dataini = ano + '07' + '01'
+            datafim = ano + '07' + '31'
+            mestitulo = 'Julho de '
+            break;
+        case 'Agosto':
+            dataini = ano + '08' + '01'
+            datafim = ano + '08' + '30'
+            mestitulo = 'Agosto de '
+            break;
+        case 'Setembro':
+            dataini = ano + '09' + '01'
+            datafim = ano + '09' + '31'
+            mestitulo = 'Setembro de '
+            break;
+        case 'Outubro':
+            dataini = ano + '10' + '01'
+            datafim = ano + '10' + '31'
+            mestitulo = 'Outubro de '
+            break;
+        case 'Novembro':
+            dataini = ano + '11' + '01'
+            datafim = ano + '11' + '30'
+            mestitulo = 'Novembro de '
+            break;
+        case 'Dezembro':
+            dataini = ano + '12' + '01'
+            datafim = ano + '12' + '31'
+            mestitulo = 'Dezembro de '
+            break;
+        default:
+            dataini = ano + '01' + '01'
+            datafim = ano + '12' + '31'
+            mestitulo = 'Todo ano de '
+    }
+    var tarefas01 = []
+    var tarefas02 = []
+    var tarefas03 = []
+    var tarefas04 = []
+    var tarefas05 = []
+    var tarefas06 = []
+    var tarefas07 = []
+    var tarefas08 = []
+    var tarefas09 = []
+    var tarefas10 = []
+    var tarefas11 = []
+    var tarefas12 = []
+    var tarefas13 = []
+    var tarefas14 = []
+    var tarefas15 = []
+    var tarefas16 = []
+    var tarefas17 = []
+    var tarefas18 = []
+    var tarefas19 = []
+    var tarefas20 = []
+    var tarefas21 = []
+    var tarefas22 = []
+    var tarefas23 = []
+    var tarefas24 = []
+    var tarefas25 = []
+    var tarefas26 = []
+    var tarefas27 = []
+    var tarefas28 = []
+    var tarefas29 = []
+    var tarefas30 = []
+    var tarefas31 = []
+
+    var dia
+    console.log('dataini=>' + dataini)
+    console.log('datafim=>' + datafim)
+    Cronograma.find({ 'agendaPlaFim': { $lte: datafim, $gte: dataini }, 'agendaPrjFim': { $lte: datafim, $gte: dataini }, user: _id }).lean().then((cronograma) => {
+        cronograma.forEach(element => {
+            console.log('entrou')
+            const { dateplaini } = element
+            
+            const { dateprjini } = element
+            const { dateateini } = element
+            const { dateestini } = element
+            const { datemodini } = element
+            const { dateinvini } = element
+            const { dateeaeini } = element
+            const { datepnlini } = element
+            const { datestbini } = element
+            const { datevisini } = element
+            const { datepla } = element
+            const { dateprj } = element
+            const { dateate } = element
+            const { dateest } = element
+            const { datemod } = element
+            const { dateinv } = element
+            const { dateeae } = element
+            const { datestb } = element
+            const { datepnl } = element
+            const { datevis } = element
+            
+            const { nome } = element
+            const { projeto } = element
+            if ((dateplaini != '' && typeof dateplaini != 'undefined') && (datepla == '' || typeof datepla == 'undefined')) {
+                dia = dateplaini.substring(8, 11)
+                console.log('dia=>' + dia)
+                if (dia == '01') {
+                    tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '02') {
+                    tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '03') {
+                    tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '04') {
+                    tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '05') {
+                    tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '06') {
+                    tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '07') {
+                    tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '08') {
+                    tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '09') {
+                    tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '10') {
+                    tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '11') {
+                    tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '12') {
+                    tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '13') {
+                    tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '14') {
+                    tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '15') {
+                    tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '16') {
+                    tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '17') {
+                    tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '18') {
+                    tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '19') {
+                    tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '20') {
+                    tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '21') {
+                    tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '22') {
+                    tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '23') {
+                    tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '24') {
+                    tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '25') {
+                    tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '26') {
+                    tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '27') {
+                    tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '28') {
+                    tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '29') {
+                    tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '30') {
+                    tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+                if (dia == '31') {
+                    tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                }
+            }
+            
+            if ((dateprjini != '' && typeof dateprjini != 'undefined') && (dateprj == '' || typeof dateprj == 'undefined')) {
+                dia = dateprjini.substring(8, 11)
+                console.log('dia=>' + dia)
+                if (dia == '01') {
+                    tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '02') {
+                    tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '03') {
+                    tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '04') {
+                    tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '05') {
+                    tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '06') {
+                    tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '07') {
+                    tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '08') {
+                    tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '09') {
+                    tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '10') {
+                    tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '11') {
+                    tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '12') {
+                    tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '13') {
+                    tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '14') {
+                    tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '15') {
+                    tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '16') {
+                    tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '17') {
+                    tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '18') {
+                    tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '19') {
+                    tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '20') {
+                    tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '21') {
+                    tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '22') {
+                    tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '23') {
+                    tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '24') {
+                    tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '25') {
+                    tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '26') {
+                    tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '27') {
+                    tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '28') {
+                    tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '29') {
+                    tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '30') {
+                    tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+                if (dia == '31') {
+                    tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                }
+            }
+
+            if ((dateateini != '' && typeof dateateini != 'undefined') && (dateate == '' || typeof dateate == 'undefined')) {
+                dia = dateateini.substring(8, 11)
+                console.log('dia=>' + dia)
+                if (dia == '01') {
+                    tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '02') {
+                    tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '03') {
+                    tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '04') {
+                    tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '05') {
+                    tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '06') {
+                    tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '07') {
+                    tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '08') {
+                    tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '09') {
+                    tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '10') {
+                    tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '11') {
+                    tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '12') {
+                    tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '13') {
+                    tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '14') {
+                    tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '15') {
+                    tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '16') {
+                    tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '17') {
+                    tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '18') {
+                    tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '19') {
+                    tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '20') {
+                    tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '21') {
+                    tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '22') {
+                    tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '23') {
+                    tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '24') {
+                    tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '25') {
+                    tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '26') {
+                    tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '27') {
+                    tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '28') {
+                    tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '29') {
+                    tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '30') {
+                    tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+                if (dia == '31') {
+                    tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                }
+            }        
+            
+            if ((dateestini != '' && typeof dateestini != 'undefined') && (dateest == '' || typeof dateest == 'undefined')) {
+                dia = dateestini.substring(8, 11)
+                console.log('dia=>' + dia)
+                if (dia == '01') {
+                    tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '02') {
+                    tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '03') {
+                    tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '04') {
+                    tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '05') {
+                    tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '06') {
+                    tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '07') {
+                    tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '08') {
+                    tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '09') {
+                    tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '10') {
+                    tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '11') {
+                    tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '12') {
+                    tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '13') {
+                    tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '14') {
+                    tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '15') {
+                    tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '16') {
+                    tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '17') {
+                    tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '18') {
+                    tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '19') {
+                    tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '20') {
+                    tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '21') {
+                    tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '22') {
+                    tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '23') {
+                    tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '24') {
+                    tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '25') {
+                    tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '26') {
+                    tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '27') {
+                    tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '28') {
+                    tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '29') {
+                    tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '30') {
+                    tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+                if (dia == '31') {
+                    tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                }
+            }
+            if ((dateinvini != '' && typeof dateinvini != 'undefined') && (dateinv == '' || typeof dateinv == 'undefined')) {
+                dia = dateinvini.substring(8, 11)
+                console.log('dia=>' + dia)
+                if (dia == '01') {
+                    tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '02') {
+                    tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '03') {
+                    tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '04') {
+                    tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '05') {
+                    tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '06') {
+                    tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '07') {
+                    tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '08') {
+                    tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '09') {
+                    tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '10') {
+                    tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '11') {
+                    tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '12') {
+                    tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '13') {
+                    tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '14') {
+                    tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '15') {
+                    tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '16') {
+                    tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '17') {
+                    tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '18') {
+                    tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '19') {
+                    tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '20') {
+                    tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '21') {
+                    tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '22') {
+                    tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '23') {
+                    tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '24') {
+                    tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '25') {
+                    tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '26') {
+                    tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '27') {
+                    tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '28') {
+                    tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '29') {
+                    tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '30') {
+                    tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '31') {
+                    tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+            }            
+            if ((dateeaeini != '' && typeof dateeaeini != 'undefined') && (dateeae == '' || typeof dateeae == 'undefined')) {
+                dia = dateeaeini.substring(8, 11)
+                console.log('dia=>' + dia)
+                if (dia == '01') {
+                    tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '02') {
+                    tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '03') {
+                    tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '04') {
+                    tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '05') {
+                    tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '06') {
+                    tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '07') {
+                    tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '08') {
+                    tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '09') {
+                    tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '10') {
+                    tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '11') {
+                    tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '12') {
+                    tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '13') {
+                    tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '14') {
+                    tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '15') {
+                    tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '16') {
+                    tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '17') {
+                    tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '18') {
+                    tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '19') {
+                    tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '20') {
+                    tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '21') {
+                    tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '22') {
+                    tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '23') {
+                    tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '24') {
+                    tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '25') {
+                    tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '26') {
+                    tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '27') {
+                    tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '28') {
+                    tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '29') {
+                    tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '30') {
+                    tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+                if (dia == '31') {
+                    tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                }
+            }   
+            if ((datestbini != '' && typeof datestbini != 'undefined') && (datestb == '' || typeof datestb == 'undefined')) {
+                dia = datestbini.substring(8, 11)
+                console.log('dia=>' + dia)
+                if (dia == '01') {
+                    tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '02') {
+                    tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '03') {
+                    tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '04') {
+                    tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '05') {
+                    tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '06') {
+                    tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '07') {
+                    tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '08') {
+                    tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '09') {
+                    tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '10') {
+                    tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '11') {
+                    tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '12') {
+                    tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '13') {
+                    tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '14') {
+                    tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '15') {
+                    tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '16') {
+                    tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '17') {
+                    tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '18') {
+                    tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '19') {
+                    tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '20') {
+                    tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '21') {
+                    tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '22') {
+                    tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '23') {
+                    tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '24') {
+                    tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '25') {
+                    tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '26') {
+                    tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '27') {
+                    tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '28') {
+                    tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '29') {
+                    tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '30') {
+                    tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+                if (dia == '31') {
+                    tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                }
+            }       
+            if ((datemodini != '' && typeof datemodini != 'undefined') && (datemod == '' || typeof datemod == 'undefined')) {
+                dia = datemodini.substring(8, 11)
+                console.log('dia=>' + dia)
+                if (dia == '01') {
+                    tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '02') {
+                    tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '03') {
+                    tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '04') {
+                    tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '05') {
+                    tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '06') {
+                    tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '07') {
+                    tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '08') {
+                    tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '09') {
+                    tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '10') {
+                    tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '11') {
+                    tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '12') {
+                    tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '13') {
+                    tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '14') {
+                    tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '15') {
+                    tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '16') {
+                    tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '17') {
+                    tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '18') {
+                    tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '19') {
+                    tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '20') {
+                    tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '21') {
+                    tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '22') {
+                    tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '23') {
+                    tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '24') {
+                    tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '25') {
+                    tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '26') {
+                    tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '27') {
+                    tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '28') {
+                    tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '29') {
+                    tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '30') {
+                    tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+                if (dia == '31') {
+                    tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                }
+            }            
+            if ((datepnlini != '' && typeof datepnlini != 'undefined') && (datepnl == '' || typeof datepnl == 'undefined')) {
+                dia = datepnlini.substring(8, 11)
+                console.log('dia=>' + dia)
+                if (dia == '01') {
+                    tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '02') {
+                    tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '03') {
+                    tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '04') {
+                    tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '05') {
+                    tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '06') {
+                    tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '07') {
+                    tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '08') {
+                    tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '09') {
+                    tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '10') {
+                    tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '11') {
+                    tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '12') {
+                    tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '13') {
+                    tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '14') {
+                    tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '15') {
+                    tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '16') {
+                    tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '17') {
+                    tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '18') {
+                    tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '19') {
+                    tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '20') {
+                    tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '21') {
+                    tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '22') {
+                    tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '23') {
+                    tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '24') {
+                    tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '25') {
+                    tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '26') {
+                    tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '27') {
+                    tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '28') {
+                    tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '29') {
+                    tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '30') {
+                    tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+                if (dia == '31') {
+                    tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                }
+            }         
+            if ((datevisini != '' && typeof datevisini != 'undefined') && (datevis == '' || typeof datevis == 'undefined')) {
+                dia = datevisini.substring(8, 11)
+                console.log('dia=>' + dia)
+                if (dia == '01') {
+                    tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '02') {
+                    tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '03') {
+                    tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '04') {
+                    tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '05') {
+                    tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '06') {
+                    tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '07') {
+                    tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '08') {
+                    tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '09') {
+                    tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '10') {
+                    tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '11') {
+                    tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '12') {
+                    tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '13') {
+                    tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '14') {
+                    tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '15') {
+                    tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '16') {
+                    tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '17') {
+                    tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '18') {
+                    tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '19') {
+                    tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '20') {
+                    tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '21') {
+                    tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '22') {
+                    tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '23') {
+                    tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '24') {
+                    tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '25') {
+                    tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '26') {
+                    tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '27') {
+                    tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '28') {
+                    tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '29') {
+                    tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '30') {
+                    tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+                if (dia == '31') {
+                    tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                }
+            }                                            
+        })
+        console.log('tarefas11=>' + tarefas11)
+        res.render('projeto/gerenciamento/agenda', {
+            tarefas01, tarefas02, tarefas03, tarefas04, tarefas05, tarefas06, tarefas07,
+            tarefas08, tarefas09, tarefas10, tarefas11, tarefas12, tarefas13, tarefas14,
+            tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
+            tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
+            tarefas29, tarefas30, tarefas31,
+            mes: req.body.messel, ano: req.body.mesano
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar as tarefas para a data de planejamento inicial.')
+        res.redirect('/gerenciamento/agenda/')
+    })
 })
 
 router.post('/aplicarcenario/', ehAdmin, (req, res) => {
@@ -240,51 +1489,31 @@ router.post('/aplicarcenario/', ehAdmin, (req, res) => {
 
 router.post('/gerenciamento/', ehAdmin, (req, res) => {
     const { _id } = req.user
-    var erros = []
-    /*
-    if (req.body.equipe == '') {
-        erros.push({ texto: 'Prencheer valor de equipe de instalação de no mínimo 1 integrante.' })
-    }
-    */
+    var erros = ''
+    var sucesso = ''
+
     //Valida campos já salvos
     Projeto.findOne({ _id: req.body.id }).then((projeto) => {
         if (parseFloat(projeto.trbint) == 0 || projeto.trbint == null) {
-            erros.push({ texto: 'Realizar ao menos um custo de instalação.' })
+            erros = erros + 'Realizar ao menos um custo de instalação.'
         }
         if (parseFloat(projeto.trbpro) == 0 || projeto.trbpro == null) {
-            erros.push({ texto: 'Realizar ao menos um custo de projetista.' })
+            erros = erros + 'Realizar ao menos um custo de projetista.'
         }
         if (parseFloat(projeto.trbges) == 0 || projeto.trbges == null) {
-            erros.push({ texto: 'Realizar ao menos um custos de gestão.' })
+            erros = erros + 'Realizar ao menos um custos de gestão.'
         }
     })
 
-    if (erros.length > 0) {
-        Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
-            Regime.find({ user: _id }).lean().then((regime) => {
-                Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                    res.render('projeto/gerenciamento/gerenciamento', { erros: erros, projeto: projeto, regime: regime, cliente: cliente })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Nenhum cliente encontrado.')
-                    res.redirect('/cliente/consulta')
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Hove uma falha interna.')
-                res.redirect('/configuracao/consultaregime')
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Hove uma falha interna.')
-            res.redirect('/projeto/consulta')
-        })
+    if (erros != '') {
+        req.flash('error_msg', erros)
+        res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
     } else {
         Projeto.findOne({ _id: req.body.id }).then((projeto) => {
             Detalhado.findOne({ projeto: req.body.id }).then((detalhe) => {
                 Regime.findOne({ _id: projeto.regime }).then((regime) => {
-                    //console.log('entrou')
-                    //Edição dos Custos de Deslocamento
-                    //var medkmh = 10
-                    var medkmh
                     Configuracao.findOne({ _id: projeto.configuracao }).then((config) => {
+                        var medkmh
                         if (parseFloat(config.medkmh) > 0) {
                             medkmh = config.medkmh
                         } else {
@@ -478,32 +1707,33 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                         var prjValor = 0
                         if (req.body.markup == '' || req.body.markup == 0) {
                             //console.log('markup igual a zero')
-                            //console.log('projeto.vlrnormal=>' + projeto.vlrnormal)
+                            //console.log('projeto.vlrnormal=>'+projeto.vlrnormal)
                             if (req.body.checkFatura != null) {
                                 fatequ = true
-                                vlrNFS = parseFloat(projeto.vlrnormal)
+                                vlrNFS = parseFloat(projeto.vlrnormal).toFixed(2)
                                 impNFS = 0
                             } else {
                                 fatequ = false
-                                vlrNFS = parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)
-                                impNFS = parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)
+                                vlrNFS = (parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)).toFixed(2)
+                                impNFS = (parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)).toFixed(2)
                             }
-                            prjValor = parseFloat(projeto.vlrnormal).toFixed(2)
-                            projeto.valor = parseFloat(projeto.vlrnormal).toFixed(2)
-                            projeto.markup = 0
+                            vlrMarkup = (parseFloat(custoTotal) - parseFloat(reserva)) / (1 - (parseFloat(config.markup) / 100))
+                            projeto.valor = parseFloat(vlrMarkup).toFixed(2)
+                            projeto.markup = config.markup
+                            prjValor = vlrMarkup
                         } else {
-                            //console.log('custoTotal=>' + custoTotal)
-                            //console.log('req.body.markup=>' + req.body.markup)
-                            vlrMarkup = (custoTotal / (1 - (parseFloat(req.body.markup) / 100))).toFixed(2)
+                            //console.log('custoTotal=>'+custoTotal)
+                            //console.log('req.body.markup=>'+req.body.markup)
+                            vlrMarkup = ((parseFloat(custoTotal) - parseFloat(reserva)) / (1 - (parseFloat(req.body.markup) / 100))).toFixed(2)
                             //console.log('vlrMarkup=>' + vlrMarkup)
                             if (req.body.checkFatura != null) {
                                 fatequ = true
-                                vlrNFS = parseFloat(vlrMarkup)
+                                vlrNFS = parseFloat(vlrMarkup).toFixed(2)
                                 impNFS = 0
                             } else {
                                 fatequ = false
-                                vlrNFS = parseFloat(vlrMarkup) - parseFloat(projeto.vlrkit)
-                                impNFS = parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)
+                                vlrNFS = (parseFloat(vlrMarkup) - parseFloat(projeto.vlrkit)).toFixed(2)
+                                impNFS = (parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)).toFixed(2)
                             }
                             projeto.markup = req.body.markup
                             projeto.valor = vlrMarkup
@@ -519,20 +1749,20 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                         //Validando a comissão
                         if (projeto.percom != null) {
                             vlrcom = parseFloat(vlrNFS) * (parseFloat(projeto.percom) / 100)
-                            projeto.vlrcom = vlrcom.toFixed(2)
+                            projeto.vlrcom = parseFloat(vlrcom).toFixed(2)
                         }
 
-                        projeto.vlrNFS = vlrNFS.toFixed(2)
-                        projeto.impNFS = impNFS.toFixed(2)
+                        projeto.vlrNFS = parseFloat(vlrNFS).toFixed(2)
+                        projeto.impNFS = parseFloat(impNFS).toFixed(2)
 
                         //console.log('impNFS=>' + impNFS)
                         //console.log('projeto.valor=>' + projeto.valor)
                         //Definindo o Lucro Bruto
                         var recLiquida = parseFloat(prjValor) - parseFloat(impNFS)
-                        projeto.recLiquida = recLiquida.toFixed(2)
+                        projeto.recLiquida = parseFloat(recLiquida).toFixed(2)
 
                         var lucroBruto = parseFloat(recLiquida) - parseFloat(projeto.vlrkit)
-                        projeto.lucroBruto = lucroBruto.toFixed(2)
+                        projeto.lucroBruto = parseFloat(lucroBruto).toFixed(2)
 
                         //console.log('lucroBruto=>' + lucroBruto)
 
@@ -557,7 +1787,7 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                         } else {
                             lbaimp = parseFloat(lbaimp) - parseFloat(vlrcom)
                         }
-                        projeto.lbaimp = lbaimp.toFixed(2)
+                        projeto.lbaimp = parseFloat(lbaimp).toFixed(2)
                         //console.log('lbaimp=>' + lbaimp)
 
                         //Dashboard              
@@ -600,29 +1830,9 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                         projeto.parPosEqu = parseFloat(parPosEqu).toFixed(2)
 
                         projeto.save().then(() => {
-                            var sucesso = []
-                            sucesso.push({ texto: 'Custo de gerenciamento aplicado com sucesso.' })
-
-                            Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
-
-                                Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                                    var fatura
-                                    if (req.body.checkFatura != null || projeto.fatequ == true) {
-                                        fatura = 'checked'
-                                    } else {
-                                        fatura = 'uncheked'
-                                    }
-
-                                    res.render('projeto/gerenciamento/gerenciamento', { sucesso: sucesso, projeto: projeto, cliente: cliente, fatura: fatura })
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Nenhum cliente encontrado.')
-                                    res.redirect('/cliente/consulta')
-                                })
-
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Hove uma falha interna.')
-                                res.redirect('/projeto/consulta')
-                            })
+                            sucesso = 'Custo de gerenciamento aplicado com sucesso.'
+                            req.flash('success_msg', sucesso)
+                            res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
                         }).catch((err) => {
                             req.flash('error_msg', 'Falha ao aplicar os custos do projeto.')
                             res.redirect('/projeto/consulta')
@@ -648,54 +1858,32 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
 
 router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
     const { _id } = req.user
-    var erros = []
-    var sucesso = []
-    /*
-    if (req.body.equipe == '') {
-        erros.push({ texto: 'Prencheer valor de equipe de instalação de no mínimo 1 integrante.' })
-    }
-    */
+    var erros = ''
+    var sucesso = ''
+
     //Valida total dos custos já salvos para aplicar as informações de gerenciamento
     Projeto.findOne({ _id: req.body.id }).then((projeto_valida) => {
         if (parseFloat(projeto_valida.trbint) == 0 || projeto_valida.trbint == null) {
-            erros.push({ texto: 'Realizar ao menos um custo de instalação.' })
+            erros = erros + 'Realizar ao menos um custo de instalação.'
         }
         if (parseFloat(projeto_valida.trbpro) == 0 || projeto_valida.trbpro == null) {
-            erros.push({ texto: 'Realizar ao menos um custo de projetista.' })
+            erros = erros + 'Realizar ao menos um custo de projetista.'
         }
         if (parseFloat(projeto_valida.trbges) == 0 || projeto_valida.trbges == null) {
-            erros.push({ texto: 'Realizar ao menos um custos de gestão.' })
+            erros = erros + 'Realizar ao menos um custos de gestão.'
         }
     })
 
-    if (erros.length > 0) {
+    if (erros != '') {
 
-        Projeto.findOne({ _id: req.body.id }).lean().then((projeto_erro) => {
-            Regime.find({ user: _id }).lean().then((regime) => {
-                Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                    res.render('projeto/gerenciamento/editgerenciamento', { erros: erros, projeto: projeto_erro, regime: regime, cliente: cliente })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Nenhum cliente encontrado.')
-                    res.redirect('/cliente/consulta')
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Hove uma falha interna.')
-                res.redirect('/configuracao/consultaregime')
-            })
-
-        }).catch((err) => {
-            req.flash('error_msg', 'Hove uma falha interna.')
-            res.redirect('/projeto/consulta')
-        })
+        req.flash('error_msg', erros)
+        res.redirect('/gerenciamento/editar/gereciamento/' + req.body.id)
 
     } else {
 
         Projeto.findOne({ _id: req.body.id }).then((projeto) => {
             Detalhado.findOne({ projeto: req.body.id }).then((detalhe) => {
                 Regime.findOne({ _id: projeto.regime }).then((regime) => {
-                    //console.log('entrou')
-                    //Edição dos Custos de Deslocamento
-                    //var medkmh = 10
                     var medkmh
                     Configuracao.findOne({ _id: projeto.configuracao }).then((config) => {
                         if (parseFloat(config.medkmh) > 0) {
@@ -894,7 +2082,7 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                         var custoPlano = parseFloat(totcop) + parseFloat(reserva)
                         projeto.custoPlano = custoPlano.toFixed(2)
                         //console.log('custoPlano=>' + custoPlano)
-                        custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
+                        var custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
                         projeto.custoTotal = custoTotal.toFixed(2)
                         //console.log('custoTotal=>' + custoTotal)
 
@@ -907,38 +2095,41 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                         var prjValor = 0
                         if (req.body.markup == '' || req.body.markup == 0) {
                             //console.log('markup igual a zero')
-                            //console.log('projeto.vlrnormal=>' + projeto.vlrnormal)
+                            //console.log('projeto.vlrnormal=>'+projeto.vlrnormal)
                             if (req.body.checkFatura != null) {
                                 fatequ = true
-                                vlrNFS = parseFloat(projeto.vlrnormal)
+                                vlrNFS = parseFloat(projeto.vlrnormal).toFixed(2)
                                 impNFS = 0
                             } else {
                                 fatequ = false
-                                vlrNFS = parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)
-                                impNFS = parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)
+                                vlrNFS = (parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)).toFixed(2)
+                                impNFS = (parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)).toFixed(2)
                             }
-                            prjValor = parseFloat(projeto.vlrnormal).toFixed(2)
-                            projeto.valor = parseFloat(projeto.vlrnormal).toFixed(2)
-                            projeto.markup = 0
+                            vlrMarkup = (parseFloat(custoTotal) - parseFloat(reserva)) / (1 - (parseFloat(config.markup) / 100))
+                            projeto.valor = parseFloat(vlrMarkup).toFixed(2)
+                            projeto.markup = config.markup
+                            prjValor = vlrMarkup
                         } else {
-                            //console.log('custoTotal=>' + custoTotal)
-                            //console.log('req.body.markup=>' + req.body.markup)
-                            vlrMarkup = (custoTotal / (1 - (parseFloat(req.body.markup) / 100))).toFixed(2)
+                            //console.log('markup diferente de zero')
+                            //console.log('custoTotal=>'+custoTotal)
+                            //console.log('req.body.markup=>'+req.body.markup)
+                            vlrMarkup = ((parseFloat(custoTotal) - parseFloat(reserva)) / (1 - (parseFloat(req.body.markup) / 100))).toFixed(2)
                             //console.log('vlrMarkup=>' + vlrMarkup)
                             if (req.body.checkFatura != null) {
                                 fatequ = true
-                                vlrNFS = parseFloat(vlrMarkup)
+                                vlrNFS = parseFloat(vlrMarkup).toFixed(2)
                                 impNFS = 0
                             } else {
                                 fatequ = false
-                                vlrNFS = parseFloat(vlrMarkup) - parseFloat(projeto.vlrkit)
-                                impNFS = parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)
+                                vlrNFS = (parseFloat(vlrMarkup) - parseFloat(projeto.vlrkit)).toFixed(2)
+                                impNFS = (parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)).toFixed(2)
                             }
                             projeto.markup = req.body.markup
                             projeto.valor = vlrMarkup
                             prjValor = parseFloat(vlrMarkup).toFixed(2)
                         }
                         //console.log('vlrNFS=>' + vlrNFS)
+                        //console.log('impNFS=>' + impNFS)
                         //console.log('prjValor=>' + prjValor)
                         //kWp médio
                         projeto.vrskwp = (parseFloat(prjValor) / parseFloat(projeto.potencia)).toFixed(2)
@@ -948,23 +2139,17 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                         //Validando a comissão
                         if (projeto.percom != null) {
                             vlrcom = parseFloat(vlrNFS) * (parseFloat(projeto.percom) / 100)
-                            projeto.vlrcom = vlrcom.toFixed(2)
+                            projeto.vlrcom = parseFloat(vlrcom).toFixed(2)
                         }
-
-                        projeto.vlrNFS = vlrNFS.toFixed(2)
-                        projeto.impNFS = impNFS.toFixed(2)
-
-                        //console.log('impNFS=>' + impNFS)
-                        //console.log('projeto.valor=>' + projeto.valor)
+                        //console.log('vlrcom=>'+vlrcom)
 
                         //Definindo o Lucro Bruto
                         var recLiquida = parseFloat(prjValor) - parseFloat(impNFS)
-                        projeto.recLiquida = recLiquida.toFixed(2)
+                        projeto.recLiquida = parseFloat(recLiquida).toFixed(2)
 
                         var lucroBruto = parseFloat(recLiquida) - parseFloat(projeto.vlrkit)
-                        projeto.lucroBruto = lucroBruto.toFixed(2)
+                        projeto.lucroBruto = parseFloat(lucroBruto).toFixed(2)
 
-                        //console.log('vlrcom=>' + vlrcom)
                         //console.log('lucroBruto=>' + lucroBruto)
 
                         var desAdm = 0
@@ -1032,29 +2217,15 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
                         var parPosEqu = parseFloat(detalhe.valorPos) / parseFloat(detalhe.vlrTotal) * 100
                         projeto.parPosEqu = parseFloat(parPosEqu).toFixed(2)
 
+                        projeto.vlrNFS = parseFloat(vlrNFS).toFixed(2)
+                        projeto.impNFS = parseFloat(impNFS).toFixed(2)
+
                         projeto.save().then(() => {
 
-                            sucesso.push({ texto: 'Custo de gerenciamento aplicado com sucesso.' })
+                            sucesso = 'Custo de gerenciamento aplicado com sucesso.'
+                            req.flash('success_msg', sucesso)
+                            res.redirect('/gerenciamento/editar/gerenciamento/' + req.body.id)
 
-                            Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
-
-                                Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                                    var fatura
-                                    if (req.body.checkFatura != null) {
-                                        fatura = 'checked'
-                                    } else {
-                                        fatura = 'uncheked'
-                                    }
-                                    res.render('projeto/gerenciamento/editgerenciamento', { sucesso: sucesso, projeto: projeto, cliente: cliente, fatura: fatura })
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Nenhum cliente encontrado.')
-                                    res.redirect('/cliente/consulta')
-                                })
-
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Hove uma falha interna.')
-                                res.redirect('/projeto/consulta')
-                            })
                         }).catch((err) => {
                             req.flash('error_msg', 'Falha ao aplicar os custos do projeto.')
                             res.redirect('/projeto/consulta')
@@ -1195,8 +2366,8 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                     }
                 }
 
-                //console.log('impNFS=>'+impNFS)
-                //console.log('impostoICMS=>'+impostoICMS)
+                //console.log('impNFS=>' + impNFS)
+                //console.log('impostoICMS=>' + impostoICMS)
 
                 //Validar ICMS
                 if (projeto.fatequ == true) {
@@ -1410,9 +2581,9 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
             var prjLR = regime.prjLR
             var prjLP = regime.prjLP
             //var vlrDAS = regime.vlrDAS
-            //console.log('prjFat=>'+prjFat)
-            //console.log('prjLR=>'+prjLR)
-            //console.log('prjLP=>'+prjLP)
+            //console.log('prjFat=>' + prjFat)
+            //console.log('prjLR=>' + prjLR)
+            //console.log('prjLP=>' + prjLP)
 
             var impostoIRPJ = 0
             var impostoIRPJAdd = 0
@@ -1432,11 +2603,11 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
             if (regime.regime == 'Simples') {
                 //console.log('Regime=>Simples')
                 var alqEfe = ((parseFloat(prjFat) * (parseFloat(regime.alqDAS) / 100)) - (parseFloat(regime.vlrred))) / parseFloat(prjFat)
-                //console.log('alqEfe=>'+alqEfe)
+                //console.log('alqEfe=>' + alqEfe)
                 var totalSimples = parseFloat(projeto.vlrNFS) * (parseFloat(alqEfe))
-                //console.log('totalSimples=>'+totalSimples)
+                //console.log('totalSimples=>' + totalSimples)
                 totalImposto = parseFloat(totalSimples).toFixed(2)
-                //console.log('totalImposto=>'+totalImposto)
+                //console.log('totalImposto=>' + totalImposto)
                 projeto.impostoSimples = parseFloat(totalImposto).toFixed(2)
                 impostoIRPJAdd = 0
                 projeto.impostoAdd = 0
@@ -1502,8 +2673,8 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
                 }
             }
             //Validar ICMS
-            //console.log('projeto.fatequ=>'+projeto.fatequ)
-            //console.log('regime.alqICMS=>'+regime.alqICMS)
+            //console.log('projeto.fatequ=>' + projeto.fatequ)
+            //console.log('regime.alqICMS=>' + regime.alqICMS)
             if (projeto.fatequ == true) {
                 if (regime.alqICMS != null) {
                     impostoICMS = (parseFloat(projeto.vlrNFS)) * (parseFloat(regime.alqICMS) / 100)
@@ -1714,265 +2885,669 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
 
     Projeto.findOne({ _id: req.body.idprojeto }).then((prj_entrega) => {
         Cronograma.findOne({ projeto: req.body.idprojeto }).then((cronograma) => {
-            if (req.body.perConclusao != '' && typeof req.body.perConclusao != 'undefined' && req.body.perConclusao != 0) {
-                console.log('tem percentual')
-                var perConclusao = 0
-                var ev = 0
-                var ac = 0
-                var cpi = 0
-                var tcpi = 0
-                var spi = 0
-                var eac = 0
-                var etc = 0
-                var texto
-                perConclusao = req.body.perConclusao
-                if (perConclusao == 100) {
-                    texto = 'Projeto Concluído'
-                }
-                ev = parseFloat(prj_entrega.valor) * (parseFloat(perConclusao) / 100)
-                if (req.body.actualCost != '' && typeof req.body.actualCost != 'undefined' && req.body.actualCost != 0) {
-                    ac = req.body.actualCost
+            Realizado.findOne({ projeto: req.body.idprojeto }).then((realizado) => {
+                if (req.body.perges != '' && typeof req.body.perges != 'undefined' && req.body.perges != 0) {
+                    var AC = 0
+                    var ev = 0
+                    var evPerGes = 0
+                    var evPerKit = 0
+                    var evPerIns = 0
+                    var evPerPro = 0
+                    var evPerAli = 0
+                    var evPerDes = 0
+                    var evPerHtl = 0
+                    var evPerCmb = 0
+                    var evPerCer = 0
+                    var evPerCen = 0
+                    var evPerPos = 0
+                    var cpi = 0
+                    var tcpi = 0
+                    var spi = 0
+                    var eac = 0
+                    var etc = 0
+                    var texto
+
+                    var custoPlanoPrj = prj_entrega.custoPlano
+                    var vlrKitPrj = prj_entrega.vlrkit
+                    var desAdm = prj_entrega.desAdm
+                    var vlrcom = prj_entrega.vlrcom
+                    var totalTributos = prj_entrega.totalTributos
+                    var margemLL = prj_entrega.valor * (parseFloat(prj_entrega.parLiqVlr) / 100)
+                    var valorComReserva = parseFloat(custoPlanoPrj) + parseFloat(vlrKitPrj) + parseFloat(desAdm) + parseFloat(vlrcom) + parseFloat(totalTributos) + parseFloat(margemLL)
+
+                    //Definição do erning value
+                    evPerGes = (parseFloat(prj_entrega.totges)) * (parseFloat(req.body.perges) / 100)
+                    if (isNaN(evPerGes)) {
+                        evPerGes = 0
+                    }
+                    evPerKit = (parseFloat(prj_entrega.vlrkit)) * (parseFloat(req.body.perkit) / 100)
+                    if (isNaN(evPerKit)) {
+                        evPerKit = 0
+                    }
+                    evPerIns = (parseFloat(prj_entrega.totint)) * (parseFloat(req.body.perins) / 100)
+                    if (isNaN(evPerIns)) {
+                        evPerIns = 0
+                    }
+                    evPerPro = (parseFloat(prj_entrega.totpro)) * (parseFloat(req.body.perpro) / 100)
+                    if (isNaN(evPerPro)) {
+                        evPerPro = 0
+                    }
+                    evPerAli = (parseFloat(prj_entrega.totali)) * (parseFloat(req.body.perali) / 100)
+                    if (isNaN(evPerAli)) {
+                        evPerAli = 0
+                    }
+                    evPerDes = (parseFloat(prj_entrega.totdes)) * (parseFloat(req.body.perdes) / 100)
+                    if (isNaN(evPerDes)) {
+                        evPerDes = 0
+                    }
+                    evPerHtl = (parseFloat(prj_entrega.tothtl)) * (parseFloat(req.body.perhtl) / 100)
+                    if (isNaN(evPerHtl)) {
+                        evPerHtl = 0
+                    }
+                    evPerCmb = (parseFloat(prj_entrega.totcmb)) * (parseFloat(req.body.percmb) / 100)
+                    if (isNaN(evPerCmb)) {
+                        evPerCmb = 0
+                    }
+                    evPerCer = (parseFloat(prj_entrega.totcer)) * (parseFloat(req.body.percer) / 100)
+                    if (isNaN(evPerCer)) {
+                        evPerCer = 0
+                    }
+                    evPerCen = (parseFloat(prj_entrega.totcen)) * (parseFloat(req.body.percen) / 100)
+                    if (isNaN(evPerCen)) {
+                        evPerCen = 0
+                    }
+                    evPerPos = (parseFloat(prj_entrega.totpos)) * (parseFloat(req.body.perpos) / 100)
+                    if (isNaN(evPerPos)) {
+                        evPerPos = 0
+                    }
+
+                    if (prj_entrega.ehDireto == 'false') {
+                        evPerDes = 0
+                    } else {
+                        evPerCmb = 0
+                        evPerHtl = 0
+                    }
+
+                    //console.log('evPerGes=>' + evPerGes)
+                    //console.log('evPerKit=>' + evPerKit)
+                    //console.log('evPerIns=>' + evPerIns)
+                    //console.log('evPerPro=>' + evPerPro)
+                    //console.log('evPerDes=>' + evPerDes)
+                    //console.log('evPerAli=>' + evPerAli)
+                    //console.log('evPerHtl=>' + evPerHtl)
+                    //console.log('evPerCmb=>' + evPerCmb)
+                    //console.log('evPerCer=>' + evPerCer)
+                    //console.log('evPerCen=>' + evPerCen)
+                    //console.log('evPerPos=>' + evPerPos)
+
+                    ev = (parseFloat(evPerGes) + parseFloat(evPerKit) + parseFloat(evPerIns) + parseFloat(evPerPro) + parseFloat(evPerAli) + parseFloat(evPerDes) + parseFloat(evPerHtl) + parseFloat(evPerCmb) + parseFloat(evPerCer) + parseFloat(evPerCen) + parseFloat(evPerPos)).toFixed(2)
+                    //console.log('ev=>' + ev)
+
+                    //console.log('vlrKitPrj=>' + vlrKitPrj)
+                    //console.log('custoPlanoPrj=>' + custoPlanoPrj)
+                    var perConclusao = parseFloat(ev) / (parseFloat(vlrKitPrj) + parseFloat(custoPlanoPrj))
+                    if (perConclusao == 100) {
+                        texto = 'Projeto Concluído'
+                    }
+                    //console.log('perConclusao=>' + perConclusao)
+                    var custoPlanoRlz
+                    var totges = req.body.totges
+                    if (isNaN(totges) || totges == '' || totges == null) {
+                        totges = 0
+                    }
+
+                    //console.log('totges=>' + totges)
+                    var vlrKitRlz = req.body.vlrkit
+                    if (isNaN(vlrKitRlz) || vlrKitRlz == '' || vlrKitRlz == null) {
+                        vlrKitRlz = 0
+                    }
+                    //console.log('vlrKitRlz=>' + vlrKitRlz)
+                    var totint = req.body.totint
+                    if (isNaN(totint) || totint == '' || totint == null) {
+                        totint = 0
+                    }
+                    //console.log('totint=>' + totint)
+                    var totpro = req.body.totpro
+                    if (isNaN(totpro) || totpro == '' || totpro == null) {
+                        totpro = 0
+                    }
+                    //console.log('totpro=>' + totpro)
+                    var totali = req.body.totali
+                    if (isNaN(totali) || totali == '' || totali == null) {
+                        totali = 0
+                    }
+                    //console.log('totali=>' + totali)
+                    var tothtl = req.body.tothtl
+                    if (isNaN(tothtl) || tothtl == '' || tothtl == null) {
+                        tothtl = 0
+                    }
+                    //console.log('tothtl=>' + tothtl)
+                    var totcmb = req.body.totcmb
+                    if (isNaN(totcmb) || totcmb == '' || totcmb == null) {
+                        totcmb = 0
+                    }
+                    //console.log('totcmb=>' + totcmb)
+                    var totdes = req.body.totdes
+                    if (isNaN(totdes) || totdes == '' || totdes == null) {
+                        totdes = 0
+                    }
+                    //console.log('totdes=>' + totdes)
+                    var cercamento = req.body.cercamento
+                    if (isNaN(cercamento) || cercamento == '' || cercamento == null) {
+                        cercamento = 0
+                    }
+                    //console.log('cercamento=>' + cercamento)
+                    var central = req.body.central
+                    if (isNaN(central) || central == '' || central == null) {
+                        central = 0
+                    }
+                    //console.log('central=>' + central)
+                    var postecond = req.body.postecond
+                    if (isNaN(postecond) || postecond == '' || postecond == null) {
+                        postecond = 0
+                    }
+                    //console.log('postecond=>' + postecond)
+                    if (prj_entrega.ehDireto == 'false') {
+                        custoPlanoRlz = parseFloat(totges) + parseFloat(vlrKitRlz) + parseFloat(totint) + parseFloat(totpro) + parseFloat(totali) + parseFloat(tothtl) + parseFloat(totcmb) + parseFloat(cercamento) + parseFloat(central) + parseFloat(postecond)
+                    } else {
+                        custoPlanoRlz = parseFloat(totges) + parseFloat(vlrKitRlz) + parseFloat(totint) + parseFloat(totpro) + parseFloat(totdes) + parseFloat(totali) + parseFloat(cercamento) + parseFloat(central) + parseFloat(postecond)
+                    }
+                    //Definição do actual cost
+
+                    //console.log('custoPlanoRlz=>' + custoPlanoRlz)
+                    /*
+                    //console.log('vlrKitRlz=>' + vlrKitRlz)
+                    //console.log('desAdm=>' + desAdm)
+                    //console.log('vlrcom=>' + vlrcom)
+                    //console.log('totalTributos=>' + totalTributos)
+                    //console.log('margemLL=>' + margemLL)
+                    */
+                    AC = parseFloat(custoPlanoRlz).toFixed(2)
+                    if (isNaN(AC)) {
+                        AC = 0
+                    }
+                    //console.log('AC=>' + AC)
+                    if (AC != '') {
+                        ac = AC
+                    } else {
+                        ac = ev
+                    }
+                    cpi = parseFloat(ev) / parseFloat(AC)
+                    //console.log('cpi=>' + cpi)
+                    if (cpi == 'Infinity') {
+                        cpi = 1
+                    }
+                    tcpi = (parseFloat(prj_entrega.valor) - parseFloat(ev)) / (parseFloat(prj_entrega.valor) - parseFloat(ac))
+                    if (isNaN(tcpi)) {
+                        tcpi = 1
+                    }
+                    eac = parseFloat(prj_entrega.custoTotal) / parseFloat(cpi)
+                    if (cronograma.perPro == 100) {
+                        etc = parseFloat(eac) - parseFloat(AC) - parseFloat(prj_entrega.vlrart)
+                    } else {
+                        etc = parseFloat(eac) - parseFloat(AC)
+                    }
+                    spi = parseFloat(prj_entrega.hrsprj) * (1 - (parseFloat(perConclusao)))
+                    if (isNaN(spi)) {
+                        spi = 0
+                    }
+                    prj_entrega.perConclusao = Math.round(perConclusao * 100)
+                    prj_entrega.actualCost = parseFloat(AC).toFixed(2)
+                    prj_entrega.cpi = parseFloat(cpi).toFixed(4)
+                    prj_entrega.tcpi = parseFloat(tcpi).toFixed(4)
+                    prj_entrega.etc = parseFloat(etc).toFixed(2)
+                    prj_entrega.eac = parseFloat(eac).toFixed(2)
+                    prj_entrega.spi = parseFloat(spi).toFixed(2)
+                    prj_entrega.tspi = 1
                 } else {
-                    ac = ev
-                }
-                cpi = parseFloat(ev) / parseFloat(ac)
-                tcpi = (parseFloat(prj_entrega.valor) - parseFloat(ev)) / (parseFloat(prj_entrega.valor) - parseFloat(ac))
-                if (isNaN(tcpi)) {
-                    tcpi = 1
-                }
-                eac = parseFloat(prj_entrega.valor) / parseFloat(cpi)
-                etc = parseFloat(eac) - parseFloat(ac)
-                spi = parseFloat(prj_entrega.hrsprj) * (1 - (parseFloat(perConclusao) / 100))
-                if (isNaN(spi)) {
-                    spi = 0
-                }
-                prj_entrega.perConclusao = perConclusao
-                prj_entrega.actualCost = parseFloat(req.body.actualCost).toFixed(2)
-                prj_entrega.cpi = parseFloat(cpi).toFixed(4)
-                prj_entrega.tcpi = parseFloat(tcpi).toFixed(4)
-                prj_entrega.etc = parseFloat(etc).toFixed(2)
-                prj_entrega.eac = parseFloat(eac).toFixed(2)
-                prj_entrega.spi = parseFloat(spi).toFixed(2)
-                prj_entrega.tspi = 1
-            } else {
-                prj_entrega.perConclusao = 0
-                prj_entrega.etc = prj_entrega.valor
-                prj_entrega.actualCost = 0
-                prj_entrega.cpi = 1
-                prj_entrega.tcpi = 1
-                prj_entrega.spi = 1
-                prj_entrega.tspi = 1
-            }
-
-            if (req.body.executando == 'true') {
-                if (req.body.datepla != '' && typeof req.body.datepla != 'undefined') {
-                    atrasou = comparaDatas(cronograma.dateplafim, req.body.datepla)
-                }
-                if (req.body.dateprj != '' && typeof req.body.dateprj != 'undefined') {
-                    atrasou = comparaDatas(cronograma.dateprjfim, req.body.dateprj)
+                    prj_entrega.perConclusao = 0
+                    prj_entrega.etc = prj_entrega.valor
+                    prj_entrega.actualCost = 0
+                    prj_entrega.cpi = 1
+                    prj_entrega.tcpi = 1
+                    prj_entrega.spi = 1
+                    prj_entrega.tspi = 1
                 }
 
-                if (req.body.dateate != '' && typeof req.body.dateate != 'undefined') {
-                    atrasou = comparaDatas(cronograma.dateatefim, req.body.dateate)
-                }
-
-                if (req.body.dateest != '' && typeof req.body.dateest != 'undefined') {
-                    atrasou = comparaDatas(cronograma.dateestfim, req.body.dateest)
-                }
-
-                if (req.body.datemod != '' && typeof req.body.datemod != 'undefined') {
-                    atrasou = comparaDatas(cronograma.datemodfim, req.body.datemod)
-                }
-
-                if (req.body.dateinv != '' && typeof req.body.dateinv != 'undefined') {
-                    atrasou = comparaDatas(cronograma.dateinvfim, req.body.dateinv)
-                }
-
-                if (req.body.dateeae != '' && typeof req.body.dateeae != 'undefined') {
-                    atrasou = comparaDatas(cronograma.dateeaefim, req.body.dateeae)
-                }
-
-                if (req.body.datestb != '' && typeof req.body.datestb != 'undefined') {
-                    atrasou = comparaDatas(cronograma.datestbfim, req.body.datestb)
-                }
-
-                if (req.body.datepnl != '' && typeof req.body.datepnl != 'undefined') {
-                    atrasou = comparaDatas(cronograma.datepnlfim, req.body.datepnl)
-                }
-
-                if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
-                    atrasou = comparaDatas(cronograma.datevisfim, req.body.datevis)
-                }
-
-                if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
-                    if (req.body.dateEntregaReal != '' && typeof req.body.dateEntregaReal != 'undifined') {
-                        if (comparaDatas(req.body.dateEntregaReal, req.body.datevis)) {
-                            erros = erros + 'Não foi possível salvar a nova data de entrega de finalização. '
-                        } else {
-                            dataEntregaReal = req.body.dateEntregaReal
-                            ano = dataEntregaReal.substring(0, 4)
-                            mes = dataEntregaReal.substring(5, 7)
-                            dia = dataEntregaReal.substring(8, 11)
-                            dataEntregaReal = dia + '/' + mes + '/' + ano
-                            prj_entrega.datafim = dataEntregaReal
-                            prj_entrega.valDataFim = req.body.dateEntregaReal
-                            atrasou = comparaDatas(req.body.dateEntregaHidden, req.body.dateEntregaReal)
-                        }
-                    }
-                }
-            }
-
-            console.log('atrasou=>' + atrasou)
-
-            if (req.body.orcado == 'true') {
-                if (req.body.datevisfim == '' || typeof req.body.datevisfim == 'undefined') {
-                    console.log('prj_entrega.valDataPrev=>'+prj_entrega.valDataPrev)
-                    console.log('req.body.dateentrega=>'+req.body.dateentrega)
-                    if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && (req.body.dateentrega != prj_entrega.valDataPrev)) {
-                        erros = erros + 'A data de entrega poderá ser alterada quando data final da vistoria estiver preenchida.'
-                        req.flash('error_msg', erros)
-                        res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
-                    }
-                }else{
-                    if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && comparaDatas(req.body.dateentrega, req.body.datevisfim)) {
-                        dataentrega = req.body.dateentrega
-                        ano = dataentrega.substring(0, 4)
-                        mes = dataentrega.substring(5, 7)
-                        dia = dataentrega.substring(8, 11)
-                        dataentrega = dia + '/' + mes + '/' + ano
-                        console.log('dataentrega=>' + dataentrega)
-                        prj_entrega.dataprev = dataentrega
-                        prj_entrega.dataord = ano + mes + dia
-                        prj_entrega.valDataPrev = req.body.dateentrega
-                    }
-                }
-            }
-            prj_entrega.atrasado = atrasou
-            prj_entrega.save().then(() => {
-                console.log('salvou projeto')
                 if (req.body.executando == 'true') {
-                    //---Validar as datas de realização com data estimada do fim da entrega--//
                     if (req.body.datepla != '' && typeof req.body.datepla != 'undefined') {
-                        cronograma.atrasouPla = comparaDatas(cronograma.dateplafim, req.body.datepla)
+                        atrasou = comparaDatas(cronograma.dateplafim, req.body.datepla)
                     }
                     if (req.body.dateprj != '' && typeof req.body.dateprj != 'undefined') {
-                        cronograma.atrasouPrj = comparaDatas(cronograma.dateprjfim, req.body.dateprj)
+                        atrasou = comparaDatas(cronograma.dateprjfim, req.body.dateprj)
                     }
+
                     if (req.body.dateate != '' && typeof req.body.dateate != 'undefined') {
-                        cronograma.atrasouAte = comparaDatas(cronograma.dateatefim, req.body.dateate)
+                        atrasou = comparaDatas(cronograma.dateatefim, req.body.dateate)
                     }
+
                     if (req.body.dateest != '' && typeof req.body.dateest != 'undefined') {
-                        cronograma.atrasouEst = comparaDatas(cronograma.dateestfim, req.body.dateest)
+                        atrasou = comparaDatas(cronograma.dateestfim, req.body.dateest)
                     }
+
                     if (req.body.datemod != '' && typeof req.body.datemod != 'undefined') {
-                        cronograma.atrasouMod = comparaDatas(cronograma.datemodfim, req.body.datemod)
+                        atrasou = comparaDatas(cronograma.datemodfim, req.body.datemod)
                     }
+
                     if (req.body.dateinv != '' && typeof req.body.dateinv != 'undefined') {
-                        cronograma.atrasouInv = comparaDatas(cronograma.dateinvfim, req.body.dateinv)
+                        atrasou = comparaDatas(cronograma.dateinvfim, req.body.dateinv)
                     }
+
                     if (req.body.dateeae != '' && typeof req.body.dateeae != 'undefined') {
-                        cronograma.atrasouEae = comparaDatas(cronograma.dateeaefim, req.body.dateeae)
+                        atrasou = comparaDatas(cronograma.dateeaefim, req.body.dateeae)
                     }
+
                     if (req.body.datestb != '' && typeof req.body.datestb != 'undefined') {
-                        cronograma.atrasouStb = comparaDatas(cronograma.datestbfim, req.body.datestb)
+                        atrasou = comparaDatas(cronograma.datestbfim, req.body.datestb)
                     }
+
                     if (req.body.datepnl != '' && typeof req.body.datepnl != 'undefined') {
-                        cronograma.atrasouPnl = comparaDatas(cronograma.datepnlfim, req.body.datepnl)
+                        atrasou = comparaDatas(cronograma.datepnlfim, req.body.datepnl)
                     }
+
                     if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
-                        cronograma.atrasouVis = comparaDatas(cronograma.datevisfim, req.body.datevis)
-                    }
-                }
-                if (req.body.orcado == 'true') {
-                    cronograma.dateplaini = req.body.dateplaini
-                    cronograma.dateateini = req.body.dateateini
-                    cronograma.dateprjini = req.body.dateprjini
-                    cronograma.dateestini = req.body.dateestini
-                    cronograma.datemodini = req.body.datemodini
-                    cronograma.dateinvini = req.body.dateinvini
-                    cronograma.dateeaeini = req.body.dateeaeini
-                    cronograma.datestbini = req.body.datestbini
-                    cronograma.datepnlini = req.body.datepnlini
-                    cronograma.datevisini = req.body.datevisini
-                    cronograma.dateplafim = req.body.dateplafim
-                    cronograma.dateatefim = req.body.dateatefim
-                    cronograma.dateprjfim = req.body.dateprjfim
-                    cronograma.dateestfim = req.body.dateestfim
-                    cronograma.datemodfim = req.body.datemodfim
-                    cronograma.dateinvfim = req.body.dateinvfim
-                    cronograma.dateeaefim = req.body.dateeaefim
-                    cronograma.datestbfim = req.body.datestbfim
-                    cronograma.datepnlfim = req.body.datepnlfim
-                    cronograma.datevisfim = req.body.datevisfim
-
-                    if (req.body.datevisfim != '' && typeof req.body.datevisfim != 'undefined') {
-                        if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && comparaDatas(req.body.dateentrega, req.body.datevisfim)) {
-                            erros = erros + 'A data de entrega deve ser maior ou igual a data final da vistoria.'
-                            req.flash('error_msg', erros)
-                            res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
-                        } else {
-                            cronograma.dateentrega = req.body.dateentrega
-                        }
+                        atrasou = comparaDatas(cronograma.datevisfim, req.body.datevis)
                     }
 
-                }
-                if (req.body.executando == 'true') {
-                    cronograma.checkPla = checkPla
-                    cronograma.checkAte = checkAte
-                    cronograma.checkPrj = checkPrj
-                    cronograma.checkAte = checkAte
-                    cronograma.checkEst = checkEst
-                    cronograma.checkMod = checkMod
-                    cronograma.checkInv = checkInv
-                    cronograma.checkEae = checkEae
-                    cronograma.checkStb = checkStb
-                    cronograma.checkPnl = checkPnl
-                    cronograma.checkVis = checkVis
-                    cronograma.datepla = req.body.datepla
-                    cronograma.dateate = req.body.dateate
-                    cronograma.dateprj = req.body.dateprj
-                    cronograma.dateest = req.body.dateest
-                    cronograma.datemod = req.body.datemod
-                    cronograma.dateinv = req.body.dateinv
-                    cronograma.dateeae = req.body.dateeae
-                    cronograma.datestb = req.body.datestb
-                    cronograma.datepnl = req.body.datepnl
-                    cronograma.datevis = req.body.datevis
-
-                    if (req.body.executando == 'true') {
-                        if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
-                            if (req.body.dateEntregaReal != '' && typeof req.body.dateEntregaReal != 'undifined') {
-                                if (comparaDatas(req.body.dateEntregaReal, req.body.datevis)) {
-                                    erros = erros + 'A data de entrega de finalização do projeto deve ser maior ou igual a data de finalização da vistoria.'
-                                } else {
-                                    cronograma.dateEntregaReal = req.body.dateEntregaReal
-                                }
+                    if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
+                        if (req.body.dateEntregaReal != '' && typeof req.body.dateEntregaReal != 'undifined') {
+                            if (comparaDatas(req.body.dateEntregaReal, req.body.datevis)) {
+                                erros = erros + 'Não foi possível salvar a nova data de entrega de finalização. '
+                            } else {
+                                dataEntregaReal = req.body.dateEntregaReal
+                                ano = dataEntregaReal.substring(0, 4)
+                                mes = dataEntregaReal.substring(5, 7)
+                                dia = dataEntregaReal.substring(8, 11)
+                                dataEntregaReal = dia + '/' + mes + '/' + ano
+                                prj_entrega.datafim = dataEntregaReal
+                                prj_entrega.valDataFim = req.body.dateEntregaReal
+                                atrasou = comparaDatas(req.body.dateEntregaHidden, req.body.dateEntregaReal)
                             }
                         }
                     }
                 }
 
-                cronograma.save().then(() => {
-                    sucesso = sucesso + 'Cronograma salvo com sucesso. '
-                    req.flash('error_msg', erros)
-                    req.flash('success_msg', sucesso)
-                    res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
+                //console.log('atrasou=>' + atrasou)
+
+                if (req.body.orcado == 'true') {
+                    //console.log('entrou orçado')
+                    if (req.body.datevisfim == '' || typeof req.body.datevisfim == 'undefined') {
+                        //console.log('prj_entrega.valDataPrev=>' + prj_entrega.valDataPrev)
+                        //console.log('req.body.dateentrega=>' + req.body.dateentrega)
+                        if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && (req.body.dateentrega != prj_entrega.valDataPrev)) {
+                            erros = erros + 'A data de entrega poderá ser alterada quando data final da vistoria estiver preenchida.'
+                            req.flash('error_msg', erros)
+                            res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
+                        }
+                    } else {
+                        if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && comparaDatas(req.body.dateentrega, req.body.datevisfim)) {
+                            dataentrega = req.body.dateentrega
+                            ano = dataentrega.substring(0, 4)
+                            mes = dataentrega.substring(5, 7)
+                            dia = dataentrega.substring(8, 11)
+                            dataentrega = dia + '/' + mes + '/' + ano
+                            //console.log('dataentrega=>' + dataentrega)
+                            prj_entrega.dataprev = dataentrega
+                            prj_entrega.dataord = ano + mes + dia
+                            prj_entrega.valDataPrev = req.body.dateentrega
+                        }
+                    }
+                }
+                prj_entrega.atrasado = atrasou
+                prj_entrega.save().then(() => {
+                    //console.log('salvou o projeto')
+                    if (req.body.executando == 'true') {
+                        //---Validar as datas de realização com data estimada do fim da entrega--//
+                        if (req.body.datepla != '' && typeof req.body.datepla != 'undefined') {
+                            cronograma.atrasouPla = comparaDatas(cronograma.dateplafim, req.body.datepla)
+                        } else {
+                            cronograma.atrasouPla = false
+                        }
+                        if (req.body.dateprj != '' && typeof req.body.dateprj != 'undefined') {
+                            cronograma.atrasouPrj = comparaDatas(cronograma.dateprjfim, req.body.dateprj)
+                        } else {
+                            cronograma.atrasouPrj = false
+                        }
+                        if (req.body.dateate != '' && typeof req.body.dateate != 'undefined') {
+                            cronograma.atrasouAte = comparaDatas(cronograma.dateatefim, req.body.dateate)
+                        } else {
+                            cronograma.atrasouAte = false
+                        }
+                        if (req.body.dateest != '' && typeof req.body.dateest != 'undefined') {
+                            cronograma.atrasouEst = comparaDatas(cronograma.dateestfim, req.body.dateest)
+                        } else {
+                            cronograma.atrasouEst = false
+                        }
+                        if (req.body.datemod != '' && typeof req.body.datemod != 'undefined') {
+                            cronograma.atrasouMod = comparaDatas(cronograma.datemodfim, req.body.datemod)
+                        } else {
+                            cronograma.atrasouMod = false
+                        }
+                        if (req.body.dateinv != '' && typeof req.body.dateinv != 'undefined') {
+                            cronograma.atrasouInv = comparaDatas(cronograma.dateinvfim, req.body.dateinv)
+                        } else {
+                            cronograma.atrasouInv = false
+                        }
+                        if (req.body.dateeae != '' && typeof req.body.dateeae != 'undefined') {
+                            cronograma.atrasouEae = comparaDatas(cronograma.dateeaefim, req.body.dateeae)
+                        } else {
+                            cronograma.atrasouEae = false
+                        }
+                        if (req.body.datestb != '' && typeof req.body.datestb != 'undefined') {
+                            cronograma.atrasouStb = comparaDatas(cronograma.datestbfim, req.body.datestb)
+                        } else {
+                            cronograma.atrasouStb = false
+                        }
+                        if (req.body.datepnl != '' && typeof req.body.datepnl != 'undefined') {
+                            cronograma.atrasouPnl = comparaDatas(cronograma.datepnlfim, req.body.datepnl)
+                        } else {
+                            cronograma.atrasouPnl = false
+                        }
+                        if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
+                            cronograma.atrasouVis = comparaDatas(cronograma.datevisfim, req.body.datevis)
+                        } else {
+                            cronograma.atrasouVis = false
+                        }
+                    }
+                    if (req.body.orcado == 'true') {
+                        //console.log('entrou orçado')
+                        cronograma.dateplaini = req.body.dateplaini
+                        cronograma.dateateini = req.body.dateateini
+                        cronograma.dateprjini = req.body.dateprjini
+                        cronograma.dateestini = req.body.dateestini
+                        cronograma.datemodini = req.body.datemodini
+                        cronograma.dateinvini = req.body.dateinvini
+                        cronograma.dateeaeini = req.body.dateeaeini
+                        cronograma.datestbini = req.body.datestbini
+                        cronograma.datepnlini = req.body.datepnlini
+                        cronograma.datevisini = req.body.datevisini
+                        
+                        cronograma.dateplafim = req.body.dateplafim
+                        if (req.body.dateplafim != '' && typeof req.body.dateplafim != 'undefined') {
+                            cronograma.agendaPlaFim = dataBusca(req.body.dateplafim)
+                        }
+                        cronograma.dateatefim = req.body.dateatefim
+                        if (req.body.dateatefim != '' && typeof req.body.dateatefim != 'undefined') {
+                            cronograma.agendaAteFim = dataBusca(req.body.dateatefim)
+                        }
+                        cronograma.dateprjfim = req.body.dateprjfim
+                        if (req.body.dateprjfim != '' && typeof req.body.dateprjfim != 'undefined') {
+                            cronograma.agendaPrjFim = dataBusca(req.body.dateprjfim)
+                        }
+                        cronograma.dateestfim = req.body.dateestfim
+                        if (req.body.dateestfim != '' && typeof req.body.dateestfim != 'undefined') {
+                            cronograma.agendaEstFim = dataBusca(req.body.dateestfim)
+                        }
+                        cronograma.datemodfim = req.body.datemodfim
+                        if (req.body.datemodfim != '' && typeof req.body.datemodfim != 'undefined') {
+                            cronograma.agendaModFim = dataBusca(req.body.datemodfim)
+                        }
+                        cronograma.dateinvfim = req.body.dateinvfim
+                        if (req.body.dateinvfim != '' && typeof req.body.dateinvfim != 'undefined') {
+                            cronograma.agendaInvFim = dataBusca(req.body.dateinvfim)
+                        }
+                        cronograma.dateeaefim = req.body.dateeaefim
+                        if (req.body.dateeaefim != '' && typeof req.body.dateeaefim != 'undefined') {
+                            cronograma.agendaEaeFim = dataBusca(req.body.dateeaefim)
+                        }
+                        cronograma.datestbfim = req.body.datestbfim
+                        if (req.body.datestbfim != '' && typeof req.body.datestbfim != 'undefined') {
+                            cronograma.agendaStbFim = dataBusca(req.body.datestbfim)
+                        }
+                        cronograma.datepnlfim = req.body.datepnlfim
+                        if (req.body.datepnlfim != '' && typeof req.body.datepnlfim != 'undefined') {
+                            cronograma.agendaPnlFim = dataBusca(req.body.datepnlfim)
+                        }
+                        cronograma.datevisfim = req.body.datevisfim
+                        if (req.body.datevisfim != '' && typeof req.body.datevisfim != 'undefined') {
+                            cronograma.agendaVisFim = dataBusca(req.body.datevisfim)
+                        }
+
+                        if (req.body.datevisfim != '' && typeof req.body.datevisfim != 'undefined') {
+                            if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && comparaDatas(req.body.dateentrega, req.body.datevisfim)) {
+                                erros = 'A data de entrega deve ser maior ou igual a data final da vistoria.'
+                                req.flash('error_msg', erros)
+                                res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
+                            } else {
+                                cronograma.dateentrega = req.body.dateentrega
+                            }
+                        }
+                        cronograma.save().then(() => {
+                            //console.log('cronograma salvo.')
+                            sucesso = sucesso + 'Cronograma salvo com sucesso. '
+                            req.flash('error_msg', erros)
+                            req.flash('success_msg', sucesso)
+                            res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Não foi possível salvar o cronograma.')
+                            res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
+                        })
+
+                    }
+                    if (req.body.executando == 'true') {
+                        //console.log('perges=>' + req.body.perges)
+                        var perges = req.body.perges
+                        var perkit = req.body.perkit
+                        var perins = req.body.perins
+                        var perpro = req.body.perpro
+                        var perali = req.body.perali
+                        var perdes = req.body.perdes
+                        var perhtl = req.body.perhtl
+                        var percmb = req.body.percmb
+                        var percer = req.body.percer
+                        var percen = req.body.percen
+                        var perpos = req.body.perpos
+                        if (perges == '') {
+                            perges = 0
+                        }
+                        if (perkit == '') {
+                            perkit = 0
+                        }
+                        if (perins == '') {
+                            perins = 0
+                        }
+                        if (perpro == '') {
+                            perpro = 0
+                        }
+                        if (perali == '') {
+                            perali = 0
+                        }
+                        if (perdes == '') {
+                            perdes = 0
+                        }
+                        if (perhtl == '') {
+                            perhtl = 0
+                        }
+                        if (percmb == '') {
+                            percmb = 0
+                        }
+                        if (percer == '') {
+                            percer = 0
+                        }
+                        if (percen == '') {
+                            percen = 0
+                        }
+                        if (perpos == '') {
+                            perpos = 0
+                        }
+                        cronograma.perGes = perges
+                        cronograma.perKit = perkit
+                        cronograma.perIns = perins
+                        cronograma.perPro = perpro
+                        cronograma.perAli = perali
+                        cronograma.perDes = perdes
+                        cronograma.perHtl = perhtl
+                        cronograma.perCmb = percmb
+                        cronograma.perCer = percer
+                        cronograma.perCen = percen
+                        cronograma.perPos = perpos
+                        cronograma.checkPla = checkPla
+                        cronograma.checkAte = checkAte
+                        cronograma.checkPrj = checkPrj
+                        cronograma.checkEst = checkEst
+                        cronograma.checkMod = checkMod
+                        cronograma.checkInv = checkInv
+                        cronograma.checkEae = checkEae
+                        cronograma.checkStb = checkStb
+                        cronograma.checkPnl = checkPnl
+                        cronograma.checkVis = checkVis
+                        cronograma.datepla = req.body.datepla
+                        cronograma.dateate = req.body.dateate
+                        cronograma.dateprj = req.body.dateprj
+                        cronograma.dateest = req.body.dateest
+                        cronograma.datemod = req.body.datemod
+                        cronograma.dateinv = req.body.dateinv
+                        cronograma.dateeae = req.body.dateeae
+                        cronograma.datestb = req.body.datestb
+                        cronograma.datepnl = req.body.datepnl
+                        cronograma.datevis = req.body.datevis
+
+                        if ((req.body.datevis != '' && typeof req.body.datevis != 'undefined') && (req.body.dateEntregaReal != '' && typeof req.body.dateEntregaReal != 'undifined')) {
+                            if (comparaDatas(req.body.dateEntregaReal, req.body.datevis)) {
+                                erros = erros + 'A data de entrega de finalização do projeto deve ser maior ou igual a data de finalização da vistoria.'
+                            } else {
+                                cronograma.dateEntregaReal = req.body.dateEntregaReal
+                            }
+                        } else {
+                            if ((req.body.datevis == '' || typeof req.body.datevis == 'undefined') && (req.body.dateEntregaReal != '' && typeof req.body.dateEntregaReal != 'undifined')) {
+                                erros = erros + 'A data de entrega de finalização somente será aceita após definir a data de finalização da vistoria.'
+                            }
+                        }
+
+                        if (realizado != null) {
+                            /*
+                            //console.log('entrou realizado')
+                            //console.log('totint=>' + totint)
+                            //console.log('totges=>' + totges)
+                            //console.log('totpro=>' + totpro)
+                            //console.log('vlrart=>' + vlrart)
+                            //console.log('totali=>' + totali)
+                            //console.log('totdes=>' + totdes)
+                            //console.log('tothtl=>' + tothtl)
+                            //console.log('totcmb=>' + totcmb)
+                            //console.log('cercamento=>' + cercamento)
+                            //console.log('central=>' + central)
+                            //console.log('postecond=>' + postecond)
+                            */
+                            realizado.vlrkit = vlrKitRlz
+                            realizado.totint = totint
+                            realizado.totges = totges
+                            realizado.totpro = totpro
+                            realizado.totali = totali
+                            realizado.totdes = totdes
+                            realizado.tothtl = tothtl
+                            realizado.totcmb = totcmb
+                            realizado.valorCer = cercamento
+                            realizado.valorCen = central
+                            realizado.valorPos = postecond
+                            realizado.vlrart = 0 
+                            realizado.desAdm = 0 
+                            realizado.vlrcom = 0 
+                            realizado.potencia = 0 
+                            realizado.valor = 0 
+                            realizado.vlrNFS = 0 
+                            realizado.custoPlano = 0 
+                            realizado.lucroLiquido = 0 
+                            realizado.custofix = 0 
+                            realizado.cutovar = 0 
+                            realizado.valorMod = 0 
+                            realizado.valorInv = 0 
+                            realizado.valorEst = 0 
+                            realizado.valorCab = 0 
+                            realizado.valorDis = 0  
+                            realizado.valorDPS = 0 
+                            realizado.valorSB = 0
+                            realizado.valorOcp = 0                            
+                            realizado.totalTributos = 0    
+                            realizado.custoPlano = 0    
+
+                            cronograma.save().then(() => {
+                                //console.log('cronograma salvo.')
+                                realizado.save().then(() => {
+                                    sucesso = sucesso + 'Cronograma salvo com sucesso. '
+                                    req.flash('error_msg', erros)
+                                    req.flash('success_msg', sucesso)
+                                    res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Não foi possível salvar o projeto.')
+                                    res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
+                                })
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Não foi possível salvar o cronograma.')
+                                res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
+                            })
+
+                        } else {
+                            //console.log('novo realizado')
+                            //console.log('req.boy.totint=>' + req.body.totint)
+                            const realizado = {
+                                user: _id,
+                                projeto: req.body.idprojeto,
+                                vlrkit: req.body.vlrKitRlz,
+                                totint: req.body.totint,
+                                totges: req.body.totges,
+                                totpro: req.body.totpro,
+                                totali: req.body.totali,
+                                totdes: req.body.totdes,
+                                tothtl: req.body.tothtl,
+                                totcmb: req.body.totcmb,
+                                valorCer: req.body.cercamento,
+                                valorCen: req.body.central,
+                                valorPos: req.body.postecond,
+                                vlrart: 0,
+                                desAdm: 0,
+                                vlrcom: 0,
+                                potencia: 0,
+                                valor: 0,
+                                vlrNFS: 0,
+                                custoPlano: 0,
+                                lucroLiquido: 0,
+                                custofix: 0,
+                                cutovar: 0,
+                                valorMod: 0,
+                                valorInv: 0,
+                                valorEst: 0,
+                                valorCab: 0,
+                                valorDis: 0, 
+                                valorDPS: 0,
+                                valorSB: 0,
+                                valorOcp: 0,
+                                totalTributos: 0,
+                                custoPlano: 0
+                            }
+
+                            new Realizado(realizado).save().then(() => {
+                                cronograma.save().then(() => {
+                                    sucesso = sucesso + 'Cronograma salvo com sucesso. '
+                                    req.flash('error_msg', erros)
+                                    req.flash('success_msg', sucesso)
+                                    res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Não foi possível salvar o cronograma.')
+                                    res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
+                                })
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Não foi posível realizar o projeto.')
+                                res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
+                            })
+                        }
+                    }
 
                 }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possível salvar o cronograma.')
-                    res.redirect('/menu')
+                    req.flash('error_msg', 'Não foi possível salvar o projeto.')
+                    res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
                 })
             }).catch((err) => {
-                req.flash('error_msg', 'Não foi possível encontrar o cronograma salvo.')
-                res.redirect('/menu')
+                req.flash('error_msg', 'Não foi possível encontrar o projeto realizado.')
+                res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
             })
         }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível salvar o projeto.')
-            res.redirect('/menu')
+            req.flash('error_msg', 'Não foi possível encontrar o cronograma.')
+            res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar o projeto.')
-        res.redirect('/menu')
+        res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
     })
 })
 

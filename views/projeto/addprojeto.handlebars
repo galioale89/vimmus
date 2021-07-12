@@ -130,7 +130,7 @@
                                 </div>
                                 <div class="row mb-1">
                                     <label class='col-form-label col-form-label-sm fw-bold'>Estação de Baterias:</label>
-                                </div>                                
+                                </div>
                                 <div class="row mb-1">
                                     <label class='col-form-label col-form-label-sm fw-bold'>Cabos:</label>
                                 </div>
@@ -182,7 +182,7 @@
                                 <input type='number' value='{{detalhe.unidadeCim}}'
                                     class='form-control form-control-sm mb-1' name='unidadeCim'>
                                 <input type='number' value='{{detalhe.unidadeEbt}}'
-                                    class='form-control form-control-sm mb-1' name='unidadeEbt'>                                    
+                                    class='form-control form-control-sm mb-1' name='unidadeEbt'>
                                 <input type='number' value='{{detalhe.unidadeCab}}'
                                     class='form-control form-control-sm mb-1' name='unidadeCab'>
                                 <input type='number' value='{{detalhe.unidadeDisCC}}'
@@ -223,7 +223,7 @@
                                 <input type='number' value='{{detalhe.vlrUniCim}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCim'>
                                 <input type='number' value='{{detalhe.vlrUniEbt}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniEbt'>                                    
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniEbt'>
                                 <input type='number' value='{{detalhe.vlrUniCab}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCab'>
                                 <input type='number' value='{{detalhe.vlrUniDisCC}}'
@@ -264,7 +264,7 @@
                                 <input type='number' value='{{detalhe.valorCim}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorCim'>
                                 <input type='number' value='{{detalhe.valorEbt}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorEbt'>                                    
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorEbt'>
                                 <input type='number' value='{{detalhe.valorCab}}'
                                     class='form-control form-control-sm mb-1' placeholder="R$" name='valorCab'>
                                 <input type='number' value='{{detalhe.valorDisCC}}'
@@ -418,10 +418,16 @@
                         <div class="form-check form-switch" style="margin-left: 60px;">
                             <input name='checkFatura' class="form-check-input" type="checkbox">
                         </div>
+                        <div class='row'>
+                            <a class="btn btn-sm btn-primary mb-1" data-bs-toggle="modal"
+                                data-bs-target="#custosModal"><i class='bi bi-list-ul'></i> Detalhar Equipamento</a>
+                        </div>
+                    </div>
+                    <div class='text-center'>
+                        <label class='fw-bold col-form-label col-form-label-sm'>Complementos</label>
                     </div>
                     <div class="row">
-                        <label class='fw-bold col-form-label col-form-label-sm'>Complementos:</label>
-                        <div class="col-md-3">
+                        <div class="col">
                             <div class="form-check">
                                 <input name='estsolo' class="form-check-input" type="checkbox" style="margin-top: 8px;">
                                 <label class="form-check-label col-form-label col-form-label-sm">
@@ -429,7 +435,7 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col">
                             <div class="form-check">
                                 <input name='central' class="form-check-input" type="checkbox" style="margin-top: 8px;">
                                 <label class="form-check-label col-form-label col-form-label-sm">
@@ -437,8 +443,8 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <div class="form-check" style="margin-left: 15px;">
+                        <div class="col">
+                            <div class="form-check">
                                 <input name='cercamento' class="form-check-input" type="checkbox"
                                     style="margin-top: 8px;">
                                 <label class="form-check-label col-form-label col-form-label-sm">
@@ -446,20 +452,32 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col">
                             <div class="form-check">
-                                <input name='poste' class="form-check-input" type="checkbox"
-                                    style="margin-top: 8px;margin-left: 10%;">
-                                <label class="form-check-label col-form-label col-form-label-sm"
-                                    style="margin-left: 5%;">
-                                    Postes de Condução
+                                <input name='poste' class="form-check-input" type="checkbox" style="margin-top: 8px;">
+                                <label class="form-check-label col-form-label col-form-label-sm">
+                                    Postes
                                 </label>
                             </div>
                         </div>
                     </div>
-                    <div class='row' style="margin-left: 1px;">
-                        <a class="btn btn-sm btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#custosModal"><i
-                                class='bi bi-list-ul'></i> Detalhar Equipamento</a>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-check">
+                                <input name='armazenamento' class="form-check-input" type="checkbox" style="margin-top: 8px;">
+                                <label class="form-check-label col-form-label col-form-label-sm">
+                                    Estação de Armazenamento de Baterias
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input name='painel' class="form-check-input" type="checkbox" style="margin-top: 8px;">
+                                <label class="form-check-label col-form-label col-form-label-sm">
+                                    Painel Elétrico
+                                </label>
+                            </div>
+                        </div>                        
                     </div>
                 </div>
                 <div class="row mt-1">
@@ -479,7 +497,7 @@
                             <option>Público</option>
                         </select>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-1 text-end">
                         <label class="fw-bold col-form-label col-form-label-sm text-end"> Tipo:
                         </label>
                     </div>
@@ -498,7 +516,7 @@
                 </div>
                 <div class="row mt-1 mb-2">
                     <div class="col-md-2 text-end">
-                        <label class="fw-bold col-form-label col-form-label-sm"> Tensão:
+                        <label class="fw-bold col-form-label col-form-label-sm">Tensão:
                         </label>
                     </div>
                     <div class="col-md-4">
@@ -511,7 +529,7 @@
                         </select>
                     </div>
                     <div class="col-md-1 text-end">
-                        <label class="fw-bold col-form-label col-form-label-sm text-end"> Grupo:
+                        <label class="fw-bold col-form-label col-form-label-sm"> Grupo:
                         </label>
                     </div>
                     <div class="col-md-5">
@@ -534,11 +552,11 @@
                 <div class="row">
                     <div class="col-md-6">
                         <label class='fw-bold col-form-label col-form-label-sm'>Premissas e Restrições</label>
-                            <textarea name='premissas' class="form-control" rows='4'></textarea>
+                        <textarea name='premissas' class="form-control" rows='4' style="font-size: 14px;"></textarea>
                     </div>
                     <div class="col-md-6">
                         <label class='fw-bold col-form-label col-form-label-sm'>Requisitos</label>
-                            <textarea name='requisitos' class="form-control" rows='4'></textarea>
+                        <textarea name='requisitos' class="form-control" rows='4' style="font-size: 14px;"></textarea>
                     </div>
                 </div>
                 <!--
@@ -551,7 +569,7 @@
                     </div>
                 </div>
                 -->
-                <div class="row mt-2">
+                <div class="row mt-1">
                     <button type='submit' class='btn btn-success'> <i class='bi bi-layers'></i> Ir para Custos</button>
                 </div>
             </div>

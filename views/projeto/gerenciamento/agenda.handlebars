@@ -1,0 +1,268 @@
+<style>
+    table {
+        border: gray 1px solid;
+        width: 100%;
+    }
+
+    th {
+        border: gray 1px solid;
+        font-weight: bold;
+        font-size: 17px;
+    }
+
+    td {
+        border: gray 1px solid;
+        font-weight: bold;        
+    }
+</style>
+<div class='row' style="padding: 10px;width: 100%;">    
+    <form action="/gerenciamento/aplicaAgenda/" method="post">
+        <div class='row mb-2'>
+            <div class="col mt-1">
+                <label style="font-size: 16px;font-weight: bold;"> Agenda: {{#if mes}}{{mes}} de {{ano}}{{/if}}</label>
+            </div>            
+            <div class="col text-end">
+                <label class='col-form-label fw-bold col-form-label-sm'>Selecione o mês e digite o ano:<label>
+            </div>
+            <div class="col">
+                <select class='form-select form-select-sm' name='messel'>
+                    <option {{janeiro}}>Janeiro</option>
+                    <option {{fevereiro}}>Fevereiro</option>
+                    <option {{marco}}>Março</option>
+                    <option {{abril}}>Abril</option>
+                    <option {{maio}}>Maio</option>
+                    <option {{junho}}>Junho </option>
+                    <option {{julho}}>Julho</option>
+                    <option {{agosto}}>Agosto</option>
+                    <option {{setembro}}>Setembro</option>
+                    <option {{outubro}}>Outubro</option>
+                    <option {{novembro}}>Novembro</option>
+                    <option {{dezembro}}>Dezembro</option>
+                    <option>Todos</option>
+                </select>
+            </div>
+            <div class="col">
+                <input class='form-control form-control-sm' type='number' name='mesano' placeholder="Ano" value='{{ano}}'>
+            </div>
+            <div class="col">
+                <button type='submit' class='btn btn-primary btn-sm'>Filtrar</button>
+            </div>
+        </div>
+        <table>
+            <tr>
+                <th style="text-align: right;width: 5%;">Semanas|Dias</th>
+                <th style="width: 14%;">1</th>
+                <th style="width: 14%;">2</th>
+                <th style="width: 14%;">3</th>
+                <th style="width: 14%;">4</th>
+                <th style="width: 14%;">5</th>
+                <th style="width: 14%;">6</th>
+                <th style="width: 14%;">7</th>
+            </tr>
+            <tr>
+                <td style="text-align: right;font-size: 17px">1</td>
+                <td>
+                    <label style="font-size: 10px; ">1</label><br>
+                    {{#each tarefas01}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                      
+                </td>
+                <td>
+                    <label style="font-size: 10px">2</label><br>
+                    {{#each tarefas02}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">3</label><br>
+                    {{#each tarefas03}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">4</label><br>
+                    {{#each tarefas04}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">5</label><br>
+                    {{#each tarefas05}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">6</label><br>
+                    {{#each tarefas06}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">7</label><br>
+                    {{#each tarefas07}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+            <tr>
+                <td style="text-align: right;font-size: 17px">2</td>
+                <td>
+                    <label style="font-size: 10px">8</label><br>
+                    {{#each tarefas08}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">9</label><br>
+                    {{#each tarefas09}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">10</label><br>
+                    {{#each tarefas10}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">11</label><br>
+                    {{#each tarefas11}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                    
+                </td>
+                <td>
+                    <label style="font-size: 10px">12</label><br>
+                    {{#each tarefas12}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">13</label><br>
+                    {{#each tarefas13}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">14</label><br>
+                    {{#each tarefas14}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right;font-size: 17px">3</td>
+                <td>
+                    <label style="font-size: 10px">15</label><br>
+                    {{#each tarefas15}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">16</label><br>
+                    {{#each tarefas16}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">17</label><br>
+                    {{#each tarefas17}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">18</label><br>
+                    {{#each tarefas18}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">19</label><br>
+                    {{#each tarefas19}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">20</label><br>
+                    {{#each tarefas20}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">21</label><br>
+                    {{#each tarefas21}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right;font-size: 17px">4</td>
+                <td>
+                    <label style="font-size: 10px">22</label><br>
+                    {{#each tarefas22}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">23</label><br>
+                    {{#each tarefas23}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">24</label><br>
+                    {{#each tarefas24}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">25</label><br>
+                    {{#each tarefas25}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">26</label><br>
+                    {{#each tarefas26}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">27</label><br>
+                    {{#each tarefas27}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">28</label><br>
+                    {{#each tarefas28}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right;font-size: 17px">5</td>
+                <td>
+                    <label style="font-size: 10px">29</label><br>
+                    {{#each tarefas29}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">30</label><br>
+                    {{#each tarefas30}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td>
+                    <label style="font-size: 10px">31</label><br>
+                    {{#each tarefas31}}
+                    <a href='/gerenciamento/cronograma/{{id}}'><i class='bi bi-check'></i> {{projeto}} ({{tarefa}})</a><br>
+                    {{/each}}                     
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </form>
+</div>

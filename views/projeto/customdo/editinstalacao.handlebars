@@ -28,7 +28,7 @@
     .caixa {
         border: rgba(200, 200, 200, 0.8) 1px solid;
         width: fit-content;
-        height: 335px;
+        height: 300px;
         border-radius: 5px;
         padding-left: 10px;
         padding-right: 20px;
@@ -39,7 +39,7 @@
     function infoEstrutura() {
         alert('Essa atividade considera a concreatagem das pilastras, a montagem das bases e a fixação dos suportes.')
 
-    }    
+    }
 </script>
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
     <div style="width: 100%;">
@@ -69,72 +69,69 @@
         </div>
 
         <div class='row mt-1'>
-            <div class="row">
-                <div class="row mb-3 mt-1">
-                    <div class='col-sm-2'>
-                        <a href='/pessoa/formaequipe/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
-                                class="bi bi-people"></i> Equipe de Instalação </a>
-                    </div>
-                    <div class='col-md-2' style="border:rgb(68, 96, 238) 1px solid;border-radius: 5px;">
-                        <label class="fw-bold col-form-label col-form-label-sm">{{#if
-                            projeto.qtdequipe}}{{projeto.qtdequipe}}{{else}}0{{/if}}
-                            pessoas na equipe</label>
-                    </div>
-                </div>
+            <div class="row" style="width: 100%;padding-left: 2%">
                 <div class="col-md-2">
-                    <div class="row mt-2">
+                    <div class="row" style=";padding: 16px;border-radius: 4px;border: rgba(120,120,120, 0.2) solid 1px">
                         <div class="col-md-4">
-                            <label for="vlrhri" class="fw-bold col-form-label col-form-label-sm">R$/Hora:
-                            </label>
+                            <label for="vlrhri" class="fw-bold col-form-label col-form-label-sm">R$/Hora: </label>
                         </div>
                         <div class="col-md-8">
-                            <input class='form-control form-control-sm' {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text" name="vlrhri" id='vlrhri'
-                                value={{#if vlrhri}}'{{projeto.vlrhri}}'{{else}}'{{configuracao.vlrhri}}'{{/if}}>
+                            <input class='form-control form-control-sm' {{#if projeto.orcado}}{{else}}disabled{{/if}}
+                                type="text" name="vlrhri" id='vlrhri' value={{#if vlrhri}}'{{projeto.vlrhri}}'{{else}}'{{configuracao.vlrhri}}'{{/if}}>
                         </div>
                     </div>
                 </div>
-                <div style="margin-left: 6%;" class="col-md-9 card">
-                    <div class="row">
+                <div class="col-md-3">
+                    <div class="row" style="padding: 5px;border:rgb(68, 96, 238) 1px solid;border-radius: 5px;">
+                        <div class="col">
+                            <a href='/pessoa/formaequipe/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
+                                    class="bi bi-people"></i> Equipe de Instalação </a>
+                        </div>
+                        <div class="col mt-2">
+                            <label class="fw-bold col-form-label col-form-label-sm">{{#if
+                                projeto.qtdequipe}}{{projeto.qtdequipe}}{{else}}0{{/if}}
+                                pessoas na equipe</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="row" style="padding: 16px;border-radius: 4px;border: rgba(120,120,120, 0.2) solid 1px">
                         <div class="col-md-3">
-                            <label class='mt-2 mb-2 col-form-label col-form-label-sm fw-bold'>Instalador
-                                Responsável:</label>
+                            <label class='col-form-label col-form-label-sm fw-bold'>Instalador Responsável:</label>
                         </div>
                         <div class="col-md-3">
                             <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='hidden' name='pinome'
                                 value='{{pi.nome}}'>
-                            <label class='mt-2 col-form-label col-form-label-sm'>{{pi.nome}}</label>
+                            <label class='col-form-label col-form-label-sm'>{{pi.nome}}</label>
                         </div>
-                        <div class="col-md-6">
-                            <div class="row mt-2 mb-1">
-                                <div class="col-md-3"
-                                    style="border: solid 1px; border-width: 1px ;border-color: gray;border-right:brown;border-top:brown;border-bottom:brown;">
-                                    <div class="row">
-                                        <div class="col-md-7">
-                                            <label class='col-form-label col-form-label-sm fw-bold'>Alterar:</label>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class='form-check'>
-                                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}}
-                                                    class='form-check-input mt-2' type='checkbox' name='checkIns'>
-                                            </div>
-                                        </div>
+                        <div class="col-md-2"
+                            style="border: solid 1px; border-width: 1px ;border-color: gray;border-right:brown;border-top:brown;border-bottom:brown;">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Alterar </label>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class='form-check'>
+                                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}}
+                                            class='form-check-input mt-2' type='checkbox' name='checkIns'>
                                     </div>
                                 </div>
-                                <div class="col-md-9">
-                                    <select {{#if projeto.orcado}}{{else}}disabled{{/if}}
-                                        class='form-select form-select-sm' name='funins'>
-                                        {{#each instalador}}
-                                        <option value='{{_id}}'>{{nome}}</option>
-                                        {{else}}
-                                        <option>Nenhum projetista cadastrado</option>
-                                        {{/each}}
-                                    </select>
-                                </div>
                             </div>
+                        </div>
+                        <div class="col-md-4">
+                            <select {{#if projeto.orcado}}{{else}}disabled{{/if}} class='form-select form-select-sm'
+                                name='funins'>
+                                {{#each instalador}}
+                                <option value='{{_id}}'>{{nome}}</option>
+                                {{else}}
+                                <option>Nenhum projetista cadastrado</option>
+                                {{/each}}
+                            </select>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="row mt-2">
                 <div class="col-md-8" style="margin-bottom: 50px;">
                     <div class="card" style="padding: 10px; padding-bottom: 20px;">
@@ -160,22 +157,22 @@
                         <div class="row">
                             <div class="col-md-3 text-end">
                                 <label for="aterramento"
-                                    class="fw-bold col-form-label col-form-label-sm mb-4">Aterramento:</label>
+                                    class="fw-bold col-form-label col-form-label-sm">Aterramento:</label>
                             </div>
                             <div class="col">
-                                <div class="input-group input-group-sm mb-1">
+                                <div class="input-group input-group-sm ">
                                     <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="uniatr"
                                         id='uniatr' value='{{projeto.uniatr}}' class='form-control'>
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="input-group input-group-sm mb-1">
+                                <div class="input-group input-group-sm ">
                                     <input disabled type="number" name='trbatr' id="trbatr" value='{{projeto.trbatr}}'
                                         class="form-control">
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="input-group input-group-sm mb-1">
+                                <div class="input-group input-group-sm ">
                                     <span class="input-group-text">$</span>
                                     <input disabled type="number" class="form-control" name='totatr' id="totatr"
                                         value='{{projeto.totatr}}' aria-label='R$'>
@@ -183,25 +180,25 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row mt-2">
                             <div class="col-md-3 text-end">
-                                <label for="estrutura"
-                                    class="fw-bold col-form-label col-form-label-sm mb-4">Estrutura:<i class='bi bi-info-circle' onmousemove="infoEstrutura()" ></i></label>
+                                <label for="estrutura" class="fw-bold col-form-label col-form-label-sm">Estrutura:<i
+                                        class='bi bi-info-circle' onmousemove="infoEstrutura()"></i></label>
                             </div>
                             <div class="col">
-                                <div class="input-group input-group-sm mb-1">
+                                <div class="input-group input-group-sm ">
                                     <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="uniest"
                                         id='uniest' value='{{projeto.uniest}}' class='form-control'>
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="input-group input-group-sm mb-1">
+                                <div class="input-group input-group-sm ">
                                     <input disabled type="number" name='trbest' id="trbest" value='{{projeto.trbest}}'
                                         class="form-control">
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="input-group input-group-sm mb-1">
+                                <div class="input-group input-group-sm ">
                                     <span class="input-group-text">$</span>
                                     <input disabled type="number" class="form-control" name='totest' id="totest"
                                         value='{{projeto.totest}}' aria-label='R$'>
@@ -209,25 +206,25 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row mt-2">
                             <div class="col-md-3 text-end">
-                                <label class="fw-bold col-form-label col-form-label-sm mb-4">Módulos e
+                                <label class="fw-bold col-form-label col-form-label-sm">Módulos e
                                     Conexões:</label>
                             </div>
                             <div class="col">
-                                <div class="input-group input-group-sm mb-1">
+                                <div class="input-group input-group-sm">
                                     <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name='unimod'
                                         id="unimod" value='{{projeto.unimod}}' class='form-control'>
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="input-group input-group-sm mb-1">
+                                <div class="input-group input-group-sm">
                                     <input disabled type="number" name='trbmod' id="trbmod" value='{{projeto.trbmod}}'
                                         class="form-control">
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="input-group input-group-sm mb-1">
+                                <div class="input-group input-group-sm">
                                     <span class="input-group-text">$</span>
                                     <input disabled type="number" class="form-control" name='totmod' id="totmod"
                                         value='{{projeto.totmod}}' aria-label="R$ ">
@@ -235,25 +232,25 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-3 text-end">
+                        <div class="row mt-2">
+                            <div class="col text-end">
                                 <label class="fw-bold col-form-label col-form-label-sm">Inversor
                                     (Instal/Config): <br> </label>
                             </div>
                             <div class="col">
-                                <div class="input-group input-group-sm mb-1">
+                                <div class="input-group input-group-sm ">
                                     <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name='uniinv'
                                         id="uniinv" value='{{projeto.uniinv}}' class="form-control">
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="input-group input-group-sm mb-1">
+                                <div class="input-group input-group-sm ">
                                     <input disabled type="number" name='trbinv' id="trbinv" value='{{projeto.trbinv}}'
                                         class="form-control">
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="input-group input-group-sm mb-1">
+                                <div class="input-group input-group-sm ">
                                     <span class="input-group-text">$</span>
                                     <input disabled type="text" class="form-control" name='totinv' id="totinv"
                                         value='{{projeto.totinv}}' aria-label="R$ " disable>
@@ -261,24 +258,24 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mt-4">
+                        <div class="row mt-1">
                             <div class="col-md-3 text-end">
                                 <label class="fw-bold col-form-label col-form-label-sm">String Box:</label>
                             </div>
                             <div class="col">
-                                <div class="input-group input-group-sm mb-1">
+                                <div class="input-group input-group-sm ">
                                     <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name='unistb'
                                         id="unistb" value='{{projeto.unistb}}' class="form-control">
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="input-group input-group-sm mb-1">
+                                <div class="input-group input-group-sm ">
                                     <input disabled type="number" name='trbstb' id="trbstb" value='{{projeto.trbstb}}'
                                         class="form-control">
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="input-group input-group-sm mb-1">
+                                <div class="input-group input-group-sm ">
                                     <span class="input-group-text">$</span>
                                     <input disabled type="text" class="form-control" name='totstb' id="totstb"
                                         value='{{projeto.totstb}}' aria-label="R$ " disable>
@@ -286,24 +283,52 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mt-3">
+                        {{#if projeto.temArmazenamento}}
+                        <div class="row mt-2">
+                            <div class="col-md-3 text-end">
+                                <label class="fw-bold col-form-label col-form-label-sm">Estação de Baterias:</label>
+                            </div>
+                            <div class="col">
+                                <div class="input-group input-group-sm">
+                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text" name='unieae'
+                                        id="unipnl" value='{{projeto.unieae}}' class="form-control">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group input-group-sm">
+                                    <input disabled type="number" name='treae' id="trbeae" value='{{projeto.trbeae}}'
+                                        class="form-control">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text">$</span>
+                                    <input disabled type="text" class="form-control" name='toteae' id="toteae"
+                                        value='{{projeto.toteae}}' aria-label="R$ " disable>
+                                    <span class="input-group-text">.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        {{/if}}
+                        {{#if projeto.temPainel}}
+                        <div class="row mt-1">
                             <div class="col-md-3 text-end">
                                 <label class="fw-bold col-form-label col-form-label-sm">Painél Elétrico:</label>
                             </div>
                             <div class="col">
-                                <div class="input-group input-group-sm mb-1">
+                                <div class="input-group input-group-sm ">
                                     <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text" name='unipnl'
                                         id="unipnl" value='{{projeto.unipnl}}' class="form-control">
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="input-group input-group-sm mb-1">
+                                <div class="input-group input-group-sm ">
                                     <input disabled type="number" name='trbpnl' id="trbpnl" value='{{projeto.trbpnl}}'
                                         class="form-control">
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="input-group input-group-sm mb-1">
+                                <div class="input-group input-group-sm ">
                                     <span class="input-group-text">$</span>
                                     <input disabled type="text" class="form-control" name='totpnl' id="totpnl"
                                         value='{{projeto.totpnl}}' aria-label="R$ " disable>
@@ -311,11 +336,12 @@
                                 </div>
                             </div>
                         </div>
+                        {{/if}}
                     </div>
                 </div>
                 <div class="col md-4">
                     <button {{#if projeto.orcado}}{{else}}disabled{{/if}} type="submit" class="btn btn-sm btn-success"
-                        style='width: 96%;' name="aplicar"> <i class="bi bi-check-circle"></i> Aplicar</button>
+                        style='width: 100%;' name="aplicar"> <i class="bi bi-check-circle"></i> Aplicar</button>
                     <div class="caixa text-center mt-2">
                         <h4 style="margin-top: 20px;"> Totais </h4>
                         <hr>

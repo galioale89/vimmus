@@ -213,6 +213,7 @@ router.post('/novo', ehAdmin, (req, res) => {
         mininv: req.body.mininv,
         minstb: req.body.minstb,
         minpnl: req.body.minpnl,
+        mineae: req.body.mineae,
         vlrhrp: req.body.vlrhrp,
         vlrhrg: req.body.vlrhrg,
         vlrhri: req.body.vlrhri,
@@ -257,6 +258,7 @@ router.post('/editconfiguracao/', ehAdmin, (req, res) => {
         configuracao.mininv = req.body.mininv
         configuracao.minstb = req.body.minstb
         configuracao.minpnl = req.body.minpnl  
+        configuracao.mineae = req.body.mineae
         configuracao.vlrhrp = req.body.vlrhrp       
         configuracao.vlrhrg = req.body.vlrhrg    
         configuracao.vlrhri = req.body.vlrhri

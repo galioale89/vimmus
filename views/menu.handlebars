@@ -1,16 +1,11 @@
 <style type="text/css">
-  table,
-  tr,
-  td,
   th {
     border-collapse: collapse;
-    text-align: left;
-    font-weight: 600;
+    font-size: 12px;
   }
 
-  th {
-    padding: 5px;
-    F
+  td {
+    text-align: center;
   }
 </style>
 
@@ -79,7 +74,11 @@
         </div>
       </div>
       <div class="menu-interno" style="padding-right: 10px;">
-        <a href='/gerenciamento/cenarios' class="relatorio titulo-relatorio"><i class='bi bi-columns'></i> Análise de Cenários</a>
+        <a href='/gerenciamento/agenda' class="relatorio titulo-relatorio"><i class='bi bi-columns'></i> Agenda</a><br>
+        <div class="mt-2">
+          <a href='/gerenciamento/cenarios' class="relatorio titulo-relatorio"><i class='bi bi-columns'></i> Análise de
+            Cenários</a>
+        </div>
         <div class="dropend mt-1">
           <button class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false"><i
               class='bi bi-clipboard-data'></i> Indicadores <i class="bi bi-caret-right"></i>
@@ -104,7 +103,7 @@
         </div>
 
         {{#if ehMaster}}
-        <div class="row mt-1" >
+        <div class="row mt-1">
           <div class="dropend">
             <button class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false">Admin <i
                 class="bi bi-caret-right"></i></i>
@@ -114,13 +113,13 @@
             </ul>
           </div>
         </div>
-        {{/if}}        
+        {{/if}}
       </div>
     </div>
   </div>
 
-  <div class='col-md-3'>
-    <div class='row' style="margin-left: 1%;">
+  <div class='col-md-3 mt-3'>
+    <div class='row card mt-2'>
       <div class="contorno-titulo text-center mt-4" style="width: 100%; padding-bottom: 10px;">
         <div style="font-size: 21px;">
           Total de Projetos
@@ -128,34 +127,34 @@
         <div class="row text-center">
           <div style="width: 150px;margin-left: 25%;font-size: 50px;">{{numprj}}</div>
         </div>
-        <div style="text-align: center;font-size: 18px;" class='mt-1'>
-          Projetos Realizados
+        <div class="row">
+          <div class="col mt-2">
+            <label class='col-form-label'> Realizados</label>
+          </div>
+          <div class="col">
+            <div style='width: 100%;' class='contorno-texto'> {{numprjrlz}} </div>
+          </div>
+          <div class="col">
+            <div style='width: 100%;' class='contorno-texto'> {{perRealizado}}% </div>
+          </div>
         </div>
         <div class="row">
-          <div class="col-md-6">
-            <div style="width: 100px;margin-left: 18px;" class='contorno-texto'> {{numprjrlz}} </div>
+          <div class="col mt-2">
+            <label class='col-form-label'>Entregues</label>
           </div>
-          <div class="col-md-6">
-            <div style="width: 100px;" class='contorno-texto'> {{perRealizado}}% </div>
+          <div class="col">
+            <div style='width: 100%;' class='contorno-texto'> {{qtdEntregue}} </div>
           </div>
-        </div>
-        <div style="text-align: center;font-size: 18px;" class='mt-1'>
-          Projetos Entregues
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div style="width: 100px;margin-left: 18px" class='contorno-texto'>{{qtdEntregue}}</div>
-          </div>
-          <div class="col-md-6">
-            <div style="width: 100px" class='contorno-texto'>{{perEntregue}}%</div>
+          <div class="col">
+            <div style='width: 100%;' class='contorno-texto'> {{perEntregue}}% </div>
           </div>
         </div>
       </div>
     </div>
     <hr>
-    <div class="row mb-2">
+    <div class="row mb-2 card" style="padding: 20px">
       <div class='contorno-titulo' style="font-size: 21px;">Margem de Lucro Liquido Médio Faturado</th>
-        <div class="sessao mt-2" style="margin-left: 32%;">
+        <div class="sessao mt-2" style="margin-left: 28%;">
           <div class='textmll'>{{perNfsMed}}%</div>
         </div>
       </div>
@@ -198,16 +197,18 @@
         <tr class='contorno-titulo' style='border-bottom: rgba(40,55,89,0.1) solid 1px;'>
           <th>Status</th>
           <th>Cliente</th>
-          <th>Projetos</th>
-          <th>Data Início</th>
-          <th>Data Previsão</th>
+          <th>Data Instalação</th>
+          <th>Previsão Entrega</th>
+          <th>Data Final</th>
+          <th>Markup</th>
+          <th>R$/kWp</th>
           <th>Registros: {{totLista}}</th>
         </tr>
         {{#each dataord}}
         <tr>
           <td>
             {{#if atrasado}}
-            <div id='atrasado'><i class='bi bi-exclamation-triangle' style="margin-left: 6px;font-size: 12px;"></i>
+            <div id='atrasado'><i class='bi bi-exclamation-triangle' style="font-size: 12px;"></i>
             </div>
             {{else}}
             {{#if executando}}
@@ -226,12 +227,16 @@
             {{/if}}
           </td>
           <td>{{nomecliente}}</td>
-          <td>{{nome}}</td>
-          <td>{{dataini}}</td>
+          <td>{{dataIns}}</td>
           <td>{{dataprev}}</td>
+          <td>{{datafim}}</td>
+          <td>{{markup}}%</td>
+          <td>{{vrskwp}}</td>
           <!--<td>{{cliente}}</td>-->
           <td style="padding-top: 3px; padding-bottom: 3px;">
             <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
+              <a href='/gerenciamento/cronograma/{{_id}}' class='botao-tabela ativado-tabela'><i
+                  class='bi bi-calendar-range icone-tabela'></i></a>
               <a href='/projeto/vermais/{{_id}}' class='botao-tabela ativado-tabela'><i
                   class="bi bi-eye icone-tabela"></i></a>
               <a href='/projeto/edicao/{{_id}}/' class='botao-tabela ativado-tabela'><i

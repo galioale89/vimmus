@@ -170,6 +170,12 @@
                             <label class="fw-bold col-form-label col-form-label-sm">Gestão: </label><br>
                             <label class="fw-bold col-form-label col-form-label-sm">Projetista: </label><br>
                             <label class="fw-bold col-form-label col-form-label-sm">Valor ART: </label><br>
+                            {{#if projeto.temArmazenamento}}
+                            <label class="fw-bold col-form-label col-form-label-sm">Armazenamento: </label><br>
+                            {{/if}}
+                            {{#if projeto.temPainel}}
+                            <label class="fw-bold col-form-label col-form-label-sm">Painél Elétrico: </label><br>
+                            {{/if}}                            
                             {{#if projeto.ehDireto}}
                             <label class="fw-bold col-form-label col-form-label-sm">Deslocamento: </label><br>
                             {{else}}
@@ -215,6 +221,12 @@
                         <label class='col-form-label col-form-label-sm' for='totges'>R$ {{projeto.totges}}</label><br>
                         <label class='col-form-label col-form-label-sm' for='totpro'>R$ {{projeto.totpro}}</label><br>
                         <label class='col-form-label col-form-label-sm' for='vlrart'>R$ {{projeto.vlrart}}</label><br>
+                        {{#if projeto.temArmazenamento}}
+                        <label class='col-form-label col-form-label-sm' for='vlrart'>R$ {{projeto.toteae}}</label><br>
+                        {{/if}}
+                        {{#if projeto.temPainel}}
+                        <label class='col-form-label col-form-label-sm' for='vlrart'>R$ {{projeto.totpnl}}</label><br>
+                        {{/if}}
                         {{#if projeto.ehDireto}}
                         <label class='col-form-label col-form-label-sm' for='totdes'>R$ {{projeto.totdes}}</label><br>
                         {{else}}
@@ -267,6 +279,14 @@
                             value='{{realizado.totpro}}' {{#if realizado.foiRealizado}} disabled {{/if}}>
                         <input type='text' class='form-control form-control-sm' name='vlrart'
                             value='{{realizado.vlrart}}' {{#if realizado.foiRealizado}} disabled {{/if}}>
+                        {{#if projeto.temArmazenamento}}
+                        <input type='text' class='form-control form-control-sm' name='toteae'
+                            value='{{realizado.toteae}}' {{#if realizado.foiRealizado}} disabled {{/if}}>
+                        {{/if}}
+                        {{#if projeto.temPainel}}
+                        <input type='text' class='form-control form-control-sm' name='totpnl'
+                            value='{{realizado.totpnl}}' {{#if realizado.foiRealizado}} disabled {{/if}}>
+                        {{/if}}                            
                         {{#if projeto.ehDireto}}
                         <input type='text' class='form-control form-control-sm' name='totdes'
                             value='{{realizado.totdes}}' {{#if realizado.foiRealizado}} disabled {{/if}}>
@@ -369,7 +389,7 @@
                     <div class="row">
                         <label class='text-center mb-2 fw-bold' style="font-size: 17px;font-weight: 500;margin-top: 2.5%;">Valor Total Orçado: R$
                             {{projeto.valor}} </label>
-                        <div class="col-md-4 text-end">
+                        <div class="col-md-4 text-end mt-4">
                             <label class='fw-bold' style="font-size: 15px;font-weight: 500;">Descrição</label>
                             <hr>
                             <label class='col-form-label col-form-label-sm'>Materiais: </label><br>
@@ -385,7 +405,7 @@
                             </label><br>
                             <label class='col-form-label col-form-label-sm'>Lucro Líquido: </label><br>
                         </div>
-                        <div class="col-md-4 text-center">
+                        <div class="col-md-4 text-center mt-4">
                             <label class='fw-bold' style="font-size: 15px;font-weight: 500;">Orçado</label>
                             <hr>
                             <label class='col-form-label col-form-label-sm text-center'>R$
@@ -409,7 +429,7 @@
                             <label class='col-form-label col-form-label-sm text-center'>R$
                                 {{projeto.lucroLiquido}}</label><br>
                         </div>
-                        <div class="col-md-4 text-center">
+                        <div class="col-md-4 text-center mt-4">
                             <label class='fw-bold' style="font-size: 15px;font-weight: 500;">Realizado</label>
                             <hr>
                             <label class='col-form-label col-form-label-sm text-center'>R$
@@ -441,7 +461,7 @@
             <div class="card">
                 <div class="row">
                     <label class='contorno-titulo'
-                        style="font-size: 20px;font-weight: 500;width: 88%;padding: 10px;margin-left: 8%;">Variações
+                        style="font-size: 20px;font-weight: 700;width: 88%;padding: 10px;margin-left: 8%;">Variações
                         entre
                         Realizado e Orçado
                     </label>

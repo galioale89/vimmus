@@ -41,7 +41,11 @@ const Config = new Schema({
     minpnl: {
         type: Number,
         require: true
-    },      
+    },    
+    mineae: {
+        type: Number,
+        require: true
+    },     
     medkmh: {
         type: Number,
         require: false

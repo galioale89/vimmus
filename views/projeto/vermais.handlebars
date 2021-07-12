@@ -24,7 +24,8 @@
                 <div class="row">
                     <div class="col-md-6"
                         style='margin-block-start: 10px; border: solid 1px; border-width: 1px; border-left: grey;border-top: grey;border-bottom: grey;'''>
-                        <h5>{{projeto.nome}}</h5>
+                        <h6>{{projeto.nomecliente}} {{projeto.potencia}}kWp</h6>
+                        <label style='font-size: 14px;color: white;'>{{cliente.celular}}</label>
                         <div class="row">
                             <div class="col-md-6 text-end">
                                 <label class='fw-bold col-form-label col-form-label-sm'>Data Início:</label><br>
@@ -47,7 +48,7 @@
                     <div class="col-md-6">
                         <div class="row">
                             <div class="col-md-4 text-end" style='margin-inline-start: 40px;'>
-                                <label class='fw-bold col-form-label col-form-label-sm'>Gestor(a):</label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm'>Responsável(a):</label><br>
                                 <label class='fw-bold col-form-label col-form-label-sm'>Total Orçado:</label><br>
                                 <label class='fw-bold col-form-label col-form-label-sm'>Valor Faturado:</label><br>
                                 <label class='fw-bold col-form-label col-form-label-sm'>Horas:</label><br>
@@ -200,15 +201,17 @@
                                 <label class='col-form-label col-form-label-sm mb-1'>Estrutura</label><br>
                                 <label class='col-form-label col-form-label-sm mb-1'>Cercamento</label><br>
                                 <label class='col-form-label col-form-label-sm mb-1'>Central</label><br>
-                                <label class='col-form-label col-form-label-sm '>Postes de Condução</label>
+                                <label class='col-form-label col-form-label-sm mb-1'>Postes de Condução</label>
+                                <label class='col-form-label col-form-label-sm mb-1'>Armazenamento</label>
+                                <label class='col-form-label col-form-label-sm '>Painel Elétrico</label>
                             </div>
                             <div class="col-md-2">
-                                <input disabled type='checkbox' class='form-check-input mb-3 mt-2'
-                                    {{projeto.temEstSolo}}><br>
-                                <input disabled type='checkbox' class='form-check-input mb-3'
-                                    {{projeto.temCercamento}}><br>
+                                <input disabled type='checkbox' class='form-check-input mb-3 mt-2'{{projeto.temEstSolo}}><br>
+                                <input disabled type='checkbox' class='form-check-input mb-3'{{projeto.temCercamento}}><br>
                                 <input disabled type='checkbox' class='form-check-input mb-3' {{projeto.temCentral}}>
-                                <input disabled type='checkbox' class='form-check-input' {{projeto.temPosteCond}}>
+                                <input disabled type='checkbox' class='form-check-input mb-3' {{projeto.temPosteCond}}>
+                                <input disabled type='checkbox' class='form-check-input mb-3' {{projeto.temArmazenamento}}>
+                                <input disabled type='checkbox' class='form-check-input' {{projeto.temPainel}}>
                             </div>
                         </div>
                     </div>

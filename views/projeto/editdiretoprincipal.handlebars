@@ -1,5 +1,26 @@
 <script>
 
+    function validaDataIns() {
+        var valDateIns = document.getElementById('valDataIns')
+        var dateIns = document.getElementById('datains')
+        if (valDataIns.value == '' || typeof valDataIns.value == 'undefined') {
+            if (confirm('Você deseja aplicar a data de hoje como a data de instalação do projeto?')) {
+                var hoje = new Date()
+                var ano = hoje.getFullYear()
+                var mes = hoje.getMonth() + 1
+                if (mes < 10) {
+                    mes = '0' + mes
+                }
+                var dia = hoje.getDate()
+                if (dia < 10) {
+                    dia = '0' + dia
+                }
+                valDataIns.value = ano + '-' + mes + '-' + dia
+                dateIns.value = dia + '/' + mes + '/' + ano
+                alert('Confirmado!Agora salve o projeto e execute novamente para prosseguir.')
+            }
+        }
+    };
     function mascara_datains() {
         var data = document.getElementById('valDataIns')
         var datains = document.getElementById('datains')
@@ -403,7 +424,7 @@
                             <div class="col-md-2">
                                 <label class='col-form-label col-form-label-sm'>{{projeto.dataini}}</label>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2 text-end">
                                 <label class="fw-bold col-form-label col-form-label-sm">Entrega:
                                 </label>
                             </div>
@@ -605,8 +626,8 @@
                                 {{else}} {{#if
                                 projeto.foiRealizado}}style='opacity: 0.5;pointer-events:none;border-radius: 30px'
                                 {{else}} href='/projeto/executar/{{projeto._id}}' {{/if}} {{/if}}
-                                style="color:white;border-radius: 30px;" class='btn btn-sm btn-warning'><i
-                                    class="bi bi-file-earmark-play"></i> Executar</a>
+                                style="color:white;border-radius: 30px;" class='btn btn-sm btn-success'
+                                onmousedown="validaDataIns()"><i class="bi bi-file-earmark-play"></i> Executar</a>
                             {{/if}}
                             {{#if projeto.homologado}}
                             <a style="color: white; background-color: rgb(252, 137, 7);pointer-events: none;border-radius: 30px;"
@@ -622,9 +643,9 @@
                                 class='btn btn-sm btn-warning'><i class="bi bi-stopwatch"></i> Homologar</a>
                             {{/if}}
                             {{/if}}
-                            <a {{#if projeto.homologado}}href='/projeto/realizar/{{projeto._id}}'
-                                {{else}}
-                                {{#if projeto.foiRealizado}}href='/projeto/realizar/{{projeto._id}}'{{else}}style='opacity: 0.5;pointer-events:none;border-radius: 30px;'{{/if}}{{/if}}
+                            <a {{#if projeto.homologado}}href='/projeto/realizar/{{projeto._id}}' {{else}} {{#if
+                                projeto.foiRealizado}}href='/projeto/realizar/{{projeto._id}}'
+                                {{else}}style='opacity: 0.5;pointer-events:none;border-radius: 30px;' {{/if}}{{/if}}
                                 class='btn btn-sm btn-success' style="border-radius: 30px;"><i
                                     class="bi bi-check2-circle"></i> Realizar</a>
                             <a href='/gerenciamento/dashboard/{{projeto._id}}' class='btn btn-sm btn-primary'
