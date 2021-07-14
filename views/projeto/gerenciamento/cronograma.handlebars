@@ -732,7 +732,7 @@
             <div class="col-md-6 text-end">
                 <label class='col-form-label col-form-label-sm fw-bold'>Data de Entrega(Turn Key):</label>
             </div>            
-            {{/else}}
+            {{else}}
             <div class='col-md-4 fw-bold'>
                 <label class="col-form-label col-form-label-sm">Solicitação de Vistoria na Distribuidora :
                     {{projeto.dataVisto}}</label>
@@ -743,13 +743,11 @@
             {{/if}}
 
             <div class="col-md-2">
-                <input type="date" class='form-control form-control-sm' name='dateentrega' {{#if
-                    projeto.orcado}}{{else}}disabled{{/if}} {{#if
-                    cronograma.dateentrega}}value='{{cronograma.dateentrega}}' {{else}}value='{{projeto.valDataPrev}}'
-                    {{/if}}>
-                <input type="hidden" class='form-control form-control-sm' name='dateEntregaHidden' {{#if
-                    cronograma.dateentrega}}value='{{cronograma.dateentrega}}' {{else}}value='{{projeto.valDataPrev}}'
-                    {{/if}}>
+                <input type="date" class='form-control form-control-sm' name='dateentrega' 
+                {{#if projeto.orcado}}{{else}}disabled{{/if}} 
+                {{#if cronograma.dateentrega}}value='{{cronograma.dateentrega}}' {{else}} value='{{projeto.valDataPrev}}' {{/if}}>
+                <input type="hidden" class='form-control form-control-sm' name='dateEntregaHidden' 
+                {{#if cronograma.dateentrega}}value='{{cronograma.dateentrega}}' {{else}} value='{{projeto.valDataPrev}}' {{/if}}>
             </div>
             <div class='col-md-1'>
             </div>
