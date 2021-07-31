@@ -1,0 +1,45 @@
+<!-- Default dropstart button -->
+{{#if user}}
+<nav id='menu-fixo-user' class='navbar navbar-expand-lg'
+  style="position: relative;z-index: 999;text-decoration: none;width: 100%;">
+  <div class="justify-content-start">
+    <label style="color: white;">Olá {{#each user}}{{nome}}{{/each}}</label>
+  </div>
+  <div class="collapse navbar-collapse d-flex justify-content-end">
+    <div class="dropstart">
+      <button class="filter" data-bs-toggle="dropdown" aria-expanded="false"><i class='bi bi-filter'></i>
+      </button>
+      <ul class="dropdown-menu">
+        <a href='/projeto/novo' class="botao-filter"><i class="bi bi-file-arrow-up"></i> Novo Projeto</a><br>
+        <a href='/projeto/consulta' class="botao-filter"><i class="bi bi-search"></i> Busca Projeto</a><br>
+        <a href='/menu' class="botao-filter"><i class='bi bi-menu-button-wide'></i> Menu</a><br>
+        <a href='/logout' class="botao-filter">Sair</a>
+      </ul>
+    </div>
+  </div>
+</nav>
+{{/if}}
+
+
+{{!--
+<script>
+  (function () {
+    var menu = document.getElementById('menu-fixo'); // colocar em cache
+    var titulo_inicio = document.getElementById('titulo-inicio');
+    var titulo_beneficio = document.getElementById('titulo-beneficio');
+    var titulo_avimmus = document.getElementById('titulo-avimmus');
+    window.addEventListener('scroll', function () {
+      if (window.scrollY > 50) {
+        titulo_inicio.classList.add('titulo-mov');
+        titulo_beneficio.classList.add('titulo-mov');
+        titulo_avimmus.classList.add('titulo-mov');
+        menu.classList.add('menu-before');
+      } else {
+        titulo_inicio.classList.remove('titulo-mov');
+        titulo_beneficio.classList.remove('titulo-mov');
+        titulo_avimmus.classList.remove('titulo-mov');
+        menu.classList.remove('menu-before');
+      }
+    });
+  })();
+</script> --}}

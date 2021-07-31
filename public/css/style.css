@@ -4343,6 +4343,8 @@ header .logo {
   line-height: 1.875rem;
   font-size: 1.875rem;
   color: #847AF4;
+  font-weight: 800;
+  color: rgb(40,55,89);
 }
 header nav.header-menu ul {
   display: flex;
@@ -4464,6 +4466,7 @@ section#step-by-step .wrapper-cards .card.not-visible {
 section#step-by-step .wrapper-cards .card .picture-card {
   max-width: 90%;
   margin-bottom: 35px;
+  margin: 0 auto 35px;
 }
 section#step-by-step .wrapper-cards .card .text-card {
   text-align: center;
@@ -4537,7 +4540,7 @@ section#membership .card-plan .price span {
 }
 section#membership .card-plan .description-plan {
   font-size: 14px;
-  padding: 40px 0 20px;
+  padding: 10px 0 20px;
 }
 
 section#about {
@@ -4702,7 +4705,7 @@ section#benefits .descriptions .text {
 }
 
 section#contact {
-  padding: 329px 0 155px;
+  padding: 150px 0 80px;
 }
 section#contact .side-img {
   width: 444px;
