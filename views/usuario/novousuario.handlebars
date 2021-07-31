@@ -14,7 +14,8 @@
                         <td><label class="col-form-label col-form-label-sm mb-1">Celular:</label><br>
                         </td>
                         <td><input type="text" class="form-control form-control-sm mb-1" name='celular' id='celular'
-                                placeholder="DDD + Número" maxlength="11">
+                                placeholder="DDD + Número" maxlength="16" autocomplete="off"
+                                onkeyup="valida_celular()">
                         </td>
                     </tr>
                     <tr align="right">

@@ -29,11 +29,67 @@ const Projeto = new Schema({
         type: String,
         require: false
     },
+    tipoEntrada: {
+        type: String,
+        require: false
+    },
+    tipoCustoGes: {
+        type: String,
+        require: false
+    },
+    tipoCustoPro: {
+        type: String,
+        require: false
+    },
+    tipoCustoIns: {
+        type: String,
+        require: false
+    },    
+    diasGes: {
+        type: Number,
+        requirw: true
+    },
+    diasIns: {
+        type: Number,
+        requirw: true
+    },    
+    diasPro: {
+        type: Number,
+        requirw: true
+    },    
+    diasAte: {
+        type: Number,
+        requirw: true
+    },    
+    diasEst: {
+        type: Number,
+        requirw: true
+    },    
+    diasMod: {
+        type: Number,
+        requirw: true
+    },    
+    diasInv: {
+        type: Number,
+        requirw: true
+    },    
+    diasStb: {
+        type: Number,
+        requirw: true
+    },    
+    diasEae: {
+        type: Number,
+        requirw: true
+    },    
+    diasPnl: {
+        type: Number,
+        requirw: true
+    },    
     classUsina: {
         type: String,
         require: false
     },
-    tipoConexao:{
+    tipoConexao: {
         type: String,
         require: false
     },
@@ -44,7 +100,7 @@ const Projeto = new Schema({
     tipoUsina: {
         type: String,
         require: false
-    },    
+    },
     valor: {
         type: Decimal128,
         require: true
@@ -73,10 +129,38 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
-    qtdequipe: {
+    qtdins: {
         type: Number,
         require: false
     },
+    equatr: {
+        type: Number,
+        require: false
+    },    
+    equinv: {
+        type: Number,
+        require: false
+    },    
+    equstb: {
+        type: Number,
+        require: false
+    },    
+    equeae: {
+        type: Number,
+        require: false
+    },    
+    equpnl: {
+        type: Number,
+        require: false
+    },            
+    equest: {
+        type: Number,
+        require: false
+    },    
+    equmod: {
+        type: Number,
+        require: false
+    },    
     equipe: {
         type: Schema.Types.ObjectId,
         ref: 'equipe',
@@ -90,6 +174,10 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
+    diasObra: {
+        type: Number,
+        require: false
+    },    
     trbatr: {
         type: Number,
         require: false
@@ -138,46 +226,50 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
-    unistb:{
+    unistb: {
         type: Number,
         require: false
     },
-    trbstb:{
+    trbstb: {
         type: Number,
         require: false
     },
-    totstb:{
-        type: Number,
-        require: false
-    },       
-    unipnl:{
+    totstb: {
         type: Number,
         require: false
     },
-    trbpnl:{
+    unipnl: {
         type: Number,
         require: false
     },
-    totpnl:{
-        type: Number,
-        require: false
-    },    
-    unieae:{
+    trbpnl: {
         type: Number,
         require: false
     },
-    trbeae:{
+    totpnl: {
         type: Number,
         require: false
     },
-    toteae:{
+    unieae: {
         type: Number,
         require: false
-    },        
+    },
+    trbeae: {
+        type: Number,
+        require: false
+    },
+    toteae: {
+        type: Number,
+        require: false
+    },
     vlrhri: {
         type: Number,
         require: false
     },
+    vlrdri: {
+        type: Number,
+        require: false
+    },    
     trbint: {
         type: Number,
         require: false
@@ -265,7 +357,7 @@ const Projeto = new Schema({
     unistb: {
         type: Number,
         require: false
-    },    
+    },
     trbstb: {
         type: Number,
         require: false
@@ -273,20 +365,24 @@ const Projeto = new Schema({
     totstb: {
         type: Number,
         require: false
-    },        
+    },
     unipnl: {
         type: Number,
         require: false
-    },    
-    trbpnl:{
+    },
+    trbpnl: {
         type: Number,
         require: false
     },
-    totpnl:{
+    totpnl: {
         type: Number,
         require: false
-    },    
+    },
     vlrhrp: {
+        type: Number,
+        require: false
+    },
+    vlrdrp: {
         type: Number,
         require: false
     },
@@ -354,6 +450,10 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
+    vlrdrg: {
+        type: Number,
+        require: false
+    },
     trbges: {
         type: Number,
         require: false
@@ -405,7 +505,7 @@ const Projeto = new Schema({
     custoest: {
         type: Number,
         require: false
-    },            
+    },
     totcop: {
         type: Number,
         require: false
@@ -510,7 +610,7 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
-    markup:{
+    markup: {
         type: Number,
         require: false
     },
@@ -537,7 +637,7 @@ const Projeto = new Schema({
     parKitEqu: {
         type: Number,
         require: false
-    },    
+    },
     parModEqu: {
         type: Number,
         require: false
@@ -557,7 +657,7 @@ const Projeto = new Schema({
     parEbtEqu: {
         type: Number,
         require: false
-    },    
+    },
     parDpsEqu: {
         type: Number,
         require: false
@@ -573,15 +673,15 @@ const Projeto = new Schema({
     parCerEqu: {
         type: Number,
         require: false
-    },       
+    },
     parCenEqu: {
         type: Number,
         require: false
-    },       
+    },
     parPosEqu: {
         type: Number,
         require: false
-    },                                        
+    },
     parIntVlr: {
         type: Number,
         require: false
@@ -699,9 +799,9 @@ const Projeto = new Schema({
         ref: 'configuracao',
         require: false
     },
-    regime: {
+    empresa: {
         type: Schema.Types.ObjectId,
-        ref: 'regime',
+        ref: 'empresa',
         require: false
     },
     premissas: {
@@ -736,12 +836,12 @@ const Projeto = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'pessoa',
         require: false
-    },    
+    },
     funate: {
         type: Schema.Types.ObjectId,
         ref: 'pessoa',
         require: false
-    },       
+    },
     ehDireto: {
         type: Boolean,
         require: true
@@ -753,7 +853,7 @@ const Projeto = new Schema({
     temCentral: {
         type: String,
         require: false
-    },    
+    },
     temEstSolo: {
         type: String,
         require: false
@@ -765,7 +865,7 @@ const Projeto = new Schema({
     temPainel: {
         type: String,
         require: false
-    },        
+    },
     temPosteCond: {
         type: String,
         require: false
@@ -786,7 +886,7 @@ const Projeto = new Schema({
         type: String,
         require: true
     },
-    valDataIni:{
+    valDataIni: {
         type: String,
         require: true
     },
@@ -842,7 +942,7 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
-    dataVisto:{
+    dataVisto: {
         type: String,
         require: false,
     },
@@ -873,27 +973,27 @@ const Projeto = new Schema({
     perConclusao: {
         type: Number,
         require: false
-    },   
-    actualCost:{
+    },
+    actualCost: {
         type: Number,
         require: false
-    } ,
+    },
     etc: {
         type: Number,
         require: false
-    }, 
+    },
     eac: {
         type: Number,
         require: false
-    }, 
+    },
     cpi: {
         type: Number,
         require: false
-    },  
+    },
     tcpi: {
         type: Number,
         require: false
-    }, 
+    },
     spi: {
         type: Number,
         require: false
@@ -901,7 +1001,11 @@ const Projeto = new Schema({
     tspi: {
         type: Number,
         require: false
-    },                            
+    },
+    mensagem: {
+        type:Boolean,
+        require: false
+    }
 })
 
 mongoose.model('projeto', Projeto)

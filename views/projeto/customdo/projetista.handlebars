@@ -25,24 +25,77 @@
         border-radius: 5px;
         padding-left: 10px;
         padding-right: 20px;
+        box-shadow: 1px 4px 5px rgba(26, 25, 25, 0.77);
     }
 </style>
+<script>
+    function selecionar() {
+        var selectHora = document.getElementById('selectHora')
+        var selectDia = document.getElementById('selectDia')
+        var selecionado = document.getElementById('selecionado')
+        var vlrhrp = document.getElementById('vlrhrp')
+        var vlrdrp = document.getElementById('vlrdrp')
+        var hrstrb = document.getElementById('hrstrb')
+        var diatrb = document.getElementById('diatrb')
+        var diasPro = document.getElementById('diasPro')
+        var displayTda = document.getElementById('displayTda')
+        var displayHrs = document.getElementById('displayHrs')
+        var memorial = document.getElementById('memorial')
+        var art = document.getElementById('art')
+        var aterramento = document.getElementById('aterramento')
+        var distribuicao = document.getElementById('distribuicao')
+        var unifilar = document.getElementById('unifilar')
+        var situacao = document.getElementById('situacao')
+        if (selectHora.checked) {
+            selecionado.value = 'hora'
+            vlrhrp.type = 'text'
+            vlrdrp.type = 'hidden'
+            hrstrb.style.display = 'inline'
+            diatrb.style.display = 'none'
+            diasPro.type = 'hidden'
+            displayTda.style.display = 'none'
+            memorial.disabled = false
+            art.disabled = false
+            aterramento.disabled = false
+            distribuicao.disabled = false
+            unifilar.disabled = false
+            situacao.disabled = false
+        } else {
+            selecionado.value = 'dia'
+            vlrdrp.type = 'text'
+            vlrhrp.type = 'hidden'
+            hrstrb.style.display = 'none'
+            diatrb.style.display = 'inline'
+            diasPro.type = 'text'
+            displayTda.style.display = 'inline'
+            displayHrs.style.display = 'inline'
+            memorial.disabled = true
+            art.disabled = true
+            aterramento.disabled = true
+            distribuicao.disabled = true
+            unifilar.disabled = true
+            situacao.disabled = true
+        }
+    }
+</script>
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
-        <div style="width: 100%;">
-            <h5 class="header">{{cliente.nome}} </h5>
-        </div>
+    <div style="width: 100%;">
+        <h5 class="header">{{cliente.nome}} </h5>
+    </div>
     <form action='/customdo/projetista' method="post">
 
         <input type='hidden' name='id' value='{{projeto._id}}'>
 
         <div class='btn-group col-12 mx-auto'>
+            <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'> <i
+                    class="bi bi-house"></i>Projeto</a>
             <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
-                Gestão</a>            
+                Gestão</a>
             <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i
                     class="bi bi-pencil"></i>
                 Projetista</a>
             <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"></i>
-                Instalação</a>                
+                Instalação</a>
             <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i
                     class="bi bi-puzzle"></i>
                 Gerenciamento</a>
@@ -50,250 +103,256 @@
                     class="bi bi-calculator"></i> Tributos</a>
         </div>
 
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label for="vlrhrp" class="fw-bold col-form-label col-form-label-sm">R$/Hora:
-                            </label>
-                        </div>
-                        <div class="col-md-7">
-                            <input type="text" name="vlrhrp" id='vlrhrp' {{#if projeto.vlrhrp}}value='{{projeto.vlrhrp}}'{{else}}value='{{configuracao.vlrhrp}}'{{/if}}
-                                class='form-control form-control-sm'>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label class="col-form-label col-form-label-sm">Valor ART: </label>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="input-group input-group-sm mb-1">
-                                <span class="input-group-text">$</span>
-                                <input type="text" class="form-control" id="vlrart" name="vlrart"
-                                    value='{{projeto.vlrart}}' aria-label="R$ ">
-                                <span class="input-group-text">.00</span>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row mt-2">
+                    <div class="col-md-2">
+                        <div class="row" style="margin-top: 1%;">
+                            <div class="col-md-6">
+                                <div class="form-check" onchange="selecionar()">
+                                    <input class="form-check-input" type="radio" name="select" id="selectHora"
+                                        {{checkHora}}>
+                                    <label class="form-check-label" style="font-size: 14px;">
+                                        R$/hora
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div style='margin-left: 6%' class="col-md-5">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <label class='col-form-label col-form-label-sm fw-bold'>Projetista:</label>
-                        </div>
-                        {{#if projeto.funpro}}
-                        <div class="col-md-10">
-                            <input type='hidden' name='ppnome' value='{{pp.nome}}'>
-                            <label class='col-form-label col-form-label-sm'>{{pp.nome}}</label>
-                        </div>
-                        {{else}}
-                        <div class="col-md-10">
-                            <div class="row mb-2">
-                                <div class="col-md-9">
-                                    <select {{#if projeto.orcado}}{{else}}disabled{{/if}}
-                                        class='form-select form-select-sm' name='funpro'>
-                                        {{#each projetista}}
-                                        <option value='{{_id}}'>{{nome}}</option>
-                                        {{else}}
-                                        <option>Nenhum projetista cadastrado</option>
-                                        {{/each}}
-                                    </select>
+                            <div class="col-md-6" style="padding-left: 12%;">
+                                <div class="form-check" onchange="selecionar()">
+                                    <input class="form-check-input" type="radio" name="select" id="selectDia"
+                                        {{checkDia}}>
+                                    <label class="form-check-label" style="font-size: 14px;">
+                                        R$/dia
+                                    </label>
                                 </div>
                             </div>
                         </div>
-                        {{/if}}
+                    </div>
+                    <div class="col-md-1">
+                        <input type='hidden' name='selecionado' id='selecionado' value='{{projeto.tipoCustoPro}}'>
+                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="{{typeHrp}}" name="vlrhrp"
+                            id='vlrhrp'
+                            value='{{#if projeto.vlrhrp}}{{projeto.vlrhrp}}{{else}}{{configuracao.vlrhrp}}{{/if}}'
+                            class='form-control form-control-sm'>
+                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="{{typeDrp}}" name="vlrdrp"
+                            id='vlrdrp'
+                            value='{{#if projeto.vlrdrp}}{{projeto.vlrdrp}}{{else}}{{configuracao.vlrdrp}}{{/if}}'
+                            class='form-control form-control-sm'>
+                    </div>
+                    <div class="col-md-3">
+                        <label class='col-form-label col-form-label-sm fw-bold' style="display: {{displayTda}}"
+                            id='displayTda'>Total de dias das
+                            atividades:</label>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="{{typePro}}" name="diasPro" id='diasPro' value='{{projeto.diasPro}}'
+                            class='form-control form-control-sm'>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="fw-bold col-form-label col-form-label-sm">Valor ART: </label>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-group input-group-sm mb-1">
+                                    <span class="input-group-text">$</span>
+                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
+                                        class="form-control" id="vlrart" name="vlrart" value='{{projeto.vlrart}}'
+                                        aria-label="R$ ">
+                                    <span class="input-group-text">.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2 mb-2">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="memorial" class="fw-bold col-form-label col-form-label-sm">Memorial
+                                            Descritivo
+                                        </label>
+                                        <div class="input-group input-group-sm mb-1">
+                                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
+                                                name="trbmem" value='{{projeto.trbmem}}' class="form-control"
+                                                id='memorial' {{memorial}}>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label for="total"
+                                            class="col-sm-6 col-form-label col-form-label-sm">Total</label>
+                                        <div class="input-group input-group-sm mb-1">
+                                            <span class="input-group-text">$</span>
+                                            <input disabled type="text" class="form-control" name="totmem"
+                                                value='{{projeto.totmem}}' aria-label="R$ ">
+                                            <span class="input-group-text">.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="art" class="fw-bold col-form-label col-form-label-sm">Art
+                                        </label>
+                                        <div class="input-group input-group-sm mb-1">
+                                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
+                                                name="trbart" value='{{projeto.trbart}}' class="form-control" id='art'
+                                                {{art}}>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label for="total"
+                                            class="col-sm-6 col-form-label col-form-label-sm">Total</label>
+                                        <div class="input-group input-group-sm mb-1">
+                                            <span class="input-group-text">$</span>
+                                            <input disabled type="text" class="form-control" name="totart"
+                                                value='{{projeto.totart}}' aria-label="R$ ">
+                                            <span class="input-group-text">.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="aterramento"
+                                            class="fw-bold col-form-label col-form-label-sm">Diagrama de
+                                            Aterramento
+                                        </label>
+                                        <div class="input-group input-group-sm mb-1">
+                                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
+                                                name="trbate" value='{{projeto.trbate}}' class="form-control"
+                                                id='aterramento' {{aterramento}}>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label for="total"
+                                            class="col-sm-6 col-form-label col-form-label-sm">Total</label>
+                                        <div class="input-group input-group-sm mb-1">
+                                            <span class="input-group-text">$</span>
+                                            <input disabled type="text" class="form-control" name="totate"
+                                                value='{{projeto.totate}}' aria-label="R$ ">
+                                            <span class="input-group-text">.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="distribuição"
+                                            class="fw-bold col-form-label col-form-label-sm">Diagrama de
+                                            Distribuição </label>
+                                        <div class="input-group input-group-sm mb-1">
+                                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
+                                                name="trbdis" value='{{projeto.trbdis}}' class="form-control"
+                                                id='distribuicao' {{distribuicao}}>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label for="total"
+                                            class="col-sm-6 col-form-label col-form-label-sm">Total</label>
+                                        <div class="input-group input-group-sm mb-1">
+                                            <span class="input-group-text">$</span>
+                                            <input disabled type="text" class="form-control" name="totdis"
+                                                value='{{projeto.totdis}}' aria-label="R$ ">
+                                            <span class="input-group-text">.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="unifilar" class="fw-bold col-form-label col-form-label-sm">Diagrama
+                                            Unifilar
+                                        </label>
+                                        <div class="input-group input-group-sm mb-1">
+                                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
+                                                name="trbuni" value='{{projeto.trbuni}}' class="form-control"
+                                                id='unifilar' {{unifilar}}>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label for="total"
+                                            class="col-sm-6 col-form-label col-form-label-sm">Total</label>
+                                        <div class="input-group input-group-sm mb-1">
+                                            <span class="input-group-text">$</span>
+                                            <input disabled type="text" class="form-control" name="totuni"
+                                                value='{{projeto.totuni}}' aria-label="R$ ">
+                                            <span class="input-group-text">.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="situacao" class="fw-bold col-form-label col-form-label-sm">Diagrama
+                                            de
+                                            Situação </label>
+                                        <div class="input-group input-group-sm mb-1">
+                                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
+                                                name="trbsit" value='{{projeto.trbsit}}' class="form-control"
+                                                id='situacao' {{situacao}}>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label for="total"
+                                            class="col-sm-6 col-form-label col-form-label-sm">Total</label>
+                                        <div class="input-group input-group-sm mb-1">
+                                            <span class="input-group-text">$</span>
+                                            <input disabled type="text" class="form-control" name="totsit"
+                                                value='{{projeto.totsit}}' aria-label="R$ ">
+                                            <span class="input-group-text">.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 text-end">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Deslocamento</label>
+                    </div>
+                    <div class="col-md-1 text-end">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Horas:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input class='form-control form-control-sm' value='{{hrsDesPro}}'>
+                    </div>
+                    <div class="col-md-1 text-end">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Total:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input class='form-control form-control-sm' value='{{totDesPro}}'>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="row mt-2 mb-2">
+
+            <div class="col md-4 mt-2">
+                <button type="submit" class="btn btn-sm btn-success" style='width: 100%;' name="aplicar" {{#if
+                    projeto.orcado}}{{else}}disabled{{/if}}> <i class="bi bi-check-circle"></i> Aplicar</button>
+                <div class="caixa text-center mt-2">
+                    <h4 style="margin-top: 30px"> Totais </h4>
+                    <hr>
+                    <div class="row">
                         <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-body">
-                                    <label for="memorial"
-                                        class="fw-bold col-sm-10 col-form-label col-form-label-sm">Memorial
-                                        Descritivo
-                                    </label>
-                                    <div class="row g-3">
-                                        <div class="col">
-                                            <label for="trabalho"
-                                                class="col-sm-10 col-form-label col-form-label-sm">Horas
-                                                Trabalho</label>
-                                            <div class="input-group input-group-sm mb-1">
-                                                <input type="text" id="trbmem" name="trbmem" value='{{projeto.trbmem}}'
-                                                    class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <label for="total"
-                                                class="col-sm-6 col-form-label col-form-label-sm">Total</label>
-                                            <div class="input-group input-group-sm mb-1">
-                                                <span class="input-group-text">$</span>
-                                                <input disabled type="text" class="form-control" id="totmem"
-                                                    name="totmem" value='{{projeto.totmem}}' aria-label="R$ ">
-                                                <span class="input-group-text">.00</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <label for="art" class="fw-bold col-sm-10 col-form-label col-form-label-sm">Art
-                                    </label>
-                                    <div class="row g-3">
-                                        <div class="col">
-                                            <label for="trabalho"
-                                                class="col-sm-10 col-form-label col-form-label-sm">Horas
-                                                Trabalho</label>
-                                            <div class="input-group input-group-sm mb-1">
-                                                <input type="text" id="trbart" name="trbart" value='{{projeto.trbart}}'
-                                                    class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <label for="total"
-                                                class="col-sm-6 col-form-label col-form-label-sm">Total</label>
-                                            <div class="input-group input-group-sm mb-1">
-                                                <span class="input-group-text">$</span>
-                                                <input disabled type="text" class="form-control" id="totart"
-                                                    name="totart" value='{{projeto.totart}}' aria-label="R$ ">
-                                                <span class="input-group-text">.00</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <label for="aterramento"
-                                        class="fw-bold col-sm-10 col-form-label col-form-label-sm">Diagrama de
-                                        Aterramento
-                                    </label>
-                                    <div class="row g-3">
-                                        <div class="col">
-                                            <label for="trabalho"
-                                                class="col-sm-10 col-form-label col-form-label-sm">Horas
-                                                Trabalho</label>
-                                            <div class="input-group input-group-sm mb-1">
-                                                <input type="text" id="trbate" name="trbate" value='{{projeto.trbate}}'
-                                                    class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <label for="total"
-                                                class="col-sm-6 col-form-label col-form-label-sm">Total</label>
-                                            <div class="input-group input-group-sm mb-1">
-                                                <span class="input-group-text">$</span>
-                                                <input disabled type="text" class="form-control" id="totate"
-                                                    name="totate" value='{{projeto.totate}}' aria-label="R$ ">
-                                                <span class="input-group-text">.00</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <label style='font-size: 17px;font-weight: bold;'>Custo</label>
+                            <div class="quadro-caixa">R$ {{projeto.totpro}}</div>
                         </div>
                         <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-body">
-                                    <label for="distribuição"
-                                        class="fw-bold col-sm-10 col-form-label col-form-label-sm">Diagrama de
-                                        Distribuição dos Módulos </label>
-                                    <div class="row g-3">
-                                        <div class="col">
-                                            <label for="trabalho"
-                                                class="col-sm-10 col-form-label col-form-label-sm">Horas
-                                                Trabalho</label>
-                                            <div class="input-group input-group-sm mb-1">
-                                                <input type="text" id="trbdis" name="trbdis" value='{{projeto.trbdis}}'
-                                                    class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <label for="total"
-                                                class="col-sm-6 col-form-label col-form-label-sm">Total</label>
-                                            <div class="input-group input-group-sm mb-1">
-                                                <span class="input-group-text">$</span>
-                                                <input disabled type="text" class="form-control" id="totdis"
-                                                    name="totdis" value='{{projeto.totdis}}' aria-label="R$ ">
-                                                <span class="input-group-text">.00</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <label for="unifilar"
-                                        class="fw-bold col-sm-10 col-form-label col-form-label-sm">Diagrama
-                                        Unifilar
-                                    </label>
-                                    <div class="row g-3">
-                                        <div class="col">
-                                            <label for="trabalho"
-                                                class="col-sm-10 col-form-label col-form-label-sm">Horas
-                                                Trabalho</label>
-                                            <div class="input-group input-group-sm mb-1">
-                                                <input type="text" id="trbuni" name="trbuni" value='{{projeto.trbuni}}'
-                                                    class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <label for="total"
-                                                class="col-sm-6 col-form-label col-form-label-sm">Total</label>
-                                            <div class="input-group input-group-sm mb-1">
-                                                <span class="input-group-text">$</span>
-                                                <input disabled type="text" class="form-control" id="totuni"
-                                                    name="totuni" value='{{projeto.totuni}}' aria-label="R$ ">
-                                                <span class="input-group-text">.00</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <label for="situacao"
-                                        class="fw-bold col-sm-10 col-form-label col-form-label-sm">Diagrama de
-                                        Situação
-                                    </label>
-                                    <div class="row g-3">
-                                        <div class="col">
-                                            <label for="trabalho"
-                                                class="col-sm-10 col-form-label col-form-label-sm">Horas
-                                                Trabalho</label>
-                                            <div class="input-group input-group-sm mb-1">
-                                                <input type="text" id="trbsit" name="trbsit" value='{{projeto.trbsit}}'
-                                                    class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <label for="total"
-                                                class="col-sm-6 col-form-label col-form-label-sm">Total</label>
-                                            <div class="input-group input-group-sm mb-1">
-                                                <span class="input-group-text">$</span>
-                                                <input disabled type="text" class="form-control" id="totsit"
-                                                    name="totsit" value='{{projeto.totsit}}' aria-label="R$ ">
-                                                <span class="input-group-text">.00</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col md-4">
-                    <div class="row mt-2">
-                        <button type="submit" style="margin-left: 10px;width: 92%;" class="btn btn-sm btn-success col-10" name="aplicar" {{#if
-                            projeto.orcado}}{{else}}disabled{{/if}}> <i class="bi bi-check-circle"></i> Aplicar</button>
-                    </div>
-                    <div class="caixa text-center mt-2">
-                        <h4 style="margin-top: 10px"> Totais </h4>
-                        <hr>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h5>Custo</h5>
-                                <div class="quadro-caixa">R$ {{projeto.totpro_art}}</div>
-                            </div>
-                            <div class="col-md-6">
-                                <h5>Horas de Trabalho</h5>
-                                <div class="quadro-caixa">{{projeto.trbpro}}</div>
-                            </div>
+                            <label style='font-size: 17px;font-weight: bold;display: {{displayHrs}};' id='hrstrb'>Horas
+                                de Trabalho</label>
+                            <label style='font-size: 17px;font-weight: bold;display: {{displayDia}};' id='diatrb'>Dias
+                                de Trabalho</label>
+                            {{#if mostraHora}}
+                            <div class="quadro-caixa">{{projeto.trbpro}}</div>
+                            {{else}}
+                            <div class="quadro-caixa">{{projeto.diasPro}}</div>
+                            {{/if}}
                         </div>
                     </div>
                 </div>

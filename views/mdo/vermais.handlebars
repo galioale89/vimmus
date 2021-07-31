@@ -69,20 +69,23 @@
     <div class="header-principal">Projetos {{pessoa.nome}}</div>
 
     <div class="row" style="width: 100%;padding-left: 20px;">
-        {{#if qtdven}}
         <div style="padding: 10px;">
-            <h6 class="header">Vendedor</h6>
+            <h6 class="header">{{pessoa}}</h6>
             <div class="quadro">
                 <table>
                     <tr>
-                        <th style="width: 40%;text-align: center;" >Nome</th>
-                        <th style="width: 20%;text-align: center;">Data Inicio</th>
-                        <th style="width: 20%;text-align: center;">Data Fim</th>
+                        <th style="width: 20%;text-align: center;" >Função</th>
+                        <th style="width: 20%;text-align: center;" >Cliente</th>
+                        <th style="width: 30%;text-align: center;" >Projeto</th>
+                        <th style="width: 10%;text-align: center;">Data Inicio</th>
+                        <th style="width: 10%;text-align: center;">Data Fim</th>
                         <th style="text-align: center;">Foi Realizado?</th>
                     </tr>
-                    {{#each prjven}}
+                    {{#each projetos_ven}}
                     <tr style="text-align: center;">
-                        <td><a href='/projeto/edicao/{{_id}}' class='selecao'>{{nome}}</a></td>
+                        <td>{{funcao}}</a></td>
+                        <td>{{nome_cliente}}</a></td>
+                        <td><a href='/projeto/edicao/{{id}}' style="font-size: 13px;" class='selecao'>{{nome}}</a></td>
                         <td>{{dataini}}</td>
                         <td>{{datafim}}</td>
                         {{#if foiRealizado}}
@@ -93,28 +96,17 @@
                     </tr>
                     {{else}}
                     {{/each}}
+                    {{#if projetos_ven}}
                     <tr>
-                        <td colspan="5" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{qtdven}}
+                        <td colspan="6" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{total_ven}}
                         </td>
                     </tr>
-                </table>
-            </div>
-        </div>
-        {{/if}}
-        {{#if qtdres}}
-        <div style="padding: 10px;">
-            <h6 class="header">Gestor</h6>
-            <div class="quadro">
-                <table>
-                    <tr>
-                        <th style="width: 40%;text-align: center;" >Nome</th>
-                        <th style="width: 20%;text-align: center;">Data Inicio</th>
-                        <th style="width: 20%;text-align: center;">Data Fim</th>
-                        <th style="text-align: center;">Foi Realizado?</th>
-                    </tr>
-                    {{#each prjres}}
+                    {{/if}}
+                    {{#each projetos_pro}}
                     <tr style="text-align: center;">
-                        <td><a href='/projeto/edicao/{{_id}}' class='selecao'>{{nome}}</a></td>
+                        <td>{{funcao}}</a></td>
+                        <td>{{nome_cliente}}</a></td>
+                        <td><a href='/projeto/edicao/{{id}}' style="font-size: 13px;" class='selecao'>{{nome}}</a></td>
                         <td>{{dataini}}</td>
                         <td>{{datafim}}</td>
                         {{#if foiRealizado}}
@@ -125,28 +117,17 @@
                     </tr>
                     {{else}}
                     {{/each}}
+                    {{#if projetos_pro}}
                     <tr>
-                        <td colspan="5" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{qtdres}}
+                        <td colspan="6" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{total_pro}}
                         </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        {{/if}}
-        {{#if qtdins}}
-        <div style="padding: 10px">
-            <h6 class='header'>Instalador Responsável</h6>
-            <div class="quadro">
-                <table>
-                    <tr>
-                        <th style="width: 40%;text-align: center;" >Nome</th>
-                        <th style="width: 20%;text-align: center;">Data Inicio</th>
-                        <th style="width: 20%;text-align: center;">Data Fim</th>
-                        <th style="text-align: center;">Foi Realizado?</th>
-                    </tr>
-                    {{#each prjins}}
+                    </tr>   
+                    {{/if}}    
+                    {{#each projetos_pla}}
                     <tr style="text-align: center;">
-                        <td><a href='/projeto/edicao/{{_id}}' class='selecao'>{{nome}}</a></td>
+                        <td>{{funcao}}</a></td>
+                        <td>{{nome_cliente}}</a></td>
+                        <td><a href='/projeto/edicao/{{id}}' style="font-size: 13px;" class='selecao'>{{nome}}</a></td>
                         <td>{{dataini}}</td>
                         <td>{{datafim}}</td>
                         {{#if foiRealizado}}
@@ -157,57 +138,17 @@
                     </tr>
                     {{else}}
                     {{/each}}
+                    {{#if projetos_pla}}
                     <tr>
-                        <td colspan="5" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{qtdins}}
+                        <td colspan="6" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{total_pla}}
                         </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        {{/if}}
-        {{#if qtdins_equipe}}
-        <div style="padding: 10px">
-            <h6 class='header'>Instalador</h6>
-            <div class="quadro">
-                <table>
-                    <tr>
-                        <th style="width: 40%;text-align: center;" >Nome</th>
-                        <th style="width: 20%;text-align: center;">Data Inicio</th>
-                        <th style="width: 20%;text-align: center;">Data Fim</th>
-                        <th style="text-align: center;">Foi Realizado?</th>
-                    </tr>
-                    {{#each nome_projetos}}
+                    </tr>   
+                    {{/if}} 
+                    {{#each projetos_ate}}
                     <tr style="text-align: center;">
-                        <td><a href='/projeto/edicao/{{projeto}}' class='selecao'>{{nome}}</a></td>
-                        <td>{{dataini}}</td>
-                        <td>{{datafim}}</td>
-                        <td>{{foiRealizado}}</td>
-                    </tr>
-                    {{else}}
-                    {{/each}}
-                    <tr>
-                        <td colspan="5" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total:
-                            {{qtdins_equipe}}
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        {{/if}}
-        {{#if qtdpro}}
-        <div style="padding: 10px">
-            <h6 class="header">Projetista</h6>
-            <div class="quadro">
-                <table>
-                    <tr>
-                        <th style="width: 40%;text-align: center;" >Nome</th>
-                        <th style="width: 20%;text-align: center;">Data Inicio</th>
-                        <th style="width: 20%;text-align: center;">Data Fim</th>
-                        <th style="text-align: center;">Foi Realizado?</th>
-                    </tr>
-                    {{#each prjpro}}
-                    <tr style="text-align: center;">
-                        <td><a href='/projeto/edicao/{{_id}}' class='selecao'>{{nome}}</a></td>
+                        <td>{{funcao}}</a></td>
+                        <td>{{nome_cliente}}</a></td>
+                        <td><a href='/projeto/edicao/{{id}}' style="font-size: 13px;" class='selecao'>{{nome}}</a></td>
                         <td>{{dataini}}</td>
                         <td>{{datafim}}</td>
                         {{#if foiRealizado}}
@@ -218,13 +159,98 @@
                     </tr>
                     {{else}}
                     {{/each}}
+                    {{#if projetos_ate}}
                     <tr>
-                        <td colspan="5" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{qtdpro}}
+                        <td colspan="6" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{total_pla}}
                         </td>
+                    </tr>   
+                    {{/if}}   
+                    {{#each projetos_inv}}
+                    <tr style="text-align: center;">
+                        <td>{{funcao}}</a></td>
+                        <td>{{nome_cliente}}</a></td>
+                        <td><a href='/projeto/edicao/{{id}}' style="font-size: 13px;" class='selecao'>{{nome}}</a></td>
+                        <td>{{dataini}}</td>
+                        <td>{{datafim}}</td>
+                        {{#if foiRealizado}}
+                        <td>Sim</td>
+                        {{else}}
+                        <td>Não</td>
+                        {{/if}}
                     </tr>
+                    {{else}}
+                    {{/each}}
+                    {{#if projetos_inv}}
+                    <tr>
+                        <td colspan="6" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{total_pla}}
+                        </td>
+                    </tr>   
+                    {{/if}}      
+                    {{#each projetos_pnl}}
+                    <tr style="text-align: center;">
+                        <td>{{funcao}}</a></td>
+                        <td>{{nome_cliente}}</a></td>
+                        <td><a href='/projeto/edicao/{{id}}' style="font-size: 13px;" class='selecao'>{{nome}}</a></td>
+                        <td>{{dataini}}</td>
+                        <td>{{datafim}}</td>
+                        {{#if foiRealizado}}
+                        <td>Sim</td>
+                        {{else}}
+                        <td>Não</td>
+                        {{/if}}
+                    </tr>
+                    {{else}}
+                    {{/each}}
+                    {{#if projetos_pnl}}
+                    <tr>
+                        <td colspan="6" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{total_pla}}
+                        </td>
+                    </tr>   
+                    {{/if}}   
+                    {{#each projetos_eae}}
+                    <tr style="text-align: center;">
+                        <td>{{funcao}}</a></td>
+                        <td>{{nome_cliente}}</a></td>
+                        <td><a href='/projeto/edicao/{{id}}' style="font-size: 13px;" class='selecao'>{{nome}}</a></td>
+                        <td>{{dataini}}</td>
+                        <td>{{datafim}}</td>
+                        {{#if foiRealizado}}
+                        <td>Sim</td>
+                        {{else}}
+                        <td>Não</td>
+                        {{/if}}
+                    </tr>
+                    {{else}}
+                    {{/each}}
+                    {{#if projetos_eae}}
+                    <tr>
+                        <td colspan="6" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{total_pla}}
+                        </td>
+                    </tr>   
+                    {{/if}} 
+                    {{#each projetos_ins}}
+                    <tr style="text-align: center;">
+                        <td>{{funcao}}</a></td>
+                        <td>{{nome_cliente}}</a></td>
+                        <td><a href='/projeto/edicao/{{id}}' style="font-size: 13px;" class='selecao'>{{nome}}</a></td>
+                        <td>{{dataini}}</td>
+                        <td>{{datafim}}</td>
+                        {{#if foiRealizado}}
+                        <td>Sim</td>
+                        {{else}}
+                        <td>Não</td>
+                        {{/if}}
+                    </tr>
+                    {{else}}
+                    {{/each}}
+                    {{#if projetos_ins}}
+                    <tr>
+                        <td colspan="6" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{total_pla}}
+                        </td>
+                    </tr>   
+                    {{/if}}                                                                                                                              
                 </table>
             </div>
         </div>
-        {{/if}}
     </div>
 </div>

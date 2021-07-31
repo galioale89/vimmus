@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 require('../app')
-require('../model/Regime')
+require('../model/Empresa')
 require('../model/Cliente')
 require('../model/CustoDetalhado')
 require('../model/Cronograma')
@@ -11,13 +11,18 @@ require('../model/Cronograma')
 const mongoose = require('mongoose')
 const Projeto = mongoose.model('projeto')
 const Configuracao = mongoose.model('configuracao')
-const Regime = mongoose.model('regime')
+const Empresa = mongoose.model('empresa')
+const Equipe = mongoose.model('equipe')
+const Pessoa = mongoose.model('pessoa')
 const Realizado = mongoose.model('realizado')
 const Cliente = mongoose.model('cliente')
 const Detalhado = mongoose.model('custoDetalhado')
 const Cronograma = mongoose.model('cronograma')
 const comparaDatas = require('../resources/comparaDatas')
 const dataBusca = require('../resources/dataBusca')
+const liberaRecursos = require('../resources/liberaRecursos')
+const setData = require('../resources/setData')
+const dataMensagem = require('../resources/dataMensagem')
 
 
 const { ehAdmin } = require('../helpers/ehAdmin')
@@ -25,7 +30,8 @@ const { ehAdmin } = require('../helpers/ehAdmin')
 //Configurando pasta de imagens 
 router.use(express.static('imagens'))
 
-global.projeto_id
+const TextMessageService = require('comtele-sdk').TextMessageService
+const apiKey = "8dbd4fb5-79af-45d6-a0b7-583a3c2c7d30"
 
 router.get('/dashboard/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
@@ -77,59 +83,48 @@ router.get('/dashboardrealliquido/:id', ehAdmin, (req, res) => {
 })
 
 router.get('/gerenciamento/:id', ehAdmin, (req, res) => {
-    const { _id } = req.user
     var fatura
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
-        Regime.findOne({ _id: projeto.regime }).lean().then((regime) => {
-            Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                if (projeto.fatequ == true) {
-                    fatura = 'checked'
-                } else {
-                    fatura = 'unchecked'
-                }
-                res.render('projeto/gerenciamento/gerenciamento', { projeto: projeto, cliente: cliente, regime: regime, fatura })
+        Empresa.findOne({ _id: projeto.empresa }).lean().then((empresa) => {
+            Cliente.findOne({ _id: projeto.cliente }).lean().then((cliente) => {
+                Cronograma.findOne({ projeto: projeto._id }).then((cronograma) => {
+                    if (projeto.fatequ == true) {
+                        fatura = 'checked'
+                    } else {
+                        fatura = 'unchecked'
+                    }
+                    var libRecursos = liberaRecursos(cronograma.dateplaini, cronograma.dateplafim, cronograma.dateprjini, cronograma.dateprjfim,
+                        cronograma.dateateini, cronograma.dateatefim, cronograma.dateinvini, cronograma.dateinvfim,
+                        cronograma.datestbini, cronograma.datestbfim, cronograma.dateestini, cronograma.dateestfim,
+                        cronograma.datemodini, cronograma.datemodfim, cronograma.datevisini, cronograma.datevisfim)
+                    if (projeto.qtdins != '' && typeof projeto.qtdins != 'undefined' && projeto.qtdins != 0) {
+                        libRecursos = true
+                    }
+                    res.render('projeto/gerenciamento/gerenciamento', { projeto, cliente, empresa, fatura, libRecursos })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Nenhum cronograma encontrado.')
+                    res.redirect('/gerenciamento/gerenciamento/' + req.params.id)
+                })
             }).catch((err) => {
                 req.flash('error_msg', 'Nenhum cliente encontrado.')
-                res.redirect('/cliente/consulta')
+                res.redirect('/gerenciamento/gerenciamento/' + req.params.id)
             })
         })
     }).catch((err) => {
         req.flash('error_msg', 'Houve uma flaha ao buscar o projeto.')
-        res.redirect('/projeto')
+        res.redirect('/gerenciamento/gerenciamento/' + req.params.id)
     })
 })
 
 router.get('/tributos/:id', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
-
-        projeto_id = projeto._id
-
-        Regime.findOne({ _id: projeto.regime }).lean().then((regime) => {
-            Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                res.render('projeto/gerenciamento/tributos', { projeto: projeto, cliente: cliente, regime: regime })
-            }).catch((err) => {
-                req.flash('error_msg', 'Nenhum cliente encontrado.')
-                res.redirect('/cliente/consulta')
-            })
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Nenhum projeto encontrado.')
-        res.redirect('/menu')
-    })
-})
-
-router.get('/editar/tributos/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
     var ehSimples = false
     var ehLP = false
     var ehLR = false
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
 
-        projeto_id = projeto._id
-
-        Regime.findOne({ _id: projeto.regime }).lean().then((regime) => {
-            switch (regime.regime) {
+        Empresa.findOne({ _id: projeto.empresa }).lean().then((empresa) => {
+            switch (empresa.regime) {
                 case "Simples": ehSimples = true
                     break;
                 case "Lucro Presumido": ehLP = true
@@ -138,37 +133,16 @@ router.get('/editar/tributos/:id', ehAdmin, (req, res) => {
                     break;
             }
             Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                res.render('projeto/gerenciamento/edittributos', { projeto: projeto, regime: regime, ehSimples: ehSimples, ehLP: ehLP, ehLR: ehLR, cliente: cliente })
+                res.render('projeto/gerenciamento/tributos', { projeto, empresa, cliente, ehSimples, ehLP, ehLR })
             }).catch((err) => {
                 req.flash('error_msg', 'Nenhum cliente encontrado.')
                 res.redirect('/cliente/consulta')
             })
         }).catch((err) => {
-            req.flash('error_msg', 'Houve uma falha ao encontrar o regime.')
+            req.flash('error_msg', 'Houve uma falha ao encontrar o empresa.')
             res.redirect('/configuracao/consulta')
         })
 
-    }).catch((err) => {
-        req.flash('error_msg', 'Houve uma falha ao encontrar o projeto.')
-        res.redirect('/projeto/consulta')
-    })
-})
-
-router.get('/editar/gerenciamento/:id', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
-        Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-            var fatura
-            if (projeto.fatequ == true) {
-                fatura = 'checked'
-            } else {
-                fatura = 'uncheked'
-            }
-            res.render('projeto/gerenciamento/editgerenciamento', { projeto: projeto, cliente: cliente, fatura })
-        }).catch((err) => {
-            req.flash('error_msg', 'Nenhum cliente encontrado.')
-            res.redirect('/cliente/consulta')
-        })
     }).catch((err) => {
         req.flash('error_msg', 'Houve uma falha ao encontrar o projeto.')
         res.redirect('/projeto/consulta')
@@ -239,21 +213,28 @@ router.get('/cronograma/:id', ehAdmin, (req, res) => {
                 } else {
                     tcpi = false
                 }
+
+                var libRecursos = liberaRecursos(cronograma.dateplaini, cronograma.dateplafim, cronograma.dateprjini, cronograma.dateprjfim,
+                    cronograma.dateateini, cronograma.dateatefim, cronograma.dateinvini, cronograma.dateinvfim,
+                    cronograma.datestbini, cronograma.datestbfim, cronograma.dateestini, cronograma.dateestfim,
+                    cronograma.datemodini, cronograma.datemodfim, cronograma.datevisini, cronograma.datevisfim)
+
+                //console.log('libRecursos=>'+libRecursos)                                                
                 res.render('projeto/gerenciamento/cronograma', {
-                    projeto, cronograma, realizado, cpi, tcpi,
+                    projeto, cronograma, realizado, cpi, tcpi, libRecursos,
                     evPerGes, evPerKit, evPerIns, evPerPro, evPerArt, evPerAli, evPerDes, evPerHtl, evPerCmb, evPerCer, evPerCen, evPerPos
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar o realizado.')
-                res.redirect('/menu')
+                res.redirect('/gerenciamento/gerenciamento/' + req.params.id)
             })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar o cronograma.')
-            res.redirect('/menu')
+            res.redirect('/gerenciamento/gerenciamento/' + req.params.id)
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar o projeto.')
-        res.redirect('/menu')
+        res.redirect('/gerenciamento/gerenciamento/' + req.params.id)
     })
 })
 
@@ -286,38 +267,38 @@ router.get('/agenda/', ehAdmin, (req, res) => {
     var novembro
     var dezembro
 
-    console.log('mes=>'+mes)
+    //console.log('mes=>' + mes)
 
     switch (mes) {
         case '01': janeiro = 'selected'
-        break;
+            break;
         case '02': fevereiro = 'selected'
-        break;
+            break;
         case '03': marco = 'selected'
-        break;
+            break;
         case '04': abril = 'selected'
-        break;
+            break;
         case '05': maio = 'selected'
-        break;
+            break;
         case '06': junho = 'selected'
-        break;
+            break;
         case '07': julho = 'selected'
-        break;
+            break;
         case '08': agosto = 'selected'
-        break;
+            break;
         case '09': setembro = 'selected'
-        break;
+            break;
         case '10': outubro = 'selected'
-        break;
+            break;
         case '11': novembro = 'selected'
-        break;
+            break;
         case '12': dezembro = 'selected'
-        break;
+            break;
     }
 
-    console.log('julho=>'+julho)
+    //console.log('julho=>' + julho)
 
-    res.render('projeto/gerenciamento/agenda', {ano, janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro})
+    res.render('projeto/gerenciamento/agenda', { ano, janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro })
 })
 
 router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
@@ -423,13 +404,26 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
     var tarefas31 = []
 
     var dia
-    console.log('dataini=>' + dataini)
-    console.log('datafim=>' + datafim)
-    Cronograma.find({ 'agendaPlaFim': { $lte: datafim, $gte: dataini }, 'agendaPrjFim': { $lte: datafim, $gte: dataini }, user: _id }).lean().then((cronograma) => {
+    var mes_busca
+    var mes
+    //console.log('dataini=>' + dataini)
+    //console.log('datafim=>' + datafim)
+    Cronograma.find({
+        $or: [{ 'agendaPlaFim': { $lte: datafim, $gte: dataini } },
+        { 'agendaPrjFim': { $lte: datafim, $gte: dataini } },
+        { 'agendaAteFim': { $lte: datafim, $gte: dataini } },
+        { 'agendaEstFim': { $lte: datafim, $gte: dataini } },
+        { 'agendaModFim': { $lte: datafim, $gte: dataini } },
+        { 'agendaInsFim': { $lte: datafim, $gte: dataini } },
+        { 'agendaStbFim': { $lte: datafim, $gte: dataini } },
+        { 'agendaPnlFim': { $lte: datafim, $gte: dataini } },
+        { 'agendaEaeFim': { $lte: datafim, $gte: dataini } },
+        { 'agendaVisFim': { $lte: datafim, $gte: dataini } }],
+        user: _id
+    }).lean().then((cronograma) => {
         cronograma.forEach(element => {
-            console.log('entrou')
+            //console.log('entrou')
             const { dateplaini } = element
-            
             const { dateprjini } = element
             const { dateateini } = element
             const { dateestini } = element
@@ -449,984 +443,1067 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
             const { datestb } = element
             const { datepnl } = element
             const { datevis } = element
-            
             const { nome } = element
             const { projeto } = element
-            if ((dateplaini != '' && typeof dateplaini != 'undefined') && (datepla == '' || typeof datepla == 'undefined')) {
-                dia = dateplaini.substring(8, 11)
-                console.log('dia=>' + dia)
-                if (dia == '01') {
-                    tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '02') {
-                    tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '03') {
-                    tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '04') {
-                    tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '05') {
-                    tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '06') {
-                    tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '07') {
-                    tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '08') {
-                    tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '09') {
-                    tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '10') {
-                    tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '11') {
-                    tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '12') {
-                    tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '13') {
-                    tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '14') {
-                    tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '15') {
-                    tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '16') {
-                    tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '17') {
-                    tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '18') {
-                    tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '19') {
-                    tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '20') {
-                    tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '21') {
-                    tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '22') {
-                    tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '23') {
-                    tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '24') {
-                    tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '25') {
-                    tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '26') {
-                    tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '27') {
-                    tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '28') {
-                    tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '29') {
-                    tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '30') {
-                    tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-                if (dia == '31') {
-                    tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                }
-            }
-            
-            if ((dateprjini != '' && typeof dateprjini != 'undefined') && (dateprj == '' || typeof dateprj == 'undefined')) {
-                dia = dateprjini.substring(8, 11)
-                console.log('dia=>' + dia)
-                if (dia == '01') {
-                    tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '02') {
-                    tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '03') {
-                    tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '04') {
-                    tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '05') {
-                    tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '06') {
-                    tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '07') {
-                    tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '08') {
-                    tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '09') {
-                    tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '10') {
-                    tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '11') {
-                    tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '12') {
-                    tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '13') {
-                    tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '14') {
-                    tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '15') {
-                    tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '16') {
-                    tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '17') {
-                    tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '18') {
-                    tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '19') {
-                    tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '20') {
-                    tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '21') {
-                    tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '22') {
-                    tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '23') {
-                    tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '24') {
-                    tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '25') {
-                    tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '26') {
-                    tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '27') {
-                    tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '28') {
-                    tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '29') {
-                    tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '30') {
-                    tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-                if (dia == '31') {
-                    tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                }
-            }
 
-            if ((dateateini != '' && typeof dateateini != 'undefined') && (dateate == '' || typeof dateate == 'undefined')) {
-                dia = dateateini.substring(8, 11)
-                console.log('dia=>' + dia)
-                if (dia == '01') {
-                    tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+            //console.log('nome=>' + nome)
+
+            if (nome != '' && typeof nome != 'undefined') {
+                //console.log('projeto=>' + projeto)
+
+                mes_busca = dataini.substring(4, 6)
+                //console.log('mes_busca=>' + mes_busca)
+                mes = dateplaini.substring(5, 7)
+                //console.log('Planejamento')
+                //console.log('mes=>' + mes)
+                if ((mes_busca == mes) && (dateplaini != '' && typeof dateplaini != 'undefined') && (datepla == '' || typeof datepla == 'undefined')) {
+                    dia = dateplaini.substring(8, 11)
+                    //console.log('entrou Planejamento')
+                    if (dia == '01') {
+                        tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '02') {
+                        tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '03') {
+                        tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '04') {
+                        tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '05') {
+                        tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '06') {
+                        tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '07') {
+                        tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '08') {
+                        tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '09') {
+                        tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '10') {
+                        tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '11') {
+                        tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '12') {
+                        tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '13') {
+                        tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '14') {
+                        tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '15') {
+                        tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '16') {
+                        tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '17') {
+                        tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '18') {
+                        tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '19') {
+                        tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '20') {
+                        tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '21') {
+                        tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '22') {
+                        tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '23') {
+                        tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '24') {
+                        tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '25') {
+                        tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '26') {
+                        tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '27') {
+                        tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '28') {
+                        tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '29') {
+                        tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '30') {
+                        tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
+                    if (dia == '31') {
+                        tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                    }
                 }
-                if (dia == '02') {
-                    tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+
+                mes = dateprjini.substring(5, 7)
+                //console.log('Projetista')
+                //console.log('mes=>' + mes)
+                if ((mes_busca == mes) && (dateprjini != '' && typeof dateprjini != 'undefined') && (dateprj == '' || typeof dateprj == 'undefined')) {
+                    dia = dateprjini.substring(8, 11)
+                    //console.log('entrou Projetista')
+                    if (dia == '01') {
+                        tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '02') {
+                        tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '03') {
+                        tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '04') {
+                        tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '05') {
+                        tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '06') {
+                        tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '07') {
+                        tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '08') {
+                        tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '09') {
+                        tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '10') {
+                        tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '11') {
+                        tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '12') {
+                        tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '13') {
+                        tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '14') {
+                        tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '15') {
+                        tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '16') {
+                        tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '17') {
+                        tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '18') {
+                        tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '19') {
+                        tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '20') {
+                        tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '21') {
+                        tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '22') {
+                        tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '23') {
+                        tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '24') {
+                        tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '25') {
+                        tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '26') {
+                        tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '27') {
+                        tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '28') {
+                        tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '29') {
+                        tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '30') {
+                        tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
+                    if (dia == '31') {
+                        tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                    }
                 }
-                if (dia == '03') {
-                    tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+
+                mes = dateateini.substring(5, 7)
+                //console.log('Aterramento')
+                //console.log('mes=>' + mes)
+                if ((mes_busca == mes) && (dateateini != '' && typeof dateateini != 'undefined') && (dateate == '' || typeof dateate == 'undefined')) {
+                    dia = dateateini.substring(8, 11)
+                    //console.log('entrou Aterramento')
+                    if (dia == '01') {
+                        tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '02') {
+                        tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '03') {
+                        tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '04') {
+                        tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '05') {
+                        tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '06') {
+                        tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '07') {
+                        tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '08') {
+                        tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '09') {
+                        tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '10') {
+                        tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '11') {
+                        tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '12') {
+                        tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '13') {
+                        tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '14') {
+                        tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '15') {
+                        tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '16') {
+                        tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '17') {
+                        tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '18') {
+                        tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '19') {
+                        tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '20') {
+                        tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '21') {
+                        tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '22') {
+                        tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '23') {
+                        tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '24') {
+                        tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '25') {
+                        tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '26') {
+                        tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '27') {
+                        tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '28') {
+                        tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '29') {
+                        tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '30') {
+                        tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
+                    if (dia == '31') {
+                        tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                    }
                 }
-                if (dia == '04') {
-                    tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+
+                mes = dateestini.substring(5, 7)
+                //console.log('Estrutura')
+                //console.log('mes=>' + mes)
+                if ((mes_busca == mes) && (dateestini != '' && typeof dateestini != 'undefined') && (dateest == '' || typeof dateest == 'undefined')) {
+                    dia = dateestini.substring(8, 11)
+                    //console.log('entrou Estrutura')
+                    if (dia == '01') {
+                        tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '02') {
+                        tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '03') {
+                        tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '04') {
+                        tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '05') {
+                        tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '06') {
+                        tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '07') {
+                        tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '08') {
+                        tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '09') {
+                        tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '10') {
+                        tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '11') {
+                        tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '12') {
+                        tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '13') {
+                        tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '14') {
+                        tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '15') {
+                        tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '16') {
+                        tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '17') {
+                        tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '18') {
+                        tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '19') {
+                        tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '20') {
+                        tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '21') {
+                        tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '22') {
+                        tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '23') {
+                        tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '24') {
+                        tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '25') {
+                        tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '26') {
+                        tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '27') {
+                        tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '28') {
+                        tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '29') {
+                        tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '30') {
+                        tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
+                    if (dia == '31') {
+                        tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                    }
                 }
-                if (dia == '05') {
-                    tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+
+                mes = dateinvini.substring(5, 7)
+                //console.log('Inversor')
+                //console.log('mes=>' + mes)
+                //console.log('dateinv=>' + dateinv)
+                //console.log('dateinvini=>' + dateinvini)
+                if ((mes_busca == mes) && (dateinvini != '' && typeof dateinvini != 'undefined') && (dateinv == '' || typeof dateinv == 'undefined')) {
+                    dia = dateinvini.substring(8, 11)
+                    //console.log('entrou Inversor')
+                    //console.log('nome=>' + nome)
+                    //console.log('projeto=>' + projeto)
+
+                    if (dia == '01') {
+                        tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '02') {
+                        tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '03') {
+                        tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '04') {
+                        tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '05') {
+                        tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '06') {
+                        tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '07') {
+                        tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '08') {
+                        tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '09') {
+                        tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '10') {
+                        tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '11') {
+                        tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '12') {
+                        tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '13') {
+                        tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '14') {
+                        tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '15') {
+                        tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '16') {
+                        tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '17') {
+                        tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '18') {
+                        tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '19') {
+                        tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '20') {
+                        tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '21') {
+                        tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '22') {
+                        tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '23') {
+                        tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '24') {
+                        tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '25') {
+                        tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '26') {
+                        tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '27') {
+                        tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '28') {
+                        tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '29') {
+                        tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '30') {
+                        tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
+                    if (dia == '31') {
+                        tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                    }
                 }
-                if (dia == '06') {
-                    tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+
+                if (dateeaeini != '' && typeof dateeaeini != 'undefined') {
+                    mes = dateeaeini.substring(5, 7)
+                    //console.log('Armazenamento')
+                    //console.log('mes=>' + mes)
+                    //console.log('dateeae=>' + dateeae)
+                    //console.log('dateeaeini=>' + dateeaeini)
+                    if ((mes_busca == mes) && (dateeae == '' || typeof dateeae == 'undefined')) {
+                        dia = dateeaeini.substring(8, 11)
+                        //console.log('Entrou Armazenamento')
+                        if (dia == '01') {
+                            tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '02') {
+                            tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '03') {
+                            tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '04') {
+                            tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '05') {
+                            tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '06') {
+                            tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '07') {
+                            tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '08') {
+                            tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '09') {
+                            tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '10') {
+                            tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '11') {
+                            tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '12') {
+                            tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '13') {
+                            tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '14') {
+                            tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '15') {
+                            tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '16') {
+                            tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '17') {
+                            tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '18') {
+                            tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '19') {
+                            tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '20') {
+                            tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '21') {
+                            tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '22') {
+                            tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '23') {
+                            tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '24') {
+                            tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '25') {
+                            tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '26') {
+                            tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '27') {
+                            tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '28') {
+                            tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '29') {
+                            tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '30') {
+                            tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                        if (dia == '31') {
+                            tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                        }
+                    }
                 }
-                if (dia == '07') {
-                    tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                mes = datestbini.substring(5, 7)
+                //console.log('StringBox')
+                //console.log('mes=>' + mes)
+                if ((mes_busca == mes) && (datestbini != '' && typeof datestbini != 'undefined') && (datestb == '' || typeof datestb == 'undefined')) {
+                    dia = datestbini.substring(8, 11)
+                    //console.log('Entrou StringBox')
+                    if (dia == '01') {
+                        tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '02') {
+                        tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '03') {
+                        tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '04') {
+                        tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '05') {
+                        tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '06') {
+                        tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '07') {
+                        tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '08') {
+                        tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '09') {
+                        tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '10') {
+                        tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '11') {
+                        tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '12') {
+                        tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '13') {
+                        tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '14') {
+                        tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '15') {
+                        tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '16') {
+                        tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '17') {
+                        tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '18') {
+                        tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '19') {
+                        tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '20') {
+                        tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '21') {
+                        tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '22') {
+                        tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '23') {
+                        tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '24') {
+                        tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '25') {
+                        tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '26') {
+                        tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '27') {
+                        tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '28') {
+                        tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '29') {
+                        tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '30') {
+                        tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
+                    if (dia == '31') {
+                        tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                    }
                 }
-                if (dia == '08') {
-                    tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                mes = datemodini.substring(5, 7)
+                //console.log('Modulos')
+                //console.log('mes=>' + mes)
+                if ((mes_busca == mes) && (datemodini != '' && typeof datemodini != 'undefined') && (datemod == '' || typeof datemod == 'undefined')) {
+                    dia = datemodini.substring(8, 11)
+                    //console.log('Entrou Modulos')
+                    if (dia == '01') {
+                        tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '02') {
+                        tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '03') {
+                        tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '04') {
+                        tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '05') {
+                        tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '06') {
+                        tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '07') {
+                        tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '08') {
+                        tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '09') {
+                        tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '10') {
+                        tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '11') {
+                        tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '12') {
+                        tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '13') {
+                        tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '14') {
+                        tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '15') {
+                        tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '16') {
+                        tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '17') {
+                        tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '18') {
+                        tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '19') {
+                        tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '20') {
+                        tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '21') {
+                        tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '22') {
+                        tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '23') {
+                        tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '24') {
+                        tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '25') {
+                        tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '26') {
+                        tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '27') {
+                        tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '28') {
+                        tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '29') {
+                        tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '30') {
+                        tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
+                    if (dia == '31') {
+                        tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                    }
                 }
-                if (dia == '09') {
-                    tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                if (datepnlini != '' && typeof datepnlini != 'undefined') {
+                    mes = datepnlini.substring(5, 7)
+                    //console.log('Painel')
+                    //console.log('mes=>' + mes)
+                    if ((mes_busca == mes) && (datepnl == '' || typeof datepnl == 'undefined')) {
+                        dia = datepnlini.substring(8, 11)
+                        //console.log('Entrou Painel')
+                        if (dia == '01') {
+                            tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '02') {
+                            tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '03') {
+                            tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '04') {
+                            tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '05') {
+                            tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '06') {
+                            tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '07') {
+                            tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '08') {
+                            tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '09') {
+                            tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '10') {
+                            tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '11') {
+                            tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '12') {
+                            tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '13') {
+                            tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '14') {
+                            tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '15') {
+                            tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '16') {
+                            tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '17') {
+                            tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '18') {
+                            tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '19') {
+                            tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '20') {
+                            tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '21') {
+                            tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '22') {
+                            tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '23') {
+                            tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '24') {
+                            tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '25') {
+                            tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '26') {
+                            tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '27') {
+                            tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '28') {
+                            tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '29') {
+                            tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '30') {
+                            tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                        if (dia == '31') {
+                            tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                        }
+                    }
                 }
-                if (dia == '10') {
-                    tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '11') {
-                    tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '12') {
-                    tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '13') {
-                    tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '14') {
-                    tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '15') {
-                    tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '16') {
-                    tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '17') {
-                    tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '18') {
-                    tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '19') {
-                    tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '20') {
-                    tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '21') {
-                    tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '22') {
-                    tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '23') {
-                    tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '24') {
-                    tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '25') {
-                    tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '26') {
-                    tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '27') {
-                    tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '28') {
-                    tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '29') {
-                    tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '30') {
-                    tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-                if (dia == '31') {
-                    tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                }
-            }        
-            
-            if ((dateestini != '' && typeof dateestini != 'undefined') && (dateest == '' || typeof dateest == 'undefined')) {
-                dia = dateestini.substring(8, 11)
-                console.log('dia=>' + dia)
-                if (dia == '01') {
-                    tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '02') {
-                    tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '03') {
-                    tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '04') {
-                    tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '05') {
-                    tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '06') {
-                    tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '07') {
-                    tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '08') {
-                    tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '09') {
-                    tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '10') {
-                    tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '11') {
-                    tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '12') {
-                    tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '13') {
-                    tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '14') {
-                    tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '15') {
-                    tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '16') {
-                    tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '17') {
-                    tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '18') {
-                    tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '19') {
-                    tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '20') {
-                    tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '21') {
-                    tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '22') {
-                    tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '23') {
-                    tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '24') {
-                    tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '25') {
-                    tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '26') {
-                    tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '27') {
-                    tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '28') {
-                    tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '29') {
-                    tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '30') {
-                    tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                }
-                if (dia == '31') {
-                    tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                mes = datevisini.substring(5, 7)
+                //console.log('Vistoria')
+                //console.log('mes=>' + mes)
+                if ((mes_busca == mes) && (datevisini != '' && typeof datevisini != 'undefined') && (datevis == '' || typeof datevis == 'undefined')) {
+                    dia = datevisini.substring(8, 11)
+                    //console.log('Entrou Vistoria')
+                    if (dia == '01') {
+                        tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '02') {
+                        tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '03') {
+                        tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '04') {
+                        tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '05') {
+                        tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '06') {
+                        tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '07') {
+                        tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '08') {
+                        tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '09') {
+                        tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '10') {
+                        tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '11') {
+                        tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '12') {
+                        tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '13') {
+                        tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '14') {
+                        tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '15') {
+                        tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '16') {
+                        tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '17') {
+                        tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '18') {
+                        tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '19') {
+                        tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '20') {
+                        tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '21') {
+                        tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '22') {
+                        tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '23') {
+                        tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '24') {
+                        tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '25') {
+                        tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '26') {
+                        tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '27') {
+                        tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '28') {
+                        tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '29') {
+                        tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '30') {
+                        tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
+                    if (dia == '31') {
+                        tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                    }
                 }
             }
-            if ((dateinvini != '' && typeof dateinvini != 'undefined') && (dateinv == '' || typeof dateinv == 'undefined')) {
-                dia = dateinvini.substring(8, 11)
-                console.log('dia=>' + dia)
-                if (dia == '01') {
-                    tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '02') {
-                    tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '03') {
-                    tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '04') {
-                    tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '05') {
-                    tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '06') {
-                    tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '07') {
-                    tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '08') {
-                    tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '09') {
-                    tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '10') {
-                    tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '11') {
-                    tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '12') {
-                    tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '13') {
-                    tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '14') {
-                    tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '15') {
-                    tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '16') {
-                    tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '17') {
-                    tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '18') {
-                    tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '19') {
-                    tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '20') {
-                    tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '21') {
-                    tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '22') {
-                    tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '23') {
-                    tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '24') {
-                    tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '25') {
-                    tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '26') {
-                    tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '27') {
-                    tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '28') {
-                    tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '29') {
-                    tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '30') {
-                    tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '31') {
-                    tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-            }            
-            if ((dateeaeini != '' && typeof dateeaeini != 'undefined') && (dateeae == '' || typeof dateeae == 'undefined')) {
-                dia = dateeaeini.substring(8, 11)
-                console.log('dia=>' + dia)
-                if (dia == '01') {
-                    tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '02') {
-                    tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '03') {
-                    tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '04') {
-                    tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '05') {
-                    tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '06') {
-                    tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '07') {
-                    tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '08') {
-                    tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '09') {
-                    tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '10') {
-                    tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '11') {
-                    tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '12') {
-                    tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '13') {
-                    tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '14') {
-                    tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '15') {
-                    tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '16') {
-                    tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '17') {
-                    tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '18') {
-                    tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '19') {
-                    tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '20') {
-                    tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '21') {
-                    tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '22') {
-                    tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '23') {
-                    tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '24') {
-                    tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '25') {
-                    tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '26') {
-                    tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '27') {
-                    tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '28') {
-                    tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '29') {
-                    tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '30') {
-                    tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-                if (dia == '31') {
-                    tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                }
-            }   
-            if ((datestbini != '' && typeof datestbini != 'undefined') && (datestb == '' || typeof datestb == 'undefined')) {
-                dia = datestbini.substring(8, 11)
-                console.log('dia=>' + dia)
-                if (dia == '01') {
-                    tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '02') {
-                    tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '03') {
-                    tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '04') {
-                    tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '05') {
-                    tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '06') {
-                    tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '07') {
-                    tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '08') {
-                    tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '09') {
-                    tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '10') {
-                    tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '11') {
-                    tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '12') {
-                    tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '13') {
-                    tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '14') {
-                    tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '15') {
-                    tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '16') {
-                    tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '17') {
-                    tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '18') {
-                    tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '19') {
-                    tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '20') {
-                    tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '21') {
-                    tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '22') {
-                    tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '23') {
-                    tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '24') {
-                    tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '25') {
-                    tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '26') {
-                    tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '27') {
-                    tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '28') {
-                    tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '29') {
-                    tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '30') {
-                    tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-                if (dia == '31') {
-                    tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                }
-            }       
-            if ((datemodini != '' && typeof datemodini != 'undefined') && (datemod == '' || typeof datemod == 'undefined')) {
-                dia = datemodini.substring(8, 11)
-                console.log('dia=>' + dia)
-                if (dia == '01') {
-                    tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '02') {
-                    tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '03') {
-                    tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '04') {
-                    tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '05') {
-                    tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '06') {
-                    tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '07') {
-                    tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '08') {
-                    tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '09') {
-                    tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '10') {
-                    tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '11') {
-                    tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '12') {
-                    tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '13') {
-                    tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '14') {
-                    tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '15') {
-                    tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '16') {
-                    tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '17') {
-                    tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '18') {
-                    tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '19') {
-                    tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '20') {
-                    tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '21') {
-                    tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '22') {
-                    tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '23') {
-                    tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '24') {
-                    tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '25') {
-                    tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '26') {
-                    tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '27') {
-                    tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '28') {
-                    tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '29') {
-                    tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '30') {
-                    tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-                if (dia == '31') {
-                    tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                }
-            }            
-            if ((datepnlini != '' && typeof datepnlini != 'undefined') && (datepnl == '' || typeof datepnl == 'undefined')) {
-                dia = datepnlini.substring(8, 11)
-                console.log('dia=>' + dia)
-                if (dia == '01') {
-                    tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '02') {
-                    tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '03') {
-                    tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '04') {
-                    tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '05') {
-                    tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '06') {
-                    tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '07') {
-                    tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '08') {
-                    tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '09') {
-                    tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '10') {
-                    tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '11') {
-                    tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '12') {
-                    tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '13') {
-                    tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '14') {
-                    tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '15') {
-                    tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '16') {
-                    tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '17') {
-                    tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '18') {
-                    tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '19') {
-                    tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '20') {
-                    tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '21') {
-                    tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '22') {
-                    tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '23') {
-                    tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '24') {
-                    tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '25') {
-                    tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '26') {
-                    tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '27') {
-                    tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '28') {
-                    tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '29') {
-                    tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '30') {
-                    tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-                if (dia == '31') {
-                    tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
-                }
-            }         
-            if ((datevisini != '' && typeof datevisini != 'undefined') && (datevis == '' || typeof datevis == 'undefined')) {
-                dia = datevisini.substring(8, 11)
-                console.log('dia=>' + dia)
-                if (dia == '01') {
-                    tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '02') {
-                    tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '03') {
-                    tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '04') {
-                    tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '05') {
-                    tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '06') {
-                    tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '07') {
-                    tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '08') {
-                    tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '09') {
-                    tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '10') {
-                    tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '11') {
-                    tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '12') {
-                    tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '13') {
-                    tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '14') {
-                    tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '15') {
-                    tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '16') {
-                    tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '17') {
-                    tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '18') {
-                    tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '19') {
-                    tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '20') {
-                    tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '21') {
-                    tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '22') {
-                    tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '23') {
-                    tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '24') {
-                    tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '25') {
-                    tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '26') {
-                    tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '27') {
-                    tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '28') {
-                    tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '29') {
-                    tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '30') {
-                    tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-                if (dia == '31') {
-                    tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                }
-            }                                            
         })
-        console.log('tarefas11=>' + tarefas11)
+        /*
+        //console.log('tarefas1=>' + tarefas01)
+        //console.log('tarefas2=>' + tarefas02) 
+        //console.log('tarefas3=>' + tarefas03) 
+        //console.log('tarefas4=>' + tarefas04) 
+        //console.log('tarefas5=>' + tarefas05)                    
+        //console.log('tarefas6=>' + tarefas06)
+        //console.log('tarefas7=>' + tarefas07)
+        //console.log('tarefas8=>' + tarefas08)
+        //console.log('tarefas9=>' + tarefas09)
+        //console.log('tarefas10=>' + tarefas10) 
+        //console.log('tarefas11=>' + tarefas11)                     
+        //console.log('tarefas12=>' + tarefas12)
+        //console.log('tarefas13=>' + tarefas13)
+        //console.log('tarefas14=>' + tarefas14)       
+        //console.log('tarefas15=>' + tarefas15)
+        //console.log('tarefas16=>' + tarefas16)                                     
+        //console.log('tarefas17=>' + tarefas17)
+        //console.log('tarefas18=>' + tarefas18)
+        //console.log('tarefas19=>' + tarefas19)
+        //console.log('tarefas20=>' + tarefas20)
+        //console.log('tarefas21=>' + tarefas21)                    
+        //console.log('tarefas22=>' + tarefas22)
+        //console.log('tarefas23=>' + tarefas23)
+        //console.log('tarefas24=>' + tarefas24)
+        //console.log('tarefas25=>' + tarefas25)
+        //console.log('tarefas26=>' + tarefas26)
+        //console.log('tarefas27=>' + tarefas27)
+        //console.log('tarefas28=>' + tarefas28)
+        //console.log('tarefas29=>' + tarefas29)
+        //console.log('tarefa30=>' + tarefas30)
+        //console.log('tarefa31=>' + tarefas31)
+        */
         res.render('projeto/gerenciamento/agenda', {
             tarefas01, tarefas02, tarefas03, tarefas04, tarefas05, tarefas06, tarefas07,
             tarefas08, tarefas09, tarefas10, tarefas11, tarefas12, tarefas13, tarefas14,
@@ -1439,6 +1516,60 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
         req.flash('error_msg', 'Não foi possível encontrar as tarefas para a data de planejamento inicial.')
         res.redirect('/gerenciamento/agenda/')
     })
+})
+
+router.get('/enviaMensagem/:id', ehAdmin, (req, res) => {
+
+    Projeto.findOne({ _id: req.params.id }).then((projeto) => {
+        Cliente.findOne({ _id: projeto.cliente }).then((cliente) => {
+            Cronograma.findOne({ projeto: projeto._id }).then((cronograma) => {
+
+                //Enviando SMS                              
+                var mensagem = 'Olá ' + cliente.nome + ', tudo bem?' + '\n' +
+                    'Segue o cronograma para a instalação de sua usina solar: ' + '\n' +
+                    'Planejamento: ' + dataMensagem(cronograma.dateplaini) + ' a ' + dataMensagem(cronograma.dateplafim) + '\n' +
+                    'Projetista: ' + dataMensagem(cronograma.dateprjini) + ' a ' + dataMensagem(cronograma.dateprjfim) + '\n' +
+                    'Aterramento: ' + dataMensagem(cronograma.dateateini) + ' a ' + dataMensagem(cronograma.dateatefim) + '\n' +
+                    'Inversores e StringBox: ' + dataMensagem(cronograma.dateinvini) + ' a ' + dataMensagem(cronograma.datestbfim) + '\n' +
+                    'Instalação da Estrutura: ' + dataMensagem(cronograma.dateestini) + ' a ' + dataMensagem(cronograma.dateestfim) + '\n' +
+                    'Instalação dos Módulos: ' + dataMensagem(cronograma.datemodini) + ' a ' + dataMensagem(cronograma.datemodfim) + '\n' +
+                    'Vistoria: ' + dataMensagem(cronograma.datevisini) + ' a ' + dataMensagem(cronograma.datevisfim) + '.' + '\n' +
+                    'Para mais detalhes entre em contato com a gente pelo whatsapp: (xx) x xxxx-xxxx'
+
+                console.log(mensagem)
+                to = cliente.celular
+                console.log(to)
+
+                var textMessageService = new TextMessageService(apiKey)
+                textMessageService.send('Vimmus', mensagem, ['49991832978'], result => {
+                    console.log(result)
+                    if (result == false) {
+                        req.flash('error_msg', 'Falha interna. Não foi possível enviar a mensagem.')
+                        res.redirect('/gerenciamento/cronograma/' + req.params.id)
+                    } else {
+                        projeto.mensagem = true
+                        projeto.save().then(() => {
+                            req.flash('success_msg', 'Mensagem enviada para: ' + cliente.nome + ' com sucesso.')
+                            res.redirect('/gerenciamento/cronograma/' + req.params.id)
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Falha ao salvar o projeto.')
+                            res.redirect('/gerenciamento/cronograma/' + req.params.id)
+                        })
+                    }
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Falha ao encontrar o cronograma.')
+                res.redirect('/gerenciamento/cronograma/' + req.params.id)
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha ao encontrar o cliente.')
+            res.redirect('/gerenciamento/cronograma/' + req.params.id)
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Falha ao encontrar o projeto.')
+        res.redirect('/gerenciamento/cronograma/' + req.params.id)
+    })
+
 })
 
 router.post('/aplicarcenario/', ehAdmin, (req, res) => {
@@ -1470,17 +1601,17 @@ router.post('/aplicarcenario/', ehAdmin, (req, res) => {
     var texto3
     if (parseFloat(kwpmax1) < parseFloat(req.body.kwpsis)) {
         texto1 = 'A potência nominal do sistema é maior que a potência do cenário 1.'
-    }else{
+    } else {
         texto1 = 'Cenário 1 compatível com o espaço disponível para a instalação da UFV.'
     }
     if (parseFloat(kwpmax2) < parseFloat(req.body.kwpsis)) {
         texto2 = 'A potência nominal do sistema é maior que a potência do cenário 2.'
-    }else{
-        texto2 = 'Cenário 2 compatível com o espaço disponível para a instalação da UFV. '
+    } else {
+        texto2 = 'Cenário 2 compatível com o espaço disponível para a instalação da UFV.'
     }
     if (parseFloat(kwpmax3) < parseFloat(req.body.kwpsis)) {
         texto3 = 'A potência nominal do sistema é maior que a potência do cenário 3.'
-    }else{
+    } else {
         texto3 = 'Cenário 3 compatível com o espaço disponível para a instalação da UFV.'
     }
 
@@ -1497,375 +1628,7 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
     const { _id } = req.user
     var erros = ''
     var sucesso = ''
-
-    //Valida campos já salvos
-    Projeto.findOne({ _id: req.body.id }).then((projeto) => {
-        if (parseFloat(projeto.trbint) == 0 || projeto.trbint == null) {
-            erros = erros + 'Realizar ao menos um custo de instalação.'
-        }
-        if (parseFloat(projeto.trbpro) == 0 || projeto.trbpro == null) {
-            erros = erros + 'Realizar ao menos um custo de projetista.'
-        }
-        if (parseFloat(projeto.trbges) == 0 || projeto.trbges == null) {
-            erros = erros + 'Realizar ao menos um custos de gestão.'
-        }
-    })
-
-    if (erros != '') {
-        req.flash('error_msg', erros)
-        res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
-    } else {
-        Projeto.findOne({ _id: req.body.id }).then((projeto) => {
-            Detalhado.findOne({ projeto: req.body.id }).then((detalhe) => {
-                Regime.findOne({ _id: projeto.regime }).then((regime) => {
-                    Configuracao.findOne({ _id: projeto.configuracao }).then((config) => {
-                        var medkmh
-                        if (parseFloat(config.medkmh) > 0) {
-                            medkmh = config.medkmh
-                        } else {
-                            medkmh = 10
-                        }
-
-                        //Definindo o número de dias de obras
-                        var equipe = projeto.qtdequipe
-                        projeto.qtdequipe = equipe
-
-                        var diastr = Math.round(parseFloat((projeto.trbmod) + parseFloat(projeto.trbest)) / parseFloat(config.hrstrb))
-                        projeto.diastr = diastr
-
-                        //console.log('equipe=>' + equipe)
-                        //console.log('hrsequ=>' + hrsequ)
-                        //console.log('projeto.trbint=>' + projeto.trbint)
-                        //console.log('diastr=>' + diastr)
-
-                        var vlrali
-                        var discmb
-                        var ltocmb
-                        var vlrdia
-                        if (req.body.vlrali == '') {
-                            vlrali = 0
-                        } else {
-                            vlrali = req.body.vlrali
-                        }
-                        if (req.body.discmb == '') {
-                            discmb = 0
-                        } else {
-                            discmb = req.body.discmb
-                        }
-                        if (req.body.ltocmb == '') {
-                            ltocmb = 0
-                        } else {
-                            ltocmb = req.body.ltocmb
-                        }
-                        if (req.body.vlrdia == '') {
-                            vlrdia = 0
-                        } else {
-                            vlrdia = req.body.vlrdia
-                        }
-                        projeto.vlrali = vlrali
-                        projeto.discmb = discmb
-                        projeto.ltocmb = ltocmb
-                        projeto.vlrdia = vlrdia
-                        //console.log('vlrali=>' + vlrali)
-                        //console.log('discmb=>' + discmb)
-                        //console.log('ltocmb=>' + ltocmb)
-                        //console.log('vlrdia=>' + vlrdia)
-                        var tothtl
-                        var totcmb
-                        var totali
-                        //Definindo custo hotel
-                        if (parseFloat(vlrdia) > 0) {
-                            tothtl = parseFloat(vlrdia) * parseFloat(diastr) * parseFloat(equipe)
-                        } else {
-                            tothtl = 0
-                        }
-
-                        //Definindo custo deslocamento
-                        if (parseFloat(discmb) > 0 && parseFloat(ltocmb)) {
-                            autmed = parseFloat(req.body.discmb) / parseFloat(medkmh)
-                            totcmb = parseFloat(autmed) * parseFloat(req.body.ltocmb)
-                        } else {
-                            totcmb = 0
-                        }
-
-                        //Definindo custo deslocamento
-                        if (parseFloat(vlrali) > 0) {
-                            totali = parseFloat(req.body.vlrali) * parseFloat(equipe)
-                        } else {
-                            totali = 0
-                        }
-                        projeto.tothtl = tothtl.toFixed(2)
-                        projeto.totcmb = totcmb.toFixed(2)
-                        projeto.totali = totali.toFixed(2)
-
-                        var totdes = parseFloat(totali) + parseFloat(totcmb) + parseFloat(tothtl)
-                        projeto.totdes = totdes.toFixed(2)
-                        //--------------------------------------------   
-
-                        var tothrs = parseFloat(projeto.trbint) + parseFloat(projeto.trbpro) + parseFloat(projeto.trbges)
-                        projeto.tothrs = tothrs
-                        var hrsprj = parseFloat(projeto.trbmod) + parseFloat(projeto.trbest) + parseFloat(projeto.trbpro) + parseFloat(projeto.trbges)
-                        projeto.hrsprj = hrsprj
-
-                        //console.log('totcmb=>' + totcmb)
-                        //console.log('tothtl=>' + tothtl)
-                        //console.log('totali=>' + totali)
-                        //console.log('totdes=>' + totdes)
-                        //console.log('tothrs=>' + tothrs)
-
-                        //Custo de Reserva
-                        var resger
-                        var conadd
-                        var impele
-                        var seguro
-                        var outcer
-                        var outpos
-                        if (req.body.resger == '') {
-                            resger = 0
-                        } else {
-                            resger = req.body.resger
-                        }
-                        if (req.body.conadd == '') {
-                            conadd = 0
-                        } else {
-                            conadd = req.body.conadd
-                        }
-                        if (req.body.impele == '') {
-                            impele = 0
-                        } else {
-                            impele = req.body.impele
-                        }
-                        if (req.body.seguro == '') {
-                            seguro = 0
-                        } else {
-                            seguro = req.body.seguro
-                        }
-                        if (req.body.outcer == '') {
-                            outcer = 0
-                        } else {
-                            outcer = req.body.outcer
-                        }
-                        if (req.body.outpos == '') {
-                            outpos = 0
-                        } else {
-                            outpos = req.body.outpos
-                        }
-                        projeto.resger = resger
-                        projeto.conadd = conadd
-                        projeto.impele = impele
-                        projeto.seguro = seguro
-                        projeto.outcer = outcer
-                        projeto.outpos = outpos
-
-                        //console.log('resger=>' + resger)
-                        //console.log('conadd=>' + conadd)
-                        //console.log('impele=>' + impele)
-                        //console.log('seguro=>' + seguro)
-                        //console.log('outcer=>' + outcer)
-                        //console.log('outpos=>' + outpos)
-
-                        var rescon = parseFloat(impele) + parseFloat(seguro) + parseFloat(outcer) + parseFloat(outpos)
-                        rescon = parseFloat(rescon) + parseFloat(conadd)
-                        projeto.rescon = rescon.toFixed(2)
-                        var reserva = parseFloat(resger) + parseFloat(rescon)
-                        projeto.reserva = reserva.toFixed(2)
-
-                        //console.log('rescon=>' + rescon)
-                        //console.log('reserva=>' + reserva)
-                        //console.log('valorCer=>' + detalhe.valorCer)
-                        //console.log('valorPos=>' + detalhe.valorPos)
-                        var vlrcom = 0
-                        //Validando a comissão
-                        if (projeto.percom != null) {
-                            vlrcom = parseFloat(projeto.vlrNFS) * (parseFloat(projeto.percom) / 100)
-                            projeto.vlrcom = vlrcom.toFixed(2)
-                        }
-
-                        var custoFix = parseFloat(projeto.totint) + parseFloat(projeto.totpro) + parseFloat(projeto.vlrart) + parseFloat(projeto.totges)
-                        var custoVar = parseFloat(totdes)
-                        var custoEst = parseFloat(detalhe.valorCer) + parseFloat(detalhe.valorPos) + parseFloat(detalhe.valorCen)
-                        var totcop = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
-
-                        //console.log('totint=>' + totint)
-                        //console.log('totpro=>' + totpro)
-                        //console.log('totges=>' + totges)
-                        //console.log('totali=>' + totali)
-                        //console.log('detalhe.valorOcp=>' + detalhe.valorOcp)
-                        //console.log('detalhe.valorCer=>' + detalhe.valorCer)
-                        //console.log('detalhe.valorPos=>' + detalhe.valorPos)
-                        projeto.custofix = custoFix.toFixed(2)
-                        projeto.custovar = custoVar.toFixed(2)
-                        projeto.custoest = custoEst.toFixed(2)
-                        projeto.totcop = totcop.toFixed(2)
-
-                        var custoPlano = parseFloat(totcop) + parseFloat(reserva)
-                        projeto.custoPlano = custoPlano.toFixed(2)
-                        //console.log('custoPlano=>' + custoPlano)
-                        custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
-                        projeto.custoTotal = custoTotal.toFixed(2)
-
-                        //Definindo o imposto ISS
-                        //console.log('regime_prj.alqNFS=>' + regime_prj.alqNFS)
-                        var fatequ
-                        var vlrNFS = 0
-                        var impNFS = 0
-                        var vlrMarkup = 0
-                        var prjValor = 0
-                        if (req.body.markup == '' || req.body.markup == 0) {
-                            //console.log('markup igual a zero')
-                            //console.log('projeto.vlrnormal=>'+projeto.vlrnormal)
-                            if (req.body.checkFatura != null) {
-                                fatequ = true
-                                vlrNFS = parseFloat(projeto.vlrnormal).toFixed(2)
-                                impNFS = 0
-                            } else {
-                                fatequ = false
-                                vlrNFS = (parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)).toFixed(2)
-                                impNFS = (parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)).toFixed(2)
-                            }
-                            vlrMarkup = (parseFloat(custoTotal) - parseFloat(reserva)) / (1 - (parseFloat(config.markup) / 100))
-                            projeto.valor = parseFloat(vlrMarkup).toFixed(2)
-                            projeto.markup = config.markup
-                            prjValor = vlrMarkup
-                        } else {
-                            //console.log('custoTotal=>'+custoTotal)
-                            //console.log('req.body.markup=>'+req.body.markup)
-                            vlrMarkup = ((parseFloat(custoTotal) - parseFloat(reserva)) / (1 - (parseFloat(req.body.markup) / 100))).toFixed(2)
-                            //console.log('vlrMarkup=>' + vlrMarkup)
-                            if (req.body.checkFatura != null) {
-                                fatequ = true
-                                vlrNFS = parseFloat(vlrMarkup).toFixed(2)
-                                impNFS = 0
-                            } else {
-                                fatequ = false
-                                vlrNFS = (parseFloat(vlrMarkup) - parseFloat(projeto.vlrkit)).toFixed(2)
-                                impNFS = (parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)).toFixed(2)
-                            }
-                            projeto.markup = req.body.markup
-                            projeto.valor = vlrMarkup
-                            prjValor = parseFloat(vlrMarkup).toFixed(2)
-                        }
-                        //console.log('vlrNFS=>' + vlrNFS)
-                        //console.log('prjValor=>' + prjValor)
-                        //kWp médio
-                        projeto.vrskwp = (parseFloat(prjValor) / parseFloat(projeto.potencia)).toFixed(2)
-                        projeto.fatequ = fatequ
-
-                        var vlrcom = 0
-                        //Validando a comissão
-                        if (projeto.percom != null) {
-                            vlrcom = parseFloat(vlrNFS) * (parseFloat(projeto.percom) / 100)
-                            projeto.vlrcom = parseFloat(vlrcom).toFixed(2)
-                        }
-
-                        projeto.vlrNFS = parseFloat(vlrNFS).toFixed(2)
-                        projeto.impNFS = parseFloat(impNFS).toFixed(2)
-
-                        //console.log('impNFS=>' + impNFS)
-                        //console.log('projeto.valor=>' + projeto.valor)
-                        //Definindo o Lucro Bruto
-                        var recLiquida = parseFloat(prjValor) - parseFloat(impNFS)
-                        projeto.recLiquida = parseFloat(recLiquida).toFixed(2)
-
-                        var lucroBruto = parseFloat(recLiquida) - parseFloat(projeto.vlrkit)
-                        projeto.lucroBruto = parseFloat(lucroBruto).toFixed(2)
-
-                        //console.log('lucroBruto=>' + lucroBruto)
-
-                        var desAdm = 0
-                        var lbaimp = 0
-                        if (parseFloat(regime.desadm) > 0) {
-                            if (regime.tipodesp == 'Percentual') {
-                                desAdm = (parseFloat(regime.desadm) * (parseFloat(regime.perdes) / 100)).toFixed(2)
-                            } else {
-                                desAdm = ((parseFloat(regime.desadm) / parseFloat(regime.estkwp)) * parseFloat(projeto.potencia)).toFixed(2)
-                            }
-                            //console.log('desAdm=>' + desAdm)
-                            lbaimp = (parseFloat(lucroBruto) - parseFloat(custoPlano) - parseFloat(desAdm)).toFixed(2)
-                            projeto.desAdm = parseFloat(desAdm).toFixed(2)
-                        } else {
-                            lbaimp = (parseFloat(lbaimp) - parseFloat(custoPlano))
-                            projeto.desAdm = 0
-                        }
-                        //Deduzindo as comissões do Lucro Antes dos Impostos
-                        if (vlrcom == 0 || vlrcom == '') {
-                            lbaimp = parseFloat(lbaimp)
-                        } else {
-                            lbaimp = parseFloat(lbaimp) - parseFloat(vlrcom)
-                        }
-                        projeto.lbaimp = parseFloat(lbaimp).toFixed(2)
-                        //console.log('lbaimp=>' + lbaimp)
-
-                        //Dashboard              
-                        //Participação dos componentes
-                        //Kit
-                        var parKitEqu = parseFloat(detalhe.valorEqu) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parKitEqu = parseFloat(parKitEqu).toFixed(2)
-                        //Módulos
-                        var parModEqu = parseFloat(detalhe.valorMod) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parModEqu = parseFloat(parModEqu).toFixed(2)
-                        //Inversor
-                        var parInvEqu = parseFloat(detalhe.valorInv) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parInvEqu = parseFloat(parInvEqu).toFixed(2)
-                        //Estrutura
-                        var parEstEqu = (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorCim)) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parEstEqu = parseFloat(parEstEqu).toFixed(2)
-                        //Cabos
-                        var parCabEqu = parseFloat(detalhe.valorCab) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parCabEqu = parseFloat(parCabEqu).toFixed(2)
-                        //Armazenagem
-                        var parEbtEqu = parseFloat(detalhe.valorEbt) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parEbtEqu = parseFloat(parEbtEqu).toFixed(2)
-                        //DPS CC + CA
-                        var parDpsEqu = (parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDPSCA)) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parDpsEqu = parseFloat(parDpsEqu).toFixed(2)
-                        //Disjuntores CC + CA
-                        var parDisEqu = (parseFloat(detalhe.valorDisCC) + parseFloat(detalhe.valorDisCA)) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parDisEqu = parseFloat(parDisEqu).toFixed(2)
-                        //StringBox
-                        var parSbxEqu = parseFloat(detalhe.valorSB) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parSbxEqu = parseFloat(parSbxEqu).toFixed(2)
-                        //Cercamento
-                        var parCerEqu = parseFloat(detalhe.valorCer) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parCerEqu = parseFloat(parCerEqu).toFixed(2)
-                        //Central
-                        var parCenEqu = parseFloat(detalhe.valorCen) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parCenEqu = parseFloat(parCenEqu).toFixed(2)
-                        //Postes de Condução
-                        var parPosEqu = parseFloat(detalhe.valorPos) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parPosEqu = parseFloat(parPosEqu).toFixed(2)
-
-                        projeto.save().then(() => {
-                            sucesso = 'Custo de gerenciamento aplicado com sucesso.'
-                            req.flash('success_msg', sucesso)
-                            res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Falha ao aplicar os custos do projeto.')
-                            res.redirect('/projeto/consulta')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Houve um erro ao encontrar as configurações.')
-                        res.redirect('/configuracao/consulta')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Falha ao encontrar o regime.')
-                    res.redirect('/menu')
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Falha ao encontrar os detalhes.')
-                res.redirect('/menu')
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Falha ao encontrar o projeto.')
-            res.redirect('/projeto/consulta')
-        })
-    }
-})
-
-router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    var erros = ''
-    var sucesso = ''
+    var medkmh
 
     //Valida total dos custos já salvos para aplicar as informações de gerenciamento
     Projeto.findOne({ _id: req.body.id }).then((projeto_valida) => {
@@ -1883,710 +1646,704 @@ router.post('/editar/gerenciamento/', ehAdmin, (req, res) => {
     if (erros != '') {
 
         req.flash('error_msg', erros)
-        res.redirect('/gerenciamento/editar/gereciamento/' + req.body.id)
+        res.redirect('/gerenciamento/gereciamento/' + req.body.id)
 
     } else {
 
         Projeto.findOne({ _id: req.body.id }).then((projeto) => {
-            Detalhado.findOne({ projeto: req.body.id }).then((detalhe) => {
-                Regime.findOne({ _id: projeto.regime }).then((regime) => {
-                    var medkmh
-                    Configuracao.findOne({ _id: projeto.configuracao }).then((config) => {
-                        if (parseFloat(config.medkmh) > 0) {
-                            medkmh = config.medkmh
-                        } else {
-                            medkmh = 10
-                        }
-
-                        //Definindo o número de dias de obras
-                        var equipe = projeto.qtdequipe
-                        projeto.qtdequipe = equipe
-
-                        var diastr = Math.round(parseFloat((projeto.trbmod) + parseFloat(projeto.trbest)) / parseFloat(config.hrstrb))
-                        projeto.diastr = diastr
-
-                        //console.log('equipe=>' + equipe)
-
-                        var vlrali
-                        var discmb
-                        var ltocmb
-                        var vlrdia
-                        if (req.body.vlrali == '') {
-                            vlrali = 0
-                        } else {
-                            vlrali = req.body.vlrali
-                        }
-                        if (req.body.discmb == '') {
-                            discmb = 0
-                        } else {
-                            discmb = req.body.discmb
-                        }
-                        if (req.body.ltocmb == '') {
-                            ltocmb = 0
-                        } else {
-                            ltocmb = req.body.ltocmb
-                        }
-                        if (req.body.vlrdia == '') {
-                            vlrdia = 0
-                        } else {
-                            vlrdia = req.body.vlrdia
-                        }
-                        projeto.vlrali = vlrali
-                        projeto.discmb = discmb
-                        projeto.ltocmb = ltocmb
-                        projeto.vlrdia = vlrdia
-                        //console.log('vlrali=>' + vlrali)
-                        //console.log('discmb=>' + discmb)
-                        //console.log('ltocmb=>' + ltocmb)
-                        //console.log('vlrdia=>' + vlrdia)
-
-                        var tothtl
-                        var totcmb
-                        var totali
-                        //Definindo custo hotel
-                        if (parseFloat(vlrdia) > 0) {
-                            tothtl = parseFloat(vlrdia) * parseFloat(diastr) * parseFloat(equipe)
-                        } else {
-                            tothtl = 0
-                        }
-
-                        //Definindo custo deslocamento
-                        if (parseFloat(discmb) > 0 && parseFloat(ltocmb)) {
-                            autmed = parseFloat(req.body.discmb) / parseFloat(medkmh)
-                            totcmb = parseFloat(autmed) * parseFloat(req.body.ltocmb)
-                        } else {
-                            totcmb = 0
-                        }
-
-                        //Definindo custo deslocamento
-                        if (parseFloat(vlrali) > 0) {
-                            totali = parseFloat(req.body.vlrali) * parseFloat(equipe)
-                        } else {
-                            totali = 0
-                        }
-                        projeto.tothtl = tothtl.toFixed(2)
-                        projeto.totcmb = totcmb.toFixed(2)
-                        projeto.totali = totali.toFixed(2)
-
-                        var totdes = parseFloat(totali) + parseFloat(totcmb) + parseFloat(tothtl)
-                        projeto.totdes = totdes.toFixed(2)
-                        //--------------------------------------------   
-
-                        var tothrs = parseFloat(projeto.trbint) + parseFloat(projeto.trbpro) + parseFloat(projeto.trbges)
-                        projeto.tothrs = tothrs
-                        var hrsprj = parseFloat(projeto.trbmod) + parseFloat(projeto.trbest) + parseFloat(projeto.trbpro) + parseFloat(projeto.trbges)
-                        projeto.hrsprj = hrsprj
-
-                        //console.log('totcmb=>' + totcmb)
-                        //console.log('tothtl=>' + tothtl)
-                        //console.log('totali=>' + totali)
-                        //console.log('totdes=>' + totdes)
-                        //console.log('tothrs=>' + tothrs)
-
-                        //Custo de Reserva
-                        var resger
-                        var conadd
-                        var impele
-                        var seguro
-                        var outcer
-                        var outpos
-                        if (req.body.resger == '') {
-                            resger = 0
-                        } else {
-                            resger = req.body.resger
-                        }
-                        if (req.body.conadd == '') {
-                            conadd = 0
-                        } else {
-                            conadd = req.body.conadd
-                        }
-                        if (req.body.impele == '') {
-                            impele = 0
-                        } else {
-                            impele = req.body.impele
-                        }
-                        if (req.body.seguro == '') {
-                            seguro = 0
-                        } else {
-                            seguro = req.body.seguro
-                        }
-                        if (req.body.outcer == '') {
-                            outcer = 0
-                        } else {
-                            outcer = req.body.outcer
-                        }
-                        if (req.body.outpos == '') {
-                            outpos = 0
-                        } else {
-                            outpos = req.body.outpos
-                        }
-                        projeto.resger = resger
-                        projeto.conadd = conadd
-                        projeto.impele = impele
-                        projeto.seguro = seguro
-                        projeto.outcer = outcer
-                        projeto.outpos = outpos
-
-                        //console.log('resger=>' + resger)
-                        //console.log('conadd=>' + conadd)
-                        //console.log('impele=>' + impele)
-                        //console.log('seguro=>' + seguro)
-                        //console.log('outcer=>' + outcer)
-                        //console.log('outpos=>' + outpos)
-
-                        var rescon = parseFloat(impele) + parseFloat(seguro) + parseFloat(outcer) + parseFloat(outpos)
-                        rescon = parseFloat(rescon) + parseFloat(conadd)
-                        projeto.rescon = rescon.toFixed(2)
-                        var reserva = parseFloat(resger) + parseFloat(rescon)
-                        projeto.reserva = reserva.toFixed(2)
-
-                        //console.log('rescon=>' + rescon)
-                        //console.log('reserva=>' + reserva)
-                        //console.log('projeto.totint=>' + projeto.totint)
-                        //console.log('projeto.totpro=>' + projeto.totpro)
-                        //console.log('projeto.totges=>' + projeto.totges)
-                        //console.log('projeto.valorCer=>' + projeto.valorCer)
-                        //console.log('projeto.valorPos=>' + projeto.valorPos)
-                        //console.log('projeto.valorOcp=>' + projeto.valorOcp)
-
-                        var valorCer
-                        var valorPos
-                        var valorCen
-                        if (typeof projeto.valorCer == "undefined") {
-                            valorCer = 0
-                        }
-                        if (typeof projeto.valorPos == "undefined") {
-                            valorPos = 0
-                        }
-                        if (typeof projeto.valorCen == "undefined") {
-                            valorCen = 0
-                        }
-                        //console.log('valorCer=>' + valorCer)
-                        //console.log('valorPos=>' + valorPos)
-                        //console.log('valorCen=>' + valorCen)
-
-                        var custoFix = parseFloat(projeto.totint) + parseFloat(projeto.totpro) + parseFloat(projeto.vlrart) + parseFloat(projeto.totges)
-                        //console.log('custoFix=>' + custoFix)
-                        var custoVar = parseFloat(totdes)
-                        //console.log('custoVar=>' + custoVar)
-                        var custoEst = parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen)
-                        //console.log('custoEst=>' + custoEst)
-                        var totcop = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
-
-                        var vlrcom = 0
-                        //Validando a comissão
-                        if (projeto.percom != null) {
-                            vlrcom = parseFloat(projeto.vlrNFS) * (parseFloat(projeto.percom) / 100)
-                            projeto.vlrcom = vlrcom.toFixed(2)
-                        }
-
-                        projeto.custofix = custoFix.toFixed(2)
-                        projeto.custovar = custoVar.toFixed(2)
-                        projeto.custoest = custoEst.toFixed(2)
-                        projeto.totcop = totcop.toFixed(2)
-                        //console.log('totcop=>' + totcop)
-                        var custoPlano = parseFloat(totcop) + parseFloat(reserva)
-                        projeto.custoPlano = custoPlano.toFixed(2)
-                        //console.log('custoPlano=>' + custoPlano)
-                        var custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
-                        projeto.custoTotal = custoTotal.toFixed(2)
-                        //console.log('custoTotal=>' + custoTotal)
-
-                        //Definindo o imposto ISS
-                        //console.log('regime_prj.alqNFS=>' + regime_prj.alqNFS)
-                        var fatequ
-                        var vlrNFS = 0
-                        var impNFS = 0
-                        var vlrMarkup = 0
-                        var prjValor = 0
-                        if (req.body.markup == '' || req.body.markup == 0) {
-                            //console.log('markup igual a zero')
-                            //console.log('projeto.vlrnormal=>'+projeto.vlrnormal)
-                            if (req.body.checkFatura != null) {
-                                fatequ = true
-                                vlrNFS = parseFloat(projeto.vlrnormal).toFixed(2)
-                                impNFS = 0
+            Cronograma.findOne({ projeto: req.body.id }).then((cronograma) => {
+                Detalhado.findOne({ projeto: req.body.id }).then((detalhe) => {
+                    Empresa.findOne({ _id: projeto.empresa }).then((empresa) => {
+                        Configuracao.findOne({ _id: projeto.configuracao }).then((config) => {
+                            if (parseFloat(config.medkmh) > 0) {
+                                medkmh = config.medkmh
                             } else {
-                                fatequ = false
-                                vlrNFS = (parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)).toFixed(2)
-                                impNFS = (parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)).toFixed(2)
+                                medkmh = 10
                             }
-                            vlrMarkup = (parseFloat(custoTotal) - parseFloat(reserva)) / (1 - (parseFloat(config.markup) / 100))
-                            projeto.valor = parseFloat(vlrMarkup).toFixed(2)
-                            projeto.markup = config.markup
-                            prjValor = vlrMarkup
-                        } else {
-                            //console.log('markup diferente de zero')
-                            //console.log('custoTotal=>'+custoTotal)
-                            //console.log('req.body.markup=>'+req.body.markup)
-                            vlrMarkup = ((parseFloat(custoTotal) - parseFloat(reserva)) / (1 - (parseFloat(req.body.markup) / 100))).toFixed(2)
-                            //console.log('vlrMarkup=>' + vlrMarkup)
-                            if (req.body.checkFatura != null) {
-                                fatequ = true
-                                vlrNFS = parseFloat(vlrMarkup).toFixed(2)
-                                impNFS = 0
+                            /*
+                            var qtdins = projeto.qtdins
+                            if (qtdins == '' || typeof qtdins == 'undefined'){
+                                qtdins = 0
+                            }
+                            var qtdate = projeto.qtdate
+                            if (qtdate == '' || typeof qtdate == 'undefined'){
+                                qtdate = 0
+                            }
+                            var qtdinv = projeto.qtdinv
+                            if (qtdinv == '' || typeof qtdinv == 'undefined'){
+                                qtdinv = 0
+                            }
+                            var qtdeae = projeto.qtdate
+                            if (qtdeae == '' || typeof qtdeae == 'undefined'){
+                                qtdeae = 0
+                            }
+                            var qtdpnl = projeto.qtdpnl
+                            if (qtdpnl == '' || typeof qtdpnl == 'undefined'){
+                                qtdpnl = 0
+                            }
+                            */
+
+                            //Definindo o número de dias de obras
+                            var conhrs = config.hrstrb
+                            var equipe = projeto.qtdins
+                            var plafim
+                            var prjfim
+                            var atefim
+                            var invfim
+                            var stbfim
+                            var estfim
+                            var modfim
+                            var invfim
+                            var eaefim
+                            var pnlfim
+                            var valplafim
+                            var valprjfim
+                            var valateini
+                            var valinvini
+                            var valstbini
+                            var valpnlini
+                            var valeaeini
+                            var valestini
+                            var valmodini
+                            var aux
+                            var soma
+
+                            if (projeto.tipoCustoGes == 'hora') {
+                                plafim = Math.trunc(projeto.trbges / conhrs)
                             } else {
-                                fatequ = false
-                                vlrNFS = (parseFloat(vlrMarkup) - parseFloat(projeto.vlrkit)).toFixed(2)
-                                impNFS = (parseFloat(vlrNFS) * (parseFloat(regime.alqNFS) / 100)).toFixed(2)
+                                if (projeto.diasGes > 1) {
+                                    plafim = parseFloat(projeto.diasGes) - 1
+                                } else {
+                                    plafim = 0
+                                }
                             }
-                            projeto.markup = req.body.markup
-                            projeto.valor = vlrMarkup
-                            prjValor = parseFloat(vlrMarkup).toFixed(2)
-                        }
-                        //console.log('vlrNFS=>' + vlrNFS)
-                        //console.log('impNFS=>' + impNFS)
-                        //console.log('prjValor=>' + prjValor)
-                        //kWp médio
-                        projeto.vrskwp = (parseFloat(prjValor) / parseFloat(projeto.potencia)).toFixed(2)
-                        projeto.fatequ = fatequ
-
-                        var vlrcom = 0
-                        //Validando a comissão
-                        if (projeto.percom != null) {
-                            vlrcom = parseFloat(vlrNFS) * (parseFloat(projeto.percom) / 100)
-                            projeto.vlrcom = parseFloat(vlrcom).toFixed(2)
-                        }
-                        //console.log('vlrcom=>'+vlrcom)
-
-                        //Definindo o Lucro Bruto
-                        var recLiquida = parseFloat(prjValor) - parseFloat(impNFS)
-                        projeto.recLiquida = parseFloat(recLiquida).toFixed(2)
-
-                        var lucroBruto = parseFloat(recLiquida) - parseFloat(projeto.vlrkit)
-                        projeto.lucroBruto = parseFloat(lucroBruto).toFixed(2)
-
-                        //console.log('lucroBruto=>' + lucroBruto)
-
-                        var desAdm = 0
-                        var lbaimp = 0
-                        if (parseFloat(regime.desadm) > 0) {
-                            if (regime.tipodesp == 'Percentual') {
-                                desAdm = (parseFloat(regime.desadm) * (parseFloat(regime.perdes) / 100)).toFixed(2)
+                            if (projeto.tipoCustoPro == 'hora') {
+                                if ((parseFloat(projeto.trbges) + parseFloat(projeto.trbpro)) > 8) {
+                                    prjfim = Math.round((projeto.trbpro / conhrs), -1)
+                                } else {
+                                    prjfim = Math.trunc(projeto.trbpro / conhrs)
+                                }
                             } else {
-                                desAdm = ((parseFloat(regime.desadm) / parseFloat(regime.estkwp)) * parseFloat(projeto.potencia)).toFixed(2)
+                                soma = (parseFloat(projeto.diasGes) + parseFloat(projeto.diasPro)).toFixed(2)
+                                if (soma > parseFloat(1)) {
+                                    aux = Math.trunc(soma)
+                                    if (soma >= aux) {
+                                        prjfim = aux - 1
+                                        if ((parseFloat(prjfim) < parseFloat(projeto.diasGes)) || (parseFloat(prjfim) < parseFloat(projeto.diasPro))) {
+                                            prjfim = aux
+                                        }
+                                    } else {
+                                        prjfim = aux
+                                    }
+                                } else {
+                                    prjfim = 0
+                                }
                             }
-                            //console.log('desAdm=>' + desAdm)
-                            lbaimp = (parseFloat(lucroBruto) - parseFloat(custoPlano) - parseFloat(desAdm)).toFixed(2)
-                            projeto.desAdm = parseFloat(desAdm).toFixed(2)
-                        } else {
-                            lbaimp = (parseFloat(lbaimp) - parseFloat(custoPlano))
-                            projeto.desAdm = 0
-                        }
+                            if (projeto.tipoCustoIns == 'hora') {
+                                if ((parseFloat(projeto.trbpro) + parseFloat(projeto.trbate)) > 8) {
+                                    atefim = Math.round((projeto.trbate / conhrs), -1)
+                                } else {
+                                    atefim = Math.trunc(projeto.trbate / conhrs)
+                                }
+                                if ((parseFloat(projeto.trbpro) + parseFloat(projeto.trbinv)) > 8) {
+                                    invfim = Math.round((projeto.trbinv / conhrs), -1)
+                                } else {
+                                    invfim = Math.trunc(projeto.trbinv / conhrs)
+                                }
+                                if ((parseFloat(projeto.trbpro) + parseFloat(projeto.trbstb)) > 8) {
+                                    stbfim = Math.round((projeto.trbstb / conhrs), -1)
+                                } else {
+                                    stbfim = Math.trunc(projeto.trbstb / conhrs)
+                                }
+                                if ((parseFloat(projeto.trbpro) + parseFloat(projeto.trbest)) > 8) {
+                                    estfim = Math.round((projeto.trbest / conhrs), -1) + 1
+                                } else {
+                                    estfim = Math.trunc(projeto.trbest / conhrs) + 1
+                                }
+                                if ((parseFloat(projeto.trbest) + parseFloat(projeto.trbmod)) > 8) {
+                                    modfim = Math.round((projeto.trbmod / conhrs), -1)
+                                } else {
+                                    modfim = Math.trunc(projeto.trbmod / conhrs)
+                                }
+                                if (projeto.temArmazenamento == 'checked') {
+                                    if ((parseFloat(projeto.trbpro) + parseFloat(projeto.trbeae)) > 8) {
+                                        eaefim = Math.round((projeto.trbeae / conhrs), -1)
+                                    } else {
+                                        eaefim = Math.trunc(projeto.trbeae / conhrs)
+                                    }
+                                }
+                                if (projeto.temPainel == 'checked') {
+                                    if ((parseFloat(projeto.trbpro) + parseFloat(projeto.trbpnl)) > 8) {
+                                        pnlfim = Math.round((projeto.trbpnl / conhrs), -1)
+                                    } else {
+                                        pnlfim = Math.trunc(projeto.trbpnl / conhrs)
+                                    }
+                                }
+                            } else {
+                                soma = (parseFloat(projeto.diasPro) + parseFloat(projeto.diasAte)).toFixed(2)
+                                if (soma > 1) {
+                                    aux = Math.trunc(soma)
+                                    if (soma >= aux) {
+                                        atefim = projeto.diasAte - 1
+                                        if ((parseFloat(atefim) < parseFloat(projeto.diasPro)) || (parseFloat(atefim) < parseFloat(projeto.diasAte))) {
+                                            atefim = projeto.diasAte
+                                        }
+                                    } else {
+                                        atefim = aux
+                                    }
+                                } else {
+                                    atefim = 0
+                                }
+                                soma = (parseFloat(projeto.diasPro) + parseFloat(projeto.diasInv)).toFixed(2)
+                                if (soma > 1) {
+                                    aux = Math.trunc(soma)
+                                    if (soma >= aux) {
+                                        invfim = projeto.diasInv - 1
+                                        if ((parseFloat(invfim) < parseFloat(projeto.diasPro)) || (parseFloat(invfim) < parseFloat(projeto.diasInv))) {
+                                            invfim = projeto.diasInv
+                                        }
+                                    } else {
+                                        invfim = aux
+                                    }
+                                } else {
+                                    invfim = 0
+                                }
+                                soma = (parseFloat(projeto.diasPro) + parseFloat(projeto.diasStb)).toFixed(2)
+                                if (soma > 1) {
+                                    aux = Math.trunc(soma)
+                                    if (soma >= aux) {
+                                        stbfim = projeto.diasStb - 1
+                                        if ((parseFloat(stbfim) < parseFloat(projeto.diasPro)) || (parseFloat(stbfim) < parseFloat(projeto.diasStb))) {
+                                            stbfim = projeto.diasStb
+                                        }
+                                    } else {
+                                        stbfim = aux
+                                    }
+                                } else {
+                                    stbfim = 0
+                                }
+                                if (projeto.temArmazenamento == 'checked') {
+                                    soma = (parseFloat(projeto.diasPro) + parseFloat(projeto.diasEae)).toFixed(2)
+                                    if (soma > 1) {
+                                        aux = Math.trunc(soma)
+                                        if (soma >= aux) {
+                                            eaefim = projeto.diasEae - 1
+                                            if ((parseFloat(eaefim) < parseFloat(projeto.diasPro)) || (parseFloat(eaefim) < parseFloat(projeto.diasEae))) {
+                                                eaefim = projeto.diasEae
+                                            }
+                                        } else {
+                                            eaefim = aux
+                                        }
+                                    } else {
+                                        eaefim = 0
+                                    }
+                                }
+                                if (projeto.temPainel == 'checked') {
+                                    soma = (parseFloat(projeto.diasPro) + parseFloat(projeto.diasPnl)).toFixed(2)
+                                    if (soma > 1) {
+                                        aux = Math.trunc(soma)
+                                        if (soma >= aux) {
+                                            pnlfim = projeto.diasPnl - 1
+                                            if ((parseFloat(pnlfim) < parseFloat(projeto.diasPro)) || (parseFloat(pnlfim) < parseFloat(projeto.diasPnl))) {
+                                                pnlfim = projeto.diasPnl
+                                            }
+                                        } else {
+                                            pnlfim = aux
+                                        }
+                                    } else {
+                                        pnlfim = 0
+                                    }
+                                }
+                                soma = (parseFloat(projeto.diasPro) + parseFloat(projeto.diasEst)).toFixed(2)
+                                if (soma > 1) {
+                                    aux = Math.trunc(soma)
+                                    if (soma >= aux) {
+                                        estfim = projeto.diasEst - 1
+                                        if ((parseFloat(estfim) < parseFloat(projeto.diasPro)) || (parseFloat(estfim) < parseFloat(projeto.diasEst))) {
+                                            estfim = projeto.diasEst
+                                        }
+                                    } else {
+                                        estfim = aux
+                                    }
+                                } else {
+                                    estfim = 0
+                                }
+                                soma = (parseFloat(projeto.diasEst) + parseFloat(projeto.diasMod)).toFixed(2)
+                                if (soma > 1) {
+                                    aux = Math.trunc(soma)
+                                    if (soma >= aux) {
+                                        modfim = projeto.diasMod - 1
+                                        if ((parseFloat(modfim) < parseFloat(projeto.diasEst)) || (parseFloat(modfim) < parseFloat(projeto.diasMod))) {
+                                            modfim = projeto.diasMod
+                                        }
+                                    } else {
+                                        modfim = aux
+                                    }
+                                } else {
+                                    modfim = 0
+                                }
+                            }
 
-                        //Deduzindo as comissões do Lucro Antes dos Impostos
-                        if (vlrcom == 0 || vlrcom == '') {
-                            lbaimp = parseFloat(lbaimp)
-                        } else {
-                            lbaimp = parseFloat(lbaimp) - parseFloat(vlrcom)
-                        }
-                        projeto.lbaimp = lbaimp.toFixed(2)
-                        //console.log('lbaimp=>' + lbaimp)
+                            //console.log('atefim=>' + atefim)
+                            //console.log('stbfim=>' + stbfim)
+                            //console.log('invfim=>' + invfim)
+                            //console.log('pnlfim=>' + pnlfim)
+                            //console.log('eaefim=>' + eaefim)
+                            //console.log('estfim=>' + estfim)
+                            //console.log('modfim=>' + modfim)
+                            //console.log('plafim=>' + plafim)
+                            //console.log('prjfim=>' + prjfim)
+                            valplafim = setData(projeto.valDataIni, plafim)
+                            valprjfim = setData(valplafim, prjfim)
 
-                        //Dashboard              
-                        //Participação dos componentes
-                        //Kit
-                        var parKitEqu = parseFloat(detalhe.valorEqu) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parKitEqu = parseFloat(parKitEqu).toFixed(2)
-                        //Módulos
-                        var parModEqu = parseFloat(detalhe.valorMod) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parModEqu = parseFloat(parModEqu).toFixed(2)
-                        //Inversor
-                        var parInvEqu = parseFloat(detalhe.valorInv) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parInvEqu = parseFloat(parInvEqu).toFixed(2)
-                        //Estrutura
-                        var parEstEqu = (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorCim)) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parEstEqu = parseFloat(parEstEqu).toFixed(2)
-                        //Cabos
-                        var parCabEqu = parseFloat(detalhe.valorCab) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parCabEqu = parseFloat(parCabEqu).toFixed(2)
-                        //Armazenagem
-                        var parEbtEqu = parseFloat(detalhe.valorEbt) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parEbtEqu = parseFloat(parEbtEqu).toFixed(2)
-                        //DPS CC + CA
-                        var parDpsEqu = (parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDPSCA)) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parDpsEqu = parseFloat(parDpsEqu).toFixed(2)
-                        //Disjuntores CC + CA
-                        var parDisEqu = (parseFloat(detalhe.valorDisCC) + parseFloat(detalhe.valorDisCA)) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parDisEqu = parseFloat(parDisEqu).toFixed(2)
-                        //StringBox
-                        var parSbxEqu = parseFloat(detalhe.valorSB) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parSbxEqu = parseFloat(parSbxEqu).toFixed(2)
-                        //Inserir Proteção CA
-                        //Cercamento
-                        var parCerEqu = parseFloat(detalhe.valorCer) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parCerEqu = parseFloat(parCerEqu).toFixed(2)
-                        //Central
-                        var parCenEqu = parseFloat(detalhe.valorCen) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parCenEqu = parseFloat(parCenEqu).toFixed(2)
-                        //Postes de Condução
-                        var parPosEqu = parseFloat(detalhe.valorPos) / parseFloat(detalhe.vlrTotal) * 100
-                        projeto.parPosEqu = parseFloat(parPosEqu).toFixed(2)
+                            if (cronograma.dateplafim == '' || typeof cronograma.dateplafim == 'undefined' || isNaN(cronograma.dateplaini)) {
+                                cronograma.dateplafim = setData(projeto.valDataIni, plafim)
+                            }
 
-                        projeto.vlrNFS = parseFloat(vlrNFS).toFixed(2)
-                        projeto.impNFS = parseFloat(impNFS).toFixed(2)
+                            if (cronograma.dateprjini == '' || typeof cronograma.dateprjini == 'undefined' || isNaN(cronograma.dateprjini)) {
+                                cronograma.dateprjini = valplafim
+                                if (cronograma.dateprjfim == '' || typeof cronograma.dateprjfim == 'undefined' || isNaN(cronograma.dateprjfim)) {
+                                    cronograma.dateprjfim = setData(valplafim, prjfim)
+                                }
+                            }
 
-                        projeto.save().then(() => {
+                            if (cronograma.dateateini == '' || typeof cronograma.dateateini == 'undefined' || isNaN(cronograma.dateateini)) {
+                                valateini = setData(valprjfim, 1)
+                                cronograma.dateateini = valateini
+                                if (cronograma.dateatefim == '' || typeof cronograma.dateatefim == 'undefined' || isNaN(cronograma.dateatefim)) {
+                                    cronograma.dateatefim = setData(valateini, atefim)
+                                }
+                            }
+                            if (cronograma.dateinvini == '' || typeof cronograma.dateinvini == 'undefined' || isNaN(cronograma.dateinvini)) {
+                                valinvini = setData(valprjfim, 1)
+                                cronograma.dateinvini = valinvini
+                                if (cronograma.dateinvfim == '' || typeof cronograma.dateinvfim == 'undefined' || isNaN(cronograma.dateinvfim)) {
+                                    cronograma.dateinvfim = setData(valinvini, invfim)
+                                }
+                            }
 
-                            sucesso = 'Custo de gerenciamento aplicado com sucesso.'
-                            req.flash('success_msg', sucesso)
-                            res.redirect('/gerenciamento/editar/gerenciamento/' + req.body.id)
+                            if (cronograma.datestbini == '' || typeof cronograma.datestbini == 'undefined' || isNaN(cronograma.datestbini)) {
+                                valstbini = setData(valprjfim, 1)
+                                cronograma.datestbini = valstbini
+                                if (cronograma.datestbfim == '' || typeof cronograma.datestbfim == 'undefined' || isNaN(cronograma.datestbfim)) {
+                                    cronograma.datestbfim = setData(valstbini, stbfim)
+                                }
+                            }
 
+                            if (cronograma.datepnlini == '' || typeof cronograma.datepnlini == 'undefined' || isNaN(cronograma.datepnlini) && projeto.temPainel == 'checked') {
+                                valpnlini = setData(valprjfim, 1)
+                                cronograma.datepnlini = valpnlini
+                                if (cronograma.datepnlfim == '' || typeof cronograma.datepnlfim == 'undefined' || isNaN(cronograma.datepnlfim)) {
+                                    cronograma.datepnlfim = setData(valpnlini, pnlfim)
+                                }
+                            }
+                            if (cronograma.dateeaeini == '' || typeof cronograma.dateeaeini == 'undefined' || isNaN(cronograma.dateeaeini) && projeto.temArmazenamento == 'checked') {
+                                valeaeini = setData(valprjfim, 1)
+                                cronograma.dateeaeini = valeaeini
+                                if (cronograma.dateeaefim == '' || typeof cronograma.dateeaefim == 'undefined' || isNaN(cronograma.dateeaefim)) {
+                                    cronograma.dateeaefim = setData(valeaeini, eaefim)
+                                }
+                            }
+
+                            if (cronograma.dateestini == '' || typeof cronograma.dateestini == 'undefined' || isNaN(cronograma.dateestini)) {
+                                valestini = setData(valprjfim, 1)
+                                cronograma.dateestini = valestini
+                                if (cronograma.dateestfim == '' || typeof cronograma.dateestfim == 'undefined' || isNaN(cronograma.dateestfim)) {
+                                    valestfim = setData(valestini, estfim)
+                                    cronograma.dateestfim = valestfim
+
+                                }
+                            }
+                            //console.log("modfim=>" + modfim)
+                            if (cronograma.datemodini == '' || typeof cronograma.datemodini == 'undefined' || isNaN(cronograma.datemodini)) {
+                                cronograma.datemodini = valestfim
+                                valmodini = valestfim
+                                if (cronograma.datemodfim == '' || typeof cronograma.datemodfim == 'undefined' || isNaN(cronograma.datemodfim)) {
+                                    //console.log('valmodini=>' + valmodini)
+                                    //console.log('valmodini=>' + valmodini)
+                                    cronograma.datemodfim = setData(valmodini, modfim)
+                                    //console.log('modfim=>' + modfim)
+                                    //console.log('setData(valmodini, modfim)=>' + setData(valmodini, modfim))
+                                }
+                            }
+                            var diasObra
+                            var diastr
+                            if (projeto.tipoCustoIns == 'hora') {
+                                diasObra = Math.round(parseFloat((projeto.trbmod) + parseFloat(projeto.trbest)) / parseFloat(config.hrstrb))
+                                diastr = Math.round(parseFloat(projeto.tothrs) / parseFloat(config.hrstrb))
+                            } else {
+                                diasObra = projeto.diasIns
+                                diastr = parseFloat(projeto.diasGes) + parseFloat(projeto.diasPro) + parseFloat(projeto.diasIns)
+                            }
+                            projeto.diasObra = diasObra
+
+                            projeto.diastr = diastr
+                            //console.log('diastr=>'+diastr)
+
+                            //console.log('equipe=>' + equipe)
+                            var vlrali
+                            var discmb
+                            var ltocmb
+                            var vlrdia
+                            if (req.body.vlrali == '') {
+                                vlrali = 0
+                            } else {
+                                vlrali = req.body.vlrali
+                            }
+                            if (req.body.discmb == '') {
+                                discmb = 0
+                            } else {
+                                discmb = req.body.discmb
+                            }
+                            if (req.body.ltocmb == '') {
+                                ltocmb = 0
+                            } else {
+                                ltocmb = req.body.ltocmb
+                            }
+                            if (req.body.vlrdia == '') {
+                                vlrdia = 0
+                            } else {
+                                vlrdia = req.body.vlrdia
+                            }
+                            projeto.vlrali = vlrali
+                            projeto.discmb = discmb
+                            projeto.ltocmb = ltocmb
+                            projeto.vlrdia = vlrdia
+                            //console.log('vlrali=>' + vlrali)
+                            //console.log('discmb=>' + discmb)
+                            //console.log('ltocmb=>' + ltocmb)
+                            //console.log('vlrdia=>' + vlrdia)
+
+                            var tothtl
+                            var totcmb
+                            var totali
+                            //Definindo custo hotel
+                            if (parseFloat(vlrdia) > 0) {
+                                tothtl = parseFloat(vlrdia) * parseFloat(diasObra) * parseFloat(equipe)
+                            } else {
+                                tothtl = 0
+                            }
+
+                            //Definindo custo deslocamento
+                            if (parseFloat(discmb) > 0 && parseFloat(ltocmb)) {
+                                autmed = parseFloat(req.body.discmb) / parseFloat(medkmh)
+                                totcmb = parseFloat(autmed) * parseFloat(req.body.ltocmb)
+                            } else {
+                                totcmb = 0
+                            }
+
+                            //Definindo custo deslocamento
+                            if (parseFloat(vlrali) > 0) {
+                                totali = parseFloat(req.body.vlrali) * parseFloat(equipe)
+                            } else {
+                                totali = 0
+                            }
+                            projeto.tothtl = tothtl.toFixed(2)
+                            projeto.totcmb = totcmb.toFixed(2)
+                            projeto.totali = totali.toFixed(2)
+
+                            var totdes = parseFloat(totali) + parseFloat(totcmb) + parseFloat(tothtl)
+                            projeto.totdes = totdes.toFixed(2)
+                            //--------------------------------------------                               
+
+                            //console.log('totcmb=>' + totcmb)
+                            //console.log('tothtl=>' + tothtl)
+                            //console.log('totali=>' + totali)
+                            //console.log('totdes=>' + totdes)
+
+
+                            //Custo de Reserva
+                            var resger
+                            var conadd
+                            var impele
+                            var seguro
+                            var outcer
+                            var outpos
+                            if (req.body.resger == '') {
+                                resger = 0
+                            } else {
+                                resger = req.body.resger
+                            }
+                            if (req.body.conadd == '') {
+                                conadd = 0
+                            } else {
+                                conadd = req.body.conadd
+                            }
+                            if (req.body.impele == '') {
+                                impele = 0
+                            } else {
+                                impele = req.body.impele
+                            }
+                            if (req.body.seguro == '') {
+                                seguro = 0
+                            } else {
+                                seguro = req.body.seguro
+                            }
+                            if (req.body.outcer == '') {
+                                outcer = 0
+                            } else {
+                                outcer = req.body.outcer
+                            }
+                            if (req.body.outpos == '') {
+                                outpos = 0
+                            } else {
+                                outpos = req.body.outpos
+                            }
+                            projeto.resger = resger
+                            projeto.conadd = conadd
+                            projeto.impele = impele
+                            projeto.seguro = seguro
+                            projeto.outcer = outcer
+                            projeto.outpos = outpos
+
+                            //console.log('resger=>' + resger)
+                            //console.log('conadd=>' + conadd)
+                            //console.log('impele=>' + impele)
+                            //console.log('seguro=>' + seguro)
+                            //console.log('outcer=>' + outcer)
+                            //console.log('outpos=>' + outpos)
+
+                            var rescon = parseFloat(impele) + parseFloat(seguro) + parseFloat(outcer) + parseFloat(outpos)
+                            rescon = parseFloat(rescon) + parseFloat(conadd)
+                            projeto.rescon = rescon.toFixed(2)
+                            var reserva = parseFloat(resger) + parseFloat(rescon)
+                            projeto.reserva = reserva.toFixed(2)
+
+                            //console.log('rescon=>' + rescon)
+                            //console.log('reserva=>' + reserva)
+                            //console.log('projeto.totint=>' + projeto.totint)
+                            //console.log('projeto.totpro=>' + projeto.totpro)
+                            //console.log('projeto.totges=>' + projeto.totges)
+                            //console.log('projeto.valorCer=>' + projeto.valorCer)
+                            //console.log('projeto.valorPos=>' + projeto.valorPos)
+                            //console.log('projeto.valorOcp=>' + projeto.valorOcp)
+
+                            var valorCer
+                            var valorPos
+                            var valorCen
+                            if (typeof projeto.valorCer == "undefined") {
+                                valorCer = 0
+                            }
+                            if (typeof projeto.valorPos == "undefined") {
+                                valorPos = 0
+                            }
+                            if (typeof projeto.valorCen == "undefined") {
+                                valorCen = 0
+                            }
+                            //console.log('valorCer=>' + valorCer)
+                            //console.log('valorPos=>' + valorPos)
+                            //console.log('valorCen=>' + valorCen)
+
+                            var custoFix = parseFloat(projeto.totint) + parseFloat(projeto.totpro) + parseFloat(projeto.vlrart) + parseFloat(projeto.totges)
+                            //console.log('custoFix=>' + custoFix)
+                            var custoVar = parseFloat(totdes)
+                            //console.log('custoVar=>' + custoVar)
+                            var custoEst = parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen)
+                            //console.log('custoEst=>' + custoEst)
+                            var totcop = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
+
+                            var vlrcom = 0
+                            //Validando a comissão
+                            if (projeto.percom != null) {
+                                vlrcom = parseFloat(projeto.vlrNFS) * (parseFloat(projeto.percom) / 100)
+                                projeto.vlrcom = vlrcom.toFixed(2)
+                            }
+
+                            projeto.custofix = custoFix.toFixed(2)
+                            projeto.custovar = custoVar.toFixed(2)
+                            projeto.custoest = custoEst.toFixed(2)
+                            projeto.totcop = totcop.toFixed(2)
+                            //console.log('totcop=>' + totcop)
+                            var custoPlano = parseFloat(totcop) + parseFloat(reserva)
+                            projeto.custoPlano = custoPlano.toFixed(2)
+                            //console.log('custoPlano=>' + custoPlano)
+                            var custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
+                            projeto.custoTotal = custoTotal.toFixed(2)
+                            //console.log('custoTotal=>' + custoTotal)
+
+                            //Definindo o imposto ISS
+                            //console.log('regime_prj.alqNFS=>' + regime_prj.alqNFS)
+                            var fatequ
+                            var vlrNFS = 0
+                            var impNFS = 0
+                            var vlrMarkup = 0
+                            var prjValor = 0
+                            if (req.body.markup == '' || req.body.markup == 0) {
+                                //console.log('markup igual a zero')
+                                //console.log('projeto.vlrnormal=>'+projeto.vlrnormal)
+                                if (req.body.checkFatura != null) {
+                                    fatequ = true
+                                    vlrNFS = parseFloat(projeto.vlrnormal).toFixed(2)
+                                    impNFS = 0
+                                } else {
+                                    fatequ = false
+                                    vlrNFS = (parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)).toFixed(2)
+                                    impNFS = (parseFloat(vlrNFS) * (parseFloat(empresa.alqNFS) / 100)).toFixed(2)
+                                }
+                                vlrMarkup = (parseFloat(custoTotal) - parseFloat(reserva)) / (1 - (parseFloat(config.markup) / 100))
+                                projeto.valor = parseFloat(vlrMarkup).toFixed(2)
+                                projeto.markup = config.markup
+                                prjValor = vlrMarkup
+                            } else {
+                                //console.log('markup diferente de zero')
+                                //console.log('custoTotal=>'+custoTotal)
+                                //console.log('req.body.markup=>'+req.body.markup)
+                                vlrMarkup = ((parseFloat(custoTotal) - parseFloat(reserva)) / (1 - (parseFloat(req.body.markup) / 100))).toFixed(2)
+                                //console.log('vlrMarkup=>' + vlrMarkup)
+                                if (req.body.checkFatura != null) {
+                                    fatequ = true
+                                    vlrNFS = parseFloat(vlrMarkup).toFixed(2)
+                                    impNFS = 0
+                                } else {
+                                    fatequ = false
+                                    vlrNFS = (parseFloat(vlrMarkup) - parseFloat(projeto.vlrkit)).toFixed(2)
+                                    impNFS = (parseFloat(vlrNFS) * (parseFloat(empresa.alqNFS) / 100)).toFixed(2)
+                                }
+                                projeto.markup = req.body.markup
+                                projeto.valor = vlrMarkup
+                                prjValor = parseFloat(vlrMarkup).toFixed(2)
+                            }
+                            //console.log('vlrNFS=>' + vlrNFS)
+                            //console.log('impNFS=>' + impNFS)
+                            //console.log('prjValor=>' + prjValor)
+                            //kWp médio
+                            projeto.vrskwp = (parseFloat(prjValor) / parseFloat(projeto.potencia)).toFixed(2)
+                            projeto.fatequ = fatequ
+
+                            var vlrcom = 0
+                            //Validando a comissão
+                            if (projeto.percom != null) {
+                                vlrcom = parseFloat(vlrNFS) * (parseFloat(projeto.percom) / 100)
+                                projeto.vlrcom = parseFloat(vlrcom).toFixed(2)
+                            }
+                            //console.log('vlrcom=>'+vlrcom)
+
+                            //Definindo o Lucro Bruto
+                            var recLiquida = parseFloat(prjValor) - parseFloat(impNFS)
+                            projeto.recLiquida = parseFloat(recLiquida).toFixed(2)
+
+                            var lucroBruto = parseFloat(recLiquida) - parseFloat(projeto.vlrkit)
+                            projeto.lucroBruto = parseFloat(lucroBruto).toFixed(2)
+
+                            //console.log('lucroBruto=>' + lucroBruto)
+
+                            var desAdm = 0
+                            var lbaimp = 0
+                            if (parseFloat(empresa.desadm) > 0) {
+                                if (empresa.tipodesp == 'quantidade') {
+                                    desAdm = (parseFloat(empresa.desadm) * (parseFloat(empresa.perdes) / 100)).toFixed(2)
+                                } else {
+                                    desAdm = ((parseFloat(empresa.desadm) / parseFloat(empresa.estkwp)) * parseFloat(projeto.potencia)).toFixed(2)
+                                }
+                                //console.log('desAdm=>' + desAdm)
+                                lbaimp = (parseFloat(lucroBruto) - parseFloat(custoPlano) - parseFloat(desAdm)).toFixed(2)
+                                projeto.desAdm = parseFloat(desAdm).toFixed(2)
+                            } else {
+                                lbaimp = (parseFloat(lbaimp) - parseFloat(custoPlano))
+                                projeto.desAdm = 0
+                            }
+
+                            //Deduzindo as comissões do Lucro Antes dos Impostos
+                            if (vlrcom == 0 || vlrcom == '') {
+                                lbaimp = parseFloat(lbaimp)
+                            } else {
+                                lbaimp = parseFloat(lbaimp) - parseFloat(vlrcom)
+                            }
+                            projeto.lbaimp = lbaimp.toFixed(2)
+                            //console.log('lbaimp=>' + lbaimp)
+
+                            //Dashboard              
+                            //Participação dos componentes
+                            //Kit
+                            var parKitEqu = parseFloat(detalhe.valorEqu) / parseFloat(detalhe.vlrTotal) * 100
+                            projeto.parKitEqu = parseFloat(parKitEqu).toFixed(2)
+                            //Módulos
+                            var parModEqu = parseFloat(detalhe.valorMod) / parseFloat(detalhe.vlrTotal) * 100
+                            projeto.parModEqu = parseFloat(parModEqu).toFixed(2)
+                            //Inversor
+                            var parInvEqu = parseFloat(detalhe.valorInv) / parseFloat(detalhe.vlrTotal) * 100
+                            projeto.parInvEqu = parseFloat(parInvEqu).toFixed(2)
+                            //Estrutura
+                            var parEstEqu = (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorCim)) / parseFloat(detalhe.vlrTotal) * 100
+                            projeto.parEstEqu = parseFloat(parEstEqu).toFixed(2)
+                            //Cabos
+                            var parCabEqu = parseFloat(detalhe.valorCab) / parseFloat(detalhe.vlrTotal) * 100
+                            projeto.parCabEqu = parseFloat(parCabEqu).toFixed(2)
+                            //Armazenagem
+                            var parEbtEqu = parseFloat(detalhe.valorEbt) / parseFloat(detalhe.vlrTotal) * 100
+                            projeto.parEbtEqu = parseFloat(parEbtEqu).toFixed(2)
+                            //DPS CC + CA
+                            var parDpsEqu = (parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDPSCA)) / parseFloat(detalhe.vlrTotal) * 100
+                            projeto.parDpsEqu = parseFloat(parDpsEqu).toFixed(2)
+                            //Disjuntores CC + CA
+                            var parDisEqu = (parseFloat(detalhe.valorDisCC) + parseFloat(detalhe.valorDisCA)) / parseFloat(detalhe.vlrTotal) * 100
+                            projeto.parDisEqu = parseFloat(parDisEqu).toFixed(2)
+                            //StringBox
+                            var parSbxEqu = parseFloat(detalhe.valorSB) / parseFloat(detalhe.vlrTotal) * 100
+                            projeto.parSbxEqu = parseFloat(parSbxEqu).toFixed(2)
+                            //Inserir Proteção CA
+                            //Cercamento
+                            var parCerEqu = parseFloat(detalhe.valorCer) / parseFloat(detalhe.vlrTotal) * 100
+                            projeto.parCerEqu = parseFloat(parCerEqu).toFixed(2)
+                            //Central
+                            var parCenEqu = parseFloat(detalhe.valorCen) / parseFloat(detalhe.vlrTotal) * 100
+                            projeto.parCenEqu = parseFloat(parCenEqu).toFixed(2)
+                            //Postes de Condução
+                            var parPosEqu = parseFloat(detalhe.valorPos) / parseFloat(detalhe.vlrTotal) * 100
+                            projeto.parPosEqu = parseFloat(parPosEqu).toFixed(2)
+
+                            projeto.vlrNFS = parseFloat(vlrNFS).toFixed(2)
+                            projeto.impNFS = parseFloat(impNFS).toFixed(2)
+
+                            cronograma.save().then(() => {
+                                //console.log('salvou cronograma')
+                                projeto.save().then(() => {
+                                    //console.log('salvou projeto')
+                                    sucesso = 'Custo de gerenciamento aplicado com sucesso.'
+                                    req.flash('success_msg', sucesso)
+                                    res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Falha ao aplicar o projeto.')
+                                    res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
+                                })
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Falha ao aplicar o cronograma.')
+                                res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
+                            })
                         }).catch((err) => {
-                            req.flash('error_msg', 'Falha ao aplicar os custos do projeto.')
-                            res.redirect('/projeto/consulta')
+                            req.flash('error_msg', 'Houve um erro ao encontrar a empresa.')
+                            res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
                         })
                     }).catch((err) => {
-                        req.flash('error_msg', 'Houve um erro ao encontrar o regime.')
-                        res.redirect('/configuracao/consulta')
+                        req.flash('error_msg', 'Houve um erro ao encontrar as configurações.')
+                        res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
                     })
                 }).catch((err) => {
-                    req.flash('error_msg', 'Houve um erro ao encontrar as configurações.')
-                    res.redirect('/configuracao/consulta')
+                    req.flash('error_msg', 'Falha ao encontrar os detalhes.')
+                    res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
                 })
             }).catch((err) => {
-                req.flash('error_msg', 'Falha ao encontrar os detalhes.')
-                res.redirect('/menu')
+                req.flash('error_msg', 'Falha ao encontrar o cronograma.')
+                res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
             })
         }).catch((err) => {
             req.flash('error_msg', 'Falha ao encontrar o projeto.')
-            res.redirect('/projeto/consulta')
+            res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
         })
     }
 })
 
 router.post('/tributos/', ehAdmin, (req, res) => {
     const { _id } = req.user
-    var erros = []
-    var ehSimples = false
-    var ehLP = false
-    var ehLR = false
-
-    Projeto.findOne({ _id: projeto_id }).then((projeto) => {
+    Projeto.findOne({ _id: req.body.id }).then((projeto) => {
 
         //Inserir calculo dos impostos
-        Regime.findOne({ _id: projeto.regime }).lean().then((regime) => {
+        Empresa.findOne({ _id: projeto.empresa }).then((empresa) => {
 
-            if (parseFloat(projeto.trbint) == 0 || projeto.trbint == null) {
-                erros.push({ texto: 'Realizar ao menos um custo de instalação.' })
-            }
-            if (parseFloat(projeto.trbpro) == 0 || projeto.trbpro == null) {
-                erros.push({ texto: 'Realizar ao menos um custo de projetista.' })
-            }
-
-            if (parseFloat(projeto.trbges) == 0 || projeto.trbges == null) {
-                erros.push({ texto: 'Realizar ao menos um custos de gestão.' })
-            }
-
-            if (parseFloat(projeto.custoTotal) == 0 || projeto.custoTotal == null) {
-                erros.push({ texto: 'Aplicar os custos na aba de gerenciamemnto.' })
-            }
-
-            if (erros.length > 0) {
-
-                res.render('projeto/gerenciamento/tributos', { projeto: projeto, regime: regime, erros: erros })
-
-            } else {
-
-                projeto_id = projeto._id
-
-                var prjFat = regime.prjFat
-                var prjLR = regime.prjLR
-                var prjLP = regime.prjLP
-                //var vlrDAS = regime.vlrDAS
-
-                var impostoIRPJ = 0
-                var impostoIRPJAdd = 0
-                var impostoCSLL = 0
-                var impostoPIS = 0
-                var impostoCOFINS = 0
-                var impostoICMS = 0
-                var totalImposto = 0
-                var totalTributos = 0
-
-                var fatadd
-                var fataju
-                var aux
-
-                //Validar calculos dos impostos
-                if (regime.regime == 'Simples') {
-                    //console.log('Regime=>Simples')
-                    var alqEfe = ((parseFloat(prjFat) * (parseFloat(regime.alqDAS) / 100)) - (parseFloat(regime.vlrred))) / parseFloat(prjFat)
-                    var totalSimples = parseFloat(projeto.vlrNFS) * (parseFloat(alqEfe))
-                    totalImposto = parseFloat(totalSimples).toFixed(2)
-                    projeto.impostoSimples = parseFloat(totalImposto).toFixed(2)
-                } else {
-                    if (regime.regime == 'Lucro Real') {
-                        //console.log('lucro real')
-                        if ((parseFloat(prjLR) / 12) > 20000) {
-                            //console.log('prjLR=>' + prjLR)
-                            fatadd = (parseFloat(prjLR) / 12) - 20000
-                            //console.log('fatadd=>' + fatadd)
-                            fataju = parseFloat(fatadd) * (parseFloat(regime.alqIRPJAdd) / 100)
-                            //console.log('fataju=>' + fataju)
-                            aux = parseFloat(fatadd) / parseFloat(projeto.lbaimp)
-                            //console.log('aux=>' + aux)
-                            impostoIRPJAdd = parseFloat(fataju) / parseFloat(aux)
-                            //console.log('impostoIRPJAdd=>' + impostoIRPJAdd)
-                            projeto.impostoAdd = impostoIRPJAdd.toFixed(2)
-                        } else {
-                            impostoIRPJAdd = 0
-                            projeto.impostoAdd = 0
-                        }
-
-                        impostoIRPJ = parseFloat(projeto.lbaimp) * (parseFloat(regime.alqIRPJ) / 100)
-                        projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
-                        //console.log('impostoIRPJ=>' + impostoIRPJ)
-                        impostoCSLL = parseFloat(projeto.lbaimp) * (parseFloat(regime.alqCSLL) / 100)
-                        projeto.impostoCSLL = impostoCSLL.toFixed(2)
-                        //console.log('impostoCSLL=>' + impostoCSLL)
-                        impostoPIS = parseFloat(projeto.vlrNFS) * 0.5 * (parseFloat(regime.alqPIS) / 100)
-                        projeto.impostoPIS = impostoPIS.toFixed(2)
-                        //console.log('impostoPIS=>' + impostoPIS)
-                        impostoCOFINS = parseFloat(projeto.vlrNFS) * 0.5 * (parseFloat(regime.alqCOFINS) / 100)
-                        projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
-                        //console.log('impostoCOFINS=>' + impostoCOFINS)
-                        totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
-
-                    } else {
-
-                        if (((parseFloat(prjLP) * 0.32) / 3) > 20000) {
-                            fatadd = ((parseFloat(prjLP) * 0.32) / 3) - 20000
-                            fataju = parseFloat(fatadd) / 20000
-                            impostoIRPJAdd = (parseFloat(projeto.vlrNFS) * 0.32) * parseFloat(fataju).toFixed(2) * (parseFloat(regime.alqIRPJAdd) / 100)
-                            projeto.impostoAdd = impostoIRPJAdd.toFixed(2)
-                        } else {
-                            impostoIRPJAdd = 0
-                            projeto.impostoAdd = 0
-                        }
-
-                        impostoIRPJ = parseFloat(projeto.vlrNFS) * 0.32 * (parseFloat(regime.alqIRPJ) / 100)
-                        projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
-                        impostoCSLL = parseFloat(projeto.vlrNFS) * 0.32 * (parseFloat(regime.alqCSLL) / 100)
-                        projeto.impostoCSLL = impostoCSLL.toFixed(2)
-                        impostoCOFINS = parseFloat(projeto.vlrNFS) * (parseFloat(regime.alqCOFINS) / 100)
-                        projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
-                        impostoPIS = parseFloat(projeto.vlrNFS) * (parseFloat(regime.alqPIS) / 100)
-                        projeto.impostoPIS = impostoPIS.toFixed(2)
-                        totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
-                    }
-                }
-
-                //console.log('impNFS=>' + impNFS)
-                //console.log('impostoICMS=>' + impostoICMS)
-
-                //Validar ICMS
-                if (projeto.fatequ == true) {
-                    if (regime.alqICMS != null) {
-                        impostoICMS = (parseFloat(projeto.vlrNFS)) * (parseFloat(regime.alqICMS) / 100)
-                        totalTributos = parseFloat(totalImposto) + parseFloat(projeto.impNFS) + parseFloat(impostoICMS)
-                        totalImposto = parseFloat(totalImposto) + parseFloat(impostoICMS)
-                    }
-                } else {
-                    impostoICMS = 0
-                    totalTributos = parseFloat(totalImposto) + parseFloat(projeto.impNFS)
-                }
-                projeto.impostoICMS = impostoICMS.toFixed(2)
-                //console.log('totalImposto=>' + totalImposto)
-                projeto.totalImposto = parseFloat(totalImposto).toFixed(2)
-                //console.log('totalTributos=>' + totalTributos)
-                projeto.totalTributos = parseFloat(totalTributos).toFixed(2)
-
-                //Lucro Líquido descontados os impostos
-                var lucroLiquido = 0
-                lucroLiquido = parseFloat(projeto.lbaimp) - parseFloat(totalImposto)
-                projeto.lucroLiquido = parseFloat(lucroLiquido).toFixed(2)
-
-                //Dashboard
-                //Participação sobre o lucro total
-                //console.log('projeto.vlrNFS=>' + projeto.vlrNFS)
-                //console.log('lucroLiquido=>' + lucroLiquido)
-                //console.log('projeto.valor=>' + projeto.valor)
-
-                var parLiqVlr = parseFloat(lucroLiquido) / parseFloat(projeto.valor) * 100
-                projeto.parLiqVlr = parLiqVlr.toFixed(2)
-                //console.log('parLiqVlr=>' + parLiqVlr)
-                var parKitVlr = parseFloat(projeto.vlrkit) / parseFloat(projeto.valor) * 100
-                projeto.parKitVlr = parKitVlr.toFixed(2)
-                //console.log('parKitVlr=>' + parKitVlr)
-                var parIntVlr = parseFloat(projeto.totint) / parseFloat(projeto.valor) * 100
-                projeto.parIntVlr = parIntVlr.toFixed(2)
-                //console.log('parIntVlr=>' + parIntVlr)
-                var parGesVlr = parseFloat(projeto.totges) / parseFloat(projeto.valor) * 100
-                projeto.parGesVlr = parGesVlr.toFixed(2)
-                //console.log('parGesVlr=>' + parGesVlr)
-                var parProVlr = parseFloat(projeto.totpro) / parseFloat(projeto.valor) * 100
-                projeto.parProVlr = parProVlr.toFixed(2)
-                //console.log('parProVlr=>' + parProVlr)
-                var parArtVlr = parseFloat(projeto.vlrart) / parseFloat(projeto.valor) * 100
-                projeto.parArtVlr = parArtVlr.toFixed(2)
-                //console.log('parArtVlr=>' + parArtVlr)
-                if (parseFloat(projeto.totcmb) > 0) {
-                    var parCmbVlr = parseFloat(projeto.totcmb) / parseFloat(projeto.valor) * 100
-                    projeto.parCmbVlr = parseFloat(parCmbVlr).toFixed(2)
-                    //console.log('parCmbVlr=>' + parCmbVlr)
-                }
-                if (parseFloat(projeto.totali) > 0) {
-                    var parAliVlr = parseFloat(projeto.totali) / parseFloat(projeto.valor) * 100
-                    projeto.parAliVlr = parseFloat(parAliVlr).toFixed(2)
-                    //console.log('parAliVlr=>' + parAliVlr)
-                }
-                if (parseFloat(projeto.tothtl) > 0) {
-                    var parEstVlr = parseFloat(projeto.tothtl) / parseFloat(projeto.valor) * 100
-                    projeto.parEstVlr = parEstVlr.toFixed(2)
-                    //console.log('parEstVlr=>' + parEstVlr)
-                }
-                if (parseFloat(projeto.reserva) > 0) {
-                    var parResVlr = parseFloat(projeto.reserva) / parseFloat(projeto.valor) * 100
-                    projeto.parResVlr = parseFloat(parResVlr).toFixed(2)
-                    //console.log('parResVlr=>' + parResVlr)
-                }
-                var parDedVlr = parseFloat(projeto.custoPlano) / parseFloat(projeto.valor) * 100
-                projeto.parDedVlr = parDedVlr.toFixed(2)
-                //console.log('parDedVlr=>' + parDedVlr)
-                var parISSVlr
-                if (projeto.impNFS > 0) {
-                    parISSVlr = parseFloat(projeto.impNFS) / parseFloat(projeto.valor) * 100
-                } else {
-                    parISSVlr = 0
-                }
-                projeto.parISSVlr = parISSVlr.toFixed(2)
-                //console.log('parISSVlr=>' + parISSVlr)
-                var parImpVlr = (parseFloat(totalImposto) / parseFloat(projeto.valor)) * 100
-                projeto.parImpVlr = parImpVlr.toFixed(2)
-                //console.log('parImpVlr=>' + parImpVlr)
-                if (projeto.vlrcom > 0) {
-                    var parComVlr = parseFloat(projeto.vlrcom) / parseFloat(projeto.valor) * 100
-                    projeto.parComVlr = parComVlr.toFixed(2)
-                    //console.log('parComVlr=>' + parComVlr)
-                }
-
-                //Participação sobre o Faturamento      
-                var parLiqNfs = parseFloat(lucroLiquido) / parseFloat(projeto.vlrNFS) * 100
-                projeto.parLiqNfs = parseFloat(parLiqNfs).toFixed(2)
-                //console.log('parLiqNfs=>' + parLiqNfs)
-                if (projeto.fatequ == true) {
-                    var parKitNfs = parseFloat(projeto.vlrkit) / parseFloat(projeto.vlrNFS) * 100
-                    projeto.parKitNfs = parseFloat(parKitNfs).toFixed(2)
-                    //console.log('parKitNfs=>' + parKitNfs)
-                }
-                var parIntNfs = parseFloat(projeto.totint) / parseFloat(projeto.vlrNFS) * 100
-                projeto.parIntNfs = parseFloat(parIntNfs).toFixed(2)
-                //console.log('parIntNfs=>' + parIntNfs)
-                var parGesNfs = parseFloat(projeto.totges) / parseFloat(projeto.vlrNFS) * 100
-                projeto.parGesNfs = parseFloat(parGesNfs).toFixed(2)
-                //console.log('parGesNfs=>' + parGesNfs)
-                var parProNfs = parseFloat(projeto.totpro) / parseFloat(projeto.vlrNFS) * 100
-                projeto.parProNfs = parseFloat(parProNfs).toFixed(2)
-                //console.log('parProNfs=>' + parProNfs)
-                var parArtNfs = parseFloat(projeto.vlrart) / parseFloat(projeto.vlrNFS) * 100
-                projeto.parArtNfs = parseFloat(parArtNfs).toFixed(2)
-                //console.log('parArtNfs=>' + parArtNfs)
-                if (parseFloat(projeto.totcmb) > 0) {
-                    var parCmbNfs = parseFloat(projeto.totcmb) / parseFloat(projeto.vlrNFS) * 100
-                    projeto.parCmbNfs = parseFloat(parCmbNfs).toFixed(2)
-                    //console.log('parCmbNfs=>' + parEstNfs)
-                }
-                if (parseFloat(projeto.totali) > 0) {
-                    var parAliNfs = parseFloat(projeto.totali) / parseFloat(projeto.vlrNFS) * 100
-                    projeto.parAliNfs = parseFloat(parAliNfs).toFixed(2)
-                    //console.log('parAliNfs=>' + parAliNfs)
-                }
-                if (parseFloat(projeto.tothtl) > 0) {
-                    var parEstNfs = parseFloat(projeto.tothtl) / parseFloat(projeto.vlrNFS) * 100
-                    projeto.parEstNfs = parEstNfs.toFixed(2)
-                    //console.log('parEstNfs=>' + parEstNfs)
-
-                }
-                if (parseFloat(projeto.reserva) > 0) {
-                    var parResNfs = parseFloat(projeto.reserva) / parseFloat(projeto.vlrNFS) * 100
-                    projeto.parResNfs = parseFloat(parResNfs).toFixed(2)
-                    //console.log('parResNfs=>' + parResNfs)
-                }
-                var parDedNfs = parseFloat(projeto.custoPlano) / parseFloat(projeto.vlrNFS) * 100
-                projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
-                //console.log('parDedNfs=>' + parDedNfs)
-                var parISSNfs
-                if (projeto.impNFS > 0) {
-                    parISSNfs = parseFloat(projeto.impNFS) / parseFloat(projeto.vlrNFS) * 100
-                } else {
-                    parISSNfs = 0
-                }
-
-                projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)
-                //console.log('parISSNfs=>' + parISSNfs)
-                var parImpNfs = (parseFloat(totalImposto) / parseFloat(projeto.vlrNFS)) * 100
-                projeto.parImpNfs = parseFloat(parImpNfs).toFixed(2)
-                //console.log('parImpNfs=>' + parImpNfs)
-                if (projeto.vlrcom > 0) {
-                    var parComNfs = parseFloat(projeto.vlrcom) / parseFloat(projeto.vlrNFS) * 100
-                    projeto.parComNfs = parseFloat(parComNfs).toFixed(2)
-                    //console.log('parComNfs=>' + parComNfs)
-                }
-
-                projeto.save().then(() => {
-                    var sucesso = []
-                    sucesso.push({ texto: 'Projeto criado com sucesso.' })
-
-                    Projeto.findOne({ _id: projeto_id }).lean().then((projeto) => {
-
-                        Regime.findOne({ _id: projeto.regime }).lean().then((regime) => {
-                            switch (regime.regime) {
-                                case "Simples": ehSimples = true
-                                    break;
-                                case "Lucro Presumido": ehLP = true
-                                    break;
-                                case "Lucro Real": ehLR = true
-                                    break;
-                            }
-                            var sucesso = []
-
-                            sucesso.push({ texto: 'Projeto salvo com sucesso.' })
-                            Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                                res.render('projeto/gerenciamento/tributos', { sucesso: sucesso, projeto: projeto, regime: regime, ehSimples: ehSimples, ehLP: ehLP, ehLR: ehLR, cliente: cliente })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Nenhum cliente encontrado.')
-                                res.redirect('/cliente/consulta')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Nenhum regime encontrado.')
-                            res.redirect('/gerencimento/consultaregime')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Nenhum projeto encontrado.')
-                        res.redirect('/projeto/consulta')
-                    })
-                }).catch(() => {
-                    req.flash('error_msg', 'Houve um erro ao criar o projeto.')
-                    res.redirect('/menu')
-                })
-            }
-        }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível encontrar o regime.')
-            res.redirect('/configuracao/consultaregime')
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar o projeto.')
-        res.redirect('/projeto/consulta')
-    })
-})
-
-router.post('/editar/tributos/', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    var ehSimples = false
-    var ehLP = false
-    var ehLR = false
-    Projeto.findOne({ _id: projeto_id }).then((projeto) => {
-
-        //Inserir calculo dos impostos
-        Regime.findOne({ _id: projeto.regime }).then((regime) => {
-
-            projeto_id = projeto._id
-
-            var prjFat = regime.prjFat
-            var prjLR = regime.prjLR
-            var prjLP = regime.prjLP
-            //var vlrDAS = regime.vlrDAS
+            var prjFat = empresa.prjFat
+            var prjLR = empresa.prjLR
+            var prjLP = empresa.prjLP
+            //var vlrDAS = empresa.vlrDAS
             //console.log('prjFat=>' + prjFat)
             //console.log('prjLR=>' + prjLR)
             //console.log('prjLP=>' + prjLP)
@@ -2606,9 +2363,9 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
 
             //console.log('projeto.vlrNFS=>' + projeto.vlrNFS)
 
-            if (regime.regime == 'Simples') {
-                //console.log('Regime=>Simples')
-                var alqEfe = ((parseFloat(prjFat) * (parseFloat(regime.alqDAS) / 100)) - (parseFloat(regime.vlrred))) / parseFloat(prjFat)
+            if (empresa.regime == 'Simples') {
+                //console.log('Empresa=>Simples')
+                var alqEfe = ((parseFloat(prjFat) * (parseFloat(empresa.alqDAS) / 100)) - (parseFloat(empresa.vlrred))) / parseFloat(prjFat)
                 //console.log('alqEfe=>' + alqEfe)
                 var totalSimples = parseFloat(projeto.vlrNFS) * (parseFloat(alqEfe))
                 //console.log('totalSimples=>' + totalSimples)
@@ -2626,11 +2383,11 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
                 impostoPIS = 0
                 projeto.impostoPIS = 0
             } else {
-                if (regime.regime == 'Lucro Real') {
+                if (empresa.regime == 'Lucro Real') {
                     if ((parseFloat(prjLR) / 12) > 20000) {
                         fatadd = (parseFloat(prjLR) / 12) - 20000
                         //console.log('fatadd=>' + fatadd)
-                        fataju = parseFloat(fatadd) * (parseFloat(regime.alqIRPJAdd) / 100)
+                        fataju = parseFloat(fatadd) * (parseFloat(empresa.alqIRPJAdd) / 100)
                         //console.log('fataju=>' + fataju)
                         aux = parseFloat(fatadd) / parseFloat(projeto.lbaimp)
                         //console.log('aux=>' + aux)
@@ -2641,37 +2398,37 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
                         projeto.impostoAdd = 0
                     }
 
-                    impostoIRPJ = parseFloat(projeto.lbaimp) * (parseFloat(regime.alqIRPJ) / 100)
+                    impostoIRPJ = parseFloat(projeto.lbaimp) * (parseFloat(empresa.alqIRPJ) / 100)
                     projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
-                    impostoCSLL = parseFloat(projeto.lbaimp) * (parseFloat(regime.alqCSLL) / 100)
+                    impostoCSLL = parseFloat(projeto.lbaimp) * (parseFloat(empresa.alqCSLL) / 100)
                     projeto.impostoCSLL = impostoCSLL.toFixed(2)
-                    impostoPIS = parseFloat(projeto.vlrNFS) * 0.5 * (parseFloat(regime.alqPIS) / 100)
+                    impostoPIS = parseFloat(projeto.vlrNFS) * 0.5 * (parseFloat(empresa.alqPIS) / 100)
                     projeto.impostoPIS = impostoPIS.toFixed(2)
-                    impostoCOFINS = parseFloat(projeto.vlrNFS) * 0.5 * (parseFloat(regime.alqCOFINS) / 100)
+                    impostoCOFINS = parseFloat(projeto.vlrNFS) * 0.5 * (parseFloat(empresa.alqCOFINS) / 100)
                     projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
                     totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
                 } else {
-                    //console.log('Regime=>Lucro Presumido')
+                    //console.log('Empresa=>Lucro Presumido')
                     if (((parseFloat(prjLP) * 0.32) / 3) > 20000) {
                         fatadd = ((parseFloat(prjLP) * 0.32) / 3) - 20000
                         fataju = parseFloat(fatadd) / 20000
-                        impostoIRPJAdd = (parseFloat(projeto.vlrNFS) * 0.32) * (parseFloat(fataju) / 100) * (parseFloat(regime.alqIRPJAdd) / 100)
+                        impostoIRPJAdd = (parseFloat(projeto.vlrNFS) * 0.32) * (parseFloat(fataju) / 100) * (parseFloat(empresa.alqIRPJAdd) / 100)
                         projeto.impostoAdd = impostoIRPJAdd.toFixed(2)
                     } else {
                         impostoIRPJAdd = 0
                         projeto.impostoAdd = 0
                     }
                     //console.log('impostoIRPJAdd=>' + impostoIRPJAdd)
-                    impostoIRPJ = parseFloat(projeto.vlrNFS) * 0.32 * (parseFloat(regime.alqIRPJ) / 100)
+                    impostoIRPJ = parseFloat(projeto.vlrNFS) * 0.32 * (parseFloat(empresa.alqIRPJ) / 100)
                     projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
                     //console.log('impostoIRPJ=>' + impostoIRPJ)
-                    impostoCSLL = parseFloat(projeto.vlrNFS) * 0.32 * (parseFloat(regime.alqCSLL) / 100)
+                    impostoCSLL = parseFloat(projeto.vlrNFS) * 0.32 * (parseFloat(empresa.alqCSLL) / 100)
                     projeto.impostoCSLL = impostoCSLL.toFixed(2)
                     //console.log('impostoCSLL=>' + impostoCSLL)
-                    impostoCOFINS = parseFloat(projeto.vlrNFS) * (parseFloat(regime.alqCOFINS) / 100)
+                    impostoCOFINS = parseFloat(projeto.vlrNFS) * (parseFloat(empresa.alqCOFINS) / 100)
                     projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
                     //console.log('impostoCOFINS=>' + impostoCOFINS)
-                    impostoPIS = parseFloat(projeto.vlrNFS) * (parseFloat(regime.alqPIS) / 100)
+                    impostoPIS = parseFloat(projeto.vlrNFS) * (parseFloat(empresa.alqPIS) / 100)
                     projeto.impostoPIS = impostoPIS.toFixed(2)
                     //console.log('impostoPIS=>' + impostoPIS)
                     totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
@@ -2680,10 +2437,10 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
             }
             //Validar ICMS
             //console.log('projeto.fatequ=>' + projeto.fatequ)
-            //console.log('regime.alqICMS=>' + regime.alqICMS)
+            //console.log('empresa.alqICMS=>' + empresa.alqICMS)
             if (projeto.fatequ == true) {
-                if (regime.alqICMS != null) {
-                    impostoICMS = (parseFloat(projeto.vlrNFS)) * (parseFloat(regime.alqICMS) / 100)
+                if (empresa.alqICMS != null) {
+                    impostoICMS = (parseFloat(projeto.vlrNFS)) * (parseFloat(empresa.alqICMS) / 100)
                     totalTributos = parseFloat(totalImposto) + parseFloat(projeto.impNFS) + parseFloat(impostoICMS)
                     totalImposto = parseFloat(totalImposto) + parseFloat(impostoICMS)
                 }
@@ -2793,44 +2550,16 @@ router.post('/editar/tributos/', ehAdmin, (req, res) => {
 
             projeto.save().then(() => {
                 var sucesso = []
-                sucesso.push({ texto: 'Projeto criado com sucesso.' })
-
-                Projeto.findOne({ _id: projeto_id }).lean().then((projeto) => {
-
-                    Regime.findOne({ _id: projeto.regime }).lean().then((regime) => {
-                        switch (regime.regime) {
-                            case "Simples": ehSimples = true
-                                break;
-                            case "Lucro Presumido": ehLP = true
-                                break;
-                            case "Lucro Real": ehLR = true
-                                break;
-                        }
-
-                        var sucesso = []
-
-                        sucesso.push({ texto: 'Projeto salvo com sucesso.' })
-                        Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                            res.render('projeto/gerenciamento/edittributos', { sucesso: sucesso, projeto: projeto, regime: regime, ehSimples: ehSimples, ehLP: ehLP, ehLR: ehLR, cliente: cliente })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Nenhum cliente encontrado.')
-                            res.redirect('/cliente/consulta')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Nenhum regime encontrado.')
-                        res.redirect('/menu')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Nenhum projeto encontrado.')
-                    res.redirect('/menu')
-                })
+                sucesso = 'Projeto salvo com sucesso.'
+                req.flash('success_msg', sucesso)
+                res.redirect('/gerenciamento/tributos/' + req.body.id)
             }).catch(() => {
                 req.flash('error_msg', 'Houve um erro ao salvar o projeto.')
-                res.redirect('/menu')
+                res.redirect('/gerenciamento/tributos/' + req.body.id)
             })
         }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível encontrar o regime.')
-            res.redirect('/configuracao/consultaregime')
+            req.flash('error_msg', 'Não foi possível encontrar o empresa.')
+            res.redirect('/gerenciamento/tributos/' + req.body.id)
         })
     })
 })
@@ -3175,6 +2904,10 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
 
                 //console.log('atrasou=>' + atrasou)
 
+                //console.log('req.body.dateentrega=>' + req.body.dateentrega)
+                //console.log('req.body.datevisfim=>' + req.body.datevisfim)
+                //console.log('req.body.orcado=>' + req.body.orcado)
+
                 if (req.body.orcado == 'true') {
                     //console.log('entrou orçado')
                     if (req.body.datevisfim == '' || typeof req.body.datevisfim == 'undefined') {
@@ -3186,13 +2919,12 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                             res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
                         }
                     } else {
-                        if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && comparaDatas(req.body.dateentrega, req.body.datevisfim)) {
+                        if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && comparaDatas(req.body.dateentrega, req.body.datevisfim) == false) {
                             dataentrega = req.body.dateentrega
                             ano = dataentrega.substring(0, 4)
                             mes = dataentrega.substring(5, 7)
                             dia = dataentrega.substring(8, 11)
                             dataentrega = dia + '/' + mes + '/' + ano
-                            //console.log('dataentrega=>' + dataentrega)
                             prj_entrega.dataprev = dataentrega
                             prj_entrega.dataord = ano + mes + dia
                             prj_entrega.valDataPrev = req.body.dateentrega
@@ -3258,16 +2990,46 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                     if (req.body.orcado == 'true') {
                         //console.log('entrou orçado')
                         cronograma.dateplaini = req.body.dateplaini
+                        if (req.body.dateplaini != '' && typeof req.body.dateplaini != 'undefined') {
+                            cronograma.agendaPlaIni = dataBusca(req.body.dateplaini)
+                        }
                         cronograma.dateateini = req.body.dateateini
+                        if (req.body.dateateini != '' && typeof req.body.dateateini != 'undefined') {
+                            cronograma.agendaAteIni = dataBusca(req.body.dateateini)
+                        }
                         cronograma.dateprjini = req.body.dateprjini
+                        if (req.body.dateprjini != '' && typeof req.body.dateprjini != 'undefined') {
+                            cronograma.agendaPrjIni = dataBusca(req.body.dateprjini)
+                        }
                         cronograma.dateestini = req.body.dateestini
+                        if (req.body.dateestini != '' && typeof req.body.dateestini != 'undefined') {
+                            cronograma.agendaEstIni = dataBusca(req.body.dateestini)
+                        }
                         cronograma.datemodini = req.body.datemodini
+                        if (req.body.datemodini != '' && typeof req.body.datemodini != 'undefined') {
+                            cronograma.agendaModIni = dataBusca(req.body.datemodini)
+                        }
                         cronograma.dateinvini = req.body.dateinvini
+                        if (req.body.dateinvini != '' && typeof req.body.dateinvini != 'undefined') {
+                            cronograma.agendaInvIni = dataBusca(req.body.dateinvini)
+                        }
                         cronograma.dateeaeini = req.body.dateeaeini
+                        if (req.body.dateeaeini != '' && typeof req.body.dateeaeini != 'undefined') {
+                            cronograma.agendaEaeIni = dataBusca(req.body.dateeaeini)
+                        }
                         cronograma.datestbini = req.body.datestbini
+                        if (req.body.datestbini != '' && typeof req.body.datestbini != 'undefined') {
+                            cronograma.agendaStbIni = dataBusca(req.body.datestbini)
+                        }
                         cronograma.datepnlini = req.body.datepnlini
+                        if (req.body.datepnlini != '' && typeof req.body.datepnlini != 'undefined') {
+                            cronograma.agendaPnlIni = dataBusca(req.body.datepnlini)
+                        }
                         cronograma.datevisini = req.body.datevisini
-                        
+                        if (req.body.datevisini != '' && typeof req.body.datevisini != 'undefined') {
+                            cronograma.agendaVisIni = dataBusca(req.body.datevisini)
+                        }
+
                         cronograma.dateplafim = req.body.dateplafim
                         if (req.body.dateplafim != '' && typeof req.body.dateplafim != 'undefined') {
                             cronograma.agendaPlaFim = dataBusca(req.body.dateplafim)
@@ -3446,25 +3208,25 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                             realizado.valorCer = cercamento
                             realizado.valorCen = central
                             realizado.valorPos = postecond
-                            realizado.vlrart = 0 
-                            realizado.desAdm = 0 
-                            realizado.vlrcom = 0 
-                            realizado.valor = 0 
-                            realizado.vlrNFS = 0 
-                            realizado.custoPlano = 0 
-                            realizado.lucroLiquido = 0 
-                            realizado.custofix = 0 
-                            realizado.cutovar = 0 
-                            realizado.valorMod = 0 
-                            realizado.valorInv = 0 
-                            realizado.valorEst = 0 
-                            realizado.valorCab = 0 
-                            realizado.valorDis = 0  
-                            realizado.valorDPS = 0 
+                            realizado.vlrart = 0
+                            realizado.desAdm = 0
+                            realizado.vlrcom = 0
+                            realizado.valor = 0
+                            realizado.vlrNFS = 0
+                            realizado.custoPlano = 0
+                            realizado.lucroLiquido = 0
+                            realizado.custofix = 0
+                            realizado.cutovar = 0
+                            realizado.valorMod = 0
+                            realizado.valorInv = 0
+                            realizado.valorEst = 0
+                            realizado.valorCab = 0
+                            realizado.valorDis = 0
+                            realizado.valorDPS = 0
                             realizado.valorSB = 0
-                            realizado.valorOcp = 0                            
-                            realizado.totalTributos = 0    
-                            realizado.custoPlano = 0    
+                            realizado.valorOcp = 0
+                            realizado.totalTributos = 0
+                            realizado.custoPlano = 0
 
                             cronograma.save().then(() => {
                                 //console.log('cronograma salvo.')
@@ -3512,7 +3274,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                                 valorInv: 0,
                                 valorEst: 0,
                                 valorCab: 0,
-                                valorDis: 0, 
+                                valorDis: 0,
                                 valorDPS: 0,
                                 valorSB: 0,
                                 valorOcp: 0,

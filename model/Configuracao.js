@@ -70,6 +70,18 @@ const Config = new Schema({
         type: Number,
         require: false    
     },
+    vlrdrp:{
+        type: Number,
+        require: false       
+    },
+    vlrdri:{
+        type: Number,
+        require: false       
+    },
+    vlrdrg:{
+        type: Number,
+        require: false    
+    },    
 })
 
 mongoose.model('configuracao', Config)

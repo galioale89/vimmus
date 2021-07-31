@@ -1,7 +1,7 @@
 <style>
     .botao-menu {
         background-color: rgb(40, 55, 86);
-        border: white 1px solid;
+        border: white solid 1px;
         border-radius: 5px;
         color: white;
     }
@@ -18,78 +18,159 @@
         background-color: rgb(10, 30, 68);
     }
 
-
     .caixa {
         border: rgba(200, 200, 200, 0.8) 1px solid;
         width: fit-content;
-        height: 325px;
+        height: 300px;
         border-radius: 5px;
         padding-left: 10px;
-        padding-right: 30px;
+        padding-right: 20px;
+        box-shadow: 1px 4px 5px rgba(26, 25, 25, 0.77);
     }
 </style>
+
+<script>
+    function selecionar() {
+        var selectHora = document.getElementById('selectHora')
+        var selectDia = document.getElementById('selectDia')
+        var selecionado = document.getElementById('selecionado')
+        var vlrhrg = document.getElementById('vlrhrg')
+        var vlrdrg = document.getElementById('vlrdrg')
+        var hrstrb = document.getElementById('hrstrb')
+        var diatrb = document.getElementById('diatrb')
+        var diasGes = document.getElementById('diasGes')
+        var displayTda = document.getElementById('displayTda')
+        var escopo = document.getElementById('escopo')
+        var cronograma = document.getElementById('cronograma')
+        var comunicacao = document.getElementById('comunicacao')
+        var vistoria = document.getElementById('vistoria')
+        var aquisicao = document.getElementById('aquisicao')
+        var alocacao = document.getElementById('alocacao')
+        if (selectHora.checked) {
+            selecionado.value = 'hora'
+            vlrhrg.type = 'text'
+            vlrdrg.type = 'hidden'
+            hrstrb.style.display = 'inline'
+            diatrb.style.display = 'none'
+            diasGes.type = 'hidden'
+            displayTda.style.display = 'none'
+            escopo.disabled = false
+            cronograma.disabled= false
+            vistoria.disabled= false
+            comunicacao.disabled= false
+            alocacao.disabled= false
+            aquisicao.disabled= false
+        } else {
+            selecionado.value = 'dia'
+            vlrdrg.type = 'text'
+            vlrhrg.type = 'hidden'
+            hrstrb.style.display = 'none'
+            diatrb.style.display = 'inline'
+            diasGes.type = 'text'
+            displayTda.style.display = 'inline' 
+            escopo.disabled = true       
+            cronograma.disabled = true
+            vistoria.disabled= true
+            comunicacao.disabled= true
+            alocacao.disabled= true
+            aquisicao.disabled= true            
+        }
+    }
+</script>
+
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
     <div style="width: 100%;">
         <h5 class="header">{{cliente.nome}} </h5>
     </div>
+    <form action='/customdo/gestao' method='post'>
 
-    <div class="btn-group  col-12 mx-auto">
-        <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i class="bi bi-gear"></i>
-            Gestão</a>
-        <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"></i>
-            Projetista</a>
-        <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"></i>
-            Instalação</a>
-        <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-puzzle"></i>
-            Gerenciamento</a>
-        <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-calculator"></i>
-            Tributos</a>
-    </div>
+        <input type='hidden' name='id' value='{{projeto._id}}'>
 
-    <form action='/customdo/gestao/' method='post'>
+        <div class='btn-group col-12 mx-auto'>
+            <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'> <i
+                    class="bi bi-house"></i>Projeto</a>
+            <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i
+                    class="bi bi-gear"></i>
+                Gestão</a>
+            <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+                    class="bi bi-pencil"></i>
+                Projetista</a>
+            <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+                    class="bi bi-tools"></i>
+                Instalação</a>
+            <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+                    class="bi bi-puzzle"></i>
+                Gerenciamento</a>
+            <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+                    class="bi bi-calculator"></i> Tributos</a>
+        </div>
 
-        <input type="hidden" name="id" value='{{projeto._id}}'>
 
         <div class="row">
             <div class="col-md-8">
                 <div class="row mt-2">
+                    <div class="col-md-2">
+                        <div class="row" style="margin-top: 1%;">
+                            <div class="col-md-6">
+                                <div class="form-check" onchange="selecionar()">
+                                    <input class="form-check-input" type="radio" name="select" id="selectHora"
+                                        {{checkHora}}>
+                                    <label class="form-check-label" style="font-size: 14px;">
+                                        R$/hora
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6" style="padding-left: 12%;">
+                                <div class="form-check" onchange="selecionar()">
+                                    <input class="form-check-input" type="radio" name="select" id="selectDia"
+                                        {{checkDia}}>
+                                    <label class="form-check-label" style="font-size: 14px;">
+                                        R$/dia
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <input type='hidden' name='selecionado' id='selecionado' value='{{projeto.tipoCustoGes}}'>
+                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="{{typeHrg}}" name="vlrhrg"
+                            id='vlrhrg' value='{{#if projeto.vlrhrg}}{{projeto.vlrhrg}}{{else}}{{configuracao.vlrhrg}}{{/if}}' class='form-control form-control-sm'>
+                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="{{typeDrg}}" name="vlrdrg"
+                            id='vlrdrg' value='{{#if projeto.vlrdrg}}{{projeto.vlrdrg}}{{else}}{{configuracao.vlrdrg}}{{/if}}' class='form-control form-control-sm'>
+                    </div>
+                    <div class="col-md-3">
+                        <label class='col-form-label col-form-label-sm fw-bold' style="display: {{displayTda}};" id='displayTda'>Total de dias das atividades:</label>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="{{typeGes}}" name="diasGes"
+                            id='diasGes' value='{{projeto.diasGes}}' class='form-control form-control-sm'>                        
+                    </div>
+                    {{#if projeto.funres}}
                     <div class="col-md-5">
                         <div class="row">
-                            <div class="col-md-3">
-                                <label for="vlrhrg" class="fw-bold col-form-label col-form-label-sm">R$/Hora:
-                                </label>
-                            </div>
-                            <div class="col-md-5">
-                                <input type="text" name="vlrhrg" id='vlrhrg' {{#if
-                                    projeto.vlrhrg}}value='{{projeto.vlrhrg}}' {{else}}value='{{configuracao.vlrhrg}}'
-                                    {{/if}} class='form-control form-control-sm'>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-7">
-                        <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <label class='col-form-label col-form-label-sm fw-bold'>Gestor Responsável:</label>
                             </div>
-                            <div class="col-md-8">
-                                <label class='col-form-label col-form-label-sm'>{{pr.nome}}</label>
+                            <div class="col-md-6">
+                                <label class='col-form-label col-form-label-sm'>{{gestor.nome}}</label>
                             </div>
                         </div>
                     </div>
+                    {{/if}}
                 </div>
-                <div class="row mt-2 mb-2">
+                <div class="row mb-2 mt-2">
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-body">
-                                <label for="escopo" class="fw-bold col-sm-10 col-form-label col-form-label-sm">Escopo
-                                </label>
-                                <div class="row g-3">
+                                <div class="row">
                                     <div class="col">
-                                        <label for="trabalho" class="col-sm-10 col-form-label col-form-label-sm">Horas
-                                            Trabalho</label>
+                                        <label for="escopo"
+                                            class="fw-bold col-sm-10 col-form-label col-form-label-sm">Escopo
+                                        </label>
                                         <div class="input-group input-group-sm mb-1">
-                                            <input type="text" id="trbesc" name="trbesc" value='{{projeto.trbesc}}'
-                                                class="form-control">
+                                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
+                                                name="trbesc" value='{{projeto.trbesc}}' class="form-control"
+                                                id='escopo' {{escopo}}>
                                         </div>
                                     </div>
                                     <div class="col">
@@ -97,23 +178,21 @@
                                             class="col-sm-6 col-form-label col-form-label-sm">Total</label>
                                         <div class="input-group input-group-sm mb-1">
                                             <span class="input-group-text">$</span>
-                                            <input disabled type="text" class="form-control" id="totesc" name="totesc"
+                                            <input disabled type="text" class="form-control" name="totesc"
                                                 value='{{projeto.totesc}}' aria-label="R$ ">
                                             <span class="input-group-text">.00</span>
                                         </div>
                                     </div>
                                 </div>
-
-                                <label for="comunicacao"
-                                    class="fw-bold col-sm-10 col-form-label col-form-label-sm">Comunicação
-                                </label>
-                                <div class="row g-3">
+                                <div class="row">
                                     <div class="col">
-                                        <label for="trabalho" class="col-sm-10 col-form-label col-form-label-sm">Horas
-                                            Trabalho</label>
+                                        <label for="comunicacao"
+                                            class="fw-bold col-sm-10 col-form-label col-form-label-sm">Comunicação
+                                        </label>
                                         <div class="input-group input-group-sm mb-1">
-                                            <input type="text" id="trbcom" name="trbcom" value='{{projeto.trbcom}}'
-                                                class="form-control">
+                                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
+                                                name="trbcom" value='{{projeto.trbcom}}' class="form-control"
+                                                id='comunicacao' {{comunicacao}}>
                                         </div>
                                     </div>
                                     <div class="col">
@@ -121,23 +200,21 @@
                                             class="col-sm-6 col-form-label col-form-label-sm">Total</label>
                                         <div class="input-group input-group-sm mb-1">
                                             <span class="input-group-text">$</span>
-                                            <input disabled type="text" class="form-control" id="totcom" name="totcom"
+                                            <input disabled type="text" class="form-control" name="totcom"
                                                 value='{{projeto.totcom}}' aria-label="R$ ">
                                             <span class="input-group-text">.00</span>
                                         </div>
                                     </div>
                                 </div>
-
-                                <label for="vistoria"
-                                    class="fw-bold col-sm-10 col-form-label col-form-label-sm">Vistoria
-                                </label>
-                                <div class="row g-3">
+                                <div class="row">
                                     <div class="col">
-                                        <label for="trabalho" class="col-sm-10 col-form-label col-form-label-sm">Horas
-                                            Trabalho</label>
+                                        <label for="vistoria"
+                                            class="fw-bold col-sm-10 col-form-label col-form-label-sm">Vistoria
+                                        </label>
                                         <div class="input-group input-group-sm mb-1">
-                                            <input type="text" id="trbvis" name="trbvis" value='{{projeto.trbvis}}'
-                                                class="form-control">
+                                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
+                                                name="trbvis" value='{{projeto.trbvis}}' class="form-control"
+                                                id='vistoria' {{vistoria}}>
                                         </div>
                                     </div>
                                     <div class="col">
@@ -145,7 +222,7 @@
                                             class="col-sm-6 col-form-label col-form-label-sm">Total</label>
                                         <div class="input-group input-group-sm mb-1">
                                             <span class="input-group-text">$</span>
-                                            <input disabled type="text" class="form-control" id="totvis" name="totvis"
+                                            <input disabled type="text" class="form-control" name="totvis"
                                                 value='{{projeto.totvis}}' aria-label="R$ ">
                                             <span class="input-group-text">.00</span>
                                         </div>
@@ -157,16 +234,15 @@
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-body">
-                                <label for="cronograma"
-                                    class="fw-bold col-sm-10 col-form-label col-form-label-sm">Cronograma
-                                </label>
-                                <div class="row g-3">
+                                <div class="row">
                                     <div class="col">
-                                        <label for="trabalho" class="col-sm-10 col-form-label col-form-label-sm">Horas
-                                            Trabalho</label>
+                                        <label for="cronograma"
+                                            class="fw-bold col-sm-10 col-form-label col-form-label-sm">Cronograma
+                                        </label>
                                         <div class="input-group input-group-sm mb-1">
-                                            <input type="text" id="trbcro" name="trbcro" value='{{projeto.trbcro}}'
-                                                class="form-control">
+                                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
+                                                name="trbcro" value='{{projeto.trbcro}}' class="form-control"
+                                                id='cronograma' {{cronograma}}>
                                         </div>
                                     </div>
                                     <div class="col">
@@ -181,16 +257,16 @@
                                     </div>
                                 </div>
 
-                                <label for="alocacao"
-                                    class="fw-bold col-sm-10 col-form-label col-form-label-sm">Alocação de
-                                    Recursos</label>
-                                <div class="row g-3">
+                                <div class="row">
                                     <div class="col">
-                                        <label for="trabalho" class="col-sm-10 col-form-label col-form-label-sm">Horas
-                                            Trabalho</label>
+
+                                        <label for="alocacao"
+                                            class="fw-bold col-sm-10 col-form-label col-form-label-sm">Alocação de
+                                            Recursos</label>
                                         <div class="input-group input-group-sm mb-1">
-                                            <input type="text" id="trbrec" name="trbrec" value='{{projeto.trbrec}}'
-                                                class="form-control">
+                                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
+                                                name="trbrec" value='{{projeto.trbrec}}' class="form-control"
+                                                id='alocacao' {{alocacao}}>
                                         </div>
                                     </div>
                                     <div class="col">
@@ -205,16 +281,15 @@
                                     </div>
                                 </div>
 
-                                <label for="aquisicao"
-                                    class="fw-bold col-sm-10 col-form-label col-form-label-sm">Aquisições
-                                </label>
-                                <div class="row g-3">
+                                <div class="row">
                                     <div class="col">
-                                        <label for="trabalho" class="col-sm-10 col-form-label col-form-label-sm">Horas
-                                            Trabalho</label>
+                                        <label for="aquisicao"
+                                            class="fw-bold col-sm-10 col-form-label col-form-label-sm">Aquisições
+                                        </label>
                                         <div class="input-group input-group-sm mb-1">
-                                            <input type="text" id="trbaqi" name="trbaqi" value='{{projeto.trbaqi}}'
-                                                class="form-control">
+                                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
+                                                name="trbaqi" value='{{projeto.trbaqi}}' class="form-control"
+                                                id='aquisicao' {{aquisicao}}>
                                         </div>
                                     </div>
                                     <div class="col">
@@ -232,24 +307,46 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col md-4">
-                <div class="row mt-2">
-                    <button type="submit" style='margin-left: 10px;width: 92%' class="btn btn-sm btn-success"
-                        name="aplicar">
-                        <i class="bi bi-check-circle"></i>Aplicar</button>
+                <div class="row mt-4">
+                    <div class="col-md-4 text-end">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Deslocamento</label>
+                    </div>
+                    <div class="col-md-1 text-end">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Horas:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input class='form-control form-control-sm' value='{{hrsDesGesF}}'>
+                    </div>
+                    <div class="col-md-1 text-end">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Total:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input class='form-control form-control-sm' value='{{totDesGes}}'>
+                    </div>
                 </div>
+            </div>
+            <div class="col md-4 mt-2">
+                <button {{#if projeto.orcado}}{{else}}disabled{{/if}} type="submit" class="btn btn-sm btn-success"
+                    style='width: 100%;' name="aplicar"> <i class="bi bi-check-circle"></i> Aplicar</button>
+
                 <div class="caixa text-center mt-2">
-                    <h4 style="margin-top: 20px;"> Totais </h4>
+                    <h4 style="margin-top: 35px;"> Totais </h4>
                     <hr>
                     <div class="row">
                         <div class="col-md-6">
-                            <h5>Custo</h5>
+                            <label style='font-size: 17px;font-weight: bold;'>Custo</label>
                             <div class="quadro-caixa">R$ {{projeto.totges}}</div>
                         </div>
                         <div class="col-md-6">
-                            <h5>Horas de Trabalho</h5>
+                            <label style='font-size: 17px;font-weight: bold;display: {{displayHrs}};' id='hrstrb'>Horas
+                                de Trabalho</label>
+                            <label style='font-size: 17px;font-weight: bold;display: {{displayDia}};' id='diatrb'>Dias
+                                de Trabalho</label>
+                            {{#if mostraHora}}    
                             <div class="quadro-caixa">{{projeto.trbges}}</div>
+                            {{else}}
+                            <div class="quadro-caixa">{{projeto.diasGes}}</div>
+                            {{/if}}
                         </div>
                     </div>
                 </div>

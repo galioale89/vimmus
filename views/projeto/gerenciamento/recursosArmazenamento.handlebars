@@ -1,0 +1,276 @@
+<style>
+    .lists {
+        display: flex;
+        flex: 1;
+        width: 100%;
+    }
+
+    .lists .list {
+        display: flex;
+        flex-flow: column;
+        flex: 1;
+
+        width: 100%;
+        border-radius: 20px;
+        min-height: 300px;
+
+        background-color: #001263e5;
+        margin: 0 15px;
+        padding: 8px;
+        transition: all 0.2s linear;
+    }
+
+    .lists .list .list-item {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+
+    .lists .list .item {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+</style>
+<div class="row text-center" style="width: 100%;">
+    <form method='post' action='/pessoa/salvarArmazenamento'>
+        <div class="row text-center mb-1 fw-bold" style="color: rgb(55,40,89);width: 100%;">
+            <label class='mt-4' style="font-size: 20px;"><i class="bi bi-people"></i> Alocação de Recursos</h2><br>
+        </div>
+        <input type='hidden' name='id' value='{{projeto._id}}' />
+        <div class="row mt-4">
+            <div class="col">
+                <a class='btn btn-secondary' style="padding-top: 30px;padding-bottom: 30px;margin-left: 10px;"
+                    href='/pessoa/recursosPlanejamento/{{projeto._id}}'>Planejamento</a>
+            </div>
+            {{#if projeto.temArmazenamento}}
+            <div class="col">
+                <a class='btn btn-secondary' style="padding: 18px"
+                    href='/pessoa/recursosProjetista/{{projeto._id}}'>Projetos Elétricos</a>
+            </div>
+            {{else}}
+            {{#if projeto.temPainel}}
+            <div class="col">
+                <a class='btn btn-secondary' style="padding: 18px"
+                    href='/pessoa/recursosProjetista/{{projeto._id}}'>Projetos Elétricos</a>
+            </div>
+            {{else}}
+            <div class="col">
+                <a class='btn btn-secondary' style="padding-top: 30px;padding-bottom: 30px"
+                    href='/pessoa/recursosProjetista/{{projeto._id}}'>Projetos Elétricos</a>
+            </div>
+            {{/if}}
+            {{/if}}
+            <div class="col">
+                <a class='btn btn-secondary' style="padding-top: 30px;padding-bottom: 30px"
+                    href='/pessoa/recursosAterramento/{{projeto._id}}'>Aterramento</a>
+            </div>
+            
+            {{#if projeto.temArmazenamento}}
+            <div class="col">
+                <a class='btn btn-secondary' style="padding-top: 5px;padding-bottom: 5px"
+                    href='/pessoa/recursosInversores/{{projeto._id}}'>Inversores <br> e String Box</a>
+            </div>
+            <div class="col">
+                <a class='btn btn-secondary' href='/pessoa/recursosInstalacao/{{projeto._id}}'
+                    style="padding-top: 18px;padding-bottom: 18px">Estruturas e
+                    Módulos</a>
+            </div>            
+            {{else}}
+            <div class="col">
+                <a class='btn btn-secondary' style="padding-top: 18px;padding-bottom: 18px"
+                    href='/pessoa/recursosInversores/{{projeto._id}}'>Inversores <br> e String Box</a>
+            </div>
+            <div class="col">
+                <a class='btn btn-secondary' href='/pessoa/recursosInstalacao/{{projeto._id}}'
+                    style="padding-top: 30px;padding-bottom: 30px">Estruturas e
+                    Módulos</a>
+            </div>            
+            {{/if}}
+
+            <div class="col">
+                <a class='btn btn-secondary' href='/pessoa/recursosInstalacao/{{projeto._id}}'
+                    style="padding-top: 18px;padding-bottom: 18px">Estruturas e
+                    Módulos</a>
+            </div>
+
+            {{#if projeto.temArmazenamento}}
+            <div class="col">
+                <a class='btn btn-primary' href='/pessoa/recursosEstacao/{{projeto._id}}' style="padding: 18px">Estação
+                    de Armazenamento</a>
+            </div>
+            {{/if}}
+            {{#if projeto.temPainel}}
+            <div class="col">
+                <a class='btn btn-secondary' href='/pessoa/recursosPainel/{{projeto._id}}' style="padding: 18px">Painél
+                    Elétrico</a>
+            </div>
+            {{/if}}
+
+            <div class="col">
+                <a class='btn btn-secondary' href='/pessoa/recursosVistoria/{{projeto._id}}'
+                    style="padding-top: 30px;padding-bottom: 30px">Vistoria</a>
+            </div>
+
+            <div class="col-md-2 mt-2">
+                <div class="btn-group col-12 gap-2 mt-1">
+                    {{#if cronograma.dateplaini}}
+                    <button type='submit' class="btn btn-sm btn-success btn-lg" onclick="getItemValue()">Salvar</button>
+                    {{/if}}
+                    <a href='/pessoa/limpaArmazenamento/{{projeto._id}}' {{limapEae}}
+                        class="btn btn-sm btn-secondary btn-lg">Limpar</a>
+                </div>
+
+                <div class="btn-group col-12 gap-2 mt-1">
+                    {{#if projeto.ehDireto}}
+                    <a href='/projeto/direto/{{projeto._id}}' class="btn btn-primary btn-sm"> Projeto</a>
+                    {{else}}
+                    <a href='/gerenciamento/gerenciamento/{{projeto._id}}' class="btn btn-primary btn-sm">
+                        Projeto</a>
+                    {{/if}}
+                    <a href='/pessoa/consulta/' class='btn btn-sm btn-warning'> <i class="bi bi-people"></i></a>
+                    <a href='/gerenciamento/cronograma/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
+                            class="bi bi-arrow-return-left"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-2 text-end">
+                <label class='col-form-label fw-bold'>Data de Início:</label>
+            </div>
+            <div class="col-md-2 mt-1">
+                <input type="date" class='form-control form-control-sm' value='{{cronograma.dateeaeini}}' />
+            </div>
+            <div class="col-md-1 text-end">
+                <label class='col-form-label fw-bold'>Data Final:</label>
+            </div>
+            <div class="col-md-2 mt-1">
+                <input type="date" class='form-control form-control-sm' value='{{cronograma.dateeaefim}}' />
+            </div>
+            <div class="col-md-2 text-end">
+                <label class='col-form-label fw-bold'>Data de Finalização: </label>
+            </div>
+            <div class="col-md-2 mt-1">
+                <input type="date" class='form-control form-control-sm' value='{{cronograma.dateeae}}' />
+            </div>
+        </div>
+        <div class="row mt-2" style="padding:20px;width: 100%;">
+            <div class="row">
+                <div class="lists">
+                    <div class="list">
+                        <label class="col-form-label col-form-label-md fw-bold text-center"
+                            style="color: white">Profissionais Disponíveis</label>
+                        {{#if fora}}
+                        {{#each fora}}
+                        <div class="list-item" style='color: black;' draggable="true">{{ins}}<a
+                                href='/pessoa/vermais/{{id}}' style="padding-left: 5px;"><i class='bi bi-eye'></i></a>
+                        </div>
+                        {{/each}}
+                        {{/if}}
+                    </div>
+                    <div class="list">
+                        <label class="col-form-label col-form-label-md fw-bold text-center"
+                            style="color: white">Profissionais Alocados</label>
+                        {{#each dentro}}
+                        <div class="item" style='color: black;' draggable="true">{{ins}}<a href='/pessoa/vermais/{{id}}'
+                                style="padding-left: 5px;"><i class='bi bi-eye'></i></a></div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type='hidden' class='eae0' name='eae0' id='eae0' value=''>
+        <input type='hidden' class='eae1' name='eae1' id='eae1' value=''>
+        <input type='hidden' class='eae2' name='eae2' id='eae2' value=''>
+        <input type='hidden' class='eae3' name='eae3' id='eae3' value=''>
+        <input type='hidden' class='eae4' name='eae4' id='eae4' value=''>
+        <input type='hidden' class='eae5' name='eae5' id='eae5' value=''>
+    </form>
+</div>
+
+<script>
+    const list_items = document.querySelectorAll('.list-item');
+    const lists = document.querySelectorAll('.list');
+
+    let draggedItem = null;
+
+    for (let i = 0; i < list_items.length; i++) {
+        const item = list_items[i];
+
+        item.addEventListener('dragstart', function () {
+            draggedItem = item;
+            setTimeout(function () {
+                item.style.display = 'none';
+            }, 0)
+        });
+
+        item.addEventListener('dragend', function () {
+            this.className = 'item';
+            setTimeout(function () {
+                draggedItem.style.display = 'block';
+                draggedItem = null;
+            }, 0);
+        })
+
+        for (let j = 0; j < lists.length; j++) {
+            const list = lists[j];
+
+            list.addEventListener('dragover', function (e) {
+                e.preventDefault();
+            });
+
+            list.addEventListener('dragenter', function (e) {
+                e.preventDefault();
+                this.style.backgroundColor = 'rgba(40, 55, 89, 1)';
+            });
+
+            list.addEventListener('dragleave', function (e) {
+                this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+            });
+
+            list.addEventListener('drop', function (e) {
+                console.log('drop');
+                this.append(draggedItem);
+                this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+            });
+        }
+    }
+
+    function getItemValue() {
+        const item = document.querySelectorAll('.item');
+        for (i = 0; i < item.length; i++) {
+            const insitem = document.getElementsByClassName(item[i].getAttribute('class'));
+            var element = insitem[i].innerText;
+            switch (i) {
+                case 0:
+                    var insdes = document.getElementById('eae0');
+                    insdes.value = element;
+                    break;
+                case 1:
+                    var insdes = document.getElementById('eae1');
+                    insdes.value = element
+                    break;
+                case 2:
+                    var insdes = document.getElementById('eae2');
+                    insdes.value = element
+                    break;
+                case 3:
+                    var insdes = document.getElementById('pla3');
+                    insdes.value = element
+                    break;
+                case 4:
+                    var insdes = document.getElementById('eae4');
+                    insdes.value = element
+                    break;
+                case 5:
+                    var insdes = document.getElementById('eae5');
+                    insdes.value = element
+                    break;
+            }
+        }
+    }
+</script>

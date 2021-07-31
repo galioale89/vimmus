@@ -456,161 +456,151 @@
             </div>
             <div class="col-md-6">
                 <div class="row">
-                    <div class="col-md-2">
-                        <label class="col-form-label col-form-label-sm fw-bold text-end">Classificação:</label>
-                    </div>
-                    <div class="col-md-3 text-start">
-                        <label class="col-form-label col-form-label-sm">{{projeto.classUsina}}</label>
-                    </div>
                     <div class="col-md-2 text-end">
-                        <label class="col-form-label col-form-label-sm fw-bold">Tipo:</label>
-                    </div>
-                    <div class="col-md-4 text-start">
-                        <label class="col-form-label col-form-label-sm">{{projeto.tipoUsina}}</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-2 text-end">
+                        <label class="col-form-label col-form-label-sm fw-bold">Classificação:</label><br>
                         <label class="col-form-label col-form-label-sm fw-bold">Tensão:</label>
                     </div>
-                    <div class="col-md-3 text-start">
+                    <div class="col-md-2">
+                        <label class="col-form-label col-form-label-sm">{{projeto.classUsina}}</label><br>
                         <label class="col-form-label col-form-label-sm">{{projeto.tipoConexao}}</label>
                     </div>
                     <div class="col-md-2 text-end">
+                        <label class="col-form-label col-form-label-sm fw-bold">Tipo:</label><br>
                         <label class="col-form-label col-form-label-sm fw-bold">Grupo:</label>
                     </div>
-                    <div class="col-md-4 text-start">
+                    <div class="col-md-5">
+                        <label class="col-form-label col-form-label-sm">{{projeto.tipoUsina}}</label>
                         <label class="col-form-label col-form-label-sm">{{projeto.grupoUsina}}</label>
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col-md-10">
+                    </div>
+                    <div class="col-md-2">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Alterar</label>                        
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-md-4 text-end">
-                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Responsável: </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Alterar
-                            Responsável:</label><br>
-                        <label class="fw-bold col-form-label col-form-label-sm mb-2">Vendedor:</label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Alterar Vendedor: </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Regime Tributário: </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Alterar Regime: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Vendedor: </label><br>
                     </div>
-                    <div class="col-md-8">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class='col-form-label col-form-label-sm mb-2'>{{pr.nome}}</label>
-                            </div>
-                            <div class="col-md-6">
-                                <label class='col-form-label col-form-label-sm fw-bold'
-                                    style="padding-left: 65%">Alterar</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-10">
-                                <select {{#if projeto.orcado}}{{else}}disabled{{/if}} name='funres'
-                                    class='form-select form-select-sm mb-2'>
-                                    {{#each responsavel}}
-                                    <option value='{{_id}}'>{{nome}}</option>
-                                    {{else}}
-                                    <option value=''>Nenhuma pessoa foi encontrada</option>
-                                    {{/each}}
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <div class='form-check'>
-                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='form-check-input'
-                                        type='checkbox' name='checkRes'>
-                                </div>
-                            </div>
-                        </div>
-                        <label class='col-form-labbel col-form-label-sm mb-2'>{{pv.nome}}</label>
-                        <div class="row">
-                            <div class="col-md-10">
-                                <select {{#if projeto.orcado}}{{else}}disabled{{/if}} name='vendedor'
-                                    class="form-select form-select-sm mb-2">
-                                    {{#each vendedor}}
-                                    <option value="{{_id}}">{{nome}}</option>
-                                    {{else}}
-                                    <option value=''>Nenhum vendedor cadastrado</option>
-                                    {{/each}}
-                                </select>
-                            </div>
-
-                            <div class="col-md-2">
-                                <div class='form-check'>
-                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='form-check-input'
-                                        type='checkbox' name='checkVende'>
-                                </div>
-                            </div>
-                        </div>
-
-                        <label class='col-form-label col-form-label-sm mb-2'>{{rp.regime}}</label>
-                        <div class="row">
-                            <div class="col-md-10">
-                                <select {{#if projeto.orcado}}{{else}}disabled{{/if}} name='regime'
-                                    class="form-select form-select-sm mb-2">
-                                    {{#each regime}}
-                                    <option value="{{_id}}">{{nome}}</option>
-                                    {{else}}
-                                    <option value=''>Nenhuma configuração encontrada</option>
-                                    {{/each}}
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <div class='form-check'>
-                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='form-check-input'
-                                        type='checkbox' name='checkRegime'>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="col-md-6">
+                        <select {{#if projeto.orcado}}{{else}}disabled{{/if}} name='vendedor'
+                            class="form-select form-select-sm mb-2">
+                            <option style="font-weight: bold;">{{pv.nome}}</option>
+                            {{#each vendedor}}
+                            <option value="{{_id}}">{{nome}}</option>
+                            {{else}}
+                            <option value=''>Nenhum vendedor cadastrado</option>
+                            {{/each}}
+                        </select>
                     </div>
-                    <div class="row">
-                        <label class='col-form-label col-form-label-sm fw-bold'>Complementos</label>
-                        <div class="col-md-2">
-                            <div class="form-check">
-                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='estsolo'
-                                    class="form-check-input" type="checkbox" style="margin-top: 8px;"
-                                    {{projeto.temEstSolo}}>
-                                <label class="form-check-label col-form-label col-form-label-sm"> Estrutura
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-check">
-                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='central'
-                                    class="form-check-input" type="checkbox" style="margin-top: 8px;"
-                                    {{projeto.temCentral}}>
-                                <label class="form-check-label col-form-label col-form-label-sm"> Central
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-check">
-                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='cercamento'
-                                    class="form-check-input" type="checkbox" style="margin-top: 8px;"
-                                    {{projeto.temCercamento}}>
-                                <label class="form-check-label col-form-label col-form-label-sm"> Cercamento
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-5">
-                            <div class="form-check">
-                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='poste'
-                                    class="form-check-input" type="checkbox" style="margin-top: 8px;margin-left: 1%;"
-                                    {{projeto.temPosteCond}}>
-                                <label class="form-check-label col-form-label col-form-label-sm"
-                                    style="margin-left: 1%">Postes de
-                                    Condução de Fios
-                                </label>
-                            </div>
+
+                    <div class="col-md-2">
+                        <div class='form-check' style="padding-left: 40%;">
+                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='form-check-input'
+                                type='checkbox' name='checkVendedor'>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="row" style="width: 100%;">
+                    <div class="col-md-4 text-end">
+                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Empresa: </label><br>
+                    </div>
+                    <div class="col-md-6">
+                        <select {{#if projeto.orcado}}{{else}}disabled{{/if}} name='empresa'
+                            class="form-select form-select-sm mb-2">
+                            <option value="{{_id}}">{{rp.nome}}</option>
+                            {{#each empresa}}
+                            <option value="{{_id}}">{{nome}}</option>
+                            {{else}}
+                            <option value=''>Nenhuma configuração encontrada</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <div class='form-check' style="padding-left: 40%;">
+                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='form-check-input'
+                                type='checkbox' name='checkEmpresa'>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-1">
+                    <div class="col-md-4 text-end">
+                        <label class='col-form-label col-form-label-sm mb-2 fw-bold'>Regime Tributário:</label>
+                    </div>
+                    <div class="col">
+                        <label class='col-form-label col-form-label-sm mb-2'>{{rp.regime}}</label>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <label class='col-form-label col-form-label-sm fw-bold'>Complementos</label>
+                    <div class="col-md-3">
+                        <div class="form-check">
+                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='estsolo' class="form-check-input"
+                                type="checkbox" style="margin-top: 8px;" {{projeto.temEstSolo}}>
+                            <label class="form-check-label col-form-label col-form-label-sm"> Estrutura
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-check">
+                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='central' class="form-check-input"
+                                type="checkbox" style="margin-top: 8px;" {{projeto.temCentral}}>
+                            <label class="form-check-label col-form-label col-form-label-sm"> Central
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-check">
+                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='cercamento'
+                                class="form-check-input" type="checkbox" style="margin-top: 8px;"
+                                {{projeto.temCercamento}}>
+                            <label class="form-check-label col-form-label col-form-label-sm"> Cercamento
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-check">
+                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='poste' class="form-check-input"
+                                type="checkbox" style="margin-top: 8px;margin-left: 1%" {{projeto.temPosteCond}}>
+                            <label class="form-check-label col-form-label col-form-label-sm"
+                                style="margin-left: 1%">Postes
+                                de
+                                Condução
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-check">
+                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='armazenamento'
+                                class="form-check-input" type="checkbox" style="margin-top: 8px;"
+                                {{projeto.temArmazenamento}}>
+                            <label class="form-check-label col-form-label col-form-label-sm">
+                                Estação de Armazenamento de Baterias
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-check">
+                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='painel' class="form-check-input"
+                                type="checkbox" style="margin-top: 8px;" {{projeto.temPainel}}>
+                            <label class="form-check-label col-form-label col-form-label-sm">
+                                Painel Elétrico
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="row mb-2" style="width: 100%;">
                         <a data-bs-toggle="modal" data-bs-target="#custosModal" class="btn btn-sm btn-primary "><i
-                                class="bi bi-list-ul"></i> Lançar Custos Detalhados do Orçamento
+                                class="bi bi-list-ul"></i> Lançar Materiais Detalhados
                         </a>
                     </div>
-                    <div class="row mt-2" style="width: 100%;">
+                    <div class="row" style="width: 100%;">
                         <div class='btn-group col-12 gap-2'>
                             <button {{#if projeto.orcado}}{{else}}disabled{{/if}} type="submit"
                                 class="btn btn-sm btn-success" name="aplicar" style="border-radius: 30px;"> <i
@@ -643,11 +633,11 @@
                                 class='btn btn-sm btn-warning'><i class="bi bi-stopwatch"></i> Homologar</a>
                             {{/if}}
                             {{/if}}
-                            <a {{#if projeto.homologado}}href='/projeto/realizar/{{projeto._id}}' {{else}} {{#if
-                                projeto.foiRealizado}}href='/projeto/realizar/{{projeto._id}}'
-                                {{else}}style='opacity: 0.5;pointer-events:none;border-radius: 30px;' {{/if}}{{/if}}
+                            <a {{#if projeto.homologado}}href='/projeto/realizar/{{projeto._id}}'
+                                {{else}}style='opacity: 0.5;pointer-events:none;border-radius: 30px;' {{/if}}
                                 class='btn btn-sm btn-success' style="border-radius: 30px;"><i
-                                    class="bi bi-check2-circle"></i> Realizar</a>
+                                    class="bi bi-check2-circle"></i>
+                                Realizar</a>
                             <a href='/gerenciamento/dashboard/{{projeto._id}}' class='btn btn-sm btn-primary'
                                 style="border-radius: 40px;"><i class="bi bi-bar-chart"></i> Dashboard</a>
                         </div>

@@ -340,15 +340,15 @@
         <div class='btn-group col-12 mx-auto'>
             <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu ativo'> <i
                     class="bi bi-house"></i>Projeto</a>
-            <a href="/customdo/editar/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
+            <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
                 Gestão</a>
-            <a href="/customdo/editar/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                    class="bi bi-pencil"></i> Projetista</a>
-            <a href="/customdo/editar/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                    class="bi bi-tools"></i> Instalação</a>
-            <a href="/gerenciamento/editar/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+            <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"></i>
+                Projetista</a>
+            <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"></i>
+                Instalação</a>
+            <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i
                     class="bi bi-puzzle"></i> Gerenciamento</a>
-            <a href="/gerenciamento/editar/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+            <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i
                     class="bi bi-calculator"></i> Tributos</a>
         </div>
 
@@ -388,9 +388,7 @@
                             </div>
                             <div class="col-md-1">
                                 <div class="row text-center">
-                                    <div style="padding-left: 0;">
-                                        <label class='fw-bold col-form-label col-form-label-sm'>Alterar </label><br>
-                                    </div>
+                                    <label class='fw-bold col-form-label col-form-label-sm'>Alterar </label><br>
                                 </div>
                             </div>
                         </div>
@@ -426,7 +424,7 @@
                         <input type="hidden" name='dataini' id='dataini' value='{{projeto.dataini}}'>
                     </div>
                 </div>
-                <div class="card mb-2">
+                <div class="card">
                     <div class="row mb-1 mt-1" style="margin-left: 5px;">
                         <div class="row">
                             <div class="col-md-2">
@@ -467,203 +465,190 @@
             </div>
             <div class="col-md-6">
                 <div class="row">
-                    <div class="col-md-2">
-                        <label class="col-form-label col-form-label-sm fw-bold text-end">Classificação:</label>
-                    </div>
-                    <div class="col-md-3 text-start">
-                        <label class="col-form-label col-form-label-sm">{{projeto.classUsina}}</label>
-                    </div>
                     <div class="col-md-2 text-end">
-                        <label class="col-form-label col-form-label-sm fw-bold">Tipo:</label>
-                    </div>
-                    <div class="col-md-4 text-start">
-                        <label class="col-form-label col-form-label-sm">{{projeto.tipoUsina}}</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-2 text-end">
+                        <label class="col-form-label col-form-label-sm fw-bold">Classificação:</label><br>
                         <label class="col-form-label col-form-label-sm fw-bold">Tensão:</label>
                     </div>
-                    <div class="col-md-3 text-start">
+                    <div class="col-md-2">
+                        <label class="col-form-label col-form-label-sm">{{projeto.classUsina}}</label><br>
                         <label class="col-form-label col-form-label-sm">{{projeto.tipoConexao}}</label>
                     </div>
                     <div class="col-md-2 text-end">
+                        <label class="col-form-label col-form-label-sm fw-bold">Tipo:</label><br>
                         <label class="col-form-label col-form-label-sm fw-bold">Grupo:</label>
                     </div>
-                    <div class="col-md-4 text-start">
+                    <div class="col-md-5">
+                        <label class="col-form-label col-form-label-sm">{{projeto.tipoUsina}}</label>
                         <label class="col-form-label col-form-label-sm">{{projeto.grupoUsina}}</label>
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col-md-10">
+                    </div>
+                    <div class="col-md-2">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Alterar</label>                        
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-md-4 text-end">
-                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Responsável: </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Alterar
-                            Responsável:</label><br>
-                        <label class="fw-bold col-form-label col-form-label-sm mb-2">Vendedor:</label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Alterar Vendedor: </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Regime Tributário: </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Alterar Regime: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Vendedor: </label><br>
                     </div>
-                    <div class="col-md-8">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class='col-form-label col-form-label-sm mb-2'>{{pr.nome}}</label>
-                            </div>
-                            <div class="col-md-6">
-                                <label class='col-form-label col-form-label-sm fw-bold'
-                                    style="padding-left: 65%">Alterar</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-10">
-                                <select {{#if projeto.orcado}}{{else}}disabled{{/if}} name='funres'
-                                    class='form-select form-select-sm mb-2'>
-                                    {{#each responsavel}}
-                                    <option value='{{_id}}'>{{nome}}</option>
-                                    {{else}}
-                                    <option value=''>Nenhuma pessoa foi encontrada</option>
-                                    {{/each}}
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <div class='form-check'>
-                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='form-check-input'
-                                        type='checkbox' name='checkRes'>
-                                </div>
-                            </div>
-                        </div>
-                        <label class='col-form-labbel col-form-label-sm mb-2'>{{pv.nome}}</label>
-                        <div class="row">
-                            <div class="col-md-10">
-                                <select {{#if projeto.orcado}}{{else}}disabled{{/if}} name='vendedor'
-                                    class="form-select form-select-sm mb-2">
-                                    {{#each vendedor}}
-                                    <option value="{{_id}}">{{nome}}</option>
-                                    {{else}}
-                                    <option value=''>Nenhum vendedor cadastrado</option>
-                                    {{/each}}
-                                </select>
-                            </div>
-
-                            <div class="col-md-2">
-                                <div class='form-check'>
-                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='form-check-input'
-                                        type='checkbox' name='checkVende'>
-                                </div>
-                            </div>
-                        </div>
-
-                        <label class='col-form-label col-form-label-sm mb-2'>{{rp.nome}}</label>
-                        <div class="row">
-                            <div class="col-md-10">
-                                <select {{#if projeto.orcado}}{{else}}disabled{{/if}} name='regime'
-                                    class="form-select form-select-sm mb-2">
-                                    {{#each regime}}
-                                    <option value="{{_id}}">{{nome}}</option>
-                                    {{else}}
-                                    <option value=''>Nenhuma configuração encontrada</option>
-                                    {{/each}}
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <div class='form-check'>
-                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='form-check-input'
-                                        type='checkbox' name='checkRegime'>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="col-md-6">
+                        <select {{#if projeto.orcado}}{{else}}disabled{{/if}} name='vendedor'
+                            class="form-select form-select-sm mb-2">
+                            <option style="font-weight: bold;">{{pv.nome}}</option>
+                            {{#each vendedor}}
+                            <option value="{{_id}}">{{nome}}</option>
+                            {{else}}
+                            <option value=''>Nenhum vendedor cadastrado</option>
+                            {{/each}}
+                        </select>
                     </div>
-                    <div class="row">
-                        <label class='col-form-label col-form-label-sm fw-bold'>Complementos</label>
-                        <div class="col-md-3">
-                            <div class="form-check">
-                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='estsolo'
-                                    class="form-check-input" type="checkbox" style="margin-top: 8px;"
-                                    {{projeto.temEstSolo}}>
-                                <label class="form-check-label col-form-label col-form-label-sm"> Estrutura
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-check">
-                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='central'
-                                    class="form-check-input" type="checkbox" style="margin-top: 8px;"
-                                    {{projeto.temCentral}}>
-                                <label class="form-check-label col-form-label col-form-label-sm"> Central
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-check">
-                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='cercamento'
-                                    class="form-check-input" type="checkbox" style="margin-top: 8px;"
-                                    {{projeto.temCercamento}}>
-                                <label class="form-check-label col-form-label col-form-label-sm"> Cercamento
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-5">
-                            <div class="form-check">
-                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='poste'
-                                    class="form-check-input" type="checkbox" style="margin-top: 8px;margin-left: 1%"
-                                    {{projeto.temPosteCond}}>
-                                <label class="form-check-label col-form-label col-form-label-sm"
-                                    style="margin-left: 1%">Postes de
-                                    Condução
-                                </label>
-                            </div>
+
+                    <div class="col-md-2">
+                        <div class='form-check' style="padding-left: 40%;">
+                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='form-check-input'
+                                type='checkbox' name='checkVendedor'>
                         </div>
                     </div>
                 </div>
-                <div class="row mt-2">
+                <div class="row">
+                    <div class="col-md-4 text-end">
+                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Empresa: </label><br>
+                    </div>
+                    <div class="col-md-6">
+                        <select {{#if projeto.orcado}}{{else}}disabled{{/if}} name='empresa'
+                            class="form-select form-select-sm mb-2">
+                            <option value="{{_id}}">{{rp.nome}}</option>
+                            {{#each empresa}}
+                            <option value="{{_id}}">{{nome}}</option>
+                            {{else}}
+                            <option value=''>Nenhuma configuração encontrada</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <div class='form-check' style="padding-left: 40%;">
+                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='form-check-input'
+                                type='checkbox' name='checkEmpresa'>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-1">
+                    <div class="col-md-4 text-end">
+                        <label class='col-form-label col-form-label-sm mb-2 fw-bold'>Regime Tributário:</label>
+                    </div>
+                    <div class="col">
+                        <label class='col-form-label col-form-label-sm mb-2'>{{rp.regime}}</label>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <label class='col-form-label col-form-label-sm fw-bold'>Complementos</label>
+                    <div class="col-md-3">
+                        <div class="form-check">
+                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='estsolo' class="form-check-input"
+                                type="checkbox" style="margin-top: 8px;" {{projeto.temEstSolo}}>
+                            <label class="form-check-label col-form-label col-form-label-sm"> Estrutura
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-check">
+                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='central' class="form-check-input"
+                                type="checkbox" style="margin-top: 8px;" {{projeto.temCentral}}>
+                            <label class="form-check-label col-form-label col-form-label-sm"> Central
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-check">
+                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='cercamento'
+                                class="form-check-input" type="checkbox" style="margin-top: 8px;"
+                                {{projeto.temCercamento}}>
+                            <label class="form-check-label col-form-label col-form-label-sm"> Cercamento
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-check">
+                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='poste' class="form-check-input"
+                                type="checkbox" style="margin-top: 8px;margin-left: 1%" {{projeto.temPosteCond}}>
+                            <label class="form-check-label col-form-label col-form-label-sm"
+                                style="margin-left: 1%">Postes
+                                de
+                                Condução
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-check">
+                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='armazenamento'
+                                class="form-check-input" type="checkbox" style="margin-top: 8px;"
+                                {{projeto.temArmazenamento}}>
+                            <label class="form-check-label col-form-label col-form-label-sm">
+                                Estação de Armazenamento de Baterias
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-check">
+                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='painel' class="form-check-input"
+                                type="checkbox" style="margin-top: 8px;" {{projeto.temPainel}}>
+                            <label class="form-check-label col-form-label col-form-label-sm">
+                                Painel Elétrico
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
                     <div class="row mb-2" style="width: 100%;">
                         <a data-bs-toggle="modal" data-bs-target="#custosModal" class="btn btn-sm btn-primary "><i
-                                class="bi bi-list-ul"></i> Lançar Custos
-                            Detalhados do Orçamento
+                                class="bi bi-list-ul"></i> Lançar Materiais Detalhados
                         </a>
                     </div>
-                    <div class="row mt-1" style="width: 100%;">
-                        <div class="row" style="width: 100%;margin-left: 5px;">
-                            <div class='btn-group col-12 gap-2'>
-                                <button {{#if projeto.orcado}}{{else}}disabled{{/if}} type="submit"
-                                    class="btn btn-sm btn-success" name="aplicar" style="border-radius: 30px;"> <i
-                                        class="bi bi-check-circle"></i>
-                                    Salvar</button>
-                                {{#if projeto.executando}}
-                                <a {{#if
-                                    projeto.homologado}}style='opacity: 0.5;pointer-events:none;border-radius: 30px'
-                                    {{else}} href='/projeto/motivoParar/{{projeto._id}}' {{/if}}
-                                    class='btn btn-sm btn-danger' style="border-radius: 30px;"><i
-                                        class="bi bi-stop-circle"></i> Parar</a>
-                                {{else}}
-                                <a {{#if
-                                    projeto.homologado}}style='border-radius: 30px;opacity: 0.5;pointer-events:none'
-                                    {{else}} {{#if projeto.foiRealizado}}style='opacity: 0.5;pointer-events:none;border-radius: 30px'
-                                    {{else}} href='/projeto/executar/{{projeto._id}}' {{/if}} {{/if}}
-                                    style="color:white;border-radius: 30px;" class='btn btn-sm btn-success' onmousedown="validaDataIns()"><i
-                                        class="bi bi-file-earmark-play"></i> Executar</a>
-                                {{/if}}
-                                {{#if projeto.homologado}}
-                                <a style="color: white; background-color: rgb(252, 137, 7);pointer-events: none;border-radius: 30px;"
-                                    class='btn btn-sm btn-warning'><i class="bi bi-check"></i> Em Homologação</a>
-                                {{else}}
-                                {{#if projeto.foiRealizado}}
-                                <a
-                                    style="color: white; background-color: rgb(19, 2, 172);border-radius: 30px; font-size:14px;padding: 7px">
-                                    Projeto Realizado </a>
-                                {{else}}
-                                <a href='/projeto/homologar/{{projeto._id}}'
-                                    style="color: white; background-color: rgb(252, 137, 7);border-radius: 30px;"
-                                    class='btn btn-sm btn-warning'><i class="bi bi-stopwatch"></i> Homologar</a>
-                                {{/if}}
-                                {{/if}}
-                                <a {{#if projeto.homologado}}href='/projeto/realizar/{{projeto._id}}'
-                                    {{else}}style='opacity: 0.5;pointer-events:none;border-radius: 30px;' {{/if}}
-                                    class='btn btn-sm btn-success' style="border-radius: 30px;"><i
-                                        class="bi bi-check2-circle"></i> Realizar</a>
-                                <a href='/gerenciamento/dashboard/{{projeto._id}}' class='btn btn-sm btn-primary'
-                                    style="border-radius: 40px;"><i class="bi bi-bar-chart"></i> Dashboard</a>
-                            </div>
+                    <div class="row" style="width: 100%;">
+                        <div class='btn-group col-12 gap-2'>
+                            <button {{#if projeto.orcado}}{{else}}disabled{{/if}} type="submit"
+                                class="btn btn-sm btn-success" name="aplicar" style="border-radius: 30px;"> <i
+                                    class="bi bi-check-circle"></i>
+                                Salvar</button>
+                            {{#if projeto.executando}}
+                            <a {{#if projeto.homologado}}style='opacity: 0.5;pointer-events:none;border-radius: 30px'
+                                {{else}} href='/projeto/motivoParar/{{projeto._id}}' {{/if}}
+                                class='btn btn-sm btn-danger' style="border-radius: 30px;"><i
+                                    class="bi bi-stop-circle"></i> Parar</a>
+                            {{else}}
+                            <a {{#if projeto.homologado}}style='border-radius: 30px;opacity: 0.5;pointer-events:none'
+                                {{else}} {{#if
+                                projeto.foiRealizado}}style='opacity: 0.5;pointer-events:none;border-radius: 30px'
+                                {{else}} href='/projeto/executar/{{projeto._id}}' {{/if}} {{/if}}
+                                style="color:white;border-radius: 30px;" class='btn btn-sm btn-success'
+                                onmousedown="validaDataIns()"><i class="bi bi-file-earmark-play"></i> Executar</a>
+                            {{/if}}
+                            {{#if projeto.homologado}}
+                            <a style="color: white; background-color: rgb(252, 137, 7);pointer-events: none;border-radius: 30px;"
+                                class='btn btn-sm btn-warning'><i class="bi bi-check"></i> Em Homologação</a>
+                            {{else}}
+                            {{#if projeto.foiRealizado}}
+                            <a
+                                style="color: white; background-color: rgb(19, 2, 172);border-radius: 30px; font-size:14px;padding: 7px">
+                                Projeto Realizado </a>
+                            {{else}}
+                            <a href='/projeto/homologar/{{projeto._id}}'
+                                style="color: white; background-color: rgb(252, 137, 7);border-radius: 30px;"
+                                class='btn btn-sm btn-warning'><i class="bi bi-stopwatch"></i> Homologar</a>
+                            {{/if}}
+                            {{/if}}
+                            <a {{#if projeto.homologado}}href='/projeto/realizar/{{projeto._id}}'
+                                {{else}}style='opacity: 0.5;pointer-events:none;border-radius: 30px;' {{/if}}
+                                class='btn btn-sm btn-success' style="border-radius: 30px;"><i
+                                    class="bi bi-check2-circle"></i>
+                                Realizar</a>
+                            <a href='/gerenciamento/dashboard/{{projeto._id}}' class='btn btn-sm btn-primary'
+                                style="border-radius: 40px;"><i class="bi bi-bar-chart"></i> Dashboard</a>
                         </div>
                     </div>
                 </div>

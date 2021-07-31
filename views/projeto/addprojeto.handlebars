@@ -96,6 +96,28 @@
             cidadeVal: '<%=Request("cidade") %>'
         });
     };
+
+    function selectEntrada () {
+        var tipoEntrada = document.getElementById('tipoEntrada')
+        var selectProprio = document.getElementById('selectProprio')
+        var selectTerceiro = document.getElementById('selectTerceiro')
+        if (selectProprio.checked){
+            tipoEntrada.value = 'Proprio'
+        }else{
+            tipoEntrada.value = 'Terceirizado'
+        }
+    }
+
+    function selectCusto (){
+        var tipoCusto = document.getElementById('tipoCusto')
+        var selectHora = document.getElementById('selectHora')
+        var selectDia = document.getElementById('selectDia')
+        if (selectHora.checked){
+            tipoCusto.value = 'hora'
+        }else{
+            tipoCusto.value = 'dia'
+        }        
+    }
 </script>
 <div class="container mt-4">
     <form action="/projeto/novo/" method="post">
@@ -309,6 +331,10 @@
                     <div class="col-md-5 text-end">
                         <label for="nome" class="fw-bold col-form-label col-form-label-sm mb-2"> Nome do Projeto:
                         </label><br>
+                        <label for="empresa" class="fw-bold col-form-label col-form-label-sm mb-2"> Empresa:
+                        </label><br>
+                        <label class="fw-bold col-form-label col-form-label-sm mb-2">Tipo de Entrada:</label><br>                        
+                        <label class="fw-bold col-form-label col-form-label-sm mb-2">Tipo Custo:</label><br> 
                         <label for="cliente" class="fw-bold col-form-label col-form-label-sm mb-2"> Cliente:
                         </label><br>
                         <label for="uf" class="fw-bold col-form-label col-form-label-sm mb-2"> Estado:
@@ -319,22 +345,63 @@
                             Projeto:</label><br>
                         <label for="vendedor" class="fw-bold col-form-label col-form-label-sm mb-2"> Vendedor:
                         </label><br>
-                        <!--<label for="percom" class="fw-bold col-form-label col-form-label-sm mb-2"> Comissão: </label><br>-->
-                        <label for="inputState" class="fw-bold col-form-label col-form-label-sm mb-2">Custos:
-                        </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Regime Tributário: </label><br>
+                        <!--<label for="percom" class="fw-bold col-form-label col-form-label-sm mb-2"> Comissão: </label><br>-->                    
                         <label class='fw-bold col-form-label col-form-label-sm mb-2'>Configuração: </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Gestor Responsável:</label><br>
                         <label class='col-form-label col-form-label-sm fw-bold mb-2'>Data Inicio Projeto:</label><br>
                         <label class='col-form-label col-form-label-sm fw-bold mb-2'>Data Previsão de Entrega:</label>
                     </div>
                     <div class="col-md-7">
                         <input type="text" name="nome" id="nome" class="form-control form-control-sm mb-2">
-                        <select class='form-select form-select-sm mb-2' name='cliente'>
+                        <select class='form-select form-select-sm' style="margin-bottom: 4%;" name='empresa'>
+                            {{#each empresa}}
+                            <option value="{{_id}}">{{nome}}</option>
+                            {{else}}
+                            <option value=''>Nenhuma empresa cadastrada.</option>
+                            {{/each}}
+                        </select>
+                        <div class="row mb-2">
+                            <input type="hidden" name='tipoEntrada' id='tipoEntrada' value=''>
+                            <div class="col-md-6">
+                                <div class="form-check" onchange="selectEntrada()">
+                                    <input class="form-check-input" type="radio" name="entrada" id="selectProprio">
+                                    <label class="form-check-label" style="font-size: 14px;">
+                                        Próprio
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6" style="padding-left: 12%;">
+                                <div class="form-check" onchange="selectEntrada()">
+                                    <input class="form-check-input" type="radio" name="entrada" id="selectTerceiro">
+                                    <label class="form-check-label" style="font-size: 14px;">
+                                        Terceiro
+                                    </label>
+                                </div>
+                            </div>
+                        </div>     
+                        <div class="row mb-2" style="margin-top: 4%;">
+                            <input type="hidden" name='tipoCusto' id='tipoCusto' value=''>
+                            <div class="col-md-6">
+                                <div class="form-check" onchange="selectCusto()">
+                                    <input class="form-check-input" type="radio" name="custo" id="selectHora">
+                                    <label class="form-check-label" style="font-size: 14px;">
+                                        R$/hora
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6" style="padding-left: 12%;">
+                                <div class="form-check" onchange="selectCusto()">
+                                    <input class="form-check-input" type="radio" name="custo" id="selectDia">
+                                    <label class="form-check-label" style="font-size: 14px;">
+                                        R$/dia
+                                    </label>
+                                </div>
+                            </div>
+                        </div>                                                  
+                        <select class='form-select form-select-sm mb-2' style="margin-top: 4%;" name='cliente'>
                             {{#each clientes}}
                             <option value="{{_id}}">{{nome}}</option>
                             {{else}}
-                            <option value=''>Nenhum cliente cadastrado</option>
+                            <option value=''>Nenhum cliente cadastrado.</option>
                             {{/each}}
                         </select>
                         <!--<input type="text" name="cliente" id="cliente" class="form-control form-control-sm mb-2">-->
@@ -355,29 +422,12 @@
                         <input type="number" name="comissao" id="comissao" class="form-control form-control-sm mb-2"
                             placeholder="%">     
                         -->
-                        <select id="inputState" name='tipocusto' class="form-select form-select-sm mb-2">
-                            <option>Próprio</option>
-                            <option>Terceirizado</option>
-                        </select>
-                        <select name='regime' class="form-select form-select-sm mb-2">
-                            {{#each regime}}
-                            <option value="{{_id}}">{{nome}}</option>
-                            {{else}}
-                            <option value=''>Nenhum regime encontrado.</option>
-                            {{/each}}
-                        </select>
+
                         <select name='configuracao' class="form-select form-select-sm mb-2">
                             {{#each configuracao}}
                             <option value="{{_id}}">{{slug}}</option>
                             {{else}}
                             <option value=''>Nenhuma configuração encontrada.</option>
-                            {{/each}}
-                        </select>
-                        <select name='gestor' class="form-select form-select-sm mb-2">
-                            {{#each pessoas}}
-                            <option value="{{_id}}">{{nome}}</option>
-                            {{else}}
-                            <option value=''>Nenhum gestor encontrado</option>
                             {{/each}}
                         </select>
                         <!--
@@ -464,7 +514,8 @@
                     <div class="row">
                         <div class="col-md-8">
                             <div class="form-check">
-                                <input name='armazenamento' class="form-check-input" type="checkbox" style="margin-top: 8px;">
+                                <input name='armazenamento' class="form-check-input" type="checkbox"
+                                    style="margin-top: 8px;">
                                 <label class="form-check-label col-form-label col-form-label-sm">
                                     Estação de Armazenamento de Baterias
                                 </label>
@@ -477,7 +528,7 @@
                                     Painel Elétrico
                                 </label>
                             </div>
-                        </div>                        
+                        </div>
                     </div>
                 </div>
                 <div class="row mt-1">

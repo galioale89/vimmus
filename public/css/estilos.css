@@ -572,13 +572,12 @@ font-weight: 700;
 
 .menu {
 text-align: center;
-border: rgb(126, 138, 163) solid 2px;
+border-right: rgb(126, 138, 163) solid 2px;
 margin-left: 25px;
 height: 100%;
 border-radius: 5px;
 position: static;
 padding-top: 10px;
-padding-bottom: 2px;
 padding-right: 10px;
 }
 
@@ -754,10 +753,11 @@ margin-bottom: 5px;
 
 .contorno-texto {
 text-align: center;
-width: fit-content;
-border: rgb(79, 99, 140) 2px solid;
+width: 50px;
+height: 50px;
+border: rgb(79, 99, 140) 5px solid;
+border-radius: 50px;
 padding: 8px;
-border-radius: 5px;
 box-shadow: 3px 1px 1px white;
 font-size: 15px;
 }

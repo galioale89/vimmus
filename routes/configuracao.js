@@ -4,10 +4,10 @@ const router = express.Router()
 const mongoose = require('mongoose')
 
 require('../model/Configuracao')
-require('../model/Regime')
+require('../model/Empresa')
 
 const Configuracao = mongoose.model('configuracao')
-const Regime = mongoose.model('regime')
+const Empresa = mongoose.model('empresa')
 
 //Configurando pasta de imagens 
 router.use(express.static('imagens'))
@@ -18,8 +18,8 @@ router.get('/novo', ehAdmin, (req, res) => {
     res.render('configuracao/addconfiguracao')
 })
 
-router.get('/addregime', ehAdmin, (req, res) => {
-    res.render('configuracao/addregime')
+router.get('/addempresa', ehAdmin, (req, res) => {
+    res.render('configuracao/empresa')
 })
 
 router.get('/consulta', ehAdmin, (req, res) => {
@@ -32,12 +32,12 @@ router.get('/consulta', ehAdmin, (req, res) => {
     })
 })
 
-router.get('/consultaregime', ehAdmin, (req, res) => {
+router.get('/consultaempresa', ehAdmin, (req, res) => {
     const { _id } = req.user
-    Regime.find({ user: _id }).sort({ data: 'desc' }).lean().then((regime) => {
-        res.render('configuracao/findregime', { regime: regime })
+    Empresa.find({ user: _id }).sort({ data: 'desc' }).lean().then((empresa) => {
+        res.render('configuracao/findempresa', { empresa })
     }).catch((err) => {
-        req.flash('error_msg', 'Nenhum regime encontrado')
+        req.flash('error_msg', 'Nenhum empresa encontrado')
         res.redirect('/configuracao')
     })
 })
@@ -51,12 +51,115 @@ router.get('/editconfiguracao/:id', ehAdmin, (req, res) => {
     })
 })
 
-router.get('/editregime/:id', ehAdmin, (req, res) => {
-    Regime.findOne({ _id: req.params.id }).lean().then((regime) => {
-        res.render('configuracao/editregime', { regime: regime })
+router.get('/editempresa/:id', ehAdmin, (req, res) => {
+    Empresa.findOne({ _id: req.params.id }).lean().then((empresa) => {
+        var checkQtd = 'unchecked'
+        var checkKwp = 'unchecked'
+        var typeQtd = 'hidden'
+        var typeKwp = 'hidden'
+        var displayQtd = 'none'
+        var displayKwp = 'none'
+
+        var alqIRPJ
+        var alqIRPJAdd
+        var alqPIS
+        var alqCOFINS
+        var alqCSLL
+        var alqDAS
+        var dasMEI
+        var labelIRPJ
+        var labelIRJPAdd
+        var labelPIS
+        var labelCOFINS
+        var labelCSLL
+        var labelDAS
+        var labelMEI
+
+        if (empresa.tipodesp == 'potencia') {
+            checkKwp = 'checked'
+            typeKwp = 'text'
+            displayKwp = 'inline'
+            
+        } else {
+            checkQtd = 'checked'
+            typeQtd = 'text'
+            displayQtd = 'inline'
+        }
+
+        if (empresa.regime == 'Simples'){
+            alqIRPJ = 'hidden'
+            labelIRPJ = 'none'
+            alqIRPJAdd = 'hidden'
+            labelIRPJAdd = 'none'
+            alqPIS = 'hidden'
+            labelPIS = 'none'            
+            alqCOFINS = 'hidden'
+            labelCOFINS = 'none'            
+            alqCSLL = 'hidden'
+            labelCSLL = 'none'   
+            dasMEI = 'none'                   
+            labelMEI = 'none'
+            alqDAS = 'inline'  
+            labelDAS = 'inline'  
+        }else{
+            if (empresa.regime == 'Lucro Real' || empresa.regime == 'Lucro Presumido') {
+                alqIRPJ = 'text'
+                labelIRPJ = 'inline'
+                alqIRPJAdd = 'text'
+                labelIRPJAdd = 'inline'
+                alqPIS = 'text'
+                labelPIS = 'inline'            
+                alqCOFINS = 'text'
+                labelCOFINS = 'inline'            
+                alqCSLL = 'text'
+                labelCSLL = 'inline'   
+                dasMEI = 'none'                   
+                labelMEI = 'none'
+                alqDAS = 'none'  
+                labelDAS = 'none'  
+            }else{
+                alqIRPJ = 'hidden'
+                labelIRPJ = 'none'
+                alqIRPJAdd = 'hidden'
+                labelIRPJAdd = 'none'
+                alqPIS = 'hidden'
+                labelPIS = 'none'            
+                alqCOFINS = 'hidden'
+                labelCOFINS = 'none'            
+                alqCSLL = 'hidden'
+                labelCSLL = 'none'   
+                dasMEI = 'inline'                   
+                labelMEI = 'inline'
+                alqDAS = 'none'  
+                labelDAS = 'none'    
+            }
+        }
+        console.log('empresa=>'+empresa)
+        console.log('checkQtd=>'+checkQtd)
+        console.log('checkKwp=>'+checkKwp)
+        console.log('typeQtd=>'+typeQtd)
+        console.log('alqIRPJ=>'+alqIRPJ)
+        console.log('alqIRPJAdd=>'+alqIRPJAdd)
+        console.log('alqPIS=>'+alqPIS)
+        console.log('alqCOFINS=>'+alqCOFINS)
+        console.log('alqCSLL=>'+alqCSLL)
+        console.log('alqDAS=>'+alqDAS)
+        console.log('dasMEI=>'+dasMEI)
+        console.log('labelIRPJ=>'+labelIRPJ)
+        console.log('labelIRJPAdd=>'+labelIRJPAdd)
+        console.log('labelPIS=>'+labelPIS)
+        console.log('labelCOFINS=>'+labelCOFINS)
+        console.log('labelCSLL=>'+labelCSLL)
+        console.log('labelDAS=>'+labelDAS)
+        console.log('labelMEI=>'+labelMEI)
+
+        console.log(empresa.regime)
+        res.render('configuracao/empresa', { empresa, checkQtd, checkKwp, typeKwp, typeQtd, displayKwp, displayQtd,
+                                            alqIRPJ, alqIRPJAdd, alqPIS,alqCOFINS, alqCSLL, alqDAS, dasMEI,
+                                            labelIRPJ, labelIRPJAdd, labelPIS, labelCOFINS, labelCSLL, labelDAS, labelMEI })
     }).catch((err) => {
-        req.flash('error_msg', 'Houve um erro ao encontrar o regime.')
-        res.redirect('/configuracao')
+        req.flash('error_msg', 'Houve um erro ao encontrar o empresa.')
+        res.redirect('/configuracao/editempresa/' + req.params.id)
     })
 })
 
@@ -66,85 +169,96 @@ router.get('/removeconfiguracao/:id', ehAdmin, (req, res) => {
         res.redirect('/configuracao/consulta')
     }).catch(() => {
         req.flash('error_msg', 'Não foi possível remover a configuração.')
-        res.redirect('/configurcao/consultaregime')
+        res.redirect('/configurcao/consultaempresa')
     })
 })
 
-router.get('/removeregime/:id', ehAdmin, (req, res) => {
-    Regime.findOneAndRemove({ _id: req.params.id }).then(() => {
-        req.flash('success_msg', 'Regime removido com sucesso')
-        res.redirect('/configuracao/consultaregime')
+router.get('/removeempresa/:id', ehAdmin, (req, res) => {
+    Empresa.findOneAndRemove({ _id: req.params.id }).then(() => {
+        req.flash('success_msg', 'Empresa removido com sucesso')
+        res.redirect('/configuracao/consultaempresa')
     }).catch(() => {
-        req.flash('error_msg', 'Não foi possível remover o regime.')
-        res.redirect('/configurcao/consultaregime')
+        req.flash('error_msg', 'Não foi possível remover o empresa.')
+        res.redirect('/configurcao/consultaempresa')
     })
 })
 
-router.post('/addregime', ehAdmin, (req, res) => {
+router.post('/addempresa', ehAdmin, (req, res) => {
     const { _id } = req.user
-    var proje
 
     var erros = []
 
     if (req.body.alqNFS == '') {
-        erros.push({ texto: 'É necessário preencher a aliquota do ISS' })
+        erros.push({ texto: 'É necessário preencher a aliquota do ISS.' })
     }
     if (req.body.nome == '') {
-        erros.push({ texto: 'É necessário preencher o nome' })
+        erros.push({ texto: 'É necessário preencher o nome.' })
     }
-    if (req.body.regime == 'MEI') {
+    if (req.body.cnpj == '') {
+        erros.push({ texto: 'É necessário preencher o CNPJ.' })
+    }
+    if (req.body.empresa == 'MEI') {
         if (req.body.vlrDAS == '') {
-            erros.push({ texto: 'É necessário preencher o valor do DAS' })
+            erros.push({ texto: 'É necessário preencher o valor do DAS.' })
         }
     }
-    if (req.body.regime == 'Simples') {
+    if (req.body.empresa == 'Simples') {
         if (req.body.alqDAS == '') {
-            erros.push({ texto: 'É necessário preencher a aliquota do DAS' })
+            erros.push({ texto: 'É necessário preencher a aliquota do DAS.' })
         }
         if (req.body.vlrred == '') {
-            erros.push({ texto: 'É necessário preencher o valor de redução do calulo do Simples' })
+            erros.push({ texto: 'É necessário preencher o valor de redução do calulo do Simples.' })
         }
     }
 
-    if (req.body.regime == 'Lucro Real' || req.body.regime == 'Lucro Presumido') {
+    if (req.body.empresa == 'Lucro Real' || req.body.empresa == 'Lucro Presumido') {
 
         if (req.body.alqPIS == '') {
-            erros.push({ texto: 'É necessário preencher a aliquota do PIS' })
+            erros.push({ texto: 'É necessário preencher a aliquota do PIS.' })
         }
         if (req.body.alqCOFINS == '') {
-            erros.push({ texto: 'É necessário preencher a aliquota do COFINS' })
+            erros.push({ texto: 'É necessário preencher a aliquota do COFINS.' })
         }
         if (req.body.alqIRPJAdd == '') {
-            erros.push({ texto: 'É necessário preencher a aliquota do IRPJ Adicional' })
+            erros.push({ texto: 'É necessário preencher a aliquota do IRPJ Adicional.' })
         }
         if (req.body.alqIRPJ == '') {
-            erros.push({ texto: 'É necessário preencher a aliquota do IRPJ' })
+            erros.push({ texto: 'É necessário preencher a aliquota do IRPJ.' })
         }
         if (req.body.alqCSLL == '') {
-            erros.push({ texto: 'É necessário preencher a aliquota do CSLL' })
+            erros.push({ texto: 'É necessário preencher a aliquota do CSLL.' })
         }
     }
 
-    if (req.body.regime == 'Simples' && req.body.prjFat == '') {
-        erros.push({ texto: 'É necessário preencher o valor de projeção de faturamento' })
+    if (req.body.empresa == 'Simples' && req.body.prjFat == '') {
+        erros.push({ texto: 'É necessário preencher o valor de projeção de faturamento.' })
     }
 
-    if (req.body.regime == 'Lucro Real' && req.body.prjLR == '') {
-        erros.push({ texto: 'É necessário preencher o valor de projeção do Lucro Real' })
+    if (req.body.empresa == 'Lucro Real' && req.body.prjLR == '') {
+        erros.push({ texto: 'É necessário preencher o valor de projeção do Lucro Real.' })
     }
 
-    if (req.body.regime == 'Lucro Presumido' && req.body.prjLP == '') {
-        erros.push({ texto: 'É necessário preencher o valor de projeção de faturamento' })
+    if (req.body.empresa == 'Lucro Presumido' && req.body.prjLP == '') {
+        erros.push({ texto: 'É necessário preencher o valor de projeção de faturamento.' })
     }
 
     if (erros.length > 0) {
 
-        res.render('configuracao/addregime', { erros: erros })
+        res.render('configuracao/addempresa', { erros: erros })
 
     } else {
-        const regime = {
+
+        var tipodesp
+        if (req.body.selecionado == 'quantidade') {
+            tipodesp = 'quantidade'
+        } else {
+            tipodesp = 'potencia'
+        }
+        const empresa = {
             user: _id,
             nome: req.body.nome,
+            cnpj: req.body.cnpj,
+            empresa: req.body.empresa,
             regime: req.body.regime,
             tipo: req.body.tipo,
             alqDAS: req.body.alqDAS,
@@ -161,18 +275,23 @@ router.post('/addregime', ehAdmin, (req, res) => {
             prjLP: req.body.prjLP,
             alqINSS: req.body.alqINSS,
             vlrDAS: req.body.vlrDAS,
-            tipodesp: req.body.tipodesp,
+            tipodesp: tipodesp,
             desadm: req.body.desadm,
             perdes: req.body.perdes,
             estkwp: req.body.estkwp,
         }
 
-        new Regime(regime).save().then(() => {
-            req.flash('success_msg', 'Configurações de tributos salvas com sucesso')
-            res.redirect('/menu')
+        new Empresa(empresa).save().then(() => {
+            Empresa.findOne({ user: _id }).sort({ field: 'asc', _id: -1 }).then((empresa) => {
+                req.flash('success_msg', 'Configurações de tributos salvas com sucesso')
+                res.redirect('/configuracao/editempresa/' + empresa._id)
+            }).catch((err) => {
+                req.flash('error_msg', 'Houve um erro ao encontrar a empresa.')
+                res.redirect('/configuracao/addempresa')
+            })
         }).catch((err) => {
-            req.flash('error_msg', 'Houve um erro ao salvar as configurações de impostos.')
-            res.redirect('/configuracao/addregime')
+            req.flash('error_msg', 'Houve um erro ao salvar a empresa.')
+            res.redirect('/configuracao/addempresa')
         })
 
     }
@@ -200,10 +319,10 @@ router.post('/novo', ehAdmin, (req, res) => {
     }
     if (req.body.minstb == '') {
         erros.push({ texto: 'É necessário preencher os minutos para a instalação do string box.' })
-    }    
+    }
     if (req.body.minpnl == '') {
         erros.push({ texto: 'É necessário preencher os minutos para a instalação do painél elétrico.' })
-    }        
+    }
     const configuracao = {
         user: _id,
         slug: req.body.slug,
@@ -217,6 +336,9 @@ router.post('/novo', ehAdmin, (req, res) => {
         vlrhrp: req.body.vlrhrp,
         vlrhrg: req.body.vlrhrg,
         vlrhri: req.body.vlrhri,
+        vlrdrp: req.body.vlrdrp,
+        vlrdrg: req.body.vlrdrg,
+        vlrdri: req.body.vlrdri,
         hrstrb: req.body.hrstrb,
         medkmh: req.body.medkmh,
         markup: req.body.markup
@@ -232,7 +354,7 @@ router.post('/novo', ehAdmin, (req, res) => {
 })
 
 router.post('/editconfiguracao/', ehAdmin, (req, res) => {
-    
+
     /*
     console.log('_id=>'+req.body.id)
     console.log('req.body.slug=>'+ req.body.slug)
@@ -248,27 +370,30 @@ router.post('/editconfiguracao/', ehAdmin, (req, res) => {
     console.log('req.body.hrstrb=>'+req.body.hrstrb)
     console.log('req.body.medkmh=>'+req.body.medkmh)  
     */
-   
+
     Configuracao.findOne({ _id: req.body.id }).then((configuracao) => {
-    
-        configuracao.slug = req.body.slug       
+
+        configuracao.slug = req.body.slug
         configuracao.minatr = req.body.minatr
         configuracao.minest = req.body.minest
         configuracao.minmod = req.body.minmod
         configuracao.mininv = req.body.mininv
         configuracao.minstb = req.body.minstb
-        configuracao.minpnl = req.body.minpnl  
+        configuracao.minpnl = req.body.minpnl
         configuracao.mineae = req.body.mineae
-        configuracao.vlrhrp = req.body.vlrhrp       
-        configuracao.vlrhrg = req.body.vlrhrg    
+        configuracao.vlrhrp = req.body.vlrhrp
+        configuracao.vlrhrg = req.body.vlrhrg
         configuracao.vlrhri = req.body.vlrhri
+        configuracao.vlrdrp = req.body.vlrdrp
+        configuracao.vlrdrg = req.body.vlrdrg
+        configuracao.vlrdri = req.body.vlrdri
         configuracao.hrstrb = req.body.hrstrb
-        configuracao.medkmh = req.body.medkmh       
-        configuracao.markup = req.body.markup 
+        configuracao.medkmh = req.body.medkmh
+        configuracao.markup = req.body.markup
 
         configuracao.save().then(() => {
             req.flash('success_msg', 'Configuração salva com sucesso.')
-            res.redirect('/configuracao/consulta')
+            res.redirect('/configuracao/editconfiguracao/' + req.body.id)
         }).catch((err) => {
             req.flash('error_msg', 'Houve um erro ao salvar a configuração.')
             res.redirect('/configuracao/consulta')
@@ -279,182 +404,189 @@ router.post('/editconfiguracao/', ehAdmin, (req, res) => {
     })
 })
 
-router.post('/editregime/', ehAdmin, (req, res) => {
+router.post('/editempresa/', ehAdmin, (req, res) => {
 
     var erros = []
 
     if (req.body.alqNFS == '') {
-        erros.push({ texto: 'É necessário preencher a aliquota do ISS' })
+        erros.push({ texto: 'É necessário preencher a aliquota do ISS.' })
     }
     if (req.body.nome == '') {
-        erros.push({ texto: 'É necessário preencher o nome' })
+        erros.push({ texto: 'É necessário preencher o nome.' })
     }
-    if (req.body.regime == 'MEI') {
+    if (req.body.cnpj == '') {
+        erros.push({ texto: 'É necessário preencher o CNPJ.' })
+    }
+    if (req.body.empresa == 'MEI') {
         if (req.body.vlrDAS == '') {
-            erros.push({ texto: 'É necessário preencher o valor do DAS' })
+            erros.push({ texto: 'É necessário preencher o valor do DAS.' })
         }
     }
-    if (req.body.regime == 'Simples') {
+    if (req.body.empresa == 'Simples') {
         if (req.body.alqDAS == '') {
-            erros.push({ texto: 'É necessário preencher a aliquota do DAS' })
+            erros.push({ texto: 'É necessário preencher a aliquota do DAS.' })
         }
         if (req.body.vlrred == '') {
-            erros.push({ texto: 'É necessário preencher o valor de redução do calulo do Simples' })
+            erros.push({ texto: 'É necessário preencher o valor de redução do calulo do Simples.' })
         }
     }
 
-    if (req.body.regime == 'Lucro Real' || req.body.regime == 'Lucro Presumido') {
+    if (req.body.empresa == 'Lucro Real' || req.body.empresa == 'Lucro Presumido') {
 
         if (req.body.alqPIS == '') {
-            erros.push({ texto: 'É necessário preencher a aliquota do PIS' })
+            erros.push({ texto: 'É necessário preencher a aliquota do PIS.' })
         }
         if (req.body.alqCOFINS == '') {
-            erros.push({ texto: 'É necessário preencher a aliquota do COFINS' })
+            erros.push({ texto: 'É necessário preencher a aliquota do COFINS.' })
         }
         if (req.body.alqIRPJAdd == '') {
-            erros.push({ texto: 'É necessário preencher a aliquota do IRPJ Adicional' })
+            erros.push({ texto: 'É necessário preencher a aliquota do IRPJ Adicional.' })
         }
         if (req.body.alqIRPJ == '') {
-            erros.push({ texto: 'É necessário preencher a aliquota do IRPJ' })
+            erros.push({ texto: 'É necessário preencher a aliquota do IRPJ.' })
         }
         if (req.body.alqCSLL == '') {
-            erros.push({ texto: 'É necessário preencher a aliquota do CSLL' })
+            erros.push({ texto: 'É necessário preencher a aliquota do CSLL.' })
         }
     }
 
-    if (req.body.regime == 'Simples' && req.body.prjFat == '') {
-        erros.push({ texto: 'É necessário preencher o valor de projeção de faturamento' })
+    if (req.body.empresa == 'Simples' && req.body.prjFat == '') {
+        erros.push({ texto: 'É necessário preencher o valor de projeção de faturamento.' })
     }
 
-    if (req.body.regime == 'Lucro Real' && req.body.prjLR == '') {
-        erros.push({ texto: 'É necessário preencher o valor de projeção do Lucro Real' })
+    if (req.body.empresa == 'Lucro Real' && req.body.prjLR == '') {
+        erros.push({ texto: 'É necessário preencher o valor de projeção do Lucro Real.' })
     }
 
-    if (req.body.regime == 'Lucro Presumido' && req.body.prjLP == '') {
-        erros.push({ texto: 'É necessário preencher o valor de projeção de faturamento' })
+    if (req.body.empresa == 'Lucro Presumido' && req.body.prjLP == '') {
+        erros.push({ texto: 'É necessário preencher o valor de projeção de faturamento.' })
     }
 
     if (erros.length > 0) {
 
-        Regime.findOne({ _id: req.body.id }).then((regime) => {
-            res.render('configuracao/editregime', { erros: erros, regime: regime })
+        Empresa.findOne({ _id: req.body.id }).then((empresa) => {
+            res.render('configuracao/empresa', { erros: erros, empresa: empresa })
         }).catch((err) => {
-            req.flash('error_msg', 'Houve um erro ao encontrar o regime.')
-            res.redirect('/configuracao/consultaregime')
+            req.flash('error_msg', 'Houve um erro ao encontrar o empresa.')
+            res.redirect('/configuracao/consultaempresa')
         })
 
     } else {
-        Regime.findOne({ _id: req.body.id }).then((regime) => {
+        Empresa.findOne({ _id: req.body.id }).then((empresa) => {
 
-            regime.nome = req.body.nome
-            regime.regime = req.body.regime
-            regime.tipo = req.body.tipo
+            empresa.nome = req.body.nome
+            empresa.cnpj = req.body.cnpj
+            empresa.empresa = req.body.empresa
+            empresa.regime = req.body.regime
+            empresa.tipo = req.body.tipo
 
             if (req.body.alqDAS == '' || parseFloat(req.body.alqDAS) == 0) {
-                regime.alqDAS = 0
+                empresa.alqDAS = 0
             } else {
-                regime.alqDAS = req.body.alqDAS
+                empresa.alqDAS = req.body.alqDAS
             }
 
             if (req.body.alqNFS == '' || parseFloat(req.body.alqNFS) == 0) {
-                regime.alqNFS = 0
+                empresa.alqNFS = 0
             } else {
-                regime.alqNFS = req.body.alqNFS
+                empresa.alqNFS = req.body.alqNFS
             }
 
             if (req.body.alqICMS == '' || parseFloat(req.body.alqICMS) == 0) {
-                regime.alqICMS = 0
+                empresa.alqICMS = 0
             } else {
-                regime.alqICMS = req.body.alqICMS
+                empresa.alqICMS = req.body.alqICMS
             }
 
             if (req.body.alqIRPJ == '' || parseFloat(req.body.alqIRPJ) == 0) {
-                regime.alqIRPJ = 0
+                empresa.alqIRPJ = 0
             } else {
-                regime.alqIRPJ = req.body.alqIRPJ
+                empresa.alqIRPJ = req.body.alqIRPJ
             }
 
             if (req.body.alqIRPJAdd == '' || parseFloat(req.body.alqIRPJAdd) == 0) {
-                regime.alqIRPJAdd = 0
+                empresa.alqIRPJAdd = 0
             } else {
-                regime.alqIRPJAdd = req.body.alqIRPJAdd
+                empresa.alqIRPJAdd = req.body.alqIRPJAdd
             }
 
             if (req.body.alqCSLL == '' || parseFloat(req.body.alqCSLL) == 0) {
-                regime.alqCSLL = 0
+                empresa.alqCSLL = 0
             } else {
-                regime.alqCSLL = req.body.alqCSLL
+                empresa.alqCSLL = req.body.alqCSLL
             }
 
             if (req.body.alqPIS == '' || parseFloat(req.body.alqPIS) == 0) {
-                regime.alqPIS = 0
+                empresa.alqPIS = 0
             } else {
-                regime.alqPIS = req.body.alqPIS
+                empresa.alqPIS = req.body.alqPIS
             }
 
             if (req.body.alqCOFINS == '' || parseFloat(req.body.alqCOFINS) == 0) {
-                regime.alqCOFINS = 0
+                empresa.alqCOFINS = 0
             } else {
-                regime.alqCOFINS = req.body.alqCOFINS
+                empresa.alqCOFINS = req.body.alqCOFINS
             }
 
             if (req.body.vlrred == '' || parseFloat(req.body.vlrred) == 0) {
-                regime.vlrred = 0
+                empresa.vlrred = 0
             } else {
-                regime.vlrred = req.body.vlrred
+                empresa.vlrred = req.body.vlrred
             }
 
             if (req.body.prjFat == '' || parseFloat(req.body.prjFat) == 0) {
-                regime.prjFat = 0
+                empresa.prjFat = 0
             } else {
-                regime.prjFat = req.body.prjFat
+                empresa.prjFat = req.body.prjFat
             }
 
             if (req.body.prjLR == '' || parseFloat(req.body.prjLR) == 0) {
-                regime.prjLR = 0
+                empresa.prjLR = 0
             } else {
-                regime.prjLR = req.body.prjLR
+                empresa.prjLR = req.body.prjLR
             }
 
             if (req.body.prjLP == '' || parseFloat(req.body.prjLP) == 0) {
-                regime.prjLP = 0
+                empresa.prjLP = 0
             } else {
-                regime.prjLP = req.body.prjLP
-            }
-            
-            if (req.body.alteraTipo != null) {
-                regime.tipodesp = req.body.tipodesp
+                empresa.prjLP = req.body.prjLP
             }
 
             if (req.body.desadm == '' || parseFloat(req.body.desadm) == 0) {
-                regime.desadm = 0
+                empresa.desadm = 0
             } else {
-                regime.desadm = req.body.desadm
+                empresa.desadm = req.body.desadm
             }
 
             if (req.body.perdes == '' || parseFloat(req.body.perdes) == 0) {
-                regime.perdes = 0
+                empresa.perdes = 0
             } else {
-                regime.perdes = req.body.perdes
+                empresa.perdes = req.body.perdes
             }
 
             if (req.body.estkwp == '' || parseFloat(req.body.estkwp) == 0) {
-                regime.estkwp = 0
+                empresa.estkwp = 0
             } else {
-                regime.estkwp = req.body.estkwp
+                empresa.estkwp = req.body.estkwp
             }
 
-            regime.save().then(() => {
-                req.flash('success_msg', 'Regime alterado com sucesso')
-                res.redirect('/configuracao/consultaregime')
+            if (req.body.selecionado == 'quantidade') {
+                empresa.tipodesp = 'quantidade'
+            } else {
+                empresa.tipodesp = 'potencia'
+            }
+
+            empresa.save().then(() => {
+                req.flash('success_msg', 'Empresa alterado com sucesso')
+                res.redirect('/configuracao/editempresa/' + empresa._id)
             }).catch((err) => {
-                req.flash('error_msg', 'Houve um erro ao salvar o regime.')
-                res.redirect('/configuracao/consultaregime')
+                req.flash('error_msg', 'Houve um erro ao salvar o empresa.')
+                res.redirect('/configuracao/consultaempresa')
             })
 
         }).catch((err) => {
-            req.flash('error_msg', 'Houve um erro ao encontrar o regime.')
-            res.redirect('/configuracao/consultaregime')
+            req.flash('error_msg', 'Houve um erro ao encontrar o empresa.')
+            res.redirect('/configuracao/consultaempresa')
         })
     }
 })

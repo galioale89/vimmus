@@ -21,27 +21,30 @@
 
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
     <div style="width: 100%;">
-        <h5 class="header">{{cliente.nome}} </h5>
-    </div>
-
-    <div class="btn-group  col-12 mx-auto'">
-        <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
-            Gestão</a>
-        <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"></i>
-            Projetista</a>
-        <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"></i>
-            Instalação</a>
-        <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-puzzle"></i>
-            Gerenciamento</a>
-        <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i
-                class="bi bi-calculator"></i>
-            Tributos</a>
+        <h5 class="header"> {{cliente.nome}} </h5>
     </div>
 
     <form action="/gerenciamento/tributos" method="post">
 
-        <input type='hidden' name='id' value='{{projeto._id}}'>
+        <input type='hidden' name='id' value='{{projeto._id}}'></input>
 
+        <div class='btn-group col-12 mx-auto'>
+            <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'> <i
+                    class="bi bi-house"></i>Projeto</a>
+            <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
+                Gestão</a>
+            <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+                    class="bi bi-pencil"></i>
+                Projetista</a>
+            <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+                    class="bi bi-tools"></i>
+                Instalação</a>
+            <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+                    class="bi bi-puzzle"></i>
+                Gerenciamento</a>
+            <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i
+                    class="bi bi-calculator"></i> Tributos</a>
+        </div>
         <div class='row mb-2'>
             <div class="col-md-8">
                 <div class="row mt-1 mb-2">
@@ -64,8 +67,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-7 text-end">
-                                <label for="estrutura" class="fw-bold col-form-label col-form-label-sm">Regime
-                                    Tributário:</label>
+                                <label class="fw-bold col-form-label col-form-label-sm">Regime Tributário:</label>
                                 <label class="fw-bold col-form-label col-form-label-sm" />Projeção Faturamento ou Lucro:
                                 </label>
                                 {{#if ehSimples }}
@@ -74,16 +76,16 @@
                                 {{/if}}
                             </div>
                             <div class="col-md-5">
-                                <label class='col-form-label col-form-label-sm'>{{regime.regime}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>{{empresa.regime}}</label><br>
                                 {{#if ehSimples }}
-                                <label class="col-form-label col-form-label-sm">R$ {{regime.prjFat}}</label><br>
-                                <label class="col-form-label col-form-label-sm">R$ {{regime.vlrred}}</label>
+                                <label class="col-form-label col-form-label-sm">R$ {{empresa.prjFat}}</label><br>
+                                <label class="col-form-label col-form-label-sm">R$ {{empresa.vlrred}}</label>
                                 {{/if}}
                                 {{#if ehLR}}
-                                <label class="col-form-label col-form-label-sm">R$ {{regime.prjLR}}</label>
+                                <label class="col-form-label col-form-label-sm">R$ {{empresa.prjLR}}</label>
                                 {{/if}}
                                 {{#if ehLP}}
-                                <label class="col-form-label col-form-label-sm">R$ {{regime.prjLP}}</label>
+                                <label class="col-form-label col-form-label-sm">R$ {{empresa.prjLP}}</label>
                                 {{/if}}
                             </div>
                         </div>
@@ -99,9 +101,9 @@
                                     <label class="fw-bold col-form-label col-form-label-sm">ICMS: </label>
                                 </div>
                                 <div class="col-md-2">
-                                    <label class="col-form-label col-form-label-sm">{{regime.alqDAS}} %</label><br>
-                                    <label class="col-form-label col-form-label-sm">{{regime.alqNFS}} %</label><br>
-                                    <label class="col-form-label col-form-label-sm">{{regime.alqICMS}} %</label>
+                                    <label class="col-form-label col-form-label-sm">{{empresa.alqDAS}} %</label><br>
+                                    <label class="col-form-label col-form-label-sm">{{empresa.alqNFS}} %</label><br>
+                                    <label class="col-form-label col-form-label-sm">{{empresa.alqICMS}} %</label>
                                 </div>
                                 <div class="col-md-4 text-end">
                                     <label class="fw-bold col-form-label col-form-label-sm">IRPJ: </label><br>
@@ -111,11 +113,11 @@
                                     <label class="fw-bold col-form-label col-form-label-sm">CSLL: </label>
                                 </div>
                                 <div class="col-md-2">
-                                    <label class="col-form-label col-form-label-sm">{{regime.alqIRPJ}}%</label><br>
-                                    <label class="col-form-label col-form-label-sm">{{regime.alqIRPJAdd}}%</label><br>
-                                    <label class="col-form-label col-form-label-sm">{{regime.alqPIS}}%</label><br>
-                                    <label class="col-form-label col-form-label-sm">{{regime.alqCOFINS}}%</label><br>
-                                    <label class="col-form-label col-form-label-sm">{{regime.alqCSLL}}%</label>
+                                    <label class="col-form-label col-form-label-sm">{{empresa.alqIRPJ}}%</label><br>
+                                    <label class="col-form-label col-form-label-sm">{{empresa.alqIRPJAdd}}%</label><br>
+                                    <label class="col-form-label col-form-label-sm">{{empresa.alqPIS}}%</label><br>
+                                    <label class="col-form-label col-form-label-sm">{{empresa.alqCOFINS}}%</label><br>
+                                    <label class="col-form-label col-form-label-sm">{{empresa.alqCSLL}}%</label>
                                 </div>
                             </div>
                         </div>
@@ -162,11 +164,11 @@
                         Aplicar</button>
                     <a href='/gerenciamento/dashboard/{{projeto._id}}' class='btn btn-sm btn-primary'>
                         <i class="bi bi-bar-chart"></i> Dashboard</a>
-                    <a href='/menu' class='btn btn-sm btn-primary'><i class="bi bi-arrow-return-left"></i></a>
+                    <a href='/menu' class='btn btn-sm btn-primary'> <i class="bi bi-arrow-return-left"></i></a>
                 </div>
                 <div class='contorno-titulo-dem mt-2' style="font-size: 20px;">
                     <label class='fw-bold col-form-label'>Demonstrativo</label><br>
-                    <label class='fw-bold col-form-label col-form-label-sm'>{{regime.regime}}</label><br>
+                    <label class='fw-bold col-form-label col-form-label-sm'>{{empresa.regime}}</label><br>
                     <div class="row">
                         <div class="col-md-7 text-end">
                             <label class='fw-bold col-form-label col-form-label-sm'>(+)Total do Projeto:</label><br>

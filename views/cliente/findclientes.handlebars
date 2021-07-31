@@ -1,9 +1,8 @@
 <style>
     #header {
         width: 100%;
-        border: solid 1px;
-        border-color: grey;
-        background-color: rgb(40, 55, 86);
+        border-bottom: rgb(40, 55, 86) 0,1px solid;
+        color: rgb(40, 55, 86);
     }
 
     .filtro-selecao {
@@ -20,24 +19,23 @@
         <div class="row">
             <form action='/cliente/filtrar' method='post'>
                 <div class="col-md-4">
-                    <h5 class='mt-2' style="margin-left: 20px; color: white;">Pessoas </h5>
+                    <h5 class='mt-2' style="margin-left: 20px;">Pessoas </h5>
                 </div>
-                <hr style="color: white;">
                 <div class="row" style="margin-left: 10px;">
                     <div class="col mb-2">
-                        <label class='col-form-label col-form-label-sm' style="color: white;">Nome</label>
+                        <label class='col-form-label col-form-label-sm fw-bold' >Nome</label>
                         <div class="col">
                             <input name='nome' type='text' class="form-control form-control-sm">
                         </div>
                     </div>
                     <div class="col">
-                        <label class='col-form-label col-form-label-sm' style="color: white;">UF</label>
+                        <label class='col-form-label col-form-label-sm fw-bold' >UF</label>
                         <div class="col">
                             <input name='uf' type='text' class="form-control form-control-sm">
                         </div>
                     </div>
                     <div class="col">
-                        <label class='col-form-label col-form-label-sm' style="color: white;">Cidade</label>
+                        <label class='col-form-label col-form-label-sm fw-bold' >Cidade</label>
                         <div class="col">
                             <input name='cidade' type='text' class="form-control form-control-sm">
                         </div>

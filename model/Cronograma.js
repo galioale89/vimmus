@@ -20,46 +20,90 @@ const Cronograma = new Schema({
         type: String,
         require: true
     },
+    agendaPlaIni: {
+        type: Number,
+        require: true
+    },
     dateateini: {
         type: String,
+        require: true
+    },
+    agendaAteIni: {
+        type: Number,
         require: true
     },
     dateprjini: {
         type: String,
         require: true
     },
+    agendaPrjIni: {
+        type: Number,
+        require: true
+    },
     dateestini: {
         type: String,
+        require: true
+    },
+    agendaEstIni: {
+        type: Number,
         require: true
     },
     dateinvini: {
         type: String,
         require: true
     },
+    agendaInvIni: {
+        type: Number,
+        require: true
+    },
     datemodini: {
         type: String,
+        require: true
+    },
+    agendaModIni: {
+        type: Number,
         require: true
     },
     dateeaeini: {
         type: String,
         require: true
     },
+    agendaEaeIni: {
+        type: Number,
+        require: true
+    },    
     datestbini: {
         type: String,
         require: true
     },
+    agendaStbIni: {
+        type: Number,
+        require: true
+    },    
     datepnlini: {
         type: String,
+        require: true
+    },
+    agendaPnlIni: {
+        type: Number,
         require: true
     },
     datevisini: {
         type: String,
         require: true
     },
+    agendaVisIni: {
+        type: Number,
+        require: true
+    },    
     dateplafim: {
         type: String,
         require: true
     },
+    plafim: {
+        type: Number,
+        require: true
+    },    
     agendaPlaFim: {
         type: Number,
         require: true        

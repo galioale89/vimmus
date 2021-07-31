@@ -6,10 +6,11 @@
 <script>
     function infoEstrutura() {
         alert('Essa atividade considera a concreatagem das pilastras, a montagem das bases e a fixação dos suportes.')
-    }    
+    }
 </script>
 <div class="container mt-4 card tamanhodiv">
-    <label for="minutos" class='fw-bold mt-2'> <i class="bi bi-wrench"></i> Configurações básicas de tempo e custos</label>
+    <label for="minutos" class='fw-bold mt-2'> <i class="bi bi-wrench"></i> Configurações básicas de tempo e
+        custos</label>
     <br>
     <form action='/configuracao/novo' method='post'>
         <div class="row mb-4 text-end">
@@ -28,11 +29,13 @@
                 <div class='row mb-2 text-end'>
                     <div class="col-md-6">
                         <label class='fw-bold col-form-label col-form-label-sm mb-1'> Aterramento: </label><br>
-                        <label class="fw-bold col-form-label col-form-label-sm mb-1">Estrutura:<i class='bi bi-info-circle' onmousemove="infoEstrutura()" ></i></label><br>
+                        <label class="fw-bold col-form-label col-form-label-sm mb-1">Estrutura:<i
+                                class='bi bi-info-circle' onmousemove="infoEstrutura()"></i></label><br>
                         <label class='fw-bold col-form-label col-form-label-sm mb-1'> Módulos: </label><br>
                         <label class='fw-bold col-form-label col-form-label-sm mb-1'> Inversores: </label><br>
                         <label class='fw-bold col-form-label col-form-label-sm mb-1'> String Box: </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Estação de Armazenamento: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Estação de Armazenamento:
+                        </label><br>
                         <label class='fw-bold col-form-label col-form-label-sm mb-1'> Painél Elétrico: </label><br>
                     </div>
                     <div class="col-md-6">
@@ -47,7 +50,7 @@
                         <input type='number' id='minstb' name='minstb' value='{{configuracoes.minstb}}'
                             class='form-control form-control-sm mb-1'>
                         <input type='number' id='mineae' name='mineae' value='{{configuracoes.mineae}}'
-                            class='form-control form-control-sm mb-1'>                            
+                            class='form-control form-control-sm mb-1'>
                         <input type='number' id='minpnl' name='minpnl' value='{{configuracoes.minpnl}}'
                             class='form-control form-control-sm mb-1'>
                     </div>
@@ -55,21 +58,42 @@
             </div>
 
             <div class="col-md-6 text-center">
-                <label class='fw-bold col-form-label col-form-label-sm'>Custo Hora/R$</label>
-                <hr>
-                <div class='row mb-2 text-end'>
+                <div class="row">
                     <div class="col-md-6">
-                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Projetista:</label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Gestor: </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Instalador:</label>
+                        <label class='fw-bold col-form-label col-form-label-sm'>Custo R$/hora</label>
+                        <div class='row mb-2 text-end'>
+                            <div class="col-md-6">
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'> Projetista:</label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'> Gestor: </label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'> Instalador:</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type='number' id='vlrhrp' name='vlrhrp' value='{{configuracoes.vlrhrp}}'
+                                    class='form-control form-control-sm'>
+                                <input type='number' id='vlrhrg' name='vlrhrg' value='{{configuracoes.vlrhrg}}'
+                                    class='form-control form-control-sm mt-1'>
+                                <input type='number' id='vlrhri' name='vlrhri' value='{{configuracoes.vlrhri}}'
+                                    class='form-control form-control-sm mt-1'>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-6">
-                        <input type='number' id='vlrhrp' name='vlrhrp' value='{{configuracoes.vlrhrp}}'
-                            class='form-control form-control-sm'>
-                        <input type='number' id='vlrhrg' name='vlrhrg' value='{{configuracoes.vlrhrg}}'
-                            class='form-control form-control-sm mt-1'>
-                        <input type='number' id='vlrhri' name='vlrhri' value='{{configuracoes.vlrhri}}'
-                            class='form-control form-control-sm mt-1'>
+                        <label class='fw-bold col-form-label col-form-label-sm'>Custo R$/dia</label>
+                        <div class='row mb-2 text-end'>
+                            <div class="col-md-6">
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'> Projetista:</label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'> Gestor: </label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'> Instalador:</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type='number' id='vlrdrp' name='vlrdrp' value='{{configuracoes.vlrdrp}}'
+                                    class='form-control form-control-sm'>
+                                <input type='number' id='vlrdrg' name='vlrdrg' value='{{configuracoes.vlrdrg}}'
+                                    class='form-control form-control-sm mt-1'>
+                                <input type='number' id='vlrdri' name='vlrdri' value='{{configuracoes.vlrdri}}'
+                                    class='form-control form-control-sm mt-1'>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <hr>
@@ -81,13 +105,13 @@
                     </div>
                     <div class="col-md-6">
                         <input type='number' id='markup' name='markup' value='{{configuracoes.markup}}'
-                            class='form-control form-control-sm mt-1'>                        
+                            class='form-control form-control-sm mt-1'>
                         <input type='number' id='medkmh' name='medkmh' value='{{configuracoes.medkmh}}'
                             class='form-control form-control-sm mt-1'>
                         <input type='text' id='hrstrb' name='hrstrb' value='{{configuracoes.hrstrb}}'
                             class='form-control form-control-sm mt-1'>
                     </div>
-                </div>               
+                </div>
             </div>
         </div>
         <div class="row mt-2">

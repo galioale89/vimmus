@@ -90,21 +90,6 @@ app.get('/logout', function (req, res) {
 app.get('/', (req, res) => {
   res.render('index')
 })
-app.get('/termo', (req, res) => {
-  res.render('termo')
-})
-app.get('/politica', (req, res) => {
-  res.render('politica')
-})
-app.get('/quem', (req, res) => {
-  res.render('quem')
-})
-app.get('/beneficios', (req, res) => {
-  res.render('beneficios')
-})
-app.get('/planilha', (req, res) => {
-  res.render('planilha')
-})
 //Direcionando para página principal
 app.get('/menu', ehAdmin, (req, res) => {
   var perVlr = 0
