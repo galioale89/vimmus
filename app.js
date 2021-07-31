@@ -63,10 +63,10 @@ app.set('view engine', 'handlebars')
 
 //Configurando pasta de imagens 
 app.use(express.static('imagens'))
-app.use(express.static('imagens/nav'))
-app.use(express.static('imagens/quem'))
-app.use(express.static('imagens/beneficios'))
-app.use(express.static('imagens/upload'))
+//app.use(express.static('imagens/nav'))
+//app.use(express.static('imagens/quem'))
+//app.use(express.static('imagens/beneficios'))
+//app.use(express.static('imagens/upload'))
 
 //Mongoose DB
 mongoose.Promise = global.Promise

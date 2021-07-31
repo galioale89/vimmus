@@ -1,29 +1,5 @@
 <nav {{#if user}}id='menu-fixo-user' {{else}}id='menu-fixo' {{/if}} class='navbar navbar-expand-lg' style="position: fixed;z-index: 999;text-decoration: none;width: 100%;">
   <div class="container-fluid">
-    {{#each user}}
-    <h6 class="fw-bold" style="color: white;"> {{#if nome}} Olá {{nome}},
-      {{/if}}
-    </h6>
-    {{else}}
-    <div class="collapse navbar-collapse">
-      <ul class='navbar-nav mb-2 mb-lg-0'>
-        <li>
-          <a id='titulo-inicio' class="nav-link fw-bold" {{#if user}}style="color: white" {{else}}{{/if}} href="/">Início</a>
-        </li>
-        <li>
-          <a id='titulo-beneficio' class="nav-link fw-bold" {{#if user}}style="color: white" {{else}} {{/if}}
-            href="/beneficios">Benefícios</a>
-        </li>
-        <li>
-          <a id='titulo-avimmus' class="nav-link fw-bold" {{#if user}}style="color: white" {{else}} {{/if}} href="/quem">A VIMMUS</a>
-        </li>
-        <li>
-          <a id='titulo-avimmus' class="nav-link fw-bold" {{#if user}}style="color: white" {{else}} {{/if}} href="/planilha">Planilha de Simulação</a>
-        </li>        
-      </ul>
-    </div>
-    {{/each}}
-
     <div class="collapse navbar-collapse d-flex justify-content-end">
       <!-- Default dropstart button -->
       {{#if user}}
@@ -37,10 +13,6 @@
           <a href='/logout' class="botao-filter">Sair</a>
         </ul>
       </div>
-      {{else}}
-      <a href="/usuario/login" class="login"><i class='bi bi-file-earmark-person'></i>
-        Login</a>
-      {{/if}}
     </div>
   </div>
 </nav>
