@@ -3,12 +3,11 @@
 <nav id='menu-fixo-user' class='navbar navbar-expand-lg'
   style="position: relative;z-index: 999;text-decoration: none;width: 100%;">
   <div class="justify-content-start">
-    <label style="color: white;">Olá {{#each user}}{{nome}}{{/each}}</label>
+    <label>Olá {{#each user}}{{nome}}{{/each}}</label>
   </div>
   <div class="collapse navbar-collapse d-flex justify-content-end">
     <div class="dropstart">
-      <button class="filter" data-bs-toggle="dropdown" aria-expanded="false"><i class='bi bi-filter'></i>
-      </button>
+      <button class="filter" data-bs-toggle="dropdown" aria-expanded="false"><i class='bi bi-filter'></i></button>
       <ul class="dropdown-menu">
         <a href='/projeto/novo' class="botao-filter"><i class="bi bi-file-arrow-up"></i> Novo Projeto</a><br>
         <a href='/projeto/consulta' class="botao-filter"><i class="bi bi-search"></i> Busca Projeto</a><br>
