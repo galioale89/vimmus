@@ -30,8 +30,8 @@ const { ehAdmin } = require('../helpers/ehAdmin')
 //Configurando pasta de imagens 
 router.use(express.static('imagens'))
 
-//const TextMessageService = require('comtele-sdk').TextMessageService
-//const apiKey = "8dbd4fb5-79af-45d6-a0b7-583a3c2c7d30"
+const TextMessageService = require('comtele-sdk').TextMessageService
+const apiKey = "8dbd4fb5-79af-45d6-a0b7-583a3c2c7d30"
 
 router.get('/dashboard/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
@@ -1540,7 +1540,6 @@ router.get('/enviaMensagem/:id', ehAdmin, (req, res) => {
                 to = cliente.celular
                 console.log(to)
 
-                /*
                 var textMessageService = new TextMessageService(apiKey)
                 textMessageService.send('Vimmus', mensagem, ['49991832978'], result => {
                     console.log(result)
@@ -1548,7 +1547,6 @@ router.get('/enviaMensagem/:id', ehAdmin, (req, res) => {
                         req.flash('error_msg', 'Falha interna. Não foi possível enviar a mensagem.')
                         res.redirect('/gerenciamento/cronograma/' + req.params.id)
                     } else {
-                */
                         projeto.mensagem = true
                         projeto.save().then(() => {
                             req.flash('success_msg', 'Mensagem enviada para: ' + cliente.nome + ' com sucesso.')
@@ -1557,8 +1555,8 @@ router.get('/enviaMensagem/:id', ehAdmin, (req, res) => {
                             req.flash('error_msg', 'Falha ao salvar o projeto.')
                             res.redirect('/gerenciamento/cronograma/' + req.params.id)
                         })
-                    //}
-                //})
+                    }
+                })
             }).catch((err) => {
                 req.flash('error_msg', 'Falha ao encontrar o cronograma.')
                 res.redirect('/gerenciamento/cronograma/' + req.params.id)

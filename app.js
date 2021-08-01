@@ -62,7 +62,7 @@ app.engine('handlebars', handlebars({ defaulLayout: "main" }))
 app.set('view engine', 'handlebars')
 
 //Configurando pasta de imagens 
-app.use(express.static('imagens'))
+app.use(express.static('public/'))
 
 //Mongoose DB
 mongoose.Promise = global.Promise

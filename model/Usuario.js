@@ -61,7 +61,11 @@ const Usuario = new Schema({
     dataexp: {
         type: String,
         require: false
-    }        
+    },
+    pgto: {
+        type: String,
+        require: false
+    }
 })
 
 Mongoose.model("usuario", Usuario)

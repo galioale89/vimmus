@@ -87,13 +87,19 @@
   <section id="login-page">
     <div class="container">
       <div class="row justify-content-center">
-        <div class="col-lg-4 col-md-8">
+        <div class="col-lg-6 col-md-8">
           <h1 class="logo">VIMMUS<span>®</span></h1>
-          <form action="/usuario/login" method="post">
-            <input type="text" name="usuario" placeholder="digite seu usuário">
-            <input name="senha" type="password" placeholder="digite sua senha">
+          <form>
+            <label for="email">Nome completo</label>
+            <input type="text" name="email" placeholder="digite seu nome completo">
+            <label for="email">E-mail</label>
+            <input type="text" name="email" placeholder="digite seu e-mail">
+            <label for="pass">Senha</label>
+            <input name="pass" type="password">
+            <label for="pass">Confirme a senha</label>
+            <input name="pass" type="password">
             <div style="text-align: right;">
-              <button class="primary-btn">Logar</button>
+              <button class="primary-btn">Cadastrar</button>
             </div>
           </form>
         </div>

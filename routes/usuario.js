@@ -43,6 +43,10 @@ router.get('/editar/:id', ehAdmin, (req, res) => {
     })
 })
 
+router.get('/registrar', (req, res) => {
+    res.render('usuario/registro')
+})
+
 router.post('/enviar', (req, res) => {
     var sucesso = []
     var erros = []
@@ -55,6 +59,21 @@ router.post('/enviar', (req, res) => {
     if (!req.body.email || typeof req.body.email == undefined || req.body.email == true) {
         erros.push({ texto: "É necessário cadastrar um e-mail." })
     }
+    if (req.body.pgto == '1') {
+
+        if ((req.body.senha != '' && req.body.senharep == '') || (req.body.senha == '' && req.body.senharep != '')) {
+            if (!req.body.senha || typeof req.body.senha == undefined || req.body.senha == true) {
+                erros.push({ texto: "Senha Inválida" })
+            }
+            if (validaSenha.length < 5) {
+                erros.push({ texto: "A senha deve ter ao menos 6 caracteres." })
+            }
+
+            if (req.body.senha != req.body.senharep) {
+                erros.push({ texto: "Senhas diferentes. Verificar." })
+            }
+        }
+    }
     if (erros.length > 0) {
         res.render('index', { erros: erros })
     } else {
@@ -62,30 +81,42 @@ router.post('/enviar', (req, res) => {
         var email = req.body.email
         var email_mais = req.body.email + ', solucoes@vimmus.com.br'
 
-        var nome = req.body.nome
-        nome = nome.toLowerCase()
-
-        var usuario = nome.split(' ')
-        if (usuario[0].length == 0) {
-            usuario = nome
+        var nome
+        var usuario
+        if (req.body.pgto == '0') {
+            nome = req.body.nome
+            nome = nome.toLowerCase()
+            usuario = nome.split(' ')
+            if (usuario[0].length == 0) {
+                usuario = nome
+            } else {
+                usuario = usuario[0]
+            }
         } else {
-            usuario = usuario[0]
+            nome = req.body.nome
+            usuario = req.body.usuario
         }
 
         //Testando se usuário já está cadastrado
         Usuario.find({ usuario: usuario }).then((user) => {
+
             if (user.length != 0) {
                 var comp = Math.floor(Math.random() * (999 - 1)) + 1;
                 usuario = usuario + comp;
             }
 
             Usuario.find({ usuario: usuario }).then((user2) => {
-                if (user2.length != 0) {
-                    var comp = Math.floor(Math.random() * (999 - 1)) + 1;
-                    usuario = usuario + comp;
-                }
 
-                var senha = Math.floor(Math.random() * (999999 - 111111)) + 111111;
+                var senha
+                if (req.body.pgto == '0') {
+                    senha = Math.floor(Math.random() * (999999 - 111111)) + 111111;
+                    if (user2.length != 0) {
+                        var comp = Math.floor(Math.random() * (999 - 1)) + 1;
+                        usuario = usuario + comp;
+                    }
+                } else {
+                    senha = req.body.senha
+                }
 
                 var texto = 'Olá ' + req.body.nome + ',' + '\n' + '\n' +
                     'Aqui está seu usuário e senha para acessar o sistema da VIMMUS e começar a geranciar de forma eficáz seus projetos.' + '\n' +
@@ -117,42 +148,85 @@ router.post('/enviar', (req, res) => {
                         var mes = parseFloat(data.getMonth()) + 1
                         var dia = data.getDate()
 
-                        const novoUsuario = new Usuario({
-                            nome: req.body.nome,
-                            usuario: usuario,
-                            telefone: req.body.celular,
-                            email: email,
-                            ehAdmin: 3,
-                            senha: senha,
-                            data: ano + '' + mes + '' + dia
-                        })
+                        if (req.body.pgto == '0') {
+                            const novoUsuario = new Usuario({
+                                nome: req.body.nome,
+                                usuario: usuario,
+                                telefone: req.body.celular,
+                                email: email,
+                                ehAdmin: 3,
+                                senha: senha,
+                                data: ano + '' + mes + '' + dia
+                            })
+                            bcrypt.genSalt(10, (erro, salt) => {
+                                bcrypt.hash(novoUsuario.senha, salt, (erro, hash) => {
+                                    if (erro) {
+                                        req.flash("error_msg", "Houve um erro durante o salvamento do usuário")
+                                        res.redirect("/")
+                                    }
 
-                        bcrypt.genSalt(10, (erro, salt) => {
-                            bcrypt.hash(novoUsuario.senha, salt, (erro, hash) => {
-                                if (erro) {
-                                    req.flash("error_msg", "Houve um erro durante o salvamento do usuário")
-                                    res.redirect("/")
-                                }
+                                    novoUsuario.senha = hash
 
-                                novoUsuario.senha = hash
-
-                                novoUsuario.save().then(() => {
-                                    req.flash("success_msg", novoUsuario.nome + ', sua senha será enviada por e-mail para: ' + novoUsuario.email + ', e sua confirmação de acesso será feita em até 24 horas. Não esqueça de verificar suar caixa de spam!')
-                                    //Enviando e-mail
-                                    transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
-                                        if (err) {
-                                            return //console.log(err)
-                                        }
-                                        //console.log(info)
+                                    novoUsuario.save().then(() => {
+                                        req.flash("success_msg", novoUsuario.nome + ', sua senha será enviada por e-mail para: ' + novoUsuario.email + ', e sua confirmação de acesso será feita em até 24 horas. Não esqueça de verificar suar caixa de spam!')
+                                        //Enviando e-mail
+                                        transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
+                                            if (err) {
+                                                return //console.log(err)
+                                            }
+                                            //console.log(info)
+                                        })
+                                        res.redirect("/menu")
+                                    }).catch((err) => {
+                                        req.flash("error_msg", "Ocorreu uma falha interna")
+                                        res.redirect("/usuario/registro")
                                     })
-                                    res.redirect("/menu")
-                                }).catch((err) => {
-                                    req.flash("error_msg", "Ocorreu uma falha interna")
-                                    res.redirect("/usuario/registro")
                                 })
                             })
-                        })
-                        res.render('index', { sucesso: sucesso })
+                        } else {
+                            const novoUsuario = new Usuario({
+                                nome: req.body.nome,
+                                razao: req.body.razao,
+                                fantasia: req.body.fantasia,
+                                cnpj: req.body.cnpj,
+                                endereco: req.body.endereco,
+                                uf: req.body.estado,
+                                cidade: req.body.cidade,
+                                telefone: req.body.celular,
+                                usuario: usuario,
+                                email: email,
+                                senha: senha,
+                                ehAdmin: 3,
+                                data: ano + '' + mes + '' + dia,
+                                pgto: req.body.selecionado
+                            })
+                            bcrypt.genSalt(10, (erro, salt) => {
+                                bcrypt.hash(novoUsuario.senha, salt, (erro, hash) => {
+                                    if (erro) {
+                                        req.flash("error_msg", "Houve um erro durante o salvamento do usuário")
+                                        res.redirect("/")
+                                    }
+
+                                    novoUsuario.senha = hash
+
+                                    novoUsuario.save().then(() => {
+                                        req.flash("success_msg", novoUsuario.nome + ', sua senha será enviada por e-mail para: ' + novoUsuario.email + ', e sua confirmação de acesso será feita em até 24 horas. Não esqueça de verificar suar caixa de spam!')
+                                        //Enviando e-mail
+                                        transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
+                                            if (err) {
+                                                return //console.log(err)
+                                            }
+                                            //console.log(info)
+                                        })
+                                        res.render('index', { sucesso: 'Obrigado por escolher a Vimmus. Em breve entraremos em contato.' })
+
+                                    }).catch((err) => {
+                                        req.flash("error_msg", "Ocorreu uma falha interna")
+                                        res.redirect("/usuario/registro")
+                                    })
+                                })
+                            })
+                        }
                     }
                 }).catch((err) => {
                     req.flash("error_msg", "Houve um erro ao se registrar.")
@@ -207,8 +281,8 @@ router.post('/salvacontato', (req, res) => {
                 })
 
                 novoUsuario.save().then(() => {
-                    sucesso.push({texto: novoUsuario.nome + ', em breve entraremos em contato com você. Não esqueça de verificar sua caixa de spam!'})
-                    res.render('index', {sucesso:sucesso})
+                    sucesso.push({ texto: novoUsuario.nome + ', em breve entraremos em contato com você. Não esqueça de verificar sua caixa de spam!' })
+                    res.render('index', { sucesso })
                 }).catch((err) => {
                     req.flash("error_msg", "Ocorreu uma falha interna")
                     res.redirect("/usuario/registro")

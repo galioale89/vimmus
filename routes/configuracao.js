@@ -15,7 +15,7 @@ router.use(express.static('imagens'))
 const { ehAdmin } = require('../helpers/ehAdmin')
 
 router.get('/novo', ehAdmin, (req, res) => {
-    res.render('configuracao/addconfiguracao')
+    res.render('configuracao/configuracao')
 })
 
 router.get('/addempresa', ehAdmin, (req, res) => {
@@ -44,10 +44,10 @@ router.get('/consultaempresa', ehAdmin, (req, res) => {
 
 router.get('/editconfiguracao/:id', ehAdmin, (req, res) => {
     Configuracao.findOne({ _id: req.params.id }).lean().then((configuracoes) => {
-        res.render('configuracao/editconfiguracao', { configuracoes: configuracoes })
+        res.render('configuracao/configuracao', { configuracoes: configuracoes })
     }).catch((err) => {
         req.flash('error_msg', 'Houve um erro ao encontrar a configuração.')
-        res.redirect('/consultar')
+        res.redirect('/configuracao/editconfiguracao/' + req.params.id)
     })
 })
 
@@ -68,95 +68,98 @@ router.get('/editempresa/:id', ehAdmin, (req, res) => {
         var alqDAS
         var dasMEI
         var labelIRPJ
-        var labelIRJPAdd
+        var labelIRPJAdd
         var labelPIS
         var labelCOFINS
         var labelCSLL
         var labelDAS
         var labelMEI
 
+        console.log('empresa.tipodesp=>'+empresa.tipodesp)
         if (empresa.tipodesp == 'potencia') {
             checkKwp = 'checked'
             typeKwp = 'text'
             displayKwp = 'inline'
-            
+
         } else {
             checkQtd = 'checked'
             typeQtd = 'text'
             displayQtd = 'inline'
         }
 
-        if (empresa.regime == 'Simples'){
+        if (empresa.regime == 'Simples') {
             alqIRPJ = 'hidden'
             labelIRPJ = 'none'
             alqIRPJAdd = 'hidden'
             labelIRPJAdd = 'none'
             alqPIS = 'hidden'
-            labelPIS = 'none'            
+            labelPIS = 'none'
             alqCOFINS = 'hidden'
-            labelCOFINS = 'none'            
+            labelCOFINS = 'none'
             alqCSLL = 'hidden'
-            labelCSLL = 'none'   
-            dasMEI = 'none'                   
+            labelCSLL = 'none'
+            dasMEI = 'none'
             labelMEI = 'none'
-            alqDAS = 'inline'  
-            labelDAS = 'inline'  
-        }else{
+            alqDAS = 'inline'
+            labelDAS = 'inline'
+        } else {
             if (empresa.regime == 'Lucro Real' || empresa.regime == 'Lucro Presumido') {
                 alqIRPJ = 'text'
                 labelIRPJ = 'inline'
                 alqIRPJAdd = 'text'
                 labelIRPJAdd = 'inline'
                 alqPIS = 'text'
-                labelPIS = 'inline'            
+                labelPIS = 'inline'
                 alqCOFINS = 'text'
-                labelCOFINS = 'inline'            
+                labelCOFINS = 'inline'
                 alqCSLL = 'text'
-                labelCSLL = 'inline'   
-                dasMEI = 'none'                   
+                labelCSLL = 'inline'
+                dasMEI = 'none'
                 labelMEI = 'none'
-                alqDAS = 'none'  
-                labelDAS = 'none'  
-            }else{
+                alqDAS = 'none'
+                labelDAS = 'none'
+            } else {
                 alqIRPJ = 'hidden'
                 labelIRPJ = 'none'
                 alqIRPJAdd = 'hidden'
                 labelIRPJAdd = 'none'
                 alqPIS = 'hidden'
-                labelPIS = 'none'            
+                labelPIS = 'none'
                 alqCOFINS = 'hidden'
-                labelCOFINS = 'none'            
+                labelCOFINS = 'none'
                 alqCSLL = 'hidden'
-                labelCSLL = 'none'   
-                dasMEI = 'inline'                   
+                labelCSLL = 'none'
+                dasMEI = 'inline'
                 labelMEI = 'inline'
-                alqDAS = 'none'  
-                labelDAS = 'none'    
+                alqDAS = 'none'
+                labelDAS = 'none'
             }
         }
-        console.log('empresa=>'+empresa)
-        console.log('checkQtd=>'+checkQtd)
-        console.log('checkKwp=>'+checkKwp)
-        console.log('typeQtd=>'+typeQtd)
-        console.log('alqIRPJ=>'+alqIRPJ)
-        console.log('alqIRPJAdd=>'+alqIRPJAdd)
-        console.log('alqPIS=>'+alqPIS)
-        console.log('alqCOFINS=>'+alqCOFINS)
-        console.log('alqCSLL=>'+alqCSLL)
-        console.log('alqDAS=>'+alqDAS)
-        console.log('dasMEI=>'+dasMEI)
-        console.log('labelIRPJ=>'+labelIRPJ)
-        console.log('labelIRJPAdd=>'+labelIRJPAdd)
-        console.log('labelPIS=>'+labelPIS)
-        console.log('labelCOFINS=>'+labelCOFINS)
-        console.log('labelCSLL=>'+labelCSLL)
-        console.log('labelDAS=>'+labelDAS)
-        console.log('labelMEI=>'+labelMEI)
-
-        console.log(empresa.regime)
-        res.render('configuracao/empresa', { empresa, checkQtd, checkKwp, typeKwp, typeQtd, displayKwp, displayQtd,
-                                            alqIRPJ, alqIRPJAdd, alqPIS,alqCOFINS, alqCSLL, alqDAS, dasMEI,
-                                            labelIRPJ, labelIRPJAdd, labelPIS, labelCOFINS, labelCSLL, labelDAS, labelMEI })
+        //console.log('empresa=>' + empresa)
+        //console.log('checkQtd=>' + checkQtd)
+        //console.log('checkKwp=>' + checkKwp)
+        //console.log('typeQtd=>' + typeQtd)
+        //console.log('alqIRPJ=>' + alqIRPJ)
+        //console.log('alqIRPJAdd=>' + alqIRPJAdd)
+        //console.log('alqPIS=>' + alqPIS)
+        //console.log('alqCOFINS=>' + alqCOFINS)
+        //console.log('alqCSLL=>' + alqCSLL)
+        //console.log('alqDAS=>' + alqDAS)
+        //console.log('dasMEI=>' + dasMEI)
+        //console.log('labelIRPJ=>' + labelIRPJ)
+        //console.log('labelIRPJAdd=>' + labelIRPJAdd)
+        //console.log('labelPIS=>' + labelPIS)
+        //console.log('labelCOFINS=>' + labelCOFINS)
+        //console.log('labelCSLL=>' + labelCSLL)
+        //console.log('labelDAS=>' + labelDAS)
+        //console.log('labelMEI=>' + labelMEI)
+        //console.log(empresa.regime)
+        
+        res.render('configuracao/empresa', {
+            empresa, checkQtd, checkKwp, typeKwp, typeQtd, displayKwp, displayQtd,
+            alqIRPJ, alqIRPJAdd, alqPIS, alqCOFINS, alqCSLL, alqDAS, dasMEI,
+            labelIRPJ, labelIRPJAdd, labelPIS, labelCOFINS, labelCSLL, labelDAS, labelMEI
+        })
     }).catch((err) => {
         req.flash('error_msg', 'Houve um erro ao encontrar o empresa.')
         res.redirect('/configuracao/editempresa/' + req.params.id)
@@ -230,9 +233,9 @@ router.post('/addempresa', ehAdmin, (req, res) => {
         }
     }
 
-    if (req.body.empresa == 'Simples' && req.body.prjFat == '') {
-        erros.push({ texto: 'É necessário preencher o valor de projeção de faturamento.' })
-    }
+    // if (req.body.empresa == 'Simples' && req.body.prjFat == '') {
+    //     erros.push({ texto: 'É necessário preencher o valor de projeção de faturamento.' })
+    // }
 
     if (req.body.empresa == 'Lucro Real' && req.body.prjLR == '') {
         erros.push({ texto: 'É necessário preencher o valor de projeção do Lucro Real.' })
@@ -244,11 +247,12 @@ router.post('/addempresa', ehAdmin, (req, res) => {
 
     if (erros.length > 0) {
 
-        res.render('configuracao/addempresa', { erros: erros })
+        res.render('configuracao/empresa', { erros: erros })
 
     } else {
 
         var tipodesp
+        console.log('req.body.selecionado='+req.body.selecionado)
         if (req.body.selecionado == 'quantidade') {
             tipodesp = 'quantidade'
         } else {
@@ -287,11 +291,11 @@ router.post('/addempresa', ehAdmin, (req, res) => {
                 res.redirect('/configuracao/editempresa/' + empresa._id)
             }).catch((err) => {
                 req.flash('error_msg', 'Houve um erro ao encontrar a empresa.')
-                res.redirect('/configuracao/addempresa')
+                res.redirect('/configuracao/empresa')
             })
         }).catch((err) => {
             req.flash('error_msg', 'Houve um erro ao salvar a empresa.')
-            res.redirect('/configuracao/addempresa')
+            res.redirect('/configuracao/empresa')
         })
 
     }
@@ -299,6 +303,7 @@ router.post('/addempresa', ehAdmin, (req, res) => {
 
 router.post('/novo', ehAdmin, (req, res) => {
     const { _id } = req.user
+
     if (req.body.hrstrb == '') {
         erros.push({ texto: 'É necessário preencher as horas trabalhadas dos instaladores.' })
     }
@@ -345,11 +350,16 @@ router.post('/novo', ehAdmin, (req, res) => {
     }
 
     new Configuracao(configuracao).save().then(() => {
-        req.flash('success_msg', 'Configurações salvas com sucesso')
-        res.redirect('/menu')
+        Configuracao.findOne({ user: _id }).sort({ field: 'asc', _id: -1 }).then((config) => {
+            req.flash('success_msg', 'Configurações salvas com sucesso')
+            res.redirect('/configuracao/editconfiguracao/' + config._id)
+        }).catch((err) => {
+            req.flash('error_msg', 'Houve um erro ao encontrar as configurações.')
+            res.redirect('/configuracao/novo/')
+        })
     }).catch((err) => {
         req.flash('error_msg', 'Houve um erro ao salvar as configurações.')
-        res.redirect('/configuracao/novo')
+        res.redirect('/configuracao/novo/')
     })
 })
 
@@ -396,11 +406,11 @@ router.post('/editconfiguracao/', ehAdmin, (req, res) => {
             res.redirect('/configuracao/editconfiguracao/' + req.body.id)
         }).catch((err) => {
             req.flash('error_msg', 'Houve um erro ao salvar a configuração.')
-            res.redirect('/configuracao/consulta')
+            res.redirect('/configuracao/editconfiguracao/' + req.body.id)
         })
     }).catch((err) => {
         req.flash('error_msg', 'Houve um erro ao encontrar a configuração.')
-        res.redirect('/configuracao/consulta')
+        res.redirect('/configuracao/editconfiguracao/' + req.body.id)
     })
 })
 
@@ -479,6 +489,8 @@ router.post('/editempresa/', ehAdmin, (req, res) => {
             empresa.empresa = req.body.empresa
             empresa.regime = req.body.regime
             empresa.tipo = req.body.tipo
+
+            console.log('req.body.alqDAS=>'+req.body.alqDAS)
 
             if (req.body.alqDAS == '' || parseFloat(req.body.alqDAS) == 0) {
                 empresa.alqDAS = 0

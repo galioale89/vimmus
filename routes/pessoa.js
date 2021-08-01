@@ -9,7 +9,7 @@ const app = express()
 app.set('view engine', 'ejs')
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'imagens/upload/')
+        cb(null, 'public/upload/')
     },
     filename: function (req, file, cb) {
         cb(null, file.originalname)
@@ -31,8 +31,8 @@ const { ehAdmin } = require('../helpers/ehAdmin')
 const setData = require('../resources/setData')
 const dataMensagem = require('../resources/dataMensagem')
 
-router.use(express.static('imagens'))
-router.use(express.static('imagens/upload'))
+router.use(express.static('public/'))
+router.use(express.static('public/upload'))
 
 router.get('/vendedor', ehAdmin, (req, res) => {
 
@@ -566,7 +566,7 @@ router.get('/recursosPlanejamento/:id', ehAdmin, (req, res) => {
     var pla5 = ''
     var diferenca
     var ins_dif = 0
-    var limpaPla = ''
+    var limpaPla = true
 
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         Cronograma.findOne({ projeto: req.params.id }).lean().then((cronograma) => {
@@ -755,8 +755,8 @@ router.get('/recursosPlanejamento/:id', ehAdmin, (req, res) => {
 
                                                                     //console.log('ins_dentro_ultimo=>' + ins_dentro)
                                                                     //console.log('ins_fora_ultimo=>' + ins_fora)
-                                                                    if (equipepla.pla0 == '') {
-                                                                        limpaPla = 'disabled'
+                                                                    if (equipepla.pla0 == '' || typeof equipepla.pla0 == 'undefined' ) {
+                                                                        limpaPla = false
                                                                     }
                                                                     res.render('projeto/gerenciamento/recursosPlanejamento', { projeto, cronograma, equipepla, fora: ins_fora, dentro: ins_dentro, limpaPla })
 
@@ -840,8 +840,8 @@ router.get('/recursosPlanejamento/:id', ehAdmin, (req, res) => {
                                         })
                                         //console.log('ins_dentro_data=>' + ins_dentro)
                                         //console.log('ins_fora_data=>' + ins_fora)
-                                        if (equipepla.pla0 == '') {
-                                            limpaPla = 'disabled'
+                                        if (equipepla.pla0 == '' || typeof equipepla.pla0 == 'undefined' ) {
+                                            limpaPla = false
                                         }
                                         res.render('projeto/gerenciamento/recursosPlanejamento', { projeto, cronograma, equipepla, fora: ins_fora, dentro: ins_dentro, limpaPla })
 
@@ -891,7 +891,7 @@ router.get('/recursosProjetista/:id', ehAdmin, (req, res) => {
     var pro5 = ''
     var diferenca
     var ins_dif = 0
-    var limpaPro = ''
+    var limpaPro = true
 
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         Cronograma.findOne({ projeto: req.params.id }).lean().then((cronograma) => {
@@ -1080,8 +1080,8 @@ router.get('/recursosProjetista/:id', ehAdmin, (req, res) => {
 
                                                                     //console.log('ins_dentro=>' + ins_dentro)
                                                                     //console.log('ins_fora=>' + ins_fora)
-                                                                    if (equipepro.pro0 == '') {
-                                                                        limpaPro = 'disabled'
+                                                                    if (equipepro.pro0 == '' || typeof equipepro.pro0 == 'undefined' ) {
+                                                                        limpaPro = false
                                                                     }
                                                                     res.render('projeto/gerenciamento/recursosProjeto', { projeto, cronograma, fora: ins_fora, dentro: ins_dentro, limpaPro })
                                                                 }).catch((err) => {
@@ -1165,8 +1165,8 @@ router.get('/recursosProjetista/:id', ehAdmin, (req, res) => {
                                         })
                                         //console.log('ins_dentro=>' + ins_dentro)
                                         //console.log('ins_fora=>' + ins_fora)
-                                        if (equipepro.pro0 == '') {
-                                            limpaPro = 'disabled'
+                                        if (equipepro.pro0 == '' || typeof equipepro.pro0 == 'undefined' ) {
+                                            limpaPro = false
                                         }
                                         res.render('projeto/gerenciamento/recursosProjeto', { projeto, cronograma, fora: ins_fora, dentro: ins_dentro, limpaPro })
 
@@ -1216,7 +1216,7 @@ router.get('/recursosAterramento/:id', ehAdmin, (req, res) => {
     var ate5 = ''
     var diferenca
     var ins_dif = 0
-    var limpaAte = 0
+    var limpaAte = true
 
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         //console.log('validação dos instaladores.')
@@ -1419,8 +1419,8 @@ router.get('/recursosAterramento/:id', ehAdmin, (req, res) => {
 
                                                                     //console.log('ins_dentro_ultimo=>' + ins_dentro)
                                                                     //console.log('ins_fora_ultimo=>' + ins_fora)
-                                                                    if (equipeins.ate0 == '') {
-                                                                        limpaAte = 'disabled'
+                                                                    if (equipeins.ate0 == '' || typeof equipeins.ate0 == 'undefined' ) {
+                                                                        limpaAte = false
                                                                     }
                                                                     res.render('projeto/gerenciamento/recursosAterramento', { projeto, cronograma, fora: ins_fora, dentro: ins_dentro, limpaAte })
                                                                 }).catch((err) => {
@@ -1503,8 +1503,8 @@ router.get('/recursosAterramento/:id', ehAdmin, (req, res) => {
                                         })
                                         //console.log('ins_dentro_dif=>' + ins_dentro)
                                         //console.log('ins_fora_dif=>' + ins_fora)
-                                        if (equipeins.ate0 == '') {
-                                            limpaAte = 'disabled'
+                                        if (equipeins.ate0 == '' || typeof equipeins.ate0 == 'undefined' ) {
+                                            limpaAte = false
                                         }
                                         res.render('projeto/gerenciamento/recursosAterramento', { projeto, cronograma, fora: ins_fora, dentro: ins_dentro, limpaAte })
 
@@ -1554,7 +1554,7 @@ router.get('/recursosInversores/:id', ehAdmin, (req, res) => {
     var inv5 = ''
     var diferenca
     var ins_dif = 0
-    var limpaInv = ''
+    var limpaInv = true
 
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         //console.log('validação dos instaladores.')
@@ -1757,8 +1757,9 @@ router.get('/recursosInversores/:id', ehAdmin, (req, res) => {
 
                                                                     //console.log('ins_dentro_ultimo=>' + ins_dentro)
                                                                     //console.log('ins_fora_ultimo=>' + ins_fora)
-                                                                    if (equipeins.inv0 == '') {
-                                                                        limpaInv = 'disabled'
+                                                                    console.log('equipeins.inv0=>'+equipeins.inv0)
+                                                                    if (equipeins.inv0 == '' || typeof equipeins.inv0 == 'undefined' ) {
+                                                                        limpaInv = false
                                                                     }
                                                                     res.render('projeto/gerenciamento/recursosInversores', { projeto, cronograma, fora: ins_fora, dentro: ins_dentro, limpaInv })
                                                                 }).catch((err) => {
@@ -1841,8 +1842,9 @@ router.get('/recursosInversores/:id', ehAdmin, (req, res) => {
                                         })
                                         //console.log('ins_dentro_dif=>' + ins_dentro)
                                         //console.log('ins_fora_dif=>' + ins_fora)
-                                        if (equipeins.inv0 == '') {
-                                            limpaInv = 'disabled'
+                                        console.log('equipeins.inv0=>'+equipeins.inv0)
+                                        if (equipeins.inv0 == '' || typeof equipeins.inv0 == 'undefined' ) {
+                                            limpaInv = false
                                         }
                                         res.render('projeto/gerenciamento/recursosInversores', { projeto, cronograma, fora: ins_fora, dentro: ins_dentro, limpaInv })
 
@@ -1892,7 +1894,7 @@ router.get('/recursosInstalacao/:id', ehAdmin, (req, res) => {
     var ins5 = ''
     var diferenca
     var ins_dif = 0
-    limpaIns = ''
+    limpaIns = true
 
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         //console.log('validação dos instaladores.')
@@ -2095,8 +2097,8 @@ router.get('/recursosInstalacao/:id', ehAdmin, (req, res) => {
 
                                                                     //console.log('ins_dentro_ultimo=>' + ins_dentro)
                                                                     //console.log('ins_fora_ultimo=>' + ins_fora)
-                                                                    if (equipeins.ins0 == '') {
-                                                                        limpaIns = 'disabled'
+                                                                    if (equipeins.ins0 == '' || typeof equipeins.ins0 == 'undefined' ) {
+                                                                        limpaIns = false
                                                                     }
                                                                     res.render('projeto/gerenciamento/recursosInstalacao', { projeto, cronograma, fora: ins_fora, dentro: ins_dentro, limpaIns })
                                                                 }).catch((err) => {
@@ -2179,8 +2181,8 @@ router.get('/recursosInstalacao/:id', ehAdmin, (req, res) => {
                                         })
                                         //console.log('ins_dentro_dif=>' + ins_dentro)
                                         //console.log('ins_fora_dif=>' + ins_fora)
-                                        if (equipeins.ins0 == '') {
-                                            limpaIns = 'disabled'
+                                        if (equipeins.ins0 == '' || typeof equipeins.ins0 == 'undefined' ) {
+                                            limpaIns = false
                                         }
                                         res.render('projeto/gerenciamento/recursosInstalacao', { projeto, cronograma, fora: ins_fora, dentro: ins_dentro, limpaIns })
 
@@ -2433,8 +2435,8 @@ router.get('/recursosArmazenamento/:id', ehAdmin, (req, res) => {
 
                                                                     //console.log('ins_dentro_ultimo=>' + ins_dentro)
                                                                     //console.log('ins_fora_ultimo=>' + ins_fora)
-                                                                    if (equipeins.eae0 == '') {
-                                                                        limpaEae = 'disabled'
+                                                                    if (equipeins.eae0 == '' || typeof equipeins.eae0 == 'undefined' ) {
+                                                                        limpaPEae = false
                                                                     }
                                                                     res.render('projeto/gerenciamento/recursosArmazenamento', { projeto, cronograma, fora: ins_fora, dentro: ins_dentro, limpaEae })
                                                                 }).catch((err) => {
@@ -2517,8 +2519,8 @@ router.get('/recursosArmazenamento/:id', ehAdmin, (req, res) => {
                                         })
                                         //console.log('ins_dentro_dif=>' + ins_dentro)
                                         //console.log('ins_fora_dif=>' + ins_fora)
-                                        if (equipeins.eae0 == '') {
-                                            limpaEae = 'disabled'
+                                        if (equipeins.eae0 == '' || typeof equipeins.eae0 == 'undefined' ) {
+                                            limpaPEae = false
                                         }
                                         res.render('projeto/gerenciamento/recursosArmazenamento', { projeto, cronograma, fora: ins_fora, dentro: ins_dentro, limpaEae })
 
@@ -2560,15 +2562,15 @@ router.get('/recursosPainel/:id', ehAdmin, (req, res) => {
     var qtd_prj = 0
     var validaLivre = 0
     var q = 0
-    var eae0 = ''
-    var eae1 = ''
-    var eae2 = ''
-    var eae3 = ''
-    var eae4 = ''
-    var eae5 = ''
+    var pnl0 = ''
+    var pnl1 = ''
+    var pnl2 = ''
+    var pnl3 = ''
+    var pnl4 = ''
+    var pnl5 = ''
     var diferenca
     var ins_dif = 0
-    limpaPnl = ''
+    limpaPnl = true
 
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         //console.log('validação dos instaladores.')
@@ -2654,23 +2656,23 @@ router.get('/recursosPainel/:id', ehAdmin, (req, res) => {
                                                                 //console.log('equipeins.ins4=>' + equipeins.ins4)
                                                                 //console.log('equipeins.ins5=>' + equipeins.ins5)
 
-                                                                if (typeof equipeins.eae0 != 'undefined') {
-                                                                    eae0 = equipeins.eae0
+                                                                if (typeof equipeins.pnl0 != 'undefined') {
+                                                                    pnl0 = equipeins.pnl0
                                                                 }
-                                                                if (typeof equipeins.eae1 != 'undefined') {
-                                                                    eae1 = equipeins.eae1
+                                                                if (typeof equipeins.pnl1 != 'undefined') {
+                                                                    pnl1 = equipeins.pnl1
                                                                 }
-                                                                if (typeof equipeins.eae2 != 'undefined') {
-                                                                    eae2 = equipeins.eae2
+                                                                if (typeof equipeins.pnl2 != 'undefined') {
+                                                                    pnl2 = equipeins.pnl2
                                                                 }
-                                                                if (typeof equipeins.eae3 != 'undefined') {
-                                                                    eae3 = equipeins.eae3
+                                                                if (typeof equipeins.pnl3 != 'undefined') {
+                                                                    pnl3 = equipeins.pnl3
                                                                 }
-                                                                if (typeof equipeins.eae4 != 'undefined') {
-                                                                    eae4 = equipeins.eae4
+                                                                if (typeof equipeins.pnl4 != 'undefined') {
+                                                                    pnl4 = equipeins.pnl4
                                                                 }
-                                                                if (typeof equipeins.eae5 != 'undefined') {
-                                                                    eae5 = equipeins.eae5
+                                                                if (typeof equipeins.pnl5 != 'undefined') {
+                                                                    pnl5 = equipeins.pnl5
                                                                 }
 
                                                                 console.log('orcado._id=>' + orcado._id)
@@ -2772,8 +2774,8 @@ router.get('/recursosPainel/:id', ehAdmin, (req, res) => {
 
                                                                     //console.log('ins_dentro_ultimo=>' + ins_dentro)
                                                                     //console.log('ins_fora_ultimo=>' + ins_fora)
-                                                                    if (equipeins.pnl0) {
-                                                                        limpaPnl = 'disabled'
+                                                                    if (equipeins.pnl0 == '' || typeof equipeins.pnl0 == 'undefined' ) {
+                                                                        limpaPanl = false
                                                                     }
                                                                     res.render('projeto/gerenciamento/recursosPainel', { projeto, cronograma, fora: ins_fora, dentro: ins_dentro, limpaPnl })
                                                                 }).catch((err) => {
@@ -2805,23 +2807,23 @@ router.get('/recursosPainel/:id', ehAdmin, (req, res) => {
                                     Pessoa.find({ funins: 'checked', user: _id }).then((instalacao) => {
                                         //console.log('entrou diferença')
                                         //console.log('equipeins.ins0=>' + equipeins.ins0)
-                                        if (typeof equipeins.eae0 != 'undefined') {
-                                            eae0 = equipeins.eae0
+                                        if (typeof equipeins.pnl0 != 'undefined') {
+                                            pnl0 = equipeins.pnl0
                                         }
-                                        if (typeof equipeins.eae1 != 'undefined') {
-                                            eae1 = equipeins.eae1
+                                        if (typeof equipeins.pnl1 != 'undefined') {
+                                            pnl1 = equipeins.pnl1
                                         }
-                                        if (typeof equipeins.eae2 != 'undefined') {
-                                            eae2 = equipeins.eae2
+                                        if (typeof equipeins.pnl2 != 'undefined') {
+                                            pnl2 = equipeins.pnl2
                                         }
-                                        if (typeof equipeins.eae3 != 'undefined') {
-                                            eae3 = equipeins.eae3
+                                        if (typeof equipeins.pnl3 != 'undefined') {
+                                            pnl3 = equipeins.pnl3
                                         }
-                                        if (typeof equipeins.eae4 != 'undefined') {
-                                            eae4 = equipeins.eae4
+                                        if (typeof equipeins.pnl4 != 'undefined') {
+                                            pnl4 = equipeins.pnl4
                                         }
-                                        if (typeof equipeins.eae5 != 'undefined') {
-                                            eae5 = equipeins.eae5
+                                        if (typeof equipeins.pnl5 != 'undefined') {
+                                            pnl5 = equipeins.pnl5
                                         }
 
                                         instalacao.forEach((eleint) => {
@@ -2856,8 +2858,8 @@ router.get('/recursosPainel/:id', ehAdmin, (req, res) => {
                                         })
                                         //console.log('ins_dentro_dif=>' + ins_dentro)
                                         //console.log('ins_fora_dif=>' + ins_fora)
-                                        if (equipeins.pnl0) {
-                                            limpaPnl = 'disabled'
+                                        if (equipeins.pnl0 == '' || typeof equipeins.pnl0 == 'undefined' ) {
+                                            limpaPanl = false
                                         }
                                         res.render('projeto/gerenciamento/recursosPainel', { projeto, cronograma, fora: ins_fora, dentro: ins_dentro, limpaPnl })
 
@@ -2907,7 +2909,7 @@ router.get('/recursosVistoria/:id', ehAdmin, (req, res) => {
     var vis5 = ''
     var diferenca
     var ins_dif = 0
-    limpaVis = ''
+    limpaVis = true
 
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         Cronograma.findOne({ projeto: req.params.id }).lean().then((cronograma) => {
@@ -3096,8 +3098,8 @@ router.get('/recursosVistoria/:id', ehAdmin, (req, res) => {
 
                                                                     //console.log('ins_dentro_ultimo=>' + ins_dentro)
                                                                     //console.log('ins_fora_ultimo=>' + ins_fora)
-                                                                    if (equipepla.vis0) {
-                                                                        limpaVis = 'disabled'
+                                                                    if (equipepla.vis0 == '' || typeof equipepla.vis0 == 'undefined' ) {
+                                                                        limpaVis = false
                                                                     }
                                                                     res.render('projeto/gerenciamento/recursosVistoria', { projeto, cronograma, equipepla, fora: ins_fora, dentro: ins_dentro, limpaVis })
 
@@ -3181,8 +3183,8 @@ router.get('/recursosVistoria/:id', ehAdmin, (req, res) => {
                                         })
                                         //console.log('ins_dentro_data=>' + ins_dentro)
                                         //console.log('ins_fora_data=>' + ins_fora)
-                                        if (equipepla.vis0) {
-                                            limpaVis = 'disabled'
+                                        if (equipepla.vis0 == '' || typeof equipepla.vis0 == 'undefined' ) {
+                                            limpaVis = false
                                         }
                                         res.render('projeto/gerenciamento/recursosVistoria', { projeto, cronograma, equipepla, fora: ins_fora, dentro: ins_dentro, limpaVis })
 
@@ -3255,7 +3257,7 @@ router.post('/salvarPlanejamento', ehAdmin, (req, res) => {
                             res.redirect('/pessoa/recursosPlanejamento/' + req.body.id)
                         }).catch((err) => {
                             req.flash('error_msg', 'Houve uma falha ao remover o responsável.')
-                            res.redirect('/pessoa/recursosProjetista/' + req.body.id)
+                            res.redirect('/pessoa/recursosPlanejamento/' + req.body.id)
                         })
                     }).catch((err) => {
                         req.flash('error_msg', 'Falha ao salvar o projeto.')
@@ -3283,12 +3285,6 @@ router.post('/salvarProjetista', ehAdmin, (req, res) => {
 
         Equipe.findOne({ projeto: req.body.id }).then((equipe) => {
 
-            //console.log('req.body.pro0=>' + req.body.pro0)
-            //console.log('req.body.pro1=>' + req.body.pro1)
-            //console.log('req.body.pro2=>' + req.body.pro2)
-            //console.log('req.body.pro3=>' + req.body.pro3)
-            //console.log('req.body.pro4=>' + req.body.pro4)
-            //console.log('req.body.pro5=>' + req.body.pro5)
             equipe.pro0 = req.body.pro0
             equipe.pro1 = req.body.pro1
             equipe.pro2 = req.body.pro2
@@ -3371,7 +3367,6 @@ router.post('/salvarAterramento', ehAdmin, (req, res) => {
 router.post('/salvarInversores', ehAdmin, (req, res) => {
     const { _id } = req.user
 
-
     Equipe.findOne({ projeto: req.body.id }).then((equipe) => {
 
         equipe.inv0 = req.body.inv0
@@ -3403,14 +3398,13 @@ router.post('/salvarInstalacao', ehAdmin, (req, res) => {
         Equipe.findOne({ projeto: req.body.id }).then((equipe) => {
 
             equipe.ins0 = req.body.ins0
-            //console.log('req.body.ins0=>' + req.body.ins0)
             equipe.ins1 = req.body.ins1
             equipe.ins2 = req.body.ins2
             equipe.ins3 = req.body.ins3
             equipe.ins4 = req.body.ins4
             equipe.ins5 = req.body.ins5
-            //console.log('req.body.ins5=>' + req.body.ins5)
-            //console.log('req.body.ins4=>' + req.body.ins4)
+            console.log('req.body.ins0=>' + req.body.ins0)
+            console.log('req.body.ins1=>' + req.body.ins1)
             var qtdins
             if (req.body.ins5 != '' && typeof req.body.ins5 != 'undefined') {
                 qtdins = 6
@@ -3433,28 +3427,46 @@ router.post('/salvarInstalacao', ehAdmin, (req, res) => {
                     }
                 }
             }
-            //console.log('qtdequipe=>' + qtdequipe)
-            Pessoa.findOne({ nome: req.body.ins0 }).then((instalador) => {
-                projeto.qtdins = qtdins
-                projeto.funins = instalador._id
-                equipe.save().then(() => {
-                    //console.log('salvou equipe')
-                    projeto.save().then(() => {
-                        //console.log('salvou o projeto')
-                        req.flash('success_msg', 'Instaladores alocados!')
-                        res.redirect('/pessoa/recursosInstalacao/' + req.body.id)
+            if (req.body.ins0 != '' || typeof req.body.pla0 != 'undefined') {
+                Pessoa.findOne({ nome: req.body.ins0 }).then((instalador) => {
+                    projeto.qtdins = qtdins
+                    projeto.funins = instalador._id
+                    equipe.save().then(() => {
+                        //console.log('salvou equipe')
+                        projeto.save().then(() => {
+                            //console.log('salvou o projeto')
+                            req.flash('success_msg', 'Instaladores alocados!')
+                            res.redirect('/pessoa/recursosInstalacao/' + req.body.id)
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Falha ao salvar a equipe.')
+                            res.redirect('/pessoa/recursosInstalacao/' + req.body.id)
+                        })
                     }).catch((err) => {
-                        req.flash('error_msg', 'Falha ao salvar a equipe.')
+                        req.flash('error_msg', 'Falha ao salvar o projeto.')
                         res.redirect('/pessoa/recursosInstalacao/' + req.body.id)
                     })
                 }).catch((err) => {
-                    req.flash('error_msg', 'Falha ao salvar o projeto.')
+                    req.flash('error_msg', 'Houve uma falha ao salvar a equipe.')
                     res.redirect('/pessoa/recursosInstalacao/' + req.body.id)
                 })
-            }).catch((err) => {
-                req.flash('error_msg', 'Houve uma falha ao salvar a equipe.')
-                res.redirect('/pessoa/recursosInstalacao/' + req.body.id)
-            })
+            } else {
+                equipe.save().then(() => {
+                    projeto.save().then(() => {
+                        Projeto.findOneAndUpdate({ _id: req.body.id }, { $unset: { funins: 1 } }).then(() => {
+                            res.redirect('/pessoa/recursosInstalacao/' + req.body.id)
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Houve uma falha ao remover o responsável.')
+                            res.redirect('/pessoa/recursosInstalacao/' + req.body.id)
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Falha ao salvar o projeto.')
+                        res.redirect('/pessoa/recursosInstalacao/' + req.body.id)
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Houve uma falha ao salvar a equipe.')
+                    res.redirect('/pessoa/recursosInstalacao/' + req.body.id)
+                })
+            }
         }).catch((err) => {
             req.flash('error_msg', 'Houve uma falha ao encontrar o instalador.')
             res.redirect('/pessoa/recursosInstalacao/' + req.body.id)
@@ -3471,7 +3483,7 @@ router.post('/salvarArmazenamento', ehAdmin, (req, res) => {
     Equipe.findOne({ projeto: req.body.id }).then((equipe) => {
 
         equipe.eae0 = req.body.eae0
-        //console.log('req.body.eae0=>' + req.body.eae0)
+        console.log('req.body.eae0=>' + req.body.eae0)
         equipe.eae1 = req.body.eae1
         equipe.eae2 = req.body.eae2
         equipe.eae3 = req.body.eae3
@@ -3481,14 +3493,14 @@ router.post('/salvarArmazenamento', ehAdmin, (req, res) => {
             //console.log('salvou equipe')
             //console.log('salvou o projeto')
             req.flash('success_msg', 'Instaladores alocados!')
-            res.redirect('/pessoa/recursosInstalacao/' + req.body.id)
+            res.redirect('/pessoa/recursosArmazenamento/' + req.body.id)
         }).catch((err) => {
             req.flash('error_msg', 'Falha ao salvar a equipe.')
-            res.redirect('/pessoa/recursosInstalacao/' + req.body.id)
+            res.redirect('/pessoa/recursosArmazenamento/' + req.body.id)
         })
     }).catch((err) => {
         req.flash('error_msg', 'Houve uma falha ao encontrar o instalador.')
-        res.redirect('/pessoa/recursosInstalacao/' + req.body.id)
+        res.redirect('/pessoa/recursosArmazenamento/' + req.body.id)
     })
 })
 
@@ -3498,7 +3510,7 @@ router.post('/salvarPainel', ehAdmin, (req, res) => {
     Equipe.findOne({ projeto: req.body.id }).then((equipe) => {
 
         equipe.pnl0 = req.body.pnl0
-        //console.log('req.body.pnl0=>' + req.body.pnl0)
+        console.log('req.body.pnl0=>' + req.body.pnl0)
         equipe.pnl1 = req.body.pnl1
         equipe.pnl2 = req.body.pnl2
         equipe.pnl3 = req.body.pnl3
@@ -3508,14 +3520,14 @@ router.post('/salvarPainel', ehAdmin, (req, res) => {
             //console.log('salvou equipe')
             //console.log('salvou o projeto')
             req.flash('success_msg', 'Instaladores alocados!')
-            res.redirect('/pessoa/recursosInstalacao/' + req.body.id)
+            res.redirect('/pessoa/recursosPainel/' + req.body.id)
         }).catch((err) => {
             req.flash('error_msg', 'Falha ao salvar a equipe.')
-            res.redirect('/pessoa/recursosInstalacao/' + req.body.id)
+            res.redirect('/pessoa/recursosPainel/' + req.body.id)
         })
     }).catch((err) => {
         req.flash('error_msg', 'Houve uma falha ao encontrar o instalador.')
-        res.redirect('/pessoa/recursosInstalacao/' + req.body.id)
+        res.redirect('/pessoa/recursosPainel/' + req.body.id)
     })
 })
 
@@ -3683,7 +3695,6 @@ router.get('/desativarequipe/:id', ehAdmin, (req, res) => {
 
 router.post('/criarequipepadrao', ehAdmin, (req, res) => {
     const { _id } = req.user
-    var sucesso = []
 
     const novaequipe = new Equipe({
         user: _id,

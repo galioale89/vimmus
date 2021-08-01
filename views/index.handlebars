@@ -4,6 +4,9 @@
     function login() {
         window.location.href = '/usuario/login'
     }
+    function registrar() {
+        window.location.href = '/usuario/registrar'
+    }    
 </script>
 
 <head>
@@ -68,7 +71,7 @@
                                     Login</button>
                             </li>
                             <li>
-                                <button class="primary-btn" type="button" title="Registrar-se">Registrar-se</button>
+                                <button class="primary-btn" type="button" title="Registrar-se" onclick="registrar()">Registrar-se</button>
                             </li>
                         </ul>
                     </nav>
@@ -499,9 +502,9 @@
                 <div class="col-lg-8">
                     <div class="card-plan">
                         <h3 class="title-plan">Plano Único</h3>
-                        <div class="row mt-4">
+                        <div class="row">
                             <div class="col">
-                                <p class="description-plan">Acesso integral do sistema completo e todas as
+                                <p style="margin-top: 38%;" class="description-plan">Acesso integral do sistema completo e todas as
                                     funcionalidades
                                     disponíveis.</p>
                                 <div class="text-center">
@@ -604,8 +607,7 @@
                 <h2 class="title-banner">Realize a gestão de custos e obtenha<br>
                     a estimativa de tributos pagos por<br>
                     cada projeto</h2>
-
-                <button class="btn primary-btn">QUERO CONHECER</button>
+                <a href="#contact" style="text-align: center; margin: auto;"><button class="btn primary-btn" href="#contact">QUERO CONHECER</button></a>
             </div>
         </div>
     </section>
@@ -654,11 +656,11 @@
 
                     <p class="text">Preencha o formulário com seus dados<br> e retornaremos em breve!</p>
 
-                    <form action="" method="post">
+                    <form action="/usuario/salvacontato" method="post">
 
-                        <input name="name" type="text" placeholder="Nome">
+                        <input name="nome" type="text" placeholder="Nome">
                         <input name="email" type="text" placeholder="E-mail">
-                        <input name="phone" type="text" placeholder="Telefone">
+                        <input name="celular" type="text" placeholder="Telefone">
 
                         <button type="submit" class="btn primary-btn">ENVIAR</button>
                     </form>

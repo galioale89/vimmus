@@ -220,7 +220,9 @@ position: fixed;
 padding: 6px;
 box-shadow: 1px 2px 5px rgb(244, 242, 250);
 width: 100%;
-background-color: rgb(40, 55, 86);
+background-color: #847AF4;
+font-weight: 700;
+color: rgb(40,55,89);
 }
 
 .menu-before {
@@ -272,8 +274,8 @@ color: white
 }
 
 .filter {
-background-color: rgb(40, 55, 89);
-border-color: rgb(40,55, 89);
+background-color: #847AF4;
+background-color: #847AF4;
 color: white;
 font-size: 20px;
 height: 20px;
@@ -470,8 +472,7 @@ color: white;
 
 .icone {
 color:white;
-padding-left: 10px;
-font-size: 20px;
+padding-left: 25%;
 }
 
 .iconefiltrar {
@@ -482,21 +483,14 @@ font-size: 20px;
 .botao {
 text-shadow: 1px 1px 10px rgb(238, 237, 245);
 border-radius: 50px;
-width: 45px;
-height: 45px;
-border: solid 2px;
-font-size: 22px;
-border-top-color: rgb(3, 67, 141);
+width: 30px;
+height: 30px;
+border: solid 1px;
+/* border-top-color: rgb(3, 67, 141);
 border-left-color: rgb(3, 67, 141);
 border-right-color: rgb(205, 223, 245);
-border-bottom-color: rgb(205, 223, 245);
-}
-
-.botao:hover {
-border-top-color: rgb(205, 223, 245);
-border-left-color: rgb(205, 223, 245);
-border-right-color: rgb(3, 67, 141);
-border-bottom-color: rgb(3, 67, 141);
+border-bottom-color: rgb(205, 223, 245); */
+font-size: 16px;
 }
 
 .ativado {
@@ -505,12 +499,12 @@ background: linear-gradient(135deg, rgb(40, 55, 86), rgb(11, 9, 161));
 
 .desativado {
 background-color: rgba(31, 27, 255, 0.185);
-text-shadow: 1px 1px 10px rgb(238, 237, 245);
+text-shadow: 1px 1px 5px rgb(238, 237, 245);
 border-radius: 50px;
-width: 45px;
-height: 45px;
-border: solid 4px;
-font-size: 22px;
+width: 30px;
+height: 30px;
+border: solid 1px;
+font-size: 16px;
 border-color: rgba(31, 27, 255, 0.185);
 }
 
@@ -518,10 +512,10 @@ border-color: rgba(31, 27, 255, 0.185);
 background-color: rgb(44, 156, 0);
 text-shadow: 1px 1px 10px rgb(238, 237, 245);
 border-radius: 50px;
-width: 45px;
-height: 45px;
-border: solid 4px;
-font-size: 22px;
+width: 30px;
+height: 30px;
+border: solid 1px;
+font-size: 16px;
 border-color: rgba(31, 27, 255, 0.185);
 }
 
