@@ -249,33 +249,26 @@
             { faixa: 6, aliquota: 30.5, deducao: 540000, recini: 3600001, recfim: 4800000 }
         ]
 
-        alert('tipo=>' + tipo.value)
         if (regime.value == 'Simples') {
             if (tipo.value == 'Anexo III') {
-                alert('Anexo III')
                 simplesiii.forEach((element) => {
                     const { recini } = element
                     const { recfim } = element
                     const { aliquota } = element
                     const { deducao } = element
                     if (faturamento.value > recini && faturamento.value <= recfim) {
-                        alert('aliquota=>' + aliquota)
-                        alert('dedução=>' + deducao)
                         alqDasVlr.value = aliquota
                         vlrDeducao.value = deducao
                     }
                 })
             }
             if (tipo.value == 'Anexo V') {
-                alert('Anexo V')
                 simplesv.forEach((element) => {
                     const { recini } = element
                     const { recfim } = element
                     const { aliquota } = element
                     const { deducao } = element
                     if (faturamento.value > recini && faturamento.value <= recfim) {
-                        alert('aliquota=>' + aliquota)
-                        alert('dedução=>' + deducao)
                         alqDasVlr.value = aliquota
                         vlrDeducao.value = deducao
                     }

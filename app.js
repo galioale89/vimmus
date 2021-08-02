@@ -194,7 +194,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                             cnpj: '',
                             empresa: '',
                             regime: 'Simples',
-                            tipo: 'simples',
+                            tipo: '',
                             alqDAS: '19.5',
                             alqICMS: 0,
                             alqIRPJ: 0,

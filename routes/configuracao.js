@@ -75,7 +75,7 @@ router.get('/editempresa/:id', ehAdmin, (req, res) => {
         var labelDAS
         var labelMEI
 
-        //console.log('empresa.tipodesp=>'+empresa.tipodesp)
+        console.log('empresa.tipodesp=>'+empresa.tipodesp)
         if (empresa.tipodesp == 'potencia') {
             checkKwp = 'checked'
             typeKwp = 'text'
@@ -252,7 +252,7 @@ router.post('/addempresa', ehAdmin, (req, res) => {
     } else {
 
         var tipodesp
-        //console.log('req.body.selecionado='+req.body.selecionado)
+        console.log('req.body.selecionado='+req.body.selecionado)
         if (req.body.selecionado == 'quantidade') {
             tipodesp = 'quantidade'
         } else {
@@ -366,19 +366,19 @@ router.post('/novo', ehAdmin, (req, res) => {
 router.post('/editconfiguracao/', ehAdmin, (req, res) => {
 
     /*
-    //console.log('_id=>'+req.body.id)
-    //console.log('req.body.slug=>'+ req.body.slug)
-    //console.log('req.body.minatr=>'+req.body.minatr)
-    //console.log('req.body.minest=>'+req.body.minest)
-    //console.log('req.body.minmod=>'+req.body.minmod)
-    //console.log('req.body.mininv=>'+req.body.mininv)
-    //console.log('req.body.minstb=>'+req.body.minstb)
-    //console.log('req.body.minpnl=>'+req.body.minpnl)
-    //console.log('req.body.vlrhrp=>'+req.body.vlrhrp)
-    //console.log('req.body.vlrhrg=>'+req.body.vlrhrg)
-    //console.log('req.body.vlrhri=>'+req.body.vlrhri)
-    //console.log('req.body.hrstrb=>'+req.body.hrstrb)
-    //console.log('req.body.medkmh=>'+req.body.medkmh)  
+    console.log('_id=>'+req.body.id)
+    console.log('req.body.slug=>'+ req.body.slug)
+    console.log('req.body.minatr=>'+req.body.minatr)
+    console.log('req.body.minest=>'+req.body.minest)
+    console.log('req.body.minmod=>'+req.body.minmod)
+    console.log('req.body.mininv=>'+req.body.mininv)
+    console.log('req.body.minstb=>'+req.body.minstb)
+    console.log('req.body.minpnl=>'+req.body.minpnl)
+    console.log('req.body.vlrhrp=>'+req.body.vlrhrp)
+    console.log('req.body.vlrhrg=>'+req.body.vlrhrg)
+    console.log('req.body.vlrhri=>'+req.body.vlrhri)
+    console.log('req.body.hrstrb=>'+req.body.hrstrb)
+    console.log('req.body.medkmh=>'+req.body.medkmh)  
     */
 
     Configuracao.findOne({ _id: req.body.id }).then((configuracao) => {
@@ -490,7 +490,7 @@ router.post('/editempresa/', ehAdmin, (req, res) => {
             empresa.regime = req.body.regime
             empresa.tipo = req.body.tipo
 
-            //console.log('req.body.alqDAS=>'+req.body.alqDAS)
+            console.log('req.body.alqDAS=>'+req.body.alqDAS)
 
             if (req.body.alqDAS == '' || parseFloat(req.body.alqDAS) == 0) {
                 empresa.alqDAS = 0
@@ -589,7 +589,7 @@ router.post('/editempresa/', ehAdmin, (req, res) => {
             }
 
             empresa.save().then(() => {
-                req.flash('success_msg', 'Empresa alterado com sucesso')
+                req.flash('success_msg', 'Empresa salva com sucesso.')
                 res.redirect('/configuracao/editempresa/' + empresa._id)
             }).catch((err) => {
                 req.flash('error_msg', 'Houve um erro ao salvar o empresa.')
