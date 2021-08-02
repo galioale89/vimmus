@@ -249,19 +249,19 @@ router.get('/direto/:id', ehAdmin, (req, res) => {
                          res.render('projeto/custosdiretos', { projeto, empresa, ehSimples, ehLP, ehLR, cliente, fatura, checkHora, libRecursos })
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve um erro ao encontrar um cliente.')
-                         res.redirect('/direto/'+req.params.id)
+                         res.redirect('/direto/' + req.params.id)
                     })
                }).catch((err) => {
                     req.flash('error_msg', 'Houve uma falha ao encontrar o cronograma.')
-                    res.redirect('/direto/'+req.params.id)
+                    res.redirect('/direto/' + req.params.id)
                })
           }).catch((err) => {
                req.flash('error_msg', 'Houve uma falha ao encontrar a empresa.')
-               res.redirect('/direto/'+req.params.id)
+               res.redirect('/direto/' + req.params.id)
           })
      }).catch((err) => {
           req.flash('error_msg', 'Nenhum projeto encontrado.')
-          res.redirect('/direto/'+req.params.id)
+          res.redirect('/direto/' + req.params.id)
      })
 })
 
@@ -383,6 +383,21 @@ router.get('/remover/:id', ehAdmin, (req, res) => {
 router.post("/novo", ehAdmin, (req, res) => {
      const { _id } = req.user
      var prj_id
+     var typeGes = 'hidden'
+     var checkHora = 'unchecked'
+     var checkDia = 'unchecked'
+     var typeHrg = 'hidden'
+     var typeDrg = 'hidden'
+     var displayHrs = 'none'
+     var displayDia = 'none'
+     var displayTda = 'none'
+     var escopo = 'enabled'
+     var cronograma = 'enabled'
+     var comunicacao = 'enabled'
+     var vistoria = 'enabled'
+     var alocacao = 'enabled'
+     var aquisicao = 'enabled'
+     var mostraHora = false     
 
      //Validação se o projeto já existe
      var nome = req.body.nome
@@ -830,8 +845,6 @@ router.post("/novo", ehAdmin, (req, res) => {
                                    vlrNFS = parseFloat(valorProjeto) - parseFloat(vlrkit)
                               }
                               //console.log('cliente.nome=>' + cliente.nome)
-                              var checkHora = 'unchecked'
-                              var checkDia = 'unchecked'
                               if (req.body.tipoCusto == 'hora') {
                                    tipoCustoGes = 'hora'
                                    tipoCustoPro = 'hora'
@@ -842,6 +855,17 @@ router.post("/novo", ehAdmin, (req, res) => {
                                    tipoCustoPro = 'dia'
                                    tipoCustoIns = 'dia'
                                    checkDia = 'checked'
+                                   typeGes = 'text'
+                                   typeDrg = 'text'
+                                   displayDia = 'inline'
+                                   displayTda = 'inline'
+                                   escopo = 'disabled'
+                                   cronograma = 'disabled'
+                                   comunicacao = 'disabled'
+                                   vistoria = 'disabled'
+                                   alocacao = 'disabled'
+                                   aquisicao = 'disabled'
+                                   mostraHora = false                                   
                               }
                               const projeto = {
                                    user: _id,
@@ -1030,10 +1054,19 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                                           } else {
                                                                                                fatura = 'uncheked'
                                                                                           }
+
                                                                                           if (req.body.tipoEntrada == 'Proprio') {
-                                                                                               res.render("projeto/customdo/gestao", { projeto, sucesso, configuracao, gestao, cliente, checkHora})
+                                                                                               res.render("projeto/customdo/gestao", {
+                                                                                                    projeto, sucesso, configuracao, gestao, cliente, checkHora,
+                                                                                                    typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
+                                                                                                    vistoria, alocacao, aquisicao
+                                                                                               })
                                                                                           } else {
-                                                                                               res.render('projeto/custosdiretos', { projeto, sucesso, configuracao, rp, vendedor, instalador, cliente, fatura, checkHora })
+                                                                                               res.render('projeto/custosdiretos', {
+                                                                                                    projeto, sucesso, configuracao, rp, vendedor, instalador, cliente, fatura, checkHora,
+                                                                                                    typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
+                                                                                                    vistoria, alocacao, aquisicao
+                                                                                               })
                                                                                           }
                                                                                           //console.log('fatura=>' + fatura)
                                                                                      }).catch(() => {
@@ -1693,7 +1726,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                               //Altera a empresa                          
                               if (req.body.checkEmpresa != null) {
                                    projeto.empresa = req.body.empresa
-                              }                            
+                              }
 
                               var vlrNFS = 0
                               if (projeto.fatequ == true) {
@@ -1834,7 +1867,7 @@ router.post('/direto', ehAdmin, (req, res) => {
                                         */
                                         //var vlrDAS = empresa.vlrDAS
 
-                                        if (projeto.qtinds == '' || typeof projeto.qtinds == 'undefined' || isNaN(projeto.qtdins)){
+                                        if (projeto.qtinds == '' || typeof projeto.qtinds == 'undefined' || isNaN(projeto.qtdins)) {
                                              projeto.qtdins = 2
                                         }
 
