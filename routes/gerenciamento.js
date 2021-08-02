@@ -1536,13 +1536,13 @@ router.get('/enviaMensagem/:id', ehAdmin, (req, res) => {
                     'Vistoria: ' + dataMensagem(cronograma.datevisini) + ' a ' + dataMensagem(cronograma.datevisfim) + '.' + '\n' +
                     'Para mais detalhes entre em contato com a gente pelo whatsapp: (xx) x xxxx-xxxx'
 
-                //console.log(mensagem)
+                console.log(mensagem)
                 to = cliente.celular
-                //console.log(to)
+                console.log(to)
 
                 var textMessageService = new TextMessageService(apiKey)
                 textMessageService.send('Vimmus', mensagem, ['49991832978'], result => {
-                    //console.log(result)
+                    console.log(result)
                     if (result == false) {
                         req.flash('error_msg', 'Falha interna. Não foi possível enviar a mensagem.')
                         res.redirect('/gerenciamento/cronograma/' + req.params.id)
