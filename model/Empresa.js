@@ -12,7 +12,7 @@ const Empresa = new Schema({
         require: true
     },
     cnpj: {
-       type: Number,
+       type: String,
        require: true
     },
     regime: {
