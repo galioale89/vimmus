@@ -13,6 +13,7 @@
         custos</label>
     <br>
     <form {{#if configuracoes._id}}action='/configuracao/editconfiguracao'{{else}}action='/configuracao/novo'{{/if}} method='post'>
+        <input type='hidden' name='id' value='{{configuracoes._id}}'>
         <div class="row mb-4 text-end">
             <div class="col-md-4">
                 <label for='slug' class='fw-bold col-form-label col-form-label-sm'> Nome da Configuração: </label><br>

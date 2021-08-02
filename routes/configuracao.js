@@ -378,8 +378,10 @@ router.post('/editconfiguracao/', ehAdmin, (req, res) => {
     console.log('req.body.vlrhrg=>'+req.body.vlrhrg)
     console.log('req.body.vlrhri=>'+req.body.vlrhri)
     console.log('req.body.hrstrb=>'+req.body.hrstrb)
-    console.log('req.body.medkmh=>'+req.body.medkmh)  
+    console.log('req.body.medkmh=>'+req.body.medkmh)     
     */
+
+    console.log('req.body.id=>'+req.body.id)
 
     Configuracao.findOne({ _id: req.body.id }).then((configuracao) => {
 
@@ -400,6 +402,8 @@ router.post('/editconfiguracao/', ehAdmin, (req, res) => {
         configuracao.hrstrb = req.body.hrstrb
         configuracao.medkmh = req.body.medkmh
         configuracao.markup = req.body.markup
+
+        console.log('req.body.id=>'+req.body.id)
 
         configuracao.save().then(() => {
             req.flash('success_msg', 'Configuração salva com sucesso.')
@@ -589,7 +593,7 @@ router.post('/editempresa/', ehAdmin, (req, res) => {
             }
 
             empresa.save().then(() => {
-                req.flash('success_msg', 'Empresa salva com sucesso.')
+                req.flash('success_msg', 'Empresa alterado com sucesso')
                 res.redirect('/configuracao/editempresa/' + empresa._id)
             }).catch((err) => {
                 req.flash('error_msg', 'Houve um erro ao salvar o empresa.')
