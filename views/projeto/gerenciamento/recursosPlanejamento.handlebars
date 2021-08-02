@@ -81,14 +81,14 @@
 
             {{#if projeto.temArmazenamento}}
             <div class="col">
-                <a class='btn btn-secondary' style="padding-top: 5px;padding-bottom: 5px"
+                <a class='btn btn-secondary' style="padding-top: 18px;padding-bottom:18px"
                     href='/pessoa/recursosInversores/{{projeto._id}}'>Inversores <br> e String Box</a>
             </div>
             <div class="col">
                 <a class='btn btn-secondary' href='/pessoa/recursosInstalacao/{{projeto._id}}'
                     style="padding-top: 18px;padding-bottom: 18px">Estruturas e
                     Módulos</a>
-            </div>            
+            </div>
             {{else}}
             <div class="col">
                 <a class='btn btn-secondary' style="padding-top: 18px;padding-bottom: 18px"
@@ -98,12 +98,12 @@
                 <a class='btn btn-secondary' href='/pessoa/recursosInstalacao/{{projeto._id}}'
                     style="padding-top: 30px;padding-bottom: 30px">Estruturas e
                     Módulos</a>
-            </div>            
+            </div>
             {{/if}}
 
             {{#if projeto.temArmazenamento}}
             <div class="col">
-                <a class='btn btn-secondary' href='/pessoa/recursosEstacao/{{projeto._id}}'
+                <a class='btn btn-secondary' href='/pessoa/recursosArmazenamento/{{projeto._id}}'
                     style="padding: 18px">Estação de Armazenamento</a>
             </div>
             {{/if}}
@@ -124,7 +124,12 @@
                     {{#if cronograma.dateplaini}}
                     <button type='submit' class="btn btn-sm btn-success" onclick="getItemValue()">Salvar</button>
                     {{/if}}
-                    <button href='/pessoa/limpaPlanejamento/{{projeto._id}}' {{limpaPla}}  class="btn btn-sm btn-secondary">Limpar</button>
+                    <a class="btn btn-sm btn-secondary btn-lg" {{#if
+                        limpaPla}}href='/pessoa/limpaPlanejamento/{{projeto._id}}'
+                        {{else}}style='background-color: rgba(120,120,120,0.2);border: rgba(120,120,120,0.2)'
+                        {{/if}}>Limpar</a>
+                    <a href='/gerenciamento/cronograma/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
+                            class="bi bi-arrow-return-left"></i></a>
                 </div>
 
                 <div class="btn-group col-12 gap-2 mt-1">
@@ -134,9 +139,7 @@
                     <a href='/gerenciamento/gerenciamento/{{projeto._id}}' class="btn btn-primary btn-sm">
                         Projeto</a>
                     {{/if}}
-                    <a href='/pessoa/consulta/' class='btn btn-sm btn-warning'> <i class="bi bi-people"></i></a>                    
-                    <a href='/gerenciamento/cronograma/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
-                            class="bi bi-arrow-return-left"></i></a>
+                    <a href='/pessoa/consulta/' class='btn btn-sm btn-warning'> <i class="bi bi-person-circle"></i></a>
                 </div>
             </div>
         </div>
@@ -169,14 +172,18 @@
                         <label class="col-form-label col-form-label-md fw-bold text-center"
                             style="color: white">Profissionais Disponíveis</label>
                         {{#each fora}}
-                        <div class="list-item" style='color: black;' draggable="true">{{pla}}<a href='/pessoa/vermais/{{id}}' style="padding-left: 5px;"><i class='bi bi-eye'></i></div>
+                        <div class="list-item" style='color: black;' draggable="true">{{pla}}<a
+                                href='/pessoa/vermais/{{id}}' style="padding-left: 5px;"><i class='bi bi-eye'></i></a>
+                        </div>
                         {{/each}}
                     </div>
                     <div class="list">
                         <label class="col-form-label col-form-label-md fw-bold text-center"
                             style="color: white">Profissionais Alocados</label>
                         {{#each dentro}}
-                        <div class="item-planejamento" style='color: black;' draggable="true">{{pla}}<a href='/pessoa/vermais/{{id}}' style="padding-left: 5px;"><i class='bi bi-eye'></i></div>
+                        <div class="item-planejamento" style='color: black;' draggable="true">{{pla}}<a
+                                href='/pessoa/vermais/{{id}}' style="padding-left: 5px;"><i class='bi bi-eye'></i></a>
+                        </div>
                         {{/each}}
                     </div>
                 </div>
@@ -301,15 +308,19 @@
                     break;
                 case 2:
                     var insdes = document.getElementById('pla2');
+                    insdes.value = element
                     break;
                 case 3:
                     var insdes = document.getElementById('pla3');
+                    insdes.value = element
                     break;
                 case 4:
                     var insdes = document.getElementById('pla4');
+                    insdes.value = element
                     break;
                 case 5:
                     var insdes = document.getElementById('pla5');
+                    insdes.value = element
                     break;
             }
         }

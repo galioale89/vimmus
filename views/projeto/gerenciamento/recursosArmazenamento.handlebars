@@ -28,6 +28,14 @@
         cursor: pointer;
     }
 
+    .lists .list .item-armazenagem {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+
     .lists .list .item {
         background-color: #F3F3F3;
         border-radius: 8px;
@@ -70,37 +78,27 @@
                     href='/pessoa/recursosAterramento/{{projeto._id}}'>Aterramento</a>
             </div>
             
-            {{#if projeto.temArmazenamento}}
-            <div class="col">
-                <a class='btn btn-secondary' style="padding-top: 5px;padding-bottom: 5px"
-                    href='/pessoa/recursosInversores/{{projeto._id}}'>Inversores <br> e String Box</a>
-            </div>
-            <div class="col">
-                <a class='btn btn-secondary' href='/pessoa/recursosInstalacao/{{projeto._id}}'
-                    style="padding-top: 18px;padding-bottom: 18px">Estruturas e
-                    Módulos</a>
-            </div>            
-            {{else}}
             <div class="col">
                 <a class='btn btn-secondary' style="padding-top: 18px;padding-bottom: 18px"
                     href='/pessoa/recursosInversores/{{projeto._id}}'>Inversores <br> e String Box</a>
             </div>
-            <div class="col">
-                <a class='btn btn-secondary' href='/pessoa/recursosInstalacao/{{projeto._id}}'
-                    style="padding-top: 30px;padding-bottom: 30px">Estruturas e
-                    Módulos</a>
-            </div>            
-            {{/if}}
 
+            {{#if projeto.temArmazenamento}}
             <div class="col">
                 <a class='btn btn-secondary' href='/pessoa/recursosInstalacao/{{projeto._id}}'
                     style="padding-top: 18px;padding-bottom: 18px">Estruturas e
                     Módulos</a>
             </div>
-
+            {{else}}
+            <div class="col">
+                <a class='btn btn-secondary' href='/pessoa/recursosInstalacao/{{projeto._id}}'
+                    style="padding-top: 30px;padding-bottom: 30px">Estruturas e
+                    Módulos</a>
+            </div>
+            {{/if}}
             {{#if projeto.temArmazenamento}}
             <div class="col">
-                <a class='btn btn-primary' href='/pessoa/recursosEstacao/{{projeto._id}}' style="padding: 18px">Estação
+                <a class='btn btn-primary' href='/pessoa/recursosArmazenamento/{{projeto._id}}' style="padding: 18px">Estação
                     de Armazenamento</a>
             </div>
             {{/if}}
@@ -111,7 +109,7 @@
             </div>
             {{/if}}
 
-            <div class="col">
+            <div class="col-md-1">
                 <a class='btn btn-secondary' href='/pessoa/recursosVistoria/{{projeto._id}}'
                     style="padding-top: 30px;padding-bottom: 30px">Vistoria</a>
             </div>
@@ -121,8 +119,9 @@
                     {{#if cronograma.dateplaini}}
                     <button type='submit' class="btn btn-sm btn-success btn-lg" onclick="getItemValue()">Salvar</button>
                     {{/if}}
-                    <a href='/pessoa/limpaArmazenamento/{{projeto._id}}' {{limapEae}}
-                        class="btn btn-sm btn-secondary btn-lg">Limpar</a>
+                    <a class="btn btn-sm btn-secondary btn-lg" {{#if limpaEae}}href='/pessoa/limpaArmazenamento/{{projeto._id}}'{{else}}style='background-color: rgba(120,120,120,0.2);border: rgba(120,120,120,0.2)'{{/if}}>Limpar</a>
+                    <a href='/gerenciamento/cronograma/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
+                            class="bi bi-arrow-return-left"></i></a>                    
                 </div>
 
                 <div class="btn-group col-12 gap-2 mt-1">
@@ -132,9 +131,7 @@
                     <a href='/gerenciamento/gerenciamento/{{projeto._id}}' class="btn btn-primary btn-sm">
                         Projeto</a>
                     {{/if}}
-                    <a href='/pessoa/consulta/' class='btn btn-sm btn-warning'> <i class="bi bi-people"></i></a>
-                    <a href='/gerenciamento/cronograma/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
-                            class="bi bi-arrow-return-left"></i></a>
+                    <a href='/pessoa/consulta/' class='btn btn-sm btn-warning'> <i class="bi bi-person-circle"></i></a>
                 </div>
             </div>
         </div>
@@ -176,8 +173,9 @@
                         <label class="col-form-label col-form-label-md fw-bold text-center"
                             style="color: white">Profissionais Alocados</label>
                         {{#each dentro}}
-                        <div class="item" style='color: black;' draggable="true">{{ins}}<a href='/pessoa/vermais/{{id}}'
-                                style="padding-left: 5px;"><i class='bi bi-eye'></i></a></div>
+                        <div class="item-armazenagem" style='color: black;' draggable="true">{{ins}}<a
+                                href='/pessoa/vermais/{{id}}' style="padding-left: 5px;"><i class='bi bi-eye'></i></a>
+                        </div>
                         {{/each}}
                     </div>
                 </div>
@@ -195,6 +193,7 @@
 <script>
     const list_items = document.querySelectorAll('.list-item');
     const lists = document.querySelectorAll('.list');
+    const list_armazenagem = document.querySelectorAll('.item-armazenagem');
 
     let draggedItem = null;
 
@@ -209,7 +208,7 @@
         });
 
         item.addEventListener('dragend', function () {
-            this.className = 'item';
+            this.className = 'item-armazenagem';
             setTimeout(function () {
                 draggedItem.style.display = 'block';
                 draggedItem = null;
@@ -240,8 +239,53 @@
         }
     }
 
+    if (list_armazenagem.length > 0 || list_armazenagem.length != '') {
+
+        for (let x = 0; x < list_armazenagem.length; x++) {
+            const armazenagem = list_armazenagem[x];
+
+            armazenagem.addEventListener('dragstart', function () {
+                draggedItem = armazenagem;
+                setTimeout(function () {
+                    item.style.display = 'none';
+                }, 0)
+            });
+
+            armazenagem.addEventListener('dragend', function () {
+                this.className = 'item';
+                setTimeout(function () {
+                    draggedItem.style.display = 'block';
+                    draggedItem = null;
+                }, 0);
+            })
+
+            for (let y = 0; y < lists.length; y++) {
+                const list = lists[y];
+
+                list.addEventListener('dragover', function (e) {
+                    e.preventDefault();
+                });
+
+                list.addEventListener('dragenter', function (e) {
+                    e.preventDefault();
+                    this.style.backgroundColor = 'rgba(40, 55, 89, 1)';
+                });
+
+                list.addEventListener('dragleave', function (e) {
+                    this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+                });
+
+                list.addEventListener('drop', function (e) {
+                    console.log('drop');
+                    this.append(draggedItem);
+                    this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+                });
+            }
+        }
+    }
+
     function getItemValue() {
-        const item = document.querySelectorAll('.item');
+        const item = document.querySelectorAll('.item-armazenagem');
         for (i = 0; i < item.length; i++) {
             const insitem = document.getElementsByClassName(item[i].getAttribute('class'));
             var element = insitem[i].innerText;
