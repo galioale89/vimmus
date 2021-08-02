@@ -38,7 +38,11 @@
         if (mes.checked) {
             selecionado.value = 'mes'
         } else {
-            selecionado.value = 'ano'
+            if (mes.checked) {
+                selecionado.value = 'ano'
+            } else {
+                selecionado.value = 'free'
+            }
         }
     }
 
@@ -186,6 +190,7 @@
                             <div class='text-center'>
                                 <label class="col-form-label col-form-label-sm fw-bold">Forma de Pagamento</label>
                             </div>
+                            {{#if tipoTodos}}
                             <input type='hidden' name='selecionado' id='selecionado' value=''>
                             <div class="form-check col text-center" onchange='plano()'>
                                 <input type="radio" name='plano' id='mes'>
@@ -200,11 +205,35 @@
                                 </label>
                             </div>
                             <div class="form-chek col text-center" onchange="plano()">
-                                <input type="radio" name='plano' id='free'>
+                                <input type="radio" name='plano' checked id='free'>
                                 <label class="form-check-label" style="font-size: 14px;">
                                     Free 7 dias
                                 </label>
-                            </div>                            
+                            </div>
+                            {{else}}
+                            {{#if tipoPlano}}
+                            <input type='hidden' name='selecionado' id='selecionado' value=''>
+                            <div class="form-check col text-center" onchange='plano()'>
+                                <input type="radio" name='plano' id='mes'>
+                                <label class="form-check-label" style="font-size: 14px;">
+                                    Mensal
+                                </label>
+                            </div>
+                            <div class="form-chek col text-center" onchange="plano()">
+                                <input type="radio" name='plano' id='ano'>
+                                <label class="form-check-label" style="font-size: 14px;">
+                                    Anual
+                                </label>
+                            </div>
+                            {{else}}
+                            <div class="form-chek col text-center" onchange="plano()">
+                                <input type="radio" name='plano' checked id='free'>
+                                <label class="form-check-label" style="font-size: 14px;">
+                                    Free 7 dias
+                                </label>
+                            </div>
+                            {{/if}}
+                            {{/if}}
                         </div>
                     </div>
                     <div class="col-md-5">

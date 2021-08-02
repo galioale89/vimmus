@@ -86,6 +86,12 @@ app.get('/logout', function (req, res) {
 app.get('/', (req, res) => {
   res.render('index')
 })
+app.get('/politica', (req, res) => {
+  res.render('politica')
+})
+app.get('/termo', (req, res) => {
+  res.render('termo')
+})  
 //Direcionando para página principal
 app.get('/menu', ehAdmin, (req, res) => {
   var perVlr = 0

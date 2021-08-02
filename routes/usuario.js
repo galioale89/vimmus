@@ -43,8 +43,21 @@ router.get('/editar/:id', ehAdmin, (req, res) => {
     })
 })
 
-router.get('/registrar', (req, res) => {
-    res.render('usuario/registro')
+router.get('/registrar/:plano', (req, res) => {
+    var tipoPlano
+    var tipoTodos
+    console.log('plano=>'+req.params.plano)
+    if (req.params.plano == 'planoPago'){
+        tipoPlano = true
+    }else{
+        tipoPlano = false
+    }
+    if(req.params.plano == 'todos'){
+        tipoTodos = true
+    }else{
+        tipoTodos = false
+    }
+    res.render('usuario/registro', {tipoPlano, tipoTodos})
 })
 
 router.post('/enviar', (req, res) => {
