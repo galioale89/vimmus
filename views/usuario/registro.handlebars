@@ -4,11 +4,10 @@
         border: solid 1px;
         border-color: rgba(153, 151, 151, 0.384);
         border-radius: 10px;
-        width: 700px;
+        width: 90%;
         height: fit-content;
-        margin-left: 300px;
-        margin-top: 30px;
-        padding: 10px;
+        margin: auto;
+        margin-top: 10px;
     }
 </style>
 <script>
@@ -41,7 +40,7 @@
         } else {
             selecionado.value = 'ano'
         }
-    }    
+    }
 
     function valida_cnpj() {
         var cnpj = document.getElementById('cnpj')
@@ -134,67 +133,93 @@
     };
 </script>
 <div
-    style="background-color: rgb(0,120,255,0.05);background-image: url(fundosite.png); background-repeat: no-repeat; height: 100%; width: 100%;position: absolute;">
+    style="background-color: white;background-image: url(fundosite.png); background-repeat: no-repeat; height: 100%; width: 100%;position: absolute;">
     <form action="/usuario/enviar" method="post">
-        <div class="quadro" style="margin-bottom: 10%;">
-            <h5>Cadastrar Novo Usuário</h5>
-            <div class="row mt-4">
+        <div class="quadro mt-4" style="margin-bottom: 2%;">
+            <h5 style="text-align: center;" class="fw-bold mt-2">Pré Cadastro para gerar a Proposta Comercial</h5>
+            <div class="row mt-4" style="width: 100%;">
                 <input type='hidden' name='pgto' value='1'>
-                <div class="col-md-4 text-end">
-                    <label class='col-form-label col-form-label-sm' for="nome">Nome Pessoa Responsável: </label><br>
-                    <label class='col-form-label col-form-label-sm mt-1' for="razao">Razão Social: </label><br>
-                    <label class='col-form-label col-form-label-sm mt-1' for="fantasia">Nome Fantasia: </label><br>
-                    <label class='col-form-label col-form-label-sm mt-1' for="cnpj">CNPJ: </label><br>
-                    <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Endereço Empresa:
-                    </label><br>
-                    <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Estado: </label><br>
-                    <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Cidade: </label><br>
-                    <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Número Celular: </label><br>
-                    <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Nome de Usuário: </label><br>
-                    <label class='col-form-label col-form-label-sm mt-1' for="email">E-mail: </label><br>
-                    <label class='col-form-label col-form-label-sm mt-1' for="senha">Senha: </label><br>
-                    <label class='col-form-label col-form-label-sm mt-1' for="senha">Repita sua senha: </label><br>
-                </div>
-                <div class="col-md-5">
-                    <input name="nome" id="nome" class="form-control form-control-sm">
-                    <input name="razao" id="razao" class="form-control form-control-sm mt-1">
-                    <input name="fantasia" id="fantasia" class="form-control form-control-sm mt-1">
-                    <input type='text' class='form-control form-control-sm mt-1' maxlength="18" autocomplete="off"
-                        id='cnpj' name='cnpj' onkeyup="valida_cnpj()">
-                    <input name="endereco" id="endereo" class="form-control form-control-sm mt-1 mb-1">
-                    <select id='estado' name='uf' clas='form-select' style="margin-bottom: 2%;"></select>
-                    <select id='cidade' name='cidade' clas='form-select'></select>
-                    <!--<input name="cidade" id="cidade" class="form-control form-control-sm mt-1">-->
-                    <!--<input name="uf" id="uf" class="form-control form-control-sm mt-1">-->
-                    <input name="celular" id="celular" maxlength="16" placeholder="DDD + Número" autocomplete="off"
-                        class="form-control form-control-sm mt-2">
-                    <input name="usuario" id="usuario" class="form-control form-control-sm mt-1">
-                    <input name="email" type="email" class="form-control form-control-sm mt-1">
-                    <input name="senha" type="password" class="form-control form-control-sm mt-1">
-                    <input name="senharep" type="password" class="form-control form-control-sm mt-1">
-                </div>
                 <div class="row">
-                    <div class='text-center'>
-                        <label class="col-form-label col-form-label-sm">Forma de Pagamento</label>
+                    <div class="col-md-7">
+                        <div class="row">
+                            <div class="col-md-6 text-end">
+                                <label class='col-form-label col-form-label-sm' for="nome">Nome Pessoa Responsável:
+                                </label><br>
+                                <label class='col-form-label col-form-label-sm mt-1' for="razao">Razão Social:
+                                </label><br>
+                                <label class='col-form-label col-form-label-sm mt-1' for="fantasia">Nome Fantasia:
+                                </label><br>
+                                <label class='col-form-label col-form-label-sm mt-1' for="cnpj">CNPJ: </label><br>
+                                <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Endereço Empresa:
+                                </label><br>
+                                <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Estado: </label><br>
+                                <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Cidade: </label><br>
+                                <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Número Celular:
+                                </label><br>
+                                <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Nome de Usuário:
+                                </label><br>
+                                <label class='col-form-label col-form-label-sm mt-1' for="email">E-mail: </label><br>
+                                <label class='col-form-label col-form-label-sm mt-1' for="senha">Senha: </label><br>
+                                <label class='col-form-label col-form-label-sm mt-1' for="senha">Repita sua senha:
+                                </label><br>
+                            </div>
+                            <div class="col-md-6">
+                                <input name="nome" id="nome" class="form-control form-control-sm">
+                                <input name="razao" id="razao" class="form-control form-control-sm mt-1">
+                                <input name="fantasia" id="fantasia" class="form-control form-control-sm mt-1">
+                                <input type='text' class='form-control form-control-sm mt-1' maxlength="18"
+                                    autocomplete="off" id='cnpj' name='cnpj' onkeyup="valida_cnpj()">
+                                <input name="endereco" id="endereo" class="form-control form-control-sm mt-1 mb-1">
+                                <select id='estado' name='uf' clas='form-select' style="margin-bottom: 2%;"></select>
+                                <select id='cidade' name='cidade' clas='form-select'></select>
+                                <!--<input name="cidade" id="cidade" class="form-control form-control-sm mt-1">-->
+                                <!--<input name="uf" id="uf" class="form-control form-control-sm mt-1">-->
+                                <input name="celular" id="celular" maxlength="16" placeholder="DDD + Número"
+                                    autocomplete="off" class="form-control form-control-sm mt-2">
+                                <input name="usuario" id="usuario" class="form-control form-control-sm mt-1">
+                                <input name="email" type="email" class="form-control form-control-sm mt-1">
+                                <input name="senha" type="password" class="form-control form-control-sm mt-1">
+                                <input name="senharep" type="password" class="form-control form-control-sm mt-1">
+                            </div>
+                        </div>
+                        <div class="row mt-3" style="width: 100%;">
+                            <div class='text-center'>
+                                <label class="col-form-label col-form-label-sm fw-bold">Forma de Pagamento</label>
+                            </div>
+                            <input type='hidden' name='selecionado' id='selecionado' value=''>
+                            <div class="form-check col text-center" onchange='plano()'>
+                                <input type="radio" name='plano' id='mes'>
+                                <label class="form-check-label" style="font-size: 14px;">
+                                    Mensal
+                                </label>
+                            </div>
+                            <div class="form-chek col text-center" onchange="plano()">
+                                <input type="radio" name='plano' id='ano'>
+                                <label class="form-check-label" style="font-size: 14px;">
+                                    Anual
+                                </label>
+                            </div>
+                            <div class="form-chek col text-center" onchange="plano()">
+                                <input type="radio" name='plano' id='free'>
+                                <label class="form-check-label" style="font-size: 14px;">
+                                    Free 7 dias
+                                </label>
+                            </div>                            
+                        </div>
                     </div>
-                    <input type='hidden' name='selecionado' id='selecionado' value=''>
-                    <div class="form-check col text-center" onchange='plano()'>
-                        <input type="radio" name='plano' id='mes'>
-                        <label class="form-check-label" style="font-size: 14px;">
-                            Mensal
-                        </label>
+                    <div class="col-md-5">
+                        <img src="/img/proposta.jpg" width="500">
+                        <div style="text-align: center;">
+                            <label class="col-form-label col-form-label-sm">Vamos precisar dos seus dados para entrar em
+                                contato com você e apresentar nossa proposta e o contrato comercial, ok?</label>
+                            <label class="col-form-label col-form-label-sm">Mas fique tranquilo porque sua obrigação de
+                                pagamento começa apenas após a assinatura do contrato!</label>
+                        </div>
+                        <div class="row">
+                            <button type="submit" class="btn btn-sm btn-success mt-4 mx-auto">Enviar</button>
+                        </div>
                     </div>
-                    <div class="form-chek col text-center" onchange="plano()">
-                        <input type="radio" name='plano' id='ano'>
-                        <label class="form-check-label" style="font-size: 14px;">
-                            Anual
-                        </label>
-                    </div>
-
                 </div>
-            </div>
-            <div class="row">
-                <button type="submit" class="btn btn-sm btn-success mt-4 mx-auto col-6">Registrar</button>
             </div>
     </form>
 </div>

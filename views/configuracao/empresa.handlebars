@@ -10,6 +10,73 @@
     function info_simples() {
         alert('O valor do campo <Projeção de Faturamento Simples> deverá ser preenchido com o valor de faturamento estimado para o ano corrente. Assim, os campos <Fator de Redução> e <DAS> deverão acompanhar  a faixa de faturamento que a projeção da sua empresa está inserida nos Anexos do Simples Nacional.')
     }
+    function valida_cnpj() {
+        var cnpj = document.getElementById('cnpj')
+
+        if (cnpj.value.length == 2 || cnpj.value.length == 6) {
+            cnpj.value += '.'
+        }
+        if (cnpj.value.length == 10) {
+            cnpj.value += '/'
+        }
+        if (cnpj.value.length == 15) {
+            cnpj.value += '-'
+        }
+
+        if (cnpj.value.length == 18) {
+
+            var d1 = cnpj.value
+            var p1 = d1.substring(0, 2)
+            var p2 = d1.substring(3, 6)
+            var p3 = d1.substring(7, 10)
+            var p4 = d1.substring(11, 15)
+            var p5 = d1.substring(16, 18)
+            var numdoc = p1 + p2 + p3 + p4 + p5
+
+            if (numdoc == "00000000000000" ||
+                numdoc == "11111111111111" ||
+                numdoc == "22222222222222" ||
+                numdoc == "33333333333333" ||
+                numdoc == "44444444444444" ||
+                numdoc == "55555555555555" ||
+                numdoc == "66666666666666" ||
+                numdoc == "77777777777777" ||
+                numdoc == "88888888888888" ||
+                numdoc == "99999999999999") {
+                cnpj.value = ''
+            }
+
+            // Valida DVs
+            var tamanho = numdoc.length - 2
+            var numeros = numdoc.substring(0, tamanho)
+            var digitos = numdoc.substring(tamanho)
+            var soma = 0
+            var pos = tamanho - 7;
+            for (i = tamanho; i >= 1; i--) {
+                soma += numeros.charAt(tamanho - i) * pos--;
+                if (pos < 2)
+                    pos = 9;
+            }
+            var resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+            if (resultado != digitos.charAt(0)) {
+                cnpj.value = ''
+            }
+
+            tamanho = tamanho + 1;
+            numeros = numdoc.substring(0, tamanho);
+            soma = 0;
+            pos = tamanho - 7;
+            for (i = tamanho; i >= 1; i--) {
+                soma += numeros.charAt(tamanho - i) * pos--;
+                if (pos < 2)
+                    pos = 9;
+            }
+            resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+            if (resultado != digitos.charAt(1)) {
+                cnpj.value = ''
+            }
+        }
+    }
     function selecionar() {
         var selectQtd = document.getElementById('selectQtd')
         var selectKwp = document.getElementById('selectKwp')
@@ -157,6 +224,7 @@
         }
         document.getElementById('focoISS').focus()
     }
+
     function aplicar() {
         //Matriz de niveis do regime Simples Nacional
         var faturamento = document.getElementById('prjFat')
@@ -181,27 +249,33 @@
             { faixa: 6, aliquota: 30.5, deducao: 540000, recini: 3600001, recfim: 4800000 }
         ]
 
+        alert('tipo=>' + tipo.value)
         if (regime.value == 'Simples') {
             if (tipo.value == 'Anexo III') {
+                alert('Anexo III')
                 simplesiii.forEach((element) => {
                     const { recini } = element
                     const { recfim } = element
                     const { aliquota } = element
                     const { deducao } = element
                     if (faturamento.value > recini && faturamento.value <= recfim) {
+                        alert('aliquota=>' + aliquota)
+                        alert('dedução=>' + deducao)
                         alqDasVlr.value = aliquota
                         vlrDeducao.value = deducao
                     }
                 })
             }
-        } else {
             if (tipo.value == 'Anexo V') {
+                alert('Anexo V')
                 simplesv.forEach((element) => {
                     const { recini } = element
                     const { recfim } = element
                     const { aliquota } = element
                     const { deducao } = element
                     if (faturamento.value > recini && faturamento.value <= recfim) {
+                        alert('aliquota=>' + aliquota)
+                        alert('dedução=>' + deducao)
                         alqDasVlr.value = aliquota
                         vlrDeducao.value = deducao
                     }
@@ -213,7 +287,8 @@
 <div class="container mt-2 card">
     <label for="minutos" class='fw-bold text-center'> Cadastro de Empresas</label>
     <br>
-    <form {{#if empresa._id}}action='/configuracao/editempresa'{{else}}action='/configuracao/addempresa'{{/if}} method='post'>
+    <form {{#if empresa._id}}action='/configuracao/editempresa' {{else}}action='/configuracao/addempresa' {{/if}}
+        method='post'>
         <div class="row" style="margin-bottom: 4px;">
             <input type='hidden' name='id' value='{{empresa._id}}'>
             <div class="col-md-6">
@@ -227,7 +302,7 @@
                             <input id='nome' name='nome' value='{{empresa.nome}}' style="margin-left: 7px;"
                                 class='form-control form-control-sm mt-1'>
                             <input id='cnpj' name='cnpj' value='{{empresa.cnpj}}' style="margin-left: 7px;"
-                                class='form-control form-control-sm mt-1'>
+                                class='form-control form-control-sm mt-1' onkeyup="valida_cnpj()">
                         </div>
                     </div>
                     <div class="row" style="margin-left: 2px;">
@@ -419,8 +494,8 @@
                             <div style="margin-top: 10px;"></div><br>
                             <input type='number' id='vlrred' name='vlrred' value='{{empresa.vlrred}}'
                                 class='form-control form-control-sm mb-1' placeholder="R$" />
-                            <input type='text' id='prjFat' name='prjFat' id='simples' value='{{empresa.prjFat}}' onchange='aplicar()' 
-                                class='form-control form-control-sm mb-1' placeholder="R$">
+                            <input type='text' id='prjFat' name='prjFat' id='simples' value='{{empresa.prjFat}}'
+                                onchange='aplicar()' class='form-control form-control-sm mb-1' placeholder="R$">
                             <hr>
                             <input type='text' id='prjLR' name='prjLR' id='real' value='{{empresa.prjLR}}'
                                 class='form-control form-control-sm' style="margin-bottom: 20px;" placeholder="R$">
@@ -430,7 +505,7 @@
                             <hr>
                         </div>
                         <div class="row mt-4">
-                            <button type='submit' class='btn btn-sm btn-success mx-auto mb-3'>
+                            <button type='submit' class='btn btn-sm btn-success mx-auto mb-3' onclick="aplicar()">
                                 Aplicar </button>
                         </div>
                         <label style="color: red;">Para o sistema calcular os tributos do projeto é necessário inserir

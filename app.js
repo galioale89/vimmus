@@ -178,7 +178,50 @@ app.get('/menu', ehAdmin, (req, res) => {
                         }else{
                           res.render("menu", { aviso: aviso, numprjrlz: numprjrlz, numprjnrl: numprjnrl, numprj: numprj, foiRealizado: foiRealizado, naoRealizado: naoRealizado, dataord: dataord, perVlrMed: perVlrMed, perNfsMed: perNfsMed, perRealizado: perRealizado, id: _id, ehMaster: ehMaster, qtdAberto: qtdAberto, qtdExecucao: qtdExecucao, qtdParado: qtdParado, qtdHomologado: qtdHomologado, qtdEntregue: qtdEntregue, perEntregue: perEntregue, totLista: totLista })
                         }
-                      })                      
+                      })       
+                      Empresa.findOne({ user: _id, nome: 'Padrão' }).then((empresa) => {
+                        if (!empresa) {
+                          const empresa = {
+                            user: _id,
+                            nome: 'Padrão',
+                            cnpj: '',
+                            empresa: '',
+                            regime: 'Simples',
+                            tipo: 'simples',
+                            alqDAS: '19.5',
+                            alqICMS: 0,
+                            alqIRPJ: 0,
+                            alqIRPJAdd: 0,
+                            alqCSLL: 0,
+                            alqPIS: 0,
+                            alqCOFINS: 0,
+                            alqNFS: 4,
+                            vlrred: 9900,
+                            prjLR: 0,
+                            prjFat: 500000,
+                            prjLP: 0,
+                            alqINSS: 0,
+                            vlrDAS: 0,
+                            tipodesp: 'potencia',
+                            desadm: 15000,
+                            perdes: 0,
+                            estkwp: 200,
+                          }
+
+                          new Empresa(empresa).save().then(() => {
+                            Empresa.findOne({ user: _id }).sort({ field: 'asc', _id: -1 }).then((empresa) => {
+                              req.flash('success_msg', 'Configurações de tributos salvas com sucesso')
+                              res.redirect('/configuracao/editempresa/' + empresa._id)
+                            }).catch((err) => {
+                              req.flash('error_msg', 'Houve um erro ao encontrar a empresa.')
+                              res.redirect('/configuracao/empresa')
+                            })
+                          }).catch((err) => {
+                            req.flash('error_msg', 'Houve um erro ao salvar a empresa.')
+                            res.redirect('/configuracao/empresa')
+                          })
+                        }
+                      })                                     
                       
                     }).catch((err) => {
                       req.flash("error_msg", "Ocorreu uma falha interna<Homologado>")
