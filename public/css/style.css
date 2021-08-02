@@ -4339,7 +4339,7 @@ header {
   display: flex;
   align-items: flex-end;
 }
-header .logo {
+.logo {
   line-height: 1.875rem;
   font-size: 1.875rem;
   color: #847AF4;
