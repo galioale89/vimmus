@@ -569,11 +569,11 @@ router.post('/projetista/', ehAdmin, (req, res) => {
           var trbpro
           var totpro
 
+          //console.log('req.body.selecionado=>' + req.body.selecionado)
+
           Configuracao.findOne({ _id: projeto.configuracao }).then((configuracao) => {
 
                var conhrs = configuracao.hrstrb
-
-               //console.log('req.body.selecionado=>' + req.body.selecionado)
 
                if (req.body.diasPro != '' && req.body.diasPro != 0 && req.body.selecionado == 'dia') {
 
@@ -728,166 +728,166 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                     }
                }
           }).catch((err) => {
-               req.flash('error_msg', 'Falha ao encontrar o projeto')
-               res.redirect('/customdo/projetista/' + req.body.id)
-          })
-     })
-
-     router.post('/gestao/', ehAdmin, (req, res) => {
-          var erros = ''
-
-          Projeto.findOne({ _id: req.body.id }).then((projeto) => {
-
-               var tothrs = 0
-               var totesc
-               var totvis
-               var totcom
-               var totcro
-               var totaqi
-               var totrec
-               var trbges
-               var totges
-
-               Configuracao.findOne({ _id: projeto.configuracao }).then((configuracao) => {
-
-                    var conhrs = configuracao.hrstrb
-
-                    console.log('req.body.selecionado=>' + req.body.selecionado)
-                    console.log('req.body.diasGes=>' + req.body.diasGes)
-
-                    if (req.body.diasGes != '' && req.body.diasGes != 0 && (req.body.selecionado == 'dia')) {
-
-                         console.log('req.body.vlrdrg=>' + req.body.vlrdrg)
-
-                         if (!req.body.vlrdrg || req.body.vlrdrg == null) {
-                              erros = erros + 'Preencher o valor R$/dia da gestão.'
-                              req.flash('error_msg', erros)
-                              res.redirect('/customdo/gestao/' + req.body.id)
-                         } else {
-                              trbges = parseFloat(req.body.diasGes) * conhrs
-                              tothrs = trbges
-                              console.log('trbges=>' + trbges)
-                              if (projeto.trbpro != null) {
-                                   tothrs = tothrs + parseFloat(projeto.trbpro)
-                              }
-                              if (projeto.trbint != null) {
-                                   tothrs = tothrs + parseFloat(projeto.trbint)
-                              }
-
-                              projeto.trbges = trbges
-                              projeto.totges = parseFloat(req.body.diasGes) * parseFloat(req.body.vlrdrg)
-                              projeto.tothrs = tothrs
-                              console.log('tothrs=>' + tothrs)
-                              projeto.tipoCustoGes = req.body.selecionado
-                              console.log('req.body.selecionado=>' + req.body.selecionado)
-                              projeto.diasGes = req.body.diasGes
-                              console.log('req.body.diasGes=>' + req.body.diasGes)
-                              projeto.vlrdrg = req.body.vlrdrg
-                              console.log('req.body.vlrdrg=>' + req.body.vlrdrg)
-                              projeto.trbesc = 0
-                              projeto.trbvis = 0
-                              projeto.trbcom = 0
-                              projeto.trbcro = 0
-                              projeto.trbaqi = 0
-                              projeto.trbrec = 0
-                              projeto.totesc = 0
-                              projeto.totvis = 0
-                              projeto.totcom = 0
-                              projeto.totcro = 0
-                              projeto.totaqi = 0
-                              projeto.totrec = 0
-
-                              projeto.save().then(() => {
-                                   console.log('salvou projeto')
-                                   req.flash('success_msg', 'Projeto salvo com sucesso. Aplicar o gerenciamento e os tributos.')
-                                   res.redirect('/customdo/gestao/' + req.body.id)
-                              }).catch((err) => {
-                                   req.flash('error_msg', 'Falha ao aplicar os custos do projeto')
-                                   res.redirect('/projeto/consulta')
-                              })
-                         }
-
-                    } else {
-
-                         if (!req.body.trbvis || req.body.trbvis == null || typeof req.body.trbvis == undefined) {
-                              erros = erros + 'Preencher as horas de vistoria.'
-                         }
-                         if (!req.body.trbcom || req.body.trbcom == null || typeof req.body.trbcom == undefined) {
-                              erros = erros + 'Preencher as horas de comunicação.'
-                         }
-                         if (!req.body.trbcro || req.body.trbcro == null || typeof req.body.trbcro == undefined) {
-                              erros = erros + 'Preencher as horas de cronograma.'
-                         }
-                         if (!req.body.trbrec || req.body.trbrec == null || typeof req.body.trbrec == undefined) {
-                              erros = erros + 'Preencher as horas de alocação de recursos.'
-                         }
-                         if (!req.body.trbaqi || req.body.trbaqi == null || typeof req.body.trbaqi == undefined) {
-                              erros = erros + 'Preencher as horas de aquisições.'
-                         }
-                         if (!req.body.vlrhrg || req.body.vlrhrg == null) {
-                              erros = erros + 'Preencher o valor R$/hora da gestão.'
-                         }
-
-                         if (erros == '') {
-                              //Edição dos Custos de Gestão
-                              totesc = (parseFloat(req.body.trbesc) * parseFloat(req.body.vlrhrg)).toFixed(2)
-                              totvis = (parseFloat(req.body.trbvis) * parseFloat(req.body.vlrhrg)).toFixed(2)
-                              totcom = (parseFloat(req.body.trbcom) * parseFloat(req.body.vlrhrg)).toFixed(2)
-                              totcro = (parseFloat(req.body.trbcro) * parseFloat(req.body.vlrhrg)).toFixed(2)
-                              totaqi = (parseFloat(req.body.trbaqi) * parseFloat(req.body.vlrhrg)).toFixed(2)
-                              totrec = (parseFloat(req.body.trbrec) * parseFloat(req.body.vlrhrg)).toFixed(2)
-
-                              totges = (parseFloat(totvis) + parseFloat(totcom) + parseFloat(totcro) + parseFloat(totaqi) + parseFloat(totrec) + parseFloat(totesc)).toFixed(2)
-
-                              trbges = Math.round(parseFloat(req.body.trbvis) + parseFloat(req.body.trbcom) + parseFloat(req.body.trbcro) + parseFloat(req.body.trbaqi) + parseFloat(req.body.trbrec) + parseFloat(req.body.trbesc))
-
-                              tothrs = parseFloat(trbges)
-                              if (projeto.trbpro != null) {
-                                   tothrs = tothrs + parseFloat(projeto.trbpro)
-                              }
-                              if (projeto.trbint != null) {
-                                   tothrs = tothrs + parseFloat(projeto.trbint)
-                              }
-
-                              projeto.vlrhrg = req.body.vlrhrg
-                              projeto.trbvis = req.body.trbvis
-                              projeto.trbcom = req.body.trbcom
-                              projeto.trbcro = req.body.trbcro
-                              projeto.trbaqi = req.body.trbaqi
-                              projeto.trbrec = req.body.trbrec
-                              projeto.trbesc = req.body.trbesc
-                              projeto.tothrs = tothrs
-                              projeto.tipoCustoGes = req.body.selecionado
-                              projeto.totesc = totesc
-                              projeto.totvis = totvis
-                              projeto.totcom = totcom
-                              projeto.totcro = totcro
-                              projeto.totaqi = totaqi
-                              projeto.totrec = totrec
-                              projeto.trbges = trbges
-                              projeto.totges = totges
-                              projeto.save().then(() => {
-                                   req.flash('success_msg', 'Projeto salvo com sucesso. Aplicar o gerenciamento e os tributos.')
-                                   res.redirect('/customdo/gestao/' + req.body.id)
-                              }).catch((err) => {
-                                   req.flash('error_msg', 'Falha ao aplicar os custos do projeto.')
-                                   res.redirect('/customdo/gestao/' + req.body.id)
-                              })
-                         } else {
-                              req.flash('error_msg', erros)
-                              res.redirect('/customdo/gestao/' + req.body.id)
-                         }
-                    }
-               }).catch((err) => {
-                    req.flash('error_msg', 'Falha ao encontrar a configuracão.')
-                    res.redirect('/customdo/gestao/' + req.body.id)
-               })
-          }).catch((err) => {
                req.flash('error_msg', 'Falha ao encontrar a configuração.')
-               res.redirect('/customdo/gestao/' + req.body.id)
+               res.redirect('/customdo/projetista/' + req.body.id)
           })
      }).catch((err) => {
           req.flash('error_msg', 'Falha ao encontrar o projeto.')
+          res.redirect('/customdo/projetista/' + req.body.id)
+     })
+})
+
+router.post('/gestao/', ehAdmin, (req, res) => {
+     var erros = ''
+
+     Projeto.findOne({ _id: req.body.id }).then((projeto) => {
+
+          var tothrs = 0
+          var totesc
+          var totvis
+          var totcom
+          var totcro
+          var totaqi
+          var totrec
+          var trbges
+          var totges
+
+          Configuracao.findOne({ _id: projeto.configuracao }).then((configuracao) => {
+
+               var conhrs = configuracao.hrstrb
+
+               console.log('req.body.selecionado=>' + req.body.selecionado)
+               console.log('req.body.diasGes=>' + req.body.diasGes)
+
+               if (req.body.diasGes != '' && req.body.diasGes != 0 && (req.body.selecionado == 'dia')) {
+
+                    console.log('req.body.vlrdrg=>' + req.body.vlrdrg)
+
+                    if (!req.body.vlrdrg || req.body.vlrdrg == null) {
+                         erros = erros + 'Preencher o valor R$/dia da gestão.'
+                         req.flash('error_msg', erros)
+                         res.redirect('/customdo/gestao/' + req.body.id)
+                    } else {
+                         trbges = parseFloat(req.body.diasGes) * conhrs
+                         tothrs = trbges
+                         console.log('trbges=>' + trbges)
+                         if (projeto.trbpro != null) {
+                              tothrs = tothrs + parseFloat(projeto.trbpro)
+                         }
+                         if (projeto.trbint != null) {
+                              tothrs = tothrs + parseFloat(projeto.trbint)
+                         }
+
+                         projeto.trbges = trbges
+                         projeto.totges = parseFloat(req.body.diasGes) * parseFloat(req.body.vlrdrg)
+                         projeto.tothrs = tothrs
+                         console.log('tothrs=>' + tothrs)
+                         projeto.tipoCustoGes = req.body.selecionado
+                         console.log('req.body.selecionado=>' + req.body.selecionado)
+                         projeto.diasGes = req.body.diasGes
+                         console.log('req.body.diasGes=>' + req.body.diasGes)
+                         projeto.vlrdrg = req.body.vlrdrg
+                         console.log('req.body.vlrdrg=>' + req.body.vlrdrg)
+                         projeto.trbesc = 0
+                         projeto.trbvis = 0
+                         projeto.trbcom = 0
+                         projeto.trbcro = 0
+                         projeto.trbaqi = 0
+                         projeto.trbrec = 0
+                         projeto.totesc = 0
+                         projeto.totvis = 0
+                         projeto.totcom = 0
+                         projeto.totcro = 0
+                         projeto.totaqi = 0
+                         projeto.totrec = 0
+
+                         projeto.save().then(() => {
+                              console.log('salvou projeto')
+                              req.flash('success_msg', 'Projeto salvo com sucesso. Aplicar o gerenciamento e os tributos.')
+                              res.redirect('/customdo/gestao/' + req.body.id)
+                         }).catch((err) => {
+                              req.flash('error_msg', 'Falha ao aplicar os custos do projeto')
+                              res.redirect('/projeto/consulta')
+                         })
+                    }
+
+               } else {
+
+                    if (!req.body.trbvis || req.body.trbvis == null || typeof req.body.trbvis == undefined) {
+                         erros = erros + 'Preencher as horas de vistoria.'
+                    }
+                    if (!req.body.trbcom || req.body.trbcom == null || typeof req.body.trbcom == undefined) {
+                         erros = erros + 'Preencher as horas de comunicação.'
+                    }
+                    if (!req.body.trbcro || req.body.trbcro == null || typeof req.body.trbcro == undefined) {
+                         erros = erros + 'Preencher as horas de cronograma.'
+                    }
+                    if (!req.body.trbrec || req.body.trbrec == null || typeof req.body.trbrec == undefined) {
+                         erros = erros + 'Preencher as horas de alocação de recursos.'
+                    }
+                    if (!req.body.trbaqi || req.body.trbaqi == null || typeof req.body.trbaqi == undefined) {
+                         erros = erros + 'Preencher as horas de aquisições.'
+                    }
+                    if (!req.body.vlrhrg || req.body.vlrhrg == null) {
+                         erros = erros + 'Preencher o valor R$/hora da gestão.'
+                    }
+
+                    if (erros == '') {
+                         //Edição dos Custos de Gestão
+                         totesc = (parseFloat(req.body.trbesc) * parseFloat(req.body.vlrhrg)).toFixed(2)
+                         totvis = (parseFloat(req.body.trbvis) * parseFloat(req.body.vlrhrg)).toFixed(2)
+                         totcom = (parseFloat(req.body.trbcom) * parseFloat(req.body.vlrhrg)).toFixed(2)
+                         totcro = (parseFloat(req.body.trbcro) * parseFloat(req.body.vlrhrg)).toFixed(2)
+                         totaqi = (parseFloat(req.body.trbaqi) * parseFloat(req.body.vlrhrg)).toFixed(2)
+                         totrec = (parseFloat(req.body.trbrec) * parseFloat(req.body.vlrhrg)).toFixed(2)
+
+                         totges = (parseFloat(totvis) + parseFloat(totcom) + parseFloat(totcro) + parseFloat(totaqi) + parseFloat(totrec) + parseFloat(totesc)).toFixed(2)
+
+                         trbges = Math.round(parseFloat(req.body.trbvis) + parseFloat(req.body.trbcom) + parseFloat(req.body.trbcro) + parseFloat(req.body.trbaqi) + parseFloat(req.body.trbrec) + parseFloat(req.body.trbesc))
+
+                         tothrs = parseFloat(trbges)
+                         if (projeto.trbpro != null) {
+                              tothrs = tothrs + parseFloat(projeto.trbpro)
+                         }
+                         if (projeto.trbint != null) {
+                              tothrs = tothrs + parseFloat(projeto.trbint)
+                         }
+
+                         projeto.vlrhrg = req.body.vlrhrg
+                         projeto.trbvis = req.body.trbvis
+                         projeto.trbcom = req.body.trbcom
+                         projeto.trbcro = req.body.trbcro
+                         projeto.trbaqi = req.body.trbaqi
+                         projeto.trbrec = req.body.trbrec
+                         projeto.trbesc = req.body.trbesc
+                         projeto.tothrs = tothrs
+                         projeto.tipoCustoGes = req.body.selecionado
+                         projeto.totesc = totesc
+                         projeto.totvis = totvis
+                         projeto.totcom = totcom
+                         projeto.totcro = totcro
+                         projeto.totaqi = totaqi
+                         projeto.totrec = totrec
+                         projeto.trbges = trbges
+                         projeto.totges = totges
+                         projeto.save().then(() => {
+                              req.flash('success_msg', 'Projeto salvo com sucesso. Aplicar o gerenciamento e os tributos.')
+                              res.redirect('/customdo/gestao/' + req.body.id)
+                         }).catch((err) => {
+                              req.flash('error_msg', 'Falha ao aplicar os custos do projeto')
+                              res.redirect('/customdo/gestao/' + req.body.id)
+                         })
+                    } else {
+                         req.flash('error_msg', erros)
+                         res.redirect('/customdo/gestao/' + req.body.id)
+                    }
+               }
+          }).catch((err) => {
+               req.flash('error_msg', 'Falha ao encontrar a configuracão.')
+               res.redirect('/customdo/gestao/' + req.body.id)
+          })
+     }).catch((err) => {
+          req.flash('error_msg', 'Falha ao encontrar o projeto')
           res.redirect('/customdo/gestao/' + req.body.id)
      })
 })
