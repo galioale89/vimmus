@@ -43,7 +43,7 @@ router.get('/gestao/:id', ehAdmin, (req, res) => {
                          var alocacao = 'enabled'
                          var aquisicao = 'enabled'
                          var mostraHora = false
-                         console.log('projeto.tipoCustoGes=>' + projeto.tipoCustoGes)
+                         //console.log('projeto.tipoCustoGes=>' + projeto.tipoCustoGes)
                          if (projeto.tipoCustoGes == 'hora') {
                               checkHora = 'checked'
                               typeHrg = 'text'
@@ -63,7 +63,7 @@ router.get('/gestao/:id', ehAdmin, (req, res) => {
                               aquisicao = 'disabled'
                               mostraHora = false
                          }
-                         console.log('checkHora=>' + checkHora)
+                         //console.log('checkHora=>' + checkHora)
                          res.render('projeto/customdo/gestao', { projeto, gestor, configuracao, cliente, checkHora, checkDia, typeHrg, typeDrg, typeGes, displayHrs, displayDia, displayTda, escopo, cronograma, vistoria, comunicacao, aquisicao, alocacao, mostraHora })
                     }).catch((err) => {
                          req.flash('error_msg', 'Nenhum cliente encontrado.')
@@ -472,7 +472,7 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                               var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr) + parseFloat(trbstb) + parseFloat(trbpnl) + parseFloat(trbeae))
 
                               tothrs = trbint
-                              console.log('trbint=>' + trbint)
+                              //console.log('trbint=>' + trbint)
                               //console.log('projeto.trbges=>' + projeto.trbges)
                               //console.log('projeto.trbpro=>' + projeto.trbpro)
                               if (projeto.trbges != null) {
