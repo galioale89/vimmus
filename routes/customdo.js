@@ -209,25 +209,26 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
      var erros = ''
 
      Projeto.findOne({ _id: req.body.id }).then((projeto) => {
+
           Configuracao.findOne({ _id: projeto.configuracao }).then((config) => {
 
                var tothrs = 0
                var hrsprj = 0
-               var totatr
-               var totinv
-               var totstb
-               var totpnl
-               var toteae
-               var totest
-               var totmod
-               var trbatr
-               var trbinv
-               var trbstb
-               var trbpnl
-               var trbeae
-               var trbest
-               var trbmod
-               var trbint
+               var totatr = 0
+               var totinv = 0
+               var totstb = 0
+               var totpnl = 0
+               var toteae = 0
+               var totest = 0
+               var totmod = 0
+               var trbatr = 0
+               var trbinv = 0
+               var trbstb = 0
+               var trbpnl = 0
+               var trbeae = 0
+               var trbest = 0
+               var trbmod = 0
+               var trbint = 0
                var conhrs = config.hrstrb
 
                //console.log('req.body.selecionado=>' + req.body.selecionado)
@@ -239,25 +240,36 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                          req.flash('error_msg', erros)
                          res.redirect('/customdo/instalacao/' + req.body.id)
                     } else {
-                         trbatr = parseFloat(req.body.trbatr) * conhrs
-                         trbinv = parseFloat(req.body.trbinv) * conhrs
-                         trbstb = parseFloat(req.body.trbstb) * conhrs
+
+                         //console.log('conhrs=>' + conhrs)
+
+                         trbatr = parseFloat(req.body.trbatr) * parseFloat(conhrs)
+                         trbinv = parseFloat(req.body.trbinv) * parseFloat(conhrs)
+                         trbstb = parseFloat(req.body.trbstb) * parseFloat(conhrs)
                          //console.log('projeto.temPainel=>' + projeto.temPainel)
                          if (projeto.temPainel == 'checked') {
-                              trbpnl = parseFloat(req.body.trbpnl) * conhrs
+                              trbpnl = parseFloat(req.body.trbpnl) * parseFloat(conhrs)
                          } else {
                               trbpnl = 0
                          }
                          //console.log('projeto.temArmazenamento=>' + projeto.temArmazenamento)
                          if (projeto.temArmazenamento == 'checked') {
-                              trbeae = parseFloat(req.body.trbeae) * conhrs
+                              trbeae = parseFloat(req.body.trbeae) * parseFloat(conhrs)
                          } else {
                               trbeae = 0
                          }
-                         trbest = parseFloat(req.body.trbest) * conhrs
-                         trbmod = parseFloat(req.body.trbmod) * conhrs
+                         trbest = parseFloat(req.body.trbest) * parseFloat(conhrs)
+                         trbmod = parseFloat(req.body.trbmod) * parseFloat(conhrs)
+                         //console.log('trbatr=>' + trbatr)
+                         //console.log('trbinv=>' + trbinv)
+                         //console.log('trbstb=>' + trbstb)
+                         //console.log('trbpnl=>' + trbpnl)
+                         //console.log('trbeae=>' + trbeae)
+                         //console.log('trbest=>' + trbest)
+                         //console.log('trbmod=>' + trbmod)
                          trbint = Math.round(parseFloat(trbatr) + parseFloat(trbinv) + parseFloat(trbstb) + parseFloat(trbpnl) + parseFloat(trbeae) + parseFloat(trbest) + parseFloat(trbmod))
 
+                         //console.log('trbint=>' + trbint)
                          tothrs = trbint
                          //console.log('trbint=>' + trbint)
                          //console.log('projeto.trbges=>' + projeto.trbges)
@@ -270,29 +282,43 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                               tothrs = parseFloat(tothrs) + parseFloat(projeto.trbpro)
                               //console.log('tothrs=>' + tothrs)
                          }
+                         //console.log('tothrs=>' + tothrs)
                          projeto.tothrs = Math.round(tothrs)
-                         hrsprj = parseFloat(projeto.trbmod) + parseFloat(projeto.trbest) + parseFloat(projeto.trbpro) + parseFloat(projeto.trbges)
+                         var trbpro = 0
+                         var trbges = 0
+                         if (projeto.trbpro != '' && typeof projeto.trbpro != 'undefined') {
+                              trbpro = projeto.trbpro
+                         }
+                         if (projeto.trbges != '' && typeof projeto.trbges != 'undefined') {
+                              trbges = projeto.trbges
+                         }
+                         hrsprj = parseFloat(trbmod) + parseFloat(trbest) + parseFloat(trbpro) + parseFloat(trbges)
                          projeto.hrsprj = hrsprj
+                         //console.log('hrsprj=>' + hrsprj)
 
                          totatr = parseFloat(req.body.trbatr) * parseFloat(req.body.vlrdri) * parseFloat(req.body.equatr)
                          totinv = parseFloat(req.body.trbinv) * parseFloat(req.body.vlrdri) * parseFloat(req.body.trbinv)
                          totstb = parseFloat(req.body.trbstb) * parseFloat(req.body.vlrdri) * parseFloat(req.body.trbstb)
 
                          if (projeto.temPainel == 'checked') {
+                              //console.log('entrou painel')
                               totpnl = parseFloat(req.body.trbpnl) * parseFloat(req.body.vlrdri) * parseFloat(req.body.trbpnl)
                               projeto.unipnl = req.body.unipnl
                               projeto.trbpnl = req.body.trbpnl
                               projeto.diasPnl = req.body.trbpnl
                               projeto.equpnl = req.body.equpnl
+                              projeto.totpnl = totpnl
                          } else {
                               totpnl = 0
                          }
                          if (projeto.temArmazenamento == 'checked') {
+                              //console.log('entrou armazenamento')
                               toteae = parseFloat(req.body.trbeae) * parseFloat(req.body.vlrdri) * parseFloat(req.body.trbeae)
                               projeto.unieae = req.body.unieae
                               projeto.trbeae = req.body.trbeae
                               projeto.diasEae = req.body.trbeae
                               projeto.equeae = req.body.equeae
+                              projeto.toteae = toteae
                          } else {
                               toteae = 0
                          }
@@ -302,16 +328,12 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                          //console.log('totatr=>' + totatr)
                          //console.log('totinv=>' + totinv)
                          //console.log('totstb=>' + totstb)
-                         //console.log('totpnl=>' + totpnl)
-                         //console.log('toteae=>' + toteae)
                          //console.log('totest=>' + totest)
-                         //console.log('totmod=>' + totmod)                    
+                         //console.log('totmod=>' + totmod)
                          //console.log('totint=>' + totint)
 
                          projeto.uniatr = req.body.uniatr
                          projeto.uniinv = req.body.uniinv
-                         projeto.unistb = req.body.unistb
-                         projeto.unipnl = req.body.unipnl
                          projeto.unistb = req.body.unistb
                          projeto.uniest = req.body.uniest
                          projeto.unimod = req.body.unimod
@@ -322,6 +344,7 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                          projeto.trbest = req.body.trbest
                          projeto.trbmod = req.body.trbmod
                          projeto.trbint = trbint
+                         //console.log('trbint=>' + trbint)
 
                          projeto.diasAte = req.body.trbatr
                          projeto.diasInv = req.body.trbinv
@@ -338,22 +361,24 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                          projeto.totatr = totatr
                          projeto.totinv = totinv
                          projeto.totstb = totstb
-                         projeto.toteae = toteae
-                         projeto.totpnl = totpnl
                          projeto.totest = totest
                          projeto.totmod = totmod
                          projeto.totint = totint
 
                          projeto.tipoCustoIns = req.body.selecionado
+                         //console.log('req.body.selecionado=>' + req.body.selecionado)
                          projeto.diasIns = req.body.diasIns
+                         //console.log('req.body.diasIns=>' + req.body.diasIns)
                          projeto.qtdins = req.body.equmod
+                         //console.log('req.body.equmod=>' + req.body.equmod)
                          projeto.vlrdri = req.body.vlrdri
+                         //console.log('req.body.vlrdri=>' + req.body.vlrdri)
 
                          projeto.save().then(() => {
                               req.flash('success_msg', 'Projeto salvo com sucesso. Aplicar o gerenciamento e os tributos.')
                               res.redirect('/customdo/instalacao/' + req.body.id)
                          }).catch((err) => {
-                              req.flash('error_msg', 'Falha ao aplicar os custos do projeto')
+                              req.flash('error_msg', 'Falha ao aplicar os custos do projeto.')
                               res.redirect('/customdo/instalacao/' + req.body.id)
                          })
                     }
@@ -446,6 +471,7 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                                    projeto.unipnl = req.body.unipnl
                                    projeto.trbpnl = trbpnl
                                    projeto.totpnl = totpnl
+                                   projeto.equpnl = req.body.equpnl
                               } else {
                                    trbpnl = 0
                                    totpnl = 0
@@ -461,6 +487,7 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                                    projeto.unipnl = req.body.unieae
                                    projeto.trbeae = trbeae
                                    projeto.toteae = toteae
+                                   projeto.equeae = req.body.equeae
                               } else {
                                    trbeae = 0
                                    toteae = 0
@@ -470,7 +497,7 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                               var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr) + parseFloat(trbstb) + parseFloat(trbpnl) + parseFloat(trbeae))
 
                               tothrs = trbint
-                              console.log('trbint=>' + trbint)
+                              //console.log('trbint=>' + trbint)
                               //console.log('projeto.trbges=>' + projeto.trbges)
                               //console.log('projeto.trbpro=>' + projeto.trbpro)
                               if (projeto.trbges != null) {
@@ -482,9 +509,14 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                                    //console.log('tothrs=>' + tothrs)
                               }
                               projeto.tothrs = Math.round(tothrs)
-                              hrsprj = parseFloat(projeto.trbmod) + parseFloat(projeto.trbest) + parseFloat(projeto.trbpro) + parseFloat(projeto.trbges)
+                              if (projeto.trbpro != '' && typeof projeto.trbpro != 'undefined') {
+                                   trbpro = projeto.trbpro
+                              }
+                              if (projeto.trbges != '' && typeof projeto.trbges != 'undefined') {
+                                   trbges = projeto.trbges
+                              }
+                              hrsprj = parseFloat(trbmod) + parseFloat(trbest) + parseFloat(trbpro) + parseFloat(trbges)
                               projeto.hrsprj = hrsprj
-
 
                               projeto.vlrhri = req.body.vlrhri
 
@@ -520,8 +552,6 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                               projeto.equatr = req.body.equatr
                               projeto.equinv = req.body.equinv
                               projeto.equstb = req.body.equstb
-                              projeto.equpnl = req.body.equpnl
-                              projeto.equeae = req.body.equeae
                               projeto.equest = req.body.equest
                               projeto.equmod = req.body.equmod
 
@@ -756,12 +786,12 @@ router.post('/gestao/', ehAdmin, (req, res) => {
 
                var conhrs = configuracao.hrstrb
 
-               console.log('req.body.selecionado=>' + req.body.selecionado)
-               console.log('req.body.diasGes=>' + req.body.diasGes)
+               //console.log('req.body.selecionado=>' + req.body.selecionado)
+               //console.log('req.body.diasGes=>' + req.body.diasGes)
 
                if (req.body.diasGes != '' && req.body.diasGes != 0 && (req.body.selecionado == 'dia')) {
 
-                    console.log('req.body.vlrdrg=>' + req.body.vlrdrg)
+                    //console.log('req.body.vlrdrg=>' + req.body.vlrdrg)
 
                     if (!req.body.vlrdrg || req.body.vlrdrg == null) {
                          erros = erros + 'Preencher o valor R$/dia da gestão.'
@@ -770,7 +800,7 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                     } else {
                          trbges = parseFloat(req.body.diasGes) * conhrs
                          tothrs = trbges
-                         console.log('trbges=>' + trbges)
+                         //console.log('trbges=>' + trbges)
                          if (projeto.trbpro != null) {
                               tothrs = tothrs + parseFloat(projeto.trbpro)
                          }
@@ -781,13 +811,13 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                          projeto.trbges = trbges
                          projeto.totges = parseFloat(req.body.diasGes) * parseFloat(req.body.vlrdrg)
                          projeto.tothrs = tothrs
-                         console.log('tothrs=>' + tothrs)
+                         //console.log('tothrs=>' + tothrs)
                          projeto.tipoCustoGes = req.body.selecionado
-                         console.log('req.body.selecionado=>' + req.body.selecionado)
+                         //console.log('req.body.selecionado=>' + req.body.selecionado)
                          projeto.diasGes = req.body.diasGes
-                         console.log('req.body.diasGes=>' + req.body.diasGes)
+                         //console.log('req.body.diasGes=>' + req.body.diasGes)
                          projeto.vlrdrg = req.body.vlrdrg
-                         console.log('req.body.vlrdrg=>' + req.body.vlrdrg)
+                         //console.log('req.body.vlrdrg=>' + req.body.vlrdrg)
                          projeto.trbesc = 0
                          projeto.trbvis = 0
                          projeto.trbcom = 0
@@ -802,7 +832,7 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                          projeto.totrec = 0
 
                          projeto.save().then(() => {
-                              console.log('salvou projeto')
+                              //console.log('salvou projeto')
                               req.flash('success_msg', 'Projeto salvo com sucesso. Aplicar o gerenciamento e os tributos.')
                               res.redirect('/customdo/gestao/' + req.body.id)
                          }).catch((err) => {
