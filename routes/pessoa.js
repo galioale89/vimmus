@@ -3856,656 +3856,380 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
     var nome_cliente
     var funcao
     var aviso = []
-    var sem_instalador = 0
-    var sem_gestor = 0
-    var sem_projetista = 0
-    var sem_vendedor = 0
 
     const { _id } = req.user
     Pessoa.find({ user: _id }).lean().then((pessoas) => {
         Pessoa.findOne({ _id: req.params.id, user: _id }).lean().then((pessoa) => {
-            //console.log(pessoa.nome)
-            //console.log('user=>' + _id)
-            console.log('encontrou vendedor')
-            console.log('pessoa.nome=>' + pessoa.nome)
-            //BUSCA VENDEDOR
-            Projeto.find({ vendedor: pessoa._id }).then((projeto) => {
-                projeto.forEach((element) => {
-                    if (element.cliente != '' && typeof element.cliente != 'undefined') {
-                        Cliente.findOne({ _id: element.cliente }).then((cliente) => {
-                            console.log('encontrou cliente')
-                            const { nome } = element
-                            const { dataini } = element
-                            const { datafim } = element
-                            nome_cliente = cliente.nome
-                            const { _id } = element
-                            dataord_ven = dataMensagem(element.valDataIni)
-                            q = q + 1
-                            projetos_ven.push({ funcao: 'Vendedor', nome_cliente, id: _id, nome: nome, dataini: dataini, datafim: datafim, foiRealiado: element.foiRealizado, dataord_ven })
+            if (pessoa.ehVendedor) {
+                //console.log(pessoa.nome)
+                //console.log('user=>' + _id)
+                console.log('pessoa.nome=>' + pessoa.nome)
+                //BUSCA VENDEDOR
+                Projeto.find({ vendedor: pessoa._id }).then((projeto) => {
+                    projeto.forEach((element) => {
+                        console.log('encontrou vendedor')
+                        if (element.cliente != '' && typeof element.cliente != 'undefined') {
+                            Cliente.findOne({ _id: element.cliente }).then((cliente) => {
+                                console.log('encontrou cliente')
+                                const { nome } = element
+                                const { dataini } = element
+                                const { datafim } = element
+                                nome_cliente = cliente.nome
+                                const { _id } = element
+                                dataord_ven = dataMensagem(element.valDataIni)
+                                q = q + 1
+                                projetos_ven.push({ funcao: 'Vendedor', nome_cliente, id: _id, nome: nome, dataini: dataini, datafim: datafim, foiRealiado: element.foiRealizado, dataord_ven })
 
-                            if (projeto.length == q) {
-                                projetos_ven.sort(function (a, b) {
-                                    if (a.dataord_ven > b.dataord_ven) {
-                                        return 1;
-                                    }
-                                    if (a.dataord_ven < b.dataord_ven) {
-                                        return -1;
-                                    }
-                                    return 0;
+                                if (projeto.length == q) {
+                                    projetos_ven.sort(function (a, b) {
+                                        if (a.dataord_ven > b.dataord_ven) {
+                                            return 1;
+                                        }
+                                        if (a.dataord_ven < b.dataord_ven) {
+                                            return -1;
+                                        }
+                                        return 0;
+                                    })
+                                    console.log('projetos_ven=>' + projetos_ven)
+                                    res.render('mdo/vermais', { projetos_ven, total_ven: projetos_ven.length, pessoa: pessoa.nome })
+                                }
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Não foi encontrado o cliente.')
+                                res.redirect('/pessoa/consulta')
+                            })
+                        } else {
+                            aviso.push({ texto: 'Este vendedor esta livre! Não foi alocado em nenhum projeto.' })
+                            res.render('mdo/findpessoas', { pessoas, aviso })
+                        }
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi encontrado o projeto.')
+                    res.redirect('/pessoa/consulta')
+                })
+            } else {
+                if (pessoa.funges == 'checked') {
+                    //BUSCA PLANEJAMENTO
+                    Equipe.find({
+                        user: _id, $or: [{ pla0: pessoa.nome }, { pla1: pessoa.nome }, { pla2: pessoa.nome }, { pla3: pessoa.nome }, { pla4: pessoa.nome }, { pla5: pessoa.nome },
+                        { vis0: pessoa.nome }, { vis1: pessoa.nome }, { vis2: pessoa.nome }, { vis3: pessoa.nome }, { vis4: pessoa.nome }, { vis5: pessoa.nome }], 'nome': { $exists: false }
+                    }).lean().then((equipe) => {
+                        if (equipe != '' && typeof equipe != 'undefined') {
+                            console.log('entrou planejamento')
+                            equipe.forEach(element => {
+                                Cronograma.findOne({ projeto: element.projeto }).then((cronograma) => {
+                                    Projeto.findOne({ _id: element.projeto }).then((projeto_pla) => {
+                                        console.log('encontrou projeto')
+                                        Cliente.findOne({ _id: projeto_pla.cliente }).then((cliente) => {
+                                            console.log('encontrou cliente')
+                                            const { nome_projeto } = element
+                                            const { projeto } = element
+                                            nome_cliente = cliente.nome
+                                            if (element.pla0 == pessoa.nome ||
+                                                element.pla1 == pessoa.nome ||
+                                                element.pla2 == pessoa.nome ||
+                                                element.pla3 == pessoa.nome ||
+                                                element.pla4 == pessoa.nome ||
+                                                element.pla5 == pessoa.nome) {
+                                                dataini = dataMensagem(cronograma.dateplaini)
+                                                datafim = dataMensagem(cronograma.dateplafim)
+                                                funcao = 'Planejamento'
+                                                dataord_pla = cronograma.agendaPlaIni
+                                                projetos_pla.push({ funcao, nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealiado: projeto_pla.foiRealizado, dataord_pla })
+                                            }
+                                            if (element.vis0 == pessoa.nome ||
+                                                element.vis1 == pessoa.nome ||
+                                                element.vis2 == pessoa.nome ||
+                                                element.vis3 == pessoa.nome ||
+                                                element.vis4 == pessoa.nome ||
+                                                element.vis5 == pessoa.nome) {
+                                                dataini = dataMensagem(cronograma.datevisini)
+                                                datafim = dataMensagem(cronograma.datevisfim)
+                                                funcao = 'Instalador de Vistoria'
+                                                dataord_vis = cronograma.agendaVisIni
+                                                projetos_vis.push({ funcao, nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealizado: projeto_pla.foiRealizado, dataord_vis })
+                                            }
+                                            q = q + 1
+                                            console.log('q=>' + q)
+                                            if (equipe.length == q) {
+                                                projetos_pla.sort(function (a, b) {
+                                                    if (a.dataord_pla > b.dataord_pla) {
+                                                        return 1;
+                                                    }
+                                                    if (a.dataord_pla < b.dataord_pla) {
+                                                        return -1;
+                                                    }
+                                                    return 0;
+                                                })
+                                                projetos_vis.sort(function (a, b) {
+                                                    if (a.dataord_vis > b.dataord_vis) {
+                                                        return 1;
+                                                    }
+                                                    if (a.dataord_vis < b.dataord_vis) {
+                                                        return -1;
+                                                    }
+                                                    return 0;
+                                                })
+                                                console.log('projetos_vis=>' + projetos_vis)
+                                                console.log('projetos_pla=>' + projetos_pla)
+                                                res.render('mdo/vermais', { projetos_vis, projetos_pla, total_vis: projetos_vis.length, total_pla: projetos_pla.length, pessoa: pessoa.nome })
+                                            }
+                                        }).catch((err) => {
+                                            req.flash('error_msg', 'Não foi encontrado o cliente.')
+                                            res.redirect('/pessoa/consulta')
+                                        })
+                                    }).catch((err) => {
+                                        req.flash('error_msg', 'Não foi encontrado o projeto.')
+                                        res.redirect('/pessoa/consulta')
+                                    })
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Não foi encontrado o cronograma.')
+                                    res.redirect('/pessoa/consulta')
                                 })
-                                console.log('projetos_ven=>' + projetos_ven)
-                                res.render('mdo/vermais', { projetos_ven, total_ven: projetos_ven.length, pessoa: pessoa.nome })
+                            })
+                        } else {
+                            aviso.push({ texto: 'Este gestor esta livre! Não foi alocado em nenhum projeto.' })
+                            res.render('mdo/findpessoas', { aviso, pessoas })
+                        }
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Não foram encontradas pessoas na equipe.')
+                        res.redirect('/pessoa/consulta')
+                    })
+                } else {
+                    if (pessoa.funpro == 'checked') {
+                        //BUSCA PROJETISTA
+                        Equipe.find({ user: _id, $or: [{ pro0: pessoa.nome }, { pro1: pessoa.nome }, { pro2: pessoa.nome }, { pro3: pessoa.nome }, { pro4: pessoa.nome }, { pro5: pessoa.nome }], 'nome': { $exists: false } }).lean().then((equipe_pro) => {
+                            if (equipe_pro != '' && typeof equipe_pro != 'undefined') {
+                                equipe_pro.forEach(element => {
+                                    console.log('entrou projetista')
+                                    Cronograma.findOne({ projeto: element.projeto }).then((cronograma) => {
+                                        Projeto.findOne({ _id: element.projeto }).then((projeto_pro) => {
+                                            Cliente.findOne({ _id: projeto_pro.cliente }).then((cliente) => {
+                                                const { nome_projeto } = element
+                                                const { projeto } = element
+                                                nome_cliente = cliente.nome
+                                                console.log('nome_projeto=>' + nome_projeto)
+                                                dataini = dataMensagem(cronograma.dateprjini)
+                                                datafim = dataMensagem(cronograma.dateprjfim)
+                                                console.log('dataini=>' + dataini)
+                                                console.log('datafim=>' + datafim)
+                                                dataord_pro = cronograma.agendaPrjIni
+                                                console.log('dataord_pro=>' + dataord_pro)
+                                                q = q + 1
+                                                projetos_pro.push({ funcao: 'Projetista', nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealizado: projeto_pro.foiRealizado, dataord_pro })
+                                                console.log('q=>' + q)
+                                                console.log('equipe_pro.length=>' + equipe_pro.length)
+                                                if (equipe_pro.length == q) {
+                                                    projetos_pro.sort(function (a, b) {
+                                                        if (a.dataord_pro > b.dataord_pro) {
+                                                            return 1;
+                                                        }
+                                                        if (a.dataord_pro < b.dataord_pro) {
+                                                            return -1;
+                                                        }
+                                                        return 0;
+                                                    })
+                                                    console.log('projetos_pro=>' + projetos_pro)
+                                                    res.render('mdo/vermais', { projetos_pro, total_pro: projetos_pro.length, pessoa: pessoa.nome })
+                                                }
+                                            }).catch((err) => {
+                                                req.flash('error_msg', 'Não foi encontrado o cliente.')
+                                                res.redirect('/pessoa/consulta')
+                                            })
+                                        }).catch((err) => {
+                                            req.flash('error_msg', 'Não foi encontrado o projeto.')
+                                            res.redirect('/pessoa/consulta')
+                                        })
+                                    }).catch((err) => {
+                                        req.flash('error_msg', 'Não foi encontrado o cronograma.')
+                                        res.redirect('/pessoa/consulta')
+                                    })
+                                })
+                            } else {
+                                aviso.push({ texto: 'Este projetista esta livre! Não foi alocado em nenhum projeto.' })
+                                res.render('mdo/findpessoas', { aviso, pessoas })
                             }
                         }).catch((err) => {
-                            req.flash('error_msg', 'Não foi encontrado o cliente.')
+                            req.flash('error_msg', 'Não foram encontradas pessoas na equipe.')
                             res.redirect('/pessoa/consulta')
                         })
-                    }else{
-                        sem_vendedor = 1
-                    }
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foi encontrado o projeto.')
-                res.redirect('/pessoa/consulta')
-            })
-
-            //BUSCA PLANEJAMENTO
-            Equipe.find({
-                user: _id, $or: [{ pla0: pessoa.nome }, { pla1: pessoa.nome }, { pla2: pessoa.nome }, { pla3: pessoa.nome }, { pla4: pessoa.nome }, { pla5: pessoa.nome },
-                { vis0: pessoa.nome }, { vis1: pessoa.nome }, { vis2: pessoa.nome }, { vis3: pessoa.nome }, { vis4: pessoa.nome }, { vis5: pessoa.nome }], 'nome': { $exists: false }
-            }).lean().then((equipe) => {
-                if (equipe != '' && typeof equipe != 'undefined') {
-                    console.log('entrou planejamento')
-                    equipe.forEach(element => {
-                        Cronograma.findOne({ projeto: element.projeto }).then((cronograma) => {
-                            Projeto.findOne({ _id: element.projeto }).then((projeto_pla) => {
-                                console.log('encontrou projeto')
-                                Cliente.findOne({ _id: projeto_pla.cliente }).then((cliente) => {
-                                    console.log('encontrou cliente')
-                                    const { nome_projeto } = element
-                                    const { projeto } = element
-                                    nome_cliente = cliente.nome
-                                    if (element.pla0 == pessoa.nome ||
-                                        element.pla1 == pessoa.nome ||
-                                        element.pla2 == pessoa.nome ||
-                                        element.pla3 == pessoa.nome ||
-                                        element.pla4 == pessoa.nome ||
-                                        element.pla5 == pessoa.nome) {
-                                        dataini = dataMensagem(cronograma.dateplaini)
-                                        datafim = dataMensagem(cronograma.dateplafim)
-                                        funcao = 'Planejamento'
-                                        dataord_pla = cronograma.agendaPlaIni
-                                        projetos_pla.push({ funcao, nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealiado: projeto_pla.foiRealizado, dataord_pla })
-                                    }
-                                    if (element.vis0 == pessoa.nome ||
-                                        element.vis1 == pessoa.nome ||
-                                        element.vis2 == pessoa.nome ||
-                                        element.vis3 == pessoa.nome ||
-                                        element.vis4 == pessoa.nome ||
-                                        element.vis5 == pessoa.nome) {
-                                        dataini = dataMensagem(cronograma.datevisini)
-                                        datafim = dataMensagem(cronograma.datevisfim)
-                                        funcao = 'Instalador de Vistoria'
-                                        dataord_vis = cronograma.agendaVisIni
-                                        projetos_vis.push({ funcao, nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealizado: projeto_pla.foiRealizado, dataord_vis })
-                                    }
-                                    q = q + 1
-                                    console.log('q=>' + q)
-                                    if (equipe.length == q) {
-                                        projetos_pla.sort(function (a, b) {
-                                            if (a.dataord_pla > b.dataord_pla) {
-                                                return 1;
-                                            }
-                                            if (a.dataord_pla < b.dataord_pla) {
-                                                return -1;
-                                            }
-                                            return 0;
-                                        })
-                                        projetos_vis.sort(function (a, b) {
-                                            if (a.dataord_vis > b.dataord_vis) {
-                                                return 1;
-                                            }
-                                            if (a.dataord_vis < b.dataord_vis) {
-                                                return -1;
-                                            }
-                                            return 0;
-                                        })
-                                        console.log('projetos_vis=>' + projetos_vis)
-                                        console.log('projetos_pla=>' + projetos_pla)
-                                        res.render('mdo/vermais', { projetos_vis, projetos_pla, total_vis: projetos_vis.length, total_pla: projetos_pla.length, pessoa: pessoa.nome })
-                                    }
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Não foi encontrado o cliente.')
-                                    res.redirect('/pessoa/consulta')
-                                })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi encontrado o projeto.')
-                                res.redirect('/pessoa/consulta')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Não foi encontrado o cronograma.')
-                            res.redirect('/pessoa/consulta')
-                        })
-                    })
-                }else{
-                    sem_gestor = 1
-                }
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foram encontradas pessoas na equipe.')
-                res.redirect('/pessoa/consulta')
-            })
-            //BUSCA PROJETISTA
-            Equipe.find({ user: _id, $or: [{ pro0: pessoa.nome }, { pro1: pessoa.nome }, { pro2: pessoa.nome }, { pro3: pessoa.nome }, { pro4: pessoa.nome }, { pro5: pessoa.nome }], 'nome': { $exists: false } }).lean().then((equipe_pro) => {
-                if (equipe_pro != '' && typeof equipe_pro != 'undefined') {
-                    equipe_pro.forEach(element => {
-                        console.log('entrou projetista')
-                        Cronograma.findOne({ projeto: element.projeto }).then((cronograma) => {
-                            Projeto.findOne({ _id: element.projeto }).then((projeto_pro) => {
-                                Cliente.findOne({ _id: projeto_pro.cliente }).then((cliente) => {
-                                    const { nome_projeto } = element
-                                    const { projeto } = element
-                                    nome_cliente = cliente.nome
-                                    console.log('nome_projeto=>'+nome_projeto)
-                                    dataini = dataMensagem(cronograma.dateprjini)
-                                    datafim = dataMensagem(cronograma.dateprjfim)
-                                    console.log('dataini=>'+dataini)
-                                    console.log('datafim=>'+datafim)
-                                    dataord_pro = cronograma.agendaPrjIni
-                                    console.log('dataord_pro=>'+dataord_pro)
-                                    q = q + 1
-                                    projetos_pro.push({ funcao: 'Projetista', nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealizado: projeto_pro.foiRealizado, dataord_pro })
-                                    console.log('q=>'+q)
-                                    console.log('equipe_pro.length=>'+equipe_pro.length)
-                                    if (equipe_pro.length == q) {
-                                        projetos_pro.sort(function (a, b) {
-                                            if (a.dataord_pro > b.dataord_pro) {
-                                                return 1;
-                                            }
-                                            if (a.dataord_pro < b.dataord_pro) {
-                                                return -1;
-                                            }
-                                            return 0;
-                                        })
-                                        console.log('projetos_pro=>' + projetos_pro)
-                                        res.render('mdo/vermais', { projetos_pro, total_pro: projetos_pro.length, pessoa: pessoa.nome })
-                                    }
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Não foi encontrado o cliente.')
-                                    res.redirect('/pessoa/consulta')
-                                })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi encontrado o projeto.')
-                                res.redirect('/pessoa/consulta')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Não foi encontrado o cronograma.')
-                            res.redirect('/pessoa/consulta')
-                        })
-                    })
-                }else{
-                    sem_projetista = 1
-                }
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foram encontradas pessoas na equipe.')
-                res.redirect('/pessoa/consulta')
-            })
-
-            //BUSCA INSTALADORES
-            Equipe.find({
-                user: _id, $or: [{ ate0: pessoa.nome }, { ate1: pessoa.nome }, { ate2: pessoa.nome }, { ate3: pessoa.nome }, { ate4: pessoa.nome }, { ate5: pessoa.nome },
-                { inv0: pessoa.nome }, { inv1: pessoa.nome }, { inv2: pessoa.nome }, { inv3: pessoa.nome }, { inv4: pessoa.nome }, { inv5: pessoa.nome },
-                { pnl0: pessoa.nome }, { pnl1: pessoa.nome }, { pnl2: pessoa.nome }, { pnl3: pessoa.nome }, { pnl4: pessoa.nome }, { pnl5: pessoa.nome },
-                { eae0: pessoa.nome }, { eae1: pessoa.nome }, { eae2: pessoa.nome }, { eae3: pessoa.nome }, { eae4: pessoa.nome }, { eae5: pessoa.nome },
-                { ins0: pessoa.nome }, { ins1: pessoa.nome }, { ins2: pessoa.nome }, { ins3: pessoa.nome }, { ins4: pessoa.nome }, { ins5: pessoa.nome }], 'nome': { $exists: false }
-            }).lean().then((equipe_ins) => {
-                if (equipe_ins != '' && typeof equipe_ins != 'undefined') {
-                    equipe_ins.forEach(element => {
-                        console.log('entrou INSTALADORES')
-                        Cronograma.findOne({ projeto: element.projeto }).then((cronograma) => {
-                            Projeto.findOne({ _id: element.projeto }).then((projeto_ins) => {
-                                Cliente.findOne({ _id: projeto_ins.cliente }).then((cliente) => {
-                                    const { nome_projeto } = element
-                                    const { projeto } = element
-                                    foiRealizado = projeto_ins.foiRealizado
-                                    nome_cliente = cliente.nome
-
-                                    if (element.ate0 == pessoa.nome ||
-                                        element.ate1 == pessoa.nome ||
-                                        element.ate2 == pessoa.nome ||
-                                        element.ate3 == pessoa.nome ||
-                                        element.ate4 == pessoa.nome ||
-                                        element.ate5 == pessoa.nome) {
-                                        dataini = dataMensagem(cronograma.dateateini)
-                                        datafim = dataMensagem(cronograma.dateatefim)
-                                        funcao = 'Instalador de Aterramento'
-                                        dataord_ate = cronograma.agendaAteIni
-                                        projetos_ate.push({ funcao, nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealizado, dataord_ate })
-                                    }
-
-                                    if (element.inv0 == pessoa.nome ||
-                                        element.inv1 == pessoa.nome ||
-                                        element.inv2 == pessoa.nome ||
-                                        element.inv3 == pessoa.nome ||
-                                        element.inv4 == pessoa.nome ||
-                                        element.inv5 == pessoa.nome) {
-                                        dataini = dataMensagem(cronograma.dateinvini)
-                                        datafim = dataMensagem(cronograma.dateinvfim)
-                                        funcao = 'Instalador de Inversores e StringBox'
-                                        dataord_inv = cronograma.agendaInvIni
-                                        projetos_inv.push({ funcao, nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealizado, dataord_inv })
-                                    }
-
-                                    if (element.pnl0 == pessoa.nome ||
-                                        element.pnl1 == pessoa.nome ||
-                                        element.pnl2 == pessoa.nome ||
-                                        element.pnl3 == pessoa.nome ||
-                                        element.pnl4 == pessoa.nome ||
-                                        element.pnl5 == pessoa.nome) {
-                                        dataini = dataMensagem(cronograma.datepnlini)
-                                        datafim = dataMensagem(cronograma.datepnlfim)
-                                        funcao = 'Instalador de Painel Elétrico'
-                                        dataord_pnl = cronograma.agendaPnlIni
-                                        projetos_pnl.push({ funcao, nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealizado, dataord_pnl })
-                                    }
-
-                                    if (element.eae0 == pessoa.nome ||
-                                        element.eae1 == pessoa.nome ||
-                                        element.eae2 == pessoa.nome ||
-                                        element.eae3 == pessoa.nome ||
-                                        element.eae4 == pessoa.nome ||
-                                        element.eae5 == pessoa.nome) {
-                                        dataini = dataMensagem(cronograma.dateeaeini)
-                                        datafim = dataMensagem(cronograma.dateeaefim)
-                                        funcao = 'Instalador de Estação de Armazenamento'
-                                        dataord_eae = cronograma.agendaEaeIni
-                                        projetos_eae.push({ funcao, nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealizado, dataord_eae })
-                                    }
-
-                                    if (element.ins0 == pessoa.nome ||
-                                        element.ins1 == pessoa.nome ||
-                                        element.ins2 == pessoa.nome ||
-                                        element.ins3 == pessoa.nome ||
-                                        element.ins4 == pessoa.nome ||
-                                        element.ins5 == pessoa.nome) {
-                                        dataini = dataMensagem(cronograma.dateestini)
-                                        datafim = dataMensagem(cronograma.datemodfim)
-                                        funcao = 'Instalador de Estruturas e Módulos'
-                                        dataord_ins = cronograma.agendaEstIni
-                                        projetos_ins.push({ funcao, nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealizado, dataord_ins })
-                                    }
-
-                                    q = q + 1
-                                    console.log('equipe_ins.length=>' + equipe_ins.length)
-                                    console.log('q=>' + q)
-                                    if (equipe_ins.length == q) {
-
-                                        projetos_ate.sort(function (a, b) {
-                                            if (a.dataord_ate > b.dataord_ate) {
-                                                return 1;
-                                            }
-                                            if (a.dataord_ate < b.dataord_ate) {
-                                                return -1;
-                                            }
-                                            return 0;
-                                        })
-
-                                        projetos_inv.sort(function (a, b) {
-                                            if (a.dataord_inv > b.dataord_inv) {
-                                                return 1;
-                                            }
-                                            if (a.dataord_inv < b.dataord_inv) {
-                                                return -1;
-                                            }
-                                            return 0;
-                                        })
-
-                                        projetos_ins.sort(function (a, b) {
-                                            if (a.dataord_ins > b.dataord_ins) {
-                                                return 1;
-                                            }
-                                            if (a.dataord_ins < b.dataord_ins) {
-                                                return -1;
-                                            }
-                                            return 0;
-                                        })
-
-                                        projetos_pnl.sort(function (a, b) {
-                                            if (a.dataord_pnl > b.dataord_pnl) {
-                                                return 1;
-                                            }
-                                            if (a.dataord_pnl < b.dataord_pnl) {
-                                                return -1;
-                                            }
-                                            return 0;
-                                        })
-                                        projetos_eae.sort(function (a, b) {
-                                            if (a.dataord_eae > b.dataord_eae) {
-                                                return 1;
-                                            }
-                                            if (a.dataord_eae < b.dataord_eae) {
-                                                return -1;
-                                            }
-                                            return 0;
-                                        })
-
-
-                                        res.render('mdo/vermais', {
-                                            projetos_ate, projetos_inv, projetos_ins, projetos_pnl, projetos_eae,
-                                            projetos_ven, projetos_pro, projetos_pla,
-                                            total_ate: projetos_ate.length, total_inv: projetos_inv.length,
-                                            total_ins: projetos_ins.length, total_pnl: projetos_pnl.length,
-                                            total_eae: projetos_eae.length, total_ven: projetos_ven.length,
-                                            total_pro: projetos_pro.length, total_pla: projetos_pla.length,
-                                            pessoa: pessoa.nome
-                                        })
-
-                                    }
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Não foi encontrado o cliente.')
-                                    res.redirect('/pessoa/consulta')
-                                })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi encontrado o projeto.')
-                                res.redirect('/pessoa/consulta')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Não foi encontrado o cronograma.')
-                            res.redirect('/pessoa/consulta')
-                        })
-                    })
-                }else{
-                    sem_instalador = 1
-                }
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foram encontradas pessoas na equipe.')
-                res.redirect('/pessoa/consulta')
-            })
-
-            if (pessoa.ehVendedor && se_vendedor == 1) {
-                console.log('entrou vendedor')
-                aviso.push({texto: 'Este vendedor esta livre! Não foi alocado em nenhum projeto.'})
-                res.render('mdo/findpessoas', { pessoas, aviso})
-            } else {
-                if (pessoa.funges == 'checked' && sem_gestor == 1) {
-                    console.log('entrou gestor')
-                    aviso.push({texto: 'Este gestor esta livre! Não foi alocado em nenhum projeto.'})
-                    res.render('mdo/findpessoas', { aviso, pessoas})
-                } else {
-                    if (pessoa.funpro == 'checked' && sem_projetista == 1) {
-                        console.log('entrou projetista')
-                        aviso.push({texto: 'Este projetista esta livre! Não foi alocado em nenhum projeto.'})
-                        res.render('mdo/findpessoas', {aviso, pessoas})
                     } else {
-                        if (pessoa.funins == 'checked' && sem_instalador == 1) {     
-                            console.log('entrou instalador')                  
-                            aviso.push({texto: 'Este instalador esta livre! Não foi alocado em nenhum projeto.'})
-                            res.render('mdo/findpessoas', { aviso, pessoas})
+                        if (pessoa.funins == 'checked') {
+                            //BUSCA INSTALADORES
+                            Equipe.find({
+                                user: _id, $or: [{ ate0: pessoa.nome }, { ate1: pessoa.nome }, { ate2: pessoa.nome }, { ate3: pessoa.nome }, { ate4: pessoa.nome }, { ate5: pessoa.nome },
+                                { inv0: pessoa.nome }, { inv1: pessoa.nome }, { inv2: pessoa.nome }, { inv3: pessoa.nome }, { inv4: pessoa.nome }, { inv5: pessoa.nome },
+                                { pnl0: pessoa.nome }, { pnl1: pessoa.nome }, { pnl2: pessoa.nome }, { pnl3: pessoa.nome }, { pnl4: pessoa.nome }, { pnl5: pessoa.nome },
+                                { eae0: pessoa.nome }, { eae1: pessoa.nome }, { eae2: pessoa.nome }, { eae3: pessoa.nome }, { eae4: pessoa.nome }, { eae5: pessoa.nome },
+                                { ins0: pessoa.nome }, { ins1: pessoa.nome }, { ins2: pessoa.nome }, { ins3: pessoa.nome }, { ins4: pessoa.nome }, { ins5: pessoa.nome }], 'nome': { $exists: false }
+                            }).lean().then((equipe_ins) => {
+                                if (equipe_ins != '' && typeof equipe_ins != 'undefined') {
+                                    equipe_ins.forEach(element => {
+                                        console.log('entrou INSTALADORES')
+                                        Cronograma.findOne({ projeto: element.projeto }).then((cronograma) => {
+                                            Projeto.findOne({ _id: element.projeto }).then((projeto_ins) => {
+                                                Cliente.findOne({ _id: projeto_ins.cliente }).then((cliente) => {
+                                                    const { nome_projeto } = element
+                                                    const { projeto } = element
+                                                    foiRealizado = projeto_ins.foiRealizado
+                                                    nome_cliente = cliente.nome
+
+                                                    if (element.ate0 == pessoa.nome ||
+                                                        element.ate1 == pessoa.nome ||
+                                                        element.ate2 == pessoa.nome ||
+                                                        element.ate3 == pessoa.nome ||
+                                                        element.ate4 == pessoa.nome ||
+                                                        element.ate5 == pessoa.nome) {
+                                                        dataini = dataMensagem(cronograma.dateateini)
+                                                        datafim = dataMensagem(cronograma.dateatefim)
+                                                        funcao = 'Instalador de Aterramento'
+                                                        dataord_ate = cronograma.agendaAteIni
+                                                        projetos_ate.push({ funcao, nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealizado, dataord_ate })
+                                                    }
+
+                                                    if (element.inv0 == pessoa.nome ||
+                                                        element.inv1 == pessoa.nome ||
+                                                        element.inv2 == pessoa.nome ||
+                                                        element.inv3 == pessoa.nome ||
+                                                        element.inv4 == pessoa.nome ||
+                                                        element.inv5 == pessoa.nome) {
+                                                        dataini = dataMensagem(cronograma.dateinvini)
+                                                        datafim = dataMensagem(cronograma.dateinvfim)
+                                                        funcao = 'Instalador de Inversores e StringBox'
+                                                        dataord_inv = cronograma.agendaInvIni
+                                                        projetos_inv.push({ funcao, nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealizado, dataord_inv })
+                                                    }
+
+                                                    if (element.pnl0 == pessoa.nome ||
+                                                        element.pnl1 == pessoa.nome ||
+                                                        element.pnl2 == pessoa.nome ||
+                                                        element.pnl3 == pessoa.nome ||
+                                                        element.pnl4 == pessoa.nome ||
+                                                        element.pnl5 == pessoa.nome) {
+                                                        dataini = dataMensagem(cronograma.datepnlini)
+                                                        datafim = dataMensagem(cronograma.datepnlfim)
+                                                        funcao = 'Instalador de Painel Elétrico'
+                                                        dataord_pnl = cronograma.agendaPnlIni
+                                                        projetos_pnl.push({ funcao, nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealizado, dataord_pnl })
+                                                    }
+
+                                                    if (element.eae0 == pessoa.nome ||
+                                                        element.eae1 == pessoa.nome ||
+                                                        element.eae2 == pessoa.nome ||
+                                                        element.eae3 == pessoa.nome ||
+                                                        element.eae4 == pessoa.nome ||
+                                                        element.eae5 == pessoa.nome) {
+                                                        dataini = dataMensagem(cronograma.dateeaeini)
+                                                        datafim = dataMensagem(cronograma.dateeaefim)
+                                                        funcao = 'Instalador de Estação de Armazenamento'
+                                                        dataord_eae = cronograma.agendaEaeIni
+                                                        projetos_eae.push({ funcao, nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealizado, dataord_eae })
+                                                    }
+
+                                                    if (element.ins0 == pessoa.nome ||
+                                                        element.ins1 == pessoa.nome ||
+                                                        element.ins2 == pessoa.nome ||
+                                                        element.ins3 == pessoa.nome ||
+                                                        element.ins4 == pessoa.nome ||
+                                                        element.ins5 == pessoa.nome) {
+                                                        dataini = dataMensagem(cronograma.dateestini)
+                                                        datafim = dataMensagem(cronograma.datemodfim)
+                                                        funcao = 'Instalador de Estruturas e Módulos'
+                                                        dataord_ins = cronograma.agendaEstIni
+                                                        projetos_ins.push({ funcao, nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealizado, dataord_ins })
+                                                    }
+
+                                                    q = q + 1
+                                                    console.log('equipe_ins.length=>' + equipe_ins.length)
+                                                    console.log('q=>' + q)
+                                                    if (equipe_ins.length == q) {
+
+                                                        projetos_ate.sort(function (a, b) {
+                                                            if (a.dataord_ate > b.dataord_ate) {
+                                                                return 1;
+                                                            }
+                                                            if (a.dataord_ate < b.dataord_ate) {
+                                                                return -1;
+                                                            }
+                                                            return 0;
+                                                        })
+
+                                                        projetos_inv.sort(function (a, b) {
+                                                            if (a.dataord_inv > b.dataord_inv) {
+                                                                return 1;
+                                                            }
+                                                            if (a.dataord_inv < b.dataord_inv) {
+                                                                return -1;
+                                                            }
+                                                            return 0;
+                                                        })
+
+                                                        projetos_ins.sort(function (a, b) {
+                                                            if (a.dataord_ins > b.dataord_ins) {
+                                                                return 1;
+                                                            }
+                                                            if (a.dataord_ins < b.dataord_ins) {
+                                                                return -1;
+                                                            }
+                                                            return 0;
+                                                        })
+
+                                                        projetos_pnl.sort(function (a, b) {
+                                                            if (a.dataord_pnl > b.dataord_pnl) {
+                                                                return 1;
+                                                            }
+                                                            if (a.dataord_pnl < b.dataord_pnl) {
+                                                                return -1;
+                                                            }
+                                                            return 0;
+                                                        })
+                                                        projetos_eae.sort(function (a, b) {
+                                                            if (a.dataord_eae > b.dataord_eae) {
+                                                                return 1;
+                                                            }
+                                                            if (a.dataord_eae < b.dataord_eae) {
+                                                                return -1;
+                                                            }
+                                                            return 0;
+                                                        })
+
+
+                                                        res.render('mdo/vermais', {
+                                                            projetos_ate, projetos_inv, projetos_ins, projetos_pnl, projetos_eae,
+                                                            projetos_ven, projetos_pro, projetos_pla,
+                                                            total_ate: projetos_ate.length, total_inv: projetos_inv.length,
+                                                            total_ins: projetos_ins.length, total_pnl: projetos_pnl.length,
+                                                            total_eae: projetos_eae.length, total_ven: projetos_ven.length,
+                                                            total_pro: projetos_pro.length, total_pla: projetos_pla.length,
+                                                            pessoa: pessoa.nome
+                                                        })
+
+                                                    }
+                                                }).catch((err) => {
+                                                    req.flash('error_msg', 'Não foi encontrado o cliente.')
+                                                    res.redirect('/pessoa/consulta')
+                                                })
+                                            }).catch((err) => {
+                                                req.flash('error_msg', 'Não foi encontrado o projeto.')
+                                                res.redirect('/pessoa/consulta')
+                                            })
+                                        }).catch((err) => {
+                                            req.flash('error_msg', 'Não foi encontrado o cronograma.')
+                                            res.redirect('/pessoa/consulta')
+                                        })
+                                    })
+                                } else {
+                                    aviso.push({ texto: 'Este instalador esta livre! Não foi alocado em nenhum projeto.' })
+                                    res.render('mdo/findpessoas', { aviso, pessoas })
+                                }
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Não foram encontradas pessoas na equipe.')
+                                res.redirect('/pessoa/consulta')
+                            })
                         }
+
                     }
                 }
             }
-            /*
-            //BUSCA INVERSOR
-            Equipe.find({ user: _id, $or: [{ inv0: pessoa.nome }, { inv1: pessoa.nome }, { inv2: pessoa.nome }, { inv3: pessoa.nome }, { inv4: pessoa.nome }, { inv5: pessoa.nome }] }).lean().then((equipe) => {
-                console.log('entrou inversor')
-                console.log('equipe=>' + equipe)
-                if (equipe != '' && typeof equipe != 'undefined') {
-                    equipe.forEach(element => {
-                        Cronograma.findOne({ projeto: element.projeto }).then((cronograma) => {
-                            Projeto.findOne({ _id: element.projeto }).then((inv_pro) => {
-                                Cliente.findOne({ _id: inv_pro.cliente }).then((cliente) => {
-                                    const { nome_projeto } = element
-                                    const { projeto } = element
-                                    nome_cliente = cliente.nome
-                                    dataini = dataMensagem(cronograma.dateinvini)
-                                    datafim = dataMensagem(cronograma.dateinvfim)
-                                    q = q + 1
-                                    projetos.push({ funcao: 'Instalador Inversor e String Box', nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealiado: inv_pro.foiRealizado, dataord: cronograma.agendainvini })
-                                    console.log('element.length=>' + element.length)
-                                    console.log('q=>' + q)
-                                    if (equipe.length == q) {
-                                        projetos.sort(function (a, b) {
-                                            if (a.dataord > b.dataord) {
-                                                return 1;
-                                            }
-                                            if (a.dataord < b.dataord) {
-                                                return -1;
-                                            }
-                                            return 0;
-                                        })
-                                        console.log('projetos=>' + projetos)
-                                        res.render('mdo/vermais', { projetos, total: equipe.length, pessoa: pessoa.nome })
-                                    }
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Não foi encontrado o cliente.')
-                                    res.redirect('/pessoa/consulta')
-                                })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi encontrado o projeto.')
-                                res.redirect('/pessoa/consulta')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Não foi encontrado o cronograma.')
-                            res.redirect('/pessoa/consulta')
-                        })
-                    })
-                }else{
-                    req.flash('error_msg', 'Este instalador esta livre! Não foi alocado em nenhum projeto.')
-                    res.redirect('/pessoa/consulta')                
-                }
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foram encontradas pessoas na equipe.')
-                res.redirect('/pessoa/consulta')
-            })
-            //BUSCA PAINEL
-            Equipe.find({ user: _id, $or: [{ pnl0: pessoa.nome }, { pnl1: pessoa.nome }, { pnl2: pessoa.nome }, { pnl3: pessoa.nome }, { pnl4: pessoa.nome }, { pnl5: pessoa.nome }] }).lean().then((equipe) => {
-                console.log('entrou painel')
-                console.log('equipe=>' + equipe)
-                if (equipe != '' && typeof equipe != 'undefined') {
-                    equipe.forEach(element => {
-                        Cronograma.findOne({ projeto: element.projeto }).then((cronograma) => {
-                            Projeto.findOne({ _id: element.projeto }).then((pnl_pro) => {
-                                Cliente.findOne({ _id: pnl_pro.cliente }).then((cliente) => {
-                                    const { nome_projeto } = element
-                                    const { projeto } = element
-                                    nome_cliente = cliente.nome
-                                    dataini = dataMensagem(cronograma.datepnlini)
-                                    datafim = dataMensagem(cronograma.datepnlfim)
-                                    q = q + 1
-                                    projetos.push({ funcao: 'Instalador Painél Elétrico', nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealiado: pnl_pro.foiRealizado, dataord: cronograma.agendapnlini })
-                                    console.log('element.length=>' + element.length)
-                                    console.log('q=>' + q)
-                                    if (equipe.length == q) {
-                                        projetos.sort(function (a, b) {
-                                            if (a.dataord > b.dataord) {
-                                                return 1;
-                                            }
-                                            if (a.dataord < b.dataord) {
-                                                return -1;
-                                            }
-                                            return 0;
-                                        })
-                                        console.log('projetos=>' + projetos)
-                                        res.render('mdo/vermais', { projetos, total: equipe.length, pessoa: pessoa.nome })
-                                    }
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Não foi encontrado o cliente.')
-                                    res.redirect('/pessoa/consulta')
-                                })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi encontrado o projeto.')
-                                res.redirect('/pessoa/consulta')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Não foi encontrado o cronograma.')
-                            res.redirect('/pessoa/consulta')
-                        })
-                    })
-                }else{
-                    req.flash('error_msg', 'Este instalador esta livre! Não foi alocado em nenhum projeto.')
-                    res.redirect('/pessoa/consulta')                
-                }
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foram encontradas pessoas na equipe.')
-                res.redirect('/pessoa/consulta')
-            })
-            //BUSCA ARMAZENAMENTO
-            Equipe.find({ user: _id, $or: [{ eae0: pessoa.nome }, { eae1: pessoa.nome }, { eae2: pessoa.nome }, { eae3: pessoa.nome }, { eae4: pessoa.nome }, { eae5: pessoa.nome }] }).lean().then((equipe) => {
-                console.log('entrou armazenagem')
-                console.log('equipe=>' + equipe)
-                if (equipe != '' && typeof equipe != 'undefined') {
-                    equipe.forEach(element => {
-                        Cronograma.findOne({ projeto: element.projeto }).then((cronograma) => {
-                            Projeto.findOne({ _id: element.projeto }).then((eae_pro) => {
-                                Cliente.findOne({ _id: eae_pro.cliente }).then((cliente) => {
-                                    const { nome_projeto } = element
-                                    const { projeto } = element
-                                    nome_cliente = cliente.nome
-                                    dataini = dataMensagem(cronograma.dateeaeini)
-                                    datafim = dataMensagem(cronograma.dateeaefim)
-                                    q = q + 1
-                                    projetos.push({ funcao: 'Instalador Da Estação de Armazenamento', nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealiado: eae_pro.foiRealizado, dataord: cronograma.agendaeaeini })
-                                    console.log('element.length=>' + element.length)
-                                    console.log('q=>' + q)
-                                    if (equipe.length == q) {
-                                        projetos.sort(function (a, b) {
-                                            if (a.dataord > b.dataord) {
-                                                return 1;
-                                            }
-                                            if (a.dataord < b.dataord) {
-                                                return -1;
-                                            }
-                                            return 0;
-                                        })
-                                        console.log('projetos=>' + projetos)
-                                        res.render('mdo/vermais', { projetos, total: equipe.length, pessoa: pessoa.nome })
-                                    }
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Não foi encontrado o cliente.')
-                                    res.redirect('/pessoa/consulta')
-                                })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi encontrado o projeto.')
-                                res.redirect('/pessoa/consulta')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Não foi encontrado o cronograma.')
-                            res.redirect('/pessoa/consulta')
-                        })
-                    })
-                }else{
-                    req.flash('error_msg', 'Este instalador esta livre! Não foi alocado em nenhum projeto.')
-                    res.redirect('/pessoa/consulta')                
-                }
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foram encontradas pessoas na equipe.')
-                res.redirect('/pessoa/consulta')
-            })
-            //BUSCA INSTALAÇÃO
-            Equipe.find({ user: _id, $or: [{ ins0: pessoa.nome }, { ins1: pessoa.nome }, { ins2: pessoa.nome }, { ins3: pessoa.nome }, { ins4: pessoa.nome }, { ins5: pessoa.nome }] }).lean().then((equipe) => {
-                console.log('entrou instalação')
-                console.log('equipe=>' + equipe)
-                if (equipe != '' && typeof equipe != 'undefined') {
-                    equipe.forEach(element => {
-                        Cronograma.findOne({ projeto: element.projeto }).then((cronograma) => {
-                            Projeto.findOne({ _id: element.projeto }).then((ins_pro) => {
-                                Cliente.findOne({ _id: ins_pro.cliente }).then((cliente) => {
-                                    const { nome_projeto } = element
-                                    const { projeto } = element
-                                    nome_cliente = cliente.nome
-                                    dataini = dataMensagem(cronograma.dateinsini)
-                                    datafim = dataMensagem(cronograma.dateinsfim)
-                                    q = q + 1
-                                    projetos.push({ funcao: 'Instalador das Estruturas e Módulos', nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealiado: ins_pro.foiRealizado, dataord: cronograma.agendainsini })
-                                    console.log('element.length=>' + element.length)
-                                    console.log('q=>' + q)
-                                    if (equipe.length == q) {
-                                        projetos.sort(function (a, b) {
-                                            if (a.dataord > b.dataord) {
-                                                return 1;
-                                            }
-                                            if (a.dataord < b.dataord) {
-                                                return -1;
-                                            }
-                                            return 0;
-                                        })
-                                        console.log('projetos=>' + projetos)
-                                        res.render('mdo/vermais', { projetos, total: equipe.length, pessoa: pessoa.nome })
-                                    }
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Não foi encontrado o cliente.')
-                                    res.redirect('/pessoa/consulta')
-                                })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi encontrado o projeto.')
-                                res.redirect('/pessoa/consulta')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Não foi encontrado o cronograma.')
-                            res.redirect('/pessoa/consulta')
-                        })
-                    })
-                }else{
-                    req.flash('error_msg', 'Este instalador esta livre! Não foi alocado em nenhum projeto.')
-                    res.redirect('/pessoa/consulta')                
-                }
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foram encontradas pessoas na equipe.')
-                res.redirect('/pessoa/consulta')
-            })
-            //BUSCA VISTORIA
-            Equipe.find({ user: _id, $or: [{ vis0: pessoa.nome }, { vis1: pessoa.nome }, { vis2: pessoa.nome }, { vis3: pessoa.nome }, { vis4: pessoa.nome }, { vis5: pessoa.nome }] }).lean().then((equipe) => {
-                console.log('entrou vistoria')
-                console.log('equipe=>' + equipe)
-                if (equipe != '' && typeof equipe != 'undefined') {
-                    equipe.forEach(element => {
-                        Cronograma.findOne({ projeto: element.projeto }).then((cronograma) => {
-                            Projeto.findOne({ _id: element.projeto }).then((vis_pro) => {
-                                Cliente.findOne({ _id: vis_pro.cliente }).then((cliente) => {
-                                    const { nome_projeto } = element
-                                    const { projeto } = element
-                                    nome_cliente = cliente.nome
-                                    dataini = dataMensagem(cronograma.datevisini)
-                                    datafim = dataMensagem(cronograma.datevisfim)
-                                    q = q + 1
-                                    projetos.push({ funcao: 'Instalador das Estruturas e Módulos', nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealiado: vis_pro.foiRealizado, dataord: cronograma.agendavisini })
-                                    console.log('element.length=>' + element.length)
-                                    console.log('q=>' + q)
-                                    if (equipe.length == q) {
-                                        projetos.sort(function (a, b) {
-                                            if (a.dataord > b.dataord) {
-                                                return 1;
-                                            }
-                                            if (a.dataord < b.dataord) {
-                                                return -1;
-                                            }
-                                            return 0;
-                                        })
-                                        console.log('projetos=>' + projetos)
-                                        res.render('mdo/vermais', { projetos, total: equipe.length, pessoa: pessoa.nome })
-                                    }
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Não foi encontrado o cliente.')
-                                    res.redirect('/pessoa/consulta')
-                                })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi encontrado o projeto.')
-                                res.redirect('/pessoa/consulta')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Não foi encontrado o cronograma.')
-                            res.redirect('/pessoa/consulta')
-                        })
-                    })
-                }else{
-                    req.flash('error_msg', 'Este instalador esta livre! Não foi alocado em nenhum projeto.')
-                    res.redirect('/pessoa/consulta')                
-                }
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foram encontradas pessoas na equipe.')
-                res.redirect('/pessoa/consulta')
-            })
-            */
         }).catch((err) => {
             req.flash('error_msg', 'Não foram encontradas pessoas.')
             res.redirect('/pessoa/consulta')
@@ -4514,6 +4238,268 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
         req.flash('error_msg', 'Não foram encontradas pessoas cadastradas')
         res.redirect('/pessoa')
     })
+    /*
+    //BUSCA INVERSOR
+    Equipe.find({ user: _id, $or: [{ inv0: pessoa.nome }, { inv1: pessoa.nome }, { inv2: pessoa.nome }, { inv3: pessoa.nome }, { inv4: pessoa.nome }, { inv5: pessoa.nome }] }).lean().then((equipe) => {
+        console.log('entrou inversor')
+        console.log('equipe=>' + equipe)
+        if (equipe != '' && typeof equipe != 'undefined') {
+            equipe.forEach(element => {
+                Cronograma.findOne({ projeto: element.projeto }).then((cronograma) => {
+                    Projeto.findOne({ _id: element.projeto }).then((inv_pro) => {
+                        Cliente.findOne({ _id: inv_pro.cliente }).then((cliente) => {
+                            const { nome_projeto } = element
+                            const { projeto } = element
+                            nome_cliente = cliente.nome
+                            dataini = dataMensagem(cronograma.dateinvini)
+                            datafim = dataMensagem(cronograma.dateinvfim)
+                            q = q + 1
+                            projetos.push({ funcao: 'Instalador Inversor e String Box', nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealiado: inv_pro.foiRealizado, dataord: cronograma.agendainvini })
+                            console.log('element.length=>' + element.length)
+                            console.log('q=>' + q)
+                            if (equipe.length == q) {
+                                projetos.sort(function (a, b) {
+                                    if (a.dataord > b.dataord) {
+                                        return 1;
+                                    }
+                                    if (a.dataord < b.dataord) {
+                                        return -1;
+                                    }
+                                    return 0;
+                                })
+                                console.log('projetos=>' + projetos)
+                                res.render('mdo/vermais', { projetos, total: equipe.length, pessoa: pessoa.nome })
+                            }
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Não foi encontrado o cliente.')
+                            res.redirect('/pessoa/consulta')
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Não foi encontrado o projeto.')
+                        res.redirect('/pessoa/consulta')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi encontrado o cronograma.')
+                    res.redirect('/pessoa/consulta')
+                })
+            })
+        }else{
+            req.flash('error_msg', 'Este instalador esta livre! Não foi alocado em nenhum projeto.')
+            res.redirect('/pessoa/consulta')                
+        }
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foram encontradas pessoas na equipe.')
+        res.redirect('/pessoa/consulta')
+    })
+    //BUSCA PAINEL
+    Equipe.find({ user: _id, $or: [{ pnl0: pessoa.nome }, { pnl1: pessoa.nome }, { pnl2: pessoa.nome }, { pnl3: pessoa.nome }, { pnl4: pessoa.nome }, { pnl5: pessoa.nome }] }).lean().then((equipe) => {
+        console.log('entrou painel')
+        console.log('equipe=>' + equipe)
+        if (equipe != '' && typeof equipe != 'undefined') {
+            equipe.forEach(element => {
+                Cronograma.findOne({ projeto: element.projeto }).then((cronograma) => {
+                    Projeto.findOne({ _id: element.projeto }).then((pnl_pro) => {
+                        Cliente.findOne({ _id: pnl_pro.cliente }).then((cliente) => {
+                            const { nome_projeto } = element
+                            const { projeto } = element
+                            nome_cliente = cliente.nome
+                            dataini = dataMensagem(cronograma.datepnlini)
+                            datafim = dataMensagem(cronograma.datepnlfim)
+                            q = q + 1
+                            projetos.push({ funcao: 'Instalador Painél Elétrico', nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealiado: pnl_pro.foiRealizado, dataord: cronograma.agendapnlini })
+                            console.log('element.length=>' + element.length)
+                            console.log('q=>' + q)
+                            if (equipe.length == q) {
+                                projetos.sort(function (a, b) {
+                                    if (a.dataord > b.dataord) {
+                                        return 1;
+                                    }
+                                    if (a.dataord < b.dataord) {
+                                        return -1;
+                                    }
+                                    return 0;
+                                })
+                                console.log('projetos=>' + projetos)
+                                res.render('mdo/vermais', { projetos, total: equipe.length, pessoa: pessoa.nome })
+                            }
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Não foi encontrado o cliente.')
+                            res.redirect('/pessoa/consulta')
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Não foi encontrado o projeto.')
+                        res.redirect('/pessoa/consulta')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi encontrado o cronograma.')
+                    res.redirect('/pessoa/consulta')
+                })
+            })
+        }else{
+            req.flash('error_msg', 'Este instalador esta livre! Não foi alocado em nenhum projeto.')
+            res.redirect('/pessoa/consulta')                
+        }
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foram encontradas pessoas na equipe.')
+        res.redirect('/pessoa/consulta')
+    })
+    //BUSCA ARMAZENAMENTO
+    Equipe.find({ user: _id, $or: [{ eae0: pessoa.nome }, { eae1: pessoa.nome }, { eae2: pessoa.nome }, { eae3: pessoa.nome }, { eae4: pessoa.nome }, { eae5: pessoa.nome }] }).lean().then((equipe) => {
+        console.log('entrou armazenagem')
+        console.log('equipe=>' + equipe)
+        if (equipe != '' && typeof equipe != 'undefined') {
+            equipe.forEach(element => {
+                Cronograma.findOne({ projeto: element.projeto }).then((cronograma) => {
+                    Projeto.findOne({ _id: element.projeto }).then((eae_pro) => {
+                        Cliente.findOne({ _id: eae_pro.cliente }).then((cliente) => {
+                            const { nome_projeto } = element
+                            const { projeto } = element
+                            nome_cliente = cliente.nome
+                            dataini = dataMensagem(cronograma.dateeaeini)
+                            datafim = dataMensagem(cronograma.dateeaefim)
+                            q = q + 1
+                            projetos.push({ funcao: 'Instalador Da Estação de Armazenamento', nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealiado: eae_pro.foiRealizado, dataord: cronograma.agendaeaeini })
+                            console.log('element.length=>' + element.length)
+                            console.log('q=>' + q)
+                            if (equipe.length == q) {
+                                projetos.sort(function (a, b) {
+                                    if (a.dataord > b.dataord) {
+                                        return 1;
+                                    }
+                                    if (a.dataord < b.dataord) {
+                                        return -1;
+                                    }
+                                    return 0;
+                                })
+                                console.log('projetos=>' + projetos)
+                                res.render('mdo/vermais', { projetos, total: equipe.length, pessoa: pessoa.nome })
+                            }
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Não foi encontrado o cliente.')
+                            res.redirect('/pessoa/consulta')
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Não foi encontrado o projeto.')
+                        res.redirect('/pessoa/consulta')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi encontrado o cronograma.')
+                    res.redirect('/pessoa/consulta')
+                })
+            })
+        }else{
+            req.flash('error_msg', 'Este instalador esta livre! Não foi alocado em nenhum projeto.')
+            res.redirect('/pessoa/consulta')                
+        }
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foram encontradas pessoas na equipe.')
+        res.redirect('/pessoa/consulta')
+    })
+    //BUSCA INSTALAÇÃO
+    Equipe.find({ user: _id, $or: [{ ins0: pessoa.nome }, { ins1: pessoa.nome }, { ins2: pessoa.nome }, { ins3: pessoa.nome }, { ins4: pessoa.nome }, { ins5: pessoa.nome }] }).lean().then((equipe) => {
+        console.log('entrou instalação')
+        console.log('equipe=>' + equipe)
+        if (equipe != '' && typeof equipe != 'undefined') {
+            equipe.forEach(element => {
+                Cronograma.findOne({ projeto: element.projeto }).then((cronograma) => {
+                    Projeto.findOne({ _id: element.projeto }).then((ins_pro) => {
+                        Cliente.findOne({ _id: ins_pro.cliente }).then((cliente) => {
+                            const { nome_projeto } = element
+                            const { projeto } = element
+                            nome_cliente = cliente.nome
+                            dataini = dataMensagem(cronograma.dateinsini)
+                            datafim = dataMensagem(cronograma.dateinsfim)
+                            q = q + 1
+                            projetos.push({ funcao: 'Instalador das Estruturas e Módulos', nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealiado: ins_pro.foiRealizado, dataord: cronograma.agendainsini })
+                            console.log('element.length=>' + element.length)
+                            console.log('q=>' + q)
+                            if (equipe.length == q) {
+                                projetos.sort(function (a, b) {
+                                    if (a.dataord > b.dataord) {
+                                        return 1;
+                                    }
+                                    if (a.dataord < b.dataord) {
+                                        return -1;
+                                    }
+                                    return 0;
+                                })
+                                console.log('projetos=>' + projetos)
+                                res.render('mdo/vermais', { projetos, total: equipe.length, pessoa: pessoa.nome })
+                            }
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Não foi encontrado o cliente.')
+                            res.redirect('/pessoa/consulta')
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Não foi encontrado o projeto.')
+                        res.redirect('/pessoa/consulta')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi encontrado o cronograma.')
+                    res.redirect('/pessoa/consulta')
+                })
+            })
+        }else{
+            req.flash('error_msg', 'Este instalador esta livre! Não foi alocado em nenhum projeto.')
+            res.redirect('/pessoa/consulta')                
+        }
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foram encontradas pessoas na equipe.')
+        res.redirect('/pessoa/consulta')
+    })
+    //BUSCA VISTORIA
+    Equipe.find({ user: _id, $or: [{ vis0: pessoa.nome }, { vis1: pessoa.nome }, { vis2: pessoa.nome }, { vis3: pessoa.nome }, { vis4: pessoa.nome }, { vis5: pessoa.nome }] }).lean().then((equipe) => {
+        console.log('entrou vistoria')
+        console.log('equipe=>' + equipe)
+        if (equipe != '' && typeof equipe != 'undefined') {
+            equipe.forEach(element => {
+                Cronograma.findOne({ projeto: element.projeto }).then((cronograma) => {
+                    Projeto.findOne({ _id: element.projeto }).then((vis_pro) => {
+                        Cliente.findOne({ _id: vis_pro.cliente }).then((cliente) => {
+                            const { nome_projeto } = element
+                            const { projeto } = element
+                            nome_cliente = cliente.nome
+                            dataini = dataMensagem(cronograma.datevisini)
+                            datafim = dataMensagem(cronograma.datevisfim)
+                            q = q + 1
+                            projetos.push({ funcao: 'Instalador das Estruturas e Módulos', nome_cliente, id: projeto, nome: nome_projeto, dataini, datafim, foiRealiado: vis_pro.foiRealizado, dataord: cronograma.agendavisini })
+                            console.log('element.length=>' + element.length)
+                            console.log('q=>' + q)
+                            if (equipe.length == q) {
+                                projetos.sort(function (a, b) {
+                                    if (a.dataord > b.dataord) {
+                                        return 1;
+                                    }
+                                    if (a.dataord < b.dataord) {
+                                        return -1;
+                                    }
+                                    return 0;
+                                })
+                                console.log('projetos=>' + projetos)
+                                res.render('mdo/vermais', { projetos, total: equipe.length, pessoa: pessoa.nome })
+                            }
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Não foi encontrado o cliente.')
+                            res.redirect('/pessoa/consulta')
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Não foi encontrado o projeto.')
+                        res.redirect('/pessoa/consulta')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi encontrado o cronograma.')
+                    res.redirect('/pessoa/consulta')
+                })
+            })
+        }else{
+            req.flash('error_msg', 'Este instalador esta livre! Não foi alocado em nenhum projeto.')
+            res.redirect('/pessoa/consulta')                
+        }
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foram encontradas pessoas na equipe.')
+        res.redirect('/pessoa/consulta')
+    })
+    */
 })
 
 router.post('/novo', uploadfoto.single('foto'), ehAdmin, (req, res) => {
