@@ -19,7 +19,8 @@ const { ehAdmin } = require('../helpers/ehAdmin')
 
 require('../app')
 //Configurando pasta de imagens 
-router.use(express.static('imagens'))
+router.use(express.static('public/'))
+router.use(express.static('public/upload/'))
 
 
 router.get('/gestao/:id', ehAdmin, (req, res) => {
