@@ -4605,11 +4605,11 @@ section#about .two-sides-row .text {
 
 section#banner {
   background-color: gray;
-  background-image: url("../img/money.png");
+  background-image: url("../img/grafico.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: bottom left;
-  padding: 61px 0 88px;
+  padding: 150px 0 60px;
   position: relative;
 }
 section#banner::before {
