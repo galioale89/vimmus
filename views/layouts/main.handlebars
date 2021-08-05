@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   {{#if user}}
+  <link type="text/css" href="/css/style.css" rel="stylesheet" />
   <link type="text/css" href="/css/estilos.css" rel="stylesheet" />
-  <link type="text/css" href="/css/style.css" rel="stylesheet" />  
   {{/if}}
   <link rel="stylesheet" href="/css/bootstrap.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
@@ -36,7 +36,8 @@
 </body>
 
 {{#if user}}
-<footer style='position: fixed; bottom: 0;border-top: rgb(40,55,89) 1px solid;color: rgb(40,55,89);position: fixed;z-index:900'>
+<footer
+  style='position: fixed; bottom: 0;border-top: rgb(40,55,89) 1px solid;color: rgb(40,55,89);position: fixed;z-index:900;font-size: 12px;'>
   <div class="row no-print" style="width: 100%;padding-top: 3px;padding-bottom: 2px;">
     <div class="col-md-2">
       <div style="margin-left: 10px; font-weight: 800;">
@@ -45,15 +46,14 @@
     </div>
     <div class="col-md-9" style="color: rgb(40,55,89);">
       <div style="text-align: right;">
-        2021 - Direitos Reservados - <a style="text-decoration: none;color: rgb(40,55,89);" href='/termo'>Termos de Uso</a> - <a
-          style="text-decoration: none;color: rgb(40,55,89);" href='/politica'>Política de Privacidade</a>
+        2021 - Direitos Reservados - <a style="text-decoration: none;color: rgb(40,55,89);" href='/termo'>Termos de
+          Uso</a> - <a style="text-decoration: none;color: rgb(40,55,89);" href='/politica'>Política de Privacidade</a>
       </div>
     </div>
     <div class="col-md-1 text-center">
-      <a href='https://www.instagram.com/vimmus.solucoes' target="_blank"><img src='/img/instagram.jpeg'
-          width="22"></a>
-      <a href='https://www.facebook.com/vimmus.solucoes' target="_blank"><img src='/img/facebook.jpeg' width="22"></a>
-      <a href='https://www.linkedin.com/company/vimmusenergiasolar' target='_blank'><img src='/img/linkedin.jpeg'
+      <a href='https://www.instagram.com/vimmus.solucoes' target="_blank"><img src='/img/instagram.svg' width="22"></a>
+      <a href='https://www.facebook.com/vimmus.solucoes' target="_blank"><img src='/img/facebook.svg' width="22"></a>
+      <a href='https://www.linkedin.com/company/vimmusenergiasolar' target='_blank'><img src='/img/linkedin.svg'
           width="22"></a>
     </div>
   </div>
@@ -61,44 +61,24 @@
 {{else}}
 <footer style='bottom: 0;color: rgb(40,55,89);background-color: white;position: relative;z-index: 900;'>
   <div style="background-color: white;">
-    <table style="width: 100%;">
-      <td>
-        <div style="margin-left: 25px">
-          <b>Entre em contato conosco:</b> 
-          <br>Rua Arquiteto Flávio Cosme Gusatti, 44D
-          <br>Chapecó - Santa Catarina
-          <br>89809-616
-          <br>(49) 9 9183-2978 
-          <img src='/img/whatsapp.svg' width="15"/>
-      </td>
-      </td>
-      <td align="right" style="padding-right: 20px;">
-        <b>Siga as nossas redes sociais</b><br><br>
-        <a href='https://www.instagram.com/vimmus.solucoes' target="_blank"><img src='/img/instagram.jpeg'
-            width="25"></a>
-        <a href='https://www.facebook.com/vimmus.solucoes' target="_blank"><img src='/img/facebook.jpeg'
-            width="25"></a>
-        <a href='https://www.linkedin.com/company/vimmusenergiasolar' target='_blank'><img src='/img/linkedin.jpeg'
-            width="25"></a>
-        <br><br><br>
-      </td>
-    </table>
+    <div class='row' style="width: 100%;padding: 20px;">
+      <div class="col" style="margin: auto">
+        <h5>Nos siga nas redes sociais</h5><br>
+        <a href='https://www.instagram.com/vimmus.solucoes' target="_blank"><img src='/img/instagram.svg'
+            width="41"></a>
+        <a href='https://www.facebook.com/vimmus.solucoes' target="_blank"><img src='/img/facebook.svg' width="40"></a>
+        <a href='https://www.linkedin.com/company/vimmusenergiasolar' target='_blank'><img src='/img/linkedin.svg'
+            width="40"></a>
+      </div>
+      <div class="col-md-3 text-end">
+        <h1>Entre em contato pelo WhatsApp</h1><br>
+        <h1 style="font-weight: 600;"><img src='img/whatsapp.svg' width="25" style="padding-right: 5px;padding: auto;">(49) 9 9183-2978</h1>
+      </div>
+    </div>
   </div>
-
-  <div>
-    <table style="width: 100%;">
-      <td>
-        <div style="font-weight: 800;margin-left: 25px;margin-bottom: 10px;">
-          VIMMUS
-        </div>
-      </td>
-      <td>
-        <div style="text-align: right;padding-right: 20px;">
-          2021 - Direitos Reservados - <a style="text-decoration: none;color: rgb(40,55,89);" href='/termo'>Termos de Uso</a> - <a
-            style="text-decoration: none;color: rgb(40,55,89);" href='/politica'>Política de Privacidade</a>
-        </div>
-      </td>
-    </table>
+  <div style="text-align: center;margin-bottom: 20px;font-size: 12px;">
+    2021 - Direitos Reservados - <a style="text-decoration: none;color: rgb(40,55,89);" href='/termo'>Termos de Uso</a>
+    - <a style="text-decoration: none;color: rgb(40,55,89);" href='/politica'>Política de Privacidade</a>
   </div>
 </footer>
 {{/if}}
@@ -120,11 +100,6 @@
     border-left: gray;
     border-right: gray;
     background-color: white;
-    font-size: 12px;
     width: 100%;
-  }
-
-  td {
-    font-size: 12px;
   }
 </style>
