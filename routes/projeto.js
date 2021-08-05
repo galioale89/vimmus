@@ -1198,7 +1198,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
      } else {
           Projeto.findOne({ _id: req.body.id }).then((projeto) => {
 
-               Pessoa.findOne({ _id: req.body.vendedor }).then((prj_vendedor) => {
+               Pessoa.findOne({ nome: req.body.vendedor }).then((prj_vendedor) => {
 
                     Detalhado.findOne({ projeto: projeto._id }).then((detalhe) => {
 
@@ -1716,7 +1716,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                               //Altera o vendedor                          
                               var percom
                               var vendedor
-                              if (req.body.checkVende != null) {
+                              if (req.body.checkVendedor != null) {
                                    vendedor = req.body.vendedor
                                    percom = prj_vendedor.percom
                               } else {
@@ -1765,15 +1765,6 @@ router.post('/edicao', ehAdmin, (req, res) => {
                               projeto.temEstSolo = estsolo
                               projeto.temArmazenamento = armazenamento
                               projeto.temPainel = painel
-
-                              /*
-                              if (req.body.checkRegime != null) {
-                                   projeto.empresa = req.body.empresa
-                              }
-                              if (req.body.checkRes != null) {
-                                   projeto.funres = req.body.funres
-                              }
-                              */
 
                               projeto.save().then(() => {
                                    cronograma.save().then(() => {
