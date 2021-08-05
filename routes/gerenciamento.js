@@ -2142,13 +2142,6 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             //console.log('custoEst=>' + custoEst)
                             var totcop = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
 
-                            var vlrcom = 0
-                            //Validando a comissão
-                            if (projeto.percom != null) {
-                                vlrcom = parseFloat(projeto.vlrNFS) * (parseFloat(projeto.percom) / 100)
-                                projeto.vlrcom = vlrcom.toFixed(2)
-                            }
-
                             projeto.custofix = custoFix.toFixed(2)
                             projeto.custovar = custoVar.toFixed(2)
                             projeto.custoest = custoEst.toFixed(2)
@@ -2160,6 +2153,15 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             var custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
                             projeto.custoTotal = custoTotal.toFixed(2)
                             //console.log('custoTotal=>' + custoTotal)
+
+                            var desAdm = 0
+                            if (parseFloat(empresa.desadm) > 0) {
+                                if (empresa.tipodesp == 'quantidade') {
+                                    desAdm = (parseFloat(empresa.desadm) * (parseFloat(empresa.perdes) / 100)).toFixed(2)
+                                } else {
+                                    desAdm = ((parseFloat(empresa.desadm) / parseFloat(empresa.estkwp)) * parseFloat(projeto.potencia)).toFixed(2)
+                                }
+                            } 
 
                             //Definindo o imposto ISS
                             //console.log('regime_prj.alqNFS=>' + regime_prj.alqNFS)
@@ -2180,7 +2182,7 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                     vlrNFS = (parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)).toFixed(2)
                                     impNFS = (parseFloat(vlrNFS) * (parseFloat(empresa.alqNFS) / 100)).toFixed(2)
                                 }
-                                vlrMarkup = (parseFloat(custoTotal) - parseFloat(reserva)) / (1 - (parseFloat(config.markup) / 100))
+                                vlrMarkup = ((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva)) / (1 -(parseFloat(req.body.markup)/ 100))).toFixed(2)
                                 projeto.valor = parseFloat(vlrMarkup).toFixed(2)
                                 projeto.markup = config.markup
                                 prjValor = vlrMarkup
@@ -2188,7 +2190,7 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 //console.log('markup diferente de zero')
                                 //console.log('custoTotal=>'+custoTotal)
                                 //console.log('req.body.markup=>'+req.body.markup)
-                                vlrMarkup = ((parseFloat(custoTotal) - parseFloat(reserva)) / (1 - (parseFloat(req.body.markup) / 100))).toFixed(2)
+                                vlrMarkup = ((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva)) / (1 - ((parseFloat(req.body.markup)) / 100))).toFixed(2)
                                 //console.log('vlrMarkup=>' + vlrMarkup)
                                 if (req.body.checkFatura != null) {
                                     fatequ = true
@@ -2227,14 +2229,8 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
 
                             //console.log('lucroBruto=>' + lucroBruto)
 
-                            var desAdm = 0
                             var lbaimp = 0
                             if (parseFloat(empresa.desadm) > 0) {
-                                if (empresa.tipodesp == 'quantidade') {
-                                    desAdm = (parseFloat(empresa.desadm) * (parseFloat(empresa.perdes) / 100)).toFixed(2)
-                                } else {
-                                    desAdm = ((parseFloat(empresa.desadm) / parseFloat(empresa.estkwp)) * parseFloat(projeto.potencia)).toFixed(2)
-                                }
                                 //console.log('desAdm=>' + desAdm)
                                 lbaimp = (parseFloat(lucroBruto) - parseFloat(custoPlano) - parseFloat(desAdm)).toFixed(2)
                                 projeto.desAdm = parseFloat(desAdm).toFixed(2)
@@ -2456,8 +2452,11 @@ router.post('/tributos/', ehAdmin, (req, res) => {
 
             //Lucro Líquido descontados os impostos
             var lucroLiquido = 0
+            console.log('projeto.lbaimp=>'+projeto.lbaimp)
+            console.log('totalImposto=>'+totalImposto)
             lucroLiquido = parseFloat(projeto.lbaimp) - parseFloat(totalImposto)
             projeto.lucroLiquido = parseFloat(lucroLiquido).toFixed(2)
+            console.log('lucroLiquido=>'+lucroLiquido)
 
             //Dashboard
             //Participação sobre o lucro total

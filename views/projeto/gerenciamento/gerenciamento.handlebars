@@ -18,6 +18,11 @@
         background-color: rgb(10, 30, 68);
     }
 </style>
+<script>
+        function info_markup() {
+        alert('O percentual de MarkUp representa o ISS, a comissão, os Tributos à recolher e a margem de lucro liquido do projeto .')
+    }
+</script>
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
     <div style="width: 100%;">
         <h5 class="header">{{cliente.nome}} </h5>
@@ -179,7 +184,8 @@
                     <div class="col-md-6">
                         <div class="row">
                             <div class="col-md-6 text-center">
-                                <label class="fw-bold col-form-label col-form-label-sm">MarkUp(%)</label>
+                                <label class="fw-bold col-form-label col-form-label-sm">MarkUp(%)<i class="bi bi-info-circle"
+                                    onmousemove='info_markup()'></i></label>
                             </div>
                             <div class="col-md-6 text-center">
                                 <label class="fw-bold col-form-label col-form-label-sm">Faturar Material?</label>

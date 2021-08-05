@@ -29,6 +29,9 @@
     function infoGestao() {
         alert('Considere o número de horas dedicados ao planejamento do projeto.')
     }
+    function info_markup() {
+        alert('O percentual de MarkUp representa o ISS, a comissão, os Tributos à recolher e a margem de lucro liquido do projeto .')
+    }    
 </script>
 <form action='/projeto/direto/' method='post'>
     <!-- Modal Consulta Alíquotas-->
@@ -226,7 +229,8 @@
                                 </div>
                             </div>
                             <div class="col-md-2 mt-4 text-end">
-                                <label class='col-form-label col-form-label-sm fw-bold'>MarkUp(%): </label><br>
+                                <label class='col-form-label col-form-label-sm fw-bold'>MarkUp(%): </label><i class="bi bi-info-circle"
+                                    onmousemove='info_markup()'></i><br>
                             </div>
                             <div class="col-md-2 mt-4">
                                 <input class='form-control form-control-sm' type="text" name="markup"

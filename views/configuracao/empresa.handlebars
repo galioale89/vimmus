@@ -269,6 +269,8 @@
                     const { aliquota } = element
                     const { deducao } = element
                     if (faturamento.value > recini && faturamento.value <= recfim) {
+                        alert('aliquota=>' + aliquota)
+                        alert('dedução=>' + deducao)
                         alqDasVlr.value = aliquota
                         vlrDeducao.value = deducao
                     }

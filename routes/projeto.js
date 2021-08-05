@@ -1747,7 +1747,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                               }
 
                               if (req.body.valor != projeto.valor) {
-                                   projeto.markup = (((parseFloat(req.body.valor) - parseFloat(vlrkit) - parseFloat(projeto.custoPlano) + parseFloat(projeto.reserva)) / parseFloat(req.body.valor)) * 100).toFixed(2)
+                                   projeto.markup = (((parseFloat(req.body.valor) - parseFloat(vlrkit) - parseFloat(projeto.custoPlano) - parseFloat(projeto.desAdm) + parseFloat(projeto.reserva)) / parseFloat(req.body.valor)) * 100).toFixed(2)
                               }
 
 
@@ -2166,14 +2166,14 @@ router.post('/direto', ehAdmin, (req, res) => {
                                                   vlrNFS = (parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)).toFixed(2)
                                                   impNFS = (parseFloat(vlrNFS) * (parseFloat(empresa_prj.alqNFS) / 100)).toFixed(2)
                                              }
-                                             vlrMarkup = (parseFloat(custoTotal) - parseFloat(reserva)) / (1 - (parseFloat(config.markup) / 100))
+                                             vlrMarkup = (parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva)) / (1 - (parseFloat(config.markup) / 100))
                                              projeto.valor = parseFloat(vlrMarkup).toFixed(2)
                                              projeto.markup = config.markup
                                              prjValor = vlrMarkup
                                         } else {
                                              //console.log('custoTotal=>'+custoTotal)
                                              //console.log('req.body.markup=>'+req.body.markup)
-                                             vlrMarkup = ((parseFloat(custoTotal) - parseFloat(reserva)) / (1 - (parseFloat(req.body.markup) / 100))).toFixed(2)
+                                             vlrMarkup = ((parseFloat(custoTotal) + parseFloat(desAdm)- parseFloat(reserva)) / (1 - (parseFloat(req.body.markup) / 100))).toFixed(2)
                                              //console.log('vlrMarkup=>' + vlrMarkup)
                                              if (req.body.checkFatura != null) {
                                                   fatequ = true
