@@ -72,7 +72,8 @@
                         </select>
                     </div>
                     <div class="col-md-1" style="margin-top:1%">
-                        <button type='submit' class='mt-3 botaofiltrar'><i class='bi bi-search iconefiltrar'></i></button>
+                        <button type='submit' class='mt-3 botaofiltrar'><i
+                                class='bi bi-search iconefiltrar'></i></button>
                     </div>
                 </div>
             </form>
@@ -91,10 +92,10 @@
     <div style="margin-bottom: 4%;margin-top: 1%;">
         <table>
             <tr>
-                <th>Status</th>
-                <th>Nome Projeto</th>
-                <th>Cliente</th>
-                <th>Classificacão</th>
+                <th style="width: 7%;">Status</th>
+                <th style="width: 15%;">Nome Projeto</th>
+                <th style="width: 10%;">Cliente</th>
+                <th style="width: 7%;">Classificacão</th>
                 <th>R$ Total Projeto</th>
                 <th>Data Cadastro</th>
                 <th>Data Instalação</th>
@@ -102,8 +103,8 @@
                 <th>Entrega Real</th>
                 <th>Potência</th>
                 <th>R$/kWp</th>
-                <th>Markup</th>
-                <th></th>
+                <th style="width: 3%;">Markup</th>
+                <th style="width: 5%;"></th>
             </tr>
             {{#each projetos}}
             <tr>
@@ -133,26 +134,27 @@
                 <td style="text-align: center;">{{potencia}} kWp</td>
                 <td style="text-align: center;">{{vrskwp}} </td>
                 <td style="text-align: center;">{{markup}} %</td>
-                <td>
-                    <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
-                        <a href='/projeto/vermais/{{_id}}' class="botao ativado"><i class="bi bi-eye icone"></i>
-                            {{#if foiRealizado}}
-                            <a href='/projeto/edicao/{{_id}}' class='desativado'><i class="bi bi-pen icone"></i></a>
-                            {{else}}
-                            <a href='/projeto/edicao/{{_id}}' class='botao ativado'><i class="bi bi-pen icone"></i></a>
-                            {{/if}}
-                            {{#if foiRealizado}}
-                            <a href='/projeto/realizar/{{_id}}' class='botao realizado'> <i
-                                    class="bi bi-check2-circle icone"></i>
-                            </a>
-                            {{else}}
-                            <a href='/projeto/realizar/{{_id}}' class='botao ativado'> <i
-                                    class="bi bi-check2-circle icone"></i>
-                            </a>
-                            {{/if}}
-                            <a href='/projeto/confirmaexclusao/{{_id}}' class="botao ativado"><i
-                                    class="bi bi-trash icone"></i>
-                            </a>
+                <td >
+                    <div style="margin: auto" class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
+                        <a href='/projeto/vermais/{{_id}}' class="botao-tabela ativado-tabela"><i class="bi bi-eye icone"></i></a>
+                        <a href='/gerenciamento/cronograma/{{_id}}' class='botao-tabela ativado-tabela'><i class="bi bi-calendar-range icone"></i></a>
+                        {{#if foiRealizado}}
+                        <a href='/projeto/edicao/{{_id}}' class='desativado'><i class="bi bi-pen icone"></i></a>
+                        {{else}}
+                        <a href='/projeto/edicao/{{_id}}' class='botao-tabela ativado-tabela'><i class="bi bi-pen icone"></i></a>
+                        {{/if}}
+                        {{#if foiRealizado}}
+                        <a href='/projeto/realizar/{{_id}}' class='botao-tabela realizado'> <i
+                                class="bi bi-check2-circle icone"></i>
+                        </a>
+                        {{else}}
+                        <a href='/projeto/realizar/{{_id}}' class='botao-tabela ativado-tabela'> <i
+                                class="bi bi-check2-circle icone"></i>
+                        </a>
+                        {{/if}}
+                        <a href='/projeto/confirmaexclusao/{{_id}}' class="botao-tabela ativado-tabela"><i
+                                class="bi bi-trash icone"></i>
+                        </a>
                     </div>
                 </td>
             </tr>

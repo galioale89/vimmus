@@ -4376,7 +4376,7 @@ body {
 }
 
 section#initial-section {
-  padding: 145px 0 181px;
+  padding: 60px 0 181px;
 }
 section#initial-section .title-banner {
   position: relative;
@@ -4389,7 +4389,7 @@ section#initial-section .title-banner {
 section#initial-section .title-banner .stripe {
   position: absolute;
   bottom: 19px;
-  left: 10px;
+  left: 8px;
   height: 25px;
   width: 233px;
   max-width: 100%;
