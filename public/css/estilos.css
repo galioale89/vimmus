@@ -1,3 +1,4 @@
+ 
 @-webkit-keyframes fadeIn {
 0% {
 opacity: 0;
@@ -234,13 +235,14 @@ background-color: rgb(40,55,89)
 .botao-filter {
 font-size: 13px;
 color: black;
+line-height: 20px;
 margin-left: 5px;
 text-decoration: none;
 box-shadow: 0px 0px 0px white;
 }
 
 .botao-filter:hover {
-color: black;
+color: #847AF4;;
 font-weight: 900;
 }
 
@@ -248,10 +250,12 @@ font-weight: 900;
 text-shadow: 1px 1px 10px rgb(238, 237, 245);
 border-radius: 50px;
 border: solid 4px;
-font-size: 18px;
 border-color: rgb(205, 223, 245);
 background: linear-gradient(135deg, rgb(40, 55, 86), rgb(11, 9, 161));
 background-color: rgba(31, 27, 255, 0.9);
+padding-left: 5px;
+padding-right: 5px;
+padding: 10px;
 }
 
 .login {
@@ -275,13 +279,18 @@ color: white
 
 .filter {
 background-color: #847AF4;
-background-color: #847AF4;
 color: white;
-font-size: 20px;
+font-size: 28px;
+line-height: 20px;
 height: 20px;
 width: 20px;
+cursor: pointer;
 }
 
+.filter:hover {
+    color: white;
+    font-size: 29px;
+}
 
 .active {
 font-weight: 700;
@@ -394,7 +403,7 @@ color: rgb(40,55,89);
 
 .textmll {
 text-align: center;
-padding-top: 25px;
+padding-top: 32px;
 font-size: 30px;
 font-weight: bold;
 color: rgb(40,55,89);
@@ -450,7 +459,7 @@ font-weight: 800;
 border-radius: 50px;
 width: 30px;
 height: 30px;
-font-size: 16px;
+font-size: 20px;
 }
 
 .ativado-tabela {
@@ -460,6 +469,7 @@ background-color: rgba(79, 99, 140);
 .desativado-tabela {
 background-color: rgba(79, 99, 140);
 opacity: 0.5;
+font-size: 20px;
 }
 
 .botao-tabela:hover{
@@ -468,17 +478,18 @@ opacity: 0.5;
 
 .icone-tabela{
 color: white;
+padding-top: 50px;
 }
 
 .icone {
 color:white;
-padding-left: 25%;
+padding-left: 15%;
 }
 
 .iconefiltrar {
-    color:white;
-    font-size: 20px;
-    }
+color:white;
+font-size: 20px;
+}
 
 .botao {
 text-shadow: 1px 1px 10px rgb(238, 237, 245);
@@ -497,14 +508,14 @@ font-size: 16px;
 background: linear-gradient(135deg, rgb(40, 55, 86), rgb(11, 9, 161));
 }
 
-.desativado {
+.desativado-tabela {
 background-color: rgba(31, 27, 255, 0.185);
 text-shadow: 1px 1px 5px rgb(238, 237, 245);
 border-radius: 50px;
 width: 30px;
 height: 30px;
 border: solid 1px;
-font-size: 16px;
+font-size: 20px;
 border-color: rgba(31, 27, 255, 0.185);
 }
 
@@ -515,7 +526,7 @@ border-radius: 50px;
 width: 30px;
 height: 30px;
 border: solid 1px;
-font-size: 16px;
+font-size: 20px;
 border-color: rgba(31, 27, 255, 0.185);
 }
 
@@ -536,9 +547,9 @@ font-weight: 800;
 text-decoration: none;
 color: white;
 background-color: rgb(40, 55, 86);
-border-radius: 5px;
+border-radius: 20px;
 border: rgb(40, 55, 86) 1px solid;
-padding: 4px;
+font-size: 12px;
 }
 
 .relatorio:hover {
@@ -549,9 +560,12 @@ color: rgb(40, 55, 86);
 
 .titulo-relatorio {
 height: 100%;
-font-size: 13px;
 font-weight: 500;
 color: white;
+padding-left: 8px;
+padding-right: 8px;
+padding-top: 4px;
+padding-bottom: 4px;
 }
 
 .titulo-relatorio:hover {
@@ -581,17 +595,13 @@ position: static;
 padding-bottom: 5px;
 }
 
-#titulo-inicio {
+.titulo-inicio {
 font-size: 15px;
-text-decoration: none;
-color: rgb(40,55,89);
+color: #847AF4;
+font-weight: 600;
+padding: 10px;
 }
 
-#titulo-inicio:hover {
-font-size: 16px;
-text-decoration: none;
-color: rgb(42, 80, 177);
-}
 
 #titulo-beneficio {
 font-size: 15px;
@@ -746,10 +756,10 @@ text-align: center;
 width: 50px;
 height: 50px;
 border: rgb(79, 99, 140) 5px solid;
-border-radius: 50px;
+border-radius: 10px;
 padding: 8px;
 box-shadow: 3px 1px 1px white;
-font-size: 15px;
+font-size: 20px;
 }
 
 .cpiPos {

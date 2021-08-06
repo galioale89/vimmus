@@ -2137,7 +2137,7 @@ progress {
 .col-form-label-sm {
   padding-top: calc(0.25rem + 1px);
   padding-bottom: calc(0.25rem + 1px);
-  font-size: 0.875rem;
+  font-size: 0.8rem;
 }
 
 .form-text {
@@ -2268,7 +2268,7 @@ progress {
 .form-control-sm {
   min-height: calc(1.5em + 0.5rem + 2px);
   padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   border-radius: 0.2rem;
 }
 .form-control-sm::file-selector-button {
@@ -2371,7 +2371,7 @@ textarea.form-control-lg {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
   padding-left: 0.5rem;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
 }
 
 .form-select-lg {
@@ -3368,8 +3368,12 @@ textarea.form-control-lg {
 
 .btn-sm, .btn-group-sm > .btn {
   padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   border-radius: 0.2rem;
+}
+
+.btn-md {
+  font-size: 14px;
 }
 
 .fade {

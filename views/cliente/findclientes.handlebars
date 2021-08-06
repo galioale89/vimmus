@@ -1,7 +1,10 @@
 <style>
+    button {
+        line-height: 0px;
+    }
     #header {
         width: 100%;
-        border-bottom: rgb(40, 55, 86) 0,1px solid;
+        border-bottom: rgb(40, 55, 86) 0, 1px solid;
         color: rgb(40, 55, 86);
     }
 
@@ -14,34 +17,49 @@
         margin-left: 5px;
     }
 </style>
+<script>
+    //Slecionar estados e cidades
+    window.onload = function () {
+        var estados = document.getElementById('estado');
+        var cidades = document.getElementById('cidade');
+        new dgCidadesEstados({
+            estado: estados,
+            cidade: cidades,
+            estadoVal: '<%=Request("estado") %>',
+            cidadeVal: '<%=Request("cidade") %>'
+        });
+    };
+</script>
 <div class="container-sm mt-2">
     <div id='header'>
         <div class="row">
             <form action='/cliente/filtrar' method='post'>
                 <div class="col-md-4">
-                    <h5 class='mt-2' style="margin-left: 20px;">Pessoas </h5>
+                    <h5 class='titulo-inicio'>Clientes</h5>
                 </div>
                 <div class="row">
-                    <div class="col mb-2">
-                        <label class='col-form-label col-form-label-sm fw-bold' style="padding-left: 15px;" >Nome</label>
+                    <div class="col mb-2 text-start">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Nome</label>
                         <div class="col">
                             <input name='nome' type='text' class="form-control form-control-sm">
                         </div>
                     </div>
-                    <div class="col">
-                        <label class='col-form-label col-form-label-sm fw-bold' style="padding-left: 15px;" >UF</label>
+                    <div class="col text-start">
+                        <label class='col-form-label col-form-label-sm fw-bold'>UF</label>
                         <div class="col">
-                            <input name='uf' type='text' class="form-control form-control-sm">
+                            <select id="estado" name='uf' class='form-select form-select-sm mb-1'>
+                            </select>
                         </div>
                     </div>
-                    <div class="col">
-                        <label class='col-form-label col-form-label-sm fw-bold' style="padding-left: 15px;">Cidade</label>
+                    <div class="col text-start">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Cidade</label>
                         <div class="col">
-                            <input name='cidade' type='text' class="form-control form-control-sm">
+                            <select id="cidade" name='cidade' class='form-select form-select-sm mb-1'>
+                            </select>
                         </div>
                     </div>
-                    <div class="col mt-4">
-                        <button type='submit' class='botaofiltrar'><i class='bi bi-search icone'></i></button>
+                    <div class="col-md-1 text-end mt-4">
+                        <button style="margin-top: 0px;" type='submit' class='botaofiltrar'><i class='bi bi-search iconefiltrar'></i></button>
                     </div>
                 </div>
             </form>
@@ -58,7 +76,7 @@
     <div class="card mb-2 mt-2; margin-bottom:30px">
         <div style="padding: 5px;">
             <input type='hidden' name='id' value='{{_id}}'>
-            <div class="row" style="padding-left: 10px;"> 
+            <div class="row" style="padding-left: 10px;">
                 <div class="col-md-4">
                     <div class="row">
                         <label for='nome' class='fw-bold col-sm-4 col-form-label col-form-label-sm'> Nome:
@@ -86,8 +104,9 @@
                 </div>
                 <div class="col-md-2 mt-2">
                     <div class='btn-group btn-group-sm gap-2' role='group'>
-                        <a href='/cliente/edicao/{{_id}}' class='botao ativado'> <i class='bi bi-pen icone'></i> </a>
-                        <a href='/cliente/confirmaexclusao/{{_id}}' class="botao ativado"> <i
+                        <a href='/cliente/edicao/{{_id}}' class='botao-tabela ativado'> <i class='bi bi-pen icone'></i>
+                        </a>
+                        <a href='/cliente/confirmaexclusao/{{_id}}' class="botao-tabela ativado"> <i
                                 class='bi bi-trash icone'></i> </a>
                     </div>
                 </div>
