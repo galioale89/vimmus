@@ -6,7 +6,59 @@
     }
     function registrar() {
         window.location.href = '/usuario/registrar/todos'
-    }    
+    }
+    function changeBenefit(num) {
+        var ben1 = document.getElementById('benefit-1')
+        var descben1 = document.getElementById('desc-benefit-1')
+        var ben2 = document.getElementById('benefit-2')
+        var descben2 = document.getElementById('desc-benefit-2')
+        var ben3 = document.getElementById('benefit-3')
+        var descben3 = document.getElementById('desc-benefit-3')
+        var ben4 = document.getElementById('benefit-4')
+        var descben4 = document.getElementById('desc-benefit-4')
+        var ben5 = document.getElementById('benefit-5')
+        var descben5 = document.getElementById('desc-benefit-5')
+        var ben6 = document.getElementById('benefit-6')
+        var descben6 = document.getElementById('desc-benefit-6')
+
+        ben1.className = 'topic'
+        descben1.style.display = 'none'
+        ben2.className = 'topic'
+        descben2.style.display = 'none'
+        ben3.className = 'topic'
+        descben3.style.display = 'none'
+        ben4.className = 'topic'
+        descben4.style.display = 'none'
+        ben5.className = 'topic'
+        descben5.style.display = 'none'
+        ben6.className = 'topic'
+        descben6.style.display = 'none'
+
+        if (num == 1) {
+            ben1.className = 'topic active'
+            descben1.style.display = ''
+        }
+        if (num == 2) {
+            ben2.className = 'topic active'
+            descben2.style.display = ''
+        }
+        if (num == 3) {
+            ben3.className = 'topic active'
+            descben3.style.display = ''
+        }
+        if (num == 4) {
+            ben4.className = 'topic active'
+            descben4.style.display = ''
+        }
+        if (num == 5) {
+            ben5.className = 'topic active'
+            descben5.style.display = ''
+        }
+        if (num == 6) {
+            ben6.className = 'topic active'
+            descben6.style.display = ''
+        }
+    }
 </script>
 
 <head>
@@ -71,7 +123,8 @@
                                     Login</button>
                             </li>
                             <li>
-                                <button class="primary-btn" type="button" title="Registrar-se" onclick="registrar()">Registrar-se</button>
+                                <button class="primary-btn" type="button" title="Registrar-se"
+                                    onclick="registrar()">Registrar-se</button>
                             </li>
                         </ul>
                     </nav>
@@ -94,19 +147,20 @@
 
                     <p class="text">Gestão de Projetos para <br>Empresas de Energias Renováveis</p>
                     <a href='#step-by-step'>
-                    <button class="arrow btn-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="13.896" height="24.304"
-                            viewBox="0 0 13.896 24.304">
-                            <path id="arrow_left" data-name="arrow left"
-                                d="M12.157,4.189l9.19,9.2a1.729,1.729,0,0,0,2.453,0,1.751,1.751,0,0,0,0-2.46L13.387.506a1.734,1.734,0,0,0-2.4-.051L.507,10.919a1.737,1.737,0,0,0,2.453,2.46Z"
-                                transform="translate(13.896) rotate(90)" />
-                        </svg>
-                    </button>
+                        <button class="arrow btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13.896" height="24.304"
+                                viewBox="0 0 13.896 24.304">
+                                <path id="arrow_left" data-name="arrow left"
+                                    d="M12.157,4.189l9.19,9.2a1.729,1.729,0,0,0,2.453,0,1.751,1.751,0,0,0,0-2.46L13.387.506a1.734,1.734,0,0,0-2.4-.051L.507,10.919a1.737,1.737,0,0,0,2.453,2.46Z"
+                                    transform="translate(13.896) rotate(90)" />
+                            </svg>
+                        </button>
                     </a>
                 </div>
 
                 <div class="col-lg-6">
-                    <img src="img/banner.svg" width="600" alt="Conjunto de painéis solares" title="Conjunto de painéis solares">
+                    <img src="img/banner.svg" width="600" alt="Conjunto de painéis solares"
+                        title="Conjunto de painéis solares">
                 </div>
             </div>
         </div>
@@ -184,8 +238,8 @@
 
                         <div class="card">
 
-                            {{!-- <svg class="picture-card" xmlns="http://www.w3.org/2000/svg" width="49.54" height="69.288"
-                                viewBox="0 0 49.54 69.288">
+                            {{!-- <svg class="picture-card" xmlns="http://www.w3.org/2000/svg" width="49.54"
+                                height="69.288" viewBox="0 0 49.54 69.288">
                                 <g transform="translate(-326.558 507.9)">
                                     <g transform="translate(326.558 -507.9)">
                                         <g transform="translate(0 0)">
@@ -234,7 +288,8 @@
                                     </g>
                                 </g>
                             </svg> --}}
-                            <img src='img/time.png' width="70" style="margin: auto;margin-top: 5px;margin-bottom: 32px;">
+                            <img src='img/time.png' width="70"
+                                style="margin: auto;margin-top: 5px;margin-bottom: 32px;">
                             <p class="text-card">2. Tempo</p>
 
                         </div>
@@ -309,7 +364,9 @@
                         <div class="card">
                             <img src="img/agenda.svg" width="70"
                                 style="color: white;margin: auto;margin-top: 20px;margin-bottom: 10px;">
-                            <p class="text-card" style="font-size: 12px;line-height: 12px;margin: auto;padding-bottom: 90px;">Agenda de planejamento</p>
+                            <p class="text-card"
+                                style="font-size: 12px;line-height: 12px;margin: auto;padding-bottom: 90px;">Agenda de
+                                planejamento</p>
                         </div>
 
                         <div class="card">
@@ -368,7 +425,9 @@
                             <img src="img/indicador.svg" width="70"
                                 style="color: white;margin: auto;margin-top: 20px;margin-bottom: 10px;">
 
-                            <p class="text-card" style="font-size: 12px;line-height: 12px;margin: auto;padding-bottom: 90px;">Indicadores de desempenho de resultado de custos</p>
+                            <p class="text-card"
+                                style="font-size: 12px;line-height: 12px;margin: auto;padding-bottom: 90px;">Indicadores
+                                de desempenho de resultado de custos</p>
 
                         </div>
 
@@ -391,7 +450,9 @@
                             </svg>
                             <img src="img/demonstrativo.svg" width="100"
                                 style="color: white;margin: auto;margin-top: 12px;margin-bottom: 30px;padding-left: 30px;">
-                            <p class="text-card" style="font-size: 12px;line-height: 12px;margin: auto;padding-bottom: 90px;">Demonstrativos
+                            <p class="text-card"
+                                style="font-size: 12px;line-height: 12px;margin: auto;padding-bottom: 90px;">
+                                Demonstrativos
                                 financeiros, estimativa de
                                 tributos e margem
                                 líquida por projeto</p>
@@ -441,7 +502,9 @@
                             </svg>
                             <img src="img/portfolio.svg" width="70"
                                 style="color: white;margin: auto;margin-top: 20px;margin-bottom: 10px;">
-                            <p class="text-card" style="font-size: 12px;line-height: 12px;margin: auto;padding-bottom: 65px;">Análise do portfólio de projetos por
+                            <p class="text-card"
+                                style="font-size: 12px;line-height: 12px;margin: auto;padding-bottom: 65px;">Análise do
+                                portfólio de projetos por
                                 parâmetros customizáveis</p>
 
 
@@ -504,7 +567,8 @@
                         <h3 class="title-plan">Plano Único</h3>
                         <div class="row">
                             <div class="col">
-                                <p style="margin-top: 38%;" class="description-plan">Acesso integral do sistema completo e todas as
+                                <p style="margin-top: 38%;" class="description-plan">Acesso integral do sistema completo
+                                    e todas as
                                     funcionalidades
                                     disponíveis.</p>
                                 <div class="text-center">
@@ -605,7 +669,8 @@
             <div class="row justify-content-center">
                 <h2 class="title-banner">Maior agilidade no lançamento e controle<br>
                     dos seus projetos</h2>
-                <a href="#contact" style="text-align: center; margin: auto;"><button class="btn primary-btn" href="#contact" style="width: 600px;">QUERO CONHECER</button></a>
+                <a href="#contact" style="text-align: center; margin: auto;"><button class="btn primary-btn"
+                        href="#contact" style="width: 600px;">QUERO CONHECER</button></a>
             </div>
         </div>
     </section>
@@ -621,22 +686,59 @@
 
                     <div class="topics">
                         <ol>
-                            <li class="active">Rentabilidade do projeto</li>
-                            <li>Sustentabilidade financeira para o negócio</li>
-                            <li>Controle de entrega por projeto</li>
-                            <li>Auxílio na tomada de decisões</li>
-                            <li>Auxílio na prestação de contas</li>
-                            <li>Gestão de equipes</li>
+                            <li class="topic active" style="cursor: pointer;" id="benefit-1"
+                                onmousedown="changeBenefit(1)">Rentabilidade do projeto</li>
+                            <li class="topic" style="cursor: pointer;" id="benefit-2" onmousedown="changeBenefit(2)">
+                                Sustentabilidade financeira para o negócio</li>
+                            <li class="topic" style="cursor: pointer;" id="benefit-3" onmousedown="changeBenefit(3)">
+                                Controle de entrega por projeto</li>
+                            <li class="topic" style="cursor: pointer;" id="benefit-4" onmousedown="changeBenefit(4)">
+                                Auxílio na tomada de decisões</li>
+                            <li class="topic" style="cursor: pointer;" id="benefit-5" onmousedown="changeBenefit(5)">
+                                Auxílio na prestação de contas</li>
+                            <li class="topic" style="cursor: pointer;" id="benefit-6" onmousedown="changeBenefit(6)">
+                                Gestão de equipes</li>
                         </ol>
                     </div>
                 </div>
 
                 <div class="col-lg-6">
-                    <div class="descriptions">
+                    <div class="descriptions" id="desc-benefit-1">
                         <p class="text">A partir do lançamento e do cálculo dos custos, levando em considerações as
                             atividades de cada recurso do projeto e também considerando as estimativas dos tributos a
                             serem recolhidos, é possível calcular o lucro líquido de cada projeto, obtendo o resultado
                             preliminar do negócio a partir da gestão individual por projeto.</p>
+                    </div>
+
+                    <div class="descriptions" id="desc-benefit-2" style="display: none;">
+                        <p class="text">O controle dos custos por projeto proporciona uma gestão mais eficaz devido a
+                            capacidade de observar os custos por recurso. Deste modo conhecendo os custos de cada
+                            projeto será possível observar as variações por tamanho de projeto e assim ter uma média de
+                            custos para identificar melhores oportunidades de negócio.</p>
+                    </div>
+
+                    <div class="descriptions" id="desc-benefit-3" style="display: none;">
+                        <p class="text">Com o sistema é possível gerenciar as datas de início e previsão de entrega dos
+                            projetos, organizando o acompanhamento e controlando o fluxo através da priorização de
+                            entregas.</p>
+                    </div>
+
+                    <div class="descriptions" id="desc-benefit-4" style="display: none;">
+                        <p class="text">Conhecendo os indicadores de custos e rentabilidade de cada recurso do projeto,
+                            será possível identificar oportunidades de melhorias, e assim tomar decisões mais eficazes
+                            em relação ao escopo e ao tempo de execução de cada atividade.</p>
+                    </div>
+
+                    <div class="descriptions" id="desc-benefit-5" style="display: none;">
+                        <p class="text">Através dos relatórios será possível obter as informações do total dos custos
+                            operacionais e dos tributos estimados de todos os projetos, e a partir dessas informações
+                            comparar com os tributos pagos pela empresa em um determinado período.</p>
+                    </div>
+
+                    <div class="descriptions" id="desc-benefit-6" style="display: none;">
+                        <p class="text">A ferramenta proporciona a gestão dos projetistas, instaladores e responsáveis
+                            pela gestão dos projetos, sendo possível consultar em quais projetos cada recurso está
+                            alocado.</p>
                     </div>
                 </div>
             </div>
