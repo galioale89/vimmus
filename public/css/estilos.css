@@ -280,16 +280,12 @@ color: white
 .filter {
 background-color: #847AF4;
 color: white;
-font-size: 28px;
-line-height: 20px;
-height: 20px;
-width: 20px;
+font-size: 16px;
 cursor: pointer;
 }
 
 .filter:hover {
-    color: white;
-    font-size: 29px;
+    color: rgb(40, 55, 86);
 }
 
 .active {
@@ -479,6 +475,7 @@ opacity: 0.5;
 .icone-tabela{
 color: white;
 padding-top: 50px;
+font-size: 20px;
 }
 
 .icone {
