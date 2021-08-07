@@ -30,28 +30,28 @@
         });
     };
 </script>
-<div class="container-sm mt-2">
+<div class="row" style="width: 100%;padding-left: 2%;">
     <div id='header'>
-        <div class="row">
+        <div class="row mt-4">
             <form action='/cliente/filtrar' method='post'>
                 <div class="col-md-4">
-                    <h5 class='titulo-inicio'>Clientes</h5>
+                    <h5 class='titulo-inicio mt-2'>Clientes</h5>
                 </div>
                 <div class="row">
-                    <div class="col mb-2 text-start">
+                    <div class="col-md-3 mb-2 text-start" style="padding-left: 3%;">
                         <label class='col-form-label col-form-label-sm fw-bold'>Nome</label>
                         <div class="col">
                             <input name='nome' type='text' class="form-control form-control-sm">
                         </div>
                     </div>
-                    <div class="col text-start">
+                    <div class="col-md-3 text-start">
                         <label class='col-form-label col-form-label-sm fw-bold'>UF</label>
                         <div class="col">
                             <select id="estado" name='uf' class='form-select form-select-sm mb-1'>
                             </select>
                         </div>
                     </div>
-                    <div class="col text-start">
+                    <div class="col-md-3 text-start">
                         <label class='col-form-label col-form-label-sm fw-bold'>Cidade</label>
                         <div class="col">
                             <select id="cidade" name='cidade' class='form-select form-select-sm mb-1'>
@@ -64,8 +64,8 @@
                 </div>
             </form>
         </div>
-        <div class="row mb-2">
-            <div class='filtro-selecao' style="margin-left: 30px;">Nome: {{nome}}</div>
+        <div class="row mb-2 mt-2">
+            <div class='filtro-selecao' style="margin-left: 3%;">Nome: {{nome}}</div>
             <div class='filtro-selecao'>UF: {{uf}}</div>
             <div class='filtro-selecao'>Cidade: {{cidade}}</div>
         </div>
@@ -73,11 +73,11 @@
 
 
     {{#each clientes}}
-    <div class="card mb-2 mt-2; margin-bottom:30px">
+    <div class="card mb-2 mt-2; margin-bottom:30px" style="width: 80%;margin-left: 3%;">
         <div style="padding: 5px;">
             <input type='hidden' name='id' value='{{_id}}'>
             <div class="row" style="padding-left: 10px;">
-                <div class="col-md-4">
+                <div class="col-md-5">
                     <div class="row">
                         <label for='nome' class='fw-bold col-sm-4 col-form-label col-form-label-sm'> Nome:
                         </label>
@@ -91,14 +91,14 @@
                 </div>
                 <div class="col-md-5">
                     <div class="row">
-                        <label for='nome' class='fw-bold col-sm-2 col-form-label col-form-label-sm'> E-mail:
+                        <label for='nome' class='fw-bold col-sm-3 col-form-label col-form-label-sm'> E-mail:
                         </label>
-                        <label class='col-sm-10 col-form-label col-form-label-sm' for='nome'> {{email}} </label>
+                        <label class='col-sm-9 col-form-label col-form-label-sm' for='nome'> {{email}} </label>
                     </div>
                     <div class="row">
-                        <label for='nome' class='fw-bold col-sm-2 col-form-label col-form-label-sm'> Celular:
+                        <label for='nome' class='fw-bold col-sm-3 col-form-label col-form-label-sm'> Celular:
                         </label>
-                        <label class='col-sm-10 col-form-label col-form-label-sm' for='nome'> {{celular}}
+                        <label class='col-sm-9 col-form-label col-form-label-sm' for='nome'> {{celular}}
                         </label>
                     </div>
                 </div>
