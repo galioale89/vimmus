@@ -1,4 +1,8 @@
 <style type="text/css">
+  i {
+    font-size: 16px;
+    vertical-align: text-top;
+  }
   th {
     border-collapse: collapse;
     font-size: 12px;
@@ -7,14 +11,22 @@
   td {
     text-align: center;
   }
+
+  table {
+    font-size: 12px;
+  }
+
+  a {
+    cursor: pointer;
+  }
 </style>
 
-<div class='row mt-1' style="width: 100%;">
+<div class='row mt-1' style="width: 100%;font-size: 12px;">
   <div class='col-md-2'>
     <div class="menu" style="height:100%">
       <img src='img/logovimmus.png' height="75" width="100" style="padding-left: 10%;" />
       <div class="menu-interno">
-        <div class='fw-bold col-form-label col-form-label-sm fw-bold text-center'> CADASTROS</div>
+        <div class='titulo-inicio text-center'> CADASTROS</div>
         <div class="row mb-2">
           <div class="col-md-8 text-end">
             <a href="/cliente/novo" class="contorno-menu"><i class='bi bi-person-plus'></i> Cliente</a><br>
@@ -43,11 +55,9 @@
           <a href='/pessoa/consultaequipepadrao' class="contorno-menu"><i class='bi bi-people'></i> Equipes
             Padrão</a><br>
         </div> --}}
-        <div class='fw-bold col-form-label col-form-label-sm fw-bold mt-2 text-center' style="font-weight: bolder;">
-          CONFIGURAÇÕES
-        </div>
+        <div class='titulo-inicio text-center'>CONFIGURAÇÕES</div>
         <div class="row mb-2">
-          <div class="col-md-8 text-end" style="padding-left: 30px;">
+          <div class="col-md-8 text-end" style="padding-left: 20px;">
             <a href='/configuracao/addempresa' class="contorno-menu"><i class='bi bi-calculator'></i> Empresa </a><br>
           </div>
           <div class="col-md-4 text-start">
@@ -63,40 +73,45 @@
           </div>
         </div>
       </div>
-      <div class="menu-interno" style="padding-right: 10px;">
-        <a href='/gerenciamento/agenda' class="relatorio titulo-relatorio" style="padding-top: 5px;padding-bottom: 5px;"><i class='bi bi-columns'></i> Agenda</a><br>
-        <div style="margin-top: 6%;margin-bottom: 4.5%;">
-          <a href='/gerenciamento/cenarios' class="relatorio titulo-relatorio" style="padding-top: 5px;padding-bottom: 5px;"><i class='bi bi-columns'></i> Análise de
+      <div class='titulo-inicio text-center'>FERRAMENTAS</div>
+      <div class="menu-interno" style="padding-right: 5px;">
+        <div style="margin-top: 6%;margin-bottom: 10%;">
+          <a href='/gerenciamento/agenda' class="relatorio titulo-relatorio"><i class='bi bi-columns'></i>
+            Agenda</a><br>
+        </div>
+        <div style="margin-top: 6%;margin-bottom: 10%;">
+          <a href='/gerenciamento/cenarios' class="relatorio titulo-relatorio"><i class='bi bi-display'></i> Análise de
             Cenários</a>
         </div>
-        <div class="dropend">
-          <button class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false"><i
+        <div class="dropend" style="margin-bottom: 10%;">
+          <a class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false"><i
               class='bi bi-clipboard-data'></i> Indicadores <i class="bi bi-caret-right"></i>
-          </button>
+          </a>
           <ul class="dropdown-menu">
             <a href='/relatorios/dashboardcustos' class="botao-filter"> Custos</a><br>
             <a href='/relatorios/dashboardbi' class="botao-filter"> Estatísticas</a><br>
           </ul>
         </div>
-        <div class="dropend mt-1">
-          <button class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false"><i
+        <div class="dropend " style="margin-bottom: 10%;">
+          <a class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false"><i
               class="bi bi-book"></i> Relatórios <i class="bi bi-caret-right"></i>
-          </button>
+          </a>
           <ul class="dropdown-menu">
             <a href='/relatorios/listarealizados' class="botao-filter"> Lista Realizados</a><br>
             <a href='/relatorios/listarabertos' class="botao-filter"> Lista Abertos</a><br>
           </ul>
         </div>
-        <div style="margin-top: 3%;margin-bottom: 4%;">
-          <a href='/usuario/editar/{{id}}' class="relatorio titulo-relatorio"><i class="bi bi-house-fill"></i> Minha Conta</a>
+        <div style="margin-bottom: 10%;">
+          <a href='/usuario/editar/{{id}}' class="relatorio titulo-relatorio"><i class="bi bi-house-fill"></i> Minha
+            Conta</a>
         </div>
 
         {{#if ehMaster}}
         <div class="row">
           <div class="dropend">
-            <button class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false">Admin <i
+            <a class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false">Admin <i
                 class="bi bi-caret-right"></i></i>
-            </button>
+            </a>
             <ul class="dropdown-menu">
               <a href='/administrador' class='botao-filter'><i class='bi bi-people-fill'></i> Controle Usuários </a>
             </ul>
@@ -110,8 +125,8 @@
   <div class='col-md-3 mt-3'>
     <div class="row contorno-titulo" style="margin-top: 5%;padding-left: 5%;">
       <div class="row">
-        <label style="font-size: 21px;"> Total de Projetos</label>
-        <label style="font-size: 50px;">{{numprj}}</label>
+        <label style="font-size: 21px;color:#847AF4;;margin-top: 10%"> Total de Projetos</label>
+        <label class="mt-2" style="font-size: 50px;">{{numprj}}</label>
       </div>
       <div class="row">
         <div class="col">
@@ -128,7 +143,7 @@
     </div>
     <hr>
     <div class="row mb-2" style="">
-      <div class='contorno-titulo' style="font-size: 21px;">Margem de Lucro Liquido Médio Faturado</th>
+      <div class='contorno-titulo' style="font-size: 21px;color: #847AF4;;">Margem de Lucro Liquido Médio Faturado</th>
         <div class="sessao mt-2" style="margin-left: 30%;">
           <div class='textmll'>{{perNfsMed}}%</div>
         </div>
@@ -141,26 +156,26 @@
         <tr>
           <td style="text-align: center;">
             <label style="font-size: 20px;font-weight: bold;">Aberto</label>
-            <div class='sessao-status-aberto mb-2' style="margin-left: 30%;">
-              <label style="font-size: 20px;font-weight: bold;">{{qtdAberto}}</label>
+            <div class='sessao-status-aberto' style="margin-left: 30%;">
+              <label class='mt-2' style="font-size: 20px;font-weight: bold;">{{qtdAberto}}</label>
             </div>
           </td>
           <td style="text-align: center;border-left: white 5px solid;">
             <label style="font-size: 20px;font-weight: bold;">Em execução</label>
             <div class='sessao-status-execucao mb-2' style="margin-left: 40%;">
-              <label style="font-size: 20px;font-weight: bold;">{{qtdExecucao}}</label>
+              <label class='mt-2' style="font-size: 20px;font-weight: bold;">{{qtdExecucao}}</label>
             </div>
           </td>
           <td style=";text-align: center;border-left: white 5px solid;">
             <label style="font-size: 20px;font-weight: bold;">Parado</label>
             <div class='sessao-status-parado mb-2' style="margin-left: 32%;">
-              <label style="font-size: 20px;font-weight: bold;">{{qtdParado}}</label>
+              <label class='mt-2' style="font-size: 20px;font-weight: bold;">{{qtdParado}}</label>
             </div>
           </td>
           <td style=";text-align: center;border-left: white 5px solid;">
             <label style="font-size: 20px;font-weight: bold;">Homologação</label>
             <div class='sessao-status-homo mb-2' style="margin-left: 40%;">
-              <label style="font-size: 20px;font-weight: bold;">{{qtdHomologado}}</label>
+              <label class='mt-2' style="font-size: 20px;font-weight: bold;">{{qtdHomologado}}</label>
             </div>
           </td>
         </tr>
