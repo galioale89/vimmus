@@ -1,0 +1,493 @@
+<style>
+    th {
+        text-align: center;
+        font-size: 14px;
+    }
+
+    td {
+        text-align: end;
+        padding-right: 5px;
+    }
+
+    tr.spaceUnder>td {
+        padding-bottom: 1em;
+    }
+</style>
+<script>
+    function trocaQtd() {
+        var qtduce = document.getElementById('qtduce')
+        var td2 = document.getElementById('td2')
+        var td3 = document.getElementById('td3')
+        if (qtduce.value == '1') {
+            td2.style.display = 'none'
+            td3.style.display = 'none'
+        } else {
+            if (qtduce.value == '2') {
+                td2.style.display = ''
+                td3.style.display = 'none'
+            } else {
+                td2.style.display = ''
+                td3.style.display = ''
+            }
+        }
+
+    }
+</script>
+<div class="row" style="width: 100%;">
+    <form action="/projeto/dimensionar/" method="post">
+        <h5 style="text-align: center;padding: 30px;font-weight: 800;">DIMENSIONAMENTO</h5>
+        <input type="hidden" name='id_dime' value='{{dimensionamento._id}}'>
+        <input type="hidden" name='id_dime' value='{{projeto._id}}'>
+        <div class="row mb-2" style="width: 100%;padding-left: 20px">
+            <div class="col-md-8">
+                <div class="row" style="width: 100%;">
+                    <div class="col-md-2 text-end">
+                        <label class='col-form-label col-form-label-sm fw-bold'>TARFIAS</label>
+                    </div>
+                    <div class="col-md-1 text-end">
+                        <label class='col-form-label col-form-label-sm fw-bold'>TE:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input class='form-control form-control-sm' step='0.010' name='te' id='te' placeholder="R$"
+                            value='{{dimensionamento.te}}'>
+                    </div>
+                    <div class="col-md-1 text-end">
+                        <label class='col-form-label col-form-label-sm fw-bold'>TUSD:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input class='form-control form-control-sm' step='0.010' name='tusd' id='tusd' placeholder="R$"
+                            value='{{dimensionamento.tusd}}'>
+                    </div>
+                    <div class="col-md-2 text-end">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Ilum. Pública:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input class='form-control form-control-sm' step='0.010' name='ilupub' id='ilupub'
+                            placeholder="R$" value='{{dimensionamento.cosip}}'>
+                    </div>
+                </div>
+                <div class="row mt-1" style="width: 100%;">
+                    <div class="col-md-2 text-end">
+                        <label class='col-form-label col-form-label-sm fw-bold'>IMPOSTOS</label>
+                    </div>
+                    <div class="col-md-1 text-end">
+                        <label class='col-form-label col-form-label-sm fw-bold'>ICMS:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input class='form-control form-control-sm' step='0.010' name='icms' id='icms' placeholder="%"
+                            value='{{dimensionamento.icms}}'>
+                    </div>
+                    <div class="col-md-1 text-end">
+                        <label class='col-form-label col-form-label-sm fw-bold'>PIS:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input class='form-control form-control-sm' step='0.010' name='pis' id='pis' placeholder="%"
+                            value='{{dimensionamento.pis}}'>
+                    </div>
+                    <div class="col-md-2 text-end">
+                        <label class='col-form-label col-form-label-sm fw-bold'>COFINS:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input class='form-control form-control-sm' step='0.010' name='cofins' id='cofins'
+                            placeholder="%" value='{{dimensionamento.cofins}}'>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-2 text-end">
+                        <label class='col-form-label col-form-label-sm fw-bold'>INFLAÇÃO:</label>
+                    </div>
+                    <div class="col-md-3">
+                        <input class='form-control form-control-sm' step='0.010' name='inflacao' id='inflacao'
+                            placeholder="%" value='{{dimensionamento.inflacao}}'>
+                    </div>
+                    <div class="col-md-1 text-end">
+                        <label class='col-form-label col-form-label-sm fw-bold'>TMA:</label>
+                    </div>
+                    <div class="col-md-3">
+                        <input class='form-control form-control-sm' step='0.010' name='tma' id='tma' placeholder="%"
+                            value='{{dimensionamento.tma}}'>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col-md-5 text-end">
+                        <label class='col-form-label col-form-label-sm fw-bold'>AJUSTE TARIFÁRIO:</label>
+                    </div>
+                    <div class="col-md-3">
+                        <input class='form-control form-control-sm' step='0.010' name='ajuste' id='ajuste'
+                            placeholder="%" value='{{dimensionamento.ajuste}}'>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="row">
+                <div class="col-md-4 text-end">
+                    <label class='col-form-label col-form-label-sm fw-bold'>Quantiadde de Unidades
+                        Consumidoras:</label>
+                </div>
+                <div class="col-md-1">
+                    <select class='form-select form-select-sm' name='qtduce' id='qtduce' onchange="trocaQtd()">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                    </select>
+                </div>
+                <div class="col-md-2 text-end">
+                    <label class='col-form-label col-form-label-sm fw-bold'>Irradiação Wh/m² dia:</label>
+                </div>
+                <div class="col-md-1">
+                    <input class='form-control form-control-sm' type="text" name='radiacao'>
+                </div>
+            </div>
+            <div class="row">
+                <table>
+                    <tr>
+                        <th style="width: 12%;"></th>
+                        <th style='width: 7%'>Janeiro</th>
+                        <th style='width: 7%'>Fevereiro</th>
+                        <th style='width: 7%'>Março</th>
+                        <th style='width: 7%'>Abril</th>
+                        <th style='width: 7%'>Maio</th>
+                        <th style='width: 7%'>Junho</th>
+                        <th style='width: 7%'>Julho</th>
+                        <th style='width: 7%'>Agosto</th>
+                        <th style='width: 7%'>Setembro</th>
+                        <th style='width: 7%'>Outubro</th>
+                        <th style='width: 7%;'>Novembro</th>
+                        <th style='width: 7%;'>Dezembro</th>
+                    </tr>
+                    <tr>
+                        <div id='td1'>
+                            <td>
+                                <label class="col-form-label col-form-label-sm fw-bold">UC 1:</label>
+                            </td>
+                            <td>
+                                <input class='form-control form-control-sm' type="{{showuc1}}" step='0.010' name='uc11'
+                                    id='uc11' value='{{dimensionamento.uc11}}'>
+                            </td>
+                            <td>
+                                <input class='form-control form-control-sm' type="{{showuc1}}" step='0.010' name='uc12'
+                                    id='uc12' value='{{dimensionamento.uc12}}'>
+                            </td>
+                            <td>
+                                <input class='form-control form-control-sm' type="{{showuc1}}" step='0.010' name='uc13'
+                                    id='uc13' value='{{dimensionamento.uc13}}'>
+                            </td>
+                            <td>
+                                <input class='form-control form-control-sm' type="{{showuc1}}" step='0.010' name='uc14'
+                                    id='uc14' value='{{dimensionamento.uc14}}'>
+                            </td>
+                            <td>
+                                <input class='form-control form-control-sm' type="{{showuc1}}" step='0.010' name='uc15'
+                                    id='uc15' value='{{dimensionamento.uc15}}'>
+                            </td>
+                            <td>
+                                <input class='form-control form-control-sm' type="{{showuc1}}" step='0.010' name='uc16'
+                                    id='uc16' value='{{dimensionamento.uc16}}'>
+                            </td>
+                            <td>
+                                <input class='form-control form-control-sm' type="{{showuc1}}" step='0.010' name='uc17'
+                                    id='uc17' value='{{dimensionamento.uc17}}'>
+                            </td>
+                            <td>
+                                <input class='form-control form-control-sm' type="{{showuc1}}" step='0.010' name='uc18'
+                                    id='uc18' value='{{dimensionamento.uc18}}'>
+                            </td>
+                            <td>
+                                <input class='form-control form-control-sm' type="{{showuc1}}" step='0.010' name='uc19'
+                                    id='uc19' value='{{dimensionamento.uc19}}'>
+                            </td>
+                            <td>
+                                <input class='form-control form-control-sm' type="{{showuc1}}" step='0.010' name='uc19'
+                                    id='uc19' value='{{dimensionamento.uc19}}'>
+                            </td>
+                            <td>
+                                <input class='form-control form-control-sm' type="{{showuc1}}" step='0.010' name='uc111'
+                                    id='uc111' value='{{dimensionamento.uc111}}'>
+                            </td>
+                            <td>
+                                <input class='form-control form-control-sm' type="{{showuc1}}" step='0.010' name='uc112'
+                                    id='uc112' value='{{dimensionamento.uc112}}'>
+                            </td>
+                        </div>
+                    </tr>
+
+                    <tr id='td2' style="display: {{td2}};">
+                        <td>
+                            <label class="col-form-label col-form-label-sm fw-bold">UC 2:</label>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc2}}" step='0.010' name='uc21'
+                                id='uc21' value='{{dimensionamento.uc21}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc2}}" step='0.010' name='uc22'
+                                id='uc22' value='{{dimensionamento.uc2}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc2}}" step='0.010' name='uc23'
+                                id='uc23' value='{{dimensionamento.uc23}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc2}}" step='0.010' name='uc24'
+                                id='uc24' value='{{dimensionamento.uc24}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc2}}" step='0.010' name='uc25'
+                                id='uc25' value='{{dimensionamento.uc25}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc2}}" step='0.010' name='uc26'
+                                id='uc26' value='{{dimensionamento.uc26}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc2}}" step='0.010' name='uc27'
+                                id='uc27' value='{{dimensionamento.uc27}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc2}}" step='0.010' name='uc28'
+                                id='uc28' value='{{dimensionamento.uc28}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc2}}" step='0.010' name='uc29'
+                                id='uc29' value='{{dimensionamento.uc29}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc2}}" step='0.010' name='uc210'
+                                id='uc210' value='{{dimensionamento.uc210}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc2}}" step='0.010' name='uc211'
+                                id='uc211' value='{{dimensionamento.uc211}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc2}}" step='0.010' name='uc212'
+                                id='uc212' value='{{dimensionamento.uc212}}'>
+                        </td>
+                    </tr>
+                    <tr id='td3' style="display: {{td3}};">
+                        <td>
+                            <label class="col-form-label col-form-label-sm fw-bold">UC 3:</label>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc3}}" step='0.010' name='uc31'
+                                id='uc31' value='{{dimensionamento.uc31}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc3}}" step='0.010' name='uc32'
+                                id='uc32' value='{{dimensionamento.uc32}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc3}}" step='0.010' name='uc33'
+                                id='uc33' value='{{dimensionamento.uc33}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc3}}" step='0.010' name='uc34'
+                                id='uc34' value='{{dimensionamento.uc34}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc3}}" step='0.010' name='uc35'
+                                id='uc35' value='{{dimensionamento.uc35}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc3}}" step='0.010' name='uc36'
+                                id='uc36' value='{{dimensionamento.uc36}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc3}}" step='0.010' name='uc37'
+                                id='uc37' value='{{dimensionamento.uc37}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc3}}" step='0.010' name='uc38'
+                                id='uc38' value='{{dimensionamento.uc38}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc3}}" step='0.010' name='uc39'
+                                id='uc39' value='{{dimensionamento.uc39}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc3}}" step='0.010' name='uc310'
+                                id='uc310' value='{{dimensionamento.uc310}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc3}}" step='0.010' name='uc311'
+                                id='uc311' value='{{dimensionamento.uc311}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="{{showuc3}}" step='0.010' name='uc312'
+                                id='uc312' value='{{dimensionamento.uc312}}'>
+                        </td>
+                    </tr>
+                    </td>
+                    <tr>
+                        <td>
+                            <label class="col-form-label col-form-label-sm fw-bold">Adicional</label>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="number" name='add1' id='add1'
+                                value='{{dimensionamento.add1}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="number" name='add2' id='add2'
+                                value='{{dimensionamento.add2}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="number" name='add3' id='add3'
+                                value='{{dimensionamento.add3}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="number" name='add4' id='add4'
+                                value='{{dimensionamento.add4}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="number" name='add5' id='add5'
+                                value='{{dimensionamento.add5}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="number" name='add6' id='add6'
+                                value='{{dimensionamento.add6}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="number" name='add7' id='add7'
+                                value='{{dimensionamento.add7}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="number" name='add8' id='add81'
+                                value='{{dimensionamento.add8}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="number" name='add9' id='add9'
+                                value='{{dimensionamento.add9}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="number" name='add10' id='add10'
+                                value='{{dimensionamento.add10}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="number" name='add11' id='add11'
+                                value='{{dimensionamento.add11}}'>
+                        </td>
+                        <td>
+                            <input class='form-control form-control-sm' type="number" name='add12' id='add12'
+                                value='{{dimensionamento.add12}}'>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="col-form-label col-form-label-sm fw-bold">Consumo kWp:</label>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='addlbl1'>{{dimensionamento.consumo1}}</label><br>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='addlbl2'>{{dimensionamento.consumo2}}</label><br>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='addlbl3'>{{dimensionamento.consumo3}}</label><br>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='addlbl4'>{{dimensionamento.consumo4}}</label><br>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='addlbl5'>{{dimensionamento.consumo5}}</label><br>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='addlbl6'>{{dimensionamento.consumo6}}</label><br>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='addlbl7'>{{dimensionamento.consumo7}}</label><br>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='addlbl8'>{{dimensionamento.consumo8}}</label><br>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='addlbl9'>{{dimensionamento.consumo9}}</label><br>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='addlbl0'>{{dimensionamento.consumo10}}</label><br>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='addlbl11'>{{dimensionamento.consumo11}}</label><br>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='addlbl12'>{{dimensionamento.consumo12}}</label><br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="col-form-label col-form-label-sm fw-bold">Total R$:</label>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='total1'>{{dimensionamento.total1}}</label><br>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='total2'>{{dimensionamento.total2}}</label><br>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='total3'>{{dimensionamento.total3}}</label><br>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='total4'>{{dimensionamento.total4}}</label><br>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='total5'>{{dimensionamento.total5}}</label><br>
+
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='total6'>{{dimensionamento.total6}}</label><br>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='total7'>{{dimensionamento.total7}}</label><br>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='total8'>{{dimensionamento.total8}}</label><br>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='total9'>{{dimensionamento.total9}}</label><br>
+                        </td>
+                        <label class="col-form-label col-form-label-sm"
+                            id='total0'>{{dimensionamento.total10}}</label><br>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='total11'>{{dimensionamento.total11}}</label><br>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='total12'>{{dimensionamento.total12}}</label><br>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="row mt-4">
+                <div class="btn-group col-6 mx-auto">
+                    <button type="submit" class="btn btn-sm btn-success">Calcular</button>
+                    <a ahref="/projeto/novo" class="btn btn-sm btn-success">Voltar para o Projeto</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

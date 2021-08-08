@@ -4291,7 +4291,7 @@ button {
   font-weight: 700;
   outline: none;
   border-radius: 0.4em;
-  text-transform: uppercase;
+  
   transition: all 0.3s ease;
   cursor: pointer;
 }

@@ -8,6 +8,7 @@ require('../model/CustoDetalhado')
 require('../model/Cliente')
 require('../model/Equipe')
 require('../model/Cronograma')
+require('../model/Dimensionamento')
 
 const mongoose = require('mongoose')
 const Projeto = mongoose.model('projeto')
@@ -19,6 +20,7 @@ const Detalhado = mongoose.model('custoDetalhado')
 const Cliente = mongoose.model('cliente')
 const Equipe = mongoose.model('equipe')
 const Cronograma = mongoose.model('cronograma')
+const Dimensionamento = mongoose.model('dimensionamento')
 
 const validaCampos = require('../resources/validaCampos')
 const comparaDatas = require('../resources/comparaDatas')
@@ -44,7 +46,7 @@ const nexmo = new Nexmo({
 //const apiKey = "8dbd4fb5-79af-45d6-a0b7-583a3c2c7d30"
 
 
-router.use(express.static('/imagens'))
+router.use(express.static('/public'))
 
 router.get("/consulta", ehAdmin, (req, res) => {
      const { _id } = req.user
@@ -59,6 +61,238 @@ router.get("/consulta", ehAdmin, (req, res) => {
      }).catch((err) => {
           req.flash('error_msg', 'Nenhum projeto encontrado')
           res.redirect('/projeto/consulta')
+     })
+})
+
+router.get('/dimensionamento/:id', ehAdmin, (req, res) => {
+     var th2 = 'white'
+     var td2 = 'none'
+     var th3 = 'white'
+     var td3 = 'none'
+     console.log('req.body.id_dime=>' + req.params.id)
+     Dimensionamento.findOne({ _id: req.params.id }).lean().then((dimensionamento) => {
+          res.render('projeto/dimensionamento', { dimensionamento, th2, td2, th3, td3 })
+     }).catch((err) => {
+          req.flash('error_msg', 'Huve um erro ao encontrar o dimensionamento.')
+          res.redirect('/projeto/novo')
+     })
+})
+
+router.get('/dimensionamento/', ehAdmin, (req, res) => {
+     var td2 = 'none'
+     var td3 = 'none'
+     res.render('projeto/dimensionamento', { td2, td3 })
+})
+
+router.post('/dimensionar', ehAdmin, (req, res) => {
+     const { _id } = req.user
+     Dimensionamento.findOneAndRemove({ _id: req.body.id_dime }).then(() => {
+     }).catch((err) => {
+          var dime1
+          var dime2
+          dime2 = {
+               user: _id,
+               te: req.body.te,
+               tusd: req.body.te,
+               icms: req.body.icms,
+               pis: req.body.pis,
+               cofins: req.body.cofins,
+               cosip: req.body.ilupub,
+               inflacao: req.body.inflacao,
+               tma: req.body.tma,
+               ajuste: req.body.ajuste,
+               uc11: req.body.uc11,
+               uc12: req.body.uc12,
+               uc13: req.body.uc13,
+               uc14: req.body.uc14,
+               uc15: req.body.uc15,
+               uc16: req.body.uc16,
+               uc17: req.body.uc17,
+               uc18: req.body.uc18,
+               uc19: req.body.uc19,
+               uc110: req.body.uc110,
+               uc111: req.body.uc111,
+               uc112: req.body.uc112,
+               uc21: req.body.uc21,
+               uc22: req.body.uc22,
+               uc23: req.body.uc23,
+               uc24: req.body.uc24,
+               uc25: req.body.uc25,
+               uc26: req.body.uc26,
+               uc27: req.body.uc27,
+               uc28: req.body.uc28,
+               uc29: req.body.uc29,
+               uc210: req.body.uc210,
+               uc211: req.body.uc211,
+               uc212: req.body.uc212,
+               uc31: req.body.uc31,
+               uc32: req.body.uc32,
+               uc33: req.body.uc33,
+               uc34: req.body.uc34,
+               uc35: req.body.uc35,
+               uc36: req.body.uc36,
+               uc37: req.body.uc37,
+               uc38: req.body.uc38,
+               uc39: req.body.uc39,
+               uc310: req.body.uc310,
+               uc311: req.body.uc311,
+               uc312: req.body.uc312,
+               add1: req.body.add1,
+               add2: req.body.add2,
+               add3: req.body.add3,
+               add4: req.body.add4,
+               add5: req.body.add5,
+               add6: req.body.add6,
+               add7: req.body.add7,
+               add8: req.body.add8,
+               add9: req.body.add9,
+               add10: req.body.add10,
+               add11: req.body.add11,
+               add12: req.body.add12,
+               potencia: 1
+          }          
+          if (req.body.qtduce == 1) {
+               dime1 = {
+                    consumo1: req.body.uc11,
+                    consumo2: req.body.uc12,
+                    consumo3: req.body.uc13,
+                    consumo4: req.body.uc14,
+                    consumo5: req.body.uc15,
+                    consumo6: req.body.uc16,
+                    consumo7: req.body.uc17,
+                    consumo8: req.body.uc18,
+                    consumo9: req.body.uc19,
+                    consumo10: req.body.uc110,
+                    consumo11: req.body.uc111,
+                    consumo12: req.body.uc112,
+               }
+          } else {
+               if (req.body.qtduce == 2) {
+                    dime1 = {
+                         consumo1: parseFloat(req.body.uc11) + parseFloat(req.body.uc21),
+                         consumo2: parseFloat(req.body.uc12) + parseFloat(req.body.uc22),
+                         consumo3: parseFloat(req.body.uc13) + parseFloat(req.body.uc23),
+                         consumo4: parseFloat(req.body.uc14) + parseFloat(req.body.uc24),
+                         consumo5: parseFloat(req.body.uc15) + parseFloat(req.body.uc25),
+                         consumo6: parseFloat(req.body.uc16) + parseFloat(req.body.uc26),
+                         consumo7: parseFloat(req.body.uc17) + parseFloat(req.body.uc27),
+                         consumo8: parseFloat(req.body.uc18) + parseFloat(req.body.uc28),
+                         consumo9: parseFloat(req.body.uc19) + parseFloat(req.body.uc29),
+                         consumo10: parseFloat(req.body.uc110) + parseFloat(req.body.uc210),
+                         consumo11: parseFloat(req.body.uc111) + parseFloat(req.body.uc211),
+                         consumo12: parseFloat(req.body.uc112) + parseFloat(req.body.uc2112)
+                    }
+               } else {
+                    dime1 = {
+                         consumo1: parseFloat(req.body.uc11) + parseFloat(req.body.uc21) + parseFloat(req.body.uc31),
+                         consumo2: parseFloat(req.body.uc12) + parseFloat(req.body.uc22) + parseFloat(req.body.uc32),
+                         consumo3: parseFloat(req.body.uc13) + parseFloat(req.body.uc23) + parseFloat(req.body.uc33),
+                         consumo4: parseFloat(req.body.uc14) + parseFloat(req.body.uc24) + parseFloat(req.body.uc34),
+                         consumo5: parseFloat(req.body.uc15) + parseFloat(req.body.uc25) + parseFloat(req.body.uc35),
+                         consumo6: parseFloat(req.body.uc16) + parseFloat(req.body.uc26) + parseFloat(req.body.uc36),
+                         consumo7: parseFloat(req.body.uc17) + parseFloat(req.body.uc27) + parseFloat(req.body.uc37),
+                         consumo8: parseFloat(req.body.uc18) + parseFloat(req.body.uc28) + parseFloat(req.body.uc38),
+                         consumo9: parseFloat(req.body.uc19) + parseFloat(req.body.uc29) + parseFloat(req.body.uc39),
+                         consumo10: parseFloat(req.body.uc110) + parseFloat(req.body.uc210) + parseFloat(req.body.uc310),
+                         consumo11: parseFloat(req.body.uc111) + parseFloat(req.body.uc211) + parseFloat(req.body.uc311),
+                         consumo12: parseFloat(req.body.uc112) + parseFloat(req.body.uc212 + parseFloat(req.body.uc312))
+                    }
+               }
+          }
+          var dime = Object.assign(dime2, dime1)
+          console.log('dime=>' + dime)
+                    
+          new Dimensionamento(dime).save().then(() => {
+               Dimensionamento.findOne().sort({ field: 'asc', _id: -1 }).lean().then((dimensionamento) => {
+                    var sucesso = []
+                    Projeto.findOne({ dimensionamento: dimensionamento._id }).lean().then((existe_projeto) => {
+                         console.log('existe_projeto=>' + existe_projeto)
+                         if (existe_projeto != null) {
+                              existe_projeto.dimensionamento = dimensionamento._id
+                              existe_projeto.save().then(() => {
+                                   Empresa.find({ user: _id }).lean().then((empresa) => {
+                                        Configuracao.find({ user: _id }).lean().then((configuracao) => {
+                                             Pessoa.find({ ehVendedor: true, user: _id }).lean().then((vendedor) => {
+                                                  Pessoa.find({ user: _id, funges: 'checked' }).lean().then((responsavel) => {
+                                                       Cliente.find({ user: _id, sissolar: 'checked' }).lean().then((clientes) => {
+                                                            sucesso.push({ texto: 'Dimensionamento realizado com sucesso!' })
+                                                            res.render('projeto/addprojeto', { projeto: existe_projeto, dimensionamento, sucesso, empresa, configuracao, vendedor, responsavel, clientes, troca_dim: 'checked' })
+                                                       }).catch((err) => {
+                                                            req.flash('error_msg', 'Houve um erro ao encontrar um cliente.')
+                                                            res.redirect('/cliente/consulta')
+                                                       })
+                                                  }).catch((err) => {
+                                                       req.flash('error_msg', 'Houve um erro ao encontrar um responsável.')
+                                                       res.redirect('/cliente/consulta')
+                                                  })
+                                             }).catch((err) => {
+                                                  req.flash('error_msg', 'Houve um erro ao encontrar um vendedor.')
+                                                  res.redirect('/configuracao/consultaempresa')
+                                             })
+                                        }).catch((err) => {
+                                             req.flash('error_msg', 'Houve um erro ao encontrar a configuração.')
+                                             res.redirect('/configuracao/consultaempresa')
+                                        })
+
+                                   }).catch((err) => {
+                                        req.flash('error_msg', 'houve um erro ao encontrar a empresa.')
+                                        res.redirect('/configuracao/consultaempresa')
+                                   })
+                              })
+                         } else {
+                              console.log('novo projeto')
+                              const novo_projeto = {
+                                   dimensionamento: dimensionamento._id,
+                                   user: _id
+                              }
+                              new Projeto(novo_projeto).save().then(() => {
+                                   Projeto.findOne().sort({ field: 'asc', _id: -1 }).lean().then((projeto) => {
+                                        Empresa.find({ user: _id }).lean().then((empresa) => {
+                                             Configuracao.find({ user: _id }).lean().then((configuracao) => {
+                                                  Pessoa.find({ ehVendedor: true, user: _id }).lean().then((vendedor) => {
+                                                       Pessoa.find({ user: _id, funges: 'checked' }).lean().then((responsavel) => {
+                                                            Cliente.find({ user: _id, sissolar: 'checked' }).lean().then((clientes) => {
+                                                                 sucesso.push({ texto: 'Dimensionamento realizado com sucesso!' })
+                                                                 res.render('projeto/addprojeto', { projeto, dimensionamento, sucesso, empresa, configuracao, vendedor, responsavel, clientes, troca_dim: 'checked' })
+                                                            }).catch((err) => {
+                                                                 req.flash('error_msg', 'Houve um erro ao encontrar um cliente.')
+                                                                 res.redirect('/cliente/consulta')
+                                                            })
+                                                       }).catch((err) => {
+                                                            req.flash('error_msg', 'Houve um erro ao encontrar um responsável.')
+                                                            res.redirect('/cliente/consulta')
+                                                       })
+                                                  }).catch((err) => {
+                                                       req.flash('error_msg', 'Houve um erro ao encontrar um vendedor.')
+                                                       res.redirect('/configuracao/consultaempresa')
+                                                  })
+                                             }).catch((err) => {
+                                                  req.flash('error_msg', 'Houve um erro ao encontrar a configuração.')
+                                                  res.redirect('/configuracao/consultaempresa')
+                                             })
+
+                                        }).catch((err) => {
+                                             req.flash('error_msg', 'Houve um erro ao encontrar a empresa.')
+                                             res.redirect('/configuracao/consultaempresa')
+                                        })
+                                   }).catch((err) => {
+                                        req.flash('error_msg', 'Houve um erro ao encontrar o projeto.')
+                                        res.redirect('/configuracao/consultaempresa')
+                                   })
+                              })
+                         }
+                    }).catch((err) => {
+                         req.flash('error_msg', 'Houve uma falha ao buscar o dimensionemnto.')
+                         res.redirect('/menu')
+                    })
+               }).catch((err) => {
+                    req.flash('error_msg', 'Houve uma falha ao buscar o projeto.')
+                    res.redirect('/menu')
+               })
+          }).catch((err) => {
+               req.flash('error_msg', 'Houve uma falha ao salvar o dimensionemnto.')
+               res.redirect('/menu')
+          })
      })
 })
 
@@ -128,7 +362,7 @@ router.get('/realizar/:id', ehAdmin, (req, res) => {
                          } else {
                               varCP = true
                          }
-                         var varTotalImposto = parseFloat(realizado.totalImposto) - parseFloat(projeto.totalImposto).toFixed(2)
+                         var varTotalImposto = (parseFloat(realizado.totalImposto) - parseFloat(projeto.totalImposto)).toFixed(2)
                          if (varTotalImposto > 1) {
                               varTI = true
                          } else {
@@ -171,29 +405,28 @@ router.get('/novo', ehAdmin, (req, res) => {
                Pessoa.find({ ehVendedor: true, user: _id }).lean().then((vendedor) => {
                     Pessoa.find({ user: _id, funges: 'checked' }).lean().then((responsavel) => {
                          Cliente.find({ user: _id, sissolar: 'checked' }).lean().then((clientes) => {
-                              res.render("projeto/addprojeto", { empresa, configuracao, responsavel, vendedor, clientes })
+                              res.render("projeto/addprojeto", { empresa, configuracao, responsavel, vendedor, clientes, troca_dim: 'checked' })
                          }).catch((err) => {
                               req.flash('error_msg', 'Houve um erro ao encontrar um cliente.')
-                              res.redirect('/cliente/consulta')
+                              res.redirect('/projeto/novo')
                          })
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve um erro ao encontrar um responsável.')
-                         res.redirect('/cliente/consulta')
+                         res.redirect('/projeto/novo')
                     })
                }).catch((err) => {
                     req.flash('error_msg', 'Houve um erro ao encontrar um vendedor.')
-                    res.redirect('/configuracao/consultaempresa')
+                    res.redirect('/projeto/novo')
                })
           }).catch((err) => {
                req.flash('error_msg', 'Houve um erro ao encontrar a configuração.')
-               res.redirect('/configuracao/consultaempresa')
+               res.redirect('/projeto/novo')
           })
 
      }).catch((err) => {
           req.flash('error_msg', 'houve um erro ao encontrar a empresa.')
-          res.redirect('/configuracao/consultaempresa')
+          res.redirect('/projeto/novo')
      })
-
 })
 
 router.get('/direto/:id', ehAdmin, (req, res) => {
@@ -351,8 +584,13 @@ router.get('/remover/:id', ehAdmin, (req, res) => {
                          Realizado.findOneAndRemove({ projeto: req.params.id }).then(() => {
                               Equipe.findOneAndRemove({ projeto: req.params.id }).then(() => {
                                    Cronograma.findOneAndRemove({ projeto: req.params.id }).then(() => {
-                                        req.flash('success_msg', 'Projeto removido com sucesso')
-                                        res.redirect('/projeto/consulta')
+                                        Dimensionamento.findOneAndRemove({ _id: projeto.dimensionamento }).then(() => {
+                                             req.flash('success_msg', 'Projeto removido com sucesso')
+                                             res.redirect('/projeto/consulta')
+                                        }).catch(() => {
+                                             req.flash('error_msg', 'Não foi possível remover o dimensionamento do projeto.')
+                                             res.redirect('/projeto/consulta')
+                                        })
                                    }).catch(() => {
                                         req.flash('error_msg', 'Não foi possível remover o cronograma do projeto.')
                                         res.redirect('/projeto/consulta')
@@ -397,7 +635,7 @@ router.post("/novo", ehAdmin, (req, res) => {
      var vistoria = 'enabled'
      var alocacao = 'enabled'
      var aquisicao = 'enabled'
-     var mostraHora = false     
+     var mostraHora = false
 
      //Validação se o projeto já existe
      var nome = req.body.nome
@@ -409,7 +647,8 @@ router.post("/novo", ehAdmin, (req, res) => {
                res.redirect('/projeto/novo')
           }
      }).catch(() => {
-          var erros = ''
+          var erros = []
+          var erros_semdim = ''
           var sucesso = []
           var vlrequ = 0
           var vlrkit = 0
@@ -739,15 +978,65 @@ router.post("/novo", ehAdmin, (req, res) => {
           //console.log(req.body.dataini)
           //------------------------------------------------------------------
           if (req.body.dataini == '' || req.body.dataprev == '') {
-               erros = erros + 'É necessário informar as data de inicio e de previsão de entrega do projeto.'
+               erros.push({ texto: 'É necessário informar as data de inicio e de previsão de entrega do projeto.' })
+               erros_semdim = erros_semdim + 'É necessário informar as data de inicio e de previsão de entrega do projeto.'
           }
+          console.log('req.body.id_dimensionamento=>' + req.body.id_dime)
+          if (!req.body.id_dime) {
+               if (validaCampos(req.body.potencia).length > 0 || validaCampos(req.body.nome).length > 0) {
+                    erros.push({ texto: 'O preenchimento dos campos de nome e potencia são obrigatórios.' })
+                    erros_semdim = erros_semdim + 'O preenchimento dos campos de nome e potencia são obrigatórios.'
+               }
+          }
+          console.log('erros=>' + erros)
+          if (erros.length > 0) {
+               console.log('id_prj=>' + req.body.id_prj)
+               console.log('id_dime=>' + req.body.id_dime)
+               if (req.body.id_dime != '' && req.body.id_prj != '') {
+                    console.log('Já tem dimensionamento')
+                    Projeto.findOne({ _id: req.body.id_prj }).lean().then((projeto) => {
+                         console.log('projeto=>' + projeto)
+                         Dimensionamento.findOne({ _id: req.body.id_dime }).lean().then((dimensionamento) => {
+                              console.log('dimensionamento=>' + dimensionamento)
+                              Empresa.find({ user: _id }).lean().then((empresa) => {
+                                   Configuracao.find({ user: _id }).lean().then((configuracao) => {
+                                        Pessoa.find({ ehVendedor: true, user: _id }).lean().then((vendedor) => {
+                                             Pessoa.find({ user: _id, funges: 'checked' }).lean().then((responsavel) => {
+                                                  Cliente.find({ user: _id, sissolar: 'checked' }).lean().then((clientes) => {
+                                                       res.render("projeto/addprojeto", { erros, empresa, projeto, dimensionamento, configuracao, responsavel, vendedor, clientes, troca_dim: 'checked' })
+                                                  }).catch((err) => {
+                                                       req.flash('error_msg', 'Houve um erro ao encontrar o cliente.')
+                                                       res.redirect('/projeto/novo')
+                                                  })
+                                             }).catch((err) => {
+                                                  req.flash('error_msg', 'Houve um erro ao encontrar um responsável.')
+                                                  res.redirect('/projeto/novo')
+                                             })
+                                        }).catch((err) => {
+                                             req.flash('error_msg', 'Houve um erro ao encontrar um vendedor.')
+                                             res.redirect('/projeto/novo')
+                                        })
+                                   }).catch((err) => {
+                                        req.flash('error_msg', 'Houve um erro ao encontrar a configuração.')
+                                        res.redirect('/projeto/novo')
+                                   })
 
-          if (validaCampos(req.body.potencia).length > 0 || validaCampos(req.body.nome).length > 0) {
-               erros = erros + 'O preenchimento dos campos de nome e potencia são obrigatórios.'
-          }
-          if (erros != '') {
-               req.flash('erros_msg', erros)
-               res.redirect('/projeto/novo')
+                              }).catch((err) => {
+                                   req.flash('error_msg', 'houve um erro ao encontrar a empresa.')
+                                   res.redirect('/projeto/novo')
+                              })
+                         }).catch((err) => {
+                              req.flash('error_msg', 'Houve um erro interno<dimensionamento>.')
+                              res.redirect('/projeto/novo')
+                         })
+                    }).catch((err) => {
+                         req.flash('error_msg', 'Houve um erro interno<dimensionamento>.')
+                         res.redirect('/projeto/novo')
+                    })
+               } else {
+                    req.flash('error_msg', erros_semdim)
+                    res.redirect('/projeto/novo')
+               }
 
           } else {
                //Define variável booleana de acordo com o tipo do custo
@@ -865,258 +1154,289 @@ router.post("/novo", ehAdmin, (req, res) => {
                                    vistoria = 'disabled'
                                    alocacao = 'disabled'
                                    aquisicao = 'disabled'
-                                   mostraHora = false                                   
-                              }
-                              const projeto = {
-                                   user: _id,
-                                   nome: req.body.nome,
-                                   nomecliente: cliente.nome,
-                                   configuracao: req.body.configuracao,
-                                   markup: config.markup,
-                                   requisitos: req.body.requisitos,
-                                   grupoUsina: req.body.grupoUsina,
-                                   tipoConexao: req.body.tipoConexao,
-                                   classUsina: req.body.classUsina,
-                                   tipoUsina: req.body.tipoUsina,
-                                   tipoCustoGes: tipoCustoGes,
-                                   tipoCustoPro: tipoCustoPro,
-                                   tipoCustoIns: tipoCustoIns,
-                                   cidade: cidade,
-                                   uf: uf,
-                                   valor: valorProjeto,
-                                   vlrnormal: valorProjeto,
-                                   data: dia + '/' + mes + '/' + ano,
-                                   datareg: datareg,
-                                   potencia: req.body.potencia,
-                                   ehDireto: tipoEntrada,
-                                   vlrequ: vlrequ,
-                                   vlrkit: vlrkit,
-                                   fatequ: fatequ,
-                                   vlrNFS: vlrNFS,
-                                   percom: percom,
-                                   vendedor: req.body.vendedor,
-                                   empresa: req.body.empresa,
-                                   cliente: req.body.cliente,
-                                   temCercamento: cercamento,
-                                   temCentral: central,
-                                   temPosteCond: poste,
-                                   temEstSolo: estsolo,
-                                   temArmazenamento: armazenamento,
-                                   temPainel: painel,
-                                   premissas: req.body.premissas,
-                                   vrskwp: (parseFloat(valorProjeto) / parseFloat(req.body.potencia)).toFixed(2),
-                                   dataini: req.body.dataini,
-                                   valDataIni: req.body.valDataIni,
-                                   dataprev: req.body.dataprev,
-                                   valDataPrev: req.body.valDataPrev,
-                                   dataord: req.body.dataord,
-                                   foiRealizado: false,
-                                   executando: false,
-                                   parado: false,
-                                   orcado: true,
+                                   mostraHora = false
                               }
 
-                              new Projeto(projeto).save().then(() => {
+                              console.log('req.body.id_prj=>' + req.body.id_prj)
 
-                                   sucesso.push({ texto: 'Projeto criado com sucesso' })
-                                   //console.log('projeto criado com sucesso')
+                              Projeto.find({ user: _id }).then((exclui_projeto) => {
 
-                                   Projeto.findOne({ user: _id }).sort({ field: 'asc', _id: -1 }).lean().then((projeto) => {
-                                        Empresa.findOne({ _id: projeto.empresa }).lean().then((rp) => {
-                                             //Busca instalador par listar
-                                             Pessoa.find({ funins: 'checked', user: _id }).lean().then((instalador) => {
-                                                  //Busca projetista para listar                         
-                                                  Pessoa.find({ funpro: 'checked', user: _id }).lean().then((projetista) => {
-                                                       Pessoa.find({ vendedor: true, user: _id }).lean().then((vendedor) => {
+                                   for (var i = 0; i < exclui_projeto.length; i++) {
+                                        if (exclui_projeto._id == req.body.id_prj) {
+                                             req.exclui_projeto.remove()
+                                        }
+                                   }
 
-                                                            //console.log('projeto=>' + projeto._id)
-                                                            //console.log('vlrTotal=>' + vlrequ)
-                                                            //console.log('checkUni=>' + checkUni)
-                                                            //console.log('unidadeEqu=>' + unidadeEqu)
-                                                            //console.log('unidadeMod=>' + unidadeMod)
-                                                            //console.log('unidadeInv=>' + unidadeInv)
-                                                            //console.log('unidadeEst=>' + unidadeEst)
-                                                            //console.log('unidadeCab=>' + unidadeCab)
-                                                            //console.log('unidadeDis=>' + unidadeDis)
-                                                            //console.log('unidadeDPS=>' + unidadeDPS)
-                                                            //console.log('unidadeSB=>' + unidadeSB)
-                                                            //console.log('unidadeCer=>' + unidadeCer)
-                                                            //console.log('unidadeCen=>' + unidadeCen)
-                                                            //console.log('unidadePos=>' + unidadePos)
-                                                            //console.log('unidadeOcp=>' + unidadeOcp)
-                                                            //console.log('vlrUniEqu=>' + vlrUniEqu)
-                                                            //console.log('vlrUniMod=>' + vlrUniMod)
-                                                            //console.log('vlrUniInv=>' + vlrUniInv)
-                                                            //console.log('vlrUniEst=>' + vlrUniEst)
-                                                            //console.log('vlrUniCab=>' + vlrUniCab)
-                                                            //console.log('vlrUniDis=>' + vlrUniDis)
-                                                            //console.log('vlrUniDPS=>' + vlrUniDPS)
-                                                            //console.log('vlrUniSB=>' + vlrUniSB)
-                                                            //console.log('vlrUniCer=>' + vlrUniCer)
-                                                            //console.log('vlrUniCen=>' + vlrUniCen)
-                                                            //console.log('vlrUniPos=>' + vlrUniPos)
-                                                            //console.log('vlrUniOcp=>' + vlrUniOcp)
-                                                            //console.log('valorEqu=>' + valorEqu)
-                                                            //console.log('valorMod=>' + valorMod)
-                                                            //console.log('valorInv=>' + valorInv)
-                                                            //console.log('valorEst=>' + valorEst)
-                                                            //console.log('valorCim=>' + valorCim)
-                                                            //console.log('valorCab=>' + valorCab)
-                                                            //console.log('valorDisCC=>' + valorDisCC)
-                                                            //console.log('valorDPSCC=>' + valorDPSCC)
-                                                            //console.log('valorDisCA=>' + valorDisCA)
-                                                            //console.log('valorDPSCA=>' + valorDPSCA)                                                       
-                                                            //console.log('valorSB=>' + valorSB)
-                                                            //console.log('valorCCA=>' + valorCCA)
-                                                            //console.log('valorCer=>' + valorCer)
-                                                            //console.log('valorCen=>' + valorCen)
-                                                            //console.log('valorPos=>' + valorPos)
-                                                            //console.log('valorOcp=>' + valorOcp)
+                                   var potencia
+                                   var dime
+                                   var corpo
+                                   var projeto
+                                   if (req.body.potencia_dime == '') {
+                                        potencia = req.body.potencia
+                                   } else {
+                                        potencia = req.body.potencia_dime
+                                   }
 
-                                                            const detalhado = {
-                                                                 projeto: projeto._id,
-                                                                 vlrTotal: vlrequ,
-                                                                 checkUni: checkUni,
-                                                                 unidadeEqu: unidadeEqu,
-                                                                 unidadeMod: unidadeMod,
-                                                                 unidadeInv: unidadeInv,
-                                                                 unidadeEst: unidadeEst,
-                                                                 unidadeCim: unidadeCim,
-                                                                 unidadeCab: unidadeCab,
-                                                                 unidadeEbt: unidadeEbt,
-                                                                 unidadeDisCC: unidadeDisCC,
-                                                                 unidadeDPSCC: unidadeDPSCC,
-                                                                 unidadeDisCA: unidadeDisCA,
-                                                                 unidadeDPSCA: unidadeDPSCA,
-                                                                 unidadeSB: unidadeSB,
-                                                                 unidadeCCA: unidadeCCA,
-                                                                 unidadeCer: unidadeCer,
-                                                                 unidadeCen: unidadeCen,
-                                                                 unidadePos: unidadePos,
-                                                                 unidadeOcp: unidadeOcp,
-                                                                 vlrUniEqu: vlrUniEqu,
-                                                                 vlrUniMod: vlrUniMod,
-                                                                 vlrUniInv: vlrUniInv,
-                                                                 vlrUniEst: vlrUniEst,
-                                                                 vlrUniCim: vlrUniCim,
-                                                                 vlrUniCab: vlrUniCab,
-                                                                 vlrUniEbt: vlrUniEbt,
-                                                                 vlrUniDisCC: vlrUniDisCC,
-                                                                 vlrUniDPSCC: vlrUniDPSCC,
-                                                                 vlrUniDisCA: vlrUniDisCA,
-                                                                 vlrUniDPSCA: vlrUniDPSCA,
-                                                                 vlrUniSB: vlrUniSB,
-                                                                 vlrUniCCA: vlrUniCCA,
-                                                                 vlrUniCer: vlrUniCer,
-                                                                 vlrUniCen: vlrUniCen,
-                                                                 vlrUniPos: vlrUniPos,
-                                                                 vlrUniOcp: vlrUniOcp,
-                                                                 valorEqu: valorEqu,
-                                                                 valorMod: valorMod,
-                                                                 valorInv: valorInv,
-                                                                 valorEst: valorEst,
-                                                                 valorCim: valorCim,
-                                                                 valorCab: valorCab,
-                                                                 valorEbt: valorEbt,
-                                                                 valorDisCC: valorDisCC,
-                                                                 valorDPSCC: valorDPSCC,
-                                                                 valorDisCA: valorDisCA,
-                                                                 valorDPSCA: valorDPSCA,
-                                                                 valorSB: valorSB,
-                                                                 valorCCA: valorCCA,
-                                                                 valorCer: valorCer,
-                                                                 valorCen: valorCen,
-                                                                 valorPos: valorPos,
-                                                                 valorOcp: valorOcp
-                                                            }
-                                                            new Detalhado(detalhado).save().then(() => {
-                                                                 sucesso.push({ texto: 'Detalhes dos custos orçados lançados com sucesso.' })
-                                                                 var cronograma = {
-                                                                      user: _id,
+                                   console.log('novo projeto')
+                                   console.log('potencia=>' + potencia)
+
+                                   corpo = {
+                                        user: _id,
+                                        nome: req.body.nome,
+                                        nomecliente: cliente.nome,
+                                        configuracao: req.body.configuracao,
+                                        markup: config.markup,
+                                        requisitos: req.body.requisitos,
+                                        grupoUsina: req.body.grupoUsina,
+                                        tipoConexao: req.body.tipoConexao,
+                                        classUsina: req.body.classUsina,
+                                        tipoUsina: req.body.tipoUsina,
+                                        tipoCustoGes: tipoCustoGes,
+                                        tipoCustoPro: tipoCustoPro,
+                                        tipoCustoIns: tipoCustoIns,
+                                        cidade: cidade,
+                                        uf: uf,
+                                        valor: valorProjeto,
+                                        vlrnormal: valorProjeto,
+                                        data: dia + '/' + mes + '/' + ano,
+                                        datareg: datareg,
+                                        potencia: potencia,
+                                        ehDireto: tipoEntrada,
+                                        vlrequ: vlrequ,
+                                        vlrkit: vlrkit,
+                                        fatequ: fatequ,
+                                        vlrNFS: vlrNFS,
+                                        percom: percom,
+                                        vendedor: req.body.vendedor,
+                                        empresa: req.body.empresa,
+                                        cliente: req.body.cliente,
+                                        temCercamento: cercamento,
+                                        temCentral: central,
+                                        temPosteCond: poste,
+                                        temEstSolo: estsolo,
+                                        temArmazenamento: armazenamento,
+                                        temPainel: painel,
+                                        premissas: req.body.premissas,
+                                        vrskwp: (parseFloat(valorProjeto) / parseFloat(potencia)).toFixed(2),
+                                        dataini: req.body.dataini,
+                                        valDataIni: req.body.valDataIni,
+                                        dataprev: req.body.dataprev,
+                                        valDataPrev: req.body.valDataPrev,
+                                        dataord: req.body.dataord,
+                                        foiRealizado: false,
+                                        executando: false,
+                                        parado: false,
+                                        orcado: true,
+                                   }
+                                   if (req.body.id_dime != '') {
+                                        dime = {
+                                             dimensionamento: req.body.id_dime
+                                        }
+                                        projeto = Object.assign(corpo,dime)
+                                   }else{
+                                        projeto = corpo
+                                   }
+
+                                   new Projeto(projeto).save().then(() => {
+
+                                        Projeto.findOne({ user: _id }).sort({ field: 'asc', _id: -1 }).lean().then((projeto) => {
+                                             Empresa.findOne({ _id: projeto.empresa }).lean().then((rp) => {
+                                                  //Busca instalador par listar
+                                                  Pessoa.find({ funins: 'checked', user: _id }).lean().then((instalador) => {
+                                                       //Busca projetista para listar                         
+                                                       Pessoa.find({ funpro: 'checked', user: _id }).lean().then((projetista) => {
+                                                            Pessoa.find({ vendedor: true, user: _id }).lean().then((vendedor) => {
+
+                                                                 //console.log('projeto=>' + projeto._id)
+                                                                 //console.log('vlrTotal=>' + vlrequ)
+                                                                 //console.log('checkUni=>' + checkUni)
+                                                                 //console.log('unidadeEqu=>' + unidadeEqu)
+                                                                 //console.log('unidadeMod=>' + unidadeMod)
+                                                                 //console.log('unidadeInv=>' + unidadeInv)
+                                                                 //console.log('unidadeEst=>' + unidadeEst)
+                                                                 //console.log('unidadeCab=>' + unidadeCab)
+                                                                 //console.log('unidadeDis=>' + unidadeDis)
+                                                                 //console.log('unidadeDPS=>' + unidadeDPS)
+                                                                 //console.log('unidadeSB=>' + unidadeSB)
+                                                                 //console.log('unidadeCer=>' + unidadeCer)
+                                                                 //console.log('unidadeCen=>' + unidadeCen)
+                                                                 //console.log('unidadePos=>' + unidadePos)
+                                                                 //console.log('unidadeOcp=>' + unidadeOcp)
+                                                                 //console.log('vlrUniEqu=>' + vlrUniEqu)
+                                                                 //console.log('vlrUniMod=>' + vlrUniMod)
+                                                                 //console.log('vlrUniInv=>' + vlrUniInv)
+                                                                 //console.log('vlrUniEst=>' + vlrUniEst)
+                                                                 //console.log('vlrUniCab=>' + vlrUniCab)
+                                                                 //console.log('vlrUniDis=>' + vlrUniDis)
+                                                                 //console.log('vlrUniDPS=>' + vlrUniDPS)
+                                                                 //console.log('vlrUniSB=>' + vlrUniSB)
+                                                                 //console.log('vlrUniCer=>' + vlrUniCer)
+                                                                 //console.log('vlrUniCen=>' + vlrUniCen)
+                                                                 //console.log('vlrUniPos=>' + vlrUniPos)
+                                                                 //console.log('vlrUniOcp=>' + vlrUniOcp)
+                                                                 //console.log('valorEqu=>' + valorEqu)
+                                                                 //console.log('valorMod=>' + valorMod)
+                                                                 //console.log('valorInv=>' + valorInv)
+                                                                 //console.log('valorEst=>' + valorEst)
+                                                                 //console.log('valorCim=>' + valorCim)
+                                                                 //console.log('valorCab=>' + valorCab)
+                                                                 //console.log('valorDisCC=>' + valorDisCC)
+                                                                 //console.log('valorDPSCC=>' + valorDPSCC)
+                                                                 //console.log('valorDisCA=>' + valorDisCA)
+                                                                 //console.log('valorDPSCA=>' + valorDPSCA)                                                       
+                                                                 //console.log('valorSB=>' + valorSB)
+                                                                 //console.log('valorCCA=>' + valorCCA)
+                                                                 //console.log('valorCer=>' + valorCer)
+                                                                 //console.log('valorCen=>' + valorCen)
+                                                                 //console.log('valorPos=>' + valorPos)
+                                                                 //console.log('valorOcp=>' + valorOcp)
+
+                                                                 const detalhado = {
                                                                       projeto: projeto._id,
-                                                                      nome: projeto.nome,
-                                                                      dateplaini: req.body.valDataIni,
-                                                                      dateentrega: req.body.valDataPrev,
+                                                                      vlrTotal: vlrequ,
+                                                                      checkUni: checkUni,
+                                                                      unidadeEqu: unidadeEqu,
+                                                                      unidadeMod: unidadeMod,
+                                                                      unidadeInv: unidadeInv,
+                                                                      unidadeEst: unidadeEst,
+                                                                      unidadeCim: unidadeCim,
+                                                                      unidadeCab: unidadeCab,
+                                                                      unidadeEbt: unidadeEbt,
+                                                                      unidadeDisCC: unidadeDisCC,
+                                                                      unidadeDPSCC: unidadeDPSCC,
+                                                                      unidadeDisCA: unidadeDisCA,
+                                                                      unidadeDPSCA: unidadeDPSCA,
+                                                                      unidadeSB: unidadeSB,
+                                                                      unidadeCCA: unidadeCCA,
+                                                                      unidadeCer: unidadeCer,
+                                                                      unidadeCen: unidadeCen,
+                                                                      unidadePos: unidadePos,
+                                                                      unidadeOcp: unidadeOcp,
+                                                                      vlrUniEqu: vlrUniEqu,
+                                                                      vlrUniMod: vlrUniMod,
+                                                                      vlrUniInv: vlrUniInv,
+                                                                      vlrUniEst: vlrUniEst,
+                                                                      vlrUniCim: vlrUniCim,
+                                                                      vlrUniCab: vlrUniCab,
+                                                                      vlrUniEbt: vlrUniEbt,
+                                                                      vlrUniDisCC: vlrUniDisCC,
+                                                                      vlrUniDPSCC: vlrUniDPSCC,
+                                                                      vlrUniDisCA: vlrUniDisCA,
+                                                                      vlrUniDPSCA: vlrUniDPSCA,
+                                                                      vlrUniSB: vlrUniSB,
+                                                                      vlrUniCCA: vlrUniCCA,
+                                                                      vlrUniCer: vlrUniCer,
+                                                                      vlrUniCen: vlrUniCen,
+                                                                      vlrUniPos: vlrUniPos,
+                                                                      vlrUniOcp: vlrUniOcp,
+                                                                      valorEqu: valorEqu,
+                                                                      valorMod: valorMod,
+                                                                      valorInv: valorInv,
+                                                                      valorEst: valorEst,
+                                                                      valorCim: valorCim,
+                                                                      valorCab: valorCab,
+                                                                      valorEbt: valorEbt,
+                                                                      valorDisCC: valorDisCC,
+                                                                      valorDPSCC: valorDPSCC,
+                                                                      valorDisCA: valorDisCA,
+                                                                      valorDPSCA: valorDPSCA,
+                                                                      valorSB: valorSB,
+                                                                      valorCCA: valorCCA,
+                                                                      valorCer: valorCer,
+                                                                      valorCen: valorCen,
+                                                                      valorPos: valorPos,
+                                                                      valorOcp: valorOcp
                                                                  }
-                                                                 new Cronograma(cronograma).save().then(() => {
-                                                                      Configuracao.findOne({ _id: req.body.configuracao }).lean().then((configuracao) => {
-                                                                           Cliente.findOne({ _id: req.body.cliente }).lean().then((cliente) => {
-                                                                                Pessoa.findOne({ _id: req.body.gestor }).lean().then((gestao) => {
-                                                                                     //console.log('salva pessoa')
-                                                                                     new Equipe({
-                                                                                          projeto: projeto._id,
-                                                                                          user: _id,
-                                                                                          nome_projeto: projeto.nome,
-                                                                                     }).save().then(() => {
-                                                                                          var fatura
-                                                                                          if (req.body.checkFatura != null) {
-                                                                                               fatura = 'checked'
-                                                                                          } else {
-                                                                                               fatura = 'uncheked'
-                                                                                          }
+                                                                 new Detalhado(detalhado).save().then(() => {
 
-                                                                                          if (req.body.tipoEntrada == 'Proprio') {
-                                                                                               res.render("projeto/customdo/gestao", {
-                                                                                                    projeto, sucesso, configuracao, gestao, cliente, checkHora,
-                                                                                                    typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
-                                                                                                    vistoria, alocacao, aquisicao
-                                                                                               })
-                                                                                          } else {
-                                                                                               res.render('projeto/custosdiretos', {
-                                                                                                    projeto, sucesso, configuracao, rp, vendedor, instalador, cliente, fatura, checkHora,
-                                                                                                    typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
-                                                                                                    vistoria, alocacao, aquisicao
-                                                                                               })
-                                                                                          }
-                                                                                          //console.log('fatura=>' + fatura)
+                                                                      var cronograma_novo = {
+                                                                           user: _id,
+                                                                           projeto: projeto._id,
+                                                                           nome: projeto.nome,
+                                                                           dateplaini: req.body.valDataIni,
+                                                                           dateentrega: req.body.valDataPrev,
+                                                                      }
+                                                                      new Cronograma(cronograma_novo).save().then(() => {
+                                                                           Configuracao.findOne({ _id: req.body.configuracao }).lean().then((configuracao) => {
+                                                                                Cliente.findOne({ _id: req.body.cliente }).lean().then((cliente) => {
+                                                                                     Pessoa.findOne({ _id: req.body.gestor }).lean().then((gestao) => {
+                                                                                          //console.log('salva pessoa')
+                                                                                          new Equipe({
+                                                                                               projeto: projeto._id,
+                                                                                               user: _id,
+                                                                                               nome_projeto: projeto.nome,
+                                                                                          }).save().then(() => {
+                                                                                               sucesso.push({ texto: 'Projeto criado com sucesso' })
+                                                                                               var fatura
+                                                                                               if (req.body.checkFatura != null) {
+                                                                                                    fatura = 'checked'
+                                                                                               } else {
+                                                                                                    fatura = 'uncheked'
+                                                                                               }
+
+                                                                                               if (req.body.tipoEntrada == 'Proprio') {
+                                                                                                    res.render("projeto/customdo/gestao", {
+                                                                                                         projeto, sucesso, configuracao, gestao, cliente, checkHora,
+                                                                                                         typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
+                                                                                                         vistoria, alocacao, aquisicao, typeDrg, displayDia
+                                                                                                    })
+                                                                                               } else {
+                                                                                                    res.render('projeto/custosdiretos', {
+                                                                                                         projeto, sucesso, configuracao, rp, vendedor, instalador, cliente, fatura, checkHora,
+                                                                                                         typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
+                                                                                                         vistoria, alocacao, aquisicao,
+                                                                                                    })
+                                                                                               }
+                                                                                               //console.log('fatura=>' + fatura)
+                                                                                          }).catch(() => {
+                                                                                               req.flash('error_msg', 'Houve um erro ao salvar a equipe.')
+                                                                                               res.redirect('/menu')
+                                                                                          })
                                                                                      }).catch(() => {
-                                                                                          req.flash('error_msg', 'Houve um erro ao salvar a equipe.')
+                                                                                          req.flash('error_msg', 'Houve um erro ao encontrar o gestor.')
                                                                                           res.redirect('/menu')
                                                                                      })
                                                                                 }).catch(() => {
-                                                                                     req.flash('error_msg', 'Houve um erro ao encontrar o gestor.')
+                                                                                     req.flash('error_msg', 'Houve um erro ao encontrar o cliente.')
                                                                                      res.redirect('/menu')
                                                                                 })
                                                                            }).catch(() => {
-                                                                                req.flash('error_msg', 'Houve um erro ao encontrar o cliente.')
+                                                                                req.flash('error_msg', 'Houve um erro ao encontrar os detalhes de custos do projeto.')
                                                                                 res.redirect('/menu')
                                                                            })
                                                                       }).catch(() => {
-                                                                           req.flash('error_msg', 'Houve um erro ao encontrar os detalhes de custos do projeto.')
+                                                                           req.flash('error_msg', 'Houve um erro ao salvar o cronograma.')
                                                                            res.redirect('/menu')
                                                                       })
                                                                  }).catch(() => {
-                                                                      req.flash('error_msg', 'Houve um erro ao salvar o cronograma.')
+                                                                      req.flash('error_msg', 'Houve um erro ao salvar os detalhes de custos do projeto.')
                                                                       res.redirect('/menu')
                                                                  })
-                                                            }).catch(() => {
-                                                                 req.flash('error_msg', 'Houve um erro ao salvar os detalhes de custos do projeto.')
-                                                                 res.redirect('/menu')
-                                                            })
 
+                                                            }).catch((err) => {
+                                                                 req.flash('error_msg', 'Houve uma falha ao encontrar um vendedor<detalhe>.')
+                                                                 res.redirect('/pessoa/consulta')
+                                                            })
                                                        }).catch((err) => {
-                                                            req.flash('error_msg', 'Houve uma falha ao encontrar um vendedor<detalhe>.')
+                                                            req.flash('error_msg', 'Houve uma falha ao encontrar o instalador.')
                                                             res.redirect('/pessoa/consulta')
                                                        })
                                                   }).catch((err) => {
-                                                       req.flash('error_msg', 'Houve uma falha ao encontrar o instalador.')
-                                                       res.redirect('/pessoa/consulta')
+                                                       req.flash('error_msg', 'Ocorreu um erro interno<Configuracao>.')
+                                                       res.redirect('/menu')
                                                   })
                                              }).catch((err) => {
                                                   req.flash('error_msg', 'Ocorreu um erro interno<Configuracao>.')
                                                   res.redirect('/menu')
                                              })
                                         }).catch((err) => {
-                                             req.flash('error_msg', 'Ocorreu um erro interno<Configuracao>.')
+                                             req.flash('error_msg', 'Nenhum projeto encontrado.')
                                              res.redirect('/menu')
                                         })
-                                   }).catch((err) => {
-                                        req.flash('error_msg', 'Nenhum projeto encontrado.')
+                                   }).catch(() => {
+                                        req.flash('error_msg', 'Houve um erro ao criar o projeto.')
                                         res.redirect('/menu')
                                    })
-                              }).catch(() => {
-                                   req.flash('error_msg', 'Houve um erro ao criar o projeto.')
-                                   res.redirect('/menu')
                               })
                          }).catch((err) => {
                               req.flash('error_msg', 'Houve um erro ao encontrar o cliente.')
@@ -1197,12 +1517,12 @@ router.post('/edicao', ehAdmin, (req, res) => {
 
      } else {
           Projeto.findOne({ _id: req.body.id }).then((projeto) => {
-
+               console.log('req.body.vendedor=>'+req.body.vendedor)
                Pessoa.findOne({ nome: req.body.vendedor }).then((prj_vendedor) => {
-
                     Detalhado.findOne({ projeto: projeto._id }).then((detalhe) => {
-
+                         console.log('projeto._id=>'+projeto._id)
                          Cronograma.findOne({ projeto: projeto._id }).then((cronograma) => {
+                              console.log('encontrou cronograma')
 
                               var sucesso = ''
                               var aviso = ''
@@ -1557,7 +1877,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                               var vlrkit = 0
 
                               var vlrTotal = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorOcp) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos)
-                              //console.log('vlrTotal=>' + vlrTotal)
+                              console.log('vlrTotal=>' + vlrTotal)
 
                               //Valida valor do equipameento
                               if (parseFloat(valorEqu) != 0 || parseFloat(valorMod) != 0) {
@@ -1565,13 +1885,13 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                    vlrequ = vlrTotal
                                    vlrkit = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorOcp)
                               } else {
-                                   //console.log('não tem lançamento manual de kit.')
+                                   console.log('não tem lançamento manual de kit.')
                                    validaequant = parseFloat(projeto.vlrkit) - (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorCim) + parseFloat(detalhe.valorDisCC) + parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDisCA) + parseFloat(detalhe.valorDPSCA) + parseFloat(detalhe.valorSB) + parseFloat(detalhe.valorCCA) + parseFloat(detalhe.valorCab) + parseFloat(detalhe.valorEbt))
-                                   //console.log('validaequant=>' + validaequant)
+                                   console.log('validaequant=>' + validaequant)
                                    validaequfut = parseFloat(req.body.equipamento) - (parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorCab) + parseFloat(valorEbt))
-                                   //console.log('validaequfut=>' + validaequfut)
+                                   console.log('validaequfut=>' + validaequfut)
                                    if (parseFloat(validaequant) != parseFloat(validaequfut)) {
-                                        //console.log('Os valores dos kits são difentes')
+                                        console.log('Os valores dos kits são difentes')
                                         if (req.body.equipamento == projeto.vlrkit) {
                                              vlrequ = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorOcp)
                                              vlrkit = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorCab) + parseFloat(valorEbt)
@@ -1580,7 +1900,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                              vlrkit = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorCab) + parseFloat(valorEbt)
                                         }
                                    } else {
-                                        //console.log('Os valores dos kits são iguais')
+                                        console.log('Os valores dos kits são iguais')
                                         vlrequ = projeto.vlrequ
                                         vlrkit = projeto.vlrkit
                                    }
@@ -1684,7 +2004,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                              mes = dataprev.substring(5, 7)
                                              dia = dataprev.substring(8, 11)
                                              dataprev = ano + mes + dia
-                                             //console.log('dataprev=>' + dataprev)
+                                             console.log('dataprev=>' + dataprev)
                                              //---Validando datas para comparação----//
 
                                              if (parseFloat(datavis) <= parseFloat(dataprev) && req.body.dataprev != '') {
@@ -1723,7 +2043,10 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                    vendedor = projeto.vendedor
                                    percom = projeto.percom
                               }
-                              //Altera a empresa                          
+                              console.log('vendedor=>'+vendedor)
+                              console.log('percom=>'+percom)
+                              //Altera a empresa 
+                              console.log('checkEmpresa=>'+req.body.checkEmpresa)                         
                               if (req.body.checkEmpresa != null) {
                                    projeto.empresa = req.body.empresa
                               }
@@ -1747,7 +2070,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                               }
 
                               if (req.body.valor != projeto.valor) {
-                                   projeto.markup = (((parseFloat(req.body.valor) - parseFloat(vlrkit) - parseFloat(projeto.custoPlano) - parseFloat(projeto.desAdm) + parseFloat(projeto.reserva)) / parseFloat(req.body.valor)) * 100).toFixed(2)
+                                   projeto.markup = (((parseFloat(req.body.valor) - parseFloat(vlrkit) - parseFloat(projeto.custoPlano) - parseFloat(projeto.desAdm) + parseFloat(projeto.reserva)) / parseFloat(req.body.valor)) * 100).toFixed(4)
                               }
 
 
@@ -2147,6 +2470,15 @@ router.post('/direto', ehAdmin, (req, res) => {
                                         var custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
                                         projeto.custoTotal = custoTotal.toFixed(2)
 
+                                        var desAdm = 0
+                                        if (parseFloat(empresa_prj.desadm) > 0) {
+                                             if (empresa_prj.tipodesp == 'Percentual') {
+                                                  desAdm = (parseFloat(empresa_prj.desadm) * (parseFloat(empresa_prj.perdes) / 100)).toFixed(2)
+                                             } else {
+                                                  desAdm = ((parseFloat(empresa_prj.desadm) / parseFloat(empresa_prj.estkwp)) * parseFloat(projeto.potencia)).toFixed(2)
+                                             }
+                                        }                                       
+
                                         //console.log('custoTotal=>'+custoTotal)
                                         //Definindo o imposto ISS
                                         //console.log('empresa_prj.alqNFS=>' + empresa_prj.alqNFS)
@@ -2166,14 +2498,14 @@ router.post('/direto', ehAdmin, (req, res) => {
                                                   vlrNFS = (parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)).toFixed(2)
                                                   impNFS = (parseFloat(vlrNFS) * (parseFloat(empresa_prj.alqNFS) / 100)).toFixed(2)
                                              }
-                                             vlrMarkup = (parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva)) / (1 - (parseFloat(config.markup) / 100))
+                                             vlrMarkup = ((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva)) / (1 -(parseFloat(req.body.markup))/ 100)).toFixed(2)
                                              projeto.valor = parseFloat(vlrMarkup).toFixed(2)
                                              projeto.markup = config.markup
                                              prjValor = vlrMarkup
                                         } else {
                                              //console.log('custoTotal=>'+custoTotal)
                                              //console.log('req.body.markup=>'+req.body.markup)
-                                             vlrMarkup = ((parseFloat(custoTotal) + parseFloat(desAdm)- parseFloat(reserva)) / (1 - (parseFloat(req.body.markup) / 100))).toFixed(2)
+                                             vlrMarkup = ((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva)) / (1 -(parseFloat(req.body.markup))/100)).toFixed(2)
                                              //console.log('vlrMarkup=>' + vlrMarkup)
                                              if (req.body.checkFatura != null) {
                                                   fatequ = true
@@ -2223,15 +2555,8 @@ router.post('/direto', ehAdmin, (req, res) => {
                                         projeto.lucroBruto = parseFloat(lucroBruto).toFixed(2)
                                         //console.log('lucroBruto=>'+lucroBruto)
 
-                                        var desAdm = 0
                                         var lbaimp = 0
                                         if (parseFloat(empresa_prj.desadm) > 0) {
-                                             if (empresa_prj.tipodesp == 'Percentual') {
-                                                  desAdm = (parseFloat(empresa_prj.desadm) * (parseFloat(empresa_prj.perdes) / 100)).toFixed(2)
-                                             } else {
-                                                  desAdm = ((parseFloat(empresa_prj.desadm) / parseFloat(empresa_prj.estkwp)) * parseFloat(projeto.potencia)).toFixed(2)
-                                             }
-                                             //console.log('desAdm=>' + desAdm)
                                              lbaimp = parseFloat(lucroBruto) - parseFloat(custoPlano) - parseFloat(desAdm)
                                              projeto.desAdm = parseFloat(desAdm).toFixed(2)
                                         } else {

@@ -3,6 +3,9 @@
         font-size: 25px;
         color: rgb(2, 38, 78);
     }
+    label {
+        font-size: 10px;
+    }
 </style>
 
 <script>
@@ -77,6 +80,20 @@
     //Slecionar estados e cidades
     window.onload = function () {
 
+        var dataini = document.getElementById('valDataIni')
+        var hoje = new Date()
+        var dia = hoje.getDate() 
+        if (parseFloat(dia) < 10){
+            dia = '0' + dia
+        }
+        var mes = hoje.getMonth() 
+        if (parseFloat(mes) < 10){
+            mes = '0' + mes
+        }
+        var ano = hoje.getFullYear()
+        dia_hoje = ano + '-' + mes + '-' + dia
+        dataini.value = dia_hoje
+
         var estados = document.getElementById('estado');
         var cidades = document.getElementById('cidade');
 
@@ -97,29 +114,53 @@
         });
     };
 
-    function selectEntrada () {
+    function selectEntrada() {
         var tipoEntrada = document.getElementById('tipoEntrada')
         var selectProprio = document.getElementById('selectProprio')
         var selectTerceiro = document.getElementById('selectTerceiro')
-        if (selectProprio.checked){
+        if (selectProprio.checked) {
             tipoEntrada.value = 'Proprio'
-        }else{
+        } else {
             tipoEntrada.value = 'Terceirizado'
         }
     }
 
-    function selectCusto (){
+    function selectCusto() {
         var tipoCusto = document.getElementById('tipoCusto')
         var selectHora = document.getElementById('selectHora')
         var selectDia = document.getElementById('selectDia')
-        if (selectHora.checked){
+        if (selectHora.checked) {
             tipoCusto.value = 'hora'
-        }else{
+        } else {
             tipoCusto.value = 'dia'
-        }        
+        }
+    }
+
+    function dimensionar() {
+        var dimsim = document.getElementById('dimsim')
+        var dimnao = document.getElementById('dimnao')
+        var troc = document.getElementById('troca_dim')
+        if (troca_dim.checked) {
+            dimsim.style.display = 'flex'
+            dimnao.style.display = 'none'
+        } else {
+            dimsim.style.display = 'none'
+            dimnao.style.display = 'flex'
+        }
+    }
+
+    function validaCampos(){
+        var nome = document.getElementById('nome')
+        var equipamento = document.getElementById('equipamento')
+        if (nome.value = ''){
+            alert('Preecher nome do Projeto.')
+        }
+        if (equipamento.value = ''){
+            alert('Preecher o valor do Equipamento.')
+        }
     }
 </script>
-<div class="container mt-4">
+<div class="mt-4" style="padding-left: 50px;padding-right: 50px">
     <form action="/projeto/novo/" method="post">
         <!-- Modal -->
         <div class="modal fade" id="custosModal" tabindex="-1" aria-hidden="true">
@@ -322,81 +363,112 @@
 
         <div class="row">
 
+            <input type='hidden' name='id_prj' value='{{projeto._id}}'>
+            <input type='hidden' name='id_dime' value='{{dimensionamento._id}}'>
+            <input type='hidden' name='potencia_dime' value='{{dimensionamento.potencia}}'>
+
             <label style='font-weight: bold;font-size:20px'> Cadastro de Projeto</label>
             <hr>
 
             <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-5 text-end">
-                        <label for="nome" class="fw-bold col-form-label col-form-label-sm mb-2"> Nome do Projeto:
+                        <div class="row mb-1">
+                            <div class="col-md-10 text-end" style="padding-left: 50%">
+                                <label class="col-form-label col-form-label-sm fw-bold">Dimensionar?</label>
+                            </div>
+                            <div class="col-md-1 mt-1">
+                                <div class="form-check form-switch" onchange="dimensionar()">
+                                    <input name='checkFatura' class="form-check-input" type="checkbox" id='troca_dim' {{troca_dim}}>
+                                </div>
+                            </div>
+                        </div>
+
+                        <label for="empresa" class="fw-bold col-form-label col-form-label-sm mb-1"> Empresa:
                         </label><br>
-                        <label for="empresa" class="fw-bold col-form-label col-form-label-sm mb-2"> Empresa:
+                        <label for="nome" class="fw-bold col-form-label col-form-label-sm mb-1"> Nome do Projeto:
                         </label><br>
-                        <label class="fw-bold col-form-label col-form-label-sm mb-2">Tipo de Entrada:</label><br>                        
-                        <label class="fw-bold col-form-label col-form-label-sm mb-2">Tipo Custo:</label><br> 
+                        <label class="fw-bold col-form-label col-form-label-sm mb-2">Tipo de Entrada:</label><br>
+                        <label class="fw-bold col-form-label col-form-label-sm mb-2">Tipo Custo:</label><br>
                         <label for="cliente" class="fw-bold col-form-label col-form-label-sm mb-2"> Cliente:
                         </label><br>
-                        <label for="uf" class="fw-bold col-form-label col-form-label-sm mb-2"> Estado:
+                        <label for="uf" class="fw-bold col-form-label col-form-label-sm mb-1"> Estado:
                         </label><br>
-                        <label for="cidade" class="fw-bold col-form-label col-form-label-sm mb-2"> Cidade:
+                        <label for="cidade" class="fw-bold col-form-label col-form-label-sm mb-1"> Cidade:
                         </label><br>
-                        <label for="ptnprj" class="fw-bold col-form-label col-form-label-sm mb-2"> Potência do
-                            Projeto:</label><br>
-                        <label for="vendedor" class="fw-bold col-form-label col-form-label-sm mb-2"> Vendedor:
+                        {{!-- <label for="ptnprj" class="fw-bold col-form-label col-form-label-sm mb-2"> Potência do
+                            Projeto:</label><br> --}}
+                        <label for="vendedor" class="fw-bold col-form-label col-form-label-sm mb-1"> Vendedor:
                         </label><br>
-                        <!--<label for="percom" class="fw-bold col-form-label col-form-label-sm mb-2"> Comissão: </label><br>-->                    
-                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Configuração: </label><br>
-                        <label class='col-form-label col-form-label-sm fw-bold mb-2'>Data Inicio Projeto:</label><br>
-                        <label class='col-form-label col-form-label-sm fw-bold mb-2'>Data Previsão de Entrega:</label>
+                        <!--<label for="percom" class="fw-bold col-form-label col-form-label-sm mb-2"> Comissão: </label><br>-->
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Configuração: </label><br>
+                        <label class='col-form-label col-form-label-sm fw-bold mb-1'>Data Inicio Projeto:</label><br>
+                        <label class='col-form-label col-form-label-sm fw-bold mb-1'>Data Previsão de Entrega:</label>
                     </div>
                     <div class="col-md-7">
-                        <input type="text" name="nome" id="nome" class="form-control form-control-sm mb-2">
-                        <select class='form-select form-select-sm' style="margin-bottom: 4%;" name='empresa'>
+                        <div class="row mb-1" id='dimsim' style="display: ;">
+                            <div class="col">
+                                <a href="/projeto/dimensionamento/{{dimensionamento._id}}" class="btn btn-sm btn-primary">Dimensionamento</a>
+                            </div>
+                            <div class="col">
+                                <label class="col-form-label col-form-label-sm fw-bold">Potência:</label>
+                            </div>
+                            <div class="col">
+                                <label class="col-form-label col-form-label-sm">{{projeto.potencia}} kWp</label>
+                            </div>
+                        </div>
+                        <div class="row" id='dimnao' style="display: none">
+                            <input type="number" name="potencia" id="potencia" class="form-control form-control-sm mb-1" style="margin-left: 12px; max-width: 100px;"
+                                placeholder="kWp" aria-placeholder="R$" step='0.010'>
+                        </div>
+
+                        <select class='form-select form-select-sm mb-1' name='empresa'>
                             {{#each empresa}}
                             <option value="{{_id}}">{{nome}}</option>
                             {{else}}
                             <option value=''>Nenhuma empresa cadastrada.</option>
                             {{/each}}
                         </select>
-                        <div class="row mb-2">
+                        <input type="text" name="nome" id="nome" class="form-control form-control-sm mb-2">
+                        <div class="row" >
                             <input type="hidden" name='tipoEntrada' id='tipoEntrada' value=''>
-                            <div class="col-md-6">
+                            <div class="col-md-6 mt-1">
                                 <div class="form-check" onchange="selectEntrada()">
-                                    <input class="form-check-input" type="radio" name="entrada" id="selectProprio">
-                                    <label class="form-check-label" style="font-size: 14px;">
+                                    <input class="form-check-input" style="margin-top: 0px" type="radio" name="entrada" id="selectProprio">
+                                    <label class="form-check-label" style="font-size: 12px;">
                                         Próprio
                                     </label>
                                 </div>
                             </div>
                             <div class="col-md-6" style="padding-left: 12%;">
                                 <div class="form-check" onchange="selectEntrada()">
-                                    <input class="form-check-input" type="radio" name="entrada" id="selectTerceiro">
-                                    <label class="form-check-label" style="font-size: 14px;">
+                                    <input class="form-check-input" style="margin-top: 0px" type="radio" name="entrada" id="selectTerceiro">
+                                    <label class="form-check-label" style="font-size: 12px;">
                                         Terceiro
                                     </label>
                                 </div>
                             </div>
-                        </div>     
-                        <div class="row mb-2" style="margin-top: 4%;">
+                        </div>
+                        <div class="row" style="margin-top: 4%;">
                             <input type="hidden" name='tipoCusto' id='tipoCusto' value=''>
                             <div class="col-md-6">
                                 <div class="form-check" onchange="selectCusto()">
-                                    <input class="form-check-input" type="radio" name="custo" id="selectHora">
-                                    <label class="form-check-label" style="font-size: 14px;">
+                                    <input class="form-check-input" style="margin-top: 0px" type="radio" name="custo" id="selectHora">
+                                    <label class="form-check-label" style="font-size: 12px;">
                                         R$/hora
                                     </label>
                                 </div>
                             </div>
                             <div class="col-md-6" style="padding-left: 12%;">
                                 <div class="form-check" onchange="selectCusto()">
-                                    <input class="form-check-input" type="radio" name="custo" id="selectDia">
-                                    <label class="form-check-label" style="font-size: 14px;">
+                                    <input class="form-check-input" style="margin-top: 0px" type="radio" name="custo" id="selectDia">
+                                    <label class="form-check-label" style="font-size: 12px;">
                                         R$/dia
                                     </label>
                                 </div>
                             </div>
-                        </div>                                                  
-                        <select class='form-select form-select-sm mb-2' style="margin-top: 4%;" name='cliente'>
+                        </div>
+                        <select class='form-select form-select-sm mb-1 mt-1' name='cliente'>
                             {{#each clientes}}
                             <option value="{{_id}}">{{nome}}</option>
                             {{else}}
@@ -404,13 +476,11 @@
                             {{/each}}
                         </select>
                         <!--<input type="text" name="cliente" id="cliente" class="form-control form-control-sm mb-2">-->
-                        <select id="estado" name='uf' class='form-select form-select-sm mb-2'>
+                        <select id="estado" name='uf' class='form-select form-select-sm mb-1'>
                         </select>
-                        <select id="cidade" name='cidade' class='form-select form-select-sm mb-2'>
+                        <select id="cidade" name='cidade' class='form-select form-select-sm mb-1'>
                         </select>
-                        <input type="number" name="potencia" id="potencia" class="form-control form-control-sm mb-2"
-                            placeholder="kWp" aria-placeholder="R$" step='0.010'>
-                        <select name='vendedor' class="form-select form-select-sm mb-2">
+                        <select name='vendedor' class="form-select form-select-sm mb-1">
                             {{#each vendedor}}
                             <option value="{{_id}}">{{nome}}</option>
                             {{else}}
@@ -422,7 +492,7 @@
                             placeholder="%">     
                         -->
 
-                        <select name='configuracao' class="form-select form-select-sm mb-2">
+                        <select name='configuracao' class="form-select form-select-sm mb-1">
                             {{#each configuracao}}
                             <option value="{{_id}}">{{slug}}</option>
                             {{else}}
@@ -435,7 +505,7 @@
                         <input class='form-control form-control-sm' type='date' name='valDataPrev' id='valDataPrev'
                             placeholder='__/__/____' autocomplete="off" maxlength="10" onmouseout="mascara_dataprev()">
                         -->
-                        <input class='form-control form-control-sm mb-2' type='date' name='valDataIni' id='valDataIni'
+                        <input class='form-control form-control-sm mb-1' type='date' name='valDataIni' id='valDataIni'
                             onchange="mascara_dataini()">
                         <input class='form-control form-control-sm' type='date' name='valDataPrev' id='valDataPrev'
                             onchange="mascara_dataprev()">
@@ -460,17 +530,19 @@
                         <input type="number" name="equipamento" id="equipamento"
                             class="form-control form-control-sm mb-2" placeholder="R$" aria-placeholder="R$">
                     </div>
-                    <div class="col-md-4 text-center mt-2"
-                        style="border-left: 1px solid rgba(70,70,70,0.2);margin-bottom: 5px;">
-                        <label class="fw-bold col-form-label col-form-label-sm"> Faturar Material?
-                        </label>
-                        <div class="form-check form-switch" style="margin-left: 60px;">
+                    <div class="col-md-4 text-center mt-2"  style="border-left: 1px solid rgba(70,70,70,0.2);margin-bottom: 5px;">
+                        <div class="row">
+                            <div class="col-md-8">
+                        <label class="fw-bold col-form-label col-form-label-sm"> Faturar Material?</label>
+                            </div>
+                            <div class="col">
+                        <div class="form-check form-switch">
                             <input name='checkFatura' class="form-check-input" type="checkbox">
                         </div>
-                        <div class='row'>
+                            </div>
+                        </div>
                             <a class="btn btn-sm btn-primary mb-1" data-bs-toggle="modal"
                                 data-bs-target="#custosModal"><i class='bi bi-list-ul'></i> Detalhar Equipamento</a>
-                        </div>
                     </div>
                     <div class='text-center'>
                         <label class='fw-bold col-form-label col-form-label-sm'>Complementos</label>
@@ -620,7 +692,10 @@
                 </div>
                 -->
                 <div class="row mt-1">
-                    <button type='submit' class='btn btn-success'> <i class='bi bi-layers'></i> Ir para Custos</button>
+                    <div class="btn-group mb-1 col-12 mx-auto">
+                        <button type='submit' class='btn btn-sm btn-success'> <i class='bi bi-layers'></i> Ir para
+                            Custos</button>
+                    </div>
                 </div>
             </div>
         </div>
