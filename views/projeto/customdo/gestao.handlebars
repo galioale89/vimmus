@@ -1,39 +1,9 @@
-<style>
-    .botao-menu {
-        background-color: rgb(40, 55, 86);
-        border: white solid 1px;
-        border-radius: 5px;
-        color: white;
-    }
-
-    .botao-menu:hover {
-        background-color: rgb(40, 55, 86);
-        border: white 1px solid;
-        border-radius: 5px;
-        font-weight: 600;
-        color: white;
-    }
-
-    .ativo {
-        background-color: rgb(10, 30, 68);
-    }
-
-    .caixa {
-        border: rgba(200, 200, 200, 0.8) 1px solid;
-        width: fit-content;
-        height: 300px;
-        border-radius: 5px;
-        padding-left: 10px;
-        padding-right: 20px;
-        box-shadow: 1px 4px 5px rgba(26, 25, 25, 0.77);
-    }
-</style>
-
 <script>
     function selecionar() {
         var selectHora = document.getElementById('selectHora')
         var selectDia = document.getElementById('selectDia')
         var selecionado = document.getElementById('selecionado')
+        var lblDes = document.getElementById('lblDes')
         var vlrhrg = document.getElementById('vlrhrg')
         var vlrdrg = document.getElementById('vlrdrg')
         var hrstrb = document.getElementById('hrstrb')
@@ -60,6 +30,7 @@
             comunicacao.disabled= false
             alocacao.disabled= false
             aquisicao.disabled= false
+            lblDes.innerHTML = 'Horas:'
         } else {
             selecionado.value = 'dia'
             vlrdrg.type = 'text'
@@ -73,7 +44,8 @@
             vistoria.disabled= true
             comunicacao.disabled= true
             alocacao.disabled= true
-            aquisicao.disabled= true            
+            aquisicao.disabled= true  
+            lblDes.innerHTML = 'Dias:'          
         }
     }
 </script>
@@ -110,21 +82,21 @@
             <div class="col-md-8">
                 <div class="row mt-2">
                     <div class="col-md-2">
-                        <div class="row" style="margin-top: 1%;">
+                        <div class="row" style="margin-top: 4%;">
                             <div class="col-md-6">
                                 <div class="form-check" onchange="selecionar()">
-                                    <input class="form-check-input" type="radio" name="select" id="selectHora"
+                                    <input class="form-check-input" style="margin-top: 0px;" type="radio" name="select" id="selectHora"
                                         {{checkHora}}>
-                                    <label class="form-check-label" style="font-size: 14px;">
+                                    <label class="form-check-label" style="font-size: 12px;">
                                         R$/hora
                                     </label>
                                 </div>
                             </div>
                             <div class="col-md-6" style="padding-left: 12%;">
                                 <div class="form-check" onchange="selecionar()">
-                                    <input class="form-check-input" type="radio" name="select" id="selectDia"
+                                    <input class="form-check-input" style="margin-top: 0px;" type="radio" name="select" id="selectDia"
                                         {{checkDia}}>
-                                    <label class="form-check-label" style="font-size: 14px;">
+                                    <label class="form-check-label" style="font-size: 12px;">
                                         R$/dia
                                     </label>
                                 </div>
@@ -138,7 +110,7 @@
                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="{{typeDrg}}" name="vlrdrg"
                             id='vlrdrg' value='{{#if projeto.vlrdrg}}{{projeto.vlrdrg}}{{else}}{{configuracao.vlrdrg}}{{/if}}' class='form-control form-control-sm'>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 mt-1" style="padding-left: 18px;">
                         <label class='col-form-label col-form-label-sm fw-bold' style="display: {{displayTda}};" id='displayTda'>Total de dias das atividades:</label>
                     </div>
                     <div class="col-md-1">
@@ -284,7 +256,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <label for="aquisicao"
-                                            class="fw-bold  col-form-label col-form-label-sm">Aquisições
+                                            class="fw-bold col-form-label col-form-label-sm">Aquisições
                                         </label>
                                         <div class="input-group input-group-sm mb-1">
                                             <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
@@ -312,16 +284,13 @@
                         <label class='col-form-label col-form-label-sm fw-bold'>Deslocamento</label>
                     </div>
                     <div class="col-md-1 text-end">
-                        <label class='col-form-label col-form-label-sm fw-bold'>Horas:</label>
+                        <label class='col-form-label col-form-label-sm fw-bold' id='lblDes'>{{lblDes}}</label>
                     </div>
                     <div class="col-md-2">
-                        <input class='form-control form-control-sm' value='{{hrsDesGesF}}'>
+                        <input class='form-control form-control-sm' name='desGes' value='{{projeto.desGes}}'>
                     </div>
-                    <div class="col-md-1 text-end">
-                        <label class='col-form-label col-form-label-sm fw-bold'>Total:</label>
-                    </div>
-                    <div class="col-md-2">
-                        <input class='form-control form-control-sm' value='{{totDesGes}}'>
+                    <div class="col-md-4 text-start">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Total R$ {{projeto.vlrDge}}</label>
                     </div>
                 </div>
             </div>
@@ -330,7 +299,7 @@
                     style='width: 100%;' name="aplicar"> <i class="bi bi-check-circle"></i> Aplicar</button>
 
                 <div class="caixa text-center mt-2">
-                    <h4 style="margin-top: 35px;"> Totais </h4>
+                    <label style="margin-top: 35px;font-size: 20px;font-weight: 600;"> Totais </label>
                     <hr>
                     <div class="row">
                         <div class="col-md-6">

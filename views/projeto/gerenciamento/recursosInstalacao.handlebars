@@ -52,47 +52,47 @@
         <input type='hidden' name='id' value='{{projeto._id}}' />
         <div class="row mt-4">
             <div class="col">
-                <a class='btn btn-secondary' style="padding-top: 30px;padding-bottom: 30px;margin-left: 10px;"
+                <a class='btn btn-md btn-secondary' style="padding-top: 30px;padding-bottom: 30px;margin-left: 10px;"
                     href='/pessoa/recursosPlanejamento/{{projeto._id}}'>Planejamento</a>
             </div>
             {{#if projeto.temArmazenamento}}
             <div class="col">
-                <a class='btn btn-secondary' style="padding: 18px"
+                <a class='btn btn-md btn-secondary' style="padding: 18px"
                     href='/pessoa/recursosProjetista/{{projeto._id}}'>Projetos Elétricos</a>
             </div>
             {{else}}
             {{#if projeto.temPainel}}
             <div class="col">
-                <a class='btn btn-secondary' style="padding: 18px"
+                <a class='btn btn-md btn-secondary' style="padding: 18px"
                     href='/pessoa/recursosProjetista/{{projeto._id}}'>Projetos Elétricos</a>
             </div>
             {{else}}
             <div class="col">
-                <a class='btn btn-secondary' style="padding-top: 30px;padding-bottom: 30px"
+                <a class='btn btn-md btn-secondary' style="padding-top: 30px;padding-bottom: 30px"
                     href='/pessoa/recursosProjetista/{{projeto._id}}'>Projetos Elétricos</a>
             </div>
             {{/if}}
             {{/if}}
             <div class="col">
-                <a class='btn btn-secondary' style="padding-top: 30px;padding-bottom: 30px"
+                <a class='btn btn-md btn-secondary' style="padding-top: 30px;padding-bottom: 30px"
                     href='/pessoa/recursosAterramento/{{projeto._id}}'>Aterramento</a>
             </div>
 
             <div class="col">
-                <a class='btn btn-secondary' style="padding-top: 18px;padding-bottom: 18px"
+                <a class='btn btn-md btn-secondary' style="padding-top: 18px;padding-bottom: 18px"
                     href='/pessoa/recursosInversores/{{projeto._id}}'>Inversores <br> e String Box</a>
             </div>
 
             {{#if projeto.temArmazenamento}}
             <div class="col">
-                <a class='btn btn-primary' href='/pessoa/recursosInstalacao/{{projeto._id}}'
+                <a class='btn btn-md btn-primary' href='/pessoa/recursosInstalacao/{{projeto._id}}'
                     style="padding-top: 18px;padding-bottom: 18px">Estruturas e
                     Módulos</a>
             </div>
             {{else}}
 
             <div class="col">
-                <a class='btn btn-primary' href='/pessoa/recursosInstalacao/{{projeto._id}}'
+                <a class='btn btn-md btn-primary' href='/pessoa/recursosInstalacao/{{projeto._id}}'
                     style="padding-top: 30px;padding-bottom: 30px">Estruturas e
                     Módulos</a>
             </div>
@@ -100,19 +100,19 @@
             
             {{#if projeto.temArmazenamento}}
             <div class="col">
-                <a class='btn btn-secondary' href='/pessoa/recursosArmazenamento/{{projeto._id}}'
+                <a class='btn btn-md btn-secondary' href='/pessoa/recursosArmazenamento/{{projeto._id}}'
                     style="padding: 18px">Estação de Armazenamento</a>
             </div>
             {{/if}}
             {{#if projeto.temPainel}}
             <div class="col">
-                <a class='btn btn-secondary' href='/pessoa/recursosPainel/{{projeto._id}}' style="padding: 18px">Painél
+                <a class='btn btn-md btn-secondary' href='/pessoa/recursosPainel/{{projeto._id}}' style="padding: 18px">Painél
                     Elétrico</a>
             </div>
             {{/if}}
 
             <div class="col-md-1">
-                <a class='btn btn-secondary' href='/pessoa/recursosVistoria/{{projeto._id}}'
+                <a class='btn btn-md btn-secondary' href='/pessoa/recursosVistoria/{{projeto._id}}'
                     style="padding-top: 30px;padding-bottom: 30px">Vistoria</a>
             </div>
 

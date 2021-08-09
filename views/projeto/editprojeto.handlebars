@@ -6,24 +6,6 @@
         background: linear-gradient(135deg, rgb(62, 81, 177), rgb(11, 19, 58, 1), rgb(11, 19, 58, 1));
     }
 
-    .botao-menu {
-        background-color: rgb(40, 55, 86);
-        border: white solid 1px;
-        border-radius: 5px;
-        color: white;
-    }
-
-    .botao-menu:hover {
-        background-color: rgb(40, 55, 86);
-        border: white 1px solid;
-        font-weight: 600;
-        border-radius: 5px;
-        color: white;
-    }
-
-    .ativo {
-        background-color: rgb(10, 30, 68);
-    }
 </style>
 <script>
     function validaDataIns() {
@@ -339,17 +321,12 @@
 
         <div class='btn-group col-12 mx-auto'>
             <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu ativo'> <i
-                    class="bi bi-house"></i>Projeto</a>
-            <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
-                Gestão</a>
-            <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"></i>
-                Projetista</a>
-            <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"></i>
-                Instalação</a>
-            <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                    class="bi bi-puzzle"></i> Gerenciamento</a>
-            <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                    class="bi bi-calculator"></i> Tributos</a>
+                    class="bi bi-house" style="font-size: 14px;vertical-align:text-bottom;"></i> Projeto</a>
+            <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"  style="font-size: 14px;vertical-align:text-bottom;"></i> Gestão</a>
+            <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil" style="font-size: 14px;vertical-align:text-bottom;"></i> Projetista</a>
+            <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools" style="font-size: 14px;vertical-align:text-bottom;"></i> Instalação</a>
+            <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-puzzle" style="font-size: 14px;vertical-align:text-bottom;"></i> Gerenciamento</a>
+            <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-calculator" style="font-size: 14px;vertical-align:text-bottom;"></i> Tributos</a>
         </div>
 
         <div class="row mt-1">

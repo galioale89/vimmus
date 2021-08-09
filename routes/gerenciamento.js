@@ -1709,22 +1709,25 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             var soma
 
                             if (projeto.tipoCustoGes == 'hora') {
-                                plafim = Math.trunc(projeto.trbges / conhrs)
+                                plafim = Math.trunc((parseFloat(projeto.trbges) + parseFloat(projeto.desGes)) / conhrs)
                             } else {
-                                if (projeto.diasGes > 1) {
-                                    plafim = parseFloat(projeto.diasGes) - 1
+                                console.log('projeto.diasGes=>'+projeto.diasGes)
+                                if ((parseFloat(projeto.diasGes) + parseFloat(projeto.desGes)) > 1) {
+                                    console.log('projeto.desGes=>'+projeto.desGes)
+                                    plafim = (parseFloat(projeto.diasGes) + parseFloat(projeto.desGes) + parseFloat(projeto.desGes)) - 1
                                 } else {
                                     plafim = 0
                                 }
                             }
+                            console.log('plafim=>'+plafim)
                             if (projeto.tipoCustoPro == 'hora') {
-                                if ((parseFloat(projeto.trbges) + parseFloat(projeto.trbpro)) > 8) {
-                                    prjfim = Math.round((projeto.trbpro / conhrs), -1)
+                                if ((parseFloat(projeto.trbges) + parseFloat(projeto.desPro) + parseFloat(projeto.trbpro)) > 8) {
+                                    prjfim = Math.round(((projeto.trbpro + parseFloat(projeto.desPro)) / conhrs), -1)
                                 } else {
                                     prjfim = Math.trunc(projeto.trbpro / conhrs)
                                 }
                             } else {
-                                soma = (parseFloat(projeto.diasGes) + parseFloat(projeto.diasPro)).toFixed(2)
+                                soma = (parseFloat(projeto.diasGes) + parseFloat(projeto.desPro) + parseFloat(projeto.diasPro)).toFixed(2)
                                 if (soma > parseFloat(1)) {
                                     aux = Math.trunc(soma)
                                     if (soma >= aux) {
@@ -1740,10 +1743,10 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 }
                             }
                             if (projeto.tipoCustoIns == 'hora') {
-                                if ((parseFloat(projeto.trbpro) + parseFloat(projeto.trbate)) > 8) {
-                                    atefim = Math.round((projeto.trbate / conhrs), -1)
+                                if ((parseFloat(projeto.trbpro) + parseFloat(projeto.desIns) + parseFloat(projeto.trbate)) > 8) {
+                                    atefim = Math.round(((projeto.trbate + parseFloat(projeto.desIns)) / conhrs), -1)
                                 } else {
-                                    atefim = Math.trunc(projeto.trbate / conhrs)
+                                    atefim = Math.trunc((projeto.trbate + parseFloat(projeto.desIns)) / conhrs)
                                 }
                                 if ((parseFloat(projeto.trbpro) + parseFloat(projeto.trbinv)) > 8) {
                                     invfim = Math.round((projeto.trbinv / conhrs), -1)
@@ -1780,11 +1783,11 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                     }
                                 }
                             } else {
-                                soma = (parseFloat(projeto.diasPro) + parseFloat(projeto.diasAte)).toFixed(2)
+                                soma = (parseFloat(projeto.diasPro) + parseFloat(projeto.desIns) + parseFloat(projeto.diasAte)).toFixed(2)
                                 if (soma > 1) {
                                     aux = Math.trunc(soma)
                                     if (soma >= aux) {
-                                        atefim = projeto.diasAte - 1
+                                        atefim = parseFloat(projeto.diasAte) + parseFloat(projeto.desIns) - 1
                                         if ((parseFloat(atefim) < parseFloat(projeto.diasPro)) || (parseFloat(atefim) < parseFloat(projeto.diasAte))) {
                                             atefim = projeto.diasAte
                                         }

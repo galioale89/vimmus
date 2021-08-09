@@ -52,72 +52,72 @@
         <input type='hidden' name='id' value='{{projeto._id}}' />
         <div class="row mt-4">
             <div class="col">
-                <a class='btn btn-secondary' style="padding-top: 30px;padding-bottom: 30px;margin-left: 10px;"
+                <a class='btn btn-md btn-secondary' style="padding-top: 30px;padding-bottom: 30px;margin-left: 10px;"
                     href='/pessoa/recursosPlanejamento/{{projeto._id}}'>Planejamento</a>
             </div>
             {{#if projeto.temArmazenamento}}
             <div class="col">
-                <a class='btn btn-secondary' style="padding: 18px"
+                <a class='btn btn-md btn-secondary' style="padding: 18px"
                     href='/pessoa/recursosProjetista/{{projeto._id}}'>Projetos Elétricos</a>
             </div>
             {{else}}
             {{#if projeto.temPainel}}
             <div class="col">
-                <a class='btn btn-secondary' style="padding: 18px"
+                <a class='btn btn-md btn-secondary' style="padding: 18px"
                     href='/pessoa/recursosProjetista/{{projeto._id}}'>Projetos Elétricos</a>
             </div>
             {{else}}
             <div class="col">
-                <a class='btn btn-secondary' style="padding-top: 30px;padding-bottom: 30px"
+                <a class='btn btn-md btn-secondary' style="padding-top: 30px;padding-bottom: 30px"
                     href='/pessoa/recursosProjetista/{{projeto._id}}'>Projetos Elétricos</a>
             </div>
             {{/if}}
             {{/if}}
             <div class="col">
-                <a class='btn btn-secondary' style="padding-top: 30px;padding-bottom: 30px"
+                <a class='btn btn-md btn-secondary' style="padding-top: 30px;padding-bottom: 30px"
                     href='/pessoa/recursosAterramento/{{projeto._id}}'>Aterramento</a>
             </div>
             
             <div class="col">
-                <a class='btn btn-secondary' style="padding-top: 18px;padding-bottom: 18px"
+                <a class='btn btn-md btn-secondary' style="padding-top: 18px;padding-bottom: 18px"
                     href='/pessoa/recursosInversores/{{projeto._id}}'>Inversores <br> e String Box</a>
             </div>
 
             {{#if projeto.temArmazenamento}}
             <div class="col">
-                <a class='btn btn-secondary' href='/pessoa/recursosInstalacao/{{projeto._id}}'
+                <a class='btn btn-md btn-secondary' href='/pessoa/recursosInstalacao/{{projeto._id}}'
                     style="padding-top: 18px;padding-bottom: 18px">Estruturas e
                     Módulos</a>
             </div>
             {{else}}
             <div class="col">
-                <a class='btn btn-secondary' href='/pessoa/recursosInstalacao/{{projeto._id}}'
+                <a class='btn btn-md btn-secondary' href='/pessoa/recursosInstalacao/{{projeto._id}}'
                     style="padding-top: 30px;padding-bottom: 30px">Estruturas e
                     Módulos</a>
             </div>
             {{/if}}
             {{#if projeto.temArmazenamento}}
             <div class="col">
-                <a class='btn btn-primary' href='/pessoa/recursosArmazenamento/{{projeto._id}}' style="padding: 18px">Estação
+                <a class='btn btn-md btn-primary' href='/pessoa/recursosArmazenamento/{{projeto._id}}' style="padding: 18px">Estação
                     de Armazenamento</a>
             </div>
             {{/if}}
             {{#if projeto.temPainel}}
             <div class="col">
-                <a class='btn btn-secondary' href='/pessoa/recursosPainel/{{projeto._id}}' style="padding: 18px">Painél
+                <a class='btn btn-md btn-secondary' href='/pessoa/recursosPainel/{{projeto._id}}' style="padding: 18px">Painél
                     Elétrico</a>
             </div>
             {{/if}}
 
             <div class="col-md-1">
-                <a class='btn btn-secondary' href='/pessoa/recursosVistoria/{{projeto._id}}'
+                <a class='btn btn-md btn-secondary' href='/pessoa/recursosVistoria/{{projeto._id}}'
                     style="padding-top: 30px;padding-bottom: 30px">Vistoria</a>
             </div>
 
             <div class="col-md-2 mt-2">
                 <div class="btn-group col-12 gap-2 mt-1">
                     {{#if cronograma.dateplaini}}
-                    <button type='submit' class="btn btn-sm btn-success btn-lg" onclick="getItemValue()">Salvar</button>
+                    <button type='submit' class="btn btn-sm btn-success" onclick="getItemValue()">Salvar</button>
                     {{/if}}
                     <a class="btn btn-sm btn-secondary btn-lg" {{#if limpaEae}}href='/pessoa/limpaArmazenamento/{{projeto._id}}'{{else}}style='background-color: rgba(120,120,120,0.2);border: rgba(120,120,120,0.2)'{{/if}}>Limpar</a>
                     <a href='/gerenciamento/cronograma/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
@@ -126,9 +126,9 @@
 
                 <div class="btn-group col-12 gap-2 mt-1">
                     {{#if projeto.ehDireto}}
-                    <a href='/projeto/direto/{{projeto._id}}' class="btn btn-primary btn-sm"> Projeto</a>
+                    <a href='/projeto/direto/{{projeto._id}}' class="btn btn-sm btn-primary"> Projeto</a>
                     {{else}}
-                    <a href='/gerenciamento/gerenciamento/{{projeto._id}}' class="btn btn-primary btn-sm">
+                    <a href='/gerenciamento/gerenciamento/{{projeto._id}}' class="btn btn-sm btn-primary">
                         Projeto</a>
                     {{/if}}
                     <a href='/pessoa/consulta/' class='btn btn-sm btn-warning'> <i class="bi bi-person-circle"></i></a>

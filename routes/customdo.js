@@ -44,11 +44,13 @@ router.get('/gestao/:id', ehAdmin, (req, res) => {
                          var alocacao = 'enabled'
                          var aquisicao = 'enabled'
                          var mostraHora = false
+                         var lblDes
                          if (projeto.tipoCustoGes == 'hora') {
                               checkHora = 'checked'
                               typeHrg = 'text'
                               displayHrs = 'inline'
                               mostraHora = true
+                              lblDes = 'Horas:'
                          } else {
                               typeGes = 'text'
                               checkDia = 'checked'
@@ -62,8 +64,9 @@ router.get('/gestao/:id', ehAdmin, (req, res) => {
                               alocacao = 'disabled'
                               aquisicao = 'disabled'
                               mostraHora = false
+                              lblDes = 'Dias:'
                          }
-                         res.render('projeto/customdo/gestao', { projeto, gestor, configuracao, cliente, checkHora, checkDia, typeHrg, typeDrg, typeGes, displayHrs, displayDia, displayTda, escopo, cronograma, vistoria, comunicacao, aquisicao, alocacao, mostraHora })
+                         res.render('projeto/customdo/gestao', { projeto, gestor, configuracao, cliente, checkHora, checkDia, typeHrg, typeDrg, typeGes, displayHrs, displayDia, displayTda, escopo, cronograma, vistoria, comunicacao, aquisicao, alocacao, mostraHora, lblDes })
                     }).catch((err) => {
                          req.flash('error_msg', 'Nenhum cliente encontrado.')
                          res.redirect('/customdo/gestao/' + req.params.id)
@@ -106,6 +109,7 @@ router.get('/instalacao/:id', ehAdmin, (req, res) => {
                          var disabledPnl = ''
                          var disabledEst = ''
                          var disabledMod = ''
+                         var lblDes = ''
                          if (projeto.tipoCustoIns == 'hora') {
                               checkHora = 'checked'
                               typeHri = 'text'
@@ -118,6 +122,7 @@ router.get('/instalacao/:id', ehAdmin, (req, res) => {
                               disabledPnl = 'disabled'
                               disabledEst = 'disabled'
                               disabledMod = 'disabled'
+                              lblDes = 'Horas:'
                          } else {
                               checkDia = 'checked'
                               typeDri = 'text'
@@ -126,8 +131,9 @@ router.get('/instalacao/:id', ehAdmin, (req, res) => {
                               displayTempo = 'inline'
                               mostraHora = false
                               typeIns = 'text'
+                              lblDes = 'Dias:'
                          }
-                         res.render('projeto/customdo/instalacao', { projeto, instalador, configuracao, cliente, checkHora, checkDia, typeHri, typeIns, typeDri, displayHrs, displayDia, displayTda, displayTempo, mostraHora, disabledAtr, disabledInv, disabledStb, disabledEae, disabledPnl, disabledEst, disabledMod })
+                         res.render('projeto/customdo/instalacao', { projeto, instalador, configuracao, cliente, checkHora, checkDia, typeHri, typeIns, typeDri, displayHrs, displayDia, displayTda, displayTempo, mostraHora, disabledAtr, disabledInv, disabledStb, disabledEae, disabledPnl, disabledEst, disabledMod, lblDes })
                     }).catch((err) => {
                          req.flash('error_msg', 'Nenhum cliente encontrado.')
                          res.redirect('/customdo/instalacao/' + req.params.id)
@@ -167,11 +173,13 @@ router.get('/projetista/:id', ehAdmin, (req, res) => {
                          var unifilar = 'enabled'
                          var situacao = 'enabled'
                          var mostraHora = false
+                         var lblDes = ''
                          if (projeto.tipoCustoPro == 'hora') {
                               checkHora = 'checked'
                               typeHrp = 'text'
                               displayHrs = 'inline'
                               mostraHora = true
+                              lblDes = 'Horas:'
                          } else {
                               typePro = 'text'
                               checkDia = 'checked'
@@ -185,8 +193,9 @@ router.get('/projetista/:id', ehAdmin, (req, res) => {
                               unifilar = 'disabled'
                               situacao = 'disabled'
                               mostraHora = false
+                              lblDes = 'Dias:'
                          }
-                         res.render('projeto/customdo/projetista', { projeto, projetista, configuracao, cliente, checkHora, checkDia, typeHrp, typeDrp, typePro, displayHrs, displayDia, displayTda, memorial, art, aterramento, distribuicao, unifilar, situacao, mostraHora })
+                         res.render('projeto/customdo/projetista', { projeto, projetista, configuracao, cliente, checkHora, checkDia, typeHrp, typeDrp, typePro, displayHrs, displayDia, displayTda, memorial, art, aterramento, distribuicao, unifilar, situacao, mostraHora, lblDes })
                     }).catch((err) => {
                          req.flash('error_msg', 'Nenhuma configuração encontrada.')
                          res.redirect('/customdo/projetista/' + req.params.id)
@@ -230,6 +239,7 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                var trbest = 0
                var trbmod = 0
                var trbint = 0
+               var totdes = 0
                var conhrs = config.hrstrb
 
                //console.log('req.body.selecionado=>' + req.body.selecionado)
@@ -268,10 +278,10 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                          //console.log('trbeae=>' + trbeae)
                          //console.log('trbest=>' + trbest)
                          //console.log('trbmod=>' + trbmod)
-                         trbint = Math.round(parseFloat(trbatr) + parseFloat(trbinv) + parseFloat(trbstb) + parseFloat(trbpnl) + parseFloat(trbeae) + parseFloat(trbest) + parseFloat(trbmod))
+                         trbint = Math.round(parseFloat(trbatr) + parseFloat(trbinv) + parseFloat(trbstb) + parseFloat(trbpnl) + parseFloat(trbeae) + parseFloat(trbest) + parseFloat(trbmod) + parseFloat(req.body.desIns))
 
                          //console.log('trbint=>' + trbint)
-                         tothrs = trbint
+                         tothrs = trbint + parseFloat(req.body.desIns)
                          //console.log('trbint=>' + trbint)
                          //console.log('projeto.trbges=>' + projeto.trbges)
                          //console.log('projeto.trbpro=>' + projeto.trbpro)
@@ -325,7 +335,9 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                          }
                          totest = parseFloat(req.body.trbest) * parseFloat(req.body.vlrdri) * parseFloat(req.body.trbest)
                          totmod = parseFloat(req.body.trbmod) * parseFloat(req.body.vlrdri) * parseFloat(req.body.trbmod)
-                         totint = parseFloat(totatr) + parseFloat(totinv) + parseFloat(totstb) + parseFloat(totpnl) + parseFloat(toteae) + parseFloat(totest) + parseFloat(totmod)
+                         totdes = parseFloat(req.body.desIns) * parseFloat(req.body.vlrdri)
+                         totint = parseFloat(totatr) + parseFloat(totinv) + parseFloat(totstb) + parseFloat(totpnl) + parseFloat(toteae) + parseFloat(totest) + parseFloat(totmod) + parseFloat(totdes)
+                         
                          //console.log('totatr=>' + totatr)
                          //console.log('totinv=>' + totinv)
                          //console.log('totstb=>' + totstb)
@@ -368,12 +380,14 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
 
                          projeto.tipoCustoIns = req.body.selecionado
                          //console.log('req.body.selecionado=>' + req.body.selecionado)
-                         projeto.diasIns = req.body.diasIns
+                         projeto.diasIns = parseFloat(req.body.diasIns) + parseFloat(req.body.desIns)
                          //console.log('req.body.diasIns=>' + req.body.diasIns)
                          projeto.qtdins = req.body.equmod
                          //console.log('req.body.equmod=>' + req.body.equmod)
                          projeto.vlrdri = req.body.vlrdri
                          //console.log('req.body.vlrdri=>' + req.body.vlrdri)
+                         projeto.desIns = req.body.desIns
+                         projeto.vlrDin = totdes
 
                          projeto.save().then(() => {
                               req.flash('success_msg', 'Projeto salvo com sucesso. Aplicar o gerenciamento e os tributos.')
@@ -493,9 +507,9 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                                    trbeae = 0
                                    toteae = 0
                               }
-
-                              var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr) + parseFloat(totstb) + parseFloat(totpnl) + parseFloat(toteae)).toFixed(2)
-                              var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr) + parseFloat(trbstb) + parseFloat(trbpnl) + parseFloat(trbeae))
+                              totdes = parseFloat(req.body.desIns) * parseFloat(req.body.vlrdri)
+                              var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr) + parseFloat(totstb) + parseFloat(totpnl) + parseFloat(toteae)+ parseFloat(totdes)).toFixed(2)
+                              var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr) + parseFloat(trbstb) + parseFloat(trbpnl) + parseFloat(trbeae)) + parseFloat(req.body.desIns)
 
                               tothrs = trbint
                               //console.log('trbint=>' + trbint)
@@ -558,6 +572,9 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
 
                               projeto.tipoCustoIns = req.body.selecionado
 
+                              projeto.desIns = req.body.desIns
+                              projeto.vlrDin = totdes
+
                               projeto.save().then(() => {
                                    req.flash('success_msg', 'Projeto salvo com sucesso. Aplicar o gerenciamento e os tributos.')
                                    res.redirect('/customdo/instalacao/' + req.body.id)
@@ -599,6 +616,7 @@ router.post('/projetista/', ehAdmin, (req, res) => {
           var totsit
           var trbpro
           var totpro
+          var totdes
 
           //console.log('req.body.selecionado=>' + req.body.selecionado)
 
@@ -615,7 +633,7 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                     } else {
 
                          trbpro = parseFloat(req.body.diasPro) * conhrs
-                         tothrs = trbpro
+                         tothrs = trbpro + parseFloat(req.body.desPro)
                          //console.log('projeto.trbges=>' + projeto.trbges)
                          //console.log('projeto.trbint=>' + projeto.trbint)
                          if (projeto.trbges != null) {
@@ -627,7 +645,8 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                               //console.log('tothrs=>' + tothrs)
                          }
 
-                         totpro = parseFloat(req.body.diasPro) * parseFloat(req.body.vlrdrp)
+                         totdes = (parseFloat(req.body.desPro) * parseFloat(req.body.vlrdrp)).toFixed(2)
+                         totpro = (parseFloat(req.body.diasPro) * parseFloat(req.body.vlrdrp)) + parseFloat(totdes)
                          projeto.trbpro = trbpro
                          //console.log('trbpro=>' + trbpro)
                          projeto.totpro = totpro
@@ -635,7 +654,7 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                          projeto.tothrs = tothrs
                          //console.log('tothrs=>' + tothrs)
                          projeto.tipoCustoPro = req.body.selecionado
-                         projeto.diasPro = req.body.diasPro
+                         projeto.diasPro = parseFloat(req.body.diasPro) + parseFloat(req.body.desPro)
                          //console.log('req.body.diasPro=>' + req.body.diasPro)
                          projeto.vlrdrp = req.body.vlrdrp
                          //console.log('req.body.vlrdrp=>' + req.body.vlrdrp)
@@ -654,6 +673,9 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                          projeto.vlrart = req.body.vlrart
                          //console.log('req.body.vlrart=>' + req.body.vlrart)
                          projeto.totpro_art = parseFloat(totpro) + parseFloat(req.body.vlrart)
+
+                         projeto.desPro = req.body.desPro
+                         projeto.vlrDpr = totdes
 
                          projeto.save().then(() => {
                               req.flash('success_msg', 'Projeto salvo com sucesso. Aplicar o gerenciamento e os tributos.')
@@ -705,9 +727,10 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                          //console.log('totuni=>' + totuni)
                          totsit = (parseFloat(req.body.trbsit) * parseFloat(req.body.vlrhrp)).toFixed(2)
                          //console.log('totsit=>' + totsit)
+                         totdes = (parseFloat(req.body.desPro) * parseFloat(req.body.vlrhrp)).toFixed(2)
 
-                         totpro = (parseFloat(totmem) + parseFloat(totart) + parseFloat(totate) + parseFloat(totdis) + parseFloat(totuni) + parseFloat(totsit)).toFixed(2)
-                         trbpro = Math.round(parseFloat(req.body.trbmem) + parseFloat(req.body.trbart) + parseFloat(req.body.trbate) + parseFloat(req.body.trbdis) + parseFloat(req.body.trbuni) + parseFloat(req.body.trbsit))
+                         totpro = (parseFloat(totmem) + parseFloat(totart) + parseFloat(totate) + parseFloat(totdis) + parseFloat(totuni) + parseFloat(totsit)+ parseFloat(totdes)).toFixed(2)
+                         trbpro = Math.round(parseFloat(req.body.trbmem) + parseFloat(req.body.trbart) + parseFloat(req.body.trbate) + parseFloat(req.body.trbdis) + parseFloat(req.body.trbuni) + parseFloat(req.body.trbsit) + parseFloat(req.body.desPro))
                          //console.log('totpro=>' + totpro)
                          //console.log('trbpro=>' + trbpro)
 
@@ -745,6 +768,8 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                          projeto.totsit = totsit
                          projeto.vlrart = req.body.vlrart
                          projeto.totpro_art = parseFloat(totpro) + parseFloat(+req.body.vlrart)
+                         projeto.desPro = req.body.desPro
+                         projeto.vlrDpr = totdes
 
                          projeto.save().then(() => {
                               req.flash('success_msg', 'Projeto salvo com sucesso. Aplicar o gerenciamento e os tributos.')
@@ -782,6 +807,7 @@ router.post('/gestao/', ehAdmin, (req, res) => {
           var totrec
           var trbges
           var totges
+          var totdes
 
           Configuracao.findOne({ _id: projeto.configuracao }).then((configuracao) => {
 
@@ -800,7 +826,7 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                          res.redirect('/customdo/gestao/' + req.body.id)
                     } else {
                          trbges = parseFloat(req.body.diasGes) * conhrs
-                         tothrs = trbges
+                         tothrs = trbges + parseFloat(req.body.desGes)
                          //console.log('trbges=>' + trbges)
                          if (projeto.trbpro != null) {
                               tothrs = tothrs + parseFloat(projeto.trbpro)
@@ -810,12 +836,13 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                          }
 
                          projeto.trbges = trbges
-                         projeto.totges = parseFloat(req.body.diasGes) * parseFloat(req.body.vlrdrg)
+                         totdes = parseFloat(req.body.desGes) * parseFloat(req.body.vlrdrg)
+                         projeto.totges = (parseFloat(req.body.diasGes) * parseFloat(req.body.vlrdrg)) + parseFloat(totdes)
                          projeto.tothrs = tothrs
                          //console.log('tothrs=>' + tothrs)
                          projeto.tipoCustoGes = req.body.selecionado
                          //console.log('req.body.selecionado=>' + req.body.selecionado)
-                         projeto.diasGes = req.body.diasGes
+                         projeto.diasGes = parseFloat(req.body.diasGes) + parseFloat(req.body.desGes)
                          //console.log('req.body.diasGes=>' + req.body.diasGes)
                          projeto.vlrdrg = req.body.vlrdrg
                          //console.log('req.body.vlrdrg=>' + req.body.vlrdrg)
@@ -831,6 +858,8 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                          projeto.totcro = 0
                          projeto.totaqi = 0
                          projeto.totrec = 0
+                         projeto.desGes = req.body.desGes
+                         projeto.vlrDge = totdes
 
                          projeto.save().then(() => {
                               //console.log('salvou projeto')
@@ -871,10 +900,11 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                          totcro = (parseFloat(req.body.trbcro) * parseFloat(req.body.vlrhrg)).toFixed(2)
                          totaqi = (parseFloat(req.body.trbaqi) * parseFloat(req.body.vlrhrg)).toFixed(2)
                          totrec = (parseFloat(req.body.trbrec) * parseFloat(req.body.vlrhrg)).toFixed(2)
+                         totdes = (parseFloat(req.body.desGes) * parseFloat(req.body.vlrhrg)).toFixed(2)
 
-                         totges = (parseFloat(totvis) + parseFloat(totcom) + parseFloat(totcro) + parseFloat(totaqi) + parseFloat(totrec) + parseFloat(totesc)).toFixed(2)
+                         totges = (parseFloat(totvis) + parseFloat(totcom) + parseFloat(totcro) + parseFloat(totaqi) + parseFloat(totrec) + parseFloat(totesc)+ parseFloat(totdes)).toFixed(2)
 
-                         trbges = Math.round(parseFloat(req.body.trbvis) + parseFloat(req.body.trbcom) + parseFloat(req.body.trbcro) + parseFloat(req.body.trbaqi) + parseFloat(req.body.trbrec) + parseFloat(req.body.trbesc))
+                         trbges = Math.round(parseFloat(req.body.trbvis) + parseFloat(req.body.trbcom) + parseFloat(req.body.trbcro) + parseFloat(req.body.trbaqi) + parseFloat(req.body.trbrec) + parseFloat(req.body.trbesc) + parseFloat(req.body.desGes))
 
                          tothrs = parseFloat(trbges)
                          if (projeto.trbpro != null) {
@@ -901,6 +931,9 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                          projeto.totrec = totrec
                          projeto.trbges = trbges
                          projeto.totges = totges
+                         projeto.desGes = req.body.desGes
+                         projeto.vlrDge = totdes
+
                          projeto.save().then(() => {
                               req.flash('success_msg', 'Projeto salvo com sucesso. Aplicar o gerenciamento e os tributos.')
                               res.redirect('/customdo/gestao/' + req.body.id)

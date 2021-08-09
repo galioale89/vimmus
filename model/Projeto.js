@@ -1,4 +1,3 @@
-const { Decimal128 } = require('bson')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
@@ -6,6 +5,11 @@ const Projeto = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: 'usuario',
+        require: false,
+    },
+    dimensionamento:{
+        type: Schema.Types.ObjectId,
+        ref: 'dimensionamento',
         require: false,
     },
     nome: {
@@ -47,16 +51,40 @@ const Projeto = new Schema({
     },    
     diasGes: {
         type: Number,
-        requirw: true
+        require: true
+    },
+    desGes: {
+        type: Number,
+        require: true
+    },
+    vlrDge:{
+        type: Number,
+        require: true
     },
     diasIns: {
         type: Number,
         requirw: true
     },    
+    desIns: {
+        type: Number,
+        require: true
+    },
+    vlrDin:{
+        type: Number,
+        require: true
+    },    
     diasPro: {
         type: Number,
         requirw: true
-    },    
+    },  
+    desPro: {
+        type: Number,
+        require: true
+    },
+    vlrDpr:{
+        type: Number,
+        require: true
+    },      
     diasAte: {
         type: Number,
         requirw: true
@@ -102,7 +130,7 @@ const Projeto = new Schema({
         require: false
     },
     valor: {
-        type: Decimal128,
+        type: Number,
         require: true
     },
     vlrequ: {
