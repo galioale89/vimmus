@@ -80,19 +80,22 @@
     //Slecionar estados e cidades
     window.onload = function () {
 
-        var dataini = document.getElementById('valDataIni')
+        var valDataIni = document.getElementById('valDataIni')
+        var dataini = document.getElementById('dataini')
         var hoje = new Date()
         var dia = hoje.getDate() 
         if (parseFloat(dia) < 10){
             dia = '0' + dia
         }
-        var mes = hoje.getMonth() 
+        var mes = hoje.getMonth() + parseFloat(1)
         if (parseFloat(mes) < 10){
             mes = '0' + mes
         }
         var ano = hoje.getFullYear()
         dia_hoje = ano + '-' + mes + '-' + dia
-        dataini.value = dia_hoje
+        valDataIni.value = dia_hoje
+        dataini.value = dia + '/' + mes + '/' + ano
+
 
         var estados = document.getElementById('estado');
         var cidades = document.getElementById('cidade');
