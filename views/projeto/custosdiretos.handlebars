@@ -257,8 +257,8 @@
                                 <div class="col text-end">
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Gestão:</label><i
                                         class='bi bi-info-circle' onmousemove="infoGestao()"></i><br>                                    
-                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Projetista:</label><br>
-                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Valor
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-2">Projetista:</label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-2">Valor
                                         ART:</label><br>                                    
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Instalação:</label><br>                                    
                                     <!--
@@ -280,28 +280,28 @@
                                         <span class="input-group-text">$</span>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
                                             class="form-control form-control-sm" name='totges' id="totges"
-                                            value='{{projeto.totges}}' aria-label="R$ ">
+                                            value='{{projeto.totges}}' aria-label="R$ " step='0.010'>
                                         <span class="input-group-text">.00</span>
                                     </div>                                    
                                     <div class="input-group input-group-sm mb-1">
                                         <span class="input-group-text">$</span>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
                                             class="form-control form-control-sm" name='totpro' id="totpro"
-                                            value='{{projeto.totpro}}' aria-label="R$ ">
+                                            value='{{projeto.totpro}}' aria-label="R$ " step='0.010'>
                                         <span class="input-group-text">.00</span>
                                     </div>            
                                     <div class="input-group input-group-sm mb-1">
                                         <span class="input-group-text">$</span>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
                                             class="form-control" id="vlrart" name="vlrart" value='{{projeto.vlrart}}'
-                                            aria-label="R$ ">
+                                            aria-label="R$ " step='0.010'>
                                         <span class="input-group-text">.00</span>
                                     </div>                                                            
                                     <div class="input-group input-group-sm mb-1">
                                         <span class="input-group-text">$</span>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
                                             class="form-control form-control-sm" name='totint' id="totint"
-                                            value='{{projeto.totint}}' aria-label='R$'>
+                                            value='{{projeto.totint}}' aria-label='R$' step='0.010'>
                                         <span class="input-group-text">.00</span>
                                     </div>
                                     <!--
@@ -344,16 +344,16 @@
                                 <div class="col-md-2">
                                     <div class="row mt-1">
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='number' name='trbges'
-                                            class='form-control form-control-sm' value='{{projeto.trbges}}'>
+                                            class='form-control form-control-sm' value='{{projeto.trbges}}' step='0.010'>
                                     </div>          
                                     <div class="row mt-1">
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='number' name='trbpro'
-                                            class='form-control form-control-sm' value='{{projeto.trbpro}}'>
+                                            class='form-control form-control-sm' value='{{projeto.trbpro}}' step='0.010'>
                                     </div>                           
                                     <div class="row" style='margin-top:85%'></div>                                                                       
                                     <div class="row">
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='number' name='trbint'
-                                            class='form-control form-control-sm' value='{{projeto.trbint}}'>
+                                            class='form-control form-control-sm' value='{{projeto.trbint}}' step='0.010'>
                                     </div>
                                 </div>
                             </div>
@@ -367,13 +367,13 @@
                                     <label class="fw-bold col-form-label col-form-label-sm">Reserva</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Reserva Gerencial:
                                     </label><br>
-                                    <label class="fw-bold col-form-label col-form-label-sm">Reserva
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Reserva
                                         Contingência:</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Adicional:
                                     </label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Imprevisto
                                         Elétrico:</label><br>
-                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Seguro:</label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-2">Seguro:</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Cercamento:</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm">Condução Ponto de
                                         Conexão:</label><br>
@@ -385,7 +385,7 @@
                                         <span class="input-group-text">$</span>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
                                             class="form-control form-control-sm" id="resger" name="resger"
-                                            value='{{projeto.resger}}' aria-label="R$ ">
+                                            value='{{projeto.resger}}' aria-label="R$ " step='0.010'>
                                         <span class="input-group-text">.00</span>
                                     </div>
                                     <div class="input-group input-group-sm">
@@ -396,35 +396,35 @@
                                         <span class="input-group-text">$</span>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
                                             class="form-control form-control-sm" id="conadd" name="conadd"
-                                            value='{{projeto.conadd}}' aria-label="R$ ">
+                                            value='{{projeto.conadd}}' aria-label="R$ " step='0.010'>
                                         <span class="input-group-text">.00</span>
                                     </div>
                                     <div class="input-group input-group-sm mb-1">
                                         <span class="input-group-text">$</span>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
                                             class="form-control form-control-sm" id="impele" name="impele"
-                                            value='{{projeto.impele}}' aria-label="R$ ">
+                                            value='{{projeto.impele}}' aria-label="R$ " step='0.010'>
                                         <span class="input-group-text">.00</span>
                                     </div>
                                     <div class="input-group input-group-sm mb-1">
                                         <span class="input-group-text">$</span>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
                                             class="form-control form-control-sm" id="seguro" name="seguro"
-                                            value='{{projeto.seguro}}' aria-label="R$ ">
+                                            value='{{projeto.seguro}}' aria-label="R$ " step='0.010'>
                                         <span class="input-group-text">.00</span>
                                     </div>
                                     <div class="input-group input-group-sm mb-1">
                                         <span class="input-group-text">$</span>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
                                             class="form-control form-control-sm" id="outcer" name="outcer"
-                                            value='{{projeto.outcer}}' aria-label="R$ ">
+                                            value='{{projeto.outcer}}' aria-label="R$ " step='0.010'>
                                         <span class="input-group-text">.00</span>
                                     </div>
                                     <div class="input-group input-group-sm mb-1">
                                         <span class="input-group-text">$</span>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
                                             class="form-control form-control-sm" id="outpos" name="outpos"
-                                            value='{{projeto.outpos}}' aria-label="R$ ">
+                                            value='{{projeto.outpos}}' aria-label="R$ " step='0.010'>
                                         <span class="input-group-text">.00</span>
                                     </div>
                                 </div>
