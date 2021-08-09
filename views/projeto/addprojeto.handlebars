@@ -373,7 +373,7 @@
             <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-5 text-end">
-                        <div class="row mb-1">
+                        {{!-- <div class="row mb-1">
                             <div class="col-md-10 text-end" style="padding-left: 50%">
                                 <label class="col-form-label col-form-label-sm fw-bold">Dimensionar?</label>
                             </div>
@@ -382,11 +382,12 @@
                                     <input name='checkFatura' class="form-check-input" type="checkbox" id='troca_dim' {{troca_dim}}>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
+                        <label class="col-form-label col-form-label-sm fw-bold">Potência do Sistema: </label><br>
 
                         <label for="empresa" class="fw-bold col-form-label col-form-label-sm mb-1"> Empresa:
                         </label><br>
-                        <label for="nome" class="fw-bold col-form-label col-form-label-sm mb-1"> Nome do Projeto:
+                        <label for="nome" class="fw-bold col-form-label col-form-label-sm mb-2"> Nome do Projeto:
                         </label><br>
                         <label class="fw-bold col-form-label col-form-label-sm mb-2">Tipo de Entrada:</label><br>
                         <label class="fw-bold col-form-label col-form-label-sm mb-2">Tipo Custo:</label><br>
@@ -406,7 +407,7 @@
                         <label class='col-form-label col-form-label-sm fw-bold mb-1'>Data Previsão de Entrega:</label>
                     </div>
                     <div class="col-md-7">
-                        <div class="row mb-1" id='dimsim' style="display: ;">
+                        {{!-- <div class="row mb-1" id='dimsim' style="display: ;">
                             <div class="col">
                                 <a href="/projeto/dimensionamento/{{dimensionamento._id}}" class="btn btn-sm btn-primary">Dimensionamento</a>
                             </div>
@@ -416,8 +417,8 @@
                             <div class="col">
                                 <label class="col-form-label col-form-label-sm">{{projeto.potencia}} kWp</label>
                             </div>
-                        </div>
-                        <div class="row" id='dimnao' style="display: none">
+                        </div> --}}
+                        <div class="row" id='dimnao' style="display: ">
                             <input type="number" name="potencia" id="potencia" class="form-control form-control-sm mb-1" style="margin-left: 12px; max-width: 100px;"
                                 placeholder="kWp" aria-placeholder="R$" step='0.010'>
                         </div>
