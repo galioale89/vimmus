@@ -429,7 +429,7 @@ height: 100px;
 color: white;
 font-weight: 700;
 font-size: 25px;
-padding: 25px;
+padding: 35px;
 border-radius: 20px;
 box-shadow: 1px 4px 5px rgba(26, 25, 25, 0.77);
 }
@@ -662,6 +662,7 @@ border: rgb(126, 138, 163) 2px solid;
 border-radius: 5px;
 color: rgb(40,55,89);
 font-weight: bold;
+margin-bottom: 10px;
 text-align: center;
 box-shadow: 1px 3px 1px rgba(90, 93, 100, 0.2);
 }
@@ -771,4 +772,37 @@ border: rgb(216, 19, 19) 15px solid;
 border-radius: 50px;
 text-align: center;
 padding: 5px;
+}
+
+.botao-menu {
+    background-color: rgb(40, 55, 86);
+    border: white solid 1px;
+    border-radius: 5px;
+    color: white;
+}
+
+.botao-menu:hover {
+    background-color: rgb(40, 55, 86);
+    border: white 1px solid;
+    border-radius: 5px;
+    font-weight: 600;
+    color: white;
+}
+
+.ativo {
+    background-color: #847AF4;
+    font-weight: 600;
+    color:rgb(40, 55, 86);
+}
+
+
+.caixa {
+    border: rgba(200, 200, 200, 0.8) 1px solid;
+    width: fit-content;
+    height: 285px;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 20px;
+    box-shadow: 1px 4px 5px rgba(26, 25, 25, 0.77);
+    font-size: 30px;
 }
