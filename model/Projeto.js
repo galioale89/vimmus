@@ -302,6 +302,14 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
+    qtdmod: {
+        type: Number,
+        require: false
+    },  
+    rspmod: {
+        type: Number,
+        require: false
+    },
     totint: {
         type: Number,
         require: false
