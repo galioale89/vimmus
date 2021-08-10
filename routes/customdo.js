@@ -1,26 +1,37 @@
-const express = require("express")
+require('../app')
+var express = require("express")
+var multer = require('multer')
+var app = express()
+var fs = require('fs')
 const router = express.Router()
-const mongoose = require('mongoose')
+
+// app.set('view engine', 'ejs')
+const storage = multer.diskStorage({
+     destination: function (req, file, cb) {
+          cb(null, 'public/arquivos/')
+     },
+     filename: (req, file, cb) => {
+          cb(null, file.originalname)
+     }
+})
 
 require('../model/Projeto')
 require('../model/Configuracao')
-require('../model/Empresa')
 require('../model/Pessoa')
 require('../model/Cliente')
 
+const mongoose = require('mongoose')
+
 const Projeto = mongoose.model('projeto')
 const Configuracao = mongoose.model('configuracao')
-const Empresa = mongoose.model('empresa')
 const Pessoa = mongoose.model('pessoa')
 const Cliente = mongoose.model('cliente')
 
 const { ehAdmin } = require('../helpers/ehAdmin')
 
-
-require('../app')
 //Configurando pasta de imagens 
 router.use(express.static('public/'))
-router.use(express.static('public/upload/'))
+router.use(express.static('public/arquivos/'))
 
 
 router.get('/gestao/:id', ehAdmin, (req, res) => {
@@ -337,7 +348,7 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                          totmod = parseFloat(req.body.trbmod) * parseFloat(req.body.vlrdri) * parseFloat(req.body.trbmod)
                          totdes = parseFloat(req.body.desIns) * parseFloat(req.body.vlrdri)
                          totint = parseFloat(totatr) + parseFloat(totinv) + parseFloat(totstb) + parseFloat(totpnl) + parseFloat(toteae) + parseFloat(totest) + parseFloat(totmod) + parseFloat(totdes)
-                         
+
                          //console.log('totatr=>' + totatr)
                          //console.log('totinv=>' + totinv)
                          //console.log('totstb=>' + totstb)
@@ -508,7 +519,7 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                                    toteae = 0
                               }
                               totdes = parseFloat(req.body.desIns) * parseFloat(req.body.vlrdri)
-                              var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr) + parseFloat(totstb) + parseFloat(totpnl) + parseFloat(toteae)+ parseFloat(totdes)).toFixed(2)
+                              var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr) + parseFloat(totstb) + parseFloat(totpnl) + parseFloat(toteae) + parseFloat(totdes)).toFixed(2)
                               var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr) + parseFloat(trbstb) + parseFloat(trbpnl) + parseFloat(trbeae)) + parseFloat(req.body.desIns)
 
                               tothrs = trbint
@@ -729,7 +740,7 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                          //console.log('totsit=>' + totsit)
                          totdes = (parseFloat(req.body.desPro) * parseFloat(req.body.vlrhrp)).toFixed(2)
 
-                         totpro = (parseFloat(totmem) + parseFloat(totart) + parseFloat(totate) + parseFloat(totdis) + parseFloat(totuni) + parseFloat(totsit)+ parseFloat(totdes)).toFixed(2)
+                         totpro = (parseFloat(totmem) + parseFloat(totart) + parseFloat(totate) + parseFloat(totdis) + parseFloat(totuni) + parseFloat(totsit) + parseFloat(totdes)).toFixed(2)
                          trbpro = Math.round(parseFloat(req.body.trbmem) + parseFloat(req.body.trbart) + parseFloat(req.body.trbate) + parseFloat(req.body.trbdis) + parseFloat(req.body.trbuni) + parseFloat(req.body.trbsit) + parseFloat(req.body.desPro))
                          //console.log('totpro=>' + totpro)
                          //console.log('trbpro=>' + trbpro)
@@ -771,6 +782,9 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                          projeto.desPro = req.body.desPro
                          projeto.vlrDpr = totdes
 
+                         console.log('req.body.fileMemo=>' + fileMemo)
+                         salvaArquivo('memorial', req.body.fileMemo)
+
                          projeto.save().then(() => {
                               req.flash('success_msg', 'Projeto salvo com sucesso. Aplicar o gerenciamento e os tributos.')
                               res.redirect('/customdo/projetista/' + req.body.id)
@@ -790,6 +804,244 @@ router.post('/projetista/', ehAdmin, (req, res) => {
      }).catch((err) => {
           req.flash('error_msg', 'Falha ao encontrar o projeto.')
           res.redirect('/customdo/projetista/' + req.body.id)
+     })
+})
+
+router.post('/salvarMemorial/', ehAdmin, (req, res) => {
+     var upload = multer({ storage }).single('memo')
+     upload(req, res, function (err) {
+          if (err) {
+               return res.end("Error uploading file.");
+          } else {
+               console.log('req.body.id=>' + req.body.id)
+               Projeto.findOne({ _id: req.body.id }).then((projeto) => {
+                    var memorial
+                    console.log('req.file=>' + req.file)
+                    if (req.file != null) {
+                         memorial = req.file.filename
+                    } else {
+                         memorial = ''
+                    }
+                    console.log('memorial=>' + memorial)
+                    projeto.memorial = memorial
+                    projeto.save().then(() => {
+                         res.redirect('/customdo/projetista/' + req.body.id)
+                    }).catch((err) => {
+                         req.flash('error_msg', 'Houve uma falha ao salvar o projeto.')
+                         res.redirect('/customdo/projetista/' + req.body.id)
+                    })
+               }).catch((err) => {
+                    req.flash('error_msg', 'Houve uma falha ao encontrar o projeto.')
+                    res.redirect('/customdo/projetista/' + req.body.id)
+               })
+          }
+     })
+
+})
+
+router.post('/salvarDistribuicao/', ehAdmin, (req, res) => {
+     var upload = multer({ storage }).single('dist')
+     upload(req, res, function (err) {
+          if (err) {
+               return res.end("Error uploading file.");
+          } else {
+               console.log('req.body.id=>' + req.body.id)
+               Projeto.findOne({ _id: req.body.id }).then((projeto) => {
+                    var distribuicao
+                    if (req.file != null) {
+                         distribuicao = req.file.filename
+                    } else {
+                         distribuicao = ''
+                    }
+                    projeto.distribuicao = distribuicao
+                    projeto.save().then(() => {
+                         res.redirect('/customdo/projetista/' + req.body.id)
+                    }).catch((err) => {
+                         req.flash('error_msg', 'Houve uma falha ao salvar o projeto.')
+                         res.redirect('/customdo/projetista/' + req.body.id)
+                    })
+               }).catch((err) => {
+                    req.flash('error_msg', 'Houve uma falha ao encontrar o projeto.')
+                    res.redirect('/customdo/projetista/' + req.body.id)
+               })
+          }
+     })
+
+})
+
+router.post('/salvarArt/', ehAdmin, (req, res) => {
+     var upload = multer({ storage }).single('art')
+     upload(req, res, function (err) {
+          if (err) {
+               return res.end("Error uploading file.");
+          } else {
+               console.log('req.body.id=>' + req.body.id)
+               Projeto.findOne({ _id: req.body.id }).then((projeto) => {
+                    var art
+                    if (req.file != null) {
+                         art = req.file.filename
+                    } else {
+                         art = ''
+                    }
+                    projeto.art = art
+                    projeto.save().then(() => {
+                         res.redirect('/customdo/projetista/' + req.body.id)
+                    }).catch((err) => {
+                         req.flash('error_msg', 'Houve uma falha ao salvar o projeto.')
+                         res.redirect('/customdo/projetista/' + req.body.id)
+                    })
+               }).catch((err) => {
+                    req.flash('error_msg', 'Houve uma falha ao encontrar o projeto.')
+                    res.redirect('/customdo/projetista/' + req.body.id)
+               })
+          }
+     })
+
+})
+
+router.post('/salvarUnifilar/', ehAdmin, (req, res) => {
+     var upload = multer({ storage }).single('unif')
+     upload(req, res, function (err) {
+          if (err) {
+               return res.end("Error uploading file.");
+          } else {
+               Projeto.findOne({ _id: req.body.id }).then((projeto) => {
+                    var unifilar
+                    if (req.file != null) {
+                         unifilar = req.file.filename
+                    } else {
+                         unifilar = ''
+                    }
+                    projeto.unifilar = unifilar
+                    projeto.save().then(() => {
+                         res.redirect('/customdo/projetista/' + req.body.id)
+                    }).catch((err) => {
+                         req.flash('error_msg', 'Houve uma falha ao salvar o projeto.')
+                         res.redirect('/customdo/projetista/' + req.body.id)
+                    })
+               }).catch((err) => {
+                    req.flash('error_msg', 'Houve uma falha ao encontrar o projeto.')
+                    res.redirect('/customdo/projetista/' + req.body.id)
+               })
+          }
+     })
+
+})
+
+router.post('/salvarAterramento/', ehAdmin, (req, res) => {
+     var upload = multer({ storage }).single('ater')
+     upload(req, res, function (err) {
+          if (err) {
+               return res.end("Error uploading file.");
+          } else {
+               console.log('req.body.id=>' + req.body.id)
+               Projeto.findOne({ _id: req.body.id }).then((projeto) => {
+                    var aterramento
+                    if (req.file != null) {
+                         aterramento = req.file.filename
+                    } else {
+                         aterramento = ''
+                    }
+                    projeto.aterramento = aterramento
+                    projeto.save().then(() => {
+                         res.redirect('/customdo/projetista/' + req.body.id)
+                    }).catch((err) => {
+                         req.flash('error_msg', 'Houve uma falha ao salvar o projeto.')
+                         res.redirect('/customdo/projetista/' + req.body.id)
+                    })
+               }).catch((err) => {
+                    req.flash('error_msg', 'Houve uma falha ao encontrar o projeto.')
+                    res.redirect('/customdo/projetista/' + req.body.id)
+               })
+          }
+     })
+
+})
+
+router.post('/salvarSituacao/', ehAdmin, (req, res) => {
+     var upload = multer({ storage }).single('situ')
+     upload(req, res, function (err) {
+          if (err) {
+               return res.end("Error uploading file.");
+          } else {
+               console.log('req.body.id=>' + req.body.id)
+               Projeto.findOne({ _id: req.body.id }).then((projeto) => {
+                    var situacao
+                    if (req.file != null) {
+                         situacao = req.file.filename
+                    } else {
+                         situacao = ''
+                    }
+                    projeto.situacao = situacao
+                    projeto.save().then(() => {
+                         res.redirect('/customdo/projetista/' + req.body.id)
+                    }).catch((err) => {
+                         req.flash('error_msg', 'Houve uma falha ao salvar o projeto.')
+                         res.redirect('/customdo/projetista/' + req.body.id)
+                    })
+               }).catch((err) => {
+                    req.flash('error_msg', 'Houve uma falha ao encontrar o projeto.')
+                    res.redirect('/customdo/projetista/' + req.body.id)
+               })
+          }
+     })
+
+})
+
+router.get('/mostrarMemorial/:id', ehAdmin, (req, res) => {
+     Projeto.findOne({ _id: req.params.id }).then((projeto) => {
+          var doc = projeto.memorial
+          var path = __dirname
+          console.log(path)
+          path = path.replace('routes', '')
+          res.sendFile(path + '/public/arquivos/'+doc)
+     })
+})
+
+router.get('/mostrarDistribuicao/:id', ehAdmin, (req, res) => {
+     Projeto.findOne({ _id: req.params.id }).then((projeto) => {
+          var doc = projeto.distribuicao
+          var path = __dirname
+          path = path.replace('routes', '')
+          res.sendFile(path + '/public/arquivos/'+doc)
+     })
+})
+
+router.get('/mostrarArt/:id', ehAdmin, (req, res) => {
+     Projeto.findOne({ _id: req.params.id }).then((projeto) => {
+          var doc = projeto.art
+          var path = __dirname
+          console.log(path)
+          path = path.replace('routes', '')
+          res.sendFile(path + '/public/arquivos/'+doc)
+     })
+})
+
+router.get('/mostrarUnifilar/:id', ehAdmin, (req, res) => {
+     Projeto.findOne({ _id: req.params.id }).then((projeto) => {
+          var doc = projeto.unifilar
+          var path = __dirname
+          path = path.replace('routes', '')
+          res.sendFile(path + '/public/arquivos/'+doc)
+     })
+})
+
+router.get('/mostrarAterramento/:id', ehAdmin, (req, res) => {
+     Projeto.findOne({ _id: req.params.id }).then((projeto) => {
+          var doc = projeto.aterramento
+          var path = __dirname
+          console.log(path)
+          path = path.replace('routes', '')
+          res.sendFile(path + '/public/arquivos/'+doc)
+     })
+})
+
+router.get('/mostrarSituacao/:id', ehAdmin, (req, res) => {
+     Projeto.findOne({ _id: req.params.id }).then((projeto) => {
+          var doc = projeto.situacao
+          var path = __dirname
+          path = path.replace('routes', '')
+          res.sendFile(path + '/public/arquivos/'+doc)
      })
 })
 
@@ -902,7 +1154,7 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                          totrec = (parseFloat(req.body.trbrec) * parseFloat(req.body.vlrhrg)).toFixed(2)
                          totdes = (parseFloat(req.body.desGes) * parseFloat(req.body.vlrhrg)).toFixed(2)
 
-                         totges = (parseFloat(totvis) + parseFloat(totcom) + parseFloat(totcro) + parseFloat(totaqi) + parseFloat(totrec) + parseFloat(totesc)+ parseFloat(totdes)).toFixed(2)
+                         totges = (parseFloat(totvis) + parseFloat(totcom) + parseFloat(totcro) + parseFloat(totaqi) + parseFloat(totrec) + parseFloat(totesc) + parseFloat(totdes)).toFixed(2)
 
                          trbges = Math.round(parseFloat(req.body.trbvis) + parseFloat(req.body.trbcom) + parseFloat(req.body.trbcro) + parseFloat(req.body.trbaqi) + parseFloat(req.body.trbrec) + parseFloat(req.body.trbesc) + parseFloat(req.body.desGes))
 

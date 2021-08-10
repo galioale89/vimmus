@@ -28,7 +28,6 @@ const Cronograma = mongoose.model('cronograma')
 const Cliente = mongoose.model('cliente')
 
 const { ehAdmin } = require('../helpers/ehAdmin')
-const setData = require('../resources/setData')
 const dataMensagem = require('../resources/dataMensagem')
 
 router.use(express.static('public/'))
@@ -607,12 +606,12 @@ router.get('/recursosPlanejamento/:id', ehAdmin, (req, res) => {
                                             plaini = dateplaini
                                         }
 
-                                        //console.log('orcado._id=>' + orcado._id)
-                                        //console.log('elecro.date=>' + elecro.agendaPlaiIni)
-                                        //console.log('cronograma.dateplaini=>' + dateplaini)
-                                        //console.log('nova_data=>' + nova_data)
-                                        //console.log('plaini=>' + plaini)
-                                        if (nova_data == plaini && dateplaini >= plaini) {
+                                        // console.log('orcado._id=>' + orcado._id)
+                                        // console.log('elecro.date=>' + elecro.agendaPlaiIni)
+                                        // console.log('cronograma.dateplaini=>' + dateplaini)
+                                        // console.log('nova_data=>' + nova_data)
+                                        // console.log('plaini=>' + plaini)
+                                        if (nova_data == plaini && dateplaini >= plaini && date>=dateplaini) {
                                             //console.log('entrou')
                                             ins_dif = 1
                                             Pessoa.find({ funges: 'checked', user: _id }).then((gestores) => {
@@ -624,15 +623,18 @@ router.get('/recursosPlanejamento/:id', ehAdmin, (req, res) => {
                                                         if (equipe != null) {
                                                             if (gestor_alocado.length == 0) {
                                                                 gestor_alocado.push({ nome: eleges.nome })
-                                                                //console.log(eleges.nome + ' está alocado.')
+                                                                console.log(eleges.nome + ' está alocado.')
                                                             } else {
                                                                 for (i = 0; i < gestor_alocado.length; i++) {
                                                                     if (gestor_alocado[i].nome != eleges.nome) {
                                                                         gestor_alocado.push({ nome: eleges.nome })
-                                                                        //console.log(eleges.nome + ' está alocado.')
+                                                                        console.log(eleges.nome + ' está alocado.')
                                                                     }
                                                                 }
                                                             }
+                                                            console.log('date=>'+date)
+                                                            console.log('dateplaini=>'+dateplaini)
+                                                            console.log('plaini=>'+plaini)
                                                         }
                                                         //console.log('num_prj=>' + num_prj)
                                                         //console.log('q=>' + q)
@@ -938,7 +940,7 @@ router.get('/recursosProjetista/:id', ehAdmin, (req, res) => {
                                         //console.log('nova_data=>' + nova_data)
                                         //console.log('proini=>' + proini)
 
-                                        if (nova_data == proini && dateprjini >= proini) {
+                                        if (nova_data == proini && dateprjini >= proini && date>dateprjini) {
                                             //console.log('entrou')
                                             ins_dif = 1
                                             Pessoa.find({ funpro: 'checked', user: _id }).then((proje) => {
@@ -1221,8 +1223,7 @@ router.get('/recursosAterramento/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         //console.log('validação dos instaladores.')
         Cronograma.findOne({ projeto: req.params.id }).lean().then((cronograma) => {
-            var dateestini = cronograma.agendaEstIni
-            var datemodfim = cronograma.agendaModFim
+            var dateateini = cronograma.agendaAteIni
             var estini
             //console.log('cronograma.agendaEstIni=>' + cronograma.agendaEstIni)
             //console.log('cronograma.agendaModFim=>' + cronograma.agendaModFim)
@@ -1232,11 +1233,11 @@ router.get('/recursosAterramento/:id', ehAdmin, (req, res) => {
                         Projeto.findOne({ _id: elecro.projeto, orcado: true }).then((orcado) => {
                             qtd_prj = qtd_prj + 1
                             if (orcado != null && orcado._id != req.params.id) {
-                                diferenca = elecro.agendaModFim - elecro.agendaEstIni
+                                diferenca = elecro.agendaAteFim - elecro.agendaAteIni
                                 //console.log('orcado._id=>' + orcado._id)                                
                                 if (isNaN(diferenca) == false) {
                                     for (var x = 0; x < diferenca + 1; x++) {
-                                        var date = elecro.dateestini
+                                        var date = elecro.dateateini
                                         var ano = date.substring(0, 4)
                                         var mes = date.substring(5, 7) - parseFloat(1)
                                         var dia = date.substring(8, 11)
@@ -1254,10 +1255,10 @@ router.get('/recursosAterramento/:id', ehAdmin, (req, res) => {
                                         }
                                         nova_data = ano + '' + mes + '' + dia
 
-                                        if (dateestini < nova_data) {
+                                        if (dateateini < nova_data) {
                                             estini = nova_data
                                         } else {
-                                            estini = dateestini
+                                            estini = dateateini
                                         }
 
                                         //console.log('diferenca=>' + diferenca)
@@ -1266,7 +1267,7 @@ router.get('/recursosAterramento/:id', ehAdmin, (req, res) => {
                                         //console.log('nova_data=>' + nova_data)
                                         //console.log('estini=>' + estini)
 
-                                        if (nova_data == estini && dateestini >= estini) {
+                                        if (nova_data == estini && dateateini >= estini && date>=dateateini) {
                                             ins_dif = 1
                                             //console.log('entrou')
                                             Pessoa.find({ funins: 'checked', user: _id }).then((instaladores) => {
@@ -1559,8 +1560,7 @@ router.get('/recursosInversores/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         //console.log('validação dos instaladores.')
         Cronograma.findOne({ projeto: req.params.id }).lean().then((cronograma) => {
-            var dateestini = cronograma.agendaEstIni
-            var datemodfim = cronograma.agendaModFim
+            var dateinvini = cronograma.agendaInvIni
             var estini
             //console.log('cronograma.agendaEstIni=>' + cronograma.agendaEstIni)
             //console.log('cronograma.agendaModFim=>' + cronograma.agendaModFim)
@@ -1574,7 +1574,7 @@ router.get('/recursosInversores/:id', ehAdmin, (req, res) => {
                                 //console.log('orcado._id=>' + orcado._id)                                
                                 if (isNaN(diferenca) == false) {
                                     for (var x = 0; x < diferenca + 1; x++) {
-                                        var date = elecro.dateestini
+                                        var date = elecro.dateinvini
                                         var ano = date.substring(0, 4)
                                         var mes = date.substring(5, 7) - parseFloat(1)
                                         var dia = date.substring(8, 11)
@@ -1592,19 +1592,19 @@ router.get('/recursosInversores/:id', ehAdmin, (req, res) => {
                                         }
                                         nova_data = ano + '' + mes + '' + dia
 
-                                        if (dateestini < nova_data) {
+                                        if (dateinvini < nova_data) {
                                             estini = nova_data
                                         } else {
-                                            estini = dateestini
+                                            estini = dateinvini
                                         }
 
                                         //console.log('diferenca=>' + diferenca)
                                         //console.log('elecro.date=>' + elecro.agendaEstIni)
-                                        //console.log('cronograma.dateestini=>' + dateestini)
+                                        //console.log('cronograma.dateinvini=>' + dateinvini)
                                         //console.log('nova_data=>' + nova_data)
                                         //console.log('estini=>' + estini)
 
-                                        if (nova_data == estini && dateestini >= estini) {
+                                        if (nova_data == estini && dateinvini >= estini && date>=dateinvini) {
                                             ins_dif = 1
                                             //console.log('entrou')
                                             Pessoa.find({ funins: 'checked', user: _id }).then((instaladores) => {
@@ -1944,7 +1944,7 @@ router.get('/recursosInstalacao/:id', ehAdmin, (req, res) => {
                                         //console.log('nova_data=>' + nova_data)
                                         //console.log('estini=>' + estini)
 
-                                        if (nova_data == estini && dateestini >= estini) {
+                                        if (nova_data == estini && dateestini >= estini && date>=dateestini) {
                                             ins_dif = 1
                                             //console.log('entrou')
                                             Pessoa.find({ funins: 'checked', user: _id }).then((instaladores) => {
@@ -2237,8 +2237,7 @@ router.get('/recursosArmazenamento/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         //console.log('validação dos instaladores.')
         Cronograma.findOne({ projeto: req.params.id }).lean().then((cronograma) => {
-            var dateestini = cronograma.agendaEstIni
-            var datemodfim = cronograma.agendaModFim
+            var dateeaeini = cronograma.agendaEaeIni
             var estini
             //console.log('cronograma.agendaEstIni=>' + cronograma.agendaEstIni)
             //console.log('cronograma.agendaModFim=>' + cronograma.agendaModFim)
@@ -2248,11 +2247,11 @@ router.get('/recursosArmazenamento/:id', ehAdmin, (req, res) => {
                         Projeto.findOne({ _id: elecro.projeto, orcado: true }).then((orcado) => {
                             qtd_prj = qtd_prj + 1
                             if (orcado != null && orcado._id != req.params.id) {
-                                diferenca = elecro.agendaModFim - elecro.agendaEstIni
+                                diferenca = elecro.agendaEaeFim - elecro.agendaEaeIni
                                 //console.log('orcado._id=>' + orcado._id)                                
                                 if (isNaN(diferenca) == false) {
                                     for (var x = 0; x < diferenca + 1; x++) {
-                                        var date = elecro.dateestini
+                                        var date = elecro.dateeaeini
                                         var ano = date.substring(0, 4)
                                         var mes = date.substring(5, 7) - parseFloat(1)
                                         var dia = date.substring(8, 11)
@@ -2270,19 +2269,19 @@ router.get('/recursosArmazenamento/:id', ehAdmin, (req, res) => {
                                         }
                                         nova_data = ano + '' + mes + '' + dia
 
-                                        if (dateestini < nova_data) {
+                                        if (dateeaeini < nova_data) {
                                             estini = nova_data
                                         } else {
-                                            estini = dateestini
+                                            estini = dateeaeini
                                         }
 
                                         //console.log('diferenca=>' + diferenca)
                                         //console.log('elecro.date=>' + elecro.agendaEstIni)
-                                        //console.log('cronograma.dateestini=>' + dateestini)
+                                        //console.log('cronograma.dateeaeini=>' + dateeaeini)
                                         //console.log('nova_data=>' + nova_data)
                                         //console.log('estini=>' + estini)
 
-                                        if (nova_data == estini && dateestini >= estini) {
+                                        if (nova_data == estini && dateeaeini >= estini && date>=dateeaeini) {
                                             ins_dif = 1
                                             //console.log('entrou')
                                             Pessoa.find({ funins: 'checked', user: _id }).then((instaladores) => {
@@ -2575,8 +2574,7 @@ router.get('/recursosPainel/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         //console.log('validação dos instaladores.')
         Cronograma.findOne({ projeto: req.params.id }).lean().then((cronograma) => {
-            var dateestini = cronograma.agendaEstIni
-            var datemodfim = cronograma.agendaModFim
+            var datepnlini = cronograma.agendaPnlIni
             var estini
             //console.log('cronograma.agendaEstIni=>' + cronograma.agendaEstIni)
             //console.log('cronograma.agendaModFim=>' + cronograma.agendaModFim)
@@ -2586,11 +2584,11 @@ router.get('/recursosPainel/:id', ehAdmin, (req, res) => {
                         Projeto.findOne({ _id: elecro.projeto, orcado: true }).then((orcado) => {
                             qtd_prj = qtd_prj + 1
                             if (orcado != null && orcado._id != req.params.id) {
-                                diferenca = elecro.agendaModFim - elecro.agendaEstIni
+                                diferenca = elecro.agendaPnlFim - elecro.agendaPnlIni
                                 //console.log('orcado._id=>' + orcado._id)                                
                                 if (isNaN(diferenca) == false) {
                                     for (var x = 0; x < diferenca + 1; x++) {
-                                        var date = elecro.dateestini
+                                        var date = elecro.datepnlini
                                         var ano = date.substring(0, 4)
                                         var mes = date.substring(5, 7) - parseFloat(1)
                                         var dia = date.substring(8, 11)
@@ -2608,19 +2606,19 @@ router.get('/recursosPainel/:id', ehAdmin, (req, res) => {
                                         }
                                         nova_data = ano + '' + mes + '' + dia
 
-                                        if (dateestini < nova_data) {
+                                        if (datepnlini < nova_data) {
                                             estini = nova_data
                                         } else {
-                                            estini = dateestini
+                                            estini = datepnlini
                                         }
 
                                         //console.log('diferenca=>' + diferenca)
                                         //console.log('elecro.date=>' + elecro.agendaEstIni)
-                                        //console.log('cronograma.dateestini=>' + dateestini)
+                                        //console.log('cronograma.datepnlini=>' + datepnlini)
                                         //console.log('nova_data=>' + nova_data)
                                         //console.log('estini=>' + estini)
 
-                                        if (nova_data == estini && dateestini >= estini) {
+                                        if (nova_data == estini && datepnlini >= estini && date>=datepnlini) {
                                             ins_dif = 1
                                             //console.log('entrou')
                                             Pessoa.find({ funins: 'checked', user: _id }).then((instaladores) => {
@@ -2913,8 +2911,7 @@ router.get('/recursosVistoria/:id', ehAdmin, (req, res) => {
 
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         Cronograma.findOne({ projeto: req.params.id }).lean().then((cronograma) => {
-            var dateplaini = cronograma.agendaPlaIni
-            var dateplafim = cronograma.agendaPlaFim
+            var datevisini = cronograma.agendaVisIni
             var plaini
             Cronograma.find({ user: _id }).then((crono_date) => {
                 if (crono_date != '') {
@@ -2923,10 +2920,10 @@ router.get('/recursosVistoria/:id', ehAdmin, (req, res) => {
                             qtd_prj = qtd_prj + 1
                             //console.log('orcado._id=>'+orcado._id)
                             if (orcado != null && orcado._id != req.params.id) {
-                                diferenca = elecro.agendaPlaFim - elecro.agendaPlaIni
+                                diferenca = elecro.agendaVisFim - elecro.agendaVisIni
                                 if (isNaN(diferenca) == false) {
                                     for (var x = 0; x < diferenca + 1; x++) {
-                                        var date = elecro.dateplaini
+                                        var date = elecro.datevisini
                                         var ano = date.substring(0, 4)
                                         var mes = date.substring(5, 7) - parseFloat(1)
                                         var dia = date.substring(8, 11)
@@ -2944,18 +2941,18 @@ router.get('/recursosVistoria/:id', ehAdmin, (req, res) => {
                                         }
                                         nova_data = ano + '' + mes + '' + dia
 
-                                        if (dateplaini < nova_data) {
+                                        if (datevisini < nova_data) {
                                             plaini = nova_data
                                         } else {
-                                            plaini = dateplaini
+                                            plaini = datevisini
                                         }
 
                                         //console.log('orcado._id=>' + orcado._id)
                                         //console.log('elecro.date=>' + elecro.agendaPlaiIni)
-                                        //console.log('cronograma.dateplaini=>' + dateplaini)
+                                        //console.log('cronograma.datevisini=>' + datevisini)
                                         //console.log('nova_data=>' + nova_data)
                                         //console.log('plaini=>' + plaini)
-                                        if (nova_data == plaini && dateplaini >= plaini) {
+                                        if (nova_data == plaini && datevisini >= plaini && date>=datevisini) {
                                             //console.log('entrou')
                                             ins_dif = 1
                                             Pessoa.find({ funges: 'checked', user: _id }).then((gestores) => {
@@ -4635,6 +4632,7 @@ router.post('/novo', uploadfoto.single('foto'), ehAdmin, (req, res) => {
             percom = 0
         }
 
+        console.log('req.file=>'+req.file)
         var foto
         if (req.file != null) {
             foto = req.file.filename
@@ -4843,6 +4841,7 @@ router.post('/editar', uploadfoto.single('foto'), ehAdmin, (req, res) => {
             pessoa.funges = funges
             pessoa.funpro = funpro
             pessoa.funins = funins
+            console.log('req.file=>'+req.file)
             if (req.file != null) {
                 pessoa.foto = req.file.filename
             } else {

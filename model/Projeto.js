@@ -1041,7 +1041,37 @@ const Projeto = new Schema({
     mensagem: {
         type:Boolean,
         require: false
-    }
+    },
+    memorial: {
+        type: String,
+        require: true,
+        trim: true
+    },    
+    distribuicao: {
+        type: String,
+        require: true,
+        trim: true
+    },      
+    art: {
+        type: String,
+        require: true,
+        trim: true
+    }, 
+    aterramento: {
+        type: String,
+        require: true,
+        trim: true
+    },       
+    unifilar: {
+        type: String,
+        require: true,
+        trim: true
+    },   
+    situacao: {
+        type: String,
+        require: true,
+        trim: true
+    },         
 })
 
 mongoose.model('projeto', Projeto)

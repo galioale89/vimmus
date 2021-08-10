@@ -9,6 +9,52 @@ const Realizado = mongoose.model('realizado')
 
 const { ehAdmin } = require('../helpers/ehAdmin')
 
+router.get('/analisegeral/', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    var potencia = 0
+    var valor = 0
+    var totint = 0
+    var qtdmod = 0
+    var custoPlano = 0
+    var q = 0
+    Realizado.find({ user: _id }).sort({ datafim: 'asc' }).lean().then((realizado) => {
+        realizado.forEach((element) => {
+            Projetos.findOne({ _id: element.projeto }).then((projeto) => {
+                if (projeto.ehDireto) {
+                    if (projeto.qtdmod > 0){
+                        qtdmod = qtdmod + projeto.qtdmod
+                    }else{
+                        qtdmod = qtdmod + 0
+                    }
+                } else {
+                    qtdmod = qtdmod + projeto.unimod
+                }
+                potencia = parseFloat(potencia) + parseFloat(element.potencia)
+                
+                valor = valor + element.valor
+                totint = totint + element.totint
+                custoPlano = custoPlano + element.custoPlano
+
+                q = q + 1
+                if (q == realizado.length) {
+                    console.log('valor=>'+valor)
+                    console.log('potencia=>'+potencia)
+                    var rspkwp = (parseFloat(valor) / parseFloat(potencia)).toFixed(2)
+                    var rspmod = (parseFloat(totint) / parseFloat(qtdmod)).toFixed(2)
+                    var custoPorModulo = (parseFloat(custoPlano) / parseFloat(qtdmod)).toFixed(2)
+                    res.render('relatorios/analisegeral', { potencia, qtdmod, valor, rspkwp, rspmod, custoPorModulo })
+                }
+            }).catch((err) => {
+                req.flash('error_msg', 'Houve um erro para encontrar projetos realizados')
+                res.redirect('/menu')
+            })
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Houve um erro para encontrar projetos realizados')
+        res.redirect('/menu')
+    })
+
+})
 router.get('/listarealizados', ehAdmin, (req, res) => {
     const { _id } = req.user
     Realizado.find({ user: _id }).sort({ datafim: 'asc' }).lean().then((realizado) => {
