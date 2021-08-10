@@ -26,12 +26,19 @@
             equipe.value = ''
         }
     }
-    function infoGestao() {
-        alert('Considere o número de horas dedicados ao planejamento do projeto.')
+    function infoTempo() {
+        alert('Considere o número de dias(ou horas) dedicados as atividades. Esse campo será utilizado para gerar o cronograma planejado.')
     }
     function info_markup() {
         alert('O percentual de MarkUp representa o ISS, a comissão, os Tributos à recolher e a margem de lucro liquido do projeto .')
     }    
+
+    function calculaInstalacao(){
+        var rspmod = document.getElementById('rspmod')
+        var qtdmod = document.getElementById('qtdmod')
+        var totint = document.getElementById('totint')
+        totint.value = parseFloat(rspmod.value) * parseFloat(qtdmod.value) 
+    }
 </script>
 <form action='/projeto/direto/' method='post'>
     <!-- Modal Consulta Alíquotas-->
@@ -196,8 +203,8 @@
         <input type="hidden" name="id" value='{{projeto._id}}'>
         <div class="row">
             <div class="col-md-8" style="padding-left: 30px;">
-                <div class="row mb-1" style="100%">
-                    <div class="col-md-4 mt-3 mb-1">
+                <div class="row mb-1 mt-2" style="100%">
+                    <div class="col-md-4 mb-1">
                         <div class="row">
                             <div class="row">
                                 <div class="text-center">
@@ -214,25 +221,25 @@
                         </div>
                     </div>
                     <div class="col-md-8 text-center">
-                        <div class="row">
-                            <div class="col-md-4" style='margin-top: 5%;'>
+                        <div class="row" >
+                            <div class="col-md-4 mt-2">
                                 <div class="form-check form-switch">
                                     <input name='checkFatura' style="margin-top: 1px;width: 25px;height: 15px;" class="form-check-input" type="checkbox" {{fatura}}>
                                     <label class="form-check-label" style='font-size: 13px;'> Faturar Material?</label>
                                 </div>
                             </div>
-                            <div class="col-md-3" style='margin-top: 5%;'>
+                            <div class="col-md-3 mt-2">
                                 <div class="form-check form-switch">
                                     <input class='form-check-input' style="margin-top: 1px;width: 25px;height: 15px;" type='checkbox' {{checkHora}} name='lancaHora'
                                         id='lancaHora'>
                                     <label class="form-check-label" style="font-size: 13px;width:100px;">Lançar Horas</label>
                                 </div>
                             </div>
-                            <div class="col-md-3 mt-4 text-end">
+                            <div class="col-md-3 text-end">
                                 <label class='col-form-label col-form-label-sm fw-bold'>MarkUp(%): </label><i class="bi bi-info-circle"
                                     onmousemove='info_markup()'></i>
                             </div>
-                            <div class="col-md-2 mt-4">
+                            <div class="col-md-2">
                                 <input class='form-control form-control-sm' type="text" name="markup"
                                     value='{{projeto.markup}}' {{#if projeto.orcado}}{{else}}disabled{{/if}}>
                             </div>
@@ -242,21 +249,35 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="row card">
+                            <div class="row mt-1">
+                                <div class="col text-end">
+                                    <label class="col-form-label col-form-label-sm fw-bold"> Número de Módulos: </label>
+                                </div>
+                                <div class="col-md-3 mt-2">
+                                    <input class="form-control form-control-sm" type="number" step='0.010' name='qtdmod' id='qtdmod' value='{{projeto.qtdmod}}' onchange="calculaInstalacao()">
+                                </div>
+                                <div class="col-md-3 mt-2">
+                                    <label class="col-form-label col-form-label-sm fw-bold"> R$/Módulo: </label>
+                                </div>
+                                <div class="col-md-3 mt-2">
+                                    <input class="form-control form-control-sm" type="number" step='0.010' name='rspmod' id='rspmod' value='{{projeto.rspmod}}' onchange="calculaInstalacao()">
+                                </div>                                
+                            </div>
                             <div class="row" style="margin-top: 5px;">
-                                <div class="col-md-10">
+                                <div class="col-md-9">
                                     <label class="fw-bold col-form-label col-form-label-sm mb-2">Custos
                                         Operacionais:</label>
                                     <label class="fw-bold col-form-label col-form-label-sm">R$
                                         {{projeto.totcop}}</label>
                                 </div>
-                                <div class="col-md-1" style="margin-top: 5px;">
-                                    <label class="fw-bold col-form-label col-form-label-sm">Tempo</label>
+                                <div class="col-md-3 text-end">
+                                    <label class="fw-bold col-form-label col-form-label-sm">Tempo</label><i
+                                        class='bi bi-info-circle' onmousemove="infoTempo()"></i>
                                 </div>
                             </div>
-                            <div class="row" style="margin-bottom: 2%;">
+                            <div class="row" style="margin-bottom: 1%;">
                                 <div class="col text-end">
-                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Gestão:</label><i
-                                        class='bi bi-info-circle' onmousemove="infoGestao()"></i><br>                                    
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Gestão:</label><br>                                    
                                     <label class="fw-bold col-form-label col-form-label-sm mb-2">Projetista:</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-2">Valor
                                         ART:</label><br>                                    
@@ -275,7 +296,8 @@
                                         class="fw-bold col-form-label col-form-label-sm mb-1">Alimentação:</label><br>
                                 </div>
                                 <div class="col">
-
+                                    <input type='hidden' id='vlrhri' value='{{cofig.vlrhri}}'>
+                                    <input type='hidden' id='vlrdri' value='{{cofig.vlrdri}}'>
                                     <div class="input-group input-group-sm mb-1">
                                         <span class="input-group-text">$</span>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
@@ -342,15 +364,15 @@
                                     </div>
                                 </div>
                                 <div class="col-md-2">
-                                    <div class="row mt-1">
+                                    <div class="row">
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='number' name='trbges'
                                             class='form-control form-control-sm' value='{{projeto.trbges}}' step='0.010'>
                                     </div>          
-                                    <div class="row mt-1">
+                                    <div class="row" style="margin-top: 15%">
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='number' name='trbpro'
                                             class='form-control form-control-sm' value='{{projeto.trbpro}}' step='0.010'>
                                     </div>                           
-                                    <div class="row" style='margin-top:85%'></div>                                                                       
+                                    <div class="row" style='margin-top:90%'></div>                                                                       
                                     <div class="row">
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='number' name='trbint'
                                             class='form-control form-control-sm' value='{{projeto.trbint}}' step='0.010'>
@@ -362,7 +384,7 @@
 
                     <div class="col-md-6">
                         <div class="row card">
-                            <div class="row">
+                            <div class="row mt-4" style="margin-bottom: 7%;">
                                 <div class="col-md-7 text-end">
                                     <label class="fw-bold col-form-label col-form-label-sm">Reserva</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-1">Reserva Gerencial:
@@ -431,7 +453,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mt-4 text-center" style="background-color: white;">
+                    <div class="row mt-2 text-center" style="background-color: white;">
                         <div class="col-md-6 text-end">
                             <div class="row">
                                 <div class="col-md-6">

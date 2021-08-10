@@ -8,6 +8,11 @@
 
     td {
         font-weight: 700;
+        font-size: 15px;
+    }
+    li {
+        font-size: 16px;
+        line-height: 18px;
     }
 </style>
 <div style="margin-top: 5px;padding-left:20px;padding-right:20px">
@@ -23,15 +28,15 @@
                 <div class='modal-body'>
                     <table align="center">
                         <tr>
-                            <td style="font-size: 20px;">Módulos</td>
-                            <td style="font-size: 20px;">Inversor</td>
-                            <td style="font-size: 20px;">Estrutura</td>
-                            <td style="font-size: 20px;">Cabos</td>
-                            <td style="font-size: 20px;">Disjuntores</td>
-                            <td style="font-size: 20px;">DPS</td>
-                            <td style="font-size: 20px;">String Box</td>
-                            <td style="font-size: 20px;">Outros</td>
-                            <td style="font-size: 20px;">Total</td>
+                            <td>Módulos</td>
+                            <td>Inversor</td>
+                            <td>Estrutura</td>
+                            <td>Cabos</td>
+                            <td>Disjuntores</td>
+                            <td>DPS</td>
+                            <td>String Box</td>
+                            <td>Outros</td>
+                            <td>Total R$</td>
                         </tr>
                         <tr>
                             <td>R$ {{med_modequ}}</td>
@@ -45,47 +50,47 @@
                         </tr>
                         <td>
                             <div class="sessao-dash-total textoper" style="margin-left: 5px;">
-                                <label>{{per_modequ}}%</label>
+                                {{per_modequ}}%
                             </div>
                         </td>
                         <td>
                             <div class="sessao-dash-total textoper" style="margin-left: 5px;">
-                                <label>{{per_invequ}}%</label>
+                                {{per_invequ}}%
                             </div>
                         </td>
                         <td>
                             <div class="sessao-dash-total textoper" style="margin-left: 5px;">
-                                <label>{{per_estequ}}%</label>
+                                {{per_estequ}}%
                             </div>
                         </td>
                         <td>
                             <div class="sessao-dash-total textoper" style="margin-left: 5px;">
-                                <label>{{per_cabequ}}%</label>
+                                {{per_cabequ}}%
                             </div>
                         </td>
                         <td>
                             <div class="sessao-dash-total textoper" style="margin-left: 5px;">
-                                <label>{{per_disequ}}%</label>
+                                {{per_disequ}}%
                             </div>
                         </td>
                         <td>
                             <div class="sessao-dash-total textoper" style="margin-left: 5px;">
-                                <label>{{per_dpsequ}}%</label>
+                                {{per_dpsequ}}%
                             </div>
                         </td>
                         <td>
                             <div class="sessao-dash-total textoper" style="margin-left: 5px;">
-                                <label>{{per_sbxequ}}%</label>
+                                {{per_sbxequ}}%
                             </div>
                         </td>
                         <td>
                             <div class="sessao-dash-total textoper" style="margin-left: 5px;">
-                                <label>{{per_ocpequ}}%</label>
+                                {{per_ocpequ}}%
                             </div>
                         </td>
                         <td>
                             <div class="sessao-dash textoper" style="margin-left: 5px;">
-                                <label>R$ {{med_totequ}}</label>
+                                {{med_totequ}}
                             </div>
                         </td>
                     </table>
@@ -133,74 +138,74 @@
             <div class="row">
                 <label class='col-form-label fw-bold text-center'>Custos Fixos e Variáveis</label>
                 <div class="col-md-5 text-end">
-                    <li style="font-size: 14px;">Projetista:</li>
-                    <li style="font-size: 14px;">Art:</li>
-                    <li style="font-size: 14px;">Gestão:</li>
-                    <li style="font-size: 14px;">Instalação:</li>
-                    <li style="font-size: 14px;">Administrativo:</li>
-                    <li style="font-size: 14px;">Comissão:</li>
-                    <li style="font-size: 14px;">Tributos:</li>
-                    <li style="font-size: 14px;">Total:</li>
+                    <li style="">Projetista:</li>
+                    <li style="">Art:</li>
+                    <li style="">Gestão:</li>
+                    <li style="">Instalação:</li>
+                    <li style="">Administrativo:</li>
+                    <li style="">Comissão:</li>
+                    <li style="">Tributos:</li>
+                    <li style="">Total:</li>
                 </div>
                 <div class="col-md-4 text-start">
-                    <li style="font-size: 14px;">R$ {{medkwp_totpro}}</li>
-                    <li style="font-size: 14px;">R$ {{medkwp_totart}}</li>
-                    <li style="font-size: 14px;">R$ {{medkwp_totges}}</li>
-                    <li style="font-size: 14px;">R$ {{medkwp_totint}}</li>
-                    <li style="font-size: 14px;">R$ {{medkwp_totadm}}</li>
-                    <li style="font-size: 14px;">R$ {{medkwp_totcom}}</li>
-                    <li style="font-size: 14px;">R$ {{medkwp_tottrb}}</li>
-                    <li style="font-size: 14px;">R$ {{medkwp_custoFix}}</li>
+                    <li style="">R$ {{medkwp_totpro}}</li>
+                    <li style="">R$ {{medkwp_totart}}</li>
+                    <li style="">R$ {{medkwp_totges}}</li>
+                    <li style="">R$ {{medkwp_totint}}</li>
+                    <li style="">R$ {{medkwp_totadm}}</li>
+                    <li style="">R$ {{medkwp_totcom}}</li>
+                    <li style="">R$ {{medkwp_tottrb}}</li>
+                    <li style="">R$ {{medkwp_custoFix}}</li>
                 </div>
                 <div class="col-md-3 text-start">
-                    <li style="font-size: 14px;">{{per_totpro}} %</li>
-                    <li style="font-size: 14px;">{{per_totart}} %</li>
-                    <li style="font-size: 14px;">{{per_totges}} %</li>
-                    <li style="font-size: 14px;">{{per_totint}} %</li>
-                    <li style="font-size: 14px;">{{per_totadm}} %</li>
-                    <li style="font-size: 14px;">{{per_totcom}} %</li>
-                    <li style="font-size: 14px;">{{per_tottrb}} %</li>
-                    <li style="font-size: 14px;">{{per_totcus}} %</li>
+                    <li style="">{{per_totpro}} %</li>
+                    <li style="">{{per_totart}} %</li>
+                    <li style="">{{per_totges}} %</li>
+                    <li style="">{{per_totint}} %</li>
+                    <li style="">{{per_totadm}} %</li>
+                    <li style="">{{per_totcom}} %</li>
+                    <li style="">{{per_tottrb}} %</li>
+                    <li style="">{{per_totcus}} %</li>
 
                 </div>
             </div>
             <div class="row">
                 <label class='col-form-label fw-bold text-center'>Outros Custos Variáveis</label>
                 <div class="col-md-5 text-end">
-                    <li style="font-size: 14px;">Alimentação:</li>
-                    <li style="font-size: 14px;">Deslocamento:</li>
-                    <li style="font-size: 14px;">Total:</li>
+                    <li style="">Alimentação:</li>
+                    <li style="">Deslocamento:</li>
+                    <li style="">Total:</li>
                 </div>
                 <div class="col-md-4 text-start">
-                    <li style="font-size: 14px;">R$ {{medkwp_totali}}</li>
-                    <li style="font-size: 14px;">R$ {{medkwp_totdes}}</li>
-                    <li style="font-size: 14px;">R$ {{medkwp_custoVar}}</li>
+                    <li style="">R$ {{medkwp_totali}}</li>
+                    <li style="">R$ {{medkwp_totdes}}</li>
+                    <li style="">R$ {{medkwp_custoVar}}</li>
                 </div>
                 <div class="col-md-3 text-start">
-                    <li style="font-size: 14px;">{{per_totali}} %</li>
-                    <li style="font-size: 14px;">{{per_totdes}} %</li>
-                    <li style="font-size: 14px;">{{per_totvar}} %</li>
+                    <li style="">{{per_totali}} %</li>
+                    <li style="">{{per_totdes}} %</li>
+                    <li style="">{{per_totvar}} %</li>
                 </div>
             </div>
             <div class="row">
                 <label class='col-form-label fw-bold text-center'>Custos Variáveis Estruturais</label>
                 <div class="col-md-5 text-end">
-                    <li style="font-size: 14px;">Cercamento:</li>
-                    <li style="font-size: 14px;">Central:</li>
-                    <li style="font-size: 14px;">Postes:</li>
-                    <li style="font-size: 14px;">Total:</li>
+                    <li style="">Cercamento:</li>
+                    <li style="">Central:</li>
+                    <li style="">Postes:</li>
+                    <li style="">Total:</li>
                 </div>
                 <div class="col-md-4 text-start">
-                    <li style="font-size: 14px;">R$ {{medkwp_totcer}}</li>
-                    <li style="font-size: 14px;">R$ {{medkwp_totcen}}</li>
-                    <li style="font-size: 14px;">R$ {{medkwp_totpos}}</li>
-                    <li style="font-size: 14px;">R$ {{medkwp_custoEst}}</li>
+                    <li style="">R$ {{medkwp_totcer}}</li>
+                    <li style="">R$ {{medkwp_totcen}}</li>
+                    <li style="">R$ {{medkwp_totpos}}</li>
+                    <li style="">R$ {{medkwp_custoEst}}</li>
                 </div>
                 <div class="col-md-3 text-start">
-                    <li style="font-size: 14px;">{{per_totcer}} %</li>
-                    <li style="font-size: 14px;">{{per_totcen}} %</li>
-                    <li style="font-size: 14px;">{{per_totpos}} %</li>
-                    <li style="font-size: 14px;">{{per_totest}} %</li>
+                    <li style="">{{per_totcer}} %</li>
+                    <li style="">{{per_totcen}} %</li>
+                    <li style="">{{per_totpos}} %</li>
+                    <li style="">{{per_totest}} %</li>
                 </div>
             </div>
             <li class='text-center'><label class='col-form-label fw-bold'>Total Serviços: R$ {{soma_totser}}</label>

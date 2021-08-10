@@ -150,7 +150,7 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
                add11: req.body.add11,
                add12: req.body.add12,
                potencia: 1
-          }          
+          }
           if (req.body.qtduce == 1) {
                dime1 = {
                     consumo1: req.body.uc11,
@@ -201,7 +201,7 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
           }
           var dime = Object.assign(dime2, dime1)
           console.log('dime=>' + dime)
-                    
+
           new Dimensionamento(dime).save().then(() => {
                Dimensionamento.findOne().sort({ field: 'asc', _id: -1 }).lean().then((dimensionamento) => {
                     var sucesso = []
@@ -442,44 +442,49 @@ router.get('/direto/:id', ehAdmin, (req, res) => {
                Cronograma.findOne({ projeto: req.params.id }).then((cronograma) => {
                     //console.log('encontrou cronograma')
                     //console.log('empresa.regime=>' + empresa.regime)
-                    switch (empresa.regime) {
-                         case "Simples": ehSimples = true
-                              break;
-                         case "Lucro Presumido": ehLP = true
-                              break;
-                         case "Lucro Real": ehLR = true
-                              break;
-                    }
-                    //console.log('ehSimples=>' + ehSimples)
-                    //console.log('ehLP=>' + ehLP)
-                    //console.log('ehLR=>' + ehLR)
-                    //console.log('projeto.cliente=>' + projeto.cliente)
-                    Cliente.findOne({ _id: projeto.cliente }).lean().then((cliente) => {
-                         //console.log('encontrou cliente')
-                         var fatura
-                         var checkHora
-                         if (projeto.fatequ == true) {
-                              fatura = 'checked'
-                         } else {
-                              fatura = 'uncheked'
+                    Configuracao.findOne({ _id: projeto.configuracao }).lean().then((config) => {
+                         switch (empresa.regime) {
+                              case "Simples": ehSimples = true
+                                   break;
+                              case "Lucro Presumido": ehLP = true
+                                   break;
+                              case "Lucro Real": ehLR = true
+                                   break;
                          }
-                         //console.log('tipoCustoIns=>'+projeto.tipoCustoIns)
+                         //console.log('ehSimples=>' + ehSimples)
+                         //console.log('ehLP=>' + ehLP)
+                         //console.log('ehLR=>' + ehLR)
+                         //console.log('projeto.cliente=>' + projeto.cliente)
+                         Cliente.findOne({ _id: projeto.cliente }).lean().then((cliente) => {
+                              //console.log('encontrou cliente')
+                              var fatura
+                              var checkHora
+                              if (projeto.fatequ == true) {
+                                   fatura = 'checked'
+                              } else {
+                                   fatura = 'uncheked'
+                              }
+                              //console.log('tipoCustoIns=>'+projeto.tipoCustoIns)
 
-                         if (projeto.tipoCustoIns == 'hora') {
-                              checkHora = 'checked'
-                         } else {
-                              checkHora = 'unchecked'
-                         }
-                         var libRecursos = liberaRecursos(cronograma.dateplaini, cronograma.dateplafim, cronograma.dateprjini, cronograma.dateprjfim,
-                              cronograma.dateateini, cronograma.dateatefim, cronograma.dateinvini, cronograma.dateinvfim,
-                              cronograma.datestbini, cronograma.datestbfim, cronograma.dateestini, cronograma.dateestfim,
-                              cronograma.datemodini, cronograma.datemodfim, cronograma.datevisini, cronograma.datevisfim)
-                         if (projeto.qtdins == '' || typeof projeto.qtdins == 'undefined' || projeto.qtdins == 0) {
-                              libRecursos = false
-                         } else {
-                              libRecursos = true
-                         }
-                         res.render('projeto/custosdiretos', { projeto, empresa, ehSimples, ehLP, ehLR, cliente, fatura, checkHora, libRecursos })
+                              if (projeto.tipoCustoIns == 'hora') {
+                                   checkHora = 'checked'
+                              } else {
+                                   checkHora = 'unchecked'
+                              }
+                              var libRecursos = liberaRecursos(cronograma.dateplaini, cronograma.dateplafim, cronograma.dateprjini, cronograma.dateprjfim,
+                                   cronograma.dateateini, cronograma.dateatefim, cronograma.dateinvini, cronograma.dateinvfim,
+                                   cronograma.datestbini, cronograma.datestbfim, cronograma.dateestini, cronograma.dateestfim,
+                                   cronograma.datemodini, cronograma.datemodfim, cronograma.datevisini, cronograma.datevisfim)
+                              if (projeto.qtdins == '' || typeof projeto.qtdins == 'undefined' || projeto.qtdins == 0) {
+                                   libRecursos = false
+                              } else {
+                                   libRecursos = true
+                              }
+                              res.render('projeto/custosdiretos', { projeto, empresa, config, ehSimples, ehLP, ehLR, cliente, fatura, checkHora, libRecursos })
+                         }).catch((err) => {
+                              req.flash('error_msg', 'Houve um erro ao encontrar a configuração.')
+                              res.redirect('/direto/' + req.params.id)
+                         })
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve um erro ao encontrar um cliente.')
                          res.redirect('/direto/' + req.params.id)
@@ -977,9 +982,9 @@ router.post("/novo", ehAdmin, (req, res) => {
           */
           //console.log(req.body.dataini)
           //------------------------------------------------------------------
-          if (req.body.dataini == '' || req.body.dataprev == '') {
-               erros.push({ texto: 'É necessário informar as data de inicio e de previsão de entrega do projeto.' })
-               erros_semdim = erros_semdim + 'É necessário informar as data de inicio e de previsão de entrega do projeto.'
+          if (req.body.dataprev == '') {
+               erros.push({ texto: 'É necessário informar a data de previsão de entrega do projeto.' })
+               erros_semdim = erros_semdim + 'É necessário informar a data de previsão de entrega do projeto.'
           }
           console.log('req.body.id_dimensionamento=>' + req.body.id_dime)
           if (!req.body.id_dime) {
@@ -1232,8 +1237,8 @@ router.post("/novo", ehAdmin, (req, res) => {
                                         dime = {
                                              dimensionamento: req.body.id_dime
                                         }
-                                        projeto = Object.assign(corpo,dime)
-                                   }else{
+                                        projeto = Object.assign(corpo, dime)
+                                   } else {
                                         projeto = corpo
                                    }
 
@@ -1517,10 +1522,10 @@ router.post('/edicao', ehAdmin, (req, res) => {
 
      } else {
           Projeto.findOne({ _id: req.body.id }).then((projeto) => {
-               console.log('req.body.vendedor=>'+req.body.vendedor)
+               console.log('req.body.vendedor=>' + req.body.vendedor)
                Pessoa.findOne({ nome: req.body.vendedor }).then((prj_vendedor) => {
                     Detalhado.findOne({ projeto: projeto._id }).then((detalhe) => {
-                         console.log('projeto._id=>'+projeto._id)
+                         console.log('projeto._id=>' + projeto._id)
                          Cronograma.findOne({ projeto: projeto._id }).then((cronograma) => {
                               console.log('encontrou cronograma')
 
@@ -2043,10 +2048,10 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                    vendedor = projeto.vendedor
                                    percom = projeto.percom
                               }
-                              console.log('vendedor=>'+vendedor)
-                              console.log('percom=>'+percom)
+                              console.log('vendedor=>' + vendedor)
+                              console.log('percom=>' + percom)
                               //Altera a empresa 
-                              console.log('checkEmpresa=>'+req.body.checkEmpresa)                         
+                              console.log('checkEmpresa=>' + req.body.checkEmpresa)
                               if (req.body.checkEmpresa != null) {
                                    projeto.empresa = req.body.empresa
                               }
@@ -2429,6 +2434,8 @@ router.post('/direto', ehAdmin, (req, res) => {
                                         projeto.outcer = outcer
                                         projeto.outpos = outpos
 
+                                        projeto.rspmod = req.body.rspmod
+                                        projeto.qtdmod = req.body.qtdmod
                                         projeto.totali = totali
                                         projeto.totint = totint
 
@@ -2477,7 +2484,7 @@ router.post('/direto', ehAdmin, (req, res) => {
                                              } else {
                                                   desAdm = ((parseFloat(empresa_prj.desadm) / parseFloat(empresa_prj.estkwp)) * parseFloat(projeto.potencia)).toFixed(2)
                                              }
-                                        }                                       
+                                        }
 
                                         //console.log('custoTotal=>'+custoTotal)
                                         //Definindo o imposto ISS
@@ -2498,14 +2505,14 @@ router.post('/direto', ehAdmin, (req, res) => {
                                                   vlrNFS = (parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)).toFixed(2)
                                                   impNFS = (parseFloat(vlrNFS) * (parseFloat(empresa_prj.alqNFS) / 100)).toFixed(2)
                                              }
-                                             vlrMarkup = ((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva)) / (1 -(parseFloat(req.body.markup))/ 100)).toFixed(2)
+                                             vlrMarkup = ((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva)) / (1 - (parseFloat(req.body.markup)) / 100)).toFixed(2)
                                              projeto.valor = parseFloat(vlrMarkup).toFixed(2)
                                              projeto.markup = config.markup
                                              prjValor = vlrMarkup
                                         } else {
                                              //console.log('custoTotal=>'+custoTotal)
                                              //console.log('req.body.markup=>'+req.body.markup)
-                                             vlrMarkup = ((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva)) / (1 -(parseFloat(req.body.markup))/100)).toFixed(2)
+                                             vlrMarkup = ((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva)) / (1 - (parseFloat(req.body.markup)) / 100)).toFixed(2)
                                              //console.log('vlrMarkup=>' + vlrMarkup)
                                              if (req.body.checkFatura != null) {
                                                   fatequ = true

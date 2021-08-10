@@ -15,7 +15,7 @@
     tr,
     td {
         border-collapse: collapse;
-        font-size: 14px;
+        font-size: 12px;
         border: rgba(255, 255, 255, 0.8) 1px solid;
         width: fit-content;
     }
@@ -31,6 +31,52 @@
         border: rgba(255, 255, 255, 0.8) 1px solid;
     }
 </style>
+<script>
+    function mascara_dataini() {
+        var data = document.getElementById('dataini')
+        //var dataord = document.getElementById('dataord')
+        var currenTime = new Date()
+        var year = currenTime.getFullYear()
+        var month = currenTime.getMonth()
+        var day = currenTime.getDate()
+        var ano = data.value
+        ano1 = ano.substring(6, 10)
+        dia1 = ano.substring(0, 2)
+        mes1 = ano.substring(3, 5)
+
+
+        if (data.value.length == 2 || data.value.length == 5) {
+            data.value += "/"
+        }
+        if (data.value.length == 10) {
+            if (parseFloat(mes1) > 12 || parseFloat(dia1) > 31) {
+                data.value = ''
+            }
+        }
+    }
+    function mascara_datafim() {
+        var data = document.getElementById('datafim')
+        //var dataord = document.getElementById('dataord')
+        var currenTime = new Date()
+        var year = currenTime.getFullYear()
+        var month = currenTime.getMonth()
+        var day = currenTime.getDate()
+        var ano = data.value
+        ano1 = ano.substring(6, 10)
+        dia1 = ano.substring(0, 2)
+        mes1 = ano.substring(3, 5)
+
+
+        if (data.value.length == 2 || data.value.length == 5) {
+            data.value += "/"
+        }
+        if (data.value.length == 10) {
+            if (parseFloat(mes1) > 12 || parseFloat(dia1) > 31) {
+                data.value = ''
+            }
+        }
+    }
+</script>
 <div id='quadro'>
     <h5 class="text-center">Relatório de Projetos Abertos</h5>
     <div class="row">
@@ -133,63 +179,17 @@
         <h6>Nenhum projeto esta aberto.</h6>
         {{/each}}
         <tr style="background-color: rgba(200, 200, 200, 0.8);font-weight: 700;">
-            <td style="font-size: 12px;" colspan='4'>Total</td>
-            <td style="font-size: 12px;">R$ {{soma_valor}}</td>
-            <td style="font-size: 12px;"> R$ {{soma_vlrnfs}}</td>
-            <td style="font-size: 12px;">R$ {{soma_lb}}</td>
-            <td style="font-size: 12px;">R$ {{soma_custo}}</td>
-            <td style="font-size: 12px;">{{perMedCusto}}</td>
-            <td style="font-size: 12px;">R$ {{soma_lbaimp}}</td>
-            <td style="font-size: 12px;">R$ {{soma_ll}}</td>
-            <td style="font-size: 12px;">{{perMedLL}}</td>
-            <td style="font-size: 12px;">R$ {{soma_tributos}}</td>
-            <td style="font-size: 12px;">{{perMedTrb}}</td>
+            <td colspan='4'>Total</td>
+            <td>R$ {{soma_valor}}</td>
+            <td> R$ {{soma_vlrnfs}}</td>
+            <td>R$ {{soma_lb}}</td>
+            <td>R$ {{soma_custo}}</td>
+            <td>{{perMedCusto}}</td>
+            <td>R$ {{soma_lbaimp}}</td>
+            <td>R$ {{soma_ll}}</td>
+            <td>{{perMedLL}}</td>
+            <td>R$ {{soma_tributos}}</td>
+            <td>{{perMedTrb}}</td>
         </tr>
     </table>
 </div>
-<script>
-    function mascara_dataini() {
-        var data = document.getElementById('dataini')
-        //var dataord = document.getElementById('dataord')
-        var currenTime = new Date()
-        var year = currenTime.getFullYear()
-        var month = currenTime.getMonth()
-        var day = currenTime.getDate()
-        var ano = data.value
-        ano1 = ano.substring(6, 10)
-        dia1 = ano.substring(0, 2)
-        mes1 = ano.substring(3, 5)
-
-
-        if (data.value.length == 2 || data.value.length == 5) {
-            data.value += "/"
-        }
-        if (data.value.length == 10) {
-            if (parseFloat(mes1) > 12 || parseFloat(dia1) > 31) {
-                data.value = ''
-            }
-        }
-    }
-    function mascara_datafim() {
-        var data = document.getElementById('datafim')
-        //var dataord = document.getElementById('dataord')
-        var currenTime = new Date()
-        var year = currenTime.getFullYear()
-        var month = currenTime.getMonth()
-        var day = currenTime.getDate()
-        var ano = data.value
-        ano1 = ano.substring(6, 10)
-        dia1 = ano.substring(0, 2)
-        mes1 = ano.substring(3, 5)
-
-
-        if (data.value.length == 2 || data.value.length == 5) {
-            data.value += "/"
-        }
-        if (data.value.length == 10) {
-            if (parseFloat(mes1) > 12 || parseFloat(dia1) > 31) {
-                data.value = ''
-            }
-        }
-    }
-</script>
