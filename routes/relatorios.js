@@ -3091,7 +3091,6 @@ router.post('/analiseGeral', ehAdmin, (req, res) => {
     }
 
     Realizado.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }}).sort({ datafim: 'asc' }).lean().then((realizado) => {
-        console.log('realizado.length=>'+realizado.length)
         realizado.forEach((element) => {
             Projetos.findOne({ _id: element.projeto}).then((projeto) => {
                 if (projeto.ehDireto) {
@@ -3118,7 +3117,7 @@ router.post('/analiseGeral', ehAdmin, (req, res) => {
                     var rsikwp = (parseFloat(totint) / parseFloat(potencia)).toFixed(2)
                     var custoPorModulo = (parseFloat(custoPlano) / parseFloat(qtdmod)).toFixed(2)
                     var custoPorKwp = (parseFloat(custoPlano) / parseFloat(potencia)).toFixed(2)
-                    res.render('relatorios/analisegeral', { potencia, qtdmod, valor, rspkwp, rspmod, rsimod, rsikwp, custoPorModulo,custoPorKwp })
+                    res.render('relatorios/analisegeral', { potencia, qtdmod, valor, rspkwp, rspmod, rsimod, rsikwp, custoPorModulo,custoPorKwp, mestitulo, ano })
                 }
             }).catch((err) => {
                 req.flash('error_msg', 'Houve um erro para encontrar projetos.')
