@@ -12,7 +12,7 @@
 <div class="container mt-4">
     <form action="/relatorios/analiseGeral" method="post">
         <div class="row">
-            <div class="sessao-dash-titulo text-center" style="margin-bottom: 10px;margin-top: 10px;">
+            <div class="sessao-dash-titulo text-center" style="margin-bottom: 10px;">
                 <label class='col-form-label fw-bold' style="color: white;">{{#if
                     mestitulo}}{{mestitulo}}{{ano}}{{else}}Tudo{{/if}}</label>
             </div>
@@ -49,26 +49,20 @@
             <tr>
                 <td>
                     <h6 style="font-weight: 600;"> Potência Instalada </h6>
-                    <div style="padding-left: 20%;">
-                        <div class="sessao-dash textoper">
+                        <div class="titulo-inicio" style="font-size: 30px;">
                             {{potencia}}
                         </div>
-                    </div>
                 </td>
                 <td>
                     <h6 style="font-weight: 600;"> Módulos Vendidos </h6>
-                    <div style="padding-left: 20%;">
-                        <div class="sessao-dash textoper">
+                    <div class="titulo-inicio" style="font-size: 30px;">
                             {{qtdmod}}
-                        </div>
                     </div>
                 </td>
                 <td>
                     <h6 style="font-weight: 600;"> R$ Total Projetos Vendidos </h6>
-                    <div style="padding-left: 20%;">
-                        <div class="sessao-dash textoper">
+                    <div class="titulo-inicio" style="font-size: 30px;">
                             {{valor}}
-                        </div>
                     </div>
                 </td>
             </tr>
@@ -83,7 +77,26 @@
                 </td>
                 <td>
 
-                    <h6 style="font-weight: 600;"> Instalação R$/Módulo</h6>
+                    <h6 style="font-weight: 600;"> Instalação R$/kWp</h6>
+                    <div style="padding-left: 20%;">
+                        <div class="sessao-dash textoper">
+                            {{rsikwp}}
+                        </div>
+                    </div>
+                </td>
+                <td>
+
+                    <h6 style="font-weight: 600;"> Custo Total R$/kWp</h6>
+                    <div style="padding-left: 20%;">
+                        <div class="sessao-dash textoper">
+                            {{custoPorKwp}}
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h6 style="font-weight: 600;"> R$/Módulo Vendido </h6>
                     <div style="padding-left: 20%;">
                         <div class="sessao-dash textoper">
                             {{rspmod}}
@@ -92,7 +105,16 @@
                 </td>
                 <td>
 
-                    <h6 style="font-weight: 600;"> Custo Total R$/ Módulo</h6>
+                    <h6 style="font-weight: 600;"> Instalação R$/Módulo</h6>
+                    <div style="padding-left: 20%;">
+                        <div class="sessao-dash textoper">
+                            {{rsimod}}
+                        </div>
+                    </div>
+                </td>
+                <td>
+
+                    <h6 style="font-weight: 600;"> Custo Total R$/Módulo</h6>
                     <div style="padding-left: 20%;">
                         <div class="sessao-dash textoper">
                             {{custoPorModulo}}

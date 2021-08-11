@@ -30,19 +30,19 @@ router.get('/analisegeral/', ehAdmin, (req, res) => {
                     qtdmod = qtdmod + projeto.unimod
                 }
                 potencia = parseFloat(potencia) + parseFloat(element.potencia)
-
                 valor = valor + element.valor
                 totint = totint + element.totint
                 custoPlano = custoPlano + element.custoPlano
 
                 q = q + 1
                 if (q == realizado.length) {
-                    console.log('valor=>' + valor)
-                    console.log('potencia=>' + potencia)
+                    var rspmod = (parseFloat(valor) / parseFloat(qtdmod)).toFixed(2)
                     var rspkwp = (parseFloat(valor) / parseFloat(potencia)).toFixed(2)
-                    var rspmod = (parseFloat(totint) / parseFloat(qtdmod)).toFixed(2)
+                    var rsimod = (parseFloat(totint) / parseFloat(qtdmod)).toFixed(2)
+                    var rsikwp = (parseFloat(totint) / parseFloat(potencia)).toFixed(2)
                     var custoPorModulo = (parseFloat(custoPlano) / parseFloat(qtdmod)).toFixed(2)
-                    res.render('relatorios/analisegeral', { potencia, qtdmod, valor, rspkwp, rspmod, custoPorModulo })
+                    var custoPorKwp = (parseFloat(custoPlano) / parseFloat(potencia)).toFixed(2)
+                    res.render('relatorios/analisegeral', { potencia, qtdmod, valor, rspkwp, rspmod, rsimod, rsikwp, custoPorModulo,custoPorKwp })
                 }
             }).catch((err) => {
                 req.flash('error_msg', 'Houve um erro para encontrar projetos realizados')
@@ -3112,12 +3112,13 @@ router.post('/analiseGeral', ehAdmin, (req, res) => {
                 console.log('q=>'+q)
                 q = q + 1
                 if (q == realizado.length) {
-                    console.log('valor=>' + valor)
-                    console.log('potencia=>' + potencia)
+                    var rspmod = (parseFloat(valor) / parseFloat(qtdmod)).toFixed(2)
                     var rspkwp = (parseFloat(valor) / parseFloat(potencia)).toFixed(2)
-                    var rspmod = (parseFloat(totint) / parseFloat(qtdmod)).toFixed(2)
+                    var rsimod = (parseFloat(totint) / parseFloat(qtdmod)).toFixed(2)
+                    var rsikwp = (parseFloat(totint) / parseFloat(potencia)).toFixed(2)
                     var custoPorModulo = (parseFloat(custoPlano) / parseFloat(qtdmod)).toFixed(2)
-                    res.render('relatorios/analisegeral', { potencia, qtdmod, valor, rspkwp, rspmod, custoPorModulo, mestitulo, ano })
+                    var custoPorKwp = (parseFloat(custoPlano) / parseFloat(potencia)).toFixed(2)
+                    res.render('relatorios/analisegeral', { potencia, qtdmod, valor, rspkwp, rspmod, rsimod, rsikwp, custoPorModulo,custoPorKwp })
                 }
             }).catch((err) => {
                 req.flash('error_msg', 'Houve um erro para encontrar projetos.')
