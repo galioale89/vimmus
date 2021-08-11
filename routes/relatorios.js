@@ -21,24 +21,24 @@ router.get('/analisegeral/', ehAdmin, (req, res) => {
         realizado.forEach((element) => {
             Projetos.findOne({ _id: element.projeto }).then((projeto) => {
                 if (projeto.ehDireto) {
-                    if (projeto.qtdmod > 0){
+                    if (projeto.qtdmod > 0) {
                         qtdmod = qtdmod + projeto.qtdmod
-                    }else{
+                    } else {
                         qtdmod = qtdmod + 0
                     }
                 } else {
                     qtdmod = qtdmod + projeto.unimod
                 }
                 potencia = parseFloat(potencia) + parseFloat(element.potencia)
-                
+
                 valor = valor + element.valor
                 totint = totint + element.totint
                 custoPlano = custoPlano + element.custoPlano
 
                 q = q + 1
                 if (q == realizado.length) {
-                    console.log('valor=>'+valor)
-                    console.log('potencia=>'+potencia)
+                    console.log('valor=>' + valor)
+                    console.log('potencia=>' + potencia)
                     var rspkwp = (parseFloat(valor) / parseFloat(potencia)).toFixed(2)
                     var rspmod = (parseFloat(totint) / parseFloat(qtdmod)).toFixed(2)
                     var custoPorModulo = (parseFloat(custoPlano) / parseFloat(qtdmod)).toFixed(2)
@@ -53,8 +53,8 @@ router.get('/analisegeral/', ehAdmin, (req, res) => {
         req.flash('error_msg', 'Houve um erro para encontrar projetos realizados')
         res.redirect('/menu')
     })
-
 })
+
 router.get('/listarealizados', ehAdmin, (req, res) => {
     const { _id } = req.user
     Realizado.find({ user: _id }).sort({ datafim: 'asc' }).lean().then((realizado) => {
@@ -2559,74 +2559,148 @@ router.post('/aplicar', ehAdmin, (req, res) => {
     var kwpsolo = 0
     var kwptelhado = 0
 
+    var dataini
+    var datafim
+    var mestitulo = ''
+    var ano = req.body.mesano
+    switch (req.body.messel) {
+        case 'Janeiro':
+            dataini = ano + '01' + '01'
+            datafim = ano + '01' + '31'
+            mestitulo = 'Janeiro de '
+            break;
+        case 'Fevereiro':
+            dataini = ano + '02' + '01'
+            datafim = ano + '02' + '28'
+            mestitulo = 'Fevereiro de '
+            break;
+        case 'Março':
+            dataini = ano + '03' + '01'
+            datafim = ano + '03' + '31'
+            mestitulo = 'Março /'
+            break;
+        case 'Abril':
+            dataini = ano + '04' + '01'
+            datafim = ano + '04' + '30'
+            mestitulo = 'Abril de '
+            break;
+        case 'Maio':
+            dataini = ano + '05' + '01'
+            datafim = ano + '05' + '31'
+            mestitulo = 'Maio de '
+            break;
+        case 'Junho':
+            dataini = ano + '06' + '01'
+            datafim = ano + '06' + '30'
+            mestitulo = 'Junho de '
+            break;
+        case 'Julho':
+            dataini = ano + '07' + '01'
+            datafim = ano + '07' + '31'
+            mestitulo = 'Julho de '
+            break;
+        case 'Agosto':
+            dataini = ano + '08' + '01'
+            datafim = ano + '08' + '30'
+            mestitulo = 'Agosto de '
+            break;
+        case 'Setembro':
+            dataini = ano + '09' + '01'
+            datafim = ano + '09' + '31'
+            mestitulo = 'Setembro de '
+            break;
+        case 'Outubro':
+            dataini = ano + '10' + '01'
+            datafim = ano + '10' + '31'
+            mestitulo = 'Outubro de '
+            break;
+        case 'Novembro':
+            dataini = ano + '11' + '01'
+            datafim = ano + '11' + '30'
+            mestitulo = 'Novembro de '
+            break;
+        case 'Dezembro':
+            dataini = ano + '12' + '01'
+            datafim = ano + '12' + '31'
+            mestitulo = 'Dezembro de '
+            break;
+        default:
+            dataini = ano + '01' + '01'
+            datafim = ano + '12' + '31'
+            mestitulo = 'Todo ano de '
+    }
+
     var selecionado = req.body.selecionado
-    //console.log(selecionado)
+    console.log('selecionado=>' + selecionado)
+
+    console.log('dataini=>' + dataini)
+    console.log('datafim=>' + datafim)
 
     if (selecionado == 'faturamento') {
         checkFat = 'checked'
         checkKwp = 'unchecked'
         checkQtd = 'unchecked'
-        Projetos.find({ user: _id, $or: [{ 'classUsina': 'Rural' }, { 'classUsina': 'Rural Residencial' }, { 'classUsina': 'Rural Granja' }, { 'classUsina': 'Rural Irrigação' }] }).then((rural) => {
+        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'classUsina': 'Rural' }, { 'classUsina': 'Rural Residencial' }, { 'classUsina': 'Rural Granja' }, { 'classUsina': 'Rural Irrigação' }] }).then((rural) => {
             for (i = 0; i < rural.length; i++) {
                 fatrural = fatrural + parseFloat(rural[i].vlrNFS)
             }
-            Projetos.find({ user: _id, classUsina: 'Residencial' }).then((residencial) => {
+            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, classUsina: 'Residencial' }).then((residencial) => {
                 for (i = 0; i < residencial.length; i++) {
                     fatresid = fatresid + parseFloat(residencial[i].vlrNFS)
                 }
-                Projetos.find({ user: _id, classUsina: 'Comercial' }).then((comercial) => {
+                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, classUsina: 'Comercial' }).then((comercial) => {
                     for (i = 0; i < comercial.length; i++) {
                         fatcomer = fatcomer + parseFloat(comercial[i].vlrNFS)
                     }
-                    Projetos.find({ user: _id, classUsina: 'Industrial' }).then((industrial) => {
+                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, classUsina: 'Industrial' }).then((industrial) => {
                         for (i = 0; i < industrial.length; i++) {
                             fatindus = fatindus + parseFloat(industrial[i].vlrNFS)
                         }
-                        Projetos.find({ user: _id, $or: [{ 'tipoUsina': 'Solo Concreto' }, { 'tipoUsina': 'Solo Metal' }, { 'tipoUsina': 'Laje' }] }).then((solo) => {
+                        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoUsina': 'Solo Concreto' }, { 'tipoUsina': 'Solo Metal' }, { 'tipoUsina': 'Laje' }] }).then((solo) => {
                             for (i = 0; i < solo.length; i++) {
                                 fatsolo = fatsolo + parseFloat(solo[i].vlrNFS)
                             }
-                            Projetos.find({ user: _id, $or: [{ 'tipoUsina': 'Telhado Fibrocimento' }, { 'tipoUsina': 'Telhado Madeira' }, { 'tipoUsina': 'Telhado Cerâmica' }, { 'tipoUsina': 'Telhado Gambrel' }] }).then((telhado) => {
+                            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoUsina': 'Telhado Fibrocimento' }, { 'tipoUsina': 'Telhado Madeira' }, { 'tipoUsina': 'Telhado Cerâmica' }, { 'tipoUsina': 'Telhado Gambrel' }] }).then((telhado) => {
                                 for (i = 0; i < telhado.length; i++) {
                                     fattelhado = fattelhado + parseFloat(telhado[i].vlrNFS)
                                 }
-                                Projetos.find({ user: _id, $or: [{ 'tipoConexao': 'Monofásico 127V' }, { 'tipoConexao': 'Monofásico 220V' }] }).then((monofasico) => {
+                                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoConexao': 'Monofásico 127V' }, { 'tipoConexao': 'Monofásico 220V' }] }).then((monofasico) => {
                                     for (i = 0; i < monofasico.length; i++) {
                                         fatmono = fatmono + parseFloat(monofasico[i].vlrNFS)
                                     }
-                                    Projetos.find({ user: _id, tipoConexao: 'Bifásico 220V' }).then((bifasico) => {
+                                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, tipoConexao: 'Bifásico 220V' }).then((bifasico) => {
                                         for (i = 0; i < bifasico.length; i++) {
                                             fatbifa = fatbifa + parseFloat(bifasico[i].vlrNFS)
                                         }
-                                        Projetos.find({ user: _id, $or: [{ 'tipoConexao': 'Trifásico 220V' }, { 'tipoConexao': 'Trifásico 380V' }] }).then((trifasico) => {
+                                        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoConexao': 'Trifásico 220V' }, { 'tipoConexao': 'Trifásico 380V' }] }).then((trifasico) => {
                                             for (i = 0; i < trifasico.length; i++) {
                                                 fattrif = fattrif + parseFloat(trifasico[i].vlrNFS)
                                             }
-                                            Projetos.find({ user: _id, 'potencia': { $lte: 10 } }).then((nivel1) => {
+                                            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 10 } }).then((nivel1) => {
                                                 for (i = 0; i < nivel1.length; i++) {
                                                     fatnivel1 = fatnivel1 + parseFloat(nivel1[i].vlrNFS)
                                                 }
-                                                Projetos.find({ user: _id, 'potencia': { $lte: 30, $gte: 11 } }).then((nivel2) => {
+                                                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 30, $gte: 11 } }).then((nivel2) => {
                                                     for (i = 0; i < nivel2.length; i++) {
                                                         fatnivel2 = fatnivel2 + parseFloat(nivel2[i].vlrNFS)
                                                     }
-                                                    Projetos.find({ user: _id, 'potencia': { $lte: 50, $gte: 31 } }).then((nivel3) => {
+                                                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 50, $gte: 31 } }).then((nivel3) => {
                                                         for (i = 0; i < nivel3.length; i++) {
                                                             fatnivel3 = fatnivel3 + parseFloat(nivel3[i].vlrNFS)
                                                         }
-                                                        Projetos.find({ user: _id, 'potencia': { $lte: 100, $gte: 51 } }).then((nivel4) => {
+                                                        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 100, $gte: 51 } }).then((nivel4) => {
                                                             for (i = 0; i < nivel4.length; i++) {
                                                                 fatnivel4 = fatnivel4 + parseFloat(nivel4[i].vlrNFS)
                                                             }
-                                                            Projetos.find({ user: _id, 'potencia': { $lte: 150, $gte: 101 } }).then((nivel5) => {
+                                                            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 150, $gte: 101 } }).then((nivel5) => {
                                                                 for (i = 0; i < nivel5.length; i++) {
                                                                     fatnivel5 = fatnivel5 + parseFloat(nivel5[i].vlrNFS)
                                                                 }
-                                                                Projetos.find({ user: _id, 'potencia': { $lte: 200, $gte: 151 } }).then((nivel6) => {
+                                                                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 200, $gte: 151 } }).then((nivel6) => {
                                                                     for (i = 0; i < nivel6.length; i++) {
                                                                         fatnivel6 = fatnivel6 + parseFloat(nivel6[i].vlrNFS)
                                                                     }
-                                                                    res.render('relatorios/dashboardbi', { checkFat, checkKwp, checkQtd, fatrural, fatresid, fatcomer, fatindus, fatsolo, fattelhado, fatmono, fatbifa, fattrif, fatnivel1, fatnivel2, fatnivel3, fatnivel4, fatnivel5, fatnivel6 })
+                                                                    res.render('relatorios/dashboardbi', { checkFat, checkKwp, checkQtd, fatrural, fatresid, fatcomer, fatindus, fatsolo, fattelhado, fatmono, fatbifa, fattrif, fatnivel1, fatnivel2, fatnivel3, fatnivel4, fatnivel5, fatnivel6, mestitulo, ano })
                                                                 }).catch((err) => {
                                                                     req.flash('error_msg', 'Falha ao encontrar usinas nivel 6.')
                                                                     res.redirect('/relatorios/dashboardbi')
@@ -2693,37 +2767,37 @@ router.post('/aplicar', ehAdmin, (req, res) => {
             checkQtd = 'checked'
             checkKwp = 'unchecked'
             checkFat = 'unchecked'
-            Projetos.find({ user: _id, $or: [{ 'classUsina': 'Rural' }, { 'classUsina': 'Rural Residencial' }, { 'classUsina': 'Rural Granja' }, { 'classUsina': 'Rural Irrigação' }] }).then((rural) => {
+            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'classUsina': 'Rural' }, { 'classUsina': 'Rural Residencial' }, { 'classUsina': 'Rural Granja' }, { 'classUsina': 'Rural Irrigação' }] }).then((rural) => {
                 qtdrural = rural.length
-                Projetos.find({ user: _id, classUsina: 'Residencial' }).then((residencial) => {
+                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, classUsina: 'Residencial' }).then((residencial) => {
                     qtdresid = residencial.length
-                    Projetos.find({ user: _id, classUsina: 'Comercial' }).then((comercial) => {
+                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, classUsina: 'Comercial' }).then((comercial) => {
                         qtdcomer = comercial.length
-                        Projetos.find({ user: _id, classUsina: 'Industrial' }).then((industrial) => {
+                        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, classUsina: 'Industrial' }).then((industrial) => {
                             qtdindus = industrial.length
-                            Projetos.find({ user: _id, $or: [{ 'tipoUsina': 'Solo Concreto' }, { 'tipoUsina': 'Solo Metal' }, { 'tipoUsina': 'Laje' }] }).then((solo) => {
+                            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoUsina': 'Solo Concreto' }, { 'tipoUsina': 'Solo Metal' }, { 'tipoUsina': 'Laje' }] }).then((solo) => {
                                 qtdsolo = solo.length
-                                Projetos.find({ user: _id, $or: [{ 'tipoUsina': 'Telhado Fibrocimento' }, { 'tipoUsina': 'Telhado Madeira' }, { 'tipoUsina': 'Telhado Cerâmica' }, { 'tipoUsina': 'Telhado Gambrel' }] }).then((telhado) => {
+                                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoUsina': 'Telhado Fibrocimento' }, { 'tipoUsina': 'Telhado Madeira' }, { 'tipoUsina': 'Telhado Cerâmica' }, { 'tipoUsina': 'Telhado Gambrel' }] }).then((telhado) => {
                                     qtdtelhado = telhado.length
-                                    Projetos.find({ user: _id, $or: [{ 'tipoConexao': 'Monofásico 127V' }, { 'tipoConexao': 'Monofásico 220V' }] }).then((monofasico) => {
+                                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoConexao': 'Monofásico 127V' }, { 'tipoConexao': 'Monofásico 220V' }] }).then((monofasico) => {
                                         qtdmono = monofasico.length
-                                        Projetos.find({ user: _id, tipoConexao: 'Bifásico 220V' }).then((bifasico) => {
+                                        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, tipoConexao: 'Bifásico 220V' }).then((bifasico) => {
                                             qtdbifa = bifasico.length
-                                            Projetos.find({ user: _id, $or: [{ 'tipoConexao': 'Trifásico 220V' }, { 'tipoConexao': 'Trifásico 380V' }] }).then((trifasico) => {
+                                            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoConexao': 'Trifásico 220V' }, { 'tipoConexao': 'Trifásico 380V' }] }).then((trifasico) => {
                                                 qtdtrif = trifasico.length
-                                                Projetos.find({ user: _id, 'potencia': { $lte: 10 } }).then((nivel1) => {
+                                                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 10 } }).then((nivel1) => {
                                                     qtdnivel1 = nivel1.length
-                                                    Projetos.find({ user: _id, 'potencia': { $lte: 30, $gte: 11 } }).then((nivel2) => {
+                                                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 30, $gte: 11 } }).then((nivel2) => {
                                                         qtdnivel2 = nivel2.length
-                                                        Projetos.find({ user: _id, 'potencia': { $lte: 50, $gte: 31 } }).then((nivel3) => {
+                                                        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 50, $gte: 31 } }).then((nivel3) => {
                                                             qtdnivel3 = nivel3.length
-                                                            Projetos.find({ user: _id, 'potencia': { $lte: 100, $gte: 51 } }).then((nivel4) => {
+                                                            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 100, $gte: 51 } }).then((nivel4) => {
                                                                 qtdnivel4 = nivel4.length
-                                                                Projetos.find({ user: _id, 'potencia': { $lte: 150, $gte: 101 } }).then((nivel5) => {
+                                                                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 150, $gte: 101 } }).then((nivel5) => {
                                                                     qtdnivel5 = nivel5.length
-                                                                    Projetos.find({ user: _id, 'potencia': { $lte: 200, $gte: 151 } }).then((nivel6) => {
+                                                                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 200, $gte: 151 } }).then((nivel6) => {
                                                                         qtdnivel6 = nivel6.length
-                                                                        res.render('relatorios/dashboardbi', { checkFat, checkKwp, checkQtd, qtdrural, qtdresid, qtdcomer, qtdindus, qtdsolo, qtdtelhado, qtdmono, qtdbifa, qtdtrif, qtdnivel1, qtdnivel2, qtdnivel3, qtdnivel4, qtdnivel5, qtdnivel6 })
+                                                                        res.render('relatorios/dashboardbi', { checkFat, checkKwp, checkQtd, qtdrural, qtdresid, qtdcomer, qtdindus, qtdsolo, qtdtelhado, qtdmono, qtdbifa, qtdtrif, qtdnivel1, qtdnivel2, qtdnivel3, qtdnivel4, qtdnivel5, qtdnivel6, mestitulo, ano })
                                                                     }).catch((err) => {
                                                                         req.flash('error_msg', 'Falha ao encontrar usinas nivel 6.')
                                                                         res.redirect('/relatorios/dashboardbi')
@@ -2786,133 +2860,279 @@ router.post('/aplicar', ehAdmin, (req, res) => {
                 res.redirect('/relatorios/dashboardbi')
             })
         } else {
-            checkKwp = 'checked'
-            checkFat = 'unchecked'
-            checkQtd = 'unchecked'
-            Projetos.find({ user: _id, $or: [{ 'classUsina': 'Rural' }, { 'classUsina': 'Rural Residencial' }, { 'classUsina': 'Rural Granja' }, { 'classUsina': 'Rural Irrigação' }] }).then((rural) => {
-                for (i = 0; i < rural.length; i++) {
-                    kwprural = kwprural + parseFloat(rural[i].potencia)
-                }
-                Projetos.find({ user: _id, classUsina: 'Residencial' }).then((residencial) => {
-                    for (i = 0; i < residencial.length; i++) {
-                        kwpresid = kwpresid + parseFloat(residencial[i].potencia)
+            if (selecionado == 'potencia') {
+                checkKwp = 'checked'
+                checkFat = 'unchecked'
+                checkQtd = 'unchecked'
+                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'classUsina': 'Rural' }, { 'classUsina': 'Rural Residencial' }, { 'classUsina': 'Rural Granja' }, { 'classUsina': 'Rural Irrigação' }] }).then((rural) => {
+                    for (i = 0; i < rural.length; i++) {
+                        kwprural = kwprural + parseFloat(rural[i].potencia)
                     }
-                    Projetos.find({ user: _id, classUsina: 'Comercial' }).then((comercial) => {
-                        for (i = 0; i < comercial.length; i++) {
-                            kwpcomer = kwpcomer + parseFloat(comercial[i].potencia)
+                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, classUsina: 'Residencial' }).then((residencial) => {
+                        for (i = 0; i < residencial.length; i++) {
+                            kwpresid = kwpresid + parseFloat(residencial[i].potencia)
                         }
-                        Projetos.find({ user: _id, classUsina: 'Industrial' }).then((industrial) => {
-                            for (i = 0; i < industrial.length; i++) {
-                                kwpindus = kwpindus + parseFloat(industrial[i].potencia)
+                        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, classUsina: 'Comercial' }).then((comercial) => {
+                            for (i = 0; i < comercial.length; i++) {
+                                kwpcomer = kwpcomer + parseFloat(comercial[i].potencia)
                             }
-                            Projetos.find({ user: _id, $or: [{ 'tipoUsina': 'Solo Concreto' }, { 'tipoUsina': 'Solo Metal' }, { 'tipoUsina': 'Laje' }] }).then((solo) => {
-                                for (i = 0; i < solo.length; i++) {
-                                    kwpsolo = kwpsolo + parseFloat(solo[i].potencia)
+                            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, classUsina: 'Industrial' }).then((industrial) => {
+                                for (i = 0; i < industrial.length; i++) {
+                                    kwpindus = kwpindus + parseFloat(industrial[i].potencia)
                                 }
-                                Projetos.find({ user: _id, $or: [{ 'tipoUsina': 'Telhado Fibrocimento' }, { 'tipoUsina': 'Telhado Madeira' }, { 'tipoUsina': 'Telhado Cerâmica' }, { 'tipoUsina': 'Telhado Gambrel' }] }).then((telhado) => {
-                                    for (i = 0; i < telhado.length; i++) {
-                                        kwptelhado = kwptelhado + parseFloat(telhado[i].potencia)
+                                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoUsina': 'Solo Concreto' }, { 'tipoUsina': 'Solo Metal' }, { 'tipoUsina': 'Laje' }] }).then((solo) => {
+                                    for (i = 0; i < solo.length; i++) {
+                                        kwpsolo = kwpsolo + parseFloat(solo[i].potencia)
                                     }
-                                    Projetos.find({ user: _id, $or: [{ 'tipoConexao': 'Monofásico 127V' }, { 'tipoConexao': 'Monofásico 220V' }] }).then((monofasico) => {
-                                        for (i = 0; i < monofasico.length; i++) {
-                                            kwpmono = kwpmono + parseFloat(monofasico[i].potencia)
+                                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoUsina': 'Telhado Fibrocimento' }, { 'tipoUsina': 'Telhado Madeira' }, { 'tipoUsina': 'Telhado Cerâmica' }, { 'tipoUsina': 'Telhado Gambrel' }] }).then((telhado) => {
+                                        for (i = 0; i < telhado.length; i++) {
+                                            kwptelhado = kwptelhado + parseFloat(telhado[i].potencia)
                                         }
-                                        Projetos.find({ user: _id, tipoConexao: 'Bifásico 220V' }).then((bifasico) => {
-                                            for (i = 0; i < bifasico.length; i++) {
-                                                kwpbifa = kwpbifa + parseFloat(bifasico[i].potencia)
+                                        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoConexao': 'Monofásico 127V' }, { 'tipoConexao': 'Monofásico 220V' }] }).then((monofasico) => {
+                                            for (i = 0; i < monofasico.length; i++) {
+                                                kwpmono = kwpmono + parseFloat(monofasico[i].potencia)
                                             }
-                                            Projetos.find({ user: _id, $or: [{ 'tipoConexao': 'Trifásico 220V' }, { 'tipoConexao': 'Trifásico 380V' }] }).then((trifasico) => {
-                                                for (i = 0; i < trifasico.length; i++) {
-                                                    kwptrif = kwptrif + parseFloat(trifasico[i].potencia)
+                                            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, tipoConexao: 'Bifásico 220V' }).then((bifasico) => {
+                                                for (i = 0; i < bifasico.length; i++) {
+                                                    kwpbifa = kwpbifa + parseFloat(bifasico[i].potencia)
                                                 }
-                                                Projetos.find({ user: _id, 'potencia': { $lte: 10 } }).then((nivel1) => {
-                                                    for (i = 0; i < nivel1.length; i++) {
-                                                        kwpnivel1 = kwpnivel1 + parseFloat(nivel1[i].potencia)
+                                                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoConexao': 'Trifásico 220V' }, { 'tipoConexao': 'Trifásico 380V' }] }).then((trifasico) => {
+                                                    for (i = 0; i < trifasico.length; i++) {
+                                                        kwptrif = kwptrif + parseFloat(trifasico[i].potencia)
                                                     }
-                                                    Projetos.find({ user: _id, 'potencia': { $lte: 30, $gte: 11 } }).then((nivel2) => {
-                                                        for (i = 0; i < nivel2.length; i++) {
-                                                            kwpnivel2 = kwpnivel2 + parseFloat(nivel2[i].potencia)
+                                                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 10 } }).then((nivel1) => {
+                                                        for (i = 0; i < nivel1.length; i++) {
+                                                            kwpnivel1 = kwpnivel1 + parseFloat(nivel1[i].potencia)
                                                         }
-                                                        Projetos.find({ user: _id, 'potencia': { $lte: 50, $gte: 31 } }).then((nivel3) => {
-                                                            for (i = 0; i < nivel3.length; i++) {
-                                                                kwpnivel3 = kwpnivel3 + parseFloat(nivel3[i].potencia)
+                                                        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 30, $gte: 11 } }).then((nivel2) => {
+                                                            for (i = 0; i < nivel2.length; i++) {
+                                                                kwpnivel2 = kwpnivel2 + parseFloat(nivel2[i].potencia)
                                                             }
-                                                            Projetos.find({ user: _id, 'potencia': { $lte: 100, $gte: 51 } }).then((nivel4) => {
-                                                                for (i = 0; i < nivel4.length; i++) {
-                                                                    kwpnivel4 = kwpnivel4 + parseFloat(nivel4[i].potencia)
+                                                            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 50, $gte: 31 } }).then((nivel3) => {
+                                                                for (i = 0; i < nivel3.length; i++) {
+                                                                    kwpnivel3 = kwpnivel3 + parseFloat(nivel3[i].potencia)
                                                                 }
-                                                                Projetos.find({ user: _id, 'potencia': { $lte: 150, $gte: 101 } }).then((nivel5) => {
-                                                                    for (i = 0; i < nivel5.length; i++) {
-                                                                        kwpnivel5 = kwpnivel5 + parseFloat(nivel5[i].potencia)
+                                                                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 100, $gte: 51 } }).then((nivel4) => {
+                                                                    for (i = 0; i < nivel4.length; i++) {
+                                                                        kwpnivel4 = kwpnivel4 + parseFloat(nivel4[i].potencia)
                                                                     }
-                                                                    Projetos.find({ user: _id, 'potencia': { $lte: 200, $gte: 151 } }).then((nivel6) => {
-                                                                        for (i = 0; i < nivel6.length; i++) {
-                                                                            kwpnivel6 = kwpnivel6 + parseFloat(nivel6[i].potencia)
+                                                                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 150, $gte: 101 } }).then((nivel5) => {
+                                                                        for (i = 0; i < nivel5.length; i++) {
+                                                                            kwpnivel5 = kwpnivel5 + parseFloat(nivel5[i].potencia)
                                                                         }
-                                                                        res.render('relatorios/dashboardbi', { checkFat, checkKwp, checkQtd, kwprural, kwpresid, kwpcomer, kwpindus, kwpsolo, kwptelhado, kwpmono, kwpbifa, kwptrif, kwpnivel1, kwpnivel2, kwpnivel3, kwpnivel4, kwpnivel5, kwpnivel6 })
+                                                                        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 200, $gte: 151 } }).then((nivel6) => {
+                                                                            for (i = 0; i < nivel6.length; i++) {
+                                                                                kwpnivel6 = kwpnivel6 + parseFloat(nivel6[i].potencia)
+                                                                            }
+                                                                            res.render('relatorios/dashboardbi', { checkFat, checkKwp, checkQtd, kwprural, kwpresid, kwpcomer, kwpindus, kwpsolo, kwptelhado, kwpmono, kwpbifa, kwptrif, kwpnivel1, kwpnivel2, kwpnivel3, kwpnivel4, kwpnivel5, kwpnivel6, mestitulo, ano })
+                                                                        }).catch((err) => {
+                                                                            req.flash('error_msg', 'Falha ao encontrar usinas nivel 6.')
+                                                                            res.redirect('/relatorios/dashboardbi')
+                                                                        })
                                                                     }).catch((err) => {
-                                                                        req.flash('error_msg', 'Falha ao encontrar usinas nivel 6.')
+                                                                        req.flash('error_msg', 'Falha ao encontrar usinas nivel 5.')
                                                                         res.redirect('/relatorios/dashboardbi')
                                                                     })
                                                                 }).catch((err) => {
-                                                                    req.flash('error_msg', 'Falha ao encontrar usinas nivel 5.')
+                                                                    req.flash('error_msg', 'Falha ao encontrar usinas nivel 4.')
                                                                     res.redirect('/relatorios/dashboardbi')
                                                                 })
                                                             }).catch((err) => {
-                                                                req.flash('error_msg', 'Falha ao encontrar usinas nivel 4.')
+                                                                req.flash('error_msg', 'Falha ao encontrar usinas nivel 3.')
                                                                 res.redirect('/relatorios/dashboardbi')
                                                             })
                                                         }).catch((err) => {
-                                                            req.flash('error_msg', 'Falha ao encontrar usinas nivel 3.')
+                                                            req.flash('error_msg', 'Falha ao encontrar usinas nivel 2.')
                                                             res.redirect('/relatorios/dashboardbi')
                                                         })
                                                     }).catch((err) => {
-                                                        req.flash('error_msg', 'Falha ao encontrar usinas nivel 2.')
+                                                        req.flash('error_msg', 'Falha ao encontrar usinas nivel 1.')
                                                         res.redirect('/relatorios/dashboardbi')
                                                     })
                                                 }).catch((err) => {
-                                                    req.flash('error_msg', 'Falha ao encontrar usinas nivel 1.')
+                                                    req.flash('error_msg', 'Falha ao encontrar usinas trifásicas.')
                                                     res.redirect('/relatorios/dashboardbi')
                                                 })
                                             }).catch((err) => {
-                                                req.flash('error_msg', 'Falha ao encontrar usinas trifásicas.')
+                                                req.flash('error_msg', 'Falha ao encontrar usinas bifásicas.')
                                                 res.redirect('/relatorios/dashboardbi')
                                             })
                                         }).catch((err) => {
-                                            req.flash('error_msg', 'Falha ao encontrar usinas bifásicas.')
+                                            req.flash('error_msg', 'Falha ao encontrar usinas monofásicas.')
                                             res.redirect('/relatorios/dashboardbi')
                                         })
                                     }).catch((err) => {
-                                        req.flash('error_msg', 'Falha ao encontrar usinas monofásicas.')
+                                        req.flash('error_msg', 'Falha ao encontrar usinas telhado.')
                                         res.redirect('/relatorios/dashboardbi')
                                     })
                                 }).catch((err) => {
-                                    req.flash('error_msg', 'Falha ao encontrar usinas telhado.')
+                                    req.flash('error_msg', 'Falha ao encontrar usinas solo.')
                                     res.redirect('/relatorios/dashboardbi')
                                 })
+
                             }).catch((err) => {
-                                req.flash('error_msg', 'Falha ao encontrar usinas solo.')
+                                req.flash('error_msg', 'Falha ao encontrar usinas industriais.')
                                 res.redirect('/relatorios/dashboardbi')
                             })
-
                         }).catch((err) => {
-                            req.flash('error_msg', 'Falha ao encontrar usinas industriais.')
+                            req.flash('error_msg', 'Falha ao encontrar usinas comerciais.')
                             res.redirect('/relatorios/dashboardbi')
                         })
                     }).catch((err) => {
-                        req.flash('error_msg', 'Falha ao encontrar usinas comerciais.')
+                        req.flash('error_msg', 'Falha ao encontrar usinas residenciais.')
                         res.redirect('/relatorios/dashboardbi')
                     })
                 }).catch((err) => {
-                    req.flash('error_msg', 'Falha ao encontrar usinas residenciais.')
+                    req.flash('error_msg', 'Falha ao encontrar usinas rurais.')
                     res.redirect('/relatorios/dashboardbi')
                 })
-            }).catch((err) => {
-                req.flash('error_msg', 'Falha ao encontrar usinas rurais.')
-                res.redirect('/relatorios/dashboardbi')
-            })
+            } else {
+                var aviso = []
+                aviso.push({ texto: 'Nenhum registro encontrado.' })
+                if (selecionado == 'faturamento') {
+                    checkFat = 'checked'
+                    checkQtd = 'unchecked'
+                    checkKwp = 'unchecked'
+                } else {
+                    if (selecionado == 'quantidade') {
+                        checkQtd = 'checked'
+                        checkFat = 'unchecked'
+                        checkKwp = 'unchecked'
+                    } else {
+                        checkKwp = 'checked'
+                        checkQtd = 'unchecked'
+                        checkFat = 'unchecked'
+                    }
+                }
+                res.render('relatorios/dashboardbi/', { aviso, mestitulo, ano, checkFat, checkQtd, checkKwp })
+            }
         }
     }
+})
+
+router.post('/analiseGeral', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    var potencia = 0
+    var valor = 0
+    var totint = 0
+    var qtdmod = 0
+    var custoPlano = 0
+    var q = 0
+
+    var dataini
+    var datafim
+    var mestitulo = ''
+    var ano = req.body.mesano
+    switch (req.body.messel) {
+        case 'Janeiro':
+            dataini = ano + '01' + '01'
+            datafim = ano + '01' + '31'
+            mestitulo = 'Janeiro de '
+            break;
+        case 'Fevereiro':
+            dataini = ano + '02' + '01'
+            datafim = ano + '02' + '28'
+            mestitulo = 'Fevereiro de '
+            break;
+        case 'Março':
+            dataini = ano + '03' + '01'
+            datafim = ano + '03' + '31'
+            mestitulo = 'Março /'
+            break;
+        case 'Abril':
+            dataini = ano + '04' + '01'
+            datafim = ano + '04' + '30'
+            mestitulo = 'Abril de '
+            break;
+        case 'Maio':
+            dataini = ano + '05' + '01'
+            datafim = ano + '05' + '31'
+            mestitulo = 'Maio de '
+            break;
+        case 'Junho':
+            dataini = ano + '06' + '01'
+            datafim = ano + '06' + '30'
+            mestitulo = 'Junho de '
+            break;
+        case 'Julho':
+            dataini = ano + '07' + '01'
+            datafim = ano + '07' + '31'
+            mestitulo = 'Julho de '
+            break;
+        case 'Agosto':
+            dataini = ano + '08' + '01'
+            datafim = ano + '08' + '30'
+            mestitulo = 'Agosto de '
+            break;
+        case 'Setembro':
+            dataini = ano + '09' + '01'
+            datafim = ano + '09' + '31'
+            mestitulo = 'Setembro de '
+            break;
+        case 'Outubro':
+            dataini = ano + '10' + '01'
+            datafim = ano + '10' + '31'
+            mestitulo = 'Outubro de '
+            break;
+        case 'Novembro':
+            dataini = ano + '11' + '01'
+            datafim = ano + '11' + '30'
+            mestitulo = 'Novembro de '
+            break;
+        case 'Dezembro':
+            dataini = ano + '12' + '01'
+            datafim = ano + '12' + '31'
+            mestitulo = 'Dezembro de '
+            break;
+        default:
+            dataini = ano + '01' + '01'
+            datafim = ano + '12' + '31'
+            mestitulo = 'Todo ano de '
+    }
+
+    Realizado.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }}).sort({ datafim: 'asc' }).lean().then((realizado) => {
+        console.log('realizado.length=>'+realizado.length)
+        realizado.forEach((element) => {
+            Projetos.findOne({ _id: element.projeto}).then((projeto) => {
+                if (projeto.ehDireto) {
+                    if (projeto.qtdmod > 0) {
+                        qtdmod = qtdmod + projeto.qtdmod
+                    } else {
+                        qtdmod = qtdmod + 0
+                    }
+                } else {
+                    qtdmod = qtdmod + projeto.unimod
+                }
+                potencia = parseFloat(potencia) + parseFloat(element.potencia)
+
+                valor = valor + element.valor
+                totint = totint + element.totint
+                custoPlano = custoPlano + element.custoPlano
+
+                console.log('q=>'+q)
+                q = q + 1
+                if (q == realizado.length) {
+                    console.log('valor=>' + valor)
+                    console.log('potencia=>' + potencia)
+                    var rspkwp = (parseFloat(valor) / parseFloat(potencia)).toFixed(2)
+                    var rspmod = (parseFloat(totint) / parseFloat(qtdmod)).toFixed(2)
+                    var custoPorModulo = (parseFloat(custoPlano) / parseFloat(qtdmod)).toFixed(2)
+                    res.render('relatorios/analisegeral', { potencia, qtdmod, valor, rspkwp, rspmod, custoPorModulo, mestitulo, ano })
+                }
+            }).catch((err) => {
+                req.flash('error_msg', 'Houve um erro para encontrar projetos.')
+                res.redirect('/menu')
+            })
+        })
+        if (realizado.length == 0){
+            aviso = []
+            aviso.push({texto: 'Nenhum projeto realizado no período de: ' + mestitulo + ' de ' + ano})
+            res.render('relatorios/analisegeral', {aviso, mestitulo, ano })            
+        }
+    }).catch((err) => {
+        req.flash('error_msg', 'Houve um erro para encontrar projetos realizados.')
+        res.redirect('/menu')
+    })
 })
 
 router.post('/filtradash', ehAdmin, (req, res) => {
