@@ -407,21 +407,43 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
 
 router.get('/vermais/:id', ehAdmin, (req, res) => {
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
+          console.log('encontrou projeto')
           Realizado.findOne({ projeto: projeto._id }).lean().then((realizado) => {
+               console.log('encontrou realizado')
                Pessoa.findOne({ _id: projeto.funges }).lean().then((responsavel) => {
+                    console.log('encontrou pessoa')
                     Cliente.findOne({ _id: projeto.cliente }).lean().then((cliente) => {
+                         console.log('encontrou cliente')
                          Empresa.findOne({ _id: projeto.empresa }).lean().then((empresa) => {
+                              console.log('encontrou empresa')
                               Cronograma.findOne({ projeto: projeto._id }).lean().then((cronograma) => {
+                                   console.log('encontrou cronograma')
                                    Equipe.findOne({ projeto: projeto._id }).lean().then((equipe) => {
-                                        console.log('equipe.pla0=>'+equipe.pla0)
-                                        var equipepla = equipe.pla0 + '|' + equipe.pla1 + '|'+ equipe.pla2 + '|'+ equipe.pla3 + '|'+ equipe.pla4 + '|'+ equipe.pla5
-                                        var equipepro = equipe.pro0 + '|' + equipe.pro1 + '|'+ equipe.pro2 + '|'+ equipe.pro3 + '|'+ equipe.pro4 + '|'+ equipe.pro5
-                                        var equipeate = equipe.ate0 + '|' + equipe.ate1 + '|'+ equipe.ate2 + '|'+ equipe.ate3 + '|'+ equipe.ate4 + '|'+ equipe.ate5
-                                        var equipeinv = equipe.inv0 + '|' + equipe.inv1 + '|'+ equipe.inv2 + '|'+ equipe.inv3 + '|'+ equipe.inv4 + '|'+ equipe.inv5
-                                        var equipepnl = equipe.pnl0 + '|' + equipe.pnl1 + '|'+ equipe.pnl2 + '|'+ equipe.pnl3 + '|'+ equipe.pnl4 + '|'+ equipe.pnl5
-                                        var equipeeae = equipe.eae0 + '|' + equipe.eae1 + '|'+ equipe.eae2 + '|'+ equipe.eae3 + '|'+ equipe.eae4 + '|'+ equipe.eae5
-                                        var equipeins = equipe.ins0 + '|' + equipe.ins1 + '|'+ equipe.ins2 + '|'+ equipe.ins3 + '|'+ equipe.ins4 + '|'+ equipe.ins5
-                                        var equipevis = equipe.vis0 + '|' + equipe.vis1 + '|'+ equipe.vis2 + '|'+ equipe.vis3 + '|'+ equipe.vis4 + '|'+ equipe.vis5
+                                        console.log('equipe.pla0=>' + equipe.pla0)
+                                        if (typeof equipe.pla0 != 'undefined') {
+                                             var equipepla = equipe.pla0 + '|' + equipe.pla1 + '|' + equipe.pla2 + '|' + equipe.pla3 + '|' + equipe.pla4 + '|' + equipe.pla5
+                                        }
+                                        if (typeof equipe.pro0 != 'undefined') {
+                                             var equipepro = equipe.pro0 + '|' + equipe.pro1 + '|' + equipe.pro2 + '|' + equipe.pro3 + '|' + equipe.pro4 + '|' + equipe.pro5
+                                        }
+                                        if (typeof equipe.ate0 != 'undefined') {
+                                             var equipeate = equipe.ate0 + '|' + equipe.ate1 + '|' + equipe.ate2 + '|' + equipe.ate3 + '|' + equipe.ate4 + '|' + equipe.ate5
+                                        }
+                                        if (typeof equipe.inv0 != 'undefined') {
+                                             var equipeinv = equipe.inv0 + '|' + equipe.inv1 + '|' + equipe.inv2 + '|' + equipe.inv3 + '|' + equipe.inv4 + '|' + equipe.inv5
+                                        }
+                                        if (typeof equipe.pnl0 != 'undefined') {
+                                             var equipepnl = equipe.pnl0 + '|' + equipe.pnl1 + '|' + equipe.pnl2 + '|' + equipe.pnl3 + '|' + equipe.pnl4 + '|' + equipe.pnl5
+                                        }
+                                        if (typeof equipe.eae0 != 'undefined') {
+                                             var equipeeae = equipe.eae0 + '|' + equipe.eae1 + '|' + equipe.eae2 + '|' + equipe.eae3 + '|' + equipe.eae4 + '|' + equipe.eae5
+                                        }
+                                        if (typeof equipe.ins0 != 'undefined') {
+                                             var equipeins = equipe.ins0 + '|' + equipe.ins1 + '|' + equipe.ins2 + '|' + equipe.ins3 + '|' + equipe.ins4 + '|' + equipe.ins5
+                                        }
+                                        if (typeof equipe.vis0 != 'undefined') {
+                                             var equipevis = equipe.vis0 + '|' + equipe.vis1 + '|' + equipe.vis2 + '|' + equipe.vis3 + '|' + equipe.vis4 + '|' + equipe.vis5
+                                        }
 
                                         var plaini = dataMensagem(cronograma.dateplaini)
                                         var plafim = dataMensagem(cronograma.dateplafim)
@@ -444,7 +466,7 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
                                         var visini = dataMensagem(cronograma.datevisini)
                                         var visfim = dataMensagem(cronograma.datevisfim)
 
-                                        console.log('equipepla=>'+equipepla)
+                                        console.log('equipepla=>' + equipepla)
                                         res.render('projeto/vermais', {
                                              projeto, responsavel, empresa, realizado, cliente, plaini, plafim, prjini, prjfim, ateini, atefim, invini, invfim,
                                              stbini, stbfim, eaeini, eaefim, pnlini, pnlfim, estini, estfim, modini, modfim, visini, visfim,
