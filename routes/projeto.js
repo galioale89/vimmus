@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+var multer = require('multer')
 
 require('../model/Empresa')
 require('../model/Pessoa')
@@ -9,6 +10,15 @@ require('../model/Cliente')
 require('../model/Equipe')
 require('../model/Cronograma')
 require('../model/Dimensionamento')
+
+const storage = multer.diskStorage({
+     destination: function (req, file, cb) {
+          cb(null, 'public/arquivos/')
+     },
+     filename: (req, file, cb) => {
+          cb(null, file.originalname)
+     }
+})
 
 const mongoose = require('mongoose')
 const Projeto = mongoose.model('projeto')
@@ -27,6 +37,7 @@ const comparaDatas = require('../resources/comparaDatas')
 const validaCronograma = require('../resources/validaCronograma')
 const liberaRecursos = require('../resources/liberaRecursos')
 const setData = require('../resources/setData')
+const dataMensagem = require('../resources/dataMensagem')
 const { ehAdmin } = require('../helpers/ehAdmin')
 
 var tipoEntrada = false
@@ -65,13 +76,23 @@ router.get("/consulta", ehAdmin, (req, res) => {
 })
 
 router.get('/dimensionamento/:id', ehAdmin, (req, res) => {
-     var th2 = 'white'
      var td2 = 'none'
-     var th3 = 'white'
      var td3 = 'none'
+     var select1 = 'selected'
+     var select2 = ''
+     var select3 = ''
      console.log('req.body.id_dime=>' + req.params.id)
      Dimensionamento.findOne({ _id: req.params.id }).lean().then((dimensionamento) => {
-          res.render('projeto/dimensionamento', { dimensionamento, th2, td2, th3, td3 })
+          if (dimensionamento.qtduce == 2) {
+               td2 = ''
+               select2 = 'selected'
+          }
+          if (dimensionamento.qtduce == 3) {
+               td2 = ''
+               td3 = ''
+               select3 = 'selected'
+          }
+          res.render('projeto/dimensionamento', { dimensionamento, td2, td3, select1, select2, select3 })
      }).catch((err) => {
           req.flash('error_msg', 'Huve um erro ao encontrar o dimensionamento.')
           res.redirect('/projeto/novo')
@@ -90,6 +111,21 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
      }).catch((err) => {
           var dime1
           var dime2
+          var consumo1
+          var consumo2
+          var consumo3
+          var consumo4
+          var consumo5
+          var consumo6
+          var consumo7
+          var consumo8
+          var consumo9
+          var consumo10
+          var consumo11
+          var consumo12
+          var totaluc1
+          var totaluc2
+          var totaluc3
           dime2 = {
                user: _id,
                te: req.body.te,
@@ -101,6 +137,7 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
                inflacao: req.body.inflacao,
                tma: req.body.tma,
                ajuste: req.body.ajuste,
+               qtduce: req.body.qtduce,
                uc11: req.body.uc11,
                uc12: req.body.uc12,
                uc13: req.body.uc13,
@@ -152,52 +189,124 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
                potencia: 1
           }
           if (req.body.qtduce == 1) {
-               dime1 = {
-                    consumo1: req.body.uc11,
-                    consumo2: req.body.uc12,
-                    consumo3: req.body.uc13,
-                    consumo4: req.body.uc14,
-                    consumo5: req.body.uc15,
-                    consumo6: req.body.uc16,
-                    consumo7: req.body.uc17,
-                    consumo8: req.body.uc18,
-                    consumo9: req.body.uc19,
-                    consumo10: req.body.uc110,
-                    consumo11: req.body.uc111,
-                    consumo12: req.body.uc112,
-               }
+
+               consumo1 = parseFloat(req.body.uc11) + parseFloat(req.body.add1)
+               consumo2 = parseFloat(req.body.uc12) + parseFloat(req.body.add2)
+               consumo3 = parseFloat(req.body.uc13) + parseFloat(req.body.add3)
+               consumo4 = parseFloat(req.body.uc14) + parseFloat(req.body.add4)
+               consumo5 = parseFloat(req.body.uc15) + parseFloat(req.body.add5)
+               consumo6 = parseFloat(req.body.uc16) + parseFloat(req.body.add6)
+               consumo7 = parseFloat(req.body.uc17) + parseFloat(req.body.add7)
+               consumo8 = parseFloat(req.body.uc18) + parseFloat(req.body.add8)
+               consumo9 = parseFloat(req.body.uc19) + parseFloat(req.body.add9)
+               consumo10 = parseFloat(req.body.uc110) + parseFloat(req.body.add10)
+               consumo11 = parseFloat(req.body.uc111) + parseFloat(req.body.add11)
+               consumo12 = parseFloat(req.body.uc112) + parseFloat(req.body.add12)
+               totaluc1 = parseFloat(req.body.uc11) + parseFloat(req.body.uc12) + parseFloat(req.body.uc13) + parseFloat(req.body.uc14) + parseFloat(req.body.uc15) + parseFloat(req.body.uc16) + parseFloat(req.body.uc17) + parseFloat(req.body.uc18) + parseFloat(req.body.uc19) + parseFloat(req.body.uc110) + parseFloat(req.body.uc111) + parseFloat(req.body.uc112)
           } else {
                if (req.body.qtduce == 2) {
-                    dime1 = {
-                         consumo1: parseFloat(req.body.uc11) + parseFloat(req.body.uc21),
-                         consumo2: parseFloat(req.body.uc12) + parseFloat(req.body.uc22),
-                         consumo3: parseFloat(req.body.uc13) + parseFloat(req.body.uc23),
-                         consumo4: parseFloat(req.body.uc14) + parseFloat(req.body.uc24),
-                         consumo5: parseFloat(req.body.uc15) + parseFloat(req.body.uc25),
-                         consumo6: parseFloat(req.body.uc16) + parseFloat(req.body.uc26),
-                         consumo7: parseFloat(req.body.uc17) + parseFloat(req.body.uc27),
-                         consumo8: parseFloat(req.body.uc18) + parseFloat(req.body.uc28),
-                         consumo9: parseFloat(req.body.uc19) + parseFloat(req.body.uc29),
-                         consumo10: parseFloat(req.body.uc110) + parseFloat(req.body.uc210),
-                         consumo11: parseFloat(req.body.uc111) + parseFloat(req.body.uc211),
-                         consumo12: parseFloat(req.body.uc112) + parseFloat(req.body.uc2112)
-                    }
+                    consumo1 = parseFloat(req.body.uc11) + parseFloat(req.body.uc21) + parseFloat(req.body.add1)
+                    consumo2 = parseFloat(req.body.uc12) + parseFloat(req.body.uc22) + parseFloat(req.body.add2)
+                    consumo3 = parseFloat(req.body.uc13) + parseFloat(req.body.uc23) + parseFloat(req.body.add3)
+                    consumo4 = parseFloat(req.body.uc14) + parseFloat(req.body.uc24) + parseFloat(req.body.add4)
+                    consumo5 = parseFloat(req.body.uc15) + parseFloat(req.body.uc25) + parseFloat(req.body.add5)
+                    consumo6 = parseFloat(req.body.uc16) + parseFloat(req.body.uc26) + parseFloat(req.body.add6)
+                    consumo7 = parseFloat(req.body.uc17) + parseFloat(req.body.uc27) + parseFloat(req.body.add7)
+                    consumo8 = parseFloat(req.body.uc18) + parseFloat(req.body.uc28) + parseFloat(req.body.add8)
+                    consumo9 = parseFloat(req.body.uc19) + parseFloat(req.body.uc29) + parseFloat(req.body.add9)
+                    consumo10 = parseFloat(req.body.uc110) + parseFloat(req.body.uc210) + parseFloat(req.body.add10)
+                    consumo11 = parseFloat(req.body.uc111) + parseFloat(req.body.uc211) + parseFloat(req.body.add11)
+                    consumo12 = parseFloat(req.body.uc112) + parseFloat(req.body.uc212) + parseFloat(req.body.add12)
+                    totaluc1 = parseFloat(req.body.uc11) + parseFloat(req.body.uc12) + parseFloat(req.body.uc13) + parseFloat(req.body.uc14) + parseFloat(req.body.uc15) + parseFloat(req.body.uc16) + parseFloat(req.body.uc17) + parseFloat(req.body.uc18) + parseFloat(req.body.uc19) + parseFloat(req.body.uc110) + parseFloat(req.body.uc111) + parseFloat(req.body.uc112)
+                    totaluc2 = parseFloat(req.body.uc21) + parseFloat(req.body.uc22) + parseFloat(req.body.uc23) + parseFloat(req.body.uc24) + parseFloat(req.body.uc25) + parseFloat(req.body.uc26) + parseFloat(req.body.uc27) + parseFloat(req.body.uc28) + parseFloat(req.body.uc29) + parseFloat(req.body.uc210) + parseFloat(req.body.uc211) + parseFloat(req.body.uc212)
                } else {
-                    dime1 = {
-                         consumo1: parseFloat(req.body.uc11) + parseFloat(req.body.uc21) + parseFloat(req.body.uc31),
-                         consumo2: parseFloat(req.body.uc12) + parseFloat(req.body.uc22) + parseFloat(req.body.uc32),
-                         consumo3: parseFloat(req.body.uc13) + parseFloat(req.body.uc23) + parseFloat(req.body.uc33),
-                         consumo4: parseFloat(req.body.uc14) + parseFloat(req.body.uc24) + parseFloat(req.body.uc34),
-                         consumo5: parseFloat(req.body.uc15) + parseFloat(req.body.uc25) + parseFloat(req.body.uc35),
-                         consumo6: parseFloat(req.body.uc16) + parseFloat(req.body.uc26) + parseFloat(req.body.uc36),
-                         consumo7: parseFloat(req.body.uc17) + parseFloat(req.body.uc27) + parseFloat(req.body.uc37),
-                         consumo8: parseFloat(req.body.uc18) + parseFloat(req.body.uc28) + parseFloat(req.body.uc38),
-                         consumo9: parseFloat(req.body.uc19) + parseFloat(req.body.uc29) + parseFloat(req.body.uc39),
-                         consumo10: parseFloat(req.body.uc110) + parseFloat(req.body.uc210) + parseFloat(req.body.uc310),
-                         consumo11: parseFloat(req.body.uc111) + parseFloat(req.body.uc211) + parseFloat(req.body.uc311),
-                         consumo12: parseFloat(req.body.uc112) + parseFloat(req.body.uc212 + parseFloat(req.body.uc312))
-                    }
+                    consumo1 = parseFloat(req.body.uc11) + parseFloat(req.body.uc21) + parseFloat(req.body.uc31) + parseFloat(req.body.add1)
+                    consumo2 = parseFloat(req.body.uc12) + parseFloat(req.body.uc22) + parseFloat(req.body.uc32) + parseFloat(req.body.add2)
+                    consumo3 = parseFloat(req.body.uc13) + parseFloat(req.body.uc23) + parseFloat(req.body.uc33) + parseFloat(req.body.add3)
+                    consumo4 = parseFloat(req.body.uc14) + parseFloat(req.body.uc24) + parseFloat(req.body.uc34) + parseFloat(req.body.add4)
+                    consumo5 = parseFloat(req.body.uc15) + parseFloat(req.body.uc25) + parseFloat(req.body.uc35) + parseFloat(req.body.add5)
+                    consumo6 = parseFloat(req.body.uc16) + parseFloat(req.body.uc26) + parseFloat(req.body.uc36) + parseFloat(req.body.add6)
+                    consumo7 = parseFloat(req.body.uc17) + parseFloat(req.body.uc27) + parseFloat(req.body.uc37) + parseFloat(req.body.add7)
+                    consumo8 = parseFloat(req.body.uc18) + parseFloat(req.body.uc28) + parseFloat(req.body.uc38) + parseFloat(req.body.add8)
+                    consumo9 = parseFloat(req.body.uc19) + parseFloat(req.body.uc29) + parseFloat(req.body.uc39) + parseFloat(req.body.add9)
+                    consumo10 = parseFloat(req.body.uc110) + parseFloat(req.body.uc210) + parseFloat(req.body.uc310) + parseFloat(req.body.add10)
+                    consumo11 = parseFloat(req.body.uc111) + parseFloat(req.body.uc211) + parseFloat(req.body.uc311) + parseFloat(req.body.add11)
+                    consumo12 = parseFloat(req.body.uc112) + parseFloat(req.body.uc212) + parseFloat(req.body.uc312) + parseFloat(req.body.add12)
+                    totaluc1 = parseFloat(req.body.uc11) + parseFloat(req.body.uc12) + parseFloat(req.body.uc13) + parseFloat(req.body.uc14) + parseFloat(req.body.uc15) + parseFloat(req.body.uc16) + parseFloat(req.body.uc17) + parseFloat(req.body.uc18) + parseFloat(req.body.uc19) + parseFloat(req.body.uc110) + parseFloat(req.body.uc111) + parseFloat(req.body.uc112)
+                    totaluc2 = parseFloat(req.body.uc21) + parseFloat(req.body.uc22) + parseFloat(req.body.uc23) + parseFloat(req.body.uc24) + parseFloat(req.body.uc25) + parseFloat(req.body.uc26) + parseFloat(req.body.uc27) + parseFloat(req.body.uc28) + parseFloat(req.body.uc29) + parseFloat(req.body.uc210) + parseFloat(req.body.uc211) + parseFloat(req.body.uc212)
+                    totaluc3 = parseFloat(req.body.uc31) + parseFloat(req.body.uc32) + parseFloat(req.body.uc33) + parseFloat(req.body.uc34) + parseFloat(req.body.uc35) + parseFloat(req.body.uc36) + parseFloat(req.body.uc37) + parseFloat(req.body.uc38) + parseFloat(req.body.uc39) + parseFloat(req.body.uc310) + parseFloat(req.body.uc311) + parseFloat(req.body.uc312)
                }
+          }
+
+          var totaladd = parseFloat(req.body.add1) + parseFloat(req.body.add2) + parseFloat(req.body.add3) + parseFloat(req.body.add4) + parseFloat(req.body.add5) + parseFloat(req.body.add6) + parseFloat(req.body.add7) + parseFloat(req.body.add8) + parseFloat(req.body.add9) + parseFloat(req.body.add10) + parseFloat(req.body.add11) + parseFloat(req.body.add12)
+          var totconsumo = consumo1 + consumo2 + consumo3 + consumo4 + consumo5 + consumo6 + consumo7 + consumo8 + consumo9 + consumo10 + consumo11 + consumo12
+          var total1 = ((parseFloat(consumo1) * (parseFloat(req.body.te) / (1 - ((parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + (parseFloat(consumo1) * (parseFloat(req.body.tusd / (1 - (parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + parseFloat(req.body.ilupub)).toFixed(2)
+          var total2 = ((parseFloat(consumo2) * (parseFloat(req.body.te) / (1 - ((parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + (parseFloat(consumo2) * (parseFloat(req.body.tusd / (1 - (parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + parseFloat(req.body.ilupub)).toFixed(2)
+          var total3 = ((parseFloat(consumo3) * (parseFloat(req.body.te) / (1 - ((parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + (parseFloat(consumo3) * (parseFloat(req.body.tusd / (1 - (parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + parseFloat(req.body.ilupub)).toFixed(2)
+          var total4 = ((parseFloat(consumo4) * (parseFloat(req.body.te) / (1 - ((parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + (parseFloat(consumo4) * (parseFloat(req.body.tusd / (1 - (parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + parseFloat(req.body.ilupub)).toFixed(2)
+          var total5 = ((parseFloat(consumo5) * (parseFloat(req.body.te) / (1 - ((parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + (parseFloat(consumo5) * (parseFloat(req.body.tusd / (1 - (parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + parseFloat(req.body.ilupub)).toFixed(2)
+          var total6 = ((parseFloat(consumo6) * (parseFloat(req.body.te) / (1 - ((parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + (parseFloat(consumo6) * (parseFloat(req.body.tusd / (1 - (parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + parseFloat(req.body.ilupub)).toFixed(2)
+          var total7 = ((parseFloat(consumo7) * (parseFloat(req.body.te) / (1 - ((parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + (parseFloat(consumo7) * (parseFloat(req.body.tusd / (1 - (parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + parseFloat(req.body.ilupub)).toFixed(2)
+          var total8 = ((parseFloat(consumo8) * (parseFloat(req.body.te) / (1 - ((parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + (parseFloat(consumo8) * (parseFloat(req.body.tusd / (1 - (parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + parseFloat(req.body.ilupub)).toFixed(2)
+          var total9 = ((parseFloat(consumo9) * (parseFloat(req.body.te) / (1 - ((parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + (parseFloat(consumo9) * (parseFloat(req.body.tusd / (1 - (parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + parseFloat(req.body.ilupub)).toFixed(2)
+          var total10 = ((parseFloat(consumo10) * (parseFloat(req.body.te) / (1 - ((parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + (parseFloat(consumo10) * (parseFloat(req.body.tusd / (1 - (parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + parseFloat(req.body.ilupub)).toFixed(2)
+          var total11 = ((parseFloat(consumo11) * (parseFloat(req.body.te) / (1 - ((parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + (parseFloat(consumo11) * (parseFloat(req.body.tusd / (1 - (parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + parseFloat(req.body.ilupub)).toFixed(2)
+          var total12 = ((parseFloat(consumo12) * (parseFloat(req.body.te) / (1 - ((parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + (parseFloat(consumo12) * (parseFloat(req.body.tusd / (1 - (parseFloat(req.body.icms) + parseFloat(req.body.pis) + parseFloat(req.body.cofins)) / 100)))) + parseFloat(req.body.ilupub)).toFixed(2)
+          var totfatura = (parseFloat(total1) + parseFloat(total2) + parseFloat(total3) + parseFloat(total4) + parseFloat(total5) + parseFloat(total6) + parseFloat(total7) + parseFloat(total8) + parseFloat(total9) + parseFloat(total10) + parseFloat(total11) + parseFloat(total12)).toFixed(2)
+          if (typeof totaluc2 == 'undefined') {
+               totaluc2 = 0
+          }
+          if (typeof totaluc3 == 'undefined') {
+               totaluc3 = 0
+          }
+          console.log('totaladd=>' + totaladd)
+          console.log('totaluc1=>' + totaluc1)
+          console.log('totaluc2=>' + totaluc2)
+          console.log('totaluc3=>' + totaluc3)
+          console.log('totconsumo=>' + totconsumo)
+          console.log('total1=>' + total1)
+          console.log('total2=>' + total2)
+          console.log('total3=>' + total3)
+          console.log('total4=>' + total4)
+          console.log('total5=>' + total5)
+          console.log('total6=>' + total6)
+          console.log('total7=>' + total7)
+          console.log('total8=>' + total8)
+          console.log('total9=>' + total9)
+          console.log('total10=>' + total10)
+          console.log('total11=>' + total11)
+          console.log('total12=>' + total12)
+          dime1 = {
+               consumo1: consumo1,
+               consumo2: consumo2,
+               consumo3: consumo3,
+               consumo4: consumo4,
+               consumo5: consumo5,
+               consumo6: consumo6,
+               consumo7: consumo7,
+               consumo8: consumo8,
+               consumo9: consumo9,
+               consumo10: consumo10,
+               consumo11: consumo11,
+               consumo12: consumo12,
+               totaluc1: totaluc1,
+               totaluc2: totaluc2,
+               totaluc3: totaluc3,
+               totaladd: totaladd,
+               totconsumo: totconsumo,
+               total1: total1,
+               total2: total2,
+               total3: total3,
+               total4: total4,
+               total5: total5,
+               total6: total6,
+               total7: total7,
+               total8: total8,
+               total9: total9,
+               total10: total10,
+               total11: total11,
+               total12: total12,
+               totfatura: totfatura
           }
           var dime = Object.assign(dime2, dime1)
           console.log('dime=>' + dime)
@@ -299,13 +408,59 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
 router.get('/vermais/:id', ehAdmin, (req, res) => {
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
           Realizado.findOne({ projeto: projeto._id }).lean().then((realizado) => {
-               Pessoa.findOne({ _id: projeto.funins }).lean().then((responsavel) => {
+               Pessoa.findOne({ _id: projeto.funges }).lean().then((responsavel) => {
                     Cliente.findOne({ _id: projeto.cliente }).lean().then((cliente) => {
                          Empresa.findOne({ _id: projeto.empresa }).lean().then((empresa) => {
-                              res.render('projeto/vermais', { projeto, responsavel, empresa, realizado, cliente })
+                              Cronograma.findOne({ projeto: projeto._id }).lean().then((cronograma) => {
+                                   Equipe.findOne({ projeto: projeto._id }).lean().then((equipe) => {
+                                        console.log('equipe.pla0=>'+equipe.pla0)
+                                        var equipepla = equipe.pla0 + '|' + equipe.pla1 + '|'+ equipe.pla2 + '|'+ equipe.pla3 + '|'+ equipe.pla4 + '|'+ equipe.pla5
+                                        var equipepro = equipe.pro0 + '|' + equipe.pro1 + '|'+ equipe.pro2 + '|'+ equipe.pro3 + '|'+ equipe.pro4 + '|'+ equipe.pro5
+                                        var equipeate = equipe.ate0 + '|' + equipe.ate1 + '|'+ equipe.ate2 + '|'+ equipe.ate3 + '|'+ equipe.ate4 + '|'+ equipe.ate5
+                                        var equipeinv = equipe.inv0 + '|' + equipe.inv1 + '|'+ equipe.inv2 + '|'+ equipe.inv3 + '|'+ equipe.inv4 + '|'+ equipe.inv5
+                                        var equipepnl = equipe.pnl0 + '|' + equipe.pnl1 + '|'+ equipe.pnl2 + '|'+ equipe.pnl3 + '|'+ equipe.pnl4 + '|'+ equipe.pnl5
+                                        var equipeeae = equipe.eae0 + '|' + equipe.eae1 + '|'+ equipe.eae2 + '|'+ equipe.eae3 + '|'+ equipe.eae4 + '|'+ equipe.eae5
+                                        var equipeins = equipe.ins0 + '|' + equipe.ins1 + '|'+ equipe.ins2 + '|'+ equipe.ins3 + '|'+ equipe.ins4 + '|'+ equipe.ins5
+                                        var equipevis = equipe.vis0 + '|' + equipe.vis1 + '|'+ equipe.vis2 + '|'+ equipe.vis3 + '|'+ equipe.vis4 + '|'+ equipe.vis5
+
+                                        var plaini = dataMensagem(cronograma.dateplaini)
+                                        var plafim = dataMensagem(cronograma.dateplafim)
+                                        var prjini = dataMensagem(cronograma.dateprjini)
+                                        var prjfim = dataMensagem(cronograma.dateprjfim)
+                                        var ateini = dataMensagem(cronograma.dateateini)
+                                        var atefim = dataMensagem(cronograma.dateatefim)
+                                        var invini = dataMensagem(cronograma.dateinvini)
+                                        var invfim = dataMensagem(cronograma.dateinvfim)
+                                        var stbini = dataMensagem(cronograma.datestbini)
+                                        var stbfim = dataMensagem(cronograma.datestbfim)
+                                        var eaeini = dataMensagem(cronograma.dateeaeini)
+                                        var eaefim = dataMensagem(cronograma.dateeaefim)
+                                        var pnlini = dataMensagem(cronograma.datepnlini)
+                                        var pnlfim = dataMensagem(cronograma.datepnlfim)
+                                        var estini = dataMensagem(cronograma.dateestini)
+                                        var estfim = dataMensagem(cronograma.dateestfim)
+                                        var modini = dataMensagem(cronograma.datemodini)
+                                        var modfim = dataMensagem(cronograma.datemodfim)
+                                        var visini = dataMensagem(cronograma.datevisini)
+                                        var visfim = dataMensagem(cronograma.datevisfim)
+
+                                        console.log('equipepla=>'+equipepla)
+                                        res.render('projeto/vermais', {
+                                             projeto, responsavel, empresa, realizado, cliente, plaini, plafim, prjini, prjfim, ateini, atefim, invini, invfim,
+                                             stbini, stbfim, eaeini, eaefim, pnlini, pnlfim, estini, estfim, modini, modfim, visini, visfim,
+                                             equipepla, equipepro, equipeate, equipeinv, equipepnl, equipeeae, equipeins, equipevis
+                                        })
+                                   }).catch((err) => {
+                                        req.flash('error_msg', 'Nenhum cronograma encontrado.')
+                                        res.redirect('/projeto/consulta')
+                                   })
+                              }).catch((err) => {
+                                   req.flash('error_msg', 'Nenhum cronograma encontrado.')
+                                   res.redirect('/projeto/consulta')
+                              })
                          }).catch((err) => {
-                              req.flash('error_msg', 'Nenhum empresa encontrado')
-                              res.redirect('/configuracao/consultaempresa.')
+                              req.flash('error_msg', 'Nenhum empresa encontrado.')
+                              res.redirect('/projeto/consulta')
                          })
                     }).catch((err) => {
                          req.flash('error_msg', 'Nenhum cliente encontrado.')
@@ -313,11 +468,11 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
                     })
                }).catch((err) => {
                     req.flash('error_msg', 'Nenhum responsável encontrado.')
-                    res.redirect('/pessoa/consulta')
+                    res.redirect('/projeto/consulta')
                })
           }).catch((err) => {
                req.flash('error_msg', 'Projeto não realizado.')
-               res.redirect('/pessoa/consulta')
+               res.redirect('/projeto/consulta')
           })
      }).catch((err) => {
           req.flash('error_msg', 'Nenhum projeto encontrado.')
@@ -1191,7 +1346,6 @@ router.post("/novo", ehAdmin, (req, res) => {
                                         nomecliente: cliente.nome,
                                         configuracao: req.body.configuracao,
                                         markup: config.markup,
-                                        requisitos: req.body.requisitos,
                                         grupoUsina: req.body.grupoUsina,
                                         tipoConexao: req.body.tipoConexao,
                                         classUsina: req.body.classUsina,
@@ -1221,7 +1375,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                         temEstSolo: estsolo,
                                         temArmazenamento: armazenamento,
                                         temPainel: painel,
-                                        premissas: req.body.premissas,
+                                        escopo: req.body.escopo,
                                         vrskwp: (parseFloat(valorProjeto) / parseFloat(potencia)).toFixed(2),
                                         dataini: req.body.dataini,
                                         valDataIni: req.body.valDataIni,
@@ -1464,18 +1618,15 @@ router.post("/novo", ehAdmin, (req, res) => {
 router.post('/salvar_prereq', ehAdmin, (req, res) => {
      var sucesso = []
      Projeto.findOne({ _id: req.body.id }).then((projeto) => {
-          //console.timeLog('req.body.premissas=>' + req.body.premissas)
-          //console.timeLog('req.body.requisitos=>' + req.body.requisitos)
-          projeto.premissas = req.body.premissas
-          projeto.requisitos = req.body.requisitos
+          projeto.escopo = req.body.escopo
           projeto.save().then(() => {
                //console.log('salvou projeto')
                Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
                     Realizado.findOne({ projeto: projeto._id }).lean().then((realizado) => {
                          Pessoa.findOne({ _id: projeto.funres }).lean().then((responsavel) => {
                               Empresa.findOne({ _id: projeto.empresa }).lean().then((empresa) => {
-                                   sucesso.push({ texto: 'Premissas e requisitos salvos com sucesso.' })
-                                   res.render('projeto/vermais', { sucesso: sucesso, projeto: projeto, responsavel: responsavel, empresa: empresa, realizado: realizado })
+                                   sucesso.push({ texto: 'Escopo salvo com sucesso.' })
+                                   res.render('projeto/vermais', { sucesso, projeto, responsavel, empresa, realizado })
                               }).catch((err) => {
                                    req.flash('error_msg', 'Nenhum empresa encontrado')
                                    res.redirect('/configuracao/consultaempresa')
@@ -1493,7 +1644,7 @@ router.post('/salvar_prereq', ehAdmin, (req, res) => {
                     res.redirect('/projeto/consulta')
                })
           }).catch((err) => {
-               req.flash('error_msg', 'Houve um erro ao salvar as premissas e')
+               req.flash('error_msg', 'Houve um erro ao salvar o escopo.')
                res.redirect('/configuracao/consultaempresa')
           })
      }).catch((err) => {
@@ -3928,6 +4079,46 @@ router.post('/filtrar', ehAdmin, (req, res) => {
           }
      }
 
+})
+
+router.post('/salvarProposta/', ehAdmin, (req, res) => {
+     console.log('req.body.id=>' + req.body.id)
+     var upload = multer({ storage }).single('proposta')
+     upload(req, res, function (err) {
+          if (err) {
+               return res.end("Error uploading file.");
+          } else {
+               Projeto.findOne({ _id: req.body.id }).then((projeto) => {
+                    var proposta
+                    if (req.file != null) {
+                         proposta = req.file.filename
+                    } else {
+                         proposta = ''
+                    }
+                    console.log('proposta=>' + proposta)
+                    projeto.proposta = proposta
+                    projeto.save().then(() => {
+                         res.redirect('/projeto/edicao/' + req.body.id)
+                    }).catch((err) => {
+                         req.flash('error_msg', 'Houve uma falha ao salvar o projeto.')
+                         res.redirect('/projeto/edicao/' + req.body.id)
+                    })
+               }).catch((err) => {
+                    req.flash('error_msg', 'Houve uma falha ao encontrar o projeto.')
+                    res.redirect('/projeto/edicao/' + req.body.id)
+               })
+          }
+     })
+})
+
+router.get('/mostrarProposta/:id', ehAdmin, (req, res) => {
+     Projeto.findOne({ _id: req.params.id }).then((projeto) => {
+          var doc = projeto.memorial
+          var path = __dirname
+          console.log(path)
+          path = path.replace('routes', '')
+          res.sendFile(path + '/public/arquivos/' + doc)
+     })
 })
 
 router.get('/confirmafinalizar/:id', ehAdmin, (req, res) => {

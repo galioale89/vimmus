@@ -840,11 +840,7 @@ const Projeto = new Schema({
         ref: 'empresa',
         require: false
     },
-    premissas: {
-        type: String,
-        require: false
-    },
-    requisitos: {
+    escopo: {
         type: String,
         require: false
     },
@@ -1041,6 +1037,11 @@ const Projeto = new Schema({
     mensagem: {
         type:Boolean,
         require: false
+    },
+    proposta:{
+        type: String,
+        require: true,
+        trim: true        
     },
     memorial: {
         type: String,

@@ -5,7 +5,6 @@
         border: solid 1px;
         background: linear-gradient(135deg, rgb(62, 81, 177), rgb(11, 19, 58, 1), rgb(11, 19, 58, 1));
     }
-
 </style>
 <script>
     function validaDataIns() {
@@ -120,7 +119,7 @@
         <h5 class="header">{{cliente.nome}} </h5>
     </div>
 
-    <form action='/projeto/edicao' method='post'>
+    <form action='/projeto/edicao' enctype="multipart/form-data" method='post'>
         <!-- Modal -->
         <div class="modal fade" id="custosModal" tabindex="1" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -320,13 +319,18 @@
         <input type='hidden' name='id' value='{{projeto._id}}'>
 
         <div class='btn-group col-12 mx-auto'>
-            <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu ativo'> <i
-                    class="bi bi-house" style="font-size: 14px;vertical-align:text-bottom;"></i> Projeto</a>
-            <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"  style="font-size: 14px;vertical-align:text-bottom;"></i> Gestão</a>
-            <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil" style="font-size: 14px;vertical-align:text-bottom;"></i> Projetista</a>
-            <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools" style="font-size: 14px;vertical-align:text-bottom;"></i> Instalação</a>
-            <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-puzzle" style="font-size: 14px;vertical-align:text-bottom;"></i> Gerenciamento</a>
-            <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-calculator" style="font-size: 14px;vertical-align:text-bottom;"></i> Tributos</a>
+            <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu ativo'> <i class="bi bi-house"
+                    style="font-size: 14px;vertical-align:text-bottom;"></i> Projeto</a>
+            <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"
+                    style="font-size: 14px;vertical-align:text-bottom;"></i> Gestão</a>
+            <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"
+                    style="font-size: 14px;vertical-align:text-bottom;"></i> Projetista</a>
+            <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"
+                    style="font-size: 14px;vertical-align:text-bottom;"></i> Instalação</a>
+            <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-puzzle"
+                    style="font-size: 14px;vertical-align:text-bottom;"></i> Gerenciamento</a>
+            <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-calculator"
+                    style="font-size: 14px;vertical-align:text-bottom;"></i> Tributos</a>
         </div>
 
         <div class="row mt-1">
@@ -434,7 +438,7 @@
                             </div>
                             <div class="col-md-10">
                                 <textarea {{#if projeto.orcado}}{{else}}disabled{{/if}} name='motivo'
-                                    class='form-control' rows='3' placeholder="Observação">{{projeto.motivo}}</textarea>
+                                    class='form-control' rows='3' placeholder="Observação" style="font-size: 12px;">{{projeto.motivo}}</textarea>
                             </div>
                         </div>
                     </div>
@@ -463,7 +467,7 @@
                     <div class="col-md-10">
                     </div>
                     <div class="col-md-2">
-                        <label class='col-form-label col-form-label-sm fw-bold'>Alterar</label>                        
+                        <label class='col-form-label col-form-label-sm fw-bold'>Alterar</label>
                     </div>
                 </div>
                 <div class="row">
@@ -580,56 +584,80 @@
                         </div>
                     </div>
                 </div>
-                <div class="row mt-3">
-                    <div class="row mb-2" style="width: 100%;">
-                        <a data-bs-toggle="modal" data-bs-target="#custosModal" class="btn btn-sm btn-primary "><i
-                                class="bi bi-list-ul"></i> Lançar Materiais Detalhados
-                        </a>
-                    </div>
-                    <div class="row" style="width: 100%;">
-                        <div class='btn-group col-12 gap-2'>
-                            <button {{#if projeto.orcado}}{{else}}disabled{{/if}} type="submit"
-                                class="btn btn-sm btn-success" name="aplicar" style="border-radius: 30px;"> <i
-                                    class="bi bi-check-circle"></i>
-                                Salvar</button>
-                            {{#if projeto.executando}}
-                            <a {{#if projeto.homologado}}style='opacity: 0.5;pointer-events:none;border-radius: 30px'
-                                {{else}} href='/projeto/motivoParar/{{projeto._id}}' {{/if}}
-                                class='btn btn-sm btn-danger' style="border-radius: 30px;"><i
-                                    class="bi bi-stop-circle"></i> Parar</a>
-                            {{else}}
-                            <a {{#if projeto.homologado}}style='border-radius: 30px;opacity: 0.5;pointer-events:none'
-                                {{else}} {{#if
-                                projeto.foiRealizado}}style='opacity: 0.5;pointer-events:none;border-radius: 30px'
-                                {{else}} href='/projeto/executar/{{projeto._id}}' {{/if}} {{/if}}
-                                style="color:white;border-radius: 30px;" class='btn btn-sm btn-success'
-                                onmousedown="validaDataIns()"><i class="bi bi-file-earmark-play"></i> Executar</a>
-                            {{/if}}
-                            {{#if projeto.homologado}}
-                            <a style="color: white; background-color: rgb(252, 137, 7);pointer-events: none;border-radius: 30px;"
-                                class='btn btn-sm btn-warning'><i class="bi bi-check"></i> Em Homologação</a>
-                            {{else}}
-                            {{#if projeto.foiRealizado}}
-                            <a
-                                style="color: white; background-color: rgb(19, 2, 172);border-radius: 30px; font-size:14px;padding: 7px">
-                                Projeto Realizado </a>
-                            {{else}}
-                            <a href='/projeto/homologar/{{projeto._id}}'
-                                style="color: white; background-color: rgb(252, 137, 7);border-radius: 30px;"
-                                class='btn btn-sm btn-warning'><i class="bi bi-stopwatch"></i> Homologar</a>
-                            {{/if}}
-                            {{/if}}
-                            <a {{#if projeto.homologado}}href='/projeto/realizar/{{projeto._id}}'
-                                {{else}}style='opacity: 0.5;pointer-events:none;border-radius: 30px;' {{/if}}
-                                class='btn btn-sm btn-success' style="border-radius: 30px;"><i
-                                    class="bi bi-check2-circle"></i>
-                                Realizar</a>
-                            <a href='/gerenciamento/dashboard/{{projeto._id}}' class='btn btn-sm btn-primary'
-                                style="border-radius: 40px;"><i class="bi bi-bar-chart"></i> Dashboard</a>
-                        </div>
+                <div class="row" style="width: 100%;">
+                    <div class='btn-group col-12 gap-2'>
+                        <button {{#if projeto.orcado}}{{else}}disabled{{/if}} type="submit"
+                            class="btn btn-sm btn-success" name="aplicar" style="border-radius: 30px;"> <i
+                                class="bi bi-check-circle"></i>
+                            Salvar</button>
+                        {{#if projeto.executando}}
+                        <a {{#if projeto.homologado}}style='opacity: 0.5;pointer-events:none;border-radius: 30px'
+                            {{else}} href='/projeto/motivoParar/{{projeto._id}}' {{/if}} class='btn btn-sm btn-danger'
+                            style="border-radius: 30px;"><i class="bi bi-stop-circle"></i> Parar</a>
+                        {{else}}
+                        <a {{#if projeto.homologado}}style='border-radius: 30px;opacity: 0.5;pointer-events:none'
+                            {{else}} {{#if
+                            projeto.foiRealizado}}style='opacity: 0.5;pointer-events:none;border-radius: 30px' {{else}}
+                            href='/projeto/executar/{{projeto._id}}' {{/if}} {{/if}}
+                            style="color:white;border-radius: 30px;" class='btn btn-sm btn-success'
+                            onmousedown="validaDataIns()"><i class="bi bi-file-earmark-play"></i> Executar</a>
+                        {{/if}}
+                        {{#if projeto.homologado}}
+                        <a style="color: white; background-color: rgb(252, 137, 7);pointer-events: none;border-radius: 30px;"
+                            class='btn btn-sm btn-warning'><i class="bi bi-check"></i> Em Homologação</a>
+                        {{else}}
+                        {{#if projeto.foiRealizado}}
+                        <a
+                            style="color: white; background-color: rgb(19, 2, 172);border-radius: 30px; font-size:14px;padding: 7px">
+                            Projeto Realizado </a>
+                        {{else}}
+                        <a href='/projeto/homologar/{{projeto._id}}'
+                            style="color: white; background-color: rgb(252, 137, 7);border-radius: 30px;"
+                            class='btn btn-sm btn-warning'><i class="bi bi-stopwatch"></i> Homologar</a>
+                        {{/if}}
+                        {{/if}}
+                        <a {{#if projeto.homologado}}href='/projeto/realizar/{{projeto._id}}'
+                            {{else}}style='opacity: 0.5;pointer-events:none;border-radius: 30px;' {{/if}}
+                            class='btn btn-sm btn-success' style="border-radius: 30px;"><i
+                                class="bi bi-check2-circle"></i>
+                            Realizar</a>
+                        <a href='/gerenciamento/dashboard/{{projeto._id}}' class='btn btn-sm btn-primary'
+                            style="border-radius: 40px;"><i class="bi bi-bar-chart"></i> Dashboard</a>
+                        <a data-bs-toggle="modal" data-bs-target="#custosModal" class="btn btn-sm btn-primary"
+                            style="border-radius: 40px;"><i class="bi bi-list-ul"></i></a>
                     </div>
                 </div>
+                <label class="col-form-label mt-3 fw-bold" style="margin-left: 70%;">Adicionar Proposta</label>
             </div>
         </div>
     </form>
+    <div class="div" style="margin-left: 68%;">
+        <form action='/projeto/salvarProposta' enctype="multipart/form-data" method="post">
+        <input type='hidden' name='id' value='{{projeto._id}}'>
+            <table>
+                <tr>
+                    <td>
+                        <input class='form-control form-control-sm' type='file' name='proposta'>
+                        <label class='col-form-label col-form-label-sm' style="line-height: 0px;">{{projeto.proposta}}</label>
+                    </td>
+                    <td>
+                        {{#if projeto.proposta}}
+                        <div class="col-md-1">
+                            <i class='bi bi-check-all'></i>
+                        </div>
+                        {{/if}}
+                    </td>
+                    <td>
+                        <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
+                                class='bi bi-save'></i></button>
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-primary" href='/projeto/mostrarProposta/{{projeto._id}}'
+                            target="_blank"><i class='bi bi-eye'></i></a>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
 </div>

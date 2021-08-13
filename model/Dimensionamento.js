@@ -240,6 +240,10 @@ const Dimensionamento = new Schema({
         type: Number,
         require: false
     },
+    add11: {
+        type: Number,
+        require: false
+    },    
     add12: {
         type: Number,
         require: false
@@ -284,6 +288,10 @@ const Dimensionamento = new Schema({
         type: Number,
         require: false
     },
+    total11: {
+        type: Number,
+        require: false
+    },    
     total12: {
         type: Number,
         require: false
@@ -336,9 +344,37 @@ const Dimensionamento = new Schema({
         type: Number,
         require: false
     },
+    totaluc1:{
+        type: Number,
+        require: false
+    },
+    totaluc2:{
+        type: Number,
+        require: false
+    },    
+    totaluc3:{
+        type: Number,
+        require: false
+    },    
+    totaladd:{
+        type: Number,
+        require: false
+    },    
+    totconsumo:{
+        type: Number,
+        require: false
+    },   
+    totfatura:{
+        type: Number,
+        require: false
+    },     
     potencia: {
         type: Number,
         require: false        
+    },
+    ajupot:{
+        type: Number,
+        require: false                
     }
 })
 

@@ -32,6 +32,56 @@
         }
 
     }
+    window.onload = function () {
+        var add1 = document.getElementById('add1')
+        var add2 = document.getElementById('add2')
+        var add3 = document.getElementById('add3')
+        var add4 = document.getElementById('add4')
+        var add5 = document.getElementById('add5')
+        var add6 = document.getElementById('add6')
+        var add7 = document.getElementById('add7')
+        var add8 = document.getElementById('add8')
+        var add9 = document.getElementById('add9')
+        var add10 = document.getElementById('add10')
+        var add11 = document.getElementById('add11')
+        var add12 = document.getElementById('add12')
+        if (add1.value == '') {
+            add1.value = 0
+        }
+        if (add2.value == '') {
+            add2.value = 0
+        }
+        if (add3.value == '') {
+            add3.value = 0
+        }
+        if (add4.value == '') {
+            add4.value = 0
+        }
+        if (add5.value == '') {
+            add5.value = 0
+        }
+        if (add6.value == '') {
+            add6.value = 0
+        }
+        if (add7.value == '') {
+            add7.value = 0
+        }
+        if (add8.value == '') {
+            add8.value = 0
+        }
+        if (add9.value == '') {
+            add9.value = 0
+        }
+        if (add10.value == '') {
+            add10.value = 0
+        }
+        if (add11.value == '') {
+            add11.value = 0
+        }
+        if (add12.value == '') {
+            add12.value = 0
+        }
+    }
 </script>
 <div class="row" style="width: 100%;">
     <form action="/projeto/dimensionar/" method="post">
@@ -48,22 +98,22 @@
                         <label class='col-form-label col-form-label-sm fw-bold'>TE:</label>
                     </div>
                     <div class="col-md-2">
-                        <input class='form-control form-control-sm' step='0.010' name='te' id='te' placeholder="R$"
-                            value='{{dimensionamento.te}}'>
+                        <input class='form-control form-control-sm' step='0.000010' name='te' id='te' placeholder="R$"
+                            value='{{dimensionamento.te}}' type='number'>
                     </div>
                     <div class="col-md-1 text-end">
                         <label class='col-form-label col-form-label-sm fw-bold'>TUSD:</label>
                     </div>
                     <div class="col-md-2">
-                        <input class='form-control form-control-sm' step='0.010' name='tusd' id='tusd' placeholder="R$"
-                            value='{{dimensionamento.tusd}}'>
+                        <input class='form-control form-control-sm' step='0.000010' name='tusd' id='tusd'
+                            placeholder="R$" value='{{dimensionamento.tusd}}' type='number'>
                     </div>
                     <div class="col-md-2 text-end">
                         <label class='col-form-label col-form-label-sm fw-bold'>Ilum. Pública:</label>
                     </div>
                     <div class="col-md-2">
-                        <input class='form-control form-control-sm' step='0.010' name='ilupub' id='ilupub'
-                            placeholder="R$" value='{{dimensionamento.cosip}}'>
+                        <input class='form-control form-control-sm' step='0.000010' name='ilupub' id='ilupub'
+                            placeholder="R$" value='{{dimensionamento.cosip}}' type='number'>
                     </div>
                 </div>
                 <div class="row mt-1" style="width: 100%;">
@@ -74,22 +124,22 @@
                         <label class='col-form-label col-form-label-sm fw-bold'>ICMS:</label>
                     </div>
                     <div class="col-md-2">
-                        <input class='form-control form-control-sm' step='0.010' name='icms' id='icms' placeholder="%"
-                            value='{{dimensionamento.icms}}'>
+                        <input class='form-control form-control-sm' step='0.000010' name='icms' id='icms'
+                            placeholder="%" value='{{dimensionamento.icms}}' type='number'>
                     </div>
                     <div class="col-md-1 text-end">
                         <label class='col-form-label col-form-label-sm fw-bold'>PIS:</label>
                     </div>
                     <div class="col-md-2">
-                        <input class='form-control form-control-sm' step='0.010' name='pis' id='pis' placeholder="%"
-                            value='{{dimensionamento.pis}}'>
+                        <input class='form-control form-control-sm' step='0.000010' name='pis' id='pis' placeholder="%"
+                            value='{{dimensionamento.pis}}' type='number'>
                     </div>
                     <div class="col-md-2 text-end">
                         <label class='col-form-label col-form-label-sm fw-bold'>COFINS:</label>
                     </div>
                     <div class="col-md-2">
-                        <input class='form-control form-control-sm' step='0.010' name='cofins' id='cofins'
-                            placeholder="%" value='{{dimensionamento.cofins}}'>
+                        <input class='form-control form-control-sm' step='0.000010' name='cofins' id='cofins'
+                            placeholder="%" value='{{dimensionamento.cofins}}' type='number'>
                     </div>
                 </div>
             </div>
@@ -99,15 +149,15 @@
                         <label class='col-form-label col-form-label-sm fw-bold'>INFLAÇÃO:</label>
                     </div>
                     <div class="col-md-3">
-                        <input class='form-control form-control-sm' step='0.010' name='inflacao' id='inflacao'
-                            placeholder="%" value='{{dimensionamento.inflacao}}'>
+                        <input class='form-control form-control-sm' step='0.000010' name='inflacao' id='inflacao'
+                            placeholder="%" value='{{dimensionamento.inflacao}}' type='number'>
                     </div>
                     <div class="col-md-1 text-end">
                         <label class='col-form-label col-form-label-sm fw-bold'>TMA:</label>
                     </div>
                     <div class="col-md-3">
-                        <input class='form-control form-control-sm' step='0.010' name='tma' id='tma' placeholder="%"
-                            value='{{dimensionamento.tma}}'>
+                        <input class='form-control form-control-sm' step='0.000010' name='tma' id='tma' placeholder="%"
+                            value='{{dimensionamento.tma}}' type='number'>
                     </div>
                 </div>
                 <div class="row mt-1">
@@ -115,8 +165,8 @@
                         <label class='col-form-label col-form-label-sm fw-bold'>AJUSTE TARIFÁRIO:</label>
                     </div>
                     <div class="col-md-3">
-                        <input class='form-control form-control-sm' step='0.010' name='ajuste' id='ajuste'
-                            placeholder="%" value='{{dimensionamento.ajuste}}'>
+                        <input class='form-control form-control-sm' step='0.000010' name='ajuste' id='ajuste'
+                            placeholder="%" value='{{dimensionamento.ajuste}}' type='number'>
                     </div>
                 </div>
             </div>
@@ -130,9 +180,9 @@
                 </div>
                 <div class="col-md-1">
                     <select class='form-select form-select-sm' name='qtduce' id='qtduce' onchange="trocaQtd()">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
+                        <option {{select1}}>1</option>
+                        <option {{select2}}>2</option>
+                        <option {{select3}}>3</option>
                     </select>
                 </div>
                 <div class="col-md-2 text-end">
@@ -141,11 +191,17 @@
                 <div class="col-md-1">
                     <input class='form-control form-control-sm' type="text" name='radiacao'>
                 </div>
+                <div class="col-md-3 text-end">
+                    <label class="col-form-label col-form-label-sm fw-bold">Ajuste da potência nominal:</label>
+                </div>
+                <div class="col-md-1">
+                    <input class='form-control form-control-sm' type="ajupot" name='ajupot' placeholder="%">
+                </div>
             </div>
-            <div class="row">
+            <div class="row mt-2">
                 <table>
                     <tr>
-                        <th style="width: 12%;"></th>
+                        <th style="width: 10%;"></th>
                         <th style='width: 7%'>Janeiro</th>
                         <th style='width: 7%'>Fevereiro</th>
                         <th style='width: 7%'>Março</th>
@@ -158,6 +214,7 @@
                         <th style='width: 7%'>Outubro</th>
                         <th style='width: 7%;'>Novembro</th>
                         <th style='width: 7%;'>Dezembro</th>
+                        <th style='width: 7%;'>Total kW/h</th>
                     </tr>
                     <tr>
                         <div id='td1'>
@@ -201,8 +258,8 @@
                                     id='uc19' value='{{dimensionamento.uc19}}'>
                             </td>
                             <td>
-                                <input class='form-control form-control-sm' type="{{showuc1}}" step='0.010' name='uc19'
-                                    id='uc19' value='{{dimensionamento.uc19}}'>
+                                <input class='form-control form-control-sm' type="{{showuc1}}" step='0.010' name='uc110'
+                                    id='uc110' value='{{dimensionamento.uc110}}'>
                             </td>
                             <td>
                                 <input class='form-control form-control-sm' type="{{showuc1}}" step='0.010' name='uc111'
@@ -211,6 +268,10 @@
                             <td>
                                 <input class='form-control form-control-sm' type="{{showuc1}}" step='0.010' name='uc112'
                                     id='uc112' value='{{dimensionamento.uc112}}'>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm' step='0.010'
+                                    name='totaluc1'>{{dimensionamento.totaluc1}}</label>
                             </td>
                         </div>
                     </tr>
@@ -225,7 +286,7 @@
                         </td>
                         <td>
                             <input class='form-control form-control-sm' type="{{showuc2}}" step='0.010' name='uc22'
-                                id='uc22' value='{{dimensionamento.uc2}}'>
+                                id='uc22' value='{{dimensionamento.uc22}}'>
                         </td>
                         <td>
                             <input class='form-control form-control-sm' type="{{showuc2}}" step='0.010' name='uc23'
@@ -266,6 +327,10 @@
                         <td>
                             <input class='form-control form-control-sm' type="{{showuc2}}" step='0.010' name='uc212'
                                 id='uc212' value='{{dimensionamento.uc212}}'>
+                        </td>
+                        <td>
+                            <label class='col-form-label col-form-label-sm' step='0.010'
+                                name='totaluc2'>{{dimensionamento.totaluc2}}</label>
                         </td>
                     </tr>
                     <tr id='td3' style="display: {{td3}};">
@@ -320,6 +385,10 @@
                             <input class='form-control form-control-sm' type="{{showuc3}}" step='0.010' name='uc312'
                                 id='uc312' value='{{dimensionamento.uc312}}'>
                         </td>
+                        <td>
+                            <label class='col-form-label col-form-label-sm' step='0.010'
+                                name='totaluc3'>{{dimensionamento.totaluc3}}</label>
+                        </td>
                     </tr>
                     </td>
                     <tr>
@@ -355,7 +424,7 @@
                                 value='{{dimensionamento.add7}}'>
                         </td>
                         <td>
-                            <input class='form-control form-control-sm' type="number" name='add8' id='add81'
+                            <input class='form-control form-control-sm' type="number" name='add8' id='add8'
                                 value='{{dimensionamento.add8}}'>
                         </td>
                         <td>
@@ -373,6 +442,10 @@
                         <td>
                             <input class='form-control form-control-sm' type="number" name='add12' id='add12'
                                 value='{{dimensionamento.add12}}'>
+                        </td>
+                        <td>
+                            <label class='col-form-label col-form-label-sm' step='0.010'
+                                name='totaladd'>{{dimensionamento.totaladd}}</label>
                         </td>
                     </tr>
                     <tr>
@@ -427,6 +500,10 @@
                             <label class="col-form-label col-form-label-sm"
                                 id='addlbl12'>{{dimensionamento.consumo12}}</label><br>
                         </td>
+                        <td>
+                            <label class='col-form-label col-form-label-sm' step='0.010'
+                                name='totconsumo'>{{dimensionamento.totconsumo}}</label>
+                        </td>
                     </tr>
                     <tr>
                         <td>
@@ -434,50 +511,56 @@
                         </td>
                         <td>
                             <label class="col-form-label col-form-label-sm"
-                                id='total1'>{{dimensionamento.total1}}</label><br>
+                                id='total1'>{{dimensionamento.total1}}</label>
                         </td>
                         <td>
                             <label class="col-form-label col-form-label-sm"
-                                id='total2'>{{dimensionamento.total2}}</label><br>
+                                id='total2'>{{dimensionamento.total2}}</label>
                         </td>
                         <td>
                             <label class="col-form-label col-form-label-sm"
-                                id='total3'>{{dimensionamento.total3}}</label><br>
+                                id='total3'>{{dimensionamento.total3}}</label>
                         </td>
                         <td>
                             <label class="col-form-label col-form-label-sm"
-                                id='total4'>{{dimensionamento.total4}}</label><br>
+                                id='total4'>{{dimensionamento.total4}}</label>
                         </td>
                         <td>
                             <label class="col-form-label col-form-label-sm"
-                                id='total5'>{{dimensionamento.total5}}</label><br>
+                                id='total5'>{{dimensionamento.total5}}</label>
 
                         </td>
                         <td>
                             <label class="col-form-label col-form-label-sm"
-                                id='total6'>{{dimensionamento.total6}}</label><br>
+                                id='total6'>{{dimensionamento.total6}}</label>
                         </td>
                         <td>
                             <label class="col-form-label col-form-label-sm"
-                                id='total7'>{{dimensionamento.total7}}</label><br>
+                                id='total7'>{{dimensionamento.total7}}</label>
                         </td>
                         <td>
                             <label class="col-form-label col-form-label-sm"
-                                id='total8'>{{dimensionamento.total8}}</label><br>
+                                id='total8'>{{dimensionamento.total8}}</label>
                         </td>
                         <td>
                             <label class="col-form-label col-form-label-sm"
-                                id='total9'>{{dimensionamento.total9}}</label><br>
-                        </td>
-                        <label class="col-form-label col-form-label-sm"
-                            id='total0'>{{dimensionamento.total10}}</label><br>
-                        <td>
-                            <label class="col-form-label col-form-label-sm"
-                                id='total11'>{{dimensionamento.total11}}</label><br>
+                                id='total9'>{{dimensionamento.total9}}</label>
                         </td>
                         <td>
                             <label class="col-form-label col-form-label-sm"
-                                id='total12'>{{dimensionamento.total12}}</label><br>
+                                id='total0'>{{dimensionamento.total10}}</label>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='total11'>{{dimensionamento.total11}}</label>
+                        </td>
+                        <td>
+                            <label class="col-form-label col-form-label-sm"
+                                id='total12'>{{dimensionamento.total12}}</label>
+                        </td>
+                        <td>
+                            <label class='col-form-label col-form-label-sm'
+                                name='totdime'>{{dimensionamento.totfatura}}</label>
                         </td>
                     </tr>
                 </table>
