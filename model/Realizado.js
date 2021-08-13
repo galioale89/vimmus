@@ -13,7 +13,7 @@ const Realizado = new Schema({
         require: true
     },
     potencia: {
-        type: String,
+        type: Number,
         require:false        
     },
     nome: {

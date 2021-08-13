@@ -1,8 +1,6 @@
 require('../app')
 var express = require("express")
 var multer = require('multer')
-var app = express()
-var fs = require('fs')
 const router = express.Router()
 
 // app.set('view engine', 'ejs')
@@ -252,6 +250,7 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                var trbint = 0
                var totdes = 0
                var conhrs = config.hrstrb
+               var desIns
 
                //console.log('req.body.selecionado=>' + req.body.selecionado)
 
@@ -289,10 +288,17 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                          //console.log('trbeae=>' + trbeae)
                          //console.log('trbest=>' + trbest)
                          //console.log('trbmod=>' + trbmod)
-                         trbint = Math.round(parseFloat(trbatr) + parseFloat(trbinv) + parseFloat(trbstb) + parseFloat(trbpnl) + parseFloat(trbeae) + parseFloat(trbest) + parseFloat(trbmod) + parseFloat(req.body.desIns))
+                         if (req.body.desIns != 0 && req.body.desIns != '' && typeof req.body.desIns != 'undefined'){
+                              desIns = req.body.desIns
+                              totdes = parseFloat(req.bodydesIns) * parseFloat(req.body.vlrdri)
+                         }else{
+                              desIns = 0
+                              totdes = 0
+                         }
+                         trbint = Math.round(parseFloat(trbatr) + parseFloat(trbinv) + parseFloat(trbstb) + parseFloat(trbpnl) + parseFloat(trbeae) + parseFloat(trbest) + parseFloat(trbmod))
 
                          //console.log('trbint=>' + trbint)
-                         tothrs = trbint + parseFloat(req.body.desIns)
+                         tothrs = trbint + parseFloat(desIns)
                          //console.log('trbint=>' + trbint)
                          //console.log('projeto.trbges=>' + projeto.trbges)
                          //console.log('projeto.trbpro=>' + projeto.trbpro)
@@ -346,7 +352,6 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                          }
                          totest = parseFloat(req.body.trbest) * parseFloat(req.body.vlrdri) * parseFloat(req.body.trbest)
                          totmod = parseFloat(req.body.trbmod) * parseFloat(req.body.vlrdri) * parseFloat(req.body.trbmod)
-                         totdes = parseFloat(req.body.desIns) * parseFloat(req.body.vlrdri)
                          totint = parseFloat(totatr) + parseFloat(totinv) + parseFloat(totstb) + parseFloat(totpnl) + parseFloat(toteae) + parseFloat(totest) + parseFloat(totmod) + parseFloat(totdes)
 
                          //console.log('totatr=>' + totatr)
@@ -391,13 +396,13 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
 
                          projeto.tipoCustoIns = req.body.selecionado
                          //console.log('req.body.selecionado=>' + req.body.selecionado)
-                         projeto.diasIns = parseFloat(req.body.diasIns) + parseFloat(req.body.desIns)
+                         projeto.diasIns = parseFloat(req.body.diasIns)
                          //console.log('req.body.diasIns=>' + req.body.diasIns)
                          projeto.qtdins = req.body.equmod
                          //console.log('req.body.equmod=>' + req.body.equmod)
                          projeto.vlrdri = req.body.vlrdri
                          //console.log('req.body.vlrdri=>' + req.body.vlrdri)
-                         projeto.desIns = req.body.desIns
+                         projeto.desIns = desIns
                          projeto.vlrDin = totdes
 
                          projeto.save().then(() => {
@@ -518,9 +523,16 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                                    trbeae = 0
                                    toteae = 0
                               }
-                              totdes = parseFloat(req.body.desIns) * parseFloat(req.body.vlrdri)
+                              if (req.body.desIns != 0 && req.body.desIns != '' && typeof req.body.desIns != 'undefined'){
+                                   desIns = req.body.desIns
+                                   totdes = parseFloat(req.body.desIns) * parseFloat(req.body.vlrdri)
+                              }else{
+                                   desIns = 0
+                                   totdes = 0
+                              }                              
+                              
                               var totint = (parseFloat(totest) + parseFloat(totmod) + parseFloat(totinv) + parseFloat(totatr) + parseFloat(totstb) + parseFloat(totpnl) + parseFloat(toteae) + parseFloat(totdes)).toFixed(2)
-                              var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr) + parseFloat(trbstb) + parseFloat(trbpnl) + parseFloat(trbeae)) + parseFloat(req.body.desIns)
+                              var trbint = Math.round(parseFloat(trbest) + parseFloat(trbmod) + parseFloat(trbinv) + parseFloat(trbatr) + parseFloat(trbstb) + parseFloat(trbpnl) + parseFloat(trbeae))
 
                               tothrs = trbint
                               //console.log('trbint=>' + trbint)
@@ -583,7 +595,7 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
 
                               projeto.tipoCustoIns = req.body.selecionado
 
-                              projeto.desIns = req.body.desIns
+                              projeto.desIns = desIns
                               projeto.vlrDin = totdes
 
                               projeto.save().then(() => {
@@ -644,7 +656,16 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                     } else {
 
                          trbpro = parseFloat(req.body.diasPro) * conhrs
-                         tothrs = trbpro + parseFloat(req.body.desPro)
+
+                         if (req.body.desPro != '' && req.body.desPro != 0 && typeof req.body.desPro != 'undefined'){
+                              tothrs = trbpro + parseFloat(req.body.desPro)
+                              totdes = (parseFloat(req.body.desPro) * parseFloat(req.body.vlrdrp)).toFixed(2)
+                              projeto.desPro = req.body.desPro
+                         }else{
+                              tothrs = trbpro
+                              totdes = 0
+                              projeto.desPro = 0
+                         }
                          //console.log('projeto.trbges=>' + projeto.trbges)
                          //console.log('projeto.trbint=>' + projeto.trbint)
                          if (projeto.trbges != null) {
@@ -655,8 +676,7 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                               tothrs = parseFloat(tothrs) + parseFloat(projeto.trbint)
                               //console.log('tothrs=>' + tothrs)
                          }
-
-                         totdes = (parseFloat(req.body.desPro) * parseFloat(req.body.vlrdrp)).toFixed(2)
+                         
                          totpro = (parseFloat(req.body.diasPro) * parseFloat(req.body.vlrdrp)) + parseFloat(totdes)
                          projeto.trbpro = trbpro
                          //console.log('trbpro=>' + trbpro)
@@ -665,7 +685,7 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                          projeto.tothrs = tothrs
                          //console.log('tothrs=>' + tothrs)
                          projeto.tipoCustoPro = req.body.selecionado
-                         projeto.diasPro = parseFloat(req.body.diasPro) + parseFloat(req.body.desPro)
+                         projeto.diasPro = parseFloat(req.body.diasPro)
                          //console.log('req.body.diasPro=>' + req.body.diasPro)
                          projeto.vlrdrp = req.body.vlrdrp
                          //console.log('req.body.vlrdrp=>' + req.body.vlrdrp)
@@ -685,7 +705,6 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                          //console.log('req.body.vlrart=>' + req.body.vlrart)
                          projeto.totpro_art = parseFloat(totpro) + parseFloat(req.body.vlrart)
 
-                         projeto.desPro = req.body.desPro
                          projeto.vlrDpr = totdes
 
                          projeto.save().then(() => {
@@ -726,6 +745,8 @@ router.post('/projetista/', ehAdmin, (req, res) => {
 
                     if (erros == '') {
 
+                         var desPro
+
                          totmem = (parseFloat(req.body.trbmem) * parseFloat(req.body.vlrhrp)).toFixed(2)
                          //console.log('totmem=>' + totmem)
                          totart = (parseFloat(req.body.trbart) * parseFloat(req.body.vlrhrp)).toFixed(2)
@@ -738,10 +759,17 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                          //console.log('totuni=>' + totuni)
                          totsit = (parseFloat(req.body.trbsit) * parseFloat(req.body.vlrhrp)).toFixed(2)
                          //console.log('totsit=>' + totsit)
-                         totdes = (parseFloat(req.body.desPro) * parseFloat(req.body.vlrhrp)).toFixed(2)
+                         trbpro = parseFloat(req.body.diasPro) * conhrs
+                         if (req.body.desPro != '' && req.body.desPro != 0 && typeof req.body.desPro != 'undefined'){
+                              totdes = (parseFloat(req.body.desPro) * parseFloat(req.body.vlrhrp)).toFixed(2)
+                              desPro = parseFloat(req.body.desPro)
+                         }else{
+                              desPro = 0
+                         }
+                         
 
                          totpro = (parseFloat(totmem) + parseFloat(totart) + parseFloat(totate) + parseFloat(totdis) + parseFloat(totuni) + parseFloat(totsit) + parseFloat(totdes)).toFixed(2)
-                         trbpro = Math.round(parseFloat(req.body.trbmem) + parseFloat(req.body.trbart) + parseFloat(req.body.trbate) + parseFloat(req.body.trbdis) + parseFloat(req.body.trbuni) + parseFloat(req.body.trbsit) + parseFloat(req.body.desPro))
+                         trbpro = Math.round(parseFloat(req.body.trbmem) + parseFloat(req.body.trbart) + parseFloat(req.body.trbate) + parseFloat(req.body.trbdis) + parseFloat(req.body.trbuni) + parseFloat(req.body.trbsit) + parseFloat(desPro))
                          //console.log('totpro=>' + totpro)
                          //console.log('trbpro=>' + trbpro)
 
@@ -779,7 +807,7 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                          projeto.totsit = totsit
                          projeto.vlrart = req.body.vlrart
                          projeto.totpro_art = parseFloat(totpro) + parseFloat(+req.body.vlrart)
-                         projeto.desPro = req.body.desPro
+                         projeto.desPro = desPro
                          projeto.vlrDpr = totdes
 
                          console.log('req.body.fileMemo=>' + fileMemo)
@@ -896,7 +924,6 @@ router.post('/salvarArt/', ehAdmin, (req, res) => {
                })
           }
      })
-
 })
 
 router.post('/salvarUnifilar/', ehAdmin, (req, res) => {
@@ -1060,10 +1087,12 @@ router.post('/gestao/', ehAdmin, (req, res) => {
           var trbges
           var totges
           var totdes
+          var desGes = 0
 
           Configuracao.findOne({ _id: projeto.configuracao }).then((configuracao) => {
 
                var conhrs = configuracao.hrstrb
+               
 
                //console.log('req.body.selecionado=>' + req.body.selecionado)
                //console.log('req.body.diasGes=>' + req.body.diasGes)
@@ -1078,7 +1107,14 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                          res.redirect('/customdo/gestao/' + req.body.id)
                     } else {
                          trbges = parseFloat(req.body.diasGes) * conhrs
-                         tothrs = trbges + parseFloat(req.body.desGes)
+                         if (req.body.desGes != '' && req.body.desGes != 0 && typeof req.body.desGes != 'undefined'){
+                              desGes = parseFloat(req.body.desGes)
+                              totdes = parseFloat(req.body.desGes) * parseFloat(req.body.vlrdrg)
+                         }else{
+                              desGes = 0
+                              totdes = 0
+                         }
+                         tothrs = trbges + parseFloat(desGes)
                          //console.log('trbges=>' + trbges)
                          if (projeto.trbpro != null) {
                               tothrs = tothrs + parseFloat(projeto.trbpro)
@@ -1088,13 +1124,12 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                          }
 
                          projeto.trbges = trbges
-                         totdes = parseFloat(req.body.desGes) * parseFloat(req.body.vlrdrg)
                          projeto.totges = (parseFloat(req.body.diasGes) * parseFloat(req.body.vlrdrg)) + parseFloat(totdes)
                          projeto.tothrs = tothrs
                          //console.log('tothrs=>' + tothrs)
                          projeto.tipoCustoGes = req.body.selecionado
                          //console.log('req.body.selecionado=>' + req.body.selecionado)
-                         projeto.diasGes = parseFloat(req.body.diasGes) + parseFloat(req.body.desGes)
+                         projeto.diasGes = parseFloat(req.body.diasGes)
                          //console.log('req.body.diasGes=>' + req.body.diasGes)
                          projeto.vlrdrg = req.body.vlrdrg
                          //console.log('req.body.vlrdrg=>' + req.body.vlrdrg)
@@ -1110,7 +1145,7 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                          projeto.totcro = 0
                          projeto.totaqi = 0
                          projeto.totrec = 0
-                         projeto.desGes = req.body.desGes
+                         projeto.desGes = desGes
                          projeto.vlrDge = totdes
 
                          projeto.save().then(() => {
@@ -1152,11 +1187,18 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                          totcro = (parseFloat(req.body.trbcro) * parseFloat(req.body.vlrhrg)).toFixed(2)
                          totaqi = (parseFloat(req.body.trbaqi) * parseFloat(req.body.vlrhrg)).toFixed(2)
                          totrec = (parseFloat(req.body.trbrec) * parseFloat(req.body.vlrhrg)).toFixed(2)
-                         totdes = (parseFloat(req.body.desGes) * parseFloat(req.body.vlrhrg)).toFixed(2)
+                         if (req.body.desGes != '' && req.body.desGes != 0 && typeof req.body.desGes != 'undefined'){
+                              desGes = parseFloat(req.body.desGes)
+                              totdes = (parseFloat(req.body.desGes) * parseFloat(req.body.vlrhrg)).toFixed(2)
+                         }else{
+                              desGes = 0
+                              totdes = 0
+                         }                         
+                         
 
                          totges = (parseFloat(totvis) + parseFloat(totcom) + parseFloat(totcro) + parseFloat(totaqi) + parseFloat(totrec) + parseFloat(totesc) + parseFloat(totdes)).toFixed(2)
 
-                         trbges = Math.round(parseFloat(req.body.trbvis) + parseFloat(req.body.trbcom) + parseFloat(req.body.trbcro) + parseFloat(req.body.trbaqi) + parseFloat(req.body.trbrec) + parseFloat(req.body.trbesc) + parseFloat(req.body.desGes))
+                         trbges = Math.round(parseFloat(req.body.trbvis) + parseFloat(req.body.trbcom) + parseFloat(req.body.trbcro) + parseFloat(req.body.trbaqi) + parseFloat(req.body.trbrec) + parseFloat(req.body.trbesc))
 
                          tothrs = parseFloat(trbges)
                          if (projeto.trbpro != null) {
@@ -1183,7 +1225,7 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                          projeto.totrec = totrec
                          projeto.trbges = trbges
                          projeto.totges = totges
-                         projeto.desGes = req.body.desGes
+                         projeto.desGes = desGes
                          projeto.vlrDge = totdes
 
                          projeto.save().then(() => {

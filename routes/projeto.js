@@ -427,7 +427,7 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
                               Cronograma.findOne({ projeto: projeto._id }).lean().then((cronograma) => {
                                    console.log('encontrou cronograma')
                                    Equipe.findOne({ projeto: projeto._id }).lean().then((equipe) => {
-                                        console.log('equipe.pla0=>' + equipe.pla0)
+                                        //console.log('equipe.pla0=>' + equipe.pla0)
                                         if (typeof equipe.pla0 != 'undefined') {
                                              equipepla = equipe.pla0 + '|' + equipe.pla1 + '|' + equipe.pla2 + '|' + equipe.pla3 + '|' + equipe.pla4 + '|' + equipe.pla5
                                         }
@@ -452,7 +452,7 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
                                         if (typeof equipe.vis0 != 'undefined') {
                                              equipevis = equipe.vis0 + '|' + equipe.vis1 + '|' + equipe.vis2 + '|' + equipe.vis3 + '|' + equipe.vis4 + '|' + equipe.vis5
                                         }
-
+                                        
                                         var plaini = dataMensagem(cronograma.dateplaini)
                                         var plafim = dataMensagem(cronograma.dateplafim)
                                         var prjini = dataMensagem(cronograma.dateprjini)
@@ -463,10 +463,19 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
                                         var invfim = dataMensagem(cronograma.dateinvfim)
                                         var stbini = dataMensagem(cronograma.datestbini)
                                         var stbfim = dataMensagem(cronograma.datestbfim)
-                                        var eaeini = dataMensagem(cronograma.dateeaeini)
-                                        var eaefim = dataMensagem(cronograma.dateeaefim)
-                                        var pnlini = dataMensagem(cronograma.datepnlini)
-                                        var pnlfim = dataMensagem(cronograma.datepnlfim)
+                                        var eaeini = ''
+                                        var eaefim = ''
+                                        var pnlini = ''
+                                        var pnlfim = ''
+                                        console.log('temEAE=>'+projeto.temArmazenamento)
+                                        if (projeto.temArmazenamento) {
+                                             eaeini = dataMensagem(cronograma.dateeaeini)
+                                             eaefim = dataMensagem(cronograma.dateeaefim)
+                                        }
+                                        if (projeto.temPainel) {
+                                             pnlini = dataMensagem(cronograma.datepnlini)
+                                             pnlfim = dataMensagem(cronograma.datepnlfim)
+                                        }
                                         var estini = dataMensagem(cronograma.dateestini)
                                         var estfim = dataMensagem(cronograma.dateestfim)
                                         var modini = dataMensagem(cronograma.datemodini)
@@ -474,7 +483,7 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
                                         var visini = dataMensagem(cronograma.datevisini)
                                         var visfim = dataMensagem(cronograma.datevisfim)
 
-                                        console.log('equipepla=>' + equipepla)
+                                        //console.log('equipepla=>' + equipepla)
                                         res.render('projeto/vermais', {
                                              projeto, responsavel, empresa, realizado, cliente, plaini, plafim, prjini, prjfim, ateini, atefim, invini, invfim,
                                              stbini, stbfim, eaeini, eaefim, pnlini, pnlfim, estini, estfim, modini, modfim, visini, visfim,

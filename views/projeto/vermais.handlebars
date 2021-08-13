@@ -89,14 +89,18 @@
                         <div class="col-md-4">
                             <div class="row">
                                 <div class="col-md-6 text-end">
+                                    {{#if responsavel.nome}}
                                     <label class='fw-bold col-form-label col-form-label-sm'>Responsável(a):</label><br>
+                                    {{/if}}
                                     <label class='fw-bold col-form-label col-form-label-sm'>Total Orçado:</label><br>
                                     <label class='fw-bold col-form-label col-form-label-sm'>Valor Faturado:</label><br>
                                     <label class='fw-bold col-form-label col-form-label-sm'>Horas:</label><br>
                                     <label class='fw-bold col-form-label col-form-label-sm'>Dias Obra:</label><br>
                                 </div>
                                 <div class="col-md-6 text-start">
+                                    {{#if responsavel.nome}}
                                     <label class='col-form-label col-form-label-sm'>{{responsavel.nome}}</label><br>
+                                    {{/if}}
                                     <label class='col-form-label col-form-label-sm'>R$ {{projeto.valor}}</label><br>
                                     <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrNFS}}</label><br>
                                     <label class='col-form-label col-form-label-sm'>{{projeto.tothrs}} h</label><br>
@@ -135,8 +139,7 @@
                                     {{/if}}
                                 </div>
                             </div>
-                            <label class='col-form-label col-form-label-sm fw-bold'>Regime:
-                                {{regime.regime}}</label><br>
+                            <label class='col-form-label col-form-label-sm fw-bold'>Regime: {{empresa.regime}}</label><br>
                             <label class='col-form-label col-form-label-sm fw-bold'>Reserva: R$
                                 {{projeto.reserva}}</label><br>
                             <div class='btn-group btn-group-sm gap-2 mx-auto mt-1' role='group'>
@@ -374,6 +377,7 @@
                                     <label class='col-form-label col-form-label-sm'>{{stbfim}}</label>
                                 </td>
                             </tr>
+                            {{#if projeto.temArmazenamento}}
                             <tr>
                                 <td align="right">
                                     <label class='col-form-label col-form-label-sm fw-bold'>
@@ -389,6 +393,8 @@
                                     <label style="font-size: 12px;">{{equipeeae}}</label>
                                 </td>
                             </tr>
+                            {{/if}}
+                            {{#if projeto.temPainel}}
                             <tr>
                                 <td align="right">
                                     <label class='col-form-label col-form-label-sm fw-bold'>Instalação Painél
@@ -404,6 +410,7 @@
                                     <label style="font-size: 12px;">{{equipepnl}}</label>
                                 </td>
                             </tr>
+                            {{/if}}
                             <tr>
                                 <td align="right">
                                     <label class='col-form-label col-form-label-sm fw-bold'>Instalação

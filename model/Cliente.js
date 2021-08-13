@@ -4,6 +4,7 @@ const Schema = mongoose.Schema
 const Cliente = new Schema({
     user: {
         type: Schema.Types.ObjectId,
+        ref: 'usuario',
         require: false,
     },
     nome: {
