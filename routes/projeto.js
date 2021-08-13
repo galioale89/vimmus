@@ -81,7 +81,7 @@ router.get('/dimensionamento/:id', ehAdmin, (req, res) => {
      var select1 = 'selected'
      var select2 = ''
      var select3 = ''
-     console.log('req.body.id_dime=>' + req.params.id)
+     //console.log('req.body.id_dime=>' + req.params.id)
      Dimensionamento.findOne({ _id: req.params.id }).lean().then((dimensionamento) => {
           if (dimensionamento.qtduce == 2) {
                td2 = ''
@@ -259,23 +259,23 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
           if (typeof totaluc3 == 'undefined') {
                totaluc3 = 0
           }
-          console.log('totaladd=>' + totaladd)
-          console.log('totaluc1=>' + totaluc1)
-          console.log('totaluc2=>' + totaluc2)
-          console.log('totaluc3=>' + totaluc3)
-          console.log('totconsumo=>' + totconsumo)
-          console.log('total1=>' + total1)
-          console.log('total2=>' + total2)
-          console.log('total3=>' + total3)
-          console.log('total4=>' + total4)
-          console.log('total5=>' + total5)
-          console.log('total6=>' + total6)
-          console.log('total7=>' + total7)
-          console.log('total8=>' + total8)
-          console.log('total9=>' + total9)
-          console.log('total10=>' + total10)
-          console.log('total11=>' + total11)
-          console.log('total12=>' + total12)
+          //console.log('totaladd=>' + totaladd)
+          //console.log('totaluc1=>' + totaluc1)
+          //console.log('totaluc2=>' + totaluc2)
+          //console.log('totaluc3=>' + totaluc3)
+          //console.log('totconsumo=>' + totconsumo)
+          //console.log('total1=>' + total1)
+          //console.log('total2=>' + total2)
+          //console.log('total3=>' + total3)
+          //console.log('total4=>' + total4)
+          //console.log('total5=>' + total5)
+          //console.log('total6=>' + total6)
+          //console.log('total7=>' + total7)
+          //console.log('total8=>' + total8)
+          //console.log('total9=>' + total9)
+          //console.log('total10=>' + total10)
+          //console.log('total11=>' + total11)
+          //console.log('total12=>' + total12)
           dime1 = {
                consumo1: consumo1,
                consumo2: consumo2,
@@ -309,13 +309,13 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
                totfatura: totfatura
           }
           var dime = Object.assign(dime2, dime1)
-          console.log('dime=>' + dime)
+          //console.log('dime=>' + dime)
 
           new Dimensionamento(dime).save().then(() => {
                Dimensionamento.findOne().sort({ field: 'asc', _id: -1 }).lean().then((dimensionamento) => {
                     var sucesso = []
                     Projeto.findOne({ dimensionamento: dimensionamento._id }).lean().then((existe_projeto) => {
-                         console.log('existe_projeto=>' + existe_projeto)
+                         //console.log('existe_projeto=>' + existe_projeto)
                          if (existe_projeto != null) {
                               existe_projeto.dimensionamento = dimensionamento._id
                               existe_projeto.save().then(() => {
@@ -349,7 +349,7 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
                                    })
                               })
                          } else {
-                              console.log('novo projeto')
+                              //console.log('novo projeto')
                               const novo_projeto = {
                                    dimensionamento: dimensionamento._id,
                                    user: _id
@@ -415,17 +415,17 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
      var equipeins = 'Nenhuma pessoa alocada.'
      var equipevis = 'Nenhuma pessoa alocada.'
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
-          console.log('encontrou projeto')
+          //console.log('encontrou projeto')
           Realizado.findOne({ projeto: projeto._id }).lean().then((realizado) => {
-               console.log('encontrou realizado')
+               //console.log('encontrou realizado')
                Pessoa.findOne({ _id: projeto.funges }).lean().then((responsavel) => {
-                    console.log('encontrou pessoa')
+                    //console.log('encontrou pessoa')
                     Cliente.findOne({ _id: projeto.cliente }).lean().then((cliente) => {
-                         console.log('encontrou cliente')
+                         //console.log('encontrou cliente')
                          Empresa.findOne({ _id: projeto.empresa }).lean().then((empresa) => {
-                              console.log('encontrou empresa')
+                              //console.log('encontrou empresa')
                               Cronograma.findOne({ projeto: projeto._id }).lean().then((cronograma) => {
-                                   console.log('encontrou cronograma')
+                                   //console.log('encontrou cronograma')
                                    Equipe.findOne({ projeto: projeto._id }).lean().then((equipe) => {
                                         //console.log('equipe.pla0=>' + equipe.pla0)
                                         if (typeof equipe.pla0 != 'undefined') {
@@ -467,7 +467,7 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
                                         var eaefim = ''
                                         var pnlini = ''
                                         var pnlfim = ''
-                                        console.log('temEAE=>'+projeto.temArmazenamento)
+                                        //console.log('temEAE=>'+projeto.temArmazenamento)
                                         if (projeto.temArmazenamento) {
                                              eaeini = dataMensagem(cronograma.dateeaeini)
                                              eaefim = dataMensagem(cronograma.dateeaefim)
@@ -1180,23 +1180,23 @@ router.post("/novo", ehAdmin, (req, res) => {
                erros.push({ texto: 'É necessário informar a data de previsão de entrega do projeto.' })
                erros_semdim = erros_semdim + 'É necessário informar a data de previsão de entrega do projeto.'
           }
-          console.log('req.body.id_dimensionamento=>' + req.body.id_dime)
+          //console.log('req.body.id_dimensionamento=>' + req.body.id_dime)
           if (!req.body.id_dime) {
                if (validaCampos(req.body.potencia).length > 0 || validaCampos(req.body.nome).length > 0) {
                     erros.push({ texto: 'O preenchimento dos campos de nome e potencia são obrigatórios.' })
                     erros_semdim = erros_semdim + 'O preenchimento dos campos de nome e potencia são obrigatórios.'
                }
           }
-          console.log('erros=>' + erros)
+          //console.log('erros=>' + erros)
           if (erros.length > 0) {
-               console.log('id_prj=>' + req.body.id_prj)
-               console.log('id_dime=>' + req.body.id_dime)
+               //console.log('id_prj=>' + req.body.id_prj)
+               //console.log('id_dime=>' + req.body.id_dime)
                if (req.body.id_dime != '' && req.body.id_prj != '') {
-                    console.log('Já tem dimensionamento')
+                    //console.log('Já tem dimensionamento')
                     Projeto.findOne({ _id: req.body.id_prj }).lean().then((projeto) => {
-                         console.log('projeto=>' + projeto)
+                         //console.log('projeto=>' + projeto)
                          Dimensionamento.findOne({ _id: req.body.id_dime }).lean().then((dimensionamento) => {
-                              console.log('dimensionamento=>' + dimensionamento)
+                              //console.log('dimensionamento=>' + dimensionamento)
                               Empresa.find({ user: _id }).lean().then((empresa) => {
                                    Configuracao.find({ user: _id }).lean().then((configuracao) => {
                                         Pessoa.find({ ehVendedor: true, user: _id }).lean().then((vendedor) => {
@@ -1356,7 +1356,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                    mostraHora = false
                               }
 
-                              console.log('req.body.id_prj=>' + req.body.id_prj)
+                              //console.log('req.body.id_prj=>' + req.body.id_prj)
 
                               Projeto.find({ user: _id }).then((exclui_projeto) => {
 
@@ -1376,8 +1376,8 @@ router.post("/novo", ehAdmin, (req, res) => {
                                         potencia = req.body.potencia_dime
                                    }
 
-                                   console.log('novo projeto')
-                                   console.log('potencia=>' + potencia)
+                                   //console.log('novo projeto')
+                                   //console.log('potencia=>' + potencia)
 
                                    corpo = {
                                         user: _id,
@@ -1712,12 +1712,12 @@ router.post('/edicao', ehAdmin, (req, res) => {
 
      } else {
           Projeto.findOne({ _id: req.body.id }).then((projeto) => {
-               console.log('req.body.vendedor=>' + req.body.vendedor)
+               //console.log('req.body.vendedor=>' + req.body.vendedor)
                Pessoa.findOne({ nome: req.body.vendedor }).then((prj_vendedor) => {
                     Detalhado.findOne({ projeto: projeto._id }).then((detalhe) => {
-                         console.log('projeto._id=>' + projeto._id)
+                         //console.log('projeto._id=>' + projeto._id)
                          Cronograma.findOne({ projeto: projeto._id }).then((cronograma) => {
-                              console.log('encontrou cronograma')
+                              //console.log('encontrou cronograma')
 
                               var sucesso = ''
                               var aviso = ''
@@ -2072,7 +2072,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                               var vlrkit = 0
 
                               var vlrTotal = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorOcp) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos)
-                              console.log('vlrTotal=>' + vlrTotal)
+                              //console.log('vlrTotal=>' + vlrTotal)
 
                               //Valida valor do equipameento
                               if (parseFloat(valorEqu) != 0 || parseFloat(valorMod) != 0) {
@@ -2080,13 +2080,13 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                    vlrequ = vlrTotal
                                    vlrkit = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorOcp)
                               } else {
-                                   console.log('não tem lançamento manual de kit.')
+                                   //console.log('não tem lançamento manual de kit.')
                                    validaequant = parseFloat(projeto.vlrkit) - (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorCim) + parseFloat(detalhe.valorDisCC) + parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDisCA) + parseFloat(detalhe.valorDPSCA) + parseFloat(detalhe.valorSB) + parseFloat(detalhe.valorCCA) + parseFloat(detalhe.valorCab) + parseFloat(detalhe.valorEbt))
-                                   console.log('validaequant=>' + validaequant)
+                                   //console.log('validaequant=>' + validaequant)
                                    validaequfut = parseFloat(req.body.equipamento) - (parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorCab) + parseFloat(valorEbt))
-                                   console.log('validaequfut=>' + validaequfut)
+                                   //console.log('validaequfut=>' + validaequfut)
                                    if (parseFloat(validaequant) != parseFloat(validaequfut)) {
-                                        console.log('Os valores dos kits são difentes')
+                                        //console.log('Os valores dos kits são difentes')
                                         if (req.body.equipamento == projeto.vlrkit) {
                                              vlrequ = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorOcp)
                                              vlrkit = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorCab) + parseFloat(valorEbt)
@@ -2095,7 +2095,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                              vlrkit = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorCab) + parseFloat(valorEbt)
                                         }
                                    } else {
-                                        console.log('Os valores dos kits são iguais')
+                                        //console.log('Os valores dos kits são iguais')
                                         vlrequ = projeto.vlrequ
                                         vlrkit = projeto.vlrkit
                                    }
@@ -2199,7 +2199,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                              mes = dataprev.substring(5, 7)
                                              dia = dataprev.substring(8, 11)
                                              dataprev = ano + mes + dia
-                                             console.log('dataprev=>' + dataprev)
+                                             //console.log('dataprev=>' + dataprev)
                                              //---Validando datas para comparação----//
 
                                              if (parseFloat(datavis) <= parseFloat(dataprev) && req.body.dataprev != '') {
@@ -2238,10 +2238,10 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                    vendedor = projeto.vendedor
                                    percom = projeto.percom
                               }
-                              console.log('vendedor=>' + vendedor)
-                              console.log('percom=>' + percom)
+                              //console.log('vendedor=>' + vendedor)
+                              //console.log('percom=>' + percom)
                               //Altera a empresa 
-                              console.log('checkEmpresa=>' + req.body.checkEmpresa)
+                              //console.log('checkEmpresa=>' + req.body.checkEmpresa)
                               if (req.body.checkEmpresa != null) {
                                    projeto.empresa = req.body.empresa
                               }
@@ -4121,7 +4121,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
 })
 
 router.post('/salvarProposta/', ehAdmin, (req, res) => {
-     console.log('req.body.id=>' + req.body.id)
+     //console.log('req.body.id=>' + req.body.id)
      var upload = multer({ storage }).single('proposta')
      upload(req, res, function (err) {
           if (err) {
@@ -4134,7 +4134,7 @@ router.post('/salvarProposta/', ehAdmin, (req, res) => {
                     } else {
                          proposta = ''
                     }
-                    console.log('proposta=>' + proposta)
+                    //console.log('proposta=>' + proposta)
                     projeto.proposta = proposta
                     projeto.save().then(() => {
                          res.redirect('/projeto/edicao/' + req.body.id)
@@ -4152,9 +4152,9 @@ router.post('/salvarProposta/', ehAdmin, (req, res) => {
 
 router.get('/mostrarProposta/:id', ehAdmin, (req, res) => {
      Projeto.findOne({ _id: req.params.id }).then((projeto) => {
-          var doc = projeto.memorial
+          var doc = projeto.proposta
           var path = __dirname
-          console.log(path)
+          //console.log(path)
           path = path.replace('routes', '')
           res.sendFile(path + '/public/arquivos/' + doc)
      })

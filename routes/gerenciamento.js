@@ -1536,13 +1536,13 @@ router.get('/enviaMensagem/:id', ehAdmin, (req, res) => {
                     'Vistoria: ' + dataMensagem(cronograma.datevisini) + ' a ' + dataMensagem(cronograma.datevisfim) + '.' + '\n' +
                     'Para mais detalhes entre em contato com a gente pelo whatsapp: (xx) x xxxx-xxxx'
 
-                console.log(mensagem)
+                //console.log(mensagem)
                 to = cliente.celular
-                console.log(to)
+                //console.log(to)
 
                 var textMessageService = new TextMessageService(apiKey)
                 textMessageService.send('Vimmus', mensagem, ['49991832978'], result => {
-                    console.log(result)
+                    //console.log(result)
                     if (result == false) {
                         req.flash('error_msg', 'Falha interna. Não foi possível enviar a mensagem.')
                         res.redirect('/gerenciamento/cronograma/' + req.params.id)
@@ -1711,15 +1711,15 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             if (projeto.tipoCustoGes == 'hora') {
                                 plafim = Math.trunc((parseFloat(projeto.trbges) + parseFloat(projeto.desGes)) / conhrs)
                             } else {
-                                console.log('projeto.diasGes=>'+projeto.diasGes)
+                                //console.log('projeto.diasGes=>'+projeto.diasGes)
                                 if ((parseFloat(projeto.diasGes) + parseFloat(projeto.desGes)) > 1) {
-                                    console.log('projeto.desGes=>'+projeto.desGes)
+                                    //console.log('projeto.desGes=>'+projeto.desGes)
                                     plafim = (parseFloat(projeto.diasGes) + parseFloat(projeto.desGes) + parseFloat(projeto.desGes)) - 1
                                 } else {
                                     plafim = 0
                                 }
                             }
-                            console.log('plafim=>'+plafim)
+                            //console.log('plafim=>'+plafim)
                             if (projeto.tipoCustoPro == 'hora') {
                                 if ((parseFloat(projeto.trbges) + parseFloat(projeto.desPro) + parseFloat(projeto.trbpro)) > 8) {
                                     prjfim = Math.round(((projeto.trbpro + parseFloat(projeto.desPro)) / conhrs), -1)
@@ -2455,11 +2455,11 @@ router.post('/tributos/', ehAdmin, (req, res) => {
 
             //Lucro Líquido descontados os impostos
             var lucroLiquido = 0
-            console.log('projeto.lbaimp=>'+projeto.lbaimp)
-            console.log('totalImposto=>'+totalImposto)
+            //console.log('projeto.lbaimp=>'+projeto.lbaimp)
+            //console.log('totalImposto=>'+totalImposto)
             lucroLiquido = parseFloat(projeto.lbaimp) - parseFloat(totalImposto)
             projeto.lucroLiquido = parseFloat(lucroLiquido).toFixed(2)
-            console.log('lucroLiquido=>'+lucroLiquido)
+            //console.log('lucroLiquido=>'+lucroLiquido)
 
             //Dashboard
             //Participação sobre o lucro total

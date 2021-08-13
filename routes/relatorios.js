@@ -2631,10 +2631,10 @@ router.post('/aplicar', ehAdmin, (req, res) => {
     }
 
     var selecionado = req.body.selecionado
-    console.log('selecionado=>' + selecionado)
+    //console.log('selecionado=>' + selecionado)
 
-    console.log('dataini=>' + dataini)
-    console.log('datafim=>' + datafim)
+    //console.log('dataini=>' + dataini)
+    //console.log('datafim=>' + datafim)
 
     if (selecionado == 'faturamento') {
         checkFat = 'checked'
@@ -3108,7 +3108,7 @@ router.post('/analiseGeral', ehAdmin, (req, res) => {
                 totint = totint + element.totint
                 custoPlano = custoPlano + element.custoPlano
 
-                console.log('q=>'+q)
+                //console.log('q=>'+q)
                 q = q + 1
                 if (q == realizado.length) {
                     var rspmod = (parseFloat(valor) / parseFloat(qtdmod)).toFixed(2)

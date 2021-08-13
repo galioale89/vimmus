@@ -810,7 +810,7 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                          projeto.desPro = desPro
                          projeto.vlrDpr = totdes
 
-                         console.log('req.body.fileMemo=>' + fileMemo)
+                         //console.log('req.body.fileMemo=>' + fileMemo)
                          salvaArquivo('memorial', req.body.fileMemo)
 
                          projeto.save().then(() => {
@@ -841,16 +841,16 @@ router.post('/salvarMemorial/', ehAdmin, (req, res) => {
           if (err) {
                return res.end("Error uploading file.");
           } else {
-               console.log('req.body.id=>' + req.body.id)
+               //console.log('req.body.id=>' + req.body.id)
                Projeto.findOne({ _id: req.body.id }).then((projeto) => {
                     var memorial
-                    console.log('req.file=>' + req.file)
+                    //console.log('req.file=>' + req.file)
                     if (req.file != null) {
                          memorial = req.file.filename
                     } else {
                          memorial = ''
                     }
-                    console.log('memorial=>' + memorial)
+                    //console.log('memorial=>' + memorial)
                     projeto.memorial = memorial
                     projeto.save().then(() => {
                          res.redirect('/customdo/projetista/' + req.body.id)
@@ -873,7 +873,7 @@ router.post('/salvarDistribuicao/', ehAdmin, (req, res) => {
           if (err) {
                return res.end("Error uploading file.");
           } else {
-               console.log('req.body.id=>' + req.body.id)
+               //console.log('req.body.id=>' + req.body.id)
                Projeto.findOne({ _id: req.body.id }).then((projeto) => {
                     var distribuicao
                     if (req.file != null) {
@@ -903,7 +903,7 @@ router.post('/salvarArt/', ehAdmin, (req, res) => {
           if (err) {
                return res.end("Error uploading file.");
           } else {
-               console.log('req.body.id=>' + req.body.id)
+               //console.log('req.body.id=>' + req.body.id)
                Projeto.findOne({ _id: req.body.id }).then((projeto) => {
                     var art
                     if (req.file != null) {
@@ -961,7 +961,7 @@ router.post('/salvarAterramento/', ehAdmin, (req, res) => {
           if (err) {
                return res.end("Error uploading file.");
           } else {
-               console.log('req.body.id=>' + req.body.id)
+               //console.log('req.body.id=>' + req.body.id)
                Projeto.findOne({ _id: req.body.id }).then((projeto) => {
                     var aterramento
                     if (req.file != null) {
@@ -991,7 +991,7 @@ router.post('/salvarSituacao/', ehAdmin, (req, res) => {
           if (err) {
                return res.end("Error uploading file.");
           } else {
-               console.log('req.body.id=>' + req.body.id)
+               //console.log('req.body.id=>' + req.body.id)
                Projeto.findOne({ _id: req.body.id }).then((projeto) => {
                     var situacao
                     if (req.file != null) {
@@ -1019,7 +1019,7 @@ router.get('/mostrarMemorial/:id', ehAdmin, (req, res) => {
      Projeto.findOne({ _id: req.params.id }).then((projeto) => {
           var doc = projeto.memorial
           var path = __dirname
-          console.log(path)
+          //console.log(path)
           path = path.replace('routes', '')
           res.sendFile(path + '/public/arquivos/'+doc)
      })
@@ -1038,7 +1038,7 @@ router.get('/mostrarArt/:id', ehAdmin, (req, res) => {
      Projeto.findOne({ _id: req.params.id }).then((projeto) => {
           var doc = projeto.art
           var path = __dirname
-          console.log(path)
+          //console.log(path)
           path = path.replace('routes', '')
           res.sendFile(path + '/public/arquivos/'+doc)
      })
@@ -1057,7 +1057,7 @@ router.get('/mostrarAterramento/:id', ehAdmin, (req, res) => {
      Projeto.findOne({ _id: req.params.id }).then((projeto) => {
           var doc = projeto.aterramento
           var path = __dirname
-          console.log(path)
+          //console.log(path)
           path = path.replace('routes', '')
           res.sendFile(path + '/public/arquivos/'+doc)
      })
