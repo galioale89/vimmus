@@ -428,7 +428,8 @@
                             </div>
                             <div class="col-md-10">
                                 <textarea {{#if projeto.orcado}}{{else}}disabled{{/if}} name='motivo'
-                                    class='form-control' rows='3' placeholder="Observação" style="font-size: 12px;"> {{projeto.motivo}}</textarea>
+                                    class='form-control' rows='3' placeholder="Observação"
+                                    style="font-size: 12px;"> {{projeto.motivo}}</textarea>
                             </div>
                         </div>
                     </div>
@@ -616,7 +617,37 @@
                             style="border-radius: 40px;"><i class="bi bi-bar-chart"></i> Dashboard</a>
                     </div>
                 </div>
+                <label class="col-form-label mt-3 fw-bold" style="margin-left: 70%;">Adicionar Proposta</label>
             </div>
         </div>
     </form>
+    <div class="div" style="margin-left: 68%;">
+        <form action='/projeto/salvarProposta' enctype="multipart/form-data" method="post">
+            <input type='hidden' name='id' value='{{projeto._id}}'>
+            <table>
+                <tr>
+                    <td>
+                        <input class='form-control form-control-sm' type='file' name='proposta'>
+                        <label class='col-form-label col-form-label-sm'
+                            style="line-height: 0px;">{{projeto.proposta}}</label>
+                    </td>
+                    <td>
+                        {{#if projeto.proposta}}
+                        <div class="col-md-1">
+                            <i class='bi bi-check-all'></i>
+                        </div>
+                        {{/if}}
+                    </td>
+                    <td>
+                        <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
+                                class='bi bi-save'></i></button>
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-primary" href='/projeto/mostrarProposta/{{projeto._id}}'
+                            target="_blank"><i class='bi bi-eye'></i></a>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
 </div>
