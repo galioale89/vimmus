@@ -406,6 +406,14 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
 })
 
 router.get('/vermais/:id', ehAdmin, (req, res) => {
+     var equipepla = 'Nenhuma pessoa alocada.'
+     var equipepro = 'Nenhuma pessoa alocada.'
+     var equipeate = 'Nenhuma pessoa alocada.'
+     var equipeinv = 'Nenhuma pessoa alocada.'
+     var equipeeae = 'Nenhuma pessoa alocada.'
+     var equipepnl = 'Nenhuma pessoa alocada.'
+     var equipeins = 'Nenhuma pessoa alocada.'
+     var equipevis = 'Nenhuma pessoa alocada.'
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
           console.log('encontrou projeto')
           Realizado.findOne({ projeto: projeto._id }).lean().then((realizado) => {
@@ -421,28 +429,28 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
                                    Equipe.findOne({ projeto: projeto._id }).lean().then((equipe) => {
                                         console.log('equipe.pla0=>' + equipe.pla0)
                                         if (typeof equipe.pla0 != 'undefined') {
-                                             var equipepla = equipe.pla0 + '|' + equipe.pla1 + '|' + equipe.pla2 + '|' + equipe.pla3 + '|' + equipe.pla4 + '|' + equipe.pla5
+                                             equipepla = equipe.pla0 + '|' + equipe.pla1 + '|' + equipe.pla2 + '|' + equipe.pla3 + '|' + equipe.pla4 + '|' + equipe.pla5
                                         }
                                         if (typeof equipe.pro0 != 'undefined') {
-                                             var equipepro = equipe.pro0 + '|' + equipe.pro1 + '|' + equipe.pro2 + '|' + equipe.pro3 + '|' + equipe.pro4 + '|' + equipe.pro5
+                                             equipepro = equipe.pro0 + '|' + equipe.pro1 + '|' + equipe.pro2 + '|' + equipe.pro3 + '|' + equipe.pro4 + '|' + equipe.pro5
                                         }
                                         if (typeof equipe.ate0 != 'undefined') {
-                                             var equipeate = equipe.ate0 + '|' + equipe.ate1 + '|' + equipe.ate2 + '|' + equipe.ate3 + '|' + equipe.ate4 + '|' + equipe.ate5
+                                             equipeate = equipe.ate0 + '|' + equipe.ate1 + '|' + equipe.ate2 + '|' + equipe.ate3 + '|' + equipe.ate4 + '|' + equipe.ate5
                                         }
                                         if (typeof equipe.inv0 != 'undefined') {
-                                             var equipeinv = equipe.inv0 + '|' + equipe.inv1 + '|' + equipe.inv2 + '|' + equipe.inv3 + '|' + equipe.inv4 + '|' + equipe.inv5
+                                             equipeinv = equipe.inv0 + '|' + equipe.inv1 + '|' + equipe.inv2 + '|' + equipe.inv3 + '|' + equipe.inv4 + '|' + equipe.inv5
                                         }
                                         if (typeof equipe.pnl0 != 'undefined') {
-                                             var equipepnl = equipe.pnl0 + '|' + equipe.pnl1 + '|' + equipe.pnl2 + '|' + equipe.pnl3 + '|' + equipe.pnl4 + '|' + equipe.pnl5
+                                             equipepnl = equipe.pnl0 + '|' + equipe.pnl1 + '|' + equipe.pnl2 + '|' + equipe.pnl3 + '|' + equipe.pnl4 + '|' + equipe.pnl5
                                         }
                                         if (typeof equipe.eae0 != 'undefined') {
-                                             var equipeeae = equipe.eae0 + '|' + equipe.eae1 + '|' + equipe.eae2 + '|' + equipe.eae3 + '|' + equipe.eae4 + '|' + equipe.eae5
+                                             equipeeae = equipe.eae0 + '|' + equipe.eae1 + '|' + equipe.eae2 + '|' + equipe.eae3 + '|' + equipe.eae4 + '|' + equipe.eae5
                                         }
                                         if (typeof equipe.ins0 != 'undefined') {
-                                             var equipeins = equipe.ins0 + '|' + equipe.ins1 + '|' + equipe.ins2 + '|' + equipe.ins3 + '|' + equipe.ins4 + '|' + equipe.ins5
+                                             equipeins = equipe.ins0 + '|' + equipe.ins1 + '|' + equipe.ins2 + '|' + equipe.ins3 + '|' + equipe.ins4 + '|' + equipe.ins5
                                         }
                                         if (typeof equipe.vis0 != 'undefined') {
-                                             var equipevis = equipe.vis0 + '|' + equipe.vis1 + '|' + equipe.vis2 + '|' + equipe.vis3 + '|' + equipe.vis4 + '|' + equipe.vis5
+                                             equipevis = equipe.vis0 + '|' + equipe.vis1 + '|' + equipe.vis2 + '|' + equipe.vis3 + '|' + equipe.vis4 + '|' + equipe.vis5
                                         }
 
                                         var plaini = dataMensagem(cronograma.dateplaini)
