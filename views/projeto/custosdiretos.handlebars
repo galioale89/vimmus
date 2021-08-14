@@ -11,13 +11,13 @@
     }
     function info_markup() {
         alert('O percentual de MarkUp representa o ISS, a comissão, os Tributos à recolher e a margem de lucro liquido do projeto .')
-    }    
+    }
 
-    function calculaInstalacao(){
+    function calculaInstalacao() {
         var rspmod = document.getElementById('rspmod')
         var qtdmod = document.getElementById('qtdmod')
         var totint = document.getElementById('totint')
-        totint.value = parseFloat(rspmod.value) * parseFloat(qtdmod.value) 
+        totint.value = parseFloat(rspmod.value) * parseFloat(qtdmod.value)
     }
 </script>
 <form action='/projeto/direto/' method='post'>
@@ -201,23 +201,25 @@
                         </div>
                     </div>
                     <div class="col-md-8 text-center">
-                        <div class="row" >
+                        <div class="row">
                             <div class="col-md-4 mt-2">
                                 <div class="form-check form-switch">
-                                    <input name='checkFatura' style="margin-top: 1px;width: 25px;height: 15px;" class="form-check-input" type="checkbox" {{fatura}}>
+                                    <input name='checkFatura' style="margin-top: 1px;width: 25px;height: 15px;"
+                                        class="form-check-input" type="checkbox" {{fatura}}>
                                     <label class="form-check-label" style='font-size: 13px;'> Faturar Material?</label>
                                 </div>
                             </div>
                             <div class="col-md-3 mt-2">
                                 <div class="form-check form-switch">
-                                    <input class='form-check-input' style="margin-top: 1px;width: 25px;height: 15px;" type='checkbox' {{checkHora}} name='lancaHora'
-                                        id='lancaHora'>
-                                    <label class="form-check-label" style="font-size: 13px;width:100px;">Lançar Horas</label>
+                                    <input class='form-check-input' style="margin-top: 1px;width: 25px;height: 15px;"
+                                        type='checkbox' {{checkHora}} name='lancaHora' id='lancaHora'>
+                                    <label class="form-check-label" style="font-size: 13px;width:100px;">Lançar
+                                        Horas</label>
                                 </div>
                             </div>
                             <div class="col-md-3 text-end">
-                                <label class='col-form-label col-form-label-sm fw-bold'>MarkUp(%): </label><i class="bi bi-info-circle"
-                                    onmousemove='info_markup()'></i>
+                                <label class='col-form-label col-form-label-sm fw-bold'>MarkUp(%): </label><i
+                                    class="bi bi-info-circle" onmousemove='info_markup()'></i>
                             </div>
                             <div class="col-md-2">
                                 <input class='form-control form-control-sm' type="text" name="markup"
@@ -234,14 +236,16 @@
                                     <label class="col-form-label col-form-label-sm fw-bold"> Número de Módulos: </label>
                                 </div>
                                 <div class="col-md-3 mt-2">
-                                    <input class="form-control form-control-sm" type="number" step='0.010' name='qtdmod' id='qtdmod' value='{{projeto.qtdmod}}' onchange="calculaInstalacao()">
+                                    <input class="form-control form-control-sm" type="number" step='0.010' name='qtdmod'
+                                        id='qtdmod' value='{{projeto.qtdmod}}' onchange="calculaInstalacao()">
                                 </div>
                                 <div class="col-md-3 mt-2">
                                     <label class="col-form-label col-form-label-sm fw-bold"> R$/Módulo: </label>
                                 </div>
                                 <div class="col-md-3 mt-2">
-                                    <input class="form-control form-control-sm" type="number" step='0.010' name='rspmod' id='rspmod' value='{{projeto.rspmod}}' onchange="calculaInstalacao()">
-                                </div>                                
+                                    <input class="form-control form-control-sm" type="number" step='0.010' name='rspmod'
+                                        id='rspmod' value='{{projeto.rspmod}}' onchange="calculaInstalacao()">
+                                </div>
                             </div>
                             <div class="row" style="margin-top: 5px;">
                                 <div class="col-md-9">
@@ -257,11 +261,11 @@
                             </div>
                             <div class="row" style="margin-bottom: 1%;">
                                 <div class="col text-end">
-                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Gestão:</label><br>                                    
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Gestão:</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-2">Projetista:</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mb-2">Valor
-                                        ART:</label><br>                                    
-                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Instalação:</label><br>                                    
+                                        ART:</label><br>
+                                    <label class="fw-bold col-form-label col-form-label-sm mb-1">Instalação:</label><br>
                                     <!--
                                     {{#if projeto.temArmazenamento}}
                                     <label class="fw-bold col-form-label col-form-label-sm">Estação de Baterias:</label>
@@ -284,21 +288,21 @@
                                             class="form-control form-control-sm" name='totges' id="totges"
                                             value='{{projeto.totges}}' aria-label="R$ " step='0.010'>
                                         <span class="input-group-text">.00</span>
-                                    </div>                                    
+                                    </div>
                                     <div class="input-group input-group-sm mb-1">
                                         <span class="input-group-text">$</span>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
                                             class="form-control form-control-sm" name='totpro' id="totpro"
                                             value='{{projeto.totpro}}' aria-label="R$ " step='0.010'>
                                         <span class="input-group-text">.00</span>
-                                    </div>            
+                                    </div>
                                     <div class="input-group input-group-sm mb-1">
                                         <span class="input-group-text">$</span>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
                                             class="form-control" id="vlrart" name="vlrart" value='{{projeto.vlrart}}'
                                             aria-label="R$ " step='0.010'>
                                         <span class="input-group-text">.00</span>
-                                    </div>                                                            
+                                    </div>
                                     <div class="input-group input-group-sm mb-1">
                                         <span class="input-group-text">$</span>
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number"
@@ -346,16 +350,19 @@
                                 <div class="col-md-2">
                                     <div class="row">
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='number' name='trbges'
-                                            class='form-control form-control-sm' value='{{projeto.trbges}}' step='0.010'>
-                                    </div>          
+                                            class='form-control form-control-sm' value='{{projeto.trbges}}'
+                                            step='0.010'>
+                                    </div>
                                     <div class="row" style="margin-top: 15%">
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='number' name='trbpro'
-                                            class='form-control form-control-sm' value='{{projeto.trbpro}}' step='0.010'>
-                                    </div>                           
-                                    <div class="row" style='margin-top:90%'></div>                                                                       
+                                            class='form-control form-control-sm' value='{{projeto.trbpro}}'
+                                            step='0.010'>
+                                    </div>
+                                    <div class="row" style='margin-top:90%'></div>
                                     <div class="row">
                                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='number' name='trbint'
-                                            class='form-control form-control-sm' value='{{projeto.trbint}}' step='0.010'>
+                                            class='form-control form-control-sm' value='{{projeto.trbint}}'
+                                            step='0.010'>
                                     </div>
                                 </div>
                             </div>
@@ -540,3 +547,188 @@
         </div>
     </div>
 </form>
+<div class="card-body mb-4">
+    <div class="card">
+        <div class="text-center">
+            <label class='col-form-label fw-bold'>Arquivos</label>
+        </div>
+        <div class="row mt-1">
+            <div class="col" style="padding-left: 2%;">
+                <label class="col-form-label fw-bold">Memoria Descritivo</label>
+                <form action='/customdo/salvarMemorial' enctype="multipart/form-data" method="post">
+                    <input type='hidden' name='id' value='{{projeto._id}}'>
+                    <table>
+                        <tr>
+                            <td>
+                                <input class="form-control form-control-sm" type="file" name='memo'>
+                                <label for='files'>{{projeto.memorial}}</label>
+                            </td>
+                            <td>
+                                {{#if projeto.memorial}}
+                                <div class="col-sm-1">
+                                    <i class='bi bi-check-all'></i>
+                                </div>
+                                {{/if}}
+                            </td>
+                            <td>
+                                <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
+                                        class='bi bi-save'></i></button>
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-primary" href='/customdo/mostrarMemorial/{{projeto._id}}'
+                                    target="_blank"><i class='bi bi-eye'></i></a>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="col">
+                <label class="col-form-label fw-bold">Diagrama de Distribuição</label>
+                <form action='/customdo/salvarDistribuicao' enctype="multipart/form-data" method="post">
+                    <input type='hidden' name='id' value='{{projeto._id}}'>
+                    <table>
+                        <tr>
+                            <td>
+                                <input class="form-control form-control-sm" type="file" name='dist'>
+                                <label for='files'>{{projeto.distribuicao}}</label>
+                            </td>
+                            <td>
+                                {{#if projeto.distribuicao}}
+                                <div class="col-sm-1">
+                                    <i class='bi bi-check-all'></i>
+                                </div>
+                                {{/if}}
+                            </td>
+                            <td>
+                                <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
+                                        class='bi bi-save'></i></button>
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-primary" href='/customdo/mostrarDistribuicao/{{projeto._id}}'
+                                    target="_blank"><i class='bi bi-eye'></i></a>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="col">
+                <label class="col-form-label fw-bold">ART</label>
+                <form action='/customdo/salvarArt' enctype="multipart/form-data" method="post">
+                    <input type='hidden' name='id' value='{{projeto._id}}'>
+                    <table>
+                        <tr>
+                            <td>
+                                <input class="form-control form-control-sm" type="file" name='art'>
+                                <label for='files'>{{projeto.art}}</label>
+                            </td>
+                            <td>
+                                {{#if projeto.art}}
+                                <div class="col-sm-1">
+                                    <i class='bi bi-check-all'></i>
+                                </div>
+                                {{/if}}
+                            </td>
+                            <td>
+                                <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
+                                        class='bi bi-save'></i></button>
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-primary" href='/customdo/mostrarArt/{{projeto._id}}'
+                                    target="_blank"><i class='bi bi-eye'></i></a>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col" style="padding-left: 2%;">
+                <label class="col-form-label fw-bold">Diagrama Unifilar</label>
+                <form action='/customdo/salvarUnifilar' enctype="multipart/form-data" method="post">
+                    <input type='hidden' name='id' value='{{projeto._id}}'>
+                    <table>
+                        <tr>
+                            <td>
+                                <input class="form-control form-control-sm" type="file" name='unif'>
+                                <label for='files'>{{projeto.unifilar}}</label>
+                            </td>
+                            <td>
+                                {{#if projeto.unifilar}}
+                                <div class="col-sm-1">
+                                    <i class='bi bi-check-all'></i>
+                                </div>
+                                {{/if}}
+                            </td>
+                            <td>
+                                <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
+                                        class='bi bi-save'></i></button>
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-primary" href='/customdo/mostrarUnifilar/{{projeto._id}}'
+                                    target="_blank"><i class='bi bi-eye'></i></a>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="col">
+                <label class="col-form-label fw-bold">Diagrama de Aterramento</label>
+                <form action='/customdo/salvarAterramento' enctype="multipart/form-data" method="post">
+                    <input type='hidden' name='id' value='{{projeto._id}}'>
+                    <table>
+                        <tr>
+                            <td>
+                                <input class="form-control form-control-sm" type="file" name='ater'>
+                                <label for='files'>{{projeto.aterramento}}</label>
+                            </td>
+                            <td>
+                                {{#if projeto.aterramento}}
+                                <div class="col-sm-1">
+                                    <i class='bi bi-check-all'></i>
+                                </div>
+                                {{/if}}
+                            </td>
+                            <td>
+                                <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
+                                        class='bi bi-save'></i></button>
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-primary" href='/customdo/mostrarAterramento/{{projeto._id}}'
+                                    target="_blank"><i class='bi bi-eye'></i></a>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="col">
+                <label class="col-form-label fw-bold">Diagrama de Situação</label>
+                <form action='/customdo/salvarSituacao' enctype="multipart/form-data" method="post">
+                    <input type='hidden' name='id' value='{{projeto._id}}'>
+                    <table>
+                        <tr>
+                            <td>
+                                <input class="form-control form-control-sm" type="file" name='situ'>
+                                <label for='files'>{{projeto.situacao}}</label>
+                            </td>
+                            <td>
+                                {{#if projeto.situacao}}
+                                <div class="col-sm-1">
+                                    <i class='bi bi-check-all'></i>
+                                </div>
+                                {{/if}}
+                            </td>
+                            <td>
+                                <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
+                                        class='bi bi-save'></i></button>
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-primary" href='/customdo/mostrarSituacao/{{projeto._id}}'
+                                    target="_blank"><i class='bi bi-eye'></i></a>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

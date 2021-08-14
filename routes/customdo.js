@@ -289,8 +289,8 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                          //console.log('trbest=>' + trbest)
                          //console.log('trbmod=>' + trbmod)
                          if (req.body.desIns != 0 && req.body.desIns != '' && typeof req.body.desIns != 'undefined'){
-                              desIns = req.body.desIns
-                              totdes = parseFloat(req.bodydesIns) * parseFloat(req.body.vlrdri)
+                              desIns = parseFloat(req.body.desIns)
+                              totdes = parseFloat(req.body.desIns) * parseFloat(req.body.vlrdri)
                          }else{
                               desIns = 0
                               totdes = 0
@@ -298,7 +298,7 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                          trbint = Math.round(parseFloat(trbatr) + parseFloat(trbinv) + parseFloat(trbstb) + parseFloat(trbpnl) + parseFloat(trbeae) + parseFloat(trbest) + parseFloat(trbmod))
 
                          //console.log('trbint=>' + trbint)
-                         tothrs = trbint + parseFloat(desIns)
+                         
                          //console.log('trbint=>' + trbint)
                          //console.log('projeto.trbges=>' + projeto.trbges)
                          //console.log('projeto.trbpro=>' + projeto.trbpro)
@@ -853,7 +853,11 @@ router.post('/salvarMemorial/', ehAdmin, (req, res) => {
                     //console.log('memorial=>' + memorial)
                     projeto.memorial = memorial
                     projeto.save().then(() => {
-                         res.redirect('/customdo/projetista/' + req.body.id)
+                         if (projeto.ehDireto){
+                              res.redirect('/projeto/direto/' + req.body.id)
+                         }else{
+                              res.redirect('/customdo/projetista/' + req.body.id)
+                         }
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve uma falha ao salvar o projeto.')
                          res.redirect('/customdo/projetista/' + req.body.id)
@@ -883,7 +887,11 @@ router.post('/salvarDistribuicao/', ehAdmin, (req, res) => {
                     }
                     projeto.distribuicao = distribuicao
                     projeto.save().then(() => {
-                         res.redirect('/customdo/projetista/' + req.body.id)
+                         if (projeto.ehDireto){
+                              res.redirect('/projeto/direto/' + req.body.id)
+                         }else{
+                              res.redirect('/customdo/projetista/' + req.body.id)
+                         }
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve uma falha ao salvar o projeto.')
                          res.redirect('/customdo/projetista/' + req.body.id)
@@ -913,7 +921,11 @@ router.post('/salvarArt/', ehAdmin, (req, res) => {
                     }
                     projeto.art = art
                     projeto.save().then(() => {
-                         res.redirect('/customdo/projetista/' + req.body.id)
+                         if (projeto.ehDireto){
+                              res.redirect('/projeto/direto/' + req.body.id)
+                         }else{
+                              res.redirect('/customdo/projetista/' + req.body.id)
+                         }
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve uma falha ao salvar o projeto.')
                          res.redirect('/customdo/projetista/' + req.body.id)
@@ -941,7 +953,11 @@ router.post('/salvarUnifilar/', ehAdmin, (req, res) => {
                     }
                     projeto.unifilar = unifilar
                     projeto.save().then(() => {
-                         res.redirect('/customdo/projetista/' + req.body.id)
+                         if (projeto.ehDireto){
+                              res.redirect('/projeto/direto/' + req.body.id)
+                         }else{
+                              res.redirect('/customdo/projetista/' + req.body.id)
+                         }
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve uma falha ao salvar o projeto.')
                          res.redirect('/customdo/projetista/' + req.body.id)
@@ -971,7 +987,11 @@ router.post('/salvarAterramento/', ehAdmin, (req, res) => {
                     }
                     projeto.aterramento = aterramento
                     projeto.save().then(() => {
-                         res.redirect('/customdo/projetista/' + req.body.id)
+                         if (projeto.ehDireto){
+                              res.redirect('/projeto/direto/' + req.body.id)
+                         }else{
+                              res.redirect('/customdo/projetista/' + req.body.id)
+                         }
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve uma falha ao salvar o projeto.')
                          res.redirect('/customdo/projetista/' + req.body.id)
@@ -1001,7 +1021,11 @@ router.post('/salvarSituacao/', ehAdmin, (req, res) => {
                     }
                     projeto.situacao = situacao
                     projeto.save().then(() => {
-                         res.redirect('/customdo/projetista/' + req.body.id)
+                         if (projeto.ehDireto){
+                              res.redirect('/projeto/direto/' + req.body.id)
+                         }else{
+                              res.redirect('/customdo/projetista/' + req.body.id)
+                         }
                     }).catch((err) => {
                          req.flash('error_msg', 'Houve uma falha ao salvar o projeto.')
                          res.redirect('/customdo/projetista/' + req.body.id)
