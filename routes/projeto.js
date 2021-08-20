@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 var multer = require('multer')
+// const fs = require('fs')
+// var json = require('../plano_direto.json')
 
 require('../model/Empresa')
 require('../model/Pessoa')
@@ -186,7 +188,6 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
                add10: req.body.add10,
                add11: req.body.add11,
                add12: req.body.add12,
-               potencia: 1
           }
           if (req.body.qtduce == 1) {
 
@@ -276,6 +277,85 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
           //console.log('total10=>' + total10)
           //console.log('total11=>' + total11)
           //console.log('total12=>' + total12)
+
+          var kwhdiajan = 0
+          var kwhdiafev = 0
+          var kwhdiamar = 0
+          var kwhdiaabr = 0
+          var kwhdiamai = 0
+          var kwhdiajun = 0
+          var kwhdiajul = 0
+          var kwhdiaago = 0
+          var kwhdiaset = 0
+          var kwhdiaout = 0
+          var kwhdianov = 0
+          var kwhdiadez = 0
+          var diasjan = 31
+          var diasfev = 29
+          var diasmar = 31
+          var diasabr = 30
+          var diasmai = 31
+          var diasjun = 30
+          var diasjul = 31
+          var diasago = 31
+          var diasset = 30
+          var diasout = 31
+          var diasnov = 30
+          var diasdez = 31
+
+
+          var kwhdiajan = (parseFloat(consumo1) / parseFloat(diasjan) / 5) / (parseFloat(req.body.irradiacao) / 5)
+          var kwhdiafev = (parseFloat(consumo2) / parseFloat(diasfev) / 5) / (parseFloat(req.body.irradiacao) / 5)
+          var kwhdiamar = (parseFloat(consumo3) / parseFloat(diasmar) / 5) / (parseFloat(req.body.irradiacao) / 5)
+          var kwhdiaabr = (parseFloat(consumo4) / parseFloat(diasabr) / 5) / (parseFloat(req.body.irradiacao) / 5)
+          var kwhdiamai = (parseFloat(consumo5) / parseFloat(diasmai) / 5) / (parseFloat(req.body.irradiacao) / 5)
+          var kwhdiaabr = (parseFloat(consumo6) / parseFloat(diasjun) / 5) / (parseFloat(req.body.irradiacao) / 5)
+          var kwhdiamai = (parseFloat(consumo7) / parseFloat(diasjul) / 5) / (parseFloat(req.body.irradiacao) / 5)
+          var kwhdiajun = (parseFloat(consumo8) / parseFloat(diasago) / 5) / (parseFloat(req.body.irradiacao) / 5)
+          var kwhdiajul = (parseFloat(consumo9) / parseFloat(diasset) / 5) / (parseFloat(req.body.irradiacao) / 5)
+          var kwhdiaago = (parseFloat(consumo10) / parseFloat(diasout) / 5) / (parseFloat(req.body.irradiacao) / 5)
+          var kwhdiaset = (parseFloat(consumo11) / parseFloat(diasnov) / 5) / (parseFloat(req.body.irradiacao) / 5)
+          var kwhdiadez = (parseFloat(consumo11) / parseFloat(diasdez) / 5) / (parseFloat(req.body.irradiacao) / 5)
+          var totconkw = kwhdiajan + kwhdiafev + kwhdiamar + kwhdiaabr + kwhdiamai + kwhdiaabr + kwhdiamai + kwhdiajun + kwhdiajul + kwhdiaago + kwhdiaset + kwhdiadez
+          var pondjan = kwhdiajan / totconkw
+          var pondfev = kwhdiafev / totconkw
+          var pondmar = kwhdiamar / totconkw
+          var pondabr = kwhdiaabr / totconkw
+          var pondmai = kwhdiamai / totconkw
+          var pondjun = kwhdiaabr / totconkw
+          var pondjul = kwhdiamai / totconkw
+          var pondago = kwhdiajun / totconkw
+          var pondset = kwhdiajul / totconkw
+          var pondout = kwhdiaago / totconkw
+          var pondnov = kwhdiaset / totconkw
+          var ponddez = kwhdiadez / totconkw
+          var pijan = parseFloat(kwhdiajan) * parseFloat(pondjan)
+          var pifev = parseFloat(kwhdiafev) * parseFloat(pondfev)
+          var pimar = parseFloat(kwhdiamar) * parseFloat(pondmar)
+          var piabr = parseFloat(kwhdiaabr) * parseFloat(pondabr)
+          var pimai = parseFloat(kwhdiamai) * parseFloat(pondmai)
+          var pijun = parseFloat(kwhdiajun) * parseFloat(pondjun)
+          var pijul = parseFloat(kwhdiajul) * parseFloat(pondjul)
+          var piago = parseFloat(kwhdiaago) * parseFloat(pondago)
+          var piset = parseFloat(kwhdiaset) * parseFloat(pondset)
+          var piout = parseFloat(kwhdiaout) * parseFloat(pondout)
+          var pinov = parseFloat(kwhdianov) * parseFloat(pondnov)
+          var pidez = parseFloat(kwhdiadez) * parseFloat(ponddez)
+          var potencia = (pijan + pifev + pimar + piabr + pimai + pijun + pijul + piago + piset + piout + pinov + pidez).toFixed(2)
+          if (req.body.ajupot != '' && typeof req.body.ajupot != 'undefined') {
+               potencia = (potencia * (1 + (parseFloat(req.body.ajupot / 100)))).toFixed(2)
+          }
+          if (req.body.tammod != '' && typeof req.body.tammod != 'undefined') {
+               var tamqua = (parseFloat(req.body.tammod) * parseFloat(req.body.qtdmod))
+               var pikwhm = ((parseFloat(req.body.qtdmod) * parseFloat(req.body.watmod)) / 1000) / tamqua
+               var temperatura = 35
+               var coeficiente = 0.0036
+               var perdas = 0.1
+               var gergeral = (pikwhm * (req.body.irradiacao - ((req.body.irradiacao * temperatura * coeficiente) + (req.body.irradiacao * perdas))))
+               gergeral = gergeral * tamqua
+               var geranual = gergeral * 365
+               geranual = (geranual - (geranual * (perdas))).toFixed(2)
+          }
           dime1 = {
                consumo1: consumo1,
                consumo2: consumo2,
@@ -306,8 +386,16 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
                total10: total10,
                total11: total11,
                total12: total12,
-               totfatura: totfatura
+               totfatura: totfatura,
+               potencia: potencia,
+               irradiacao: req.body.irradiacao,
+               ajupot: req.body.ajupot,
+               tammod: req.body.tammod,
+               qtdmod: req.body.qtdmod,
+               watmod: req.body.watmod,
+               geranual: geranual
           }
+
           var dime = Object.assign(dime2, dime1)
           //console.log('dime=>' + dime)
 
@@ -361,8 +449,9 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
                                                   Pessoa.find({ ehVendedor: true, user: _id }).lean().then((vendedor) => {
                                                        Pessoa.find({ user: _id, funges: 'checked' }).lean().then((responsavel) => {
                                                             Cliente.find({ user: _id, sissolar: 'checked' }).lean().then((clientes) => {
-                                                                 sucesso.push({ texto: 'Dimensionamento realizado com sucesso!' })
-                                                                 res.render('projeto/addprojeto', { projeto, dimensionamento, sucesso, empresa, configuracao, vendedor, responsavel, clientes, troca_dim: 'checked' })
+                                                                 // sucesso.push({ texto: 'Dimensionamento realizado com sucesso!' })
+                                                                 // res.render('projeto/addprojeto', { projeto, dimensionamento, sucesso, empresa, configuracao, vendedor, responsavel, clientes, troca_dim: 'checked' })
+                                                                 res.redirect('/projeto/dimensionamento/' + dimensionamento._id)
                                                             }).catch((err) => {
                                                                  req.flash('error_msg', 'Houve um erro ao encontrar um cliente.')
                                                                  res.redirect('/cliente/consulta')
@@ -391,7 +480,7 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
                               })
                          }
                     }).catch((err) => {
-                         req.flash('error_msg', 'Houve uma falha ao buscar o dimensionemnto.')
+                         req.flash('error_msg', 'Houve uma falha ao buscar o dimensionamento.')
                          res.redirect('/menu')
                     })
                }).catch((err) => {
@@ -399,7 +488,7 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
                     res.redirect('/menu')
                })
           }).catch((err) => {
-               req.flash('error_msg', 'Houve uma falha ao salvar o dimensionemnto.')
+               req.flash('error_msg', 'Houve uma falha ao salvar o dimensionamento.')
                res.redirect('/menu')
           })
      })
@@ -418,7 +507,7 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
           //console.log('encontrou projeto')
           Realizado.findOne({ projeto: projeto._id }).lean().then((realizado) => {
                //console.log('encontrou realizado')
-               Pessoa.findOne({ _id: projeto.funges }).lean().then((responsavel) => {
+               Pessoa.findOne({ _id: projeto.funres }).lean().then((responsavel) => {
                     //console.log('encontrou pessoa')
                     Cliente.findOne({ _id: projeto.cliente }).lean().then((cliente) => {
                          //console.log('encontrou cliente')
@@ -452,7 +541,7 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
                                         if (typeof equipe.vis0 != 'undefined') {
                                              equipevis = equipe.vis0 + '|' + equipe.vis1 + '|' + equipe.vis2 + '|' + equipe.vis3 + '|' + equipe.vis4 + '|' + equipe.vis5
                                         }
-                                        
+
                                         var plaini = dataMensagem(cronograma.dateplaini)
                                         var plafim = dataMensagem(cronograma.dateplafim)
                                         var prjini = dataMensagem(cronograma.dateprjini)
@@ -1654,41 +1743,21 @@ router.post("/novo", ehAdmin, (req, res) => {
 
 })
 
-router.post('/salvar_prereq', ehAdmin, (req, res) => {
-     var sucesso = []
+router.post('/salvarescopo', ehAdmin, (req, res) => {
+     console.log('req.body.id=>'+req.body.id)
      Projeto.findOne({ _id: req.body.id }).then((projeto) => {
           projeto.escopo = req.body.escopo
           projeto.save().then(() => {
-               //console.log('salvou projeto')
-               Projeto.findOne({ _id: req.body.id }).lean().then((projeto) => {
-                    Realizado.findOne({ projeto: projeto._id }).lean().then((realizado) => {
-                         Pessoa.findOne({ _id: projeto.funres }).lean().then((responsavel) => {
-                              Empresa.findOne({ _id: projeto.empresa }).lean().then((empresa) => {
-                                   sucesso.push({ texto: 'Escopo salvo com sucesso.' })
-                                   res.render('projeto/vermais', { sucesso, projeto, responsavel, empresa, realizado })
-                              }).catch((err) => {
-                                   req.flash('error_msg', 'Nenhum empresa encontrado')
-                                   res.redirect('/configuracao/consultaempresa')
-                              })
-                         }).catch((err) => {
-                              req.flash('error_msg', 'Nenhum responsável encontrado')
-                              res.redirect('/pessoa/consulta')
-                         })
-                    }).catch((err) => {
-                         req.flash('error_msg', 'Projeto não realizado')
-                         res.redirect('/pessoa/consulta')
-                    })
-               }).catch((err) => {
-                    req.flash('error_msg', 'Nenhum projeto encontrado')
-                    res.redirect('/projeto/consulta')
-               })
+               console.log('salvou projeto')
+               console.log('req.body.id=>'+req.body.id)
+               res.redirect('/projeto/vermais/' + req.body.id)
           }).catch((err) => {
-               req.flash('error_msg', 'Houve um erro ao salvar o escopo.')
+               req.flash('error_msg', 'Nenhum empresa encontrado.')
                res.redirect('/configuracao/consultaempresa')
           })
      }).catch((err) => {
-          req.flash('error_msg', 'Houve um erro ao encontrar o projeto')
-          res.redirect('/configuracao/consultaempresa')
+          req.flash('error_msg', 'Nenhum projeto encontrado.')
+          res.redirect('/pessoa/consulta')
      })
 })
 
@@ -1713,7 +1782,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
      } else {
           Projeto.findOne({ _id: req.body.id }).then((projeto) => {
                //console.log('req.body.vendedor=>' + req.body.vendedor)
-               Pessoa.findOne({ nome: req.body.vendedor }).then((prj_vendedor) => {
+               Pessoa.findOne({ _id: req.body.vendedor }).then((prj_vendedor) => {
                     Detalhado.findOne({ projeto: projeto._id }).then((detalhe) => {
                          //console.log('projeto._id=>' + projeto._id)
                          Cronograma.findOne({ projeto: projeto._id }).then((cronograma) => {
@@ -2229,20 +2298,19 @@ router.post('/edicao', ehAdmin, (req, res) => {
                               projeto.dataIns = req.body.datains
                               projeto.valDataIns = req.body.valDataIns
                               //Altera o vendedor                          
-                              var percom
-                              var vendedor
-                              if (req.body.checkVendedor != null) {
-                                   vendedor = req.body.vendedor
-                                   percom = prj_vendedor.percom
-                              } else {
-                                   vendedor = projeto.vendedor
-                                   percom = projeto.percom
+                              // console.log('req.body.vende=>' + req.body.vendedor)
+                              // console.log('projeto.vendedor=>' + projeto.vendedor)
+                              if (req.body.vendedor != projeto.vendedor) {
+                                   projeto.vendedor = req.body.vendedor
+                                   projeto.percom = prj_vendedor.percom
                               }
-                              //console.log('vendedor=>' + vendedor)
-                              //console.log('percom=>' + percom)
+                              // console.log('vendedor=>'+vendedor)
+                              // console.log('percom=>'+percom)
+                              
+                              // console.log('req.body.empresa=>' + req.body.empresa)
+                              // console.log('projeto.empresa=>' + projeto.empresa)
                               //Altera a empresa 
-                              //console.log('checkEmpresa=>' + req.body.checkEmpresa)
-                              if (req.body.checkEmpresa != null) {
+                              if (req.body.empresa != projeto.empresa) {
                                    projeto.empresa = req.body.empresa
                               }
 
@@ -2252,8 +2320,9 @@ router.post('/edicao', ehAdmin, (req, res) => {
                               } else {
                                    vlrNFS = (parseFloat(req.body.valor) - parseFloat(vlrkit)).toFixed(2)
                               }
-
-                              if (req.body.checkLocal != null && req.body.uf != '' && req.body.cidade != '') {
+                              console.log('req.body.uf=>'+req.body.uf)
+                              console.log('req.body.cidade=>'+req.body.cidade)
+                              if (req.body.uf != '' && req.body.cidade != '' && typeof req.body.uf != 'undefined' && typeof req.body.cidade != 'undefined') {
                                    if (req.body.uf != projeto.uf && req.body.uf != projeto.cidade) {
                                         projeto.uf = req.body.uf
                                         projeto.cidade = req.body.cidade
@@ -2275,8 +2344,6 @@ router.post('/edicao', ehAdmin, (req, res) => {
                               projeto.vlrkit = vlrkit
                               projeto.vlrNFS = vlrNFS
                               projeto.potencia = req.body.potencia
-                              projeto.vendedor = vendedor
-                              projeto.percom = percom
                               projeto.temCercamento = cercamento
                               projeto.temCentral = central
                               projeto.temPosteCond = poste

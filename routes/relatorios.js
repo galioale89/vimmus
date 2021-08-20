@@ -2637,9 +2637,7 @@ router.post('/aplicar', ehAdmin, (req, res) => {
     //console.log('datafim=>' + datafim)
 
     if (selecionado == 'faturamento') {
-        checkFat = 'checked'
-        checkKwp = 'unchecked'
-        checkQtd = 'unchecked'
+        checkFat = 'checked'     
         Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'classUsina': 'Rural' }, { 'classUsina': 'Rural Residencial' }, { 'classUsina': 'Rural Granja' }, { 'classUsina': 'Rural Irrigação' }] }).then((rural) => {
             for (i = 0; i < rural.length; i++) {
                 fatrural = fatrural + parseFloat(rural[i].vlrNFS)
@@ -2700,7 +2698,7 @@ router.post('/aplicar', ehAdmin, (req, res) => {
                                                                     for (i = 0; i < nivel6.length; i++) {
                                                                         fatnivel6 = fatnivel6 + parseFloat(nivel6[i].vlrNFS)
                                                                     }
-                                                                    res.render('relatorios/dashboardbi', { checkFat, checkKwp, checkQtd, fatrural, fatresid, fatcomer, fatindus, fatsolo, fattelhado, fatmono, fatbifa, fattrif, fatnivel1, fatnivel2, fatnivel3, fatnivel4, fatnivel5, fatnivel6, mestitulo, ano })
+                                                                    res.render('relatorios/dashboardbi', { checkFat, checkKwp, checkQtd, fatrural, fatresid, fatcomer, fatindus, fatsolo, fattelhado, fatmono, fatbifa, fattrif, fatnivel1, fatnivel2, fatnivel3, fatnivel4, fatnivel5, fatnivel6, mestitulo, ano, selecionado })
                                                                 }).catch((err) => {
                                                                     req.flash('error_msg', 'Falha ao encontrar usinas nivel 6.')
                                                                     res.redirect('/relatorios/dashboardbi')
@@ -2765,8 +2763,6 @@ router.post('/aplicar', ehAdmin, (req, res) => {
     } else {
         if (selecionado == 'quantidade') {
             checkQtd = 'checked'
-            checkKwp = 'unchecked'
-            checkFat = 'unchecked'
             Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'classUsina': 'Rural' }, { 'classUsina': 'Rural Residencial' }, { 'classUsina': 'Rural Granja' }, { 'classUsina': 'Rural Irrigação' }] }).then((rural) => {
                 qtdrural = rural.length
                 Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, classUsina: 'Residencial' }).then((residencial) => {
@@ -2797,7 +2793,7 @@ router.post('/aplicar', ehAdmin, (req, res) => {
                                                                     qtdnivel5 = nivel5.length
                                                                     Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 200, $gte: 151 } }).then((nivel6) => {
                                                                         qtdnivel6 = nivel6.length
-                                                                        res.render('relatorios/dashboardbi', { checkFat, checkKwp, checkQtd, qtdrural, qtdresid, qtdcomer, qtdindus, qtdsolo, qtdtelhado, qtdmono, qtdbifa, qtdtrif, qtdnivel1, qtdnivel2, qtdnivel3, qtdnivel4, qtdnivel5, qtdnivel6, mestitulo, ano })
+                                                                        res.render('relatorios/dashboardbi', { checkFat, checkKwp, checkQtd, qtdrural, qtdresid, qtdcomer, qtdindus, qtdsolo, qtdtelhado, qtdmono, qtdbifa, qtdtrif, qtdnivel1, qtdnivel2, qtdnivel3, qtdnivel4, qtdnivel5, qtdnivel6, mestitulo, ano, selecionado })
                                                                     }).catch((err) => {
                                                                         req.flash('error_msg', 'Falha ao encontrar usinas nivel 6.')
                                                                         res.redirect('/relatorios/dashboardbi')
@@ -2862,8 +2858,6 @@ router.post('/aplicar', ehAdmin, (req, res) => {
         } else {
             if (selecionado == 'potencia') {
                 checkKwp = 'checked'
-                checkFat = 'unchecked'
-                checkQtd = 'unchecked'
                 Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'classUsina': 'Rural' }, { 'classUsina': 'Rural Residencial' }, { 'classUsina': 'Rural Granja' }, { 'classUsina': 'Rural Irrigação' }] }).then((rural) => {
                     for (i = 0; i < rural.length; i++) {
                         kwprural = kwprural + parseFloat(rural[i].potencia)
@@ -2924,7 +2918,7 @@ router.post('/aplicar', ehAdmin, (req, res) => {
                                                                             for (i = 0; i < nivel6.length; i++) {
                                                                                 kwpnivel6 = kwpnivel6 + parseFloat(nivel6[i].potencia)
                                                                             }
-                                                                            res.render('relatorios/dashboardbi', { checkFat, checkKwp, checkQtd, kwprural, kwpresid, kwpcomer, kwpindus, kwpsolo, kwptelhado, kwpmono, kwpbifa, kwptrif, kwpnivel1, kwpnivel2, kwpnivel3, kwpnivel4, kwpnivel5, kwpnivel6, mestitulo, ano })
+                                                                            res.render('relatorios/dashboardbi', { checkFat, checkKwp, checkQtd, kwprural, kwpresid, kwpcomer, kwpindus, kwpsolo, kwptelhado, kwpmono, kwpbifa, kwptrif, kwpnivel1, kwpnivel2, kwpnivel3, kwpnivel4, kwpnivel5, kwpnivel6, mestitulo, ano, selecionado })
                                                                         }).catch((err) => {
                                                                             req.flash('error_msg', 'Falha ao encontrar usinas nivel 6.')
                                                                             res.redirect('/relatorios/dashboardbi')

@@ -119,7 +119,7 @@
         <h5 class="header">{{cliente.nome}} </h5>
     </div>
 
-    <form action='/projeto/edicao' enctype="multipart/form-data" method='post'>
+    <form action='/projeto/edicao' method='post'>
         <!-- Modal -->
         <div class="modal fade" id="custosModal" tabindex="1" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -367,11 +367,6 @@
                                     class='form-select form-select-sm'>
                                 </select>
                             </div>
-                            <div class="col-md-1">
-                                <div class="row text-center">
-                                    <label class='fw-bold col-form-label col-form-label-sm'>Alterar </label><br>
-                                </div>
-                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-5">
@@ -381,12 +376,6 @@
                                 <select {{#if projeto.orcado}}{{else}}disabled{{/if}} id="cidade" name='cidade'
                                     class='form-select form-select-sm mb-2'>
                                 </select>
-                            </div>
-                            <div class="col-md-1">
-                                <div class="form-check">
-                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type='checkbox'
-                                        class='form-check-input' name='checkLocal'>
-                                </div>
                             </div>
                         </div>
                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="valor" id="valor"
@@ -464,33 +453,19 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-10">
-                    </div>
-                    <div class="col-md-2">
-                        <label class='col-form-label col-form-label-sm fw-bold'>Alterar</label>
-                    </div>
-                </div>
-                <div class="row">
                     <div class="col-md-4 text-end">
                         <label class='fw-bold col-form-label col-form-label-sm mb-2'>Vendedor: </label><br>
                     </div>
                     <div class="col-md-6">
                         <select {{#if projeto.orcado}}{{else}}disabled{{/if}} name='vendedor'
                             class="form-select form-select-sm mb-2">
-                            <option style="font-weight: bold;">{{pv.nome}}</option>
+                            <option style="font-weight: bold;" value="{{pv._id}}">{{pv.nome}}</option>
                             {{#each vendedor}}
                             <option value="{{_id}}">{{nome}}</option>
                             {{else}}
                             <option value=''>Nenhum vendedor cadastrado</option>
                             {{/each}}
                         </select>
-                    </div>
-
-                    <div class="col-md-2">
-                        <div class='form-check' style="padding-left: 40%;">
-                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='form-check-input'
-                                type='checkbox' name='checkVendedor'>
-                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -500,19 +475,13 @@
                     <div class="col-md-6">
                         <select {{#if projeto.orcado}}{{else}}disabled{{/if}} name='empresa'
                             class="form-select form-select-sm mb-2">
-                            <option value="{{_id}}">{{rp.nome}}</option>
+                            <option style="font-weight: bold;" value="{{rp._id}}">{{rp.nome}}</option>
                             {{#each empresa}}
                             <option value="{{_id}}">{{nome}}</option>
                             {{else}}
-                            <option value=''>Nenhuma configuração encontrada</option>
+                            <option value=''>Nenhuma empresa encontrada</option>
                             {{/each}}
                         </select>
-                    </div>
-                    <div class="col-md-2">
-                        <div class='form-check' style="padding-left: 40%;">
-                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='form-check-input'
-                                type='checkbox' name='checkEmpresa'>
-                        </div>
                     </div>
                 </div>
 

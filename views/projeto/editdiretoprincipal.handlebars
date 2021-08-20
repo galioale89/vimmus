@@ -468,20 +468,13 @@
                     <div class="col-md-6">
                         <select {{#if projeto.orcado}}{{else}}disabled{{/if}} name='vendedor'
                             class="form-select form-select-sm mb-2">
-                            <option style="font-weight: bold;">{{pv.nome}}</option>
+                            <option style="font-weight: bold;" value="{{pv._id}}">{{pv.nome}}</option>
                             {{#each vendedor}}
                             <option value="{{_id}}">{{nome}}</option>
                             {{else}}
                             <option value=''>Nenhum vendedor cadastrado</option>
                             {{/each}}
                         </select>
-                    </div>
-
-                    <div class="col-md-2">
-                        <div class='form-check' style="padding-left: 40%;">
-                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='form-check-input'
-                                type='checkbox' name='checkVendedor'>
-                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -491,19 +484,13 @@
                     <div class="col-md-6">
                         <select {{#if projeto.orcado}}{{else}}disabled{{/if}} name='empresa'
                             class="form-select form-select-sm mb-2">
-                            <option value="{{_id}}">{{rp.nome}}</option>
+                            <option style="font-weight: bold;"  value="{{rp._id}}">{{rp.nome}}</option>
                             {{#each empresa}}
                             <option value="{{_id}}">{{nome}}</option>
                             {{else}}
                             <option value=''>Nenhuma configuração encontrada</option>
                             {{/each}}
                         </select>
-                    </div>
-                    <div class="col-md-2">
-                        <div class='form-check' style="padding-left: 40%;">
-                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='form-check-input'
-                                type='checkbox' name='checkEmpresa'>
-                        </div>
                     </div>
                 </div>
 
