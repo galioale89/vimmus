@@ -569,23 +569,27 @@
 
                 <div class="col-lg-8">
                     <div class="card-plan">
-                        <h3 class="title-plan">Plano Único</h3>
+                        <label class="title-plan" style="font-size: 30px;font-weight: 600;margin-top: 5%;">Plano
+                            Único</label>
                         <div class="row">
                             <div class="col">
-                                <p style="margin-top: 38%;" class="description-plan">Acesso integral do sistema completo
+                                <p class="description-plan">Acesso integral do sistema completo
                                     e todas as
                                     funcionalidades
                                     disponíveis.</p>
-                                <div class="text-center">
-                                    <a href="/usuario/registrar/planoPago">
-                                        <button class="primary-btn">Adquirir</button>
+                                <div class="text-center" style="margin-top: 4%;">
+                                    <p>Quer ser Vimmus? </p><br><small>Clica no botão abaixo </small><br>
+                                    <a href="#contact">
+                                        <button class="mt-2 primary-btn">Solicitar Cotação</button>
                                     </a>
                                 </div>
                             </div>
+                            <!--
                             <div class="col">
                                 <p class="price">R$ 300,00 <span>Mês</span></p>
                                 <p style="font-size: 14px;margin-top: 0;" class="price">R$ 3.600,00 Ano</p>
                             </div>
+                            -->
                         </div>
                     </div>
                 </div>
@@ -766,8 +770,21 @@
                         <input name="nome" type="text" placeholder="Nome">
                         <input name="email" type="text" placeholder="E-mail">
                         <input name="celular" type="text" placeholder="Telefone">
-
-                        <button type="submit" class="btn primary-btn">ENVIAR</button>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label class='col-form-label'> Motivo:</label>
+                            </div>
+                            <div class="col-md-7">
+                                <select class="form-select" name="motivo" type="text">
+                                    <option>Gostei! Quero contratar</option>
+                                    <option>Me chama pelo Whats!</option>
+                                    <option>Agendar apresentação</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <button type="submit" class="btn primary-btn">ENVIAR</button>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
