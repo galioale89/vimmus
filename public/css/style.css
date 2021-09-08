@@ -4385,7 +4385,7 @@ section#initial-section .title-banner {
   position: relative;
   color: #07072D;
   font-weight: 700;
-  font-size: 3.125rem;
+  font-size: 2.725rem;
   line-height: 3.8125rem;
   padding-bottom: 1rem;
 }
@@ -4394,7 +4394,7 @@ section#initial-section .title-banner .stripe {
   bottom: 19px;
   left: 8px;
   height: 25px;
-  width: 233px;
+  width: 300px;
   max-width: 100%;
   background-color: #847AF4;
   opacity: 0.6;
@@ -4609,10 +4609,10 @@ section#about .two-sides-row .text {
 section#banner {
   background-color: gray;
   background-image: url("../img/grafico.png");
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-repeat: round;
+  background-size: contain;
   background-position: bottom left;
-  padding: 150px 0 60px;
+  padding: 50px 0px 100px;
   position: relative;
 }
 section#banner::before {
@@ -4686,7 +4686,6 @@ section#benefits .topics li::before {
   border: 1px solid #07072D;
   background-color: transparent;
   left: -2rem;
-  top: 0.35rem;
   border-radius: 50%;
 }
 section#benefits .topics li.active::before {
@@ -4694,7 +4693,7 @@ section#benefits .topics li.active::before {
   background-color: #847AF4;
 }
 section#benefits .descriptions {
-  margin-top: 60px;
+  margin-top: 10px;
   background-color: #847AF4;
   width: 100%;
   padding: 45px;
