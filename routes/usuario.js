@@ -290,7 +290,8 @@ router.post('/salvacontato', (req, res) => {
                     telefone: req.body.celular,
                     email: email,
                     ehAdmin: 3,
-                    data: ano + '' + mes + '' + dia
+                    data: ano + '' + mes + '' + dia,
+                    pricont: req.body.motivo
                 })
 
                 novoUsuario.save().then(() => {
