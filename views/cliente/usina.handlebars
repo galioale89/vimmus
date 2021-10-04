@@ -1,0 +1,241 @@
+<script>
+    function excluir() {
+        var cliente = document.getElementById('idcliente')
+        var usina = document.getElementById('idusina')
+        var r = confirm("Tem certeza que deseja excluir a usina?");
+        if (r == true) {
+            var caminho = '/cliente/excluirusina/' + String(usina.value)
+            alert(caminho)
+            window.open(caminho)
+        }
+        else {
+            var caminho = '/cliente/usinas/' + String(cliente.value)
+            alert(caminho)
+            window.open(caminho)
+        }
+    }
+</script>
+<div class="cotainer mt-4" style="width: 50%;margin-left: 25%;">
+    <ul class="nav nav-tabs mb-2">
+        <li class="nav-item">
+            <a class="nav-link" aria-current="page" style="color: black" href="/cliente/edicao/{{cliente._id}}">Cadastro de Cliente</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" style="color: black"
+                href="/cliente/usinas/{{cliente._id}}">Usinas</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" aria-current="page" style="color: black"
+                href="/cliente/historico/{{cliente._id}}">Histórico</a>
+        </li>
+    </ul>
+</div>
+<div class="container row mb-2">
+    {{#each lista_usina}}
+    <form method="post" action='/cliente/editusina/'>
+        <input type="hidden" id='idcliente' name='idcliente' value='{{cliente}}'>
+        <input type="hidden" id='idusina' name='idusina' value='{{_id}}'>
+        <div class="card" style="padding: 5px" id='card'>
+            <div class="row" style="padding-left: 10px;padding-right: 10px">
+                <div class="col-md-2 text-end">
+                    <label class='col-form-label col-form-label-sm fw-bold'>Nome:</label>
+                </div>
+                <div class="col-md-3 text-start">
+                    <input type='text' name='nome' class='form-control form-control-sm' value='{{nome}}'>
+                </div>
+                <div class="col-md-2 text-end">
+                    <label class='col-form-label col-form-label-sm fw-bold'>Endereço:</label>
+                </div>
+                <div class="col-md-4 text-start">
+                    <input type='text' name='endereco' id='endereco' class='form-control form-control-sm'
+                        value='{{endereco}}'>
+                </div>
+            </div>
+            <div class="row" style="padding: 10px;">
+                <div class="col-md-2 text-end">
+                    <label class="fw-bold col-form-label col-form-label-sm" id='tituloclass'>
+                        Classificação:
+                    </label>
+                </div>
+                <div class="col-md-3">
+                    <select name='classUsina' class='form-select form-select-sm' id='selectclass'>
+                        <option>{{classificacao}}</option>
+                        <option>Rural</option>
+                        <option>Rural Residencial</option>
+                        <option>Rural Granja</option>
+                        <option>Rural Irrigação</option>
+                        <option>Residencial</option>
+                        <option>Industrial</option>
+                        <option>Comercial</option>
+                        <option>Público</option>
+                    </select>
+                </div>
+                <div class="col-md-2 text-end">
+                    <label class="fw-bold col-form-label col-form-label-sm text-end" id='titulotipo'>
+                        Tipo:
+                    </label>
+                </div>
+                <div class="col-md-3">
+                    <select name='tipoUsina' class='form-select form-select-sm' id='selecttipo'>
+                        <option>{{tipo}}</option>
+                        <option>Solo Concreto</option>
+                        <option>Solo Metal</option>
+                        <option>Telhado Fibrocimento</option>
+                        <option>Telhado Madeira</option>
+                        <option>Telhado Cerâmica</option>
+                        <option>Telhado Gambrel</option>
+                        <option>Telhado Metálico</option>
+                        <option>Laje</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-3 text-end">
+                    <label class='col-form-label col-form-label-sm fw-bold' id='titulodata'>Data de Cadastro:</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="date" name='cadastro' class='form-control form-control-sm' id='inputdata'
+                        value='{{cadastro}}'>
+                </div>
+                <div class="col-md-2 text-end">
+                    <label class='col-form-label col-form-label-sm fw-bold'>Próxima Limpeza:</label>
+                </div>
+                <div class="col-md-1">
+                    <label class='col-form-label col-form-label-sm'>{{datalimp}}</label>
+                </div>
+                <div class="col-md-2 text-end">
+                    <label class='col-form-label col-form-label-sm fw-bold' id='titulodata'>Próxima Revisão:</label>
+                </div>
+                <div class="col-md-1">
+                    <label class='col-form-label col-form-label-sm'>{{datarevi}}</label>
+                </div>
+            </div>
+            <div class="row" style="padding-left: 10px;padding-right: 10px">
+                <div class="col-md-3 text-end">
+                    <label class='col-form-label col-form-label-sm fw-bold' id='titulodata'>Área(m²):</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" name='area' class='form-control form-control-sm' value='{{area}}'>
+                </div>
+                <div class="col-md-2 text-end">
+                    <label class='col-form-label col-form-label-sm fw-bold' id='titulodata'>Plano:</label>
+                </div>
+                <div class="col-md-2">
+                    <select class='form-select form-select-sm' name='plano'>
+                        <option class="fw-bold">{{nome_plano}}</option>
+                        {{#each ../lista_plano}}
+                        <option value='{{this._id}}'>{{this.nome}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class='col-form-label col-form-label-sm fw-bold' >Mensalidade: R$ {{mensalidade}}</label>
+                </div>
+            </div>
+            <div class="row" style="padding: 10px;">
+                <div class="col-md-3 text-end">
+                    <label class='col-form-label col-form-label-sm fw-bold' id='titulodata'>Quantidade Painéis:</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" name='qtdmod' class='form-control form-control-sm' value='{{qtdmod}}'>
+                </div>
+                <div class="col-md-7 input-group d-flex justify-content-center">
+                    <button type="submit" class='btn btn-sm btn-primary'>Salvar</button>
+                    <a href='' class='btn btn-sm btn-secondary' onclick="excluir()">Excluir</a>
+                </div>
+            </div>
+        </div>
+        <hr>
+    </form>
+    {{/each}}
+    <form method="post" action='/cliente/addusina/'>
+        <input type='hidden' name='id' value='{{cliente._id}}'>
+        <div class="card mb-4" style="padding: 5px" id='card'>
+            <div class="row" style="padding-left: 10px;padding-right: 10px">
+                <label class='col-form-label col-form-label-sm'>Adicionar Nova Usina</label>
+                <div class="col-md-2 text-end">
+                    <label class='col-form-label col-form-label-sm fw-bold'>Nome</label>
+                </div>
+                <div class="col-md-3">
+                    <input class='form-control form-control-sm' type="text" name='nome'>
+                </div>
+                <div class="col-md-2 text-end">
+                    <label class='col-form-label col-form-label-sm fw-bold'>Endereço:</label>
+                </div>
+                <div class="col-md-4 text-start">
+                    <input type='text' name='endereco' class='form-control form-control-sm' value='{{endereco}}'>
+                </div>
+            </div>
+            <div class="row" style="padding: 10px;">
+                <div class="col-md-2 text-end">
+                    <label class="fw-bold col-form-label col-form-label-sm" id='tituloclass'>
+                        Classificação:
+                    </label>
+                </div>
+                <div class="col-md-3">
+                    <select name='classUsina' class='form-select form-select-sm' id='selectclass'>
+                        <option>{{classificao}}</option>
+                        <option>Rural</option>
+                        <option>Rural Residencial</option>
+                        <option>Rural Granja</option>
+                        <option>Rural Irrigação</option>
+                        <option>Residencial</option>
+                        <option>Industrial</option>
+                        <option>Comercial</option>
+                        <option>Público</option>
+                    </select>
+                </div>
+                <div class="col-md-2 text-end">
+                    <label class="fw-bold col-form-label col-form-label-sm text-end" id='titulotipo'>
+                        Tipo:
+                    </label>
+                </div>
+                <div class="col-md-3">
+                    <select name='tipoUsina' class='form-select form-select-sm' id='selecttipo'>
+                        <option>{{tipo}}</option>
+                        <option>Solo Concreto</option>
+                        <option>Solo Metal</option>
+                        <option>Telhado Fibrocimento</option>
+                        <option>Telhado Madeira</option>
+                        <option>Telhado Cerâmica</option>
+                        <option>Telhado Gambrel</option>
+                        <option>Telhado Metálico</option>
+                        <option>Laje</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="padding-left: 10px;padding-right: 10px">
+                <div class="col-md-3 text-end">
+                    <label class='col-form-label col-form-label-sm fw-bold' id='titulodata'>Quantidade de
+                        Painéis:</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" name='qtdmod' class='form-control form-control-sm' value='{{qtdmod}}'>
+                </div>
+                <div class="col-md-2 text-end">
+                    <label class='col-form-label col-form-label-sm fw-bold' id='titulodata'>Plano:</label>
+                </div>
+                <div class="col-md-3">
+                    <select class='form-select form-select-sm' name='plano'>
+                        {{#each lista_plano}}
+                        <option class="fw-bold" value='{{_id}}'>{{nome}}</option>
+                        {{else}}
+                        <option>Não existem planos cadastrados.</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="padding: 10px;">
+                <div class="col-md-3 text-end">
+                    <label class='col-form-label col-form-label-sm fw-bold' id='titulodata'>Área(m²):</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" name='area' class='form-control form-control-sm' value='{{area}}'>
+                </div>
+                <div class="col-md-7 d-flex justify-content-center">
+                    <button type="submit" class='btn btn-sm btn-success'>Adicionar</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

@@ -4,10 +4,15 @@ const Schema = mongoose.Schema
 const Pessoa = new Schema({
     user:{
         type: Schema.Types.ObjectId,
+        ref: 'usuario',
         require: false,
     },
     nome: {
         type: String,
+        require: true
+    },
+    custo: {
+        type: Number,
         require: true
     },
     funges: {
@@ -18,10 +23,22 @@ const Pessoa = new Schema({
         type: String,
         require: true
     },
+    funeng: {
+        type: String,
+        require: true
+    },    
+    crea:{
+        type: String,
+        require: true
+    },
     funins: {
         type: String,
         require: true
     },        
+    funele: {
+        type: String,
+        require: true
+    },
     endereco: {
         type: String,
         require: true

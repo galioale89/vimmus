@@ -20,450 +20,459 @@
         width: 15%;
     }
 </style>
-<form action="/projeto/salvar_prereq" method="post">
-    <div class="modal fade" id="arquivos" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Visualizar PDF</h5>
-                    <button type="button" class='btn-close' data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-10 text-end">
-                            <label class="col-form-label col-form-label-sm">Memorial Descritivo: </label><br>
-                            <label class="col-form-label col-form-label-sm">ART: </label><br>
-                            <label class="col-form-label col-form-label-sm">Diagrama de Aterramento: </label><br>
-                            <label class="col-form-label col-form-label-sm">Diagrama Unifilar: </label><br>
-                            <label class="col-form-label col-form-label-sm">Diagrama de Situação: </label><br>
-                            <label class="col-form-label col-form-label-sm">Diagrama de Distribuição: </label><br>
-                        </div>
-                        <div class="col-md-2 text-start">
-                            <a href='/customdo/mostrarMemorial/{{projeto._id}}' class='btn btn-sm btn-secondary'><i
-                                    class='bi bi-eye'></i></a>
-                            <a href='/customdo/mostrarArt/{{projeto._id}}' class='btn btn-sm btn-secondary'><i
-                                    class='bi bi-eye'></i></a>
-                            <a href='/customdo/mostrarAterramento/{{projeto._id}}' class='btn btn-sm btn-secondary'><i
-                                    class='bi bi-eye'></i></a>
-                            <a href='/customdo/mostrar/{{projeto._id}}' class='btn btn-sm btn-secondary'><i
-                                    class='bi bi-eye'></i></a>
-                            <a href='/customdo/mostrarSituacao/{{projeto._id}}' class='btn btn-sm btn-secondary'><i
-                                    class='bi bi-eye'></i></a>
-                            <a href='/customdo/mostrarDistribuicao/{{projeto._id}}' class='btn btn-sm btn-secondary'><i
-                                    class='bi bi-eye'></i></a>
-                        </div>
+<div class="modal fade" id="arquivos" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Visualizar PDF</h5>
+                <button type="button" class='btn-close' data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-10 text-end">
+                        <label class="col-form-label col-form-label-sm mb-1">Proposta: </label><br>
+                        <label class="col-form-label col-form-label-sm mb-1">Memorial Descritivo: </label><br>
+                        <label class="col-form-label col-form-label-sm mb-1">ART: </label><br>
+                        <label class="col-form-label col-form-label-sm mb-1">Diagrama de Aterramento: </label><br>
+                        <label class="col-form-label col-form-label-sm mb-1">Diagrama Unifilar: </label><br>
+                        <label class="col-form-label col-form-label-sm mb-1">Diagrama de Situação: </label><br>
+                        <label class="col-form-label col-form-label-sm mb-1">Diagrama de Distribuição: </label><br>
+                    </div>
+                    <div class="col-md-2 text-start">
+                        <a href='/projeto/mostrarProposta/{{projeto._id}}' class='btn btn-sm btn-primary mb-1'
+                            target='_blank'><i class='bi bi-eye'></i></a>
+                        <a href='/customdo/mostrarMemorial/{{projeto._id}}' class='btn btn-sm btn-primary mb-1'
+                            target='_blank'><i class='bi bi-eye'></i></a>
+                        <a href='/customdo/mostrarArt/{{projeto._id}}' class='btn btn-sm btn-primary mb-1'
+                            target='_blank'><i class='bi bi-eye'></i></a>
+                        <a href='/customdo/mostrarAterramento/{{projeto._id}}' class='btn btn-sm btn-primary mb-1'
+                            target='_blank'><i class='bi bi-eye'></i></a>
+                        <a href='/customdo/mostrar/{{projeto._id}}' class='btn btn-sm btn-primary mb-1'
+                            target='_blank'><i class='bi bi-eye'></i></a>
+                        <a href='/customdo/mostrarSituacao/{{projeto._id}}' class='btn btn-sm btn-primary mb-1'
+                            target='_blank'><i class='bi bi-eye'></i></a>
+                        <a href='/customdo/mostrarDistribuicao/{{projeto._id}}' class='btn btn-sm btn-primary mb-1'
+                            target='_blank'><i class='bi bi-eye'></i></a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <input type="hidden" name='id' value="{{projeto._id}}">
-    <div style=" margin-bottom: 30px;">
-        <div style="padding: 10px; height: fit-content; border: rgba(200,200,200,0.5) solid 1px;border-radius: 5px;">
-            <div style='text-align: center'>
-                <div id='header'>
-                    <div class="row" style="width: 100%;">
-                        <div class="col-md-5"
-                            style='margin-bottom: 10px; margin-block-start: 10px; border: solid 1px; border-width: 1px; border-left: grey;border-top: grey;border-bottom: grey;'>
-                            <h6>{{projeto.nomecliente}} {{projeto.potencia}}kWp</h6>
-                            <label style='font-size: 14px;color: white;'>{{cliente.celular}}</label>
-                            <div class="row">
-                                <div class="col-md-6 text-end">
-                                    <label class='fw-bold col-form-label col-form-label-sm'>Data Início:</label><br>
-                                    <label class='fw-bold col-form-label col-form-label-sm'>Data Previsão:</label><br>
-                                    <label class='fw-bold col-form-label col-form-label-sm'>Data Entrega:</label>
-                                </div>
-                                <div class="col-md-6 text-start">
-                                    <label class='col-form-label col-form-label-sm'>{{projeto.dataini}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>{{projeto.dataprev}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>{{projeto.datafim}}</label>
-                                </div>
+</div>
+<div style=" margin-bottom: 30px;">
+    <div style="padding: 10px; height: fit-content; border: rgba(200,200,200,0.5) solid 1px;border-radius: 5px;">
+        <div style='text-align: center'>
+            <div id='header'>
+                <div class="row" style="width: 100%;">
+                    <div class="col-md-5"
+                        style='margin-bottom: 10px; margin-block-start: 10px; border: solid 1px; border-width: 1px; border-left: grey;border-top: grey;border-bottom: grey;'>
+                        <h6>{{projeto.nomecliente}} {{projeto.potencia}}kWp</h6>
+                        <div class="row mt-1 mb-1">
+                            <div class="col">
+                                <label style='font-size: 14px'>Cidade: {{projeto.cidade}} / {{projeto.uf}}</label>
                             </div>
-                            <div class="row">
-                                {{#if projeto.atrasado}}
-                                <div><label style="size: 5px;">Atrasado </label> <i
-                                        class='bi bi-exclamation-triangle'></i></div>
+                            <div class="col">
+                                <label style='font-size: 14px'>{{cliente.celular}}</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 text-end">
+                                <label class='fw-bold col-form-label col-form-label-sm'>Data Início:</label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm'>Data Previsão de
+                                    Entrega:</label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm'>Data Entrega:</label>
+                            </div>
+                            <div class="col-md-6 text-start">
+                                <label class='col-form-label col-form-label-sm'>{{projeto.dataini}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>{{projeto.datafim}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>{{projeto.dataprev}}</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            {{#if projeto.atrasado}}
+                            <div><label style="size: 5px;">Atrasado </label> <i class='bi bi-exclamation-triangle'></i>
+                            </div>
+                            {{/if}}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 text-end">
+                                {{#if responsavel.nome}}
+                                <label class='fw-bold col-form-label col-form-label-sm'>Responsável(a):</label><br>
+                                {{/if}}
+                                <label class='fw-bold col-form-label col-form-label-sm'>Total Orçado:</label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm'>Valor Faturado:</label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm'>Horas:</label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm'>Dias Obra:</label><br>
+                            </div>
+                            <div class="col-md-6 text-start">
+                                {{#if responsavel.nome}}
+                                <label class='col-form-label col-form-label-sm'>{{responsavel.nome}}</label><br>
+                                {{/if}}
+                                <label class='col-form-label col-form-label-sm'>R$ {{projeto.valor}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrNFS}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>{{projeto.tothrs}} h</label><br>
+                                <label class='col-form-label col-form-label-sm'>{{projeto.diastr}}
+                                    dia(s)</label><br>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-6 text-end">
+                                <label class='col-form-label col-form-label-sm fw-bold text-start'>Status:</label>
+                            </div>
+                            <div class="col-md-6 mt-2">
+                                {{#if realizado.foiRealizado}}
+                                <div style="font-size: 17px;"><i class='bi bi-bookmark-check'
+                                        style="color: rgb(40,55,89);"></i></div>
+                                {{else}}
+                                {{#if projeto.executando}}
+                                <div id='execucao'></div>
+                                {{else}}
+                                {{#if projeto.parado}}
+                                <div id='parado'></div>
+                                {{else}}
+                                {{#if projeto.homologado}}
+                                <div id='homologado'></div>
+                                {{else}}
+                                {{#if projeto.foiRealizado}}
+                                <div id='realizado'></div>
+                                {{else}}
+                                <div id='aguardando'></div>
+                                {{/if}}
+                                {{/if}}
+                                {{/if}}
+                                {{/if}}
                                 {{/if}}
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="row">
-                                <div class="col-md-6 text-end">
-                                    {{#if responsavel.nome}}
-                                    <label class='fw-bold col-form-label col-form-label-sm'>Responsável(a):</label><br>
-                                    {{/if}}
-                                    <label class='fw-bold col-form-label col-form-label-sm'>Total Orçado:</label><br>
-                                    <label class='fw-bold col-form-label col-form-label-sm'>Valor Faturado:</label><br>
-                                    <label class='fw-bold col-form-label col-form-label-sm'>Horas:</label><br>
-                                    <label class='fw-bold col-form-label col-form-label-sm'>Dias Obra:</label><br>
-                                </div>
-                                <div class="col-md-6 text-start">
-                                    {{#if responsavel.nome}}
-                                    <label class='col-form-label col-form-label-sm'>{{responsavel.nome}}</label><br>
-                                    {{/if}}
-                                    <label class='col-form-label col-form-label-sm'>R$ {{projeto.valor}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrNFS}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>{{projeto.tothrs}} h</label><br>
-                                    <label class='col-form-label col-form-label-sm'>{{projeto.diastr}}
-                                        dia(s)</label><br>
-                                </div>
+                        <label class='col-form-label col-form-label-sm fw-bold'>Regime:
+                            {{empresa.regime}}</label><br>
+                        <label class='col-form-label col-form-label-sm fw-bold'>Reserva: R$
+                            {{projeto.reserva}}</label><br>
+                        <div class='btn-group btn-group-sm gap-2 mx-auto mt-1' role='group'>
+                            <a href='/projeto/consulta/' class='botao-tabela ativado'><i
+                                    class="bi bi-arrow-left-circle icone-tabela"></i></a>
+                            <a href='/gerenciamento/cronograma/{{projeto._id}}' class="botao-tabela ativado"><i
+                                    class="bi bi-calendar-range icone-tabela"></i>
+                            </a>
+                            {{#if projeto.foiRealizado}}
+                            <a href='/projeto/edicao/{{projeto._id}}' class='desativado'><i
+                                    class="bi bi-pen icone-tabela"></i></a>
+                            {{else}}
+                            <a href='/projeto/edicao/{{projeto._id}}' class='botao-tabela ativado'><i
+                                    class="bi bi-pen icone-tabela"></i></a>
+                            {{/if}}
+                            {{#if projeto.foiRealizado}}
+                            <a href='/projeto/realizar/{{projeto._id}}' class='botao-tabela realizado'> <i
+                                    class="bi bi-check2-circle icone-tabela"></i>
+                            </a>
+                            {{else}}
+                            <a href='/projeto/realizar/{{projeto._id}}' class='botao-tabela ativado'> <i
+                                    class="bi bi-check2-circle icone-tabela"></i>
+                            </a>
+                            {{/if}}
+                            <a class="botao-tabela ativado" data-bs-toggle="modal" data-bs-target="#arquivos"><i
+                                    class='bi bi-folder2-open icone-tabela' style="cursor: pointer;"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class='row mt-3' style="width: 100%;">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-md-3 mt-2 text-end">
+                            <div class="row" style="margin-top: 15%;">
+                                <label class='fw-bold col-form-label col-form-label-sm'>ISS:</label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm'>Receita Liquida:</label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm'>Equipamento:</label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm'>Lucro Bruto:</label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm'>Custo
+                                    Operacional:</label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm'>Despesas Adm.:</label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm'>Comissão:</label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm'>LAI:</label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm'>Tributos:</label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm'>Lucro Líquido:</label><br>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="row">
-                                <div class="col-md-6 text-end">
-                                    <label class='col-form-label col-form-label-sm fw-bold text-start'>Status:</label>
+                                <div class="col-md-1">
+                                    <a href='/gerenciamento/dashboard/{{projeto._id}}'><i
+                                            class='bi bi-file-bar-graph'></i></a>
                                 </div>
-                                <div class="col-md-6 mt-2">
-                                    {{#if realizado.foiRealizado}}
-                                    <div style="font-size: 17px;"><i class='bi bi-bookmark-check'
-                                            style="color: rgb(40,55,89);"></i></div>
-                                    {{else}}
-                                    {{#if projeto.executando}}
-                                    <div id='execucao'></div>
-                                    {{else}}
-                                    {{#if projeto.parado}}
-                                    <div id='parado'></div>
-                                    {{else}}
-                                    {{#if projeto.homologado}}
-                                    <div id='homologado'></div>
-                                    {{else}}
-                                    {{#if projeto.foiRealizado}}
-                                    <div id='realizado'></div>
-                                    {{else}}
-                                    <div id='aguardando'></div>
-                                    {{/if}}
-                                    {{/if}}
-                                    {{/if}}
-                                    {{/if}}
-                                    {{/if}}
-                                </div>
-                            </div>
-                            <label class='col-form-label col-form-label-sm fw-bold'>Regime: {{empresa.regime}}</label><br>
-                            <label class='col-form-label col-form-label-sm fw-bold'>Reserva: R$
-                                {{projeto.reserva}}</label><br>
-                            <div class='btn-group btn-group-sm gap-2 mx-auto mt-1' role='group'>
-                                <a href='/projeto/consulta/' class='botao-tabela ativado'><i
-                                        class="bi bi-arrow-left-circle icone-tabela"></i></a>
-                                {{#if projeto.foiRealizado}}
-                                <a href='/projeto/edicao/{{projeto._id}}' class='desativado'><i
-                                        class="bi bi-pen icone-tabela"></i></a>
-                                {{else}}
-                                <a href='/projeto/edicao/{{projeto._id}}' class='botao-tabela ativado'><i
-                                        class="bi bi-pen icone-tabela"></i></a>
-                                {{/if}}
-                                {{#if projeto.foiRealizado}}
-                                <a href='/projeto/realizar/{{projeto._id}}' class='botao-tabela realizado'> <i
-                                        class="bi bi-check2-circle icone-tabela"></i>
-                                </a>
-                                {{else}}
-                                <a href='/projeto/realizar/{{projeto._id}}' class='botao-tabela ativado'> <i
-                                        class="bi bi-check2-circle icone-tabela"></i>
-                                </a>
-                                {{/if}}
-                                <a href='/projeto/confirmaexclusao/{{projeto._id}}' class="botao-tabela ativado"><i
-                                        class="bi bi-trash icone-tabela"></i>
-                                </a>
-                                <a class="botao-tabela ativado" data-bs-toggle="modal" data-bs-target="#arquivos"><i
-                                        class='bi bi-folder2-open icone-tabela' style="cursor: pointer;"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class='row mt-3' style="width: 100%;">
-                    <div class="col">
-                        <div class="row">
-                            <div class="col-md-3 mt-2 text-end">
-                                <div class="row" style="margin-top: 15%;">
-                                    <label class='fw-bold col-form-label col-form-label-sm'>ISS:</label><br>
-                                    <label class='fw-bold col-form-label col-form-label-sm'>Receita Liquida:</label><br>
-                                    <label class='fw-bold col-form-label col-form-label-sm'>Equipamento:</label><br>
-                                    <label class='fw-bold col-form-label col-form-label-sm'>Lucro Bruto:</label><br>
-                                    <label class='fw-bold col-form-label col-form-label-sm'>Custo
-                                        Operacional:</label><br>
-                                    <label class='fw-bold col-form-label col-form-label-sm'>Despesas Adm.:</label><br>
-                                    <label class='fw-bold col-form-label col-form-label-sm'>Comissão:</label><br>
-                                    <label class='fw-bold col-form-label col-form-label-sm'>LAI:</label><br>
-                                    <label class='fw-bold col-form-label col-form-label-sm'>Tributos:</label><br>
-                                    <label class='fw-bold col-form-label col-form-label-sm'>Lucro Líquido:</label><br>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="row">
-                                    <div class="col-md-1">
-                                        <a href='/gerenciamento/dashboard/{{projeto._id}}'><i
-                                                class='bi bi-file-bar-graph'></i></a>
-                                    </div>
-                                    <div class="col-md-10">
-                                        <label class='col-form-label col-form-label-sm fw-bold'>Orçado</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <label class='col-form-label col-form-label-sm'>R$ {{projeto.impNFS}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>R$
-                                        {{projeto.recLiquida}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrkit}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>R$
-                                        {{projeto.lucroBruto}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>R$ {{projeto.totcop}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>R$ {{projeto.desAdm}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrcom}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>R$ {{projeto.lbaimp}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>R$
-                                        {{projeto.totalImposto}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>R$
-                                        {{projeto.lucroLiquido}}</label><br>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="row">
-                                    <div class="col-md-1">
-                                        <a href='/gerenciamento/dashboardreal/{{realizado._id}}'><i
-                                                class='bi bi-file-bar-graph'></i></a>
-                                    </div>
-                                    <div class="col-md-10">
-                                        <label
-                                            class='col-form-label col-form-label-sm fw-bold fw-bold'>Realizado</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <label class='col-form-label col-form-label-sm'>R$ {{realizado.impISS}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>R$
-                                        {{realizado.recLiquida}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>R$ {{realizado.vlrkit}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>R$
-                                        {{realizado.lucroBruto}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>R$
-                                        {{realizado.custoPlano}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>R$ {{realizado.desAdm}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>R$ {{realizado.vlrcom}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>R$ {{realizado.lbaimp}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>R$
-                                        {{realizado.totalImposto}}</label><br>
-                                    <label class='col-form-label col-form-label-sm'>R$
-                                        {{realizado.lucroLiquido}}</label><br>
+                                <div class="col-md-10">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Orçado</label>
                                 </div>
                             </div>
                             <div class="row">
-                                <label class='col-form-label col-form-label-sm fw-bold'>Complementos</label><br>
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <label class='col-form-label col-form-label-sm mb-1'>Estrutura</label>
-                                        </td>
-                                        <td>
-                                            <input disabled type='checkbox' class='form-check-input mb-3 mt-2'
-                                                {{projeto.temEstSolo}}>
-                                        </td>
-                                        <td>
-                                            <label class='col-form-label col-form-label-sm mb-1'>Cercamento</label>
-                                        </td>
-                                        <td>
-                                            <input disabled type='checkbox' class='form-check-input mb-3'
-                                                {{projeto.temCercamento}}>
-                                        </td>
-                                    </tr>
-                                    <td>
-                                        <label class='col-form-label col-form-label-sm mb-1'>Central</label>
-                                    </td>
-                                    <td>
-                                        <input disabled type='checkbox' class='form-check-input mb-3'
-                                            {{projeto.temCentral}}>
-                                    </td>
-                                    <td>
-                                        <label class='col-form-label col-form-label-sm mb-1'>Postes de
-                                            Condução</label>
-                                    </td>
-                                    <td>
-                                        <input disabled type='checkbox' class='form-check-input mb-3'
-                                            {{projeto.temPosteCond}}>
-                                    </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label class='col-form-label col-form-label-sm mb-1'>Armazenamento</label>
-                                        </td>
-                                        <td>
-                                            <input disabled type='checkbox' class='form-check-input mb-3'
-                                                {{projeto.temArmazenamento}}>
-                                        </td>
-                                        <td>
-                                            <label class='col-form-label col-form-label-sm '>Painel Elétrico</label>
-                                        </td>
-                                        <td>
-                                            <input disabled type='checkbox' class='form-check-input'
-                                                {{projeto.temPainel}}>
-                                        </td>
-                                    </tr>
-                                </table>
+                                <label class='col-form-label col-form-label-sm'>R$ {{projeto.impNFS}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$
+                                    {{projeto.recLiquida}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrkit}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$
+                                    {{projeto.lucroBruto}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$ {{projeto.totcop}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$ {{projeto.desAdm}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$ {{projeto.vlrcom}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$ {{projeto.lbaimp}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$
+                                    {{projeto.totalImposto}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$
+                                    {{projeto.lucroLiquido}}</label><br>
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <a href='/gerenciamento/dashboardreal/{{realizado._id}}'><i
+                                            class='bi bi-file-bar-graph'></i></a>
+                                </div>
+                                <div class="col-md-10">
+                                    <label class='col-form-label col-form-label-sm fw-bold fw-bold'>Realizado</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label class='col-form-label col-form-label-sm'>R$ {{realizado.impISS}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$
+                                    {{realizado.recLiquida}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$ {{realizado.vlrkit}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$
+                                    {{realizado.lucroBruto}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$
+                                    {{realizado.custoPlano}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$ {{realizado.desAdm}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$ {{realizado.vlrcom}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$ {{realizado.lbaimp}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$
+                                    {{realizado.totalImposto}}</label><br>
+                                <label class='col-form-label col-form-label-sm'>R$
+                                    {{realizado.lucroLiquido}}</label><br>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class='col-form-label col-form-label-sm fw-bold'>Complementos</label><br>
+                            <table>
+                                <tr>
+                                    <td>
+                                        <label class='col-form-label col-form-label-sm mb-1'>Estrutura</label>
+                                    </td>
+                                    <td>
+                                        <input disabled type='checkbox' class='form-check-input mb-3 mt-2'
+                                            {{projeto.temEstSolo}}>
+                                    </td>
+                                    <td>
+                                        <label class='col-form-label col-form-label-sm mb-1'>Cercamento</label>
+                                    </td>
+                                    <td>
+                                        <input disabled type='checkbox' class='form-check-input mb-3'
+                                            {{projeto.temCercamento}}>
+                                    </td>
+                                </tr>
+                                <td>
+                                    <label class='col-form-label col-form-label-sm mb-1'>Central</label>
+                                </td>
+                                <td>
+                                    <input disabled type='checkbox' class='form-check-input mb-3'
+                                        {{projeto.temCentral}}>
+                                </td>
+                                <td>
+                                    <label class='col-form-label col-form-label-sm mb-1'>Postes de
+                                        Condução</label>
+                                </td>
+                                <td>
+                                    <input disabled type='checkbox' class='form-check-input mb-3'
+                                        {{projeto.temPosteCond}}>
+                                </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class='col-form-label col-form-label-sm mb-1'>Armazenamento</label>
+                                    </td>
+                                    <td>
+                                        <input disabled type='checkbox' class='form-check-input mb-3'
+                                            {{projeto.temArmazenamento}}>
+                                    </td>
+                                    <td>
+                                        <label class='col-form-label col-form-label-sm '>Painel Elétrico</label>
+                                    </td>
+                                    <td>
+                                        <input disabled type='checkbox' class='form-check-input' {{projeto.temPainel}}>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
-                    <div class="col">
-                        <label class='col-form-label fw-bold'>Crongorama</label>
-                        <table>
-                            <tr>
-                                <th style="text-align: right;">Atividade</th>
-                                <th>Data Inicial</th>
-                                <th>Data Final</th>
-                                <th>Pessoas Alocadas</th>
-                            </tr>
-                            <tr>
-                                <td align="right">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Planejamento:</label><br>
-                                </td>
-                                <td>
-                                    <label class='col-form-label col-form-label-sm'>{{plaini}}</label>
-                                </td>
-                                <td>
-                                    <label class='col-form-label col-form-label-sm'>{{plafim}}</label>
-                                </td>
-                                <td>
-                                    <label style="font-size: 12px;">{{equipepla}}</label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="right">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Projetista:</label><br>
-                                </td>
-                                <td>
-                                    <label class='col-form-label col-form-label-sm'>{{prjini}}</label>
-                                </td>
-                                <td>
-                                    <label class='col-form-label col-form-label-sm'>{{prjfim}}</label>
-                                </td>
-                                <td>
-                                    <label style="font-size: 12px;">{{equipepro}}</label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="right">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Aterramento:</label><br>
-                                </td>
-                                <td>
-                                    <label class='col-form-label col-form-label-sm'>{{ateini}}</label>
-                                </td>
-                                <td>
-                                    <label class='col-form-label col-form-label-sm'>{{atefim}}</label>
-                                </td>
-                                <td>
-                                    <label style="font-size: 12px;">{{equipeate}}</label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="right">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Instalação
-                                        Inversor:</label><br>
-                                </td>
-                                <td>
-                                    <label class='col-form-label col-form-label-sm'>{{invini}}</label>
-                                </td>
-                                <td>
-                                    <label class='col-form-label col-form-label-sm'>{{invfim}}</label>
-                                </td>
-                                <td rowspan="2">
-                                    <label style="font-size: 12px;">{{equipeinv}}</label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="right">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Instalação
-                                        StringBox:</label><br>
-                                </td>
-                                <td>
-                                    <label class='col-form-label col-form-label-sm'>{{stbini}}</label>
-                                </td>
-                                <td>
-                                    <label class='col-form-label col-form-label-sm'>{{stbfim}}</label>
-                                </td>
-                            </tr>
-                            {{#if projeto.temArmazenamento}}
-                            <tr>
-                                <td align="right">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>
-                                        Armazenamento:</label><br>
-                                </td>
-                                <td>
-                                    <label class='col-form-label col-form-label-sm'>{{eaeini}}</label>
-                                </td>
-                                <td>
-                                    <label class='col-form-label col-form-label-sm'>{{eaefim}}</label>
-                                </td>
-                                <td>
-                                    <label style="font-size: 12px;">{{equipeeae}}</label>
-                                </td>
-                            </tr>
-                            {{/if}}
-                            {{#if projeto.temPainel}}
-                            <tr>
-                                <td align="right">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Instalação Painél
-                                        Elétrico:</label><br>
-                                </td>
-                                <td>
-                                    <label class='col-form-label col-form-label-sm'>{{pnlini}}</label>
-                                </td>
-                                <td>
-                                    <label class='col-form-label col-form-label-sm'>{{pnlfim}}</label>
-                                </td>
-                                <td>
-                                    <label style="font-size: 12px;">{{equipepnl}}</label>
-                                </td>
-                            </tr>
-                            {{/if}}
-                            <tr>
-                                <td align="right">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Instalação
-                                        Estrutura:</label><br>
-                                </td>
-                                <td>
-                                    <label class='col-form-label col-form-label-sm'>{{estini}}</label>
-                                </td>
-                                <td>
-                                    <label class='col-form-label col-form-label-sm'>{{estfim}}</label>
-                                </td>
-                                <td rowspan="2">
-                                    <label style="font-size: 12px;">{{equipeins}}</label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="right">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Instalação
-                                        Módulos:</label><br>
-                                </td>
-                                <td>
-                                    <label class='col-form-label col-form-label-sm'>{{modini}}</label>
-                                </td>
-                                <td>
-                                    <label class='col-form-label col-form-label-sm'>{{modfim}}</label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="right">
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Vistoria:</label><br>
-                                </td>
-                                <td>
-                                    <label class='col-form-label col-form-label-sm'>{{visini}}</label>
-                                </td>
-                                <td>
-                                    <label class='col-form-label col-form-label-sm'>{{visfim}}</label>
-                                </td>
-                                <td>
-                                    <label style="font-size: 12px;">{{equipevis}}</label>
-                                </td>
-                            </tr>
-                        </table>
+                </div>
+                <div class="col">
+                    <label class='col-form-label fw-bold'>Crongorama</label>
+                    <table>
+                        <tr>
+                            <th style="text-align: right;">Atividade</th>
+                            <th>Data Inicial</th>
+                            <th>Data Final</th>
+                            <th>Pessoas Alocadas</th>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <label class='col-form-label col-form-label-sm fw-bold'>Planejamento:</label><br>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'>{{plaini}}</label>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'>{{plafim}}</label>
+                            </td>
+                            <td>
+                                <label style="font-size: 12px;">{{equipepla}}</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <label class='col-form-label col-form-label-sm fw-bold'>Projetista:</label><br>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'>{{prjini}}</label>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'>{{prjfim}}</label>
+                            </td>
+                            <td>
+                                <label style="font-size: 12px;">{{equipepro}}</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <label class='col-form-label col-form-label-sm fw-bold'>Aterramento:</label><br>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'>{{ateini}}</label>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'>{{atefim}}</label>
+                            </td>
+                            <td>
+                                <label style="font-size: 12px;">{{equipeate}}</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <label class='col-form-label col-form-label-sm fw-bold'>Instalação
+                                    Inversor:</label><br>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'>{{invini}}</label>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'>{{invfim}}</label>
+                            </td>
+                            <td rowspan="2">
+                                <label style="font-size: 12px;">{{equipeinv}}</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <label class='col-form-label col-form-label-sm fw-bold'>Instalação
+                                    StringBox:</label><br>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'>{{stbini}}</label>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'>{{stbfim}}</label>
+                            </td>
+                        </tr>
+                        {{#if projeto.temArmazenamento}}
+                        <tr>
+                            <td align="right">
+                                <label class='col-form-label col-form-label-sm fw-bold'>
+                                    Armazenamento:</label><br>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'>{{eaeini}}</label>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'>{{eaefim}}</label>
+                            </td>
+                            <td>
+                                <label style="font-size: 12px;">{{equipeeae}}</label>
+                            </td>
+                        </tr>
+                        {{/if}}
+                        {{#if projeto.temPainel}}
+                        <tr>
+                            <td align="right">
+                                <label class='col-form-label col-form-label-sm fw-bold'>Instalação Painél
+                                    Elétrico:</label><br>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'>{{pnlini}}</label>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'>{{pnlfim}}</label>
+                            </td>
+                            <td>
+                                <label style="font-size: 12px;">{{equipepnl}}</label>
+                            </td>
+                        </tr>
+                        {{/if}}
+                        <tr>
+                            <td align="right">
+                                <label class='col-form-label col-form-label-sm fw-bold'>Instalação
+                                    Estrutura:</label><br>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'>{{estini}}</label>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'>{{estfim}}</label>
+                            </td>
+                            <td rowspan="2">
+                                <label style="font-size: 12px;">{{equipeins}}</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <label class='col-form-label col-form-label-sm fw-bold'>Instalação
+                                    Módulos:</label><br>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'>{{modini}}</label>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'>{{modfim}}</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <label class='col-form-label col-form-label-sm fw-bold'>Vistoria:</label><br>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'>{{visini}}</label>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'>{{visfim}}</label>
+                            </td>
+                            <td>
+                                <label style="font-size: 12px;">{{equipevis}}</label>
+                            </td>
+                        </tr>
+                    </table>
+                    <form action="/projeto/salvarescopo" method="post">
+                        <input type="hidden" name='id' value="{{projeto._id}}">
                         <div class="row">
                             <label class='fw-bold col-form-label col-form-label-sm'>Premissas, Restrições e
                                 Requisitos</label>
                             <textarea class='form-control' name='escopo' rows='3'
                                 style="font-size: 12px;">{{projeto.escopo}}</textarea>
                         </div>
-                        <button type="submit" class="mt-2 btn btn-sm btn-success">Salvar premissas e
-                            requisitos</button>
-                    </div>
+                        <button type="submit" class="mt-2 btn btn-sm btn-success">Salvar alterações de escopo</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </form>

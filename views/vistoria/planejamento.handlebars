@@ -1,0 +1,229 @@
+<style>
+    .list {
+        display: flex;
+        flex-flow: column;
+        flex: 1;
+
+        border-radius: 20px;
+
+        background-color: #001263e5;
+        margin: 0 15px;
+        padding: 8px;
+    }
+</style>
+<div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
+
+    <a href='/gerenciamento/vistoriaPla/{{projeto._id}}' class='btn btn-sm botao-menu ativo'><i
+            class="bi bi-layers"></i>
+        Planejamento</a>
+    <a href='/gerenciamento/vistoriaAte/{{projeto._id}}' class='btn btn-sm botao-menu'><i class="bi bi-layers"></i>
+        Aterramento</a>
+    <a href="/gerenciamento/vistoriaStb/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+        StringBox</a>
+    <a href="/gerenciamento/vistoriaInv/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+        Inversor</a>
+    <a href="/gerenciamento/vistoriaEst/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+        Estruturas</a>
+    <a href="/gerenciamento/vistoriaMod/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+        Módulos</a>
+    <a href='/gerenciamento/cronograma/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
+            class="bi bi-arrow-return-left"></i></a>
+
+    <div style="padding: 15px;">
+        <form action='/gerenciamento/planejamento/' method="post">
+        <input type='hidden' name='id' value="{{projeto._id}}">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class='row mt-1'>
+                                <div class="col-md-8 text-end">
+                                    <label class='col-form-label col-form-label-sm'>Quantidade de Módulos: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type='Number' class="form-control form-control-sm" name='plaQtdMod'
+                                        value='{{vistoria.plaQtdMod}}'>
+                                </div>
+                            </div>
+                            <div class='row mt-1'>
+                                <div class="col-md-8 text-end">
+                                    <label class='col-form-label col-form-label-sm'>Potência dos Módulos: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type='Number' class="form-control form-control-sm" name='plaWattMod'
+                                        value='{{vistoria.plaWattMod}}'>
+                                </div>
+                            </div>
+                            <div class='row mt-1'>
+                                <div class="col-md-8 text-end">
+                                    <label class='col-form-label col-form-label-sm'>Quantidade de Inversores: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type='Number' class="form-control form-control-sm" name='plaQtdInv'
+                                        value='{{vistoria.plaQtdInv}}'>
+                                </div>
+                            </div>
+                            <div class='row mt-1'>
+                                <div class="col-md-8 text-end">
+                                    <label class='col-form-label col-form-label-sm'>Potência do Inversor: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type='Number' class="form-control form-control-sm" name='plaKwpInv'
+                                        value='{{vistoria.plaKwpInv}}'>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class='row mt-1'>
+                                <div class="col-md-8 text-end">
+                                    <label class='col-form-label col-form-label-sm'>Dimensão Área(m2): </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type='Number' class="form-control form-control-sm" name='plaDimArea'
+                                        value='{{vistoria.plaDimArea}}'>
+                                </div>
+                                </table>
+                            </div>
+                            <div class='row mt-1'>
+                                <div class="col-md-8 text-end">
+                                    <label class='col-form-label col-form-label-sm'>Quantidade de String: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type='Number' class="form-control form-control-sm" name='plaQtdString'
+                                        value='{{vistoria.plaQtdString}}'>
+                                </div>
+                            </div>
+                            <div class='row mt-1'>
+                                <div class="col-md-8 text-end">
+                                    <label class='col-form-label col-form-label-sm'>Módulos por String: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type='Number' class="form-control form-control-sm" name='plaModString'
+                                        value='{{vistoria.plaModString}}'>
+                                </div>
+                            </div>
+                            <div class='row mt-1'>
+                                <div class="col-md-8 text-end">
+                                    <label class='col-form-label col-form-label-sm'>Quantidade de Estruturas: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type='Number' class="form-control form-control-sm" name='plaQtdEst'
+                                        value='{{vistoria.plaQtdEst}}'>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2" style="padding:8px">
+                        <label class='col-form-label col-form-label-sm text-center'>Componentes</label>
+                        <div class="col-md-10 mt-2">
+                            <select name="componente" class='form-select form-select-sm'>
+                                {{#each componentes}}
+                                <option value="{{_id}}">{{nome}}</option>
+                                {{else}}
+                                <option>Nenhum Componente Cadastrado</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class="col-md-1 mt-2">
+                            <div style="width:60px;">
+                                <input class='form-control form-control-sm' type="number" name='qtditem'>
+                            </div>
+                        </div>
+                        <div class="col-md-1 mt-2">
+                            <div style="width:60px;">
+                                <button type='submit' class="btn btn-sm btn-primary">>></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-1">
+                        <div class="list">
+                            <label class="col-form-label col-form-label-sm fw-bold text-center"
+                                style="color: white">Utilizados</label>
+                            {{#each componente_prj}}
+                            <div style='color: black;' draggable="true">{{nome}}<i class='bi bi-eye'></i></div>
+                            {{/each}}
+                        </div>
+                    </div>
+                    <div class="row mt-1" style="padding: 20px;">
+                        <button type='submit' class='btn btn-sm btn-success'>Salvar</button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-check">
+                                <input class='form-check-input' style="margin-top: 4px;" type="checkbox"
+                                    name='plaSombra' {{vistoria.plaSombra}}>
+                                <label class='col-form-label col-form-label-sm form-check-label'>Sombreamento</label>
+                            </div>
+                            <img id='fotoPlaSombra' name='fotoPlaSombra'
+                                style="width: 300px; height: 190px;" />
+                            <div class="row">
+                                <div class="col text-end">
+                                    <label class="col-form-label col-form-label-sm">Data:</label>
+                                </div>
+                                <div class="col">
+                                    <input name='dtPlaSombra' value='{{vistoria.dtPlaSombra}}' type="date"
+                                        class='form-control form-control-sm'>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-check">
+                                <input class='form-check-input' style="margin-top: 6px;" type="checkbox" name='plaArea'
+                                    {{vistoria.plaArea}}>
+                                <label class='col-form-label col-form-label-sm form-check-label'>Área</label>
+                            </div>
+                            <img id='fotoPlaArea' name='fotoPlaArea' style="width: 300px; height: 190px;" />
+                            <div class="row">
+                                <div class="col text-end">
+                                    <label class="col-form-label col-form-label-sm">Data:</label>
+                                </div>
+                                <div class="col">
+                                    <input name='dtPlaAre' value='{{vistoria.dtPlaAre}}' type="date"
+                                        class='form-control form-control-sm'>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-check">
+                                <input class='form-check-input' style="margin-top: 6px;" type="checkbox"
+                                    name='plaAcessManut' {{vistoria.plaLocalStb}}>
+                                <label class='col-form-label col-form-label-sm form-check-label'>Local de Instalação do StringBox</label>
+                            </div>
+                            <img id='fotoPlaLocalStb' name='fotoPlaLocalStb' style="width: 300px; height: 190px;" />
+                            <div class="row">
+                                <div class="col text-end">
+                                    <label class="col-form-label col-form-label-sm">Data:</label>
+                                </div>
+                                <div class="col">
+                                    <input name='dtPlalocalStb' value='{{vistoria.dtPlaLocalStb}}' type="date"
+                                        class='form-control form-control-sm'>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-check">
+                                <input class='form-check-input' style="margin-top: 6px;" type="checkbox"
+                                    name='plaAte' {{vistoria.plaAte}}>
+                                <label class='col-form-label col-form-label-sm form-check-label'>Local do Aterramento</label>
+                            </div>
+                            <img id='fotoPlaAte' name='fotoPlaAte' style="width: 300px; height: 190px;" />
+                            <div class="row">
+                                <div class="col text-end">
+                                    <label class="col-form-label col-form-label-sm">Data:</label>
+                                </div>
+                                <div class="col">
+                                    <input name='dtPlaAte' value='{{vistoria.dtPlaAte}}' type="date"
+                                        class='form-control form-control-sm'>
+                                </div>
+                            </div>
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -16,6 +16,14 @@ const Empresa = new Schema({
        type: String,
        require: true
     },
+    endereco:{
+        type: String,
+        require: false
+    },
+    telefone:{
+        type: String,
+        require: false
+    },    
     regime: {
         type: String,
         require: false

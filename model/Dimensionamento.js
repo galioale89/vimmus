@@ -8,7 +8,7 @@ const Dimensionamento = new Schema({
         ref: 'usuario',
         require: false,
     },
-    radiacao:{
+    irradiacao:{
         type: Number,
         require: false
     },
@@ -375,7 +375,23 @@ const Dimensionamento = new Schema({
     ajupot:{
         type: Number,
         require: false                
-    }
+    },
+    tammod:{
+        type: Number,
+        require: false                
+    },
+    qtdmod:{
+        type: Number,
+        require: false                
+    },
+    watmod:{
+        type: Number,
+        require: false                
+    },
+    geranual:{
+        type: Number,
+        require: false                
+    }    
 })
 
 mongoose.model('dimensionamento', Dimensionamento)

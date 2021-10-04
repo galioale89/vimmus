@@ -116,7 +116,7 @@
 </script>
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
     <div style="width: 100%;">
-        <h5 class="header">{{cliente.nome}} </h5>
+        <h5 class="header">{{projeto.nomecliente}} </h5>
     </div>
 
     <form action='/projeto/edicao' method='post'>
@@ -318,80 +318,175 @@
         </div>
         <input type='hidden' name='id' value='{{projeto._id}}'>
 
-        <div class='btn-group col-12 mx-auto'>
-            <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu ativo'> <i class="bi bi-house"
-                    style="font-size: 14px;vertical-align:text-bottom;"></i> Projeto</a>
-            <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"
-                    style="font-size: 14px;vertical-align:text-bottom;"></i> Gestão</a>
-            <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"
-                    style="font-size: 14px;vertical-align:text-bottom;"></i> Projetista</a>
-            <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"
-                    style="font-size: 14px;vertical-align:text-bottom;"></i> Instalação</a>
-            <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-puzzle"
-                    style="font-size: 14px;vertical-align:text-bottom;"></i> Gerenciamento</a>
-            <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-calculator"
-                    style="font-size: 14px;vertical-align:text-bottom;"></i> Tributos</a>
+        {{#if projeto.ehDireto}}
+        <div class="row">
+            <div class="col-md-6">
+                <!--<div class='btn-group col-12 mx-auto'>-->
+                <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu ativo'><i
+                        class="bi bi-house"></i>
+                    Principal</a>
+                <a href="/projeto/direto/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+                    Custos Diretos</a>
+                <!--</div>-->
+            </div>
+            <div class="col-md-2 d-flex justify-content-end">
+                <div class='form-check'>
+                    <label class='form-check-label col-form-label col-form-label-sm'>Pedido Realizado?</label>
+                    <input class='form-check-input' style="margin-top: 6%" type="checkbox" name='pedido' >
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="row">
+                    <div class="col text-end">
+                        <label class='col-form-label col-form-label-sm'>Data Pedido</label>
+                    </div>
+                    <div class="col">
+                        <input class='form-control form-control-sm' type="date" name='dataPedido' value='{{projeto.dataPedido}}'>
+                    </div>
+                </div>
+            </div>            
         </div>
+
+        {{else}}
+        <div class="row">
+            <div class="col-md-6">
+                <!--<div class='btn-group col-12 mx-auto'>-->
+                <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu ativo'> <i class="bi bi-house"
+                        style="font-size: 14px;vertical-align:text-bottom;"></i> Projeto</a>
+                <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"
+                        style="font-size: 14px;vertical-align:text-bottom;"></i> Gestão</a>
+                <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"
+                        style="font-size: 14px;vertical-align:text-bottom;"></i> Projetista</a>
+                <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"
+                        style="font-size: 14px;vertical-align:text-bottom;"></i> Instalação</a>
+                <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+                        class="bi bi-puzzle" style="font-size: 14px;vertical-align:text-bottom;"></i> Gerenciamento</a>
+                <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+                        class="bi bi-calculator" style="font-size: 14px;vertical-align:text-bottom;"></i> Custos</a>
+                <!--</div>-->
+            </div>
+            <div class="col-md-2 d-flex justify-content-end">
+                <div class='form-check'>
+                    <label class='form-check-label col-form-label col-form-label-sm'>Pedido Realizado?</label>
+                    <input class='form-check-input' style="margin-top: 6%" type="checkbox" name='pedido' {{projeto.pedidoRealizado}}>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="row">
+                    <div class="col text-end">
+                        <label class='col-form-label col-form-label-sm'>Data Pedido</label>
+                    </div>
+                    <div class="col">
+                        <input class='form-control form-control-sm' type="date" name='dataPedido' value='{{projeto.dataPedido}}'>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{/if}}
 
         <div class="row mt-1">
             <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-3 text-end">
-                        <label for="nome" class=" fw-bold col-form-label col-form-label-sm"> Nome do Projeto:
+                        <label class=" fw-bold col-form-label col-form-label-sm mt-1"> Número Contrato:
                         </label><br>
-                        <label for="cliente" class="fw-bold col-form-label col-form-label-sm mt-1"> Cliente:
+                        <label class=" fw-bold col-form-label col-form-label-sm mt-1"> Endereço:
                         </label><br>
-                        <label for="estado" class="fw-bold col-form-label col-form-label-sm"> Estado:
+                        <label class="fw-bold col-form-label col-form-label-sm mt-1"> Cliente:
                         </label><br>
-                        <label for="cidade" class="fw-bold col-form-label col-form-label-sm mb-2"> Cidade:
+                        <label class="fw-bold col-form-label col-form-label-sm mt-1"> Estado:
                         </label><br>
-                        <label for="vlrorc" class="fw-bold  col-form-label col-form-label-sm mb-2"> Total do Projeto:
+                        <label class="fw-bold col-form-label col-form-label-sm mt-1"> Cidade:
                         </label><br>
-                        <label for="vlreqi" class=" fw-bold col-form-label col-form-label-sm mb-2"> Valor Material:
-                        </label><br>
-                        <label for="ptnprj" class=" fw-bold col-form-label col-form-label-sm mb-2"> Potência do
-                            Projeto:</label>
-                        <label class=" fw-bold col-form-label col-form-label-sm mb-2"> Data de Instalação:</label>
                     </div>
                     <div class="col-md-9">
-                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text" name="nome" id="nome"
-                            value='{{projeto.nome}}' class="form-control form-control-sm mt-1">
-                        <label class="col-form-label col-form-label-sm">{{cliente.nome}}</label>
-
+                        <input type="text" name="nome" id="nome" value='{{projeto.nome}}'
+                            class="form-control form-control-sm mt-1">
+                        <input name='endereco' type='text' class='form-control form-control-sm mt-1'
+                            value="{{projeto.endereco}}">
+                        <select class='form-select form-select-sm mb-1 mt-1' name='cliente'>
+                            <option style="font-weight: bold;" value="{{cli._id}}">{{cli.nome}}</option>
+                            {{#each cliente}}
+                            <option value="{{_id}}">{{nome}}</option>
+                            {{else}}
+                            <option value=''>Nenhum cliente cadastrado.</option>
+                            {{/each}}
+                        </select>
                         <div class="row">
+                            <div class="col-md-7">
+                                <select id="estado" name='uf' class='form-select form-select-sm'>
+                                </select>
+                            </div>
                             <div class="col-md-5">
                                 <label class='col-form-label col-form-label-sm'>{{projeto.uf}}</label>
                             </div>
-                            <div class="col-md-6">
-                                <select {{#if projeto.orcado}}{{else}}disabled{{/if}} id="estado" name='uf'
-                                    class='form-select form-select-sm'>
+                        </div>
+                        <div class="row mt-1">
+                            <div class="col-md-7">
+                                <select id="cidade" name='cidade' class='form-select form-select-sm'>
                                 </select>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-5">
                                 <label class='col-form-label col-form-label-sm'>{{projeto.cidade}}</label>
                             </div>
-                            <div class="col-md-6">
-                                <select {{#if projeto.orcado}}{{else}}disabled{{/if}} id="cidade" name='cidade'
-                                    class='form-select form-select-sm mb-2'>
-                                </select>
-                            </div>
                         </div>
-                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="valor" id="valor"
-                            value='{{projeto.valor}}' class="form-control form-control-sm mb-2" placeholder="R$"
-                            aria-placeholder="R$" step='0.010'>
-                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="equipamento"
-                            id="equipamento" value='{{projeto.vlrkit}}' class="form-control form-control-sm mb-2"
-                            placeholder="R$" aria-placeholder="R$" step='0.010'>
-                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="number" name="potencia" id="potencia"
-                            value='{{projeto.potencia}}' class="form-control form-control-sm mb-2" placeholder="kWp"
-                            aria-placeholder="R$" step='0.010'>
-                        <input {{#if projeto.orcado}}{{else}}disabled{{/if}} class='form-control form-control-sm'
-                            type='date' name='valDataIns' id='valDataIns' value='{{projeto.valDataIns}}'
-                            onchange="mascara_datains()">
-                        <input type="hidden" name='datains' id='datains' value=''>
-                        <input type="hidden" name='dataini' id='dataini' value='{{projeto.dataini}}'>
+                    </div>
+                </div>
+                {{#if projeto.ehVinculo}}
+                <div class="row mt-1">
+                    <div class="col-md-3 text-end">
+                        <label class='fw-bold col-form-label col-form-label-sm'>Gestor: </label><br>
+                    </div>
+                    <div class="col-md-9">
+                        <select name='responsavel' class="form-select form-select-sm">
+                            <option style="font-weight: bold;" value="{{pr._id}}">{{pr.nome}}</option>
+                            {{#each responsavel}}
+                            <option value="{{_id}}">{{nome}}</option>
+                            {{else}}
+                            <option value=''>Nenhum gestor cadastrado</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </div>
+                {{/if}}
+                <div class="row mt-1">
+                    <div class="col-md-3 text-end">
+                        <label class='fw-bold col-form-label col-form-label-sm'>Vendedor: </label><br>
+                    </div>
+                    <div class="col-md-9">
+                        <select name='vendedor' class="form-select form-select-sm">
+                            <option style="font-weight: bold;" value="{{pv._id}}">{{pv.nome}}</option>
+                            {{#each vendedor}}
+                            <option value="{{_id}}">{{nome}}</option>
+                            {{else}}
+                            <option value=''>Nenhum vendedor cadastrado</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-1 mb-1">
+                    <div class="col-md-3 text-end">
+                        <label class='fw-bold col-form-label col-form-label-sm'>Empresa: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mt-1'>Configuração: </label>
+                    </div>
+                    <div class="col-md-9">
+                        <select name='empresa' class="form-select form-select-sm">
+                            <option style="font-weight: bold;" value="{{rp._id}}">{{rp.nome}}</option>
+                            {{#each empresa}}
+                            <option value="{{_id}}">{{nome}}</option>
+                            {{else}}
+                            <option value=''>Nenhuma empresa encontrada</option>
+                            {{/each}}
+                        </select>
+                        <select name='configuracao' class="form-select form-select-sm mt-1">
+                            <option style="font-weight: bold;" value="{{config._id}}">{{config.slug}}</option>
+                            {{#each configuracao}}
+                            <option value="{{_id}}">{{slug}}</option>
+                            {{else}}
+                            <option value=''>Nenhuma configuração encontrada.</option>
+                            {{/each}}
+                        </select>
                     </div>
                 </div>
                 <div class="card">
@@ -422,99 +517,114 @@
                             </div>
                         </div>
                         <div class="row mt-1">
-                            <div class="col-md-2 mt-4">
+                            <div class="col-md-2 text-end">
                                 <label class='col-form-label col-form-label-sm fw-bold'>Motivo:</label>
                             </div>
                             <div class="col-md-10">
                                 <textarea {{#if projeto.orcado}}{{else}}disabled{{/if}} name='motivo'
-                                    class='form-control' rows='3' placeholder="Observação" style="font-size: 12px;">{{projeto.motivo}}</textarea>
+                                    class='form-control' rows='1' placeholder="Observação"
+                                    style="font-size: 12px;">{{projeto.motivo}}</textarea>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col">
+                <div class="row mt-1 mb-1">
+                    <div class="col-md-3 text-end">
+                        <label class="fw-bold col-form-label col-form-label-sm"> Potência:
+                        </label>
+                    </div>
+                    <div class="col-md-7">
+                        <input name='potencia' type='text' class='form-control form-control-sm'
+                            value="{{projeto.potencia}}">
+                    </div>
+                </div>
                 <div class="row">
-                    <div class="col-md-2 text-end">
-                        <label class="col-form-label col-form-label-sm fw-bold">Classificação:</label><br>
-                        <label class="col-form-label col-form-label-sm fw-bold">Tensão:</label>
+                    <div class="col-md-3 text-end">
+                        <label for="vlrorc" class="fw-bold  col-form-label col-form-label-sm"> Total do
+                            Projeto:</label><br>
+                        <label for="vlreqi" class=" fw-bold col-form-label col-form-label-sm mt-1"> Valor Material:
+                        </label><br>
                     </div>
-                    <div class="col-md-2">
-                        <label class="col-form-label col-form-label-sm">{{projeto.classUsina}}</label><br>
-                        <label class="col-form-label col-form-label-sm">{{projeto.tipoConexao}}</label>
+                    <div class="col-md-7">
+                        <input type="number" name="valor" id="valor" value='{{projeto.valor}}'
+                            class="form-control form-control-sm mb-1" placeholder="R$" aria-placeholder="R$"
+                            step='0.010'>
+                        <input type="number" name="equipamento" id="equipamento" value='{{projeto.vlrkit}}'
+                            class="form-control form-control-sm mb-1" placeholder="R$" aria-placeholder="R$"
+                            step='0.010'>
                     </div>
-                    <div class="col-md-2 text-end">
-                        <label class="col-form-label col-form-label-sm fw-bold">Tipo:</label><br>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 text-end">
+                        <label class="col-form-label col-form-label-sm fw-bold mb-1">Classificação:</label><br>
+                        <label class="col-form-label col-form-label-sm fw-bold mb-1">Tensão:</label><br>
+                        <label class="col-form-label col-form-label-sm fw-bold mb-1">Tipo:</label><br>
                         <label class="col-form-label col-form-label-sm fw-bold">Grupo:</label>
                     </div>
-                    <div class="col-md-5">
-                        <label class="col-form-label col-form-label-sm">{{projeto.tipoUsina}}</label>
-                        <label class="col-form-label col-form-label-sm">{{projeto.grupoUsina}}</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4 text-end">
-                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Vendedor: </label><br>
-                    </div>
-                    <div class="col-md-6">
-                        <select {{#if projeto.orcado}}{{else}}disabled{{/if}} name='vendedor'
-                            class="form-select form-select-sm mb-2">
-                            <option style="font-weight: bold;" value="{{pv._id}}">{{pv.nome}}</option>
-                            {{#each vendedor}}
-                            <option value="{{_id}}">{{nome}}</option>
-                            {{else}}
-                            <option value=''>Nenhum vendedor cadastrado</option>
-                            {{/each}}
+                    <div class="col-md-7">
+                        <select name='classUsina' class='form-select form-select-sm mb-1'>
+                            <option>{{projeto.classUsina}}</option>
+                            <option>Rural</option>
+                            <option>Rural Residencial</option>
+                            <option>Rural Granja</option>
+                            <option>Rural Irrigação</option>
+                            <option>Residencial</option>
+                            <option>Industrial</option>
+                            <option>Comercial</option>
+                            <option>Público</option>
+                        </select>
+                        <select name='tipoConexao' class='form-select form-select-sm mb-1'>
+                            <option>{{projeto.tipoConexao}}</option>
+                            <option>Monofásico 127V</option>
+                            <option>Monofásico 220V</option>
+                            <option>Bifásico 220V</option>
+                            <option>Trifásico 220V</option>
+                            <option>Trifásico 380V</option>
+                        </select>
+                        <select name='tipoUsina' class='form-select form-select-sm mb-1'>
+                            <option>{{projeto.tipoUsina}}</option>
+                            <option>Solo Concreto</option>
+                            <option>Solo Metal</option>
+                            <option>Telhado Fibrocimento</option>
+                            <option>Telhado Madeira</option>
+                            <option>Telhado Cerâmica</option>
+                            <option>Telhado Gambrel</option>
+                            <option>Telhado Metálico</option>
+                            <option>Laje</option>
+                        </select>
+                        <select name='grupoUsina' class='form-select form-select-sm'>
+                            <option>{{projeto.grupoUsina}}</option>
+                            <option>Grupo A > 2,3kV</option>
+                            <option>Grupo B1 - Residencial</option>
+                            <option>Grupo B2 - Rural</option>
+                            <option>Grupo B3 - Comercial e Indústria PP</option>
+                            <option>Grupo B4 - IP</option>
                         </select>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-4 text-end">
-                        <label class='fw-bold col-form-label col-form-label-sm mb-2'>Empresa: </label><br>
-                    </div>
-                    <div class="col-md-6">
-                        <select {{#if projeto.orcado}}{{else}}disabled{{/if}} name='empresa'
-                            class="form-select form-select-sm mb-2">
-                            <option style="font-weight: bold;" value="{{rp._id}}">{{rp.nome}}</option>
-                            {{#each empresa}}
-                            <option value="{{_id}}">{{nome}}</option>
-                            {{else}}
-                            <option value=''>Nenhuma empresa encontrada</option>
-                            {{/each}}
-                        </select>
-                    </div>
-                </div>
-
                 <div class="row mt-1">
-                    <div class="col-md-4 text-end">
-                        <label class='col-form-label col-form-label-sm mb-2 fw-bold'>Regime Tributário:</label>
-                    </div>
-                    <div class="col">
-                        <label class='col-form-label col-form-label-sm mb-2'>{{rp.regime}}</label>
-                    </div>
-                </div>
-                <div class="row mt-3">
                     <label class='col-form-label col-form-label-sm fw-bold'>Complementos</label>
                     <div class="col-md-3">
                         <div class="form-check">
-                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='estsolo' class="form-check-input"
-                                type="checkbox" style="margin-top: 8px;" {{projeto.temEstSolo}}>
+                            <input name='estsolo' class="form-check-input" type="checkbox" style="margin-top: 8px;"
+                                {{projeto.temEstSolo}}>
                             <label class="form-check-label col-form-label col-form-label-sm"> Estrutura
                             </label>
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-check">
-                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='central' class="form-check-input"
-                                type="checkbox" style="margin-top: 8px;" {{projeto.temCentral}}>
+                            <input name='central' class="form-check-input" type="checkbox" style="margin-top: 8px;"
+                                {{projeto.temCentral}}>
                             <label class="form-check-label col-form-label col-form-label-sm"> Central
                             </label>
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-check">
-                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='cercamento'
-                                class="form-check-input" type="checkbox" style="margin-top: 8px;"
+                            <input name='cercamento' class="form-check-input" type="checkbox" style="margin-top: 8px;"
                                 {{projeto.temCercamento}}>
                             <label class="form-check-label col-form-label col-form-label-sm"> Cercamento
                             </label>
@@ -522,8 +632,8 @@
                     </div>
                     <div class="col-md-5">
                         <div class="form-check">
-                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='poste' class="form-check-input"
-                                type="checkbox" style="margin-top: 8px;margin-left: 1%" {{projeto.temPosteCond}}>
+                            <input name='poste' class="form-check-input" type="checkbox"
+                                style="margin-top: 8px;margin-left: 1%" {{projeto.temPosteCond}}>
                             <label class="form-check-label col-form-label col-form-label-sm"
                                 style="margin-left: 1%">Postes
                                 de
@@ -535,9 +645,8 @@
                 <div class="row">
                     <div class="col-md-8">
                         <div class="form-check">
-                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='armazenamento'
-                                class="form-check-input" type="checkbox" style="margin-top: 8px;"
-                                {{projeto.temArmazenamento}}>
+                            <input name='armazenamento' class="form-check-input" type="checkbox"
+                                style="margin-top: 8px;" {{projeto.temArmazenamento}}>
                             <label class="form-check-label col-form-label col-form-label-sm">
                                 Estação de Armazenamento de Baterias
                             </label>
@@ -545,20 +654,21 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-check">
-                            <input {{#if projeto.orcado}}{{else}}disabled{{/if}} name='painel' class="form-check-input"
-                                type="checkbox" style="margin-top: 8px;" {{projeto.temPainel}}>
+                            <input name='painel' class="form-check-input" type="checkbox" style="margin-top: 8px;"
+                                {{projeto.temPainel}}>
                             <label class="form-check-label col-form-label col-form-label-sm">
                                 Painel Elétrico
                             </label>
                         </div>
                     </div>
                 </div>
+
                 <div class="row" style="width: 100%;">
                     <div class='btn-group col-12 gap-2'>
-                        <button {{#if projeto.orcado}}{{else}}disabled{{/if}} type="submit"
-                            class="btn btn-sm btn-success" name="aplicar" style="border-radius: 30px;"> <i
-                                class="bi bi-check-circle"></i>
+                        <button type="submit" class="btn btn-sm btn-success" name="aplicar"
+                            style="border-radius: 30px;"> <i class="bi bi-check-circle"></i>
                             Salvar</button>
+                        {{#if projeto._id}}
                         {{#if projeto.executando}}
                         <a {{#if projeto.homologado}}style='opacity: 0.5;pointer-events:none;border-radius: 30px'
                             {{else}} href='/projeto/motivoParar/{{projeto._id}}' {{/if}} class='btn btn-sm btn-danger'
@@ -592,41 +702,48 @@
                             Realizar</a>
                         <a href='/gerenciamento/dashboard/{{projeto._id}}' class='btn btn-sm btn-primary'
                             style="border-radius: 40px;"><i class="bi bi-bar-chart"></i> Dashboard</a>
-                        <a data-bs-toggle="modal" data-bs-target="#custosModal" class="btn btn-sm btn-primary"
-                            style="border-radius: 40px;"><i class="bi bi-list-ul"></i></a>
+                        {{/if}}
                     </div>
                 </div>
-                <label class="col-form-label mt-3 fw-bold" style="margin-left: 70%;">Adicionar Proposta</label>
             </div>
         </div>
     </form>
-    <div class="div" style="margin-left: 68%;">
-        <form action='/projeto/salvarProposta' enctype="multipart/form-data" method="post">
-        <input type='hidden' name='id' value='{{projeto._id}}'>
-            <table>
-                <tr>
-                    <td>
-                        <input class='form-control form-control-sm' type='file' name='proposta'>
-                        <label class='col-form-label col-form-label-sm' style="line-height: 0px;">{{projeto.proposta}}</label>
-                    </td>
-                    <td>
-                        {{#if projeto.proposta}}
-                        <div class="col-md-1">
-                            <i class='bi bi-check-all'></i>
-                        </div>
-                        {{/if}}
-                    </td>
-                    <td>
-                        <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
-                                class='bi bi-save'></i></button>
-                    </td>
-                    <td>
-                        <a class="btn btn-sm btn-primary" href='/projeto/mostrarProposta/{{projeto._id}}'
-                            target="_blank"><i class='bi bi-eye'></i></a>
-                    </td>
-                </tr>
-            </table>
-        </form>
+    <div class="div">
+        <div class="row">
+            <div class="col-md-2 text-end">
+                <label class="col-form-label fw-bold">Adicionar Proposta</label>
+            </div>
+            <div class="col text-start mt-1">
+                <form action='/projeto/salvarProposta' enctype="multipart/form-data" method="post">
+                    <input type='hidden' name='id' value='{{projeto._id}}'>
+                    <table>
+                        <tr>
+                            <td>
+                                <input class='form-control form-control-sm' type='file' name='proposta'>
+                            </td>
+                            <td>
+                                <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
+                                        class='bi bi-save'></i></button>
+                            </td>
+                            <td>
+                                <label class='col-form-label col-form-label-sm'
+                                    style="line-height: 0px;">{{projeto.proposta}}</label>
+                            </td>
+                            <td>
+                                {{#if projeto.proposta}}
+                                <div class="col-md-1">
+                                    <i class='bi bi-check-all'></i>
+                                </div>
+                                {{/if}}
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-primary" href='/projeto/mostrarProposta/{{projeto._id}}'
+                                    target="_blank"><i class='bi bi-eye'></i></a>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
     </div>
-
 </div>

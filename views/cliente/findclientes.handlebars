@@ -16,6 +16,9 @@
         border-radius: 10px;
         margin-left: 5px;
     }
+    table {
+        font-size: 13px;
+    }
 </style>
 <script>
     //Slecionar estados e cidades
@@ -71,49 +74,35 @@
         </div>
     </div>
 
-
-    {{#each clientes}}
-    <div class="card mb-2 mt-2; margin-bottom:30px" style="width: 80%;margin-left: 3%;">
-        <div style="padding: 5px;">
-            <input type='hidden' name='id' value='{{_id}}'>
-            <div class="row" style="padding-left: 10px;">
-                <div class="col-md-5">
-                    <div class="row">
-                        <label for='nome' class='fw-bold col-sm-4 col-form-label col-form-label-sm'> Nome:
-                        </label>
-                        <label class='col-sm-8 col-form-label col-form-label-sm' for='nome'> {{nome}} </label>
-                    </div>
-                    <div class="row">
-                        <label for='nome' class='fw-bold col-sm-4 col-form-label col-form-label-sm'> Cidade/UF: </label>
-                        <label class='col-sm-8 col-form-label col-form-label-sm' for='nome'> {{cidade}} / {{uf}}
-                        </label>
-                    </div>
-                </div>
-                <div class="col-md-5">
-                    <div class="row">
-                        <label for='nome' class='fw-bold col-sm-3 col-form-label col-form-label-sm'> E-mail:
-                        </label>
-                        <label class='col-sm-9 col-form-label col-form-label-sm' for='nome'> {{email}} </label>
-                    </div>
-                    <div class="row">
-                        <label for='nome' class='fw-bold col-sm-3 col-form-label col-form-label-sm'> Celular:
-                        </label>
-                        <label class='col-sm-9 col-form-label col-form-label-sm' for='nome'> {{celular}}
-                        </label>
-                    </div>
-                </div>
-                <div class="col-md-2 mt-2">
-                    <div class='btn-group btn-group-sm gap-2' role='group'>
-                        <a href='/cliente/edicao/{{_id}}' class='botao-tabela ativado'> <i class='bi bi-pen icone'></i>
+    <div style="margin-bottom: 30px; width: 100%;margin-top: 1%;padding-left: 4%;">
+        <div class="card" style="width: 90%;padding: 10px;">
+        <table>
+            <tr>
+                <th>Nome</th>
+                <th>Cidade</th>
+                <th>Estado</th>
+                <th>E-mail</th>
+                <th>Celular</th>
+            </tr>
+            {{#each clientes}}
+            <tr>
+                <td>{{nome}}</td>
+                <td>{{cidade}}</td>
+                <td>{{uf}}</td>
+                <td>{{email}}</td>
+                <td>{{celular}}</td>
+                <td>
+                    <div class='btn-group col-12 gap-2' role='group'>
+                        <a href='/cliente/edicao/{{_id}}' class='botao-tabela ativado'><i class="bi bi-pen icone"></i></a>
+                        <a href='/cliente/confirmaexclusao/{{_id}}' class='botao-tabela ativado'> <i class='bi bi-trash icone'></i> </a>
                         </a>
-                        <a href='/cliente/confirmaexclusao/{{_id}}' class="botao-tabela ativado"> <i
-                                class='bi bi-trash icone'></i> </a>
                     </div>
-                </div>
-            </div>
+                </td>
+            </tr>
+            {{else}}
+            <h6>Nenhuma pessoa cadastrada</h6>
+            {{/each}}
+        </table>
         </div>
     </div>
-    {{else}}
-    <h6>Nenhuma pessoa cadastrada</h6>
-    {{/each}}
 </div>

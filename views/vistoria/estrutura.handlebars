@@ -1,0 +1,103 @@
+<div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
+
+    <a href='/gerenciamento/vistoriaPla/{{projeto._id}}' class='btn btn-sm botao-menu'><i
+            class="bi bi-layers"></i>
+        Planejamento</a>
+    <a href='/gerenciamento/vistoriaAte/{{projeto._id}}' class='btn btn-sm botao-menu'><i class="bi bi-layers"></i>
+        Aterramento</a>
+    <a href="/gerenciamento/vistoriaStb/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+            class="bi bi-layers"></i>
+        StringBox</a>
+    <a href="/gerenciamento/vistoriaInv/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+        Inversor</a>
+    <a href="/gerenciamento/vistoriaEst/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i class="bi bi-layers"></i>
+        Estruturas</a>
+    <a href="/gerenciamento/vistoriaMod/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+        Módulos</a>
+    <a href='/gerenciamento/cronograma/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
+            class="bi bi-arrow-return-left"></i></a>        
+
+    <div class="row" style="padding-left: 15px;">
+        <div class="col-md-4">
+            <div class="form-check">
+                <input class='form-check-input' style="margin-top: 6px;" type="checkbox" name='estAnalise'
+                    {{vistoria.estAnalise}}>
+                <label class='col-form-label col-form-label-sm form-check-label'>Analisar Superfície</label>
+            </div>
+            <img id='fotoEstFAnalise' name='fotoEstFAnalise' style="width: 300px; height: 190px;" />
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="col-form-label col-form-label-sm">Data Entrega:</label>
+                </div>
+                <div class="col-md-5">
+                    <input name='dtEstFixar' value='{{vistoria.dtEstFixar}}' type="date"
+                        class='form-control form-control-sm'>
+                </div>
+            </div>
+            <div class="form-check">
+                <input class='form-check-input' style="margin-top: 6px;" type="checkbox" name='estFixar'
+                    {{vistoria.estFixar}}>
+                <label class='col-form-label col-form-label-sm form-check-label'>Fixar Estruturas</label>
+            </div>
+            <img id='fotoEstFixar' name='fotoEstFixar' style="width: 300px; height: 190px;" />
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="col-form-label col-form-label-sm">Data Entrega:</label>
+                </div>
+                <div class="col-md-5">
+                    <input name='dtEstFixar' value='{{vistoria.dtEstFixar}}' type="date"
+                        class='form-control form-control-sm'>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-check">
+                <input class='form-check-input' style="margin-top: 6px;" type="checkbox" name='estFuracao'
+                    {{vistoria.estFuracao}}>
+                <label class='col-form-label col-form-label-sm form-check-label'>Fazer Furação</label>
+            </div>
+            <img id='fotoEstFuracao' name='fotoEstFuracao' style="width: 300px; height: 190px;" />
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="col-form-label col-form-label-sm">Data Entrega:</label>
+                </div>
+                <div class="col-md-5">
+                    <input name='dtEstFuracao' value='{{vistoria.dtEstFuracao}}' type="date"
+                        class='form-control form-control-sm'>
+                </div>
+            </div>
+            <div class="form-check">
+                <input class='form-check-input' style="margin-top: 6px;" type="checkbox" name='estLinhaVida'
+                    {{vistoria.estLinhaVida}}>
+                <label class='col-form-label col-form-label-sm form-check-label'>Avaliar Linha de Vida</label>
+            </div>
+            <img id='fotoEstLinhaVida' name='fotoEstLinhaVida' style="width: 300px; height: 190px;" />
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="col-form-label col-form-label-sm">Data Entrega:</label>
+                </div>
+                <div class="col-md-5">
+                    <input name='dtEstLinhaVida' value='{{vistoria.dtEstLinhaVida}}' type="date"
+                        class='form-control form-control-sm'>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-check">
+                <input class='form-check-input' style="margin-top: 6px;" type="checkbox" name='estVerificacao'
+                    {{vistoria.estVerificacao}}>
+                <label class='col-form-label col-form-label-sm form-check-label'>Verifciar Instalação</label>
+            </div>
+            <img id='fotoEstVerificacao' name='fotoEstVerificacao' style="width: 300px; height: 190px;" />
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="col-form-label col-form-label-sm">Data Entrega:</label>
+                </div>
+                <div class="col-md-5">
+                    <input name='dtEstVerificacao' value='{{vistoria.dtEstVerificacao}}' type="date"
+                        class='form-control form-control-sm'>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,118 @@
+<div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
+
+    <a href='/gerenciamento/vistoriaPla/{{projeto._id}}' class='btn btn-sm botao-menu'><i
+            class="bi bi-layers"></i>
+        Planejamento</a>
+    <a href='/gerenciamento/vistoriaAte/{{projeto._id}}' class='btn btn-sm botao-menu'><i class="bi bi-layers"></i>
+        Aterramento</a>
+    <a href="/gerenciamento/vistoriaStb/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i
+            class="bi bi-layers"></i>
+        StringBox</a>
+    <a href="/gerenciamento/vistoriaInv/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+        Inversor</a>
+    <a href="/gerenciamento/vistoriaEst/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+        Estruturas</a>
+    <a href="/gerenciamento/vistoriaMod/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+        Módulos</a>
+    <a href='/gerenciamento/cronograma/{{projeto._id}}' class='btn btn-sm btn-primary'> <i
+            class="bi bi-arrow-return-left"></i></a>        
+
+    <div class="row" style="padding-left: 15px;">
+        <div class="col-md-4">
+            <div class="form-check">
+                <input class='form-check-input' style="margin-top: 6px;" type="checkbox" name='stbInstalCaixa'
+                    {{vistoria.stbInstalCaixa}}>
+                <label class='col-form-label col-form-label-sm form-check-label'>Instalar Caixa StringBox</label>
+            </div>
+            <img id='fotoStbInstalCaixa' name='fotoStbInstalCaixa' style="width: 300px; height: 190px;" />
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="col-form-label col-form-label-sm">Data Entrega:</label>
+                </div>
+                <div class="col-md-5">
+                    <input name='dtStbInstalCaixa' value='{{vistoria.dtStbInstalCaixa}}' type="date"
+                        class='form-control form-control-sm'>
+                </div>
+            </div>
+            <div class="form-check">
+                <input class='form-check-input' style="margin-top: 6px;" type="checkbox" name='stbDisjuntores'
+                    {{vistoria.stbDisjuntores}}>
+                <label class='col-form-label col-form-label-sm form-check-label'>Instalar Disjuntores</label>
+            </div>
+            <img id='fotoStbDisjuntores' name='fotoStbDisjuntores' style="width: 300px; height: 190px;" />
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="col-form-label col-form-label-sm">Data Entrega:</label>
+                </div>
+                <div class="col-md-5">
+                    <input name='dtStbDisjuntores' value='{{vistoria.dtStbDisjuntores}}' type="date"
+                        class='form-control form-control-sm'>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-check">
+                <input class='form-check-input' style="margin-top: 6px;" type="checkbox" name='stbLigacaoAC'
+                    {{vistoria.stbLigacaoAC}}>
+                <label class='col-form-label col-form-label-sm form-check-label'>Fazer Ligação AC</label>
+            </div>
+            <img id='fotoStbLigacaoAC' name='fotoStbLigacaoAC' style="width: 300px; height: 190px;" />
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="col-form-label col-form-label-sm">Data Entrega:</label>
+                </div>
+                <div class="col-md-5">
+                    <input name='dtStbLigacaoAC' value='{{vistoria.dtStbLigacaoAC}}' type="date"
+                        class='form-control form-control-sm'>
+                </div>
+            </div>
+            <div class="form-check">
+                <input class='form-check-input' style="margin-top: 6px;" type="checkbox" name='stbLigacaoDC'
+                    {{vistoria.stbLigacaoDC}}>
+                <label class='col-form-label col-form-label-sm form-check-label'>Fazer Ligação DC</label>
+            </div>
+            <img id='fotoStbLigacaoDC' name='fotoStbLigacaoDC' style="width: 300px; height: 190px;" />
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="col-form-label col-form-label-sm">Data Entrega:</label>
+                </div>
+                <div class="col-md-5">
+                    <input name='dtStbLigacaoDC' value='{{vistoria.dtStbLigacaoDC}}' type="date"
+                        class='form-control form-control-sm'>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-check">
+                <input class='form-check-input' style="margin-top: 6px;" type="checkbox" name='stbInstalDPS'
+                    {{vistoria.stbInstalDPS}}>
+                <label class='col-form-label col-form-label-sm form-check-label'>Instalar DPS</label>
+            </div>
+            <img id='fotoStbInstalDPS' name='fotoStbInstalDPS' style="width: 300px; height: 190px;" />
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="col-form-label col-form-label-sm">Data Entrega:</label>
+                </div>
+                <div class="col-md-5">
+                    <input name='dtStbInstalDPS' value='{{vistoria.dtStbInstalDPS}}' type="date"
+                        class='form-control form-control-sm'>
+                </div>
+            </div>
+            <div class="form-check">
+                <input class='form-check-input' style="margin-top: 6px;" type="checkbox" name='stbEletrocalhas'
+                    {{vistoria.stbEletrocalhas}}>
+                <label class='col-form-label col-form-label-sm form-check-label'>Instalar Eletrocalhas</label>
+            </div>
+            <img id='fotoStbEletrocalhas' name='fotoStbEletrocalhas' style="width: 300px; height: 190px;" />
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="col-form-label col-form-label-sm">Data Entrega:</label>
+                </div>
+                <div class="col-md-5">
+                    <input name='dtStbEletrocalhas' value='{{vistoria.dtStbEletrocalhas}}' type="date"
+                        class='form-control form-control-sm'>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

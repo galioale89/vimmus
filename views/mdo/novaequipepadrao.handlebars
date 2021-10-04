@@ -3,12 +3,12 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Segoe UI;
+    color: rgb(40, 55, 89);
   }
 
   .body {
-    background-color: #001263e5;
-    font-family: 'Roboto', Helvetica, sans-serif;
+    background-color: #847AF4;
+    height: 400px;
   }
 
   .lists {
@@ -53,40 +53,39 @@
 </style>
 <form method='post' action='/pessoa/criarequipepadrao'>
   <div class="body">
-    <input type='hidden' name='id' value='{{projeto._id}}'/>
-    <div class="card-body" style="color: white;margin-top: 50px;">
+    <input type='hidden' name='id' value='{{projeto._id}}' />
+    <div class="card-body" style="margin-top: 50px;">
+      <label style="font-size: 25px;font-weight: 600;">Criar nova equipe </label>
       <div class="row" style="margin-top: 20px;">
         <div class="col-md-5">
-          <div class="row">
-            <div class="row text-center mb-4" style="margin-left: 50px; margin-top: 20px">
-              <h2><i class="bi bi-people"></i> Criação de Equipes</h2><br>
-              <p style="color: white;">Aqui serão ser criadas as equipes que poderão ser vinculadas aos projetos </p>
+          <div class="row mb-4" style="margin-left: 50px;margin-top: 50px;">
+            <div class="col-md-6 text-end">
+              <label class="col-form-label fw-bold">Nome Equipe:</label><br>
+              <label class="col-form-label fw-bold">Custo da Equipe por Dia:</label>
             </div>
-            <div class="row mb-4" style="margin-left: 50px;">
-              <div class="col-md-3">
-                <label class="col-form-label col-form-label-sm" style="color: white;">Nome Equipe:</label>
-              </div>
-              <div class="col-md-8">
-                <input type='text' name='nome' class="form-control" value='{{equipe.nome}}'>
-              </div>
-            </div>            
+            <div class="col-md-6">
+              <input type='text' name='nome' class="form-control form-control-sm mt-1" value='{{equipe.nome}}'>
+              <input type='number' name='custo' class="form-control form-control-sm mt-2" value='{{equipe.custo}}'>
+            </div>
           </div>
           <div class="row" style="margin-left: 100px;">
-            <button type='submit' class="col-6 btn btn-sm btn-success btn-lg" style="margin-left: 100px;"
-              onclick="getItemValue()">Criar Equipe</button>
+            <button type='submit' class="col-6 btn btn-primary btn-lg" style="margin-left: 100px;"
+              onclick="getItemValue()">Salvar Equipe</button>
           </div>
         </div>
         <div class="col-md-6">
           <div class="lists">
             <div class="list">
-              <label class="col-form-label col-form-label-md fw-bold text-center">Profissionais Disponíveis</label>
+              <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white;">Profissionais
+                Disponíveis</label>
               {{#each instaladores}}
-              <div class="list-item" style='color: black;' draggable="true" name='{{_id}}'>{{nome}}</div>
+              <div class="list-item" style='color: rgb(40,55,89);' draggable="true" name='{{_id}}'>{{nome}}</div>
               {{else}}
               {{/each}}
             </div>
             <div class="list">
-              <label class="col-form-label col-form-label-md fw-bold text-center">Profissionais Alocados</label>
+              <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white;">Profissionais
+                Alocados</label>
             </div>
           </div>
         </div>
@@ -167,19 +166,19 @@
         case 2:
           var insdes = document.getElementById('ins2');
           insdes.value = element
-          break;    
+          break;
         case 3:
           var insdes = document.getElementById('ins3');
           insdes.value = element
-          break;   
+          break;
         case 4:
           var insdes = document.getElementById('ins4');
           insdes.value = element
-          break;   
+          break;
         case 5:
           var insdes = document.getElementById('ins5');
           insdes.value = element
-          break;                                       
+          break;
       }
     }
   }

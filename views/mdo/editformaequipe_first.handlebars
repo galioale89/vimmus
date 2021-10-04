@@ -1,0 +1,188 @@
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Segoe UI;
+  }
+
+  .body {
+    background-color: #001263e5;
+    font-family: 'Roboto', Helvetica, sans-serif;
+  }
+
+  .lists {
+    display: flex;
+    flex: 1;
+    width: 100%;
+  }
+
+  .lists .list {
+    display: flex;
+    flex-flow: column;
+    flex: 1;
+
+    width: 100%;
+    border-radius: 20px;
+    min-width: 250px;
+    max-width: 350px;
+    height: 100%;
+    min-height: 300px;
+
+    background-color: #001263e5;
+    margin: 0 15px;
+    padding: 8px;
+    transition: all 0.2s linear;
+  }
+
+  .lists .list .list-item {
+    background-color: #F3F3F3;
+    border-radius: 8px;
+    text-align: center;
+    margin: 4px 0px;
+    cursor: pointer;
+  }
+
+  .lists .list .item {
+    background-color: #F3F3F3;
+    border-radius: 8px;
+    text-align: center;
+    margin: 4px 0px;
+  }
+</style>
+<form method='post' action='/pessoa/salvarequipe'>
+  <div class="body">
+    <input type='hidden' name='id' value='{{projeto._id}}'>
+    <div class="card-body" style="color: white;margin-top:50px">
+      <div class="row" style="margin-top: 20px;width: 100%;">
+        <div class="col-md-5">
+          <div class="row">
+            <div class="row text-center mb-4" style="margin-left: 50px; margin-top:30px">
+              <h2><i class="bi bi-people"></i> Criação de Equipes</h2><br>
+              <p style="color: white;">Aqui serão ser criadas as equipes que poderão ser vinculadas aos projetos </p>
+            </div>
+          </div>
+          <div class="row gap-2 col-6" style="margin-left: 100px;">
+            <button {{#if projeto.orcado}}{{else}}disabled{{/if}} href='/pessoa/salvarequipe/{{projeto._id}}' class="btn btn-success btn-sm" style="margin-left: 100px;"
+              onclick="getItemValue()">Salvar Equipe</button>
+            <a {{#if projeto.orcado}}href='/pessoa/refazequipe/{{projeto._id}}'{{else}}style='margin-left: 100px;opacity: 0.5;pointer-events: none'{{/if}} class="btn btn-success btn-sm" style="margin-left: 100px;">Reformular Equipe</button>
+            {{#if projeto.ehDireto}}
+            <a href='/projeto/direto/{{projeto._id}}' class="mt-2 btn btn-primary btn-sm" style="margin-left: 100px;">Voltar para o Projeto</a>
+            {{else}}
+            <a href='/customdo/editar/instalacao/{{projeto._id}}' class="mt-2 btn btn-primary btn-sm" style="margin-left: 100px;">Voltar para o Projeto</a>
+            {{/if}}
+          </div>    
+        </div>
+        <div class="col-md-6">
+          <div class="text-center mb-2"><label>Selecione no mínimo 3 instaladores para a obra!</label></div>
+          <div class="lists">
+            <div class="list">
+              <label class="col-form-label col-form-label-md fw-bold text-center">Profissionais Disponíveis</label>
+              {{#each fora}}
+              <div class="list-item" style='color: black;'  draggable="true" >{{ins}}</div>
+              {{else}}
+              {{/each}}
+            </div>
+            <div class="list">
+              <label class="col-form-label col-form-label-md fw-bold text-center">Profissionais Alocados</label>
+              {{#each dentro}}
+              <div class="item" style='color: black;'>{{ins}}</div>
+              {{else}}
+              {{/each}}
+            </div>
+          </div>
+        </div>
+        <input type='hidden' class='ins0' name='ins0' id='ins0' value=''>
+        <input type='hidden' class='ins1' name='ins1' id='ins1' value=''>
+        <input type='hidden' class='ins2' name='ins2' id='ins2' value=''>
+        <input type='hidden' class='ins3' name='ins3' id='ins3' value=''>
+        <input type='hidden' class='ins4' name='ins4' id='ins4' value=''>
+        <input type='hidden' class='ins5' name='ins5' id='ins5' value=''>
+      </div>
+    </div>
+  </div>
+</form>
+
+<script>
+  const list_items = document.querySelectorAll('.list-item');
+  const lists = document.querySelectorAll('.list');
+
+  let draggedItem = null;
+
+  for (let i = 0; i < list_items.length; i++) {
+    const item = list_items[i];
+
+    item.addEventListener('dragstart', function () {
+      draggedItem = item;
+      setTimeout(function () {
+        item.style.display = 'none';
+      }, 0)
+    });
+
+    item.addEventListener('dragend', function () {
+      this.className = 'item';
+      setTimeout(function () {
+        draggedItem.style.display = 'block';
+        draggedItem = null;
+      }, 0);
+    })
+
+    for (let j = 0; j < lists.length; j++) {
+      const list = lists[j];
+
+      list.addEventListener('dragover', function (e) {
+        e.preventDefault();
+      });
+
+      list.addEventListener('dragenter', function (e) {
+        e.preventDefault();
+        this.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
+      });
+
+      list.addEventListener('dragleave', function (e) {
+        this.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+      });
+
+      list.addEventListener('drop', function (e) {
+
+        console.log('drop');
+        this.append(draggedItem);
+        this.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+      });
+    }
+  }
+
+  function getItemValue() {
+    const item = document.querySelectorAll('.item');
+    for (i = 0; i < item.length; i++) {
+      const insitem = document.getElementsByClassName(item[i].getAttribute('class'));
+      var element = insitem[i].innerText;
+      switch (i) {
+        case 0:
+          var insdes = document.getElementById('ins0');
+          insdes.value = element;
+          break;
+        case 1:
+          var insdes = document.getElementById('ins1');
+          insdes.value = element
+          break;
+        case 2:
+          var insdes = document.getElementById('ins2');
+          insdes.value = element
+          break;            
+        case 3:
+          var insdes = document.getElementById('ins3');
+          insdes.value = element
+          break;   
+        case 4:
+          var insdes = document.getElementById('ins4');
+          insdes.value = element
+          break;   
+        case 5:
+          var insdes = document.getElementById('ins5');
+          insdes.value = element
+          break;            
+      }
+    }
+  }
+</script>

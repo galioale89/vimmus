@@ -27,9 +27,16 @@ router.get('/analisegeral/', ehAdmin, (req, res) => {
                         qtdmod = qtdmod + 0
                     }
                 } else {
-                    qtdmod = qtdmod + projeto.unimod
+                    if (projeto.unimod != '' || typeof projeto.unimod != 'undefined'){
+                        qtdmod = qtdmod + projeto.unimod
+                    }
+
                 }
-                potencia = parseFloat(potencia) + parseFloat(element.potencia)
+                console.log('projeto._id=>'+element._id)
+                console.log("potencia=>"+element.potencia)
+                if (element.potencia != '' && typeof element.potencia != 'undefined'){
+                    potencia = parseFloat(potencia) + parseFloat(element.potencia)
+                }
                 valor = valor + element.valor
                 totint = totint + element.totint
                 custoPlano = custoPlano + element.custoPlano
@@ -42,7 +49,7 @@ router.get('/analisegeral/', ehAdmin, (req, res) => {
                     var rsikwp = (parseFloat(totint) / parseFloat(potencia)).toFixed(2)
                     var custoPorModulo = (parseFloat(custoPlano) / parseFloat(qtdmod)).toFixed(2)
                     var custoPorKwp = (parseFloat(custoPlano) / parseFloat(potencia)).toFixed(2)
-                    res.render('relatorios/analisegeral', { potencia, qtdmod, valor, rspkwp, rspmod, rsimod, rsikwp, custoPorModulo,custoPorKwp })
+                    res.render('relatorios/analisegeral', { potencia, qtdmod, valor, rspkwp, rspmod, rsimod, rsikwp, custoPorModulo, custoPorKwp })
                 }
             }).catch((err) => {
                 req.flash('error_msg', 'Houve um erro para encontrar projetos realizados')
@@ -2444,7 +2451,21 @@ router.get('/dashboardbi', ehAdmin, (req, res) => {
                                                                 for (i = 0; i < nivel6.length; i++) {
                                                                     fatnivel6 = fatnivel6 + parseFloat(nivel6[i].vlrNFS)
                                                                 }
-                                                                res.render('relatorios/dashboardbi', { checkFat, checkKwp, checkQtd, fatrural, fatresid, fatcomer, fatindus, fatsolo, fattelhado, fatmono, fatbifa, fattrif, fatnivel1, fatnivel2, fatnivel3, fatnivel4, fatnivel5, fatnivel6 })
+                                                                Realizado.find({ user: _id }).lean().then((realizados) => {
+                                                                    Projetos.find({ user: _id, homologado: true }).lean().then((homologado) => {
+                                                                        Projetos.find({ user: _id, atrasado: true }).lean().then((atrasado) => {
+                                                                            Projetos.find({ user: _id, executando: true }).lean().then((executando) => {
+                                                                                Projetos.find({ user: _id, orcado: true }).lean().then((orcado) => {
+                                                                                    Projetos.find({ user: _id, parado: true }).lean().then((parado) => {
+                                                                                        Projetos.find({ user: _id, foiRealizado: true }).lean().then((foirealizado) => {
+                                                                                            res.render('relatorios/dashboardbi', { realizados, homologado, atrasado, executando, orcado, foirealizado, parado, checkFat, checkKwp, checkQtd, fatrural, fatresid, fatcomer, fatindus, fatsolo, fattelhado, fatmono, fatbifa, fattrif, fatnivel1, fatnivel2, fatnivel3, fatnivel4, fatnivel5, fatnivel6 })
+                                                                                        })
+                                                                                    })
+                                                                                })
+                                                                            })
+                                                                        })
+                                                                    })
+                                                                })
                                                             }).catch((err) => {
                                                                 req.flash('error_msg', 'Falha ao encontrar usinas nivel 6.')
                                                                 res.redirect('/relatorios/dashboardbi')
@@ -2637,7 +2658,7 @@ router.post('/aplicar', ehAdmin, (req, res) => {
     //console.log('datafim=>' + datafim)
 
     if (selecionado == 'faturamento') {
-        checkFat = 'checked'     
+        checkFat = 'checked'
         Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'classUsina': 'Rural' }, { 'classUsina': 'Rural Residencial' }, { 'classUsina': 'Rural Granja' }, { 'classUsina': 'Rural Irrigação' }] }).then((rural) => {
             for (i = 0; i < rural.length; i++) {
                 fatrural = fatrural + parseFloat(rural[i].vlrNFS)
@@ -2698,7 +2719,21 @@ router.post('/aplicar', ehAdmin, (req, res) => {
                                                                     for (i = 0; i < nivel6.length; i++) {
                                                                         fatnivel6 = fatnivel6 + parseFloat(nivel6[i].vlrNFS)
                                                                     }
-                                                                    res.render('relatorios/dashboardbi', { checkFat, checkKwp, checkQtd, fatrural, fatresid, fatcomer, fatindus, fatsolo, fattelhado, fatmono, fatbifa, fattrif, fatnivel1, fatnivel2, fatnivel3, fatnivel4, fatnivel5, fatnivel6, mestitulo, ano, selecionado })
+                                                                    Realizado.find({ user: _id }).lean().then((realizados) => {
+                                                                        Projetos.find({ user: _id, homologado: true }).lean().then((homologado) => {
+                                                                            Projetos.find({ user: _id, atrasado: true }).lean().then((atrasado) => {
+                                                                                Projetos.find({ user: _id, executando: true }).lean().then((executando) => {
+                                                                                    Projetos.find({ user: _id, orcado: true }).lean().then((orcado) => {
+                                                                                        Projetos.find({ user: _id, parado: true }).lean().then((parado) => {
+                                                                                            Projetos.find({ user: _id, foiRealizado: true }).lean().then((foirealizado) => {
+                                                                                                res.render('relatorios/dashboardbi', { realizados, homologado, atrasado, executando, orcado, foirealizado, parado, checkFat, checkKwp, checkQtd, fatrural, fatresid, fatcomer, fatindus, fatsolo, fattelhado, fatmono, fatbifa, fattrif, fatnivel1, fatnivel2, fatnivel3, fatnivel4, fatnivel5, fatnivel6, mestitulo, ano, selecionado })
+                                                                                            })
+                                                                                        })
+                                                                                    })
+                                                                                })
+                                                                            })
+                                                                        })
+                                                                    })                                                                    
                                                                 }).catch((err) => {
                                                                     req.flash('error_msg', 'Falha ao encontrar usinas nivel 6.')
                                                                     res.redirect('/relatorios/dashboardbi')
@@ -3084,9 +3119,9 @@ router.post('/analiseGeral', ehAdmin, (req, res) => {
             mestitulo = 'Todo ano de '
     }
 
-    Realizado.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }}).sort({ datafim: 'asc' }).lean().then((realizado) => {
+    Realizado.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini } }).sort({ datafim: 'asc' }).lean().then((realizado) => {
         realizado.forEach((element) => {
-            Projetos.findOne({ _id: element.projeto}).then((projeto) => {
+            Projetos.findOne({ _id: element.projeto }).then((projeto) => {
                 if (projeto.ehDireto) {
                     if (projeto.qtdmod > 0) {
                         qtdmod = qtdmod + projeto.qtdmod
@@ -3111,17 +3146,17 @@ router.post('/analiseGeral', ehAdmin, (req, res) => {
                     var rsikwp = (parseFloat(totint) / parseFloat(potencia)).toFixed(2)
                     var custoPorModulo = (parseFloat(custoPlano) / parseFloat(qtdmod)).toFixed(2)
                     var custoPorKwp = (parseFloat(custoPlano) / parseFloat(potencia)).toFixed(2)
-                    res.render('relatorios/analisegeral', { potencia, qtdmod, valor, rspkwp, rspmod, rsimod, rsikwp, custoPorModulo,custoPorKwp, mestitulo, ano })
+                    res.render('relatorios/analisegeral', { potencia, qtdmod, valor, rspkwp, rspmod, rsimod, rsikwp, custoPorModulo, custoPorKwp, mestitulo, ano })
                 }
             }).catch((err) => {
                 req.flash('error_msg', 'Houve um erro para encontrar projetos.')
                 res.redirect('/menu')
             })
         })
-        if (realizado.length == 0){
+        if (realizado.length == 0) {
             aviso = []
-            aviso.push({texto: 'Nenhum projeto realizado no período de: ' + mestitulo + ' de ' + ano})
-            res.render('relatorios/analisegeral', {aviso, mestitulo, ano })            
+            aviso.push({ texto: 'Nenhum projeto realizado no período de: ' + mestitulo + ' de ' + ano })
+            res.render('relatorios/analisegeral', { aviso, mestitulo, ano })
         }
     }).catch((err) => {
         req.flash('error_msg', 'Houve um erro para encontrar projetos realizados.')

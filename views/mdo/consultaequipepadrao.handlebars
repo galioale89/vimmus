@@ -3,63 +3,64 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Segoe UI;
+    color: rgb(40, 55, 89);
   }
 
   .body {
-    background-color: #001263e5;
-    font-family: 'Roboto', Helvetica, sans-serif;
+    background-color: #847AF4;
+    height: 400px;
   }
 
-  table,
+  table {
+    height: 100px;
+  }
+
   tr,
   td {
     border-collapse: collapse;
     text-align: center;
-    font-weight: 600;
     border: white 1px solid;
-    width: fit-content;
+    color: rgb(40, 55, 89);
   }
+
   th {
-    font-weight: 400;
+    font-weight: 600;
     border: white 1px solid;
   }
 </style>
 
-  <div class="body">
-    <div class="card-body" style="color: white;margin-top: 50px;">
-      <div class="row" style="margin-top: 20px;height: fit-content;">
-        <div class="col-md-4">
-          <div class="row text-center" style="margin-left: 50px; margin-top: 20px">
-            <h2><i class="bi bi-people"></i> Criação de Equipes</h2><br>
-            <p style="color: white;">Aqui serão ser criadas as equipes padrão que poderão ser vinculadas aos projetos
-            </p>
-          </div>
-          <div class="row mb-4" style="margin-left: 50px;">
-            <a href='/pessoa/novaequipepadrao' class="col-6 btn btn-sm btn-success btn-lg"
-              style="margin-left: 100px;">Nova Equipe</a>
-          </div>
-        </div>
-        <div class="col-md-8" style="padding-left: 100px;">
-          <table>
-            <tr>
-              <th>Nome</th>
-              <th>Membros</th>
-              <th>Ações</th>
-            </tr>
-            {{#each equipe}}
-            <tr>
-              <td style="font-size: 15px;padding-left: 10px;padding-right:10px;">{{nome}}</td>
-              <td style="font-size: 15px;padding-left: 10px;padding-right:10px;">{{ins0}},{{ins1}},{{ins2}}</td>
-              <td style="padding-left: 10px;padding-right:10px;">
-                <a href='/pessoa/confirmaexclusaoequipe/{{_id}}'><i class="bi bi-trash icone-tabela" style="font-size: 20px;"></i></a>
-                <a href='/pessoa/confirmadesativarequipe/{{_id}}'><i class="bi bi-eye-slash icone-tabela" style="font-size: 20px;"></i></a>
-              </td>
-            </tr>
-            {{else}}
-            <h6>Não há equipes criadas</h6>
-            {{/each}}
-          </table>
-        </div>
+<div class="body">
+  <div class="card-body" style="margin-top: 50px;">
+    <label style="font-size: 25px;font-weight: 600;">Aqui são criadas as equipes padrão para vincular aos projetos </label>
+    <div class="row" style="margin-top: 50px">
+      <div class="col-md-10">
+        <table style="width: 100%;">
+          <tr>
+            <th style="width: 15%;">Nome</th>
+            <th style="width: 65%;">Membros</th>
+            <th>Custo Diário R$</th>
+            <th>Ações</th>
+          </tr>
+          {{#each equipe}}
+          <tr>
+            <td style="font-size: 15px;padding-left: 10px;padding-right:10px;">{{nome}}</td>
+            <td style="font-size: 15px;padding-left: 10px;padding-right:10px;">{{ins0}} | {{ins1}} | {{ins2}} | {{ins2}} | {{ins4}} | {{ins5}}</td>
+            <td style="font-size: 15px;padding-left: 10px;padding-right:10px;">{{custoins}}</td>
+            <td style="padding-left: 10px;padding-right:10px;">
+              <a href='/pessoa/confirmaexclusaoequipe/{{_id}}'><i class="bi bi-trash icone-tabela"
+                  style="font-size: 20px;"></i></a>
+              <a href='/pessoa/confirmadesativarequipe/{{_id}}'><i class="bi bi-eye-slash icone-tabela"
+                  style="font-size: 20px;"></i></a>
+            </td>
+          </tr>
+          {{else}}
+          <h6>Não há equipes criadas</h6>
+          {{/each}}
+        </table>
+      </div>
+      <div class="col-md-2">
+        <a href='/pessoa/novaequipepadrao' class="btn btn-primary">Criar Nova Equipe</a>
       </div>
     </div>
+  </div>
+</div>

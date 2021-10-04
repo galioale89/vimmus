@@ -262,6 +262,8 @@ router.post('/addempresa', ehAdmin, (req, res) => {
             user: _id,
             nome: req.body.nome,
             cnpj: req.body.cnpj,
+            endereco: req.body.endereco,
+            telefone: req.body.telefone,
             empresa: req.body.empresa,
             regime: req.body.regime,
             tipo: req.body.tipo,
@@ -489,6 +491,8 @@ router.post('/editempresa/', ehAdmin, (req, res) => {
         Empresa.findOne({ _id: req.body.id }).then((empresa) => {
 
             empresa.nome = req.body.nome
+            empresa.endereco = req.body.endereco
+            empresa.telefone = req.body.telefone
             empresa.cnpj = req.body.cnpj
             empresa.empresa = req.body.empresa
             empresa.regime = req.body.regime

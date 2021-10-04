@@ -210,7 +210,7 @@
 
         <div class="row mt-2 mb-3">
             <div class="col-md-8 mt-2">
-                <h5><i class="bi bi-people icone"></i> Edição de Pessoas</h5>
+                <label style='font-weight: bold;font-size:20px'> Edição de Pessoas</label>
             </div>
             <div class="col-md-4 mt-4 text-end">
                 <a href='/pessoa/consulta' class='btn btn-sm btn-primary'>Voltar</a>
@@ -317,27 +317,47 @@
             </div>
             {{else}}
             <div class="col-md-5">
-                <div class="container card">
+                <div>
                     <label class='col-form-label col-form-label-sm fw-bold'>Função:</label>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col">
                             <div class="form-check form-switch">
                                 <input name='funges' class="form-check-input" type="checkbox" {{pessoa.funges}}>
-                                <label class="form-check-label">Gestor</label>
+                                <label class="form-check-label mt-1" style="font-size: 14px;">Gestor</label>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col">
                             <div class="form-check form-switch">
                                 <input name='funpro' class="form-check-input" type="checkbox" {{pessoa.funpro}}>
-                                <label class="form-check-label">Projetista</label>
+                                <label class="form-check-label mt-1" style="font-size: 14px;">Projetista</label>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col">
+                            <div class="form-check form-switch">
+                                <input name='funeng' class="form-check-input" type="checkbox" {{pessoa.funeng}}>
+                                <label class="form-check-label mt-1" style="font-size: 14px;">Engenheiro</label>
+                            </div>
+                        </div>                        
+                        <div class="col">
                             <div class="form-check form-switch">
                                 <input name='funins' class="form-check-input" type="checkbox" {{pessoa.funins}}>
-                                <label class="form-check-label">Instalador</label>
+                                <label class="form-check-label mt-1" style="font-size: 14px;">Instalador</label>
                             </div>
                         </div>
+                        <div class="col">
+                            <div class="form-check form-switch">
+                                <input name='funele' class="form-check-input" type="checkbox" {{pessoa.funele}}>
+                                <label class="form-check-label mt-1" style="font-size: 14px;">Eletricista</label>
+                            </div>
+                        </div>                        
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-md-3">
+                            <label class="col-form-label col-form-label-sm">R$ Custo Dia:</label>
+                        </div>
+                        <div class="col">
+                            <input type='number' name='custo' step='0.010' class="form-control form-control-sm" value='{{pessoa.custo}}'>
+                        </div>                        
                     </div>
                 </div>
                 <div class="row mt-4">
@@ -362,13 +382,13 @@
                     <div class="col-md-4">
                         <div class="form-check form-switch">
                             <input name='maninv' class="form-check-input" type="checkbox" {{pessoa.maninv}}>
-                            <label class="form-check-label">Manutenção de
+                            <label class="form-check-label mt-1" style='font-size: 13px'>Manutenção de
                                 Inversores</label>
                         </div>
 
                         <div class="form-check form-switch">
                             <input name='subcom' class="form-check-input" type="checkbox" {{pessoa.subcom}}>
-                            <label class="form-check-label">Substituição de
+                            <label class="form-check-label mt-1" style='font-size: 13px'>Substituição de
                                 Componentes</label>
                         </div>
 
@@ -376,26 +396,26 @@
                     <div class="col-md-4">
                         <div class="form-check form-switch">
                             <input name='repequ' class="form-check-input" type="checkbox" {{pessoa.repequ}}>
-                            <label class="form-check-label">Reposicionamento de
+                            <label class="form-check-label mt-1" style='font-size: 13px'>Reposicionamento de
                                 Equipamento</label>
                         </div>
 
                         <div class="form-check form-switch">
                             <input name='vistor' class="form-check-input" type="checkbox" {{pessoa.vistor}}>
-                            <label class="form-check-label">Vistoria de Conexões e
+                            <label class="form-check-label mt-1" style='font-size: 13px'>Vistoria de Conexões e
                                 Instalações</label>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-check form-switch">
                             <input name='dlaudo' class="form-check-input" type="checkbox" {{pessoa.dlaudo}}>
-                            <label class="form-check-label">Diagnóstico e
+                            <label class="form-check-label mt-1" style='font-size: 13px'>Diagnóstico e
                                 Laudos</label>
                         </div>
 
                         <div class="form-check form-switch">
                             <input name='limmod' class="form-check-input" type="checkbox" {{pessoa.limmod}}>
-                            <label class="form-check-label">Limpeza de
+                            <label class="form-check-label mt-1" style='font-size: 13px'>Limpeza de
                                 Módulos(Painéis)</label>
                         </div>
                     </div>

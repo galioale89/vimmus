@@ -289,25 +289,32 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="row mt-1 mb-1">
-                        <div class="col-md-2 text-end">
+                        <div class="col-md-3 text-end">
                             <label class='fw-bold col-form-label col-form-label-sm'> Nome: </label><br>
-                            <label class='fw-bold col-form-label col-form-label-sm mt-1'> CNPJ: </label>
+                            <label class='fw-bold col-form-label col-form-label-sm mt-1'> CNPJ: </label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm mt-1'> Endereço: </label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm mt-1'> Telefone: </label><br>
                         </div>
-                        <div class="col-md-9">
-                            <input id='nome' name='nome' value='{{empresa.nome}}' style="margin-left: 7px;"
+                        <div class="col-md-8">
+                            <input id='nome' name='nome' value='{{empresa.nome}}'
                                 class='form-control form-control-sm mt-1'>
-                            <input id='cnpj' name='cnpj' value='{{empresa.cnpj}}' style="margin-left: 7px;"
+                            <input id='cnpj' name='cnpj' value='{{empresa.cnpj}}'
                                 class='form-control form-control-sm mt-1' onkeyup="valida_cnpj()">
+                            <input id='cnpj' name='endereco' value='{{empresa.endereco}}'
+                                class='form-control form-control-sm mt-1'>
+                            <input id='cnpj' name='telefone' value='{{empresa.telefone}}'
+                                class='form-control form-control-sm mt-1'>
                         </div>
                     </div>
-                    <div class="row" style="margin-left: 2px;">
-                        <div class="row">
+                        <div class="row"style="padding: 8px;">
                             <div class="col-md-6">
                                 <div class="row">
-                                    <label class='fw-bold col-md-4 col-form-label col-form-label-sm'>
-                                        Regime:
-                                    </label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-3 text-end">
+                                        <label class='fw-bold col-form-label col-form-label-sm'>
+                                            Regime:
+                                        </label>
+                                    </div>
+                                    <div class="col-md-9">
                                         <select name='regime' class='form-select form-select-sm' id='regime'
                                             onchange="selecionaRegime()">
                                             <option style="font-weight: bold;">{{empresa.regime}}</option>
@@ -321,10 +328,13 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="row">
-                                    <label for='tipo' class='fw-bold col-md-3 col-form-label col-form-label-sm mb-2'>
-                                        Tipo:
-                                    </label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-3 text-end">
+                                        <label for='tipo'
+                                            class='fw-bold col-form-label col-form-label-sm mb-2'>
+                                            Tipo:
+                                        </label>
+                                    </div>
+                                    <div class="col-md-9">
                                         <select name='tipo' class='form-select form-select-sm' id='tipo'
                                             onchange="selecionaRegime()">
                                             <option style="font-weight: bold;">{{empresa.tipo}}</option>
@@ -337,7 +347,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
                 <div class="card mt-1 mb-2">

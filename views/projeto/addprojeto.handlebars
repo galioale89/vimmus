@@ -3,6 +3,7 @@
         font-size: 25px;
         color: rgb(2, 38, 78);
     }
+
     label {
         font-size: 10px;
     }
@@ -37,7 +38,7 @@
                 dataini.value = dia1 + '/' + mes1 + '/' + ano1
             }
         }
-    };
+    }
     function mascara_dataprev() {
         var data = document.getElementById('valDataPrev')
         var dataprev = document.getElementById('dataprev')
@@ -83,12 +84,12 @@
         var valDataIni = document.getElementById('valDataIni')
         var dataini = document.getElementById('dataini')
         var hoje = new Date()
-        var dia = hoje.getDate() 
-        if (parseFloat(dia) < 10){
+        var dia = hoje.getDate()
+        if (parseFloat(dia) < 10) {
             dia = '0' + dia
         }
         var mes = hoje.getMonth() + parseFloat(1)
-        if (parseFloat(mes) < 10){
+        if (parseFloat(mes) < 10) {
             mes = '0' + mes
         }
         var ano = hoje.getFullYear()
@@ -152,18 +153,18 @@
         }
     }
 
-    function validaCampos(){
+    function validaCampos() {
         var nome = document.getElementById('nome')
         var equipamento = document.getElementById('equipamento')
-        if (nome.value = ''){
-            alert('Preecher nome do Projeto.')
+        if (nome.value = '') {
+            alert('Preecher o Número do Contrato.')
         }
-        if (equipamento.value = ''){
+        if (equipamento.value = '') {
             alert('Preecher o valor do Equipamento.')
         }
     }
 </script>
-<div class="mt-4" style="padding-left: 50px;padding-right: 50px">
+<div class="mt-4" style="padding-left: 20px;padding-right: 50px">
     <form action="/projeto/novo/" method="post">
         <!-- Modal -->
         <div class="modal fade" id="custosModal" tabindex="-1" aria-hidden="true">
@@ -369,6 +370,7 @@
             <input type='hidden' name='id_prj' value='{{projeto._id}}'>
             <input type='hidden' name='id_dime' value='{{dimensionamento._id}}'>
             <input type='hidden' name='potencia_dime' value='{{dimensionamento.potencia}}'>
+            <input type="hidden" name='tipoprj' value='1'>
 
             <label style='font-weight: bold;font-size:20px'> Cadastro de Projeto</label>
             <hr>
@@ -376,26 +378,30 @@
             <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-5 text-end">
-                        {{!-- <div class="row mb-1">
+                        <div class="row mb-1">
                             <div class="col-md-10 text-end" style="padding-left: 50%">
                                 <label class="col-form-label col-form-label-sm fw-bold">Dimensionar?</label>
                             </div>
                             <div class="col-md-1 mt-1">
                                 <div class="form-check form-switch" onchange="dimensionar()">
-                                    <input name='checkFatura' class="form-check-input" type="checkbox" id='troca_dim' {{troca_dim}}>
+                                    <input name='checkFatura' class="form-check-input" type="checkbox" id='troca_dim'
+                                        {{troca_dim}}>
                                 </div>
                             </div>
-                        </div> --}}
-                        <label class="col-form-label col-form-label-sm fw-bold">Potência do Sistema: </label><br>
+                        </div>
+                        {{!-- <label class="col-form-label col-form-label-sm fw-bold">Potência do Sistema: </label><br>
+                        --}}
 
                         <label for="empresa" class="fw-bold col-form-label col-form-label-sm mb-1"> Empresa:
                         </label><br>
-                        <label for="nome" class="fw-bold col-form-label col-form-label-sm mb-2"> Nome do Projeto:
+                        <label for="nome" class="fw-bold col-form-label col-form-label-sm mb-1"> Número Contrato:
                         </label><br>
                         <label class="fw-bold col-form-label col-form-label-sm mb-2">Tipo de Entrada:</label><br>
-                        <label class="fw-bold col-form-label col-form-label-sm mb-2">Tipo Custo:</label><br>
-                        <label for="cliente" class="fw-bold col-form-label col-form-label-sm mb-2"> Cliente:
+                        <label class="fw-bold col-form-label col-form-label-sm" style="margin-bottom: 10px;">Tipo Custo:</label><br>
+                        <label for="cliente" class="fw-bold col-form-label col-form-label-sm" style="margin-bottom: 5px;"> Cliente:
                         </label><br>
+                        <label for="endereco" class="fw-bold col-form-label col-form-label-sm mb-1"> Endereço:
+                        </label><br>                        
                         <label for="uf" class="fw-bold col-form-label col-form-label-sm mb-1"> Estado:
                         </label><br>
                         <label for="cidade" class="fw-bold col-form-label col-form-label-sm mb-1"> Cidade:
@@ -410,9 +416,11 @@
                         <label class='col-form-label col-form-label-sm fw-bold mb-1'>Data Previsão de Entrega:</label>
                     </div>
                     <div class="col-md-7">
-                        {{!-- <div class="row mb-1" id='dimsim' style="display: ;">
+                        <div class="row mb-1" id='dimsim' style="display: ;">
                             <div class="col">
-                                <a href="/projeto/dimensionamento/{{dimensionamento._id}}" class="btn btn-sm btn-primary">Dimensionamento</a>
+                                <a {{#if dimensionamento._id}}href="/projeto/dimensionamento/{{dimensionamento._id}}"
+                                    {{else}}href="/projeto/dimensionamento/" {{/if}}
+                                    class="btn btn-sm btn-primary">Dimensionamento</a>
                             </div>
                             <div class="col">
                                 <label class="col-form-label col-form-label-sm fw-bold">Potência:</label>
@@ -420,10 +428,11 @@
                             <div class="col">
                                 <label class="col-form-label col-form-label-sm">{{projeto.potencia}} kWp</label>
                             </div>
-                        </div> --}}
-                        <div class="row" id='dimnao' style="display: ">
-                            <input type="number" name="potencia" id="potencia" class="form-control form-control-sm mb-1" style="margin-left: 12px; max-width: 100px;"
-                                placeholder="kWp" aria-placeholder="R$" step='0.010'>
+                        </div>
+                        <div class="row" id='dimnao' style="display: none">
+                            <input type="number" name="potencia" id="potencia" class="form-control form-control-sm mb-1"
+                                style="margin-left: 12px; max-width: 100px;" placeholder="kWp" aria-placeholder="R$"
+                                step='0.010'>
                         </div>
 
                         <select class='form-select form-select-sm mb-1' name='empresa'>
@@ -434,11 +443,12 @@
                             {{/each}}
                         </select>
                         <input type="text" name="nome" id="nome" class="form-control form-control-sm mb-2">
-                        <div class="row" >
+                        <div class="row">
                             <input type="hidden" name='tipoEntrada' id='tipoEntrada' value=''>
                             <div class="col-md-6 mt-1">
                                 <div class="form-check" onchange="selectEntrada()">
-                                    <input class="form-check-input" style="margin-top: 0px" type="radio" name="entrada" id="selectProprio">
+                                    <input class="form-check-input" style="margin-top: 0px" type="radio" name="entrada"
+                                        id="selectProprio">
                                     <label class="form-check-label" style="font-size: 12px;">
                                         Próprio
                                     </label>
@@ -446,7 +456,8 @@
                             </div>
                             <div class="col-md-6" style="padding-left: 12%;">
                                 <div class="form-check" onchange="selectEntrada()">
-                                    <input class="form-check-input" style="margin-top: 0px" type="radio" name="entrada" id="selectTerceiro">
+                                    <input class="form-check-input" style="margin-top: 0px" type="radio" name="entrada"
+                                        id="selectTerceiro">
                                     <label class="form-check-label" style="font-size: 12px;">
                                         Terceiro
                                     </label>
@@ -457,7 +468,8 @@
                             <input type="hidden" name='tipoCusto' id='tipoCusto' value=''>
                             <div class="col-md-6">
                                 <div class="form-check" onchange="selectCusto()">
-                                    <input class="form-check-input" style="margin-top: 0px" type="radio" name="custo" id="selectHora">
+                                    <input class="form-check-input" style="margin-top: 0px" type="radio" name="custo"
+                                        id="selectHora">
                                     <label class="form-check-label" style="font-size: 12px;">
                                         R$/hora
                                     </label>
@@ -465,7 +477,8 @@
                             </div>
                             <div class="col-md-6" style="padding-left: 12%;">
                                 <div class="form-check" onchange="selectCusto()">
-                                    <input class="form-check-input" style="margin-top: 0px" type="radio" name="custo" id="selectDia">
+                                    <input class="form-check-input" style="margin-top: 0px" type="radio" name="custo"
+                                        id="selectDia">
                                     <label class="form-check-label" style="font-size: 12px;">
                                         R$/dia
                                     </label>
@@ -479,11 +492,17 @@
                             <option value=''>Nenhum cliente cadastrado.</option>
                             {{/each}}
                         </select>
+                        <input type='text' name='endereco' class='form-control form-control-sm mb-1' value='{{projeto.endereco}}'>
                         <!--<input type="text" name="cliente" id="cliente" class="form-control form-control-sm mb-2">-->
-                        <select id="estado" name='uf' class='form-select form-select-sm mb-1'>
-                        </select>
-                        <select id="cidade" name='cidade' class='form-select form-select-sm mb-1'>
-                        </select>
+                        {{#if dimensionamento._id}}
+                        <label class='col-form-label col-form-label-sm mb-1'>{{projeto.uf}}</label><br>
+                        <input type='hidden' name='ufAtual' value={{projeto.uf}}></input>
+                        <label class='col-form-label col-form-label-sm mb-1'>{{projeto.cidade}}</label>
+                        <input type='hidden' name='cidadeAtual' value={{projeto.cidade}}></input>
+                        {{else}}
+                        <select id="estado" name='uf' class='form-select form-select-sm mb-1'></select>
+                        <select id="cidade" name='cidade' class='form-select form-select-sm mb-1'></select>
+                        {{/if}}
                         <select name='vendedor' class="form-select form-select-sm mb-1">
                             {{#each vendedor}}
                             <option value="{{_id}}">{{nome}}</option>
@@ -534,19 +553,20 @@
                         <input type="number" name="equipamento" id="equipamento"
                             class="form-control form-control-sm mb-2" placeholder="R$" aria-placeholder="R$">
                     </div>
-                    <div class="col-md-4 text-center mt-2"  style="border-left: 1px solid rgba(70,70,70,0.2);margin-bottom: 5px;">
+                    <div class="col-md-4 text-center mt-2"
+                        style="border-left: 1px solid rgba(70,70,70,0.2);margin-bottom: 5px;">
                         <div class="row">
                             <div class="col-md-8">
-                        <label class="fw-bold col-form-label col-form-label-sm"> Faturar Material?</label>
+                                <label class="fw-bold col-form-label col-form-label-sm"> Faturar Material?</label>
                             </div>
                             <div class="col">
-                        <div class="form-check form-switch">
-                            <input name='checkFatura' class="form-check-input" type="checkbox">
-                        </div>
+                                <div class="form-check form-switch">
+                                    <input name='checkFatura' class="form-check-input" type="checkbox">
+                                </div>
                             </div>
                         </div>
-                            <a class="btn btn-sm btn-primary mb-1" data-bs-toggle="modal"
-                                data-bs-target="#custosModal"><i class='bi bi-list-ul'></i> Detalhar Equipamento</a>
+                        <a class="btn btn-sm btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#custosModal"><i
+                                class='bi bi-list-ul'></i> Detalhar Equipamento</a>
                     </div>
                     <div class='text-center'>
                         <label class='fw-bold col-form-label col-form-label-sm'>Complementos</label>
@@ -606,7 +626,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row mt-1">
+                <div class="row mt-3">
                     <div class="col-md-2 text-end">
                         <label class="fw-bold col-form-label col-form-label-sm"> Classificação:
                         </label>
@@ -668,9 +688,9 @@
                         </select>
                     </div>
                 </div>
-                <div class="row">
-                        <label class='fw-bold col-form-label col-form-label-sm'>Premissas, Restrições e Requisitos</label>
-                        <textarea name='escopo' class="form-control" rows='4' style="font-size: 12px;"></textarea>
+                <div class="row mt-3">
+                    <label class='fw-bold col-form-label col-form-label-sm'>Premissas, Restrições e Requisitos</label>
+                    <textarea name='escopo' class="form-control" rows='4' style="font-size: 12px;"></textarea>
                 </div>
                 <!--
                 <div class="row mt-2">
@@ -682,12 +702,12 @@
                     </div>
                 </div>
                 -->
-                <div class="row mt-1">
+                <div class="row mt-2">
                     <div class="btn-group mb-1 col-12 mx-auto">
                         <button type='submit' class='btn btn-sm btn-success'> <i class='bi bi-layers'></i> Ir para
                             Custos</button>
                     </div>
-                </div>  
+                </div>
             </div>
         </div>
     </form>

@@ -168,6 +168,7 @@
                         <hr>
                         <div class="text-end">
                             <label class="fw-bold col-form-label col-form-label-sm">Instalação: </label><br>
+                            <label class="fw-bold col-form-label col-form-label-sm">Vistoria: </label><br>
                             <label class="fw-bold col-form-label col-form-label-sm">Gestão: </label><br>
                             <label class="fw-bold col-form-label col-form-label-sm">Projetista: </label><br>
                             <label class="fw-bold col-form-label col-form-label-sm">Valor ART: </label><br>
@@ -177,11 +178,21 @@
                             {{#if projeto.temPainel}}
                             <label class="fw-bold col-form-label col-form-label-sm">Painél Elétrico: </label><br>
                             {{/if}}                            
-                            {{#if projeto.ehDireto}}
+                            {{#if projeto.ehDireto}}                            
                             <label class="fw-bold col-form-label col-form-label-sm">Deslocamento: </label><br>
+                            <label class="fw-bold col-form-label col-form-label-sm">Material Aterramento: </label><br>
+                            <label class="fw-bold col-form-label col-form-label-sm">Empilhadeira: </label><br>
+                            <label class="fw-bold col-form-label col-form-label-sm">Componentes: </label><br>                            
+                            {{else}}
+                            {{#if projeto.ehVinculo}}
+                            <label class="fw-bold col-form-label col-form-label-sm">Deslocamento: </label><br>
+                            <label class="fw-bold col-form-label col-form-label-sm">Material Aterramento: </label><br>
+                            <label class="fw-bold col-form-label col-form-label-sm">Empilhadeira: </label><br>
+                            <label class="fw-bold col-form-label col-form-label-sm">Componentes: </label><br>
                             {{else}}
                             <label class="fw-bold col-form-label col-form-label-sm">Estadia: </label><br>
                             <label class="fw-bold col-form-label col-form-label-sm">Combustível: </label><br>
+                            {{/if}}
                             {{/if}}
                             <label class="fw-bold col-form-label col-form-label-sm">Alimentação: </label><br>
                             {{#if temCercamento}}
@@ -219,6 +230,7 @@
                         <h6>Orçado</h6>
                         <hr>
                         <label class='col-form-label col-form-label-sm' for='totint'>R$ {{projeto.totint}}</label><br>
+                        <label class='col-form-label col-form-label-sm' for='toteng'>R$ {{projeto.toteng}}</label><br>
                         <label class='col-form-label col-form-label-sm' for='totges'>R$ {{projeto.totges}}</label><br>
                         <label class='col-form-label col-form-label-sm' for='totpro'>R$ {{projeto.totpro}}</label><br>
                         <label class='col-form-label col-form-label-sm' for='vlrart'>R$ {{projeto.vlrart}}</label><br>
@@ -230,9 +242,19 @@
                         {{/if}}
                         {{#if projeto.ehDireto}}
                         <label class='col-form-label col-form-label-sm' for='totdes'>R$ {{projeto.totdes}}</label><br>
+                        <label class='col-form-label col-form-label-sm' for='totdes'>R$ {{projeto.matate}}</label><br>
+                        <label class='col-form-label col-form-label-sm' for='totdes'>R$ {{projeto.vlremp}}</label><br>
+                        <label class='col-form-label col-form-label-sm' for='totdes'>R$ {{projeto.compon}}</label><br>
                         {{else}}
+                        {{#if projeto.ehVinculo}}
+                        <label class='col-form-label col-form-label-sm' for='totdes'>R$ {{projeto.totdes}}</label><br>
+                        <label class='col-form-label col-form-label-sm' for='totdes'>R$ {{projeto.matate}}</label><br>
+                        <label class='col-form-label col-form-label-sm' for='totdes'>R$ {{projeto.vlremp}}</label><br>
+                        <label class='col-form-label col-form-label-sm' for='totdes'>R$ {{projeto.compon}}</label><br>                        
+                        {{else}}                        
                         <label class='col-form-label col-form-label-sm' for='tothtl'>R$ {{projeto.tothtl}}</label><br>
                         <label class='col-form-label col-form-label-sm' for='totcmb'>R$ {{projeto.totcmb}}</label><br>
+                        {{/if}}
                         {{/if}}
                         <label class='col-form-label col-form-label-sm' for='totali'>R$ {{projeto.totali}}</label><br>
                         {{#if temCercamento}}
@@ -274,6 +296,8 @@
                         <hr>
                         <input type='text' class='form-control form-control-sm' name='totint'
                             value='{{realizado.totint}}' {{#if realizado.foiRealizado}} disabled {{/if}}>
+                        <input type='text' class='form-control form-control-sm' name='toteng'
+                            value='{{realizado.toteng}}' {{#if realizado.foiRealizado}} disabled {{/if}}>                            
                         <input type='text' class='form-control form-control-sm' name='totges'
                             value='{{realizado.totges}}' {{#if realizado.foiRealizado}} disabled {{/if}}>
                         <input type='text' class='form-control form-control-sm' name='totpro'
@@ -291,11 +315,28 @@
                         {{#if projeto.ehDireto}}
                         <input type='text' class='form-control form-control-sm' name='totdes'
                             value='{{realizado.totdes}}' {{#if realizado.foiRealizado}} disabled {{/if}}>
+                        <input type='text' class='form-control form-control-sm' name='matate'
+                            value='{{realizado.matate}}' {{#if realizado.foiRealizado}} disabled {{/if}}>   
+                        <input type='text' class='form-control form-control-sm' name='vlremp'
+                            value='{{realizado.vlremp}}' {{#if realizado.foiRealizado}} disabled {{/if}}>   
+                        <input type='text' class='form-control form-control-sm' name='compon'
+                            value='{{realizado.compon}}' {{#if realizado.foiRealizado}} disabled {{/if}}>                                 
+                        {{else}}
+                        {{#if projeto.ehVinculo}}
+                        <input type='text' class='form-control form-control-sm' name='totdes'
+                            value='{{realizado.totdes}}' {{#if realizado.foiRealizado}} disabled {{/if}}>   
+                        <input type='text' class='form-control form-control-sm' name='matate'
+                            value='{{realizado.matate}}' {{#if realizado.foiRealizado}} disabled {{/if}}>   
+                        <input type='text' class='form-control form-control-sm' name='vlremp'
+                            value='{{realizado.vlremp}}' {{#if realizado.foiRealizado}} disabled {{/if}}>   
+                        <input type='text' class='form-control form-control-sm' name='compon'
+                            value='{{realizado.compon}}' {{#if realizado.foiRealizado}} disabled {{/if}}>                                                                                                                
                         {{else}}
                         <input type='text' class='form-control form-control-sm' name='tothtl'
                             value='{{realizado.tothtl}}' {{#if realizado.foiRealizado}} disabled {{/if}}>
                         <input type='text' class='form-control form-control-sm' name='totcmb'
                             value='{{realizado.totcmb}}' {{#if realizado.foiRealizado}} disabled {{/if}}>
+                        {{/if}}
                         {{/if}}
                         <input type='text' class='form-control form-control-sm' name='totali'
                             value='{{realizado.totali}}' {{#if realizado.foiRealizado}} disabled {{/if}}>

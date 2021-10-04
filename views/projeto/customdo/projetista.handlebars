@@ -64,7 +64,7 @@
 
         <input type='hidden' name='id' value='{{projeto._id}}'>
 
-        <div class='btn-group col-12 mx-auto'>
+        <!--<div class='btn-group col-12 mx-auto'>-->
             <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'> <i
                     class="bi bi-house"></i>Projeto</a>
             <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
@@ -78,8 +78,8 @@
                     class="bi bi-puzzle"></i>
                 Gerenciamento</a>
             <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                    class="bi bi-calculator"></i> Tributos</a>
-        </div>
+                    class="bi bi-calculator"></i> Custos</a>
+        <!--</div>-->
 
         <div class="row">
             <div class="col-md-8">
@@ -107,7 +107,7 @@
                         </div>
                     </div>
                     <div class="col-md-1">
-                        <input type='hidden' name='selecionado' id='selecionado' value='{{projeto.tipoCustoPro}}'>
+                        <input type='hidden' name='selecionado' id='selecionado' value='{{selecionado}}'>
                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="{{typeHrp}}" name="vlrhrp"
                             id='vlrhrp'
                             value='{{#if projeto.vlrhrp}}{{projeto.vlrhrp}}{{else}}{{configuracao.vlrhrp}}{{/if}}'
@@ -117,30 +117,35 @@
                             value='{{#if projeto.vlrdrp}}{{projeto.vlrdrp}}{{else}}{{configuracao.vlrdrp}}{{/if}}'
                             class='form-control form-control-sm'>
                     </div>
-                    <div class="col-md-3 mt-1" style="padding-left: 20px;">
+                    <div class="col-md-2 mt-1 text-end">
                         <label class='col-form-label col-form-label-sm fw-bold' style="display: {{displayTda}}"
-                            id='displayTda'>Total de dias das
-                            atividades:</label>
+                            id='displayTda'>Total de dias: </label>
                     </div>
                     <div class="col-md-1">
                         <input type="{{typePro}}" name="diasPro" id='diasPro' value='{{projeto.diasPro}}'
                             class='form-control form-control-sm'>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-3">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <label class="fw-bold col-form-label col-form-label-sm">Valor ART: </label>
                             </div>
-                            <div class="col-md-6">
-                                <div class="input-group input-group-sm mb-1">
-                                    <span class="input-group-text">$</span>
+                            <div class="col-md-7">
                                     <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
-                                        class="form-control" id="vlrart" name="vlrart" value='{{projeto.vlrart}}'
-                                        aria-label="R$ ">
-                                    <span class="input-group-text">.00</span>
-                                </div>
+                                        class="form-control form-control-sm" id="vlrart" name="vlrart" value='{{projeto.vlrart}}'>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-5 text-end">
+                                <label class='col-form-label col-form-label-sm fw-bold'>Vistoria:</label>
+                            </div>
+                            <div class="col">
+                                <input class='form-control form-control-sm' name='toteng' placeholder='R$' value='{{projeto.toteng}}'>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 

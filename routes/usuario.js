@@ -161,13 +161,20 @@ router.post('/enviar', (req, res) => {
                         var mes = parseFloat(data.getMonth()) + 1
                         var dia = data.getDate()
 
+                        var tipoContrato = 0
+                        if (req.body.selecionado == 'free'){
+                            tipoContrato = 4
+                        }else{
+                            tipoContrato = 3
+                        }
+
                         if (req.body.pgto == '0') {
                             const novoUsuario = new Usuario({
                                 nome: req.body.nome,
                                 usuario: usuario,
                                 telefone: req.body.celular,
                                 email: email,
-                                ehAdmin: 3,
+                                ehAdmin: tipoContrato,
                                 senha: senha,
                                 data: ano + '' + mes + '' + dia
                             })
@@ -284,6 +291,8 @@ router.post('/salvacontato', (req, res) => {
                 var ano = data.getFullYear()
                 var mes = parseFloat(data.getMonth()) + 1
                 var dia = data.getDate()
+
+                console.log('motivo=>'+req.body.motivo)
 
                 const novoUsuario = new Usuario({
                     nome: req.body.nome,

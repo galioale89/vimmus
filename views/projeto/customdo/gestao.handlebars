@@ -58,7 +58,7 @@
 
         <input type='hidden' name='id' value='{{projeto._id}}'>
 
-        <div class='btn-group col-12 mx-auto'>
+        <!--<div class='btn-group col-12 mx-auto'>-->
             <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'> <i
                     class="bi bi-house"></i>Projeto</a>
             <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i
@@ -74,8 +74,8 @@
                     class="bi bi-puzzle"></i>
                 Gerenciamento</a>
             <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                    class="bi bi-calculator"></i> Tributos</a>
-        </div>
+                    class="bi bi-calculator"></i> Custos</a>
+        <!--</div>-->
 
 
         <div class="row">
@@ -104,7 +104,7 @@
                         </div>
                     </div>
                     <div class="col-md-1">
-                        <input type='hidden' name='selecionado' id='selecionado' value='{{projeto.tipoCustoGes}}'>
+                        <input type='hidden' name='selecionado' id='selecionado' value='{{selecionado}}'>
                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="{{typeHrg}}" name="vlrhrg"
                             id='vlrhrg' value='{{#if projeto.vlrhrg}}{{projeto.vlrhrg}}{{else}}{{configuracao.vlrhrg}}{{/if}}' class='form-control form-control-sm'>
                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="{{typeDrg}}" name="vlrdrg"
@@ -120,7 +120,7 @@
                     {{#if projeto.funres}}
                     <div class="col-md-5">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-6 text-end">
                                 <label class='col-form-label col-form-label-sm fw-bold'>Gestor Responsável:</label>
                             </div>
                             <div class="col-md-6">

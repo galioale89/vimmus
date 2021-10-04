@@ -1,0 +1,61 @@
+<div class="cotainer mt-4" style="width: 50%;margin-left: 25%;">
+    <ul class="nav nav-tabs mb-2">
+        <li class="nav-item">
+            <a class="nav-link" aria-current="page" style="color: black" href="/cliente/edicao/{{cliente._id}}">Cadastro
+                de
+                Cliente</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" aria-current="page" style="color: black"
+                href="/cliente/usinas/{{cliente._id}}">Usinas</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" style="color: black"
+                href="/cliente/historico/{{cliente._id}}">Histórico</a>
+        </li>
+    </ul>
+    <div class="card" style="padding: 10px;">
+    <h2 style="font-weight: 600;">Serviços em Aberto</h2><br>
+    {{#each emaberto}}
+    <table>
+        <tr>
+            <th style="20%">Usina</th>
+            <th style="20%">Serviço</th>
+            <th style="20%">Data Inicial</th>
+            <th style="20%">Data Final</th>
+            <th>Ver Mais</th>
+        </tr>
+        <tr>
+            <td>{{usina}}</td>
+            <td>{{servico}}</td>
+            <td>{{dataini}}</td>
+            <td>{{datafim}}</td>
+            <td style="padding-left: 4%"><a href='/gerenciamento/tarefas/{{_id}}' <i class='bi bi-eye'></i></a></td>
+        </tr>
+    </table>
+    {{/each}}
+    </div>
+
+    <div class="card mt-2" style="padding: 10px;">
+    <h2 style="font-weight: 600;">Serviços Realizados</h2><br>
+    {{#each concluido}}
+    <table>
+        <tr>
+            <th>Usina</th>
+            <th>Serviço</th>
+            <th>Data Inicial</th>
+            <th>Data Final</th>
+            <th>Ver Mais</th>
+        </tr>
+        <tr>
+            <td>{{usina}}</td>
+            <td>{{servico}}</td>
+            <td>{{dataini}}</td>
+            <td>{{datafim}}</td>
+            <td style="padding-left: 4%"><a href='/gerenciamento/tarefas/{{_id}}' <i class='bi bi-eye'></i></a></td>
+        </tr>
+    </table>
+    {{/each}}
+    </div>    
+
+</div>

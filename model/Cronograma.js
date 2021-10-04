@@ -9,356 +9,365 @@ const Cronograma = new Schema({
     },
     projeto: {
         type: Schema.Types.ObjectId,
-        require: true,
+        require: false,
         ref: 'projeto'
+    },
+    tarefa: {
+        type: Schema.Types.ObjectId,
+        require: false,
+        ref: 'tarefas'
+    },
+    ehManutencao: {
+        type: Boolean,
+        require: false
     },
     nome: {
         type: String,
-        require: true
-    },
+        require: false
+    },    
     dateplaini: {
         type: String,
-        require: true
+        require: false
     },
     agendaPlaIni: {
         type: Number,
-        require: true
+        require: false
     },
     dateateini: {
         type: String,
-        require: true
+        require: false
     },
     agendaAteIni: {
         type: Number,
-        require: true
+        require: false
     },
     dateprjini: {
         type: String,
-        require: true
+        require: false
     },
     agendaPrjIni: {
         type: Number,
-        require: true
+        require: false
     },
     dateestini: {
         type: String,
-        require: true
+        require: false
     },
     agendaEstIni: {
         type: Number,
-        require: true
+        require: false
     },
     dateinvini: {
         type: String,
-        require: true
+        require: false
     },
     agendaInvIni: {
         type: Number,
-        require: true
+        require: false
     },
     datemodini: {
         type: String,
-        require: true
+        require: false
     },
     agendaModIni: {
         type: Number,
-        require: true
+        require: false
     },
     dateeaeini: {
         type: String,
-        require: true
+        require: false
     },
     agendaEaeIni: {
         type: Number,
-        require: true
+        require: false
     },    
     datestbini: {
         type: String,
-        require: true
+        require: false
     },
     agendaStbIni: {
         type: Number,
-        require: true
+        require: false
     },    
     datepnlini: {
         type: String,
-        require: true
+        require: false
     },
     agendaPnlIni: {
         type: Number,
-        require: true
+        require: false
     },
     datevisini: {
         type: String,
-        require: true
+        require: false
     },
     agendaVisIni: {
         type: Number,
-        require: true
+        require: false
     },    
     dateplafim: {
         type: String,
-        require: true
+        require: false
     },
     plafim: {
         type: Number,
-        require: true
+        require: false
     },    
     agendaPlaFim: {
         type: Number,
-        require: true        
+        require: false        
     },
     agendaPrjFim: {
         type: Number,
-        require: true        
+        require: false        
     },
     agendaAteFim: {
         type: Number,
-        require: true        
+        require: false        
     },
     agendaEstFim: {
         type: Number,
-        require: true        
+        require: false        
     },
     agendaModFim: {
         type: Number,
-        require: true        
+        require: false        
     },
     agendaInvFim: {
         type: Number,
-        require: true        
+        require: false        
     },
     agendaEaeFim: {
         type: Number,
-        require: true        
+        require: false        
     },
     agendaStbFim: {
         type: Number,
-        require: true        
+        require: false        
     },
     agendaPnlFim: {
         type: Number,
-        require: true        
+        require: false        
     },
     agendaVisFim: {
         type: Number,
-        require: true        
+        require: false        
     },
     dateatefim: {
         type: String,
-        require: true
+        require: false
     },
     dateprjfim: {
         type: String,
-        require: true
+        require: false
     },
     dateestfim: {
         type: String,
-        require: true
+        require: false
     },
     dateinvfim: {
         type: String,
-        require: true
+        require: false
     },
     datemodfim: {
         type: String,
-        require: true
+        require: false
     },
     dateeaefim: {
         type: String,
-        require: true
+        require: false
     },
     datestbfim: {
         type: String,
-        require: true
+        require: false
     },
     datepnlfim: {
         type: String,
-        require: true
+        require: false
     },
     datevisfim: {
         type: String,
-        require: true
+        require: false
     },
     dateentrega: {
         type: String,
-        require: true
+        require: false
     },
     checkPla: {
         type: String,
-        require: true
+        require: false
     },
     checkPrj: {
         type: String,
-        require: true
+        require: false
     },
     checkAte: {
         type: String,
-        require: true
+        require: false
     },
     checkInv: {
         type: String,
-        require: true
+        require: false
     },
     checkMod: {
         type: String,
-        require: true
+        require: false
     },
     checkEst: {
         type: String,
-        require: true
+        require: false
     },
     checkEae: {
         type: String,
-        require: true
+        require: false
     },
     checkStb: {
         type: String,
-        require: true
+        require: false
     },
     checkPnl: {
         type: String,
-        require: true
+        require: false
     },
     checkVis: {
         type: String,
-        require: true
+        require: false
     },
     datepla: {
         type: String,
-        require: true
+        require: false
     },
     dateate: {
         type: String,
-        require: true
+        require: false
     },
     dateprj: {
         type: String,
-        require: true
+        require: false
     },
     dateest: {
         type: String,
-        require: true
+        require: false
     },
     dateinv: {
         type: String,
-        require: true
+        require: false
     },
     datemod: {
         type: String,
-        require: true
+        require: false
     },
     dateeae: {
         type: String,
-        require: true
+        require: false
     },
     datestb: {
         type: String,
-        require: true
+        require: false
     },
     datepnl: {
         type: String,
-        require: true
+        require: false
     },
     datevis: {
         type: String,
-        require: true
+        require: false
     },
     dateEntregaReal: {
         type: String,
-        require: true
+        require: false
     },
     atrasouPla: {
         type: Boolean,
-        require: true
+        require: false
     },
     atrasouPrj: {
         type: Boolean,
-        require: true
+        require: false
     },
     atrasouAte: {
         type: Boolean,
-        require: true
+        require: false
     },    
     atrasouEst: {
         type: Boolean,
-        require: true
+        require: false
     },    
     atrasouMod: {
         type: Boolean,
-        require: true
+        require: false
     },    
     atrasouInv: {
         type: Boolean,
-        require: true
+        require: false
     },    
     atrasouEae: {
         type: Boolean,
-        require: true
+        require: false
     },    
     atrasouStb: {
         type: Boolean,
-        require: true
+        require: false
     },    
     atrasouPnl: {
         type: Boolean,
-        require: true
+        require: false
     },    
     atrasouVis: {
         type: Boolean,
-        require: true
+        require: false
     },    
     atrasado:{
         type: Boolean,
-        require: true
+        require: false
     },
     perGes:{
         type: Number,
-        require: true
+        require: false
     },
     perKit:{
         type: Number,
-        require: true
+        require: false
     },
     perIns:{
         type: Number,
-        require: true
+        require: false
     },
     perPro:{
         type: Number,
-        require: true
+        require: false
     },
     perArt:{
         type: Number,
-        require: true
+        require: false
     },
     perAli:{
         type: Number,
-        require: true
+        require: false
     },
     perDes:{
         type: Number,
-        require: true
+        require: false
     },
     perHtl:{
         type: Number,
-        require: true
+        require: false
     },
     perCmb:{
         type: Number,
-        require: true
+        require: false
     },
     perCer:{
         type: Number,
-        require: true
+        require: false
     }, 
     perCen:{
         type: Number,
-        require: true
+        require: false
     },
     perPos:{
         type: Number,
-        require: true
+        require: false
     }
 })
 

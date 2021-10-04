@@ -1,0 +1,73 @@
+<div class="cotainer mt-2" style="width: 80%; margin-left: 150px;">
+    <form action='/gerenciamento/plano' method="post">
+        <div class="row mt-4">
+            <input type='hidden' name='id' value='{{plano._id}}'>
+            <ul class="nav nav-tabs mb-2">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" style="color: black"
+                        href="/gerenciamento/plano/">Cadastro de
+                        Plano</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" style="color: black"
+                        href="/gerenciamento/consultaplano/">Todos Planos</a>
+                </li>
+            </ul>
+            <div class="row mt-4">
+                <div class="row">
+                    <div class="col-md-4 text-end">
+                        <label class='col-form-label fw-bold'>Nome:</label>
+                    </div>
+                    <div class="col-md-4">
+                        <input class='form-control' name='nome' value='{{plano.nome}}'>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col-md-4 text-end">
+                        <label class='col-form-label fw-bold'>Quantidade Inicial de Módulos:</label>
+                    </div>
+                    <div class="col-md-4">
+                        <input class='form-control' name='qtdini' value='{{plano.qtdini}}'>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col-md-4 text-end">
+                        <label class='col-form-label fw-bold'>Quantidade Final de Módulos</label>
+                    </div>
+                    <div class="col-md-4">
+                        <input class='form-control' name='qtdfim' value='{{plano.qtdfim}}'>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col-md-4 text-end">
+                        <label class='col-form-label fw-bold'>Mensalidade</label>
+                    </div>
+                    <div class="col-md-4">
+                        <input class='form-control' name='mensalidade' value='{{plano.mensalidade}}'
+                            placeholder="meses">
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col-md-4 text-end">
+                        <label class='col-form-label fw-bold'>Fidelidade</label>
+                    </div>
+                    <div class="col-md-4">
+                        <input class='form-control' name='fidelidade' value='{{plano.fidelidade}}' placeholder="meses">
+                    </div>
+                </div>
+                <div class="row mt-2 text-center" style="width: 70%;padding-left: 30%;">
+                    {{#if plano._id}}
+                    <div class="btn-group">
+                        <button type='submit' class='btn btn-success'>Salvar</button>
+                        <a href='/gerenciamento/plano' class='btn btn-primary'>Novo Plano</a>
+                    </div>
+                    {{else}}
+                    <div class="btn-group">
+                        <button type='submit' class='btn btn-success'>Salvar</button>
+                    </div>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

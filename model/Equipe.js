@@ -5,24 +5,41 @@ const Equipe = new Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: 'usuario',
-    require: false
+    require: true
+  },
+  ehpadrao: {
+    type: Boolean,
+    require: false,
   },
   projeto: {
     type: Schema.Types.ObjectId,
     ref: 'projeto',
-    require: true
+    require: false
+  },
+  tarefa: {
+    type: Schema.Types.ObjectId,
+    ref: 'tarefas',
+    require: false
   },
   nome_projeto: {
     type: String,
-    require: false        
+    require: false
   },
-  ativo:{
+  ativo: {
     type: Boolean,
     require: false,
   },
   nome: {
     type: String,
-    require: true
+    require: false
+  },
+  custoins: {
+    type: Number,
+    require: false
+  },
+  custoele: {
+    type: Number,
+    require: false
   },
   ins0: {
     type: String,
@@ -45,6 +62,30 @@ const Equipe = new Schema({
     require: false
   },
   ins5: {
+    type: String,
+    require: false
+  },
+  ele0: {
+    type: String,
+    require: false
+  },
+  ele1: {
+    type: String,
+    require: false
+  },
+  ele2: {
+    type: String,
+    require: false
+  },
+  ele3: {
+    type: String,
+    require: false
+  },
+  ele4: {
+    type: String,
+    require: false
+  },
+  ele5: {
     type: String,
     require: false
   },
@@ -99,7 +140,7 @@ const Equipe = new Schema({
   ate0: {
     type: String,
     require: false
-  },  
+  },
   ate1: {
     type: String,
     require: false
@@ -111,7 +152,7 @@ const Equipe = new Schema({
   ate3: {
     type: String,
     require: false
-  },  
+  },
   ate4: {
     type: String,
     require: false
@@ -119,11 +160,11 @@ const Equipe = new Schema({
   ate5: {
     type: String,
     require: false
-  }, 
+  },
   inv0: {
     type: String,
     require: false
-  },  
+  },
   inv1: {
     type: String,
     require: false
@@ -135,7 +176,7 @@ const Equipe = new Schema({
   inv3: {
     type: String,
     require: false
-  }, 
+  },
   inv4: {
     type: String,
     require: false
@@ -143,7 +184,7 @@ const Equipe = new Schema({
   inv5: {
     type: String,
     require: false
-  },   
+  },
   eae0: {
     type: String,
     require: false
@@ -151,7 +192,7 @@ const Equipe = new Schema({
   eae1: {
     type: String,
     require: false
-  },    
+  },
   eae2: {
     type: String,
     require: false
@@ -159,15 +200,15 @@ const Equipe = new Schema({
   eae3: {
     type: String,
     require: false
-  }, 
+  },
   eae4: {
     type: String,
     require: false
-  },   
+  },
   eae5: {
     type: String,
     require: false
-  },  
+  },
   pnl0: {
     type: String,
     require: false
@@ -175,7 +216,7 @@ const Equipe = new Schema({
   pnl1: {
     type: String,
     require: false
-  },    
+  },
   pnl2: {
     type: String,
     require: false
@@ -183,15 +224,15 @@ const Equipe = new Schema({
   pnl3: {
     type: String,
     require: false
-  }, 
+  },
   pnl4: {
     type: String,
     require: false
-  },   
+  },
   pnl5: {
     type: String,
     require: false
-  },       
+  },
   vis0: {
     type: String,
     require: false
@@ -199,7 +240,7 @@ const Equipe = new Schema({
   vis1: {
     type: String,
     require: false
-  },    
+  },
   vis2: {
     type: String,
     require: false
@@ -207,15 +248,15 @@ const Equipe = new Schema({
   vis3: {
     type: String,
     require: false
-  }, 
+  },
   vis4: {
     type: String,
     require: false
-  },   
+  },
   vis5: {
     type: String,
     require: false
-  },  
+  },
 })
 
 mongoose.model('equipe', Equipe)

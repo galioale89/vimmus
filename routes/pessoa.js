@@ -19,6 +19,7 @@ const uploadfoto = multer({ storage })
 
 require('../model/Pessoa')
 require('../model/Equipe')
+require('../model/Vistoria')
 const mongoose = require('mongoose')
 
 const Pessoa = mongoose.model('pessoa')
@@ -26,6 +27,7 @@ const Projeto = mongoose.model('projeto')
 const Equipe = mongoose.model('equipe')
 const Cronograma = mongoose.model('cronograma')
 const Cliente = mongoose.model('cliente')
+const Vistoria = mongoose.model('vistoria')
 
 const { ehAdmin } = require('../helpers/ehAdmin')
 const dataMensagem = require('../resources/dataMensagem')
@@ -342,7 +344,8 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
                 ins2: req.body.ins2,
                 ins3: req.body.ins3,
                 ins4: req.body.ins4,
-                ins5: req.body.ins5
+                ins5: req.body.ins5,
+                ehpadrao: true
             }
 
 
@@ -438,7 +441,7 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
                     ins2: equipe.ins2,
                     ins3: equipe.ins3,
                     ins4: equipe.ins4,
-                    ins5: equipe.ins5
+                    ins5: equipe.ins5,
                 }
 
                 //console.log('id=>' + equipe._id)
@@ -611,7 +614,7 @@ router.get('/recursosPlanejamento/:id', ehAdmin, (req, res) => {
                                         // console.log('cronograma.dateplaini=>' + dateplaini)
                                         // console.log('nova_data=>' + nova_data)
                                         // console.log('plaini=>' + plaini)
-                                        if (nova_data == plaini && dateplaini >= plaini && date>=dateplaini) {
+                                        if (nova_data == plaini && dateplaini >= plaini && date >= dateplaini) {
                                             //console.log('entrou')
                                             ins_dif = 1
                                             Pessoa.find({ funges: 'checked', user: _id }).then((gestores) => {
@@ -632,9 +635,9 @@ router.get('/recursosPlanejamento/:id', ehAdmin, (req, res) => {
                                                                     }
                                                                 }
                                                             }
-                                                            console.log('date=>'+date)
-                                                            console.log('dateplaini=>'+dateplaini)
-                                                            console.log('plaini=>'+plaini)
+                                                            console.log('date=>' + date)
+                                                            console.log('dateplaini=>' + dateplaini)
+                                                            console.log('plaini=>' + plaini)
                                                         }
                                                         //console.log('num_prj=>' + num_prj)
                                                         //console.log('q=>' + q)
@@ -940,7 +943,7 @@ router.get('/recursosProjetista/:id', ehAdmin, (req, res) => {
                                         //console.log('nova_data=>' + nova_data)
                                         //console.log('proini=>' + proini)
 
-                                        if (nova_data == proini && dateprjini >= proini && date>dateprjini) {
+                                        if (nova_data == proini && dateprjini >= proini && date > dateprjini) {
                                             //console.log('entrou')
                                             ins_dif = 1
                                             Pessoa.find({ funpro: 'checked', user: _id }).then((proje) => {
@@ -1267,7 +1270,7 @@ router.get('/recursosAterramento/:id', ehAdmin, (req, res) => {
                                         //console.log('nova_data=>' + nova_data)
                                         //console.log('estini=>' + estini)
 
-                                        if (nova_data == estini && dateateini >= estini && date>=dateateini) {
+                                        if (nova_data == estini && dateateini >= estini && date >= dateateini) {
                                             ins_dif = 1
                                             //console.log('entrou')
                                             Pessoa.find({ funins: 'checked', user: _id }).then((instaladores) => {
@@ -1604,7 +1607,7 @@ router.get('/recursosInversores/:id', ehAdmin, (req, res) => {
                                         //console.log('nova_data=>' + nova_data)
                                         //console.log('estini=>' + estini)
 
-                                        if (nova_data == estini && dateinvini >= estini && date>=dateinvini) {
+                                        if (nova_data == estini && dateinvini >= estini && date >= dateinvini) {
                                             ins_dif = 1
                                             //console.log('entrou')
                                             Pessoa.find({ funins: 'checked', user: _id }).then((instaladores) => {
@@ -1944,7 +1947,7 @@ router.get('/recursosInstalacao/:id', ehAdmin, (req, res) => {
                                         //console.log('nova_data=>' + nova_data)
                                         //console.log('estini=>' + estini)
 
-                                        if (nova_data == estini && dateestini >= estini && date>=dateestini) {
+                                        if (nova_data == estini && dateestini >= estini && date >= dateestini) {
                                             ins_dif = 1
                                             //console.log('entrou')
                                             Pessoa.find({ funins: 'checked', user: _id }).then((instaladores) => {
@@ -2281,7 +2284,7 @@ router.get('/recursosArmazenamento/:id', ehAdmin, (req, res) => {
                                         //console.log('nova_data=>' + nova_data)
                                         //console.log('estini=>' + estini)
 
-                                        if (nova_data == estini && dateeaeini >= estini && date>=dateeaeini) {
+                                        if (nova_data == estini && dateeaeini >= estini && date >= dateeaeini) {
                                             ins_dif = 1
                                             //console.log('entrou')
                                             Pessoa.find({ funins: 'checked', user: _id }).then((instaladores) => {
@@ -2618,7 +2621,7 @@ router.get('/recursosPainel/:id', ehAdmin, (req, res) => {
                                         //console.log('nova_data=>' + nova_data)
                                         //console.log('estini=>' + estini)
 
-                                        if (nova_data == estini && datepnlini >= estini && date>=datepnlini) {
+                                        if (nova_data == estini && datepnlini >= estini && date >= datepnlini) {
                                             ins_dif = 1
                                             //console.log('entrou')
                                             Pessoa.find({ funins: 'checked', user: _id }).then((instaladores) => {
@@ -2952,10 +2955,10 @@ router.get('/recursosVistoria/:id', ehAdmin, (req, res) => {
                                         //console.log('cronograma.datevisini=>' + datevisini)
                                         //console.log('nova_data=>' + nova_data)
                                         //console.log('plaini=>' + plaini)
-                                        if (nova_data == plaini && datevisini >= plaini && date>=datevisini) {
+                                        if (nova_data == plaini && datevisini >= plaini && date >= datevisini) {
                                             //console.log('entrou')
                                             ins_dif = 1
-                                            Pessoa.find({ funges: 'checked', user: _id }).then((gestores) => {
+                                            Pessoa.find({ funeng: 'checked', user: _id }).then((gestores) => {
                                                 gestores.forEach((eleges) => {
                                                     num_prj = num_prj + 1
                                                     //console.log('Recurso=>' + eleges.nome)
@@ -3000,7 +3003,7 @@ router.get('/recursosVistoria/:id', ehAdmin, (req, res) => {
                                                                 if (typeof equipepla.vis5 != 'undefined') {
                                                                     vis5 = equipepla.vis5
                                                                 }
-                                                                Pessoa.find({ funges: 'checked', user: _id }).sort({ nome: 'asc' }).then((planejamento) => {
+                                                                Pessoa.find({ funeng: 'checked', user: _id }).sort({ nome: 'asc' }).then((planejamento) => {
                                                                     planejamento.forEach((elepla) => {
                                                                         //console.log('elepla.nome=>' + elepla.nome)
                                                                         if (gestor_alocado.length == '') {
@@ -3530,32 +3533,24 @@ router.post('/salvarPainel', ehAdmin, (req, res) => {
 
 router.post('/salvarVistoria', ehAdmin, (req, res) => {
     const { _id } = req.user
-    Projeto.findOne({ _id: req.body.id }).then((projeto) => {
-        Equipe.findOne({ projeto: req.body.id }).then((equipe) => {
-
+        Equipe.findOne({ projeto: req.body.id }).then((equipe) => {            
             equipe.vis0 = req.body.vis0
             equipe.vis1 = req.body.vis1
             equipe.vis2 = req.body.vis2
             equipe.vis3 = req.body.vis3
             equipe.vis4 = req.body.vis4
             equipe.vis5 = req.body.vis5
-
-            equipe.save().then(() => {
-                req.flash('success_msg', 'Vistoriador alocado!')
-                res.redirect('/pessoa/recursosVistoria/' + req.body.id)
-            }).catch((err) => {
-                req.flash('error_msg', 'Houve uma falha ao salvar a equipe.')
-                res.redirect('/pessoa/recursosVistoria/' + req.body.id)
-            })
-
+                equipe.save().then(() => {
+                    req.flash('success_msg', 'Vistoriador alocado!')
+                    res.redirect('/pessoa/recursosVistoria/' + req.body.id)
+                }).catch((err) => {
+                    req.flash('error_msg', 'Houve uma falha ao salvar a equipe.')
+                    res.redirect('/pessoa/recursosVistoria/' + req.body.id)
+                })
         }).catch((err) => {
             req.flash('error_msg', 'Houve uma falha ao encontrar a equipe.')
             res.redirect('/pessoa/recursosVistoria/' + req.body.id)
         })
-    }).catch((err) => {
-        req.flash('error_msg', 'Houve uma falha ao encontrar o projeto.')
-        res.redirect('/pessoa/recursosProjetista/' + req.body.id)
-    })
 })
 
 router.post('/salvarequipe/', ehAdmin, (req, res) => {
@@ -3693,21 +3688,56 @@ router.get('/desativarequipe/:id', ehAdmin, (req, res) => {
 router.post('/criarequipepadrao', ehAdmin, (req, res) => {
     const { _id } = req.user
 
-    const novaequipe = new Equipe({
-        user: _id,
-        ativo: true,
-        nome: req.body.nome,
-        ins0: req.body.ins0,
-        ins1: req.body.ins1,
-        ins2: req.body.ins2,
-        ins3: req.body.ins3,
-        ins4: req.body.ins4,
-        ins5: req.body.ins5
-    })
+    var custo = 0
 
-    ////console.log(req.body.ins0, req.body.ins1, req.body.ins2)
-    novaequipe.save().then(() => {
-        Equipe.find({ user: _id, ativo: true }).lean().then((equipe) => {
+
+    Pessoa.find({ user: _id }).then((pessoas) => {
+        pessoas.forEach((element) => {
+            console.log('element.nome=>' + element.nome)
+            console.log('req.body.ins0=>' + req.body.ins0)
+            if (element.custo != '' && typeof element.custo != 'undefined') {
+                if (element.nome == req.body.ins0) {
+                    custo = custo + element.custo
+                }
+                if (element.nome == req.body.ins1) {
+                    custo = custo + element.custo
+                }
+                if (element.nome == req.body.ins2) {
+                    custo = custo + element.custo
+                }
+                if (element.nome == req.body.ins3) {
+                    custo = custo + element.custo
+                }
+                if (element.nome == req.body.ins4) {
+                    custo = custo + element.custo
+                }
+                if (element.nome == req.body.ins5) {
+                    custo = custo + element.custo
+                }
+            }
+        })
+
+
+        if (custo == '' || custo == 0) {
+            custo = req.body.custo
+        }
+
+        const novaequipe = new Equipe({
+            user: _id,
+            ativo: true,
+            nome: req.body.nome,
+            custoins: custo,
+            ins0: req.body.ins0,
+            ins1: req.body.ins1,
+            ins2: req.body.ins2,
+            ins3: req.body.ins3,
+            ins4: req.body.ins4,
+            ins5: req.body.ins5,
+            ehpadrao: true
+        })
+
+        ////console.log(req.body.ins0, req.body.ins1, req.body.ins2)
+        novaequipe.save().then(() => {
             req.flash('success_msg', 'Equipe padrão criada com suecesso.')
             res.redirect('/pessoa/consultaequipepadrao')
         }).catch((err) => {
@@ -4508,6 +4538,7 @@ router.post('/novo', uploadfoto.single('foto'), ehAdmin, (req, res) => {
     var dlaudo
     var limmod
     var funges
+    var funeng
     var funpro
     var funins
     var funcao = 0
@@ -4544,10 +4575,16 @@ router.post('/novo', uploadfoto.single('foto'), ehAdmin, (req, res) => {
         if (req.body.funges != null) {
             funcao = + 1
         }
+        if (req.body.funeng != null) {
+            funcao = + 1
+        }
         if (req.body.funpro != null) {
             funcao = + 1
         }
         if (req.body.funins != null) {
+            funcao = + 1
+        }
+        if (req.body.funele != null) {
             funcao = + 1
         }
 
@@ -4604,17 +4641,29 @@ router.post('/novo', uploadfoto.single('foto'), ehAdmin, (req, res) => {
         } else {
             funges = 'unchecked'
         }
-        //Validando função 
+        //Validando função engenheiro
+        if (req.body.funeng != null) {
+            funeng = 'checked'
+        } else {
+            funeng = 'unchecked'
+        }
+        //Validando função projetista
         if (req.body.funpro != null) {
             funpro = 'checked'
         } else {
             funpro = 'unchecked'
         }
-        //Validando Limpeza de Módulos
+        //Validandofunção instalador
         if (req.body.funins != null) {
             funins = 'checked'
         } else {
             funins = 'unchecked'
+        }
+        //Validandofunção eletricista
+        if (req.body.funele != null) {
+            funele = 'checked'
+        } else {
+            funele = 'unchecked'
         }
 
         var cnpj
@@ -4632,17 +4681,23 @@ router.post('/novo', uploadfoto.single('foto'), ehAdmin, (req, res) => {
             percom = 0
         }
 
-        console.log('req.file=>'+req.file)
+        //console.log('req.file=>' + req.file)
         var foto
         if (req.file != null) {
             foto = req.file.filename
         } else {
             foto = ''
         }
-
+        var custo
+        if (req.body.custo != '') {
+            custo = req.body.custo
+        } else {
+            custo = 0
+        }
         const pessoa = {
             user: _id,
             nome: req.body.nome,
+            custo: custo,
             endereco: req.body.endereco,
             cidade: req.body.cidade,
             uf: req.body.uf,
@@ -4657,9 +4712,11 @@ router.post('/novo', uploadfoto.single('foto'), ehAdmin, (req, res) => {
             vistor: vistor,
             dlaudo: dlaudo,
             limmod: limmod,
-            funges: funges,
+            funges: funges, funeng: funeng,
+            funeng: funeng,
             funpro: funpro,
             funins: funins,
+            funele: funele,
             foto: foto,
             ehVendedor: ehVendedor,
             percom: percom
@@ -4694,6 +4751,7 @@ router.post('/editar', uploadfoto.single('foto'), ehAdmin, (req, res) => {
     var dlaudo
     var limmod
     var funges
+    var funeng
     var funpro
     var funins
     var funcao = 0
@@ -4723,10 +4781,16 @@ router.post('/editar', uploadfoto.single('foto'), ehAdmin, (req, res) => {
         if (req.body.funges != null) {
             funcao = + 1
         }
+        if (req.body.funeng != null) {
+            funcao = + 1
+        }
         if (req.body.funpro != null) {
             funcao = + 1
         }
         if (req.body.funins != null) {
+            funcao = + 1
+        }
+        if (req.body.funele != null) {
             funcao = + 1
         }
 
@@ -4789,17 +4853,29 @@ router.post('/editar', uploadfoto.single('foto'), ehAdmin, (req, res) => {
         } else {
             funges = 'unchecked'
         }
-        //Validando função 
+        //Validando função engenheiro
+        if (req.body.funeng != null) {
+            funeng = 'checked'
+        } else {
+            funeng = 'unchecked'
+        }
+        //Validando função projetista
         if (req.body.funpro != null) {
             funpro = 'checked'
         } else {
             funpro = 'unchecked'
         }
-        //Validando Limpeza de Módulos
+        //Validando função instalador
         if (req.body.funins != null) {
             funins = 'checked'
         } else {
             funins = 'unchecked'
+        }
+        //Validando função eletricista
+        if (req.body.funele != null) {
+            funele = 'checked'
+        } else {
+            funele = 'unchecked'
         }
 
         var cnpj
@@ -4827,6 +4903,11 @@ router.post('/editar', uploadfoto.single('foto'), ehAdmin, (req, res) => {
             if (req.body.cidade != '' && req.body.uf != pessoa.cidade) {
                 pessoa.cidade = req.body.cidade
             }
+            if (req.body.custo != '') {
+                pessoa.custo = req.body.custo
+            } else {
+                pessoa.custo = 0
+            }
             pessoa.cnpj = cnpj
             pessoa.cpf = cpf
             pessoa.iniati = req.body.iniati
@@ -4839,9 +4920,11 @@ router.post('/editar', uploadfoto.single('foto'), ehAdmin, (req, res) => {
             pessoa.dlaudo = dlaudo
             pessoa.limmod = limmod
             pessoa.funges = funges
+            pessoa.funeng = funeng
             pessoa.funpro = funpro
             pessoa.funins = funins
-            console.log('req.file=>'+req.file)
+            pessoa.funele = funele
+            console.log('req.file=>' + req.file)
             if (req.file != null) {
                 pessoa.foto = req.file.filename
             } else {
@@ -4878,27 +4961,38 @@ router.post('/filtrar', ehAdmin, (req, res) => {
     var nome = req.body.nome
     var funins
     var funges
+    var funeng
     var funpro
+    var funele
     var ehVendedor
     var funcao = req.body.funcao
     switch (funcao) {
-        case 'Instalador': funins = 'checked', funges = 'unchecked', funpro = 'unchecked', ehVendedor = false;
+        case 'Instalador': funins = 'checked', funeng = 'unchecked', funges = 'unchecked', funpro = 'unchecked', funele = 'unchecked', ehVendedor = false;
             break;
-        case 'Projetista': funins = 'unchecked', funges = 'unchecked', funpro = 'checked', ehVendedor = false;
+        case 'Engenheiro': funins = 'unchecked', funeng = 'checked', funges = 'unchecked', funpro = 'unchecked', funele = 'unchecked', ehVendedor = false;
             break;
-        case 'Gestor': funins = 'unchecked', funges = 'checked', funpro = 'unchecked', ehVendedor = false;
+        case 'Projetista': funins = 'unchecked', funeng = 'unchecked', funges = 'unchecked', funpro = 'checked', funele = 'unchecked', ehVendedor = false;
             break;
-        case 'Vendedor': funins = 'unchecked', funges = 'unchecked', funpro = 'unchecked', ehVendedor = true;
+        case 'Gestor': funins = 'unchecked', funeng = 'unchecked', funges = 'checked', funpro = 'unchecked', funele = 'unchecked', ehVendedor = false;
+            break;
+        case 'Vendedor': funins = 'unchecked', funeng = 'unchecked', funges = 'unchecked', funpro = 'unchecked', funele = 'unchecked', ehVendedor = true;
+            break;
+        case 'Eletricista': funins = 'unchecked', funeng = 'unchecked', funges = 'unchecked', funpro = 'unchecked', funele = 'checked', ehVendedor = false;
             break;
     }
-    ////console.log('funcao=>' + funcao)
-    ////console.log('funins=>' + funins)
-    ////console.log('funges=>' + funges)
-    ////console.log('funpro=>' + funpro)
-    ////console.log('ehVendedor=>' + ehVendedor)
+    console.log('funcao=>' + funcao)
+    console.log('funins=>' + funins)
+    console.log('funeng=>' + funeng)
+    console.log('funges=>' + funges)
+    console.log('funpro=>' + funpro)
+    console.log('funele=>' + funele)
+    console.log('ehVendedor=>' + ehVendedor)
+    console.log('nome=>' + nome)
+    console.log('uf=>' + uf)
+    console.log('cidade=>' + cidade)
 
     if (nome != '' && uf != '' && cidade != '' && funcao != 'Todos') {
-        Pessoa.find({ nome: new RegExp(nome), uf: new RegExp(uf), cidade: new RegExp(cidade), funins: funins, funges: funges, funpro: funpro, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
+        Pessoa.find({ nome: new RegExp(nome), uf: new RegExp(uf), cidade: new RegExp(cidade), funins: funins, funges: funges, funeng: funeng, funpro: funpro, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
             res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
         })
     } else {
@@ -4946,36 +5040,37 @@ router.post('/filtrar', ehAdmin, (req, res) => {
 
             } else {
                 if (nome == '' && cidade == '' && uf == '') {
-                    Pessoa.find({ funins: funins, funges: funges, funpro: funpro, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
+                    console.log('achou')
+                    Pessoa.find({ funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
                         res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
                     })
                 } else {
                     if (nome == '' && cidade == '') {
-                        Pessoa.find({ uf: new RegExp(uf), funins: funins, funges: funges, funpro: funpro, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
+                        Pessoa.find({ uf: new RegExp(uf), funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
                             res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
                         })
                     } else {
                         if (nome == '' && uf == '') {
-                            Pessoa.find({ cidade: new RegExp(cidade), funins: funins, funges: funges, funpro: funpro, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
+                            Pessoa.find({ cidade: new RegExp(cidade), funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
                                 res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
                             })
                         } else {
                             if (cidade == '' && uf == '') {
-                                Pessoa.find({ nome: new RegExp(nome), funins: funins, funges: funges, funpro: funpro, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
+                                Pessoa.find({ nome: new RegExp(nome), funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
                                     res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
                                 })
                             } else {
                                 if (cidade == '') {
-                                    Pessoa.find({ nome: new RegExp(nome), uf: new RegExp(uf), funins: funins, funges: funges, funpro: funpro, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
+                                    Pessoa.find({ nome: new RegExp(nome), uf: new RegExp(uf), funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
                                         res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
                                     })
                                 } else {
                                     if (uf == '') {
-                                        Pessoa.find({ nome: new RegExp(nome), cidade: new RegExp(cidade), funins: funins, funges: funges, funpro: funpro, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
+                                        Pessoa.find({ nome: new RegExp(nome), cidade: new RegExp(cidade), funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
                                             res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
                                         })
                                     } else {
-                                        Pessoa.find({ cidade: new RegExp(cidade), uf: new RegExp(uf), funins: funins, funges: funges, funpro: funpro, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
+                                        Pessoa.find({ cidade: new RegExp(cidade), uf: new RegExp(uf), funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
                                             res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
                                         })
                                     }

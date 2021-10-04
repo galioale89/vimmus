@@ -1,6 +1,13 @@
-<div style="width: 95%">
+<style>
+    table {
+        font-size: 12px;
+        text-align: center;
+        width: fit-content;
+    }
+</style>
+<div style="width: 100%;height: 1100px;padding-left: 4%;padding-right: 4%">
     <form method='post' action='/relatorios/aplicar'>
-        <div class="row" style="padding-left: 4%;">
+        <div class="row">
             <div class="sessao-dash-titulo text-center" style="margin-bottom: 10px;margin-top: 10px;">
                 <label class='col-form-label fw-bold' style="color: white;">{{#if
                     mestitulo}}{{mestitulo}}{{ano}}{{else}}Tudo{{/if}}</label>
@@ -59,7 +66,7 @@
             </div>
             <div class="col-md-2">
                 <input type='hidden' name='selecionado' id='selecionado' {{#if checkFat}} value='faturamento'
-                    {{else}}value='' {{/if}}>
+                    {{else}}value='{{selecionado}}' {{/if}}>
                 <button type='submit' class='btn btn-sm btn-primary'>Aplicar</button>
             </div>
         </div>
@@ -156,6 +163,115 @@
             </div>
         </div>
     </form>
+    <hr>
+    <div class="row" style="width: 100%;">
+        <div class="row">
+            <div class="col">
+                <label class='col-form-label col-form-label-sm fw-bold'>Aberto</label>
+                <table>
+                    <tr>
+                        <th style="width: 50%;">Projeto</th>
+                        <th style="width: 20%;">Potência</th>
+                        <th>Classificação</th>
+                    </tr>
+                    {{#each orcado}}
+                    <tr>
+                        <td>{{nome}}</td>
+                        <td>{{potencia}}</td>
+                        <td>{{classUsina}}</td>
+                    </tr>
+                    {{/each}}
+                </table>
+            </div>
+            <div class="col">
+                <label class='col-form-label col-form-label-sm fw-bold'>Em Execução</label>
+                <table>
+                    <tr>
+                        <th style="width: 50%;">Projeto</th>
+                        <th style="width: 20%;">Potência</th>
+                        <th>Classificação</th>
+                    </tr>
+                    {{#each executando}}
+                    <tr>
+                        <td>{{nome}}</td>
+                        <td>{{potencia}}</td>
+                        <td>{{classUsina}}</td>
+                    </tr>
+                    {{/each}}
+                </table>
+            </div>
+            <div class="col">
+                <label class='col-form-label col-form-label-sm fw-bold'>Realizado</label>
+                <table>
+                    <tr>
+                        <th style="width: 50%;">Projeto</th>
+                        <th style="width: 20%;">Potência</th>
+                        <th>Classificação</th>
+                    </tr>
+                    {{#each realizado}}
+                    <tr>
+                        <td>{{nome}}</td>
+                        <td>{{potencia}}</td>
+                        <td>{{classUsina}}</td>
+                    </tr>
+                    {{/each}}
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label class='col-form-label col-form-label-sm fw-bold'>Parado</label>
+                <table>
+                    <tr>
+                        <th style="width: 50%;">Projeto</th>
+                        <th style="width: 20%;">Potência</th>
+                        <th>Classificação</th>
+                    </tr>
+                    {{#each parado}}
+                    <tr>
+                        <td>{{nome}}</td>
+                        <td>{{potencia}}</td>
+                        <td>{{classUsina}}</td>
+                    </tr>
+                    {{/each}}
+                </table>
+            </div>
+            <div class="col">
+                <label class='col-form-label col-form-label-sm fw-bold'>Homologado</label>
+                <table>
+                    <tr>
+                        <th style="width: 50%;">Projeto</th>
+                        <th style="width: 20%;">Potência</th>
+                        <th>Classificação</th>
+                    </tr>
+                    {{#each homologado}}
+                    <tr>
+                        <td>{{nome}}</td>
+                        <td>{{potencia}}</td>
+                        <td>{{classUsina}}</td>
+                    </tr>
+                    {{/each}}
+                </table>
+            </div>
+            <div class="col">
+                <label class='col-form-label col-form-label-sm fw-bold'>Entregue</label>
+                <table>
+                    <tr>
+                        <th style="width: 50%;">Projeto</th>
+                        <th style="width: 20%;">Potência</th>
+                        <th>Classificação</th>
+                    </tr>
+                    {{#each foirealizado}}
+                    <tr>
+                        <td>{{nome}}</td>
+                        <td>{{potencia}}</td>
+                        <td>{{classUsina}}</td>
+                    </tr>
+                    {{/each}}
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 <script type='text/javascript'>
     function selecionar() {

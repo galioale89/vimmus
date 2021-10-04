@@ -13,7 +13,93 @@
         padding-bottom: 1em;
     }
 </style>
-<script>
+
+<script type="text/javascript">
+
+    function aplicakwhuc1() {
+        if (confirm("Utilizar entrada de consumo kw/h de Janeiro como média para todos os meses?")) {
+            var uc11 = document.getElementById('uc11')
+            var uc12 = document.getElementById('uc12')
+            var uc13 = document.getElementById('uc13')
+            var uc14 = document.getElementById('uc14')
+            var uc15 = document.getElementById('uc15')
+            var uc16 = document.getElementById('uc16')
+            var uc17 = document.getElementById('uc17')
+            var uc18 = document.getElementById('uc18')
+            var uc19 = document.getElementById('uc19')
+            var uc110 = document.getElementById('uc110')
+            var uc111 = document.getElementById('uc111')
+            var uc112 = document.getElementById('uc112')
+            uc12.value = uc11.value
+            uc13.value = uc11.value
+            uc14.value = uc11.value
+            uc15.value = uc11.value
+            uc16.value = uc11.value
+            uc17.value = uc11.value
+            uc18.value = uc11.value
+            uc19.value = uc11.value
+            uc110.value = uc11.value
+            uc111.value = uc11.value
+            uc112.value = uc11.value
+        }
+    }
+    function aplicakwhuc2() {
+        if (confirm("Utilizar entrada de consumo kw/h de Janeiro como média para todos os meses?")) {
+            var uc21 = document.getElementById('uc21')
+            var uc22 = document.getElementById('uc22')
+            var uc23 = document.getElementById('uc23')
+            var uc24 = document.getElementById('uc24')
+            var uc25 = document.getElementById('uc25')
+            var uc26 = document.getElementById('uc26')
+            var uc27 = document.getElementById('uc27')
+            var uc28 = document.getElementById('uc28')
+            var uc29 = document.getElementById('uc29')
+            var uc210 = document.getElementById('uc210')
+            var uc211 = document.getElementById('uc211')
+            var uc212 = document.getElementById('uc212')
+            uc22.value = uc21.value
+            uc23.value = uc21.value
+            uc24.value = uc21.value
+            uc25.value = uc21.value
+            uc26.value = uc21.value
+            uc27.value = uc21.value
+            uc28.value = uc21.value
+            uc29.value = uc21.value
+            uc210.value = uc21.value
+            uc211.value = uc21.value
+            uc212.value = uc21.value
+        }
+    }
+
+    function aplicakwhuc3() {
+        if (confirm("Utilizar entrada de consumo kw/h de Janeiro como média para todos os meses?")) {
+            var uc31 = document.getElementById('uc31')
+            var uc32 = document.getElementById('uc32')
+            var uc33 = document.getElementById('uc33')
+            var uc34 = document.getElementById('uc34')
+            var uc35 = document.getElementById('uc35')
+            var uc36 = document.getElementById('uc36')
+            var uc37 = document.getElementById('uc37')
+            var uc38 = document.getElementById('uc38')
+            var uc39 = document.getElementById('uc39')
+            var uc310 = document.getElementById('uc310')
+            var uc311 = document.getElementById('uc311')
+            var uc312 = document.getElementById('uc312')
+            uc32.value = uc31.value
+            uc33.value = uc31.value
+            uc34.value = uc31.value
+            uc35.value = uc31.value
+            uc36.value = uc31.value
+            uc37.value = uc31.value
+            uc38.value = uc31.value
+            uc39.value = uc31.value
+            uc310.value = uc31.value
+            uc311.value = uc31.value
+            uc312.value = uc31.value
+
+        }
+    }
+
     function trocaQtd() {
         var qtduce = document.getElementById('qtduce')
         var td2 = document.getElementById('td2')
@@ -30,8 +116,20 @@
                 td3.style.display = ''
             }
         }
-
     }
+    /*
+        function buscaLocal() {
+            var request = new XMLHttpRequest()
+            request.open("GET", 'plano_direto.json')
+            request.responseType = 'json'
+            request.send()
+            var data = JSON.stringify(request.response)
+            var irradiacao = JSON.parse(data)
+            alert(irradiacao)
+            alert('entrou')
+        }
+        */
+
     window.onload = function () {
         var add1 = document.getElementById('add1')
         var add2 = document.getElementById('add2')
@@ -81,13 +179,57 @@
         if (add12.value == '') {
             add12.value = 0
         }
+
+        var estados = document.getElementById('estado')
+        var cidades = document.getElementById('cidade')
+
+        new dgCidadesEstados({
+            estado: estados,
+            cidade: cidades,
+            estadoVal: '<%=Request("estado") %>',
+            cidadeVal: '<%=Request("cidade") %>'
+        });
     }
 </script>
 <div class="row" style="width: 100%;">
     <form action="/projeto/dimensionar/" method="post">
-        <h5 style="text-align: center;padding: 30px;font-weight: 800;">DIMENSIONAMENTO</h5>
+        <div class="row" style="text-align: center;padding: 30px;">
+            <div class="col-md-2 mt-1">
+                <h5 style="font-weight: 800;">DIMENSIONAMENTO</h5>
+            </div>
+            <div class="col-md-1">
+                <label class="fw-bold col-form-label col-form-label-sm"> Estado:
+                </label><br>
+            </div>
+            <div class="col-md-2">
+                <select id="estado" name='uf' class='form-select form-select-sm' onchange="buscaLocal()">
+                </select>
+            </div>
+            <div class="col-md-1 text-start">
+                <label class="fw-bold col-form-label col-form-label-sm"> {{projeto.uf}}
+                </label>
+                {{!-- <input type='hidden' name='ufAtual' value='{{projeto.uf}}'> --}}
+            </div>
+            <div class="col-md-1 text-start">
+                <label class="fw-bold col-form-label col-form-label-sm"> |
+                </label>
+            </div>
+            <div class="col-md-1">
+                <label class="fw-bold col-form-label col-form-label-sm"> Cidade:
+                </label><br>
+            </div>
+            <div class="col-md-2">
+                <select id="cidade" name='cidade' class='form-select form-select-sm' onchange="buscaLocal()">
+                </select>
+                {{!-- <input type='hidden' name='cidadeAtual' value='{{projeto.cidade}}'> --}}
+            </div>
+            <div class="col-md-2 text-start">
+                <label class="fw-bold col-form-label col-form-label-sm"> {{projeto.cidade}}
+                </label>
+            </div>
+        </div>
         <input type="hidden" name='id_dime' value='{{dimensionamento._id}}'>
-        <input type="hidden" name='id_dime' value='{{projeto._id}}'>
+        <input type="hidden" name='id_prj' value='{{projeto._id}}'>
         <div class="row mb-2" style="width: 100%;padding-left: 20px">
             <div class="col-md-8">
                 <div class="row" style="width: 100%;">
@@ -174,8 +316,8 @@
         <hr>
         <div class="row">
             <div class="row">
-                <div class="col-md-4 text-end">
-                    <label class='col-form-label col-form-label-sm fw-bold'>Quantiadde de Unidades
+                <div class="col-md-3 text-end">
+                    <label class='col-form-label col-form-label-sm fw-bold'>Quantidade de Unidades
                         Consumidoras:</label>
                 </div>
                 <div class="col-md-1">
@@ -189,13 +331,15 @@
                     <label class='col-form-label col-form-label-sm fw-bold'>Irradiação Wh/m² dia:</label>
                 </div>
                 <div class="col-md-1">
-                    <input class='form-control form-control-sm' type="text" name='radiacao'>
+                    <input class='form-control form-control-sm' type="text" name='irradiacao' step='0.010'
+                        value="{{dimensionamento.irradiacao}}">
                 </div>
-                <div class="col-md-3 text-end">
+                <div class="col-md-2 text-end">
                     <label class="col-form-label col-form-label-sm fw-bold">Ajuste da potência nominal:</label>
                 </div>
                 <div class="col-md-1">
-                    <input class='form-control form-control-sm' type="ajupot" name='ajupot' placeholder="%">
+                    <input class='form-control form-control-sm' type="number" name='ajupot' placeholder="%"
+                        value="{{dimensionamento.ajupot}}">
                 </div>
             </div>
             <div class="row mt-2">
@@ -214,7 +358,7 @@
                         <th style='width: 7%'>Outubro</th>
                         <th style='width: 7%;'>Novembro</th>
                         <th style='width: 7%;'>Dezembro</th>
-                        <th style='width: 7%;'>Total kW/h</th>
+                        <th style='width: 7%;'>Total</th>
                     </tr>
                     <tr>
                         <div id='td1'>
@@ -222,8 +366,8 @@
                                 <label class="col-form-label col-form-label-sm fw-bold">UC 1:</label>
                             </td>
                             <td>
-                                <input class='form-control form-control-sm' type="{{showuc1}}" step='0.010' name='uc11'
-                                    id='uc11' value='{{dimensionamento.uc11}}'>
+                                <input class='form-control form-control-sm' type="{{showuc1}}" onchange="aplicakwhuc1()"
+                                    step='0.010' name='uc11' id='uc11' value='{{dimensionamento.uc11}}'>
                             </td>
                             <td>
                                 <input class='form-control form-control-sm' type="{{showuc1}}" step='0.010' name='uc12'
@@ -271,7 +415,7 @@
                             </td>
                             <td>
                                 <label class='col-form-label col-form-label-sm' step='0.010'
-                                    name='totaluc1'>{{dimensionamento.totaluc1}}</label>
+                                    name='totaluc1'>{{dimensionamento.totaluc1}} kW/h</label>
                             </td>
                         </div>
                     </tr>
@@ -281,8 +425,8 @@
                             <label class="col-form-label col-form-label-sm fw-bold">UC 2:</label>
                         </td>
                         <td>
-                            <input class='form-control form-control-sm' type="{{showuc2}}" step='0.010' name='uc21'
-                                id='uc21' value='{{dimensionamento.uc21}}'>
+                            <input class='form-control form-control-sm' type="{{showuc2}}" onchange="aplicakwhuc2()"
+                                step='0.010' name='uc21' id='uc21' value='{{dimensionamento.uc21}}'>
                         </td>
                         <td>
                             <input class='form-control form-control-sm' type="{{showuc2}}" step='0.010' name='uc22'
@@ -330,7 +474,7 @@
                         </td>
                         <td>
                             <label class='col-form-label col-form-label-sm' step='0.010'
-                                name='totaluc2'>{{dimensionamento.totaluc2}}</label>
+                                name='totaluc2'>{{dimensionamento.totaluc2}} kW/h</label>
                         </td>
                     </tr>
                     <tr id='td3' style="display: {{td3}};">
@@ -338,8 +482,8 @@
                             <label class="col-form-label col-form-label-sm fw-bold">UC 3:</label>
                         </td>
                         <td>
-                            <input class='form-control form-control-sm' type="{{showuc3}}" step='0.010' name='uc31'
-                                id='uc31' value='{{dimensionamento.uc31}}'>
+                            <input class='form-control form-control-sm' type="{{showuc3}}" onchange="aplicakwhuc3()"
+                                step='0.010' name='uc31' id='uc31' value='{{dimensionamento.uc31}}'>
                         </td>
                         <td>
                             <input class='form-control form-control-sm' type="{{showuc3}}" step='0.010' name='uc32'
@@ -387,7 +531,7 @@
                         </td>
                         <td>
                             <label class='col-form-label col-form-label-sm' step='0.010'
-                                name='totaluc3'>{{dimensionamento.totaluc3}}</label>
+                                name='totaluc3'>{{dimensionamento.totaluc3}} kW/h</label>
                         </td>
                     </tr>
                     </td>
@@ -445,7 +589,7 @@
                         </td>
                         <td>
                             <label class='col-form-label col-form-label-sm' step='0.010'
-                                name='totaladd'>{{dimensionamento.totaladd}}</label>
+                                name='totaladd'>{{dimensionamento.totaladd}} kW/h</label>
                         </td>
                     </tr>
                     <tr>
@@ -502,7 +646,7 @@
                         </td>
                         <td>
                             <label class='col-form-label col-form-label-sm' step='0.010'
-                                name='totconsumo'>{{dimensionamento.totconsumo}}</label>
+                                name='totconsumo'>{{dimensionamento.totconsumo}} kW/h</label>
                         </td>
                     </tr>
                     <tr>
@@ -559,16 +703,50 @@
                                 id='total12'>{{dimensionamento.total12}}</label>
                         </td>
                         <td>
-                            <label class='col-form-label col-form-label-sm'
-                                name='totdime'>{{dimensionamento.totfatura}}</label>
+                            <label class='col-form-label col-form-label-sm' name='totdime'>R$
+                                {{dimensionamento.totfatura}}</label>
                         </td>
+                    </tr>
+                    <tr>
+                        <div style="padding-left: 60px;padding-bottom: 10px;">
+                            <label class='col-form-label col-form-label-sm fw-bold'>Média Anual R$/kW/h:
+                                {{medkwhano}}</label>
+                        </div>
                     </tr>
                 </table>
             </div>
-            <div class="row mt-4">
+            <div class="text-center mt-3 mb-2">
+                <label style="font-weight: 600;font-size: 20px;">Potência do Sistema: {{dimensionamento.potencia}}
+                    kWp</label>
+                <div class="row mt-2 d-flex justify-content-center">
+                    <div class="col-md-2 text-end">
+                        <label class="col-form-label col-form-label-sm fw-bold">Quantidade de Módulos:</label>
+                    </div>
+                    <div class="col-md-1 text-start">
+                        <input class='form-control form-control-sm' type="number" name='qtdmod' placeholder="nº"
+                            value="{{dimensionamento.qtdmod}}">
+                    </div>
+                    <div class="col-md-2 text-end">
+                        <label class="col-form-label col-form-label-sm fw-bold">Potência dos Módulos:</label>
+                    </div>
+                    <div class="col-md-1 text-start">
+                        <input class='form-control form-control-sm' type="number" name='watmod' placeholder="watts"
+                            value="{{dimensionamento.watmod}}">
+                    </div>
+                    <div class="col-md-1 text-end">
+                        <label class="col-form-label col-form-label-sm fw-bold">m² Módulo:</label>
+                    </div>
+                    <div class="col-md-1 text-start">
+                        <input class='form-control form-control-sm' step='0.010' type="number" name='tammod'
+                            placeholder="m²" value="{{dimensionamento.tammod}}">
+                    </div>
+                </div>
+                <label class='col-form-label mt-1'>Geração anual: {{dimensionamento.geranual}} kWh</label>
+            </div>
+            <div class="row">
                 <div class="btn-group col-6 mx-auto">
                     <button type="submit" class="btn btn-sm btn-success">Calcular</button>
-                    <a ahref="/projeto/novo" class="btn btn-sm btn-success">Voltar para o Projeto</a>
+                    <a href="/projeto/novo/{{projeto._id}}" class="btn btn-sm btn-success">Voltar para o Projeto</a>
                 </div>
             </div>
         </div>

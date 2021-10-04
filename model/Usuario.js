@@ -65,6 +65,10 @@ const Usuario = new Schema({
     pgto: {
         type: String,
         require: false
+    },
+    pricont:{
+        type: String,
+        require: false
     }
 })
 

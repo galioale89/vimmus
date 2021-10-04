@@ -1,0 +1,703 @@
+<script>
+    function mascara_dataini() {
+        var data = document.getElementById('valDataIni')
+        var dataini = document.getElementById('dataini')
+
+        var novadata = data.value
+        novadata = novadata.replace(novadata.substring(4, 5), "")
+        novadata = novadata.replace(novadata.substring(6, 7), "")
+
+        var currenTime = new Date()
+        var year = currenTime.getFullYear()
+        var month = currenTime.getMonth()
+        var day = currenTime.getDate()
+        var ano = novadata
+        ano1 = ano.substring(0, 4)
+        dia1 = ano.substring(6, 8)
+        mes1 = ano.substring(4, 6)
+
+        if (parseFloat(ano1) > parseFloat(year) || parseFloat(mes1) > parseFloat(month) + 1) {
+            data.value = ''
+            alert('Data maior que o dia de hoje.')
+        } else {
+            if (parseFloat(dia1) > parseFloat(day) && parseFloat(mes1) == parseFloat(month) + 1) {
+                data.value = ''
+                alert('Data maior que o dia de hoje.')
+            } else {
+                dataini.value = dia1 + '/' + mes1 + '/' + ano1
+            }
+        }
+    };
+    function validaDataIns() {
+        var valDateIns = document.getElementById('valDataIns')
+        var dateIns = document.getElementById('datains')
+        if (valDataIns.value == '' || typeof valDataIns.value == 'undefined') {
+            if (confirm('Você deseja aplicar a data de hoje como a data de instalação do projeto?')) {
+                var hoje = new Date()
+                var ano = hoje.getFullYear()
+                var mes = hoje.getMonth() + 1
+                if (mes < 10) {
+                    mes = '0' + mes
+                }
+                var dia = hoje.getDate()
+                if (dia < 10) {
+                    dia = '0' + dia
+                }
+                valDataIns.value = ano + '-' + mes + '-' + dia
+                dateIns.value = dia + '/' + mes + '/' + ano
+                alert('Confirmado!Agora salve o projeto e execute novamente para prosseguir.')
+            }
+        }
+    };
+    function mascara_datains() {
+        var data = document.getElementById('valDataIns')
+        var datains = document.getElementById('datains')
+        var dataini = document.getElementById('dataini')
+
+        var novadata = data.value
+        novadata = novadata.replace(novadata.substring(4, 5), "")
+        novadata = novadata.replace(novadata.substring(6, 7), "")
+
+        var dia = novadata.substring(6, 8)
+        var mes = novadata.substring(4, 6)
+        var ano = novadata.substring(0, 4)
+        var dataNova = ano + mes + dia
+
+        var dataBase = dataini.value
+        var dia1 = dataBase.substring(0, 2)
+        var mes1 = dataBase.substring(3, 5)
+        var ano1 = dataBase.substring(6, 10)
+        dataBase = ano1 + mes1 + dia1
+
+        var datanova = parseFloat(dataNova)
+        var database = parseFloat(dataBase)
+
+        var salvaDataIns = dia + '/' + mes + '/' + ano
+
+        if (datanova < database) {
+            data.value = ''
+            alert('A data de início da instalação deve ser maior ou igual a data de início do projeto.')
+        } else {
+            datains.value = salvaDataIns
+        }
+    };
+
+    function mascara_dataprev() {
+        var data = document.getElementById('valDataPrev')
+        var dataprev = document.getElementById('dataprev')
+
+        var novadata = data.value
+        novadata = novadata.replace(novadata.substring(4, 5), "")
+        novadata = novadata.replace(novadata.substring(6, 7), "")
+
+        var currenTime = new Date()
+        var year = currenTime.getFullYear()
+        var month = currenTime.getMonth()
+        var day = currenTime.getDate()
+
+        var ano = novadata
+        ano1 = ano.substring(0, 4)
+        dia1 = ano.substring(6, 8)
+        mes1 = ano.substring(4, 6)
+
+        if (parseFloat(ano1) < parseFloat(year) || parseFloat(mes1) < parseFloat(month) + 1) {
+            data.value = ''
+            alert('Data deve ser maior que data inicial.')
+        } else {
+            if (parseFloat(ano1) == parseFloat(year) && parseFloat(mes1) == parseFloat(month) + 1 && parseFloat(dia1) < parseFloat(day)) {
+                data.value = ''
+                alert('Data deve ser maior que data inicial.')
+            } else {
+                dataprev.value = dia1 + '/' + mes1 + '/' + ano1
+            }
+        }
+    };
+    //Selecionar estados e cidades
+    window.onload = function () {
+
+        var estados = document.getElementById('estado');
+        var cidades = document.getElementById('cidade');
+        /*
+        cidades.onchange = function () {
+            if (cidades.value !== "") {
+                //Basta modificar está linha conforme a necessidade
+                window.location = "estado=" + estados.value + "&cidade=" + cidades.value
+            }
+        };
+        */
+
+        new dgCidadesEstados({
+            estado: estados,
+            cidade: cidades,
+            estadoVal: '<%=Request("estado") %>',
+            cidadeVal: '<%=Request("cidade") %>'
+        });
+    }
+</script>
+
+<div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
+    <div style="width: 100%;">
+        <h5 class="header">{{cli.nome}}</h5>
+    </div>
+
+    <form {{#if projeto._id}}action='/projeto/edicao/' {{else}}action='/projeto/novo/' {{/if}} method='post'>
+        <!-- Modal -->
+        <div class="modal fade" id="custosModal" tabindex="1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title">Lançar custos detalhados do projeto</h6>
+                        <button type="button" class="btn btn-sm btn-success" data-bs-dismiss="modal">Aplicar</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4 text-end">
+                                <label class='col-form-label col-form-label-sm fw-bold'>Descrição</label><br>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Kit Gerador:</label>
+                                </div>
+                                <hr>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Módulos:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Inversor:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Estrutura:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Concretagem:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Estação de Baterias:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Cabos:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Disjuntores CC:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>DPS CC:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Disjuntores CA:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>DPS CA:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Cx. Proteção CA:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>String Box:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Outros Componentes:
+                                </div>
+                                <hr>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Cerca:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Central:</label>
+                                </div>
+                                <div class="row mb-1">
+                                    <label class='col-form-label col-form-label-sm fw-bold'>Postes de Condução de
+                                        Fios:</label>
+                                </div>
+                                <hr>
+                            </div>
+                            <div class="col-md-2">
+                                <label class='col-form-label col-form-label-sm fw-bold'>UN</label><br>
+                                <input type='number' value='{{detalhe.unidadeEqu}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeEqu'>
+                                <hr>
+                                <input type='number' value='{{detalhe.unidadeMod}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeMod'>
+                                <input type='number' value='{{detalhe.unidadeInv}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeInv'>
+                                <input type='number' value='{{detalhe.unidadeEst}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeEst'>
+                                <input type='number' value='{{detalhe.unidadeCim}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeCim'>
+                                <input type='number' value='{{detalhe.unidadeEbt}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeEbt'>
+                                <input type='number' value='{{detalhe.unidadeCab}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeCab'>
+                                <input type='number' value='{{detalhe.unidadeDisCC}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeDisCC'>
+                                <input type='number' value='{{detalhe.unidadeDPSCC}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeDPSCC'>
+                                <input type='number' value='{{detalhe.unidadeDisCA}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeDisCA'>
+                                <input type='number' value='{{detalhe.unidadeDPSCA}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeDPSCA'>
+                                <input type='number' value='{{detalhe.unidadeCCA}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeCCA'>
+                                <input type='number' value='{{detalhe.unidadeSB}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeSB'>
+                                <input type='number' value='{{detalhe.unidadeOcp}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeOcp'>
+                                <hr>
+                                <input type='number' value='{{detalhe.unidadeCer}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeCer'>
+                                <input type='number' value='{{detalhe.unidadeCen}}'
+                                    class='form-control form-control-sm mb-1' name='unidadeCen'>
+                                <input type='number' value='{{detalhe.unidadePos}}'
+                                    class='form-control form-control-sm mb-1' name='unidadePos'>
+                                <hr>
+                            </div>
+                            <div class="col-md-3">
+                                <label type='number' class='col-form-label col-form-label-sm fw-bold'>R$
+                                    Unitário</label><br>
+                                <input type='number' value='{{detalhe.vlrUniEqu}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniEqu'>
+                                <hr>
+                                <input type='number' value='{{detalhe.vlrUniMod}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniMod'>
+                                <input type='number' value='{{detalhe.vlrUniInv}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniInv'>
+                                <input type='number' value='{{detalhe.vlrUniEst}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniEst'>
+                                <input type='number' value='{{detalhe.vlrUniCim}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCim'>
+                                <input type='number' value='{{detalhe.vlrUniEbt}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniEbt'>
+                                <input type='number' value='{{detalhe.vlrUniCab}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCab'>
+                                <input type='number' value='{{detalhe.vlrUniDisCC}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDisCC'>
+                                <input type='number' value='{{detalhe.vlrUniDPSCC}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDPSCC'>
+                                <input type='number' value='{{detalhe.vlrUniDisCA}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDisCA'>
+                                <input type='number' value='{{detalhe.vlrUniDPSCA}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniDPSCA'>
+                                <input type='number' value='{{detalhe.vlrUniCCA}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCCA'>
+                                <input type='number' value='{{detalhe.vlrUniSB}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniSB'>
+                                <input type='number' value='{{detalhe.vlrUniOcp}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniOcp'>
+                                <hr>
+                                <input type='number' value='{{detalhe.vlrUniCer}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCer'>
+                                <input type='number' value='{{detalhe.vlrUniCen}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniCen'>
+                                <input type='number' value='{{detalhe.vlrUniPos}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='vlrUniPos'>
+                                <hr>
+                                <label class="col-form-label fw-bold">Total</label>
+                            </div>
+                            <div class="col-md-3">
+                                <label class='col-form-label col-form-label-sm fw-bold'>R$ Total</label><br>
+                                <input type='number' value='{{detalhe.valorEqu}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorEqu'>
+                                <hr>
+                                <input type='number' value='{{detalhe.valorMod}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorMod'>
+                                <input type='number' value='{{detalhe.valorInv}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorInv'>
+                                <input type='number' value='{{detalhe.valorEst}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorEst'>
+                                <input type='number' value='{{detalhe.valorCim}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorCim'>
+                                <input type='number' value='{{detalhe.valorEbt}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorEbt'>
+                                <input type='number' value='{{detalhe.valorCab}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorCab'>
+                                <input type='number' value='{{detalhe.valorDisCC}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorDisCC'>
+                                <input type='number' value='{{detalhe.valorDPSCC}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorDPSCC'>
+                                <input type='number' value='{{detalhe.valorDisCA}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorDisCA'>
+                                <input type='number' value='{{detalhe.valorDPSCA}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorDPSCA'>
+                                <input type='number' value='{{detalhe.valorCCA}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorCCA'>
+                                <input type='number' value='{{detalhe.valorSB}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorSB'>
+                                <input type='number' value='{{detalhe.valorOcp}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorOcp'>
+                                <hr>
+                                <input type='number' value='{{detalhe.valorCer}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorCer'>
+                                <input type='number' value='{{detalhe.valorCen}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorCen'>
+                                <input type='number' value='{{detalhe.valorPos}}'
+                                    class='form-control form-control-sm mb-1' placeholder="R$" name='valorPos'>
+                                <hr>
+                                <label class="col-form-label fw-bold">R$ {{detalhe.vlrTotal}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Fim do Modal -->
+
+        <input type="hidden" name="id" value='{{projeto._id}}'>
+
+        <!--<div class='btn-group col-12 mx-auto'>-->
+            {{#if projeto._id}}
+            <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu ativo'><i class="bi bi-house"></i>
+                Principal</a>
+            <a href="/projeto/alocacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+                Alocação de Recursos</a>
+            <a href="/projeto/custos/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+                Custos</a>
+            <a href="/gerenciamento/cronograma/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+                    class="bi bi-layers"></i>
+                Cronograma</a>
+            <a href="/gerenciamento/documentos/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+                    class="bi bi-layers"></i>
+                Documentos</a>
+            {{else}}
+            <a style="cursor: unset" class='btn btn-sm botao-menu ativo'><i class="bi bi-house"></i>
+                Principal</a>
+            {{/if}}
+        <!--</div>-->
+
+        <input type="hidden" name='tipoprj' value='2'>
+
+        <div class="row mt-1">
+            <div class="col">
+                <div class="row">
+                    <div class="col-md-3 text-end">
+                        <label class=" fw-bold col-form-label col-form-label-sm mt-1"> Número Contrato:
+                        </label><br>
+                        <label class=" fw-bold col-form-label col-form-label-sm mt-1"> Endereço:
+                        </label><br>
+                        <label class="fw-bold col-form-label col-form-label-sm mt-1"> Cliente:
+                        </label><br>
+                        <label class="fw-bold col-form-label col-form-label-sm mt-1"> Estado:
+                        </label><br>
+                        <label class="fw-bold col-form-label col-form-label-sm mt-1"> Cidade:
+                        </label><br>
+                    </div>
+                    <div class="col-md-9">
+                        <input type="text" name="nome" id="nome" value='{{projeto.nome}}'
+                            class="form-control form-control-sm mt-1">
+                        <input name='endereco' type='text' class='form-control form-control-sm mt-1'
+                            value="{{projeto.endereco}}">
+                        <select class='form-select form-select-sm mb-1 mt-1' name='cliente'>
+                            <option style="font-weight: bold;" value="{{cli._id}}">{{cli.nome}}</option>
+                            {{#each cliente}}
+                            <option value="{{_id}}">{{nome}}</option>
+                            {{else}}
+                            <option value=''>Nenhum cliente cadastrado.</option>
+                            {{/each}}
+                        </select>
+                        <div class="row">
+                            <div class="col-md-7">
+                                <select id="estado" name='uf' class='form-select form-select-sm'>
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <label class='col-form-label col-form-label-sm'>{{projeto.uf}}</label>
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <div class="col-md-7">
+                                <select id="cidade" name='cidade' class='form-select form-select-sm'>
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <label class='col-form-label col-form-label-sm'>{{projeto.cidade}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col-md-3 text-end">
+                        <label class='fw-bold col-form-label col-form-label-sm'>Gestor: </label><br>
+                    </div>
+                    <div class="col-md-9">
+                        <select name='responsavel' class="form-select form-select-sm">
+                            <option style="font-weight: bold;" value="{{pr._id}}">{{pr.nome}}</option>
+                            {{#each responsavel}}
+                            <option value="{{_id}}">{{nome}}</option>
+                            {{else}}
+                            <option value=''>Nenhum gestor cadastrado</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col-md-3 text-end">
+                        <label class='fw-bold col-form-label col-form-label-sm'>Vendedor: </label><br>
+                    </div>
+                    <div class="col-md-9">
+                        <select name='vendedor' class="form-select form-select-sm">
+                            <option style="font-weight: bold;" value="{{pv._id}}">{{pv.nome}}</option>
+                            {{#each vendedor}}
+                            <option value="{{_id}}">{{nome}}</option>
+                            {{else}}
+                            <option value=''>Nenhum vendedor cadastrado</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-1 mb-1">
+                    <div class="col-md-3 text-end">
+                        <label class='fw-bold col-form-label col-form-label-sm'>Empresa: </label><br>
+                        <label class='fw-bold col-form-label col-form-label-sm mt-1'>Configuração: </label>
+                    </div>
+                    <div class="col-md-9">
+                        <select name='empresa' class="form-select form-select-sm">
+                            <option style="font-weight: bold;" value="{{rp._id}}">{{rp.nome}}</option>
+                            {{#each empresa}}
+                            <option value="{{_id}}">{{nome}}</option>
+                            {{else}}
+                            <option value=''>Nenhuma empresa encontrada</option>
+                            {{/each}}
+                        </select>
+                        <select name='configuracao' class="form-select form-select-sm mt-1">
+                            <option style="font-weight: bold;" value="{{config._id}}">{{config.slug}}</option>
+                            {{#each configuracao}}
+                            <option value="{{_id}}">{{slug}}</option>
+                            {{else}}
+                            <option value=''>Nenhuma configuração encontrada.</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="row mt-2 mb-2">
+                        <div class="col-md-6 text-end">
+                            <label class='col-form-label col-form-label-sm fw-bold mb-1'>Data Início
+                                Projeto:</label><br>
+                            <label class='col-form-label col-form-label-sm fw-bold mb-1'>Data Previsão de
+                                Entrega:</label>
+                        </div>
+                        <div class="col-md-5">
+                            <input class='form-control form-control-sm mb-1' type='date' name='valDataIni'
+                                id='valDataIni' onchange="mascara_dataini()" value='{{projeto.valDataIni}}'>
+                            <input class='form-control form-control-sm' type='date' name='valDataPrev' id='valDataPrev'
+                                onchange="mascara_dataprev()" value='{{projeto.valDataPrev}}'>
+                            <input type="hidden" name='dataord' id='dataord' value=''>
+                            <input type="hidden" name='dataini' id='dataini' value=''>
+                            <input type="hidden" name='dataprev' id='dataprev' value=''>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="row mt-1 mb-1">
+                    <div class="col-md-3 text-end">
+                        <label class="fw-bold col-form-label col-form-label-sm"> Potência:
+                        </label>
+                    </div>
+                    <div class="col-md-7">
+                        <input name='potencia' type='text' class='form-control form-control-sm'
+                            value="{{projeto.potencia}}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 text-end">
+                        <label for="vlrorc" class="fw-bold  col-form-label col-form-label-sm"> Total do
+                            Projeto:</label><br>
+                        <label for="vlreqi" class=" fw-bold col-form-label col-form-label-sm mt-1"> Valor Material:
+                        </label><br>
+                    </div>
+                    <div class="col-md-7">
+                        <input type="number" name="valor" id="valor" value='{{projeto.valor}}'
+                            class="form-control form-control-sm mb-1" placeholder="R$" aria-placeholder="R$"
+                            step='0.010'>
+                        <input type="number" name="equipamento" id="equipamento" value='{{projeto.vlrkit}}'
+                            class="form-control form-control-sm mb-1" placeholder="R$" aria-placeholder="R$"
+                            step='0.010'>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 text-end">
+                        <label class="col-form-label col-form-label-sm fw-bold mb-1">Classificação:</label><br>
+                        <label class="col-form-label col-form-label-sm fw-bold mb-1">Tensão:</label><br>
+                        <label class="col-form-label col-form-label-sm fw-bold mb-1">Tipo:</label><br>
+                        <label class="col-form-label col-form-label-sm fw-bold">Grupo:</label>
+                    </div>
+                    <div class="col-md-7">
+                        <select name='classUsina' class='form-select form-select-sm mb-1'>
+                            <option>{{projeto.classUsina}}</option>
+                            <option>Rural</option>
+                            <option>Rural Residencial</option>
+                            <option>Rural Granja</option>
+                            <option>Rural Irrigação</option>
+                            <option>Residencial</option>
+                            <option>Industrial</option>
+                            <option>Comercial</option>
+                            <option>Público</option>
+                        </select>
+                        <select name='tipoConexao' class='form-select form-select-sm mb-1'>
+                            <option>{{projeto.tipoConexao}}</option>
+                            <option>Monofásico 127V</option>
+                            <option>Monofásico 220V</option>
+                            <option>Bifásico 220V</option>
+                            <option>Trifásico 220V</option>
+                            <option>Trifásico 380V</option>
+                        </select>
+                        <select name='tipoUsina' class='form-select form-select-sm mb-1'>
+                            <option>{{projeto.tipoUsina}}</option>
+                            <option>Solo Concreto</option>
+                            <option>Solo Metal</option>
+                            <option>Telhado Fibrocimento</option>
+                            <option>Telhado Madeira</option>
+                            <option>Telhado Cerâmica</option>
+                            <option>Telhado Gambrel</option>
+                            <option>Telhado Metálico</option>
+                            <option>Laje</option>
+                        </select>
+                        <select name='grupoUsina' class='form-select form-select-sm'>
+                            <option>{{projeto.grupoUsina}}</option>
+                            <option>Grupo A > 2,3kV</option>
+                            <option>Grupo B1 - Residencial</option>
+                            <option>Grupo B2 - Rural</option>
+                            <option>Grupo B3 - Comercial e Indústria PP</option>
+                            <option>Grupo B4 - IP</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <label class='col-form-label col-form-label-sm fw-bold'>Complementos</label>
+                    <div class="col-md-3">
+                        <div class="form-check">
+                            <input name='estsolo' class="form-check-input" type="checkbox" style="margin-top: 8px;"
+                                {{projeto.temEstSolo}}>
+                            <label class="form-check-label col-form-label col-form-label-sm"> Estrutura
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-check">
+                            <input name='central' class="form-check-input" type="checkbox" style="margin-top: 8px;"
+                                {{projeto.temCentral}}>
+                            <label class="form-check-label col-form-label col-form-label-sm"> Central
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-check">
+                            <input name='cercamento' class="form-check-input" type="checkbox" style="margin-top: 8px;"
+                                {{projeto.temCercamento}}>
+                            <label class="form-check-label col-form-label col-form-label-sm"> Cercamento
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-check">
+                            <input name='poste' class="form-check-input" type="checkbox"
+                                style="margin-top: 8px;margin-left: 1%" {{projeto.temPosteCond}}>
+                            <label class="form-check-label col-form-label col-form-label-sm"
+                                style="margin-left: 1%">Postes
+                                de
+                                Condução
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-check">
+                            <input name='armazenamento' class="form-check-input" type="checkbox"
+                                style="margin-top: 8px;" {{projeto.temArmazenamento}}>
+                            <label class="form-check-label col-form-label col-form-label-sm">
+                                Estação de Armazenamento de Baterias
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-check">
+                            <input name='painel' class="form-check-input" type="checkbox" style="margin-top: 8px;"
+                                {{projeto.temPainel}}>
+                            <label class="form-check-label col-form-label col-form-label-sm">
+                                Painel Elétrico
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="width: 100%;">
+                    <div class='btn-group col-12 gap-2'>
+                        <button type="submit" class="btn btn-sm btn-success" name="aplicar"
+                            style="border-radius: 30px;"> <i class="bi bi-check-circle"></i>
+                            Salvar</button>
+                        {{#if projeto._id}}
+                        {{#if projeto.executando}}
+                        <a {{#if projeto.homologado}}style='opacity: 0.5;pointer-events:none;border-radius: 30px'
+                            {{else}} href='/projeto/motivoParar/{{projeto._id}}' {{/if}} class='btn btn-sm btn-danger'
+                            style="border-radius: 30px;"><i class="bi bi-stop-circle"></i> Parar</a>
+                        {{else}}
+                        <a {{#if projeto.homologado}}style='border-radius: 30px;opacity: 0.5;pointer-events:none'
+                            {{else}} {{#if
+                            projeto.foiRealizado}}style='opacity: 0.5;pointer-events:none;border-radius: 30px' {{else}}
+                            href='/projeto/executar/{{projeto._id}}' {{/if}} {{/if}}
+                            style="color:white;border-radius: 30px;" class='btn btn-sm btn-success'
+                            onmousedown="validaDataIns()"><i class="bi bi-file-earmark-play"></i> Executar</a>
+                        {{/if}}
+                        {{#if projeto.homologado}}
+                        <a style="color: white; background-color: rgb(252, 137, 7);pointer-events: none;border-radius: 30px;"
+                            class='btn btn-sm btn-warning'><i class="bi bi-check"></i> Em Homologação</a>
+                        {{else}}
+                        {{#if projeto.foiRealizado}}
+                        <a
+                            style="color: white; background-color: rgb(19, 2, 172);border-radius: 30px; font-size:14px;padding: 7px">
+                            Projeto Realizado </a>
+                        {{else}}
+                        <a href='/projeto/homologar/{{projeto._id}}'
+                            style="color: white; background-color: rgb(252, 137, 7);border-radius: 30px;"
+                            class='btn btn-sm btn-warning'><i class="bi bi-stopwatch"></i> Homologar</a>
+                        {{/if}}
+                        {{/if}}
+                        <a {{#if projeto.homologado}}href='/projeto/realizar/{{projeto._id}}'
+                            {{else}}style='opacity: 0.5;pointer-events:none;border-radius: 30px;' {{/if}}
+                            class='btn btn-sm btn-success' style="border-radius: 30px;"><i
+                                class="bi bi-check2-circle"></i>
+                            Realizar</a>
+                        <a href='/gerenciamento/dashboard/{{projeto._id}}' class='btn btn-sm btn-primary'
+                            style="border-radius: 40px;"><i class="bi bi-bar-chart"></i> Dashboard</a>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="div">
+        <div class="row">
+            <div class="col text-end">
+                <label class="col-form-label fw-bold">Adicionar Proposta</label>
+            </div>
+            <div class="col text-start mt-1">
+                <form action='/projeto/salvarProposta' enctype="multipart/form-data" method="post">
+                    <input type='hidden' name='id' value='{{projeto._id}}'>
+                    <table>
+                        <tr>
+                            <td>
+                                <input class='form-control form-control-sm' type='file' name='proposta'>
+                                <label class='col-form-label col-form-label-sm'
+                                    style="line-height: 0px;">{{projeto.proposta}}</label>
+                            </td>
+                            <td>
+                                {{#if projeto.proposta}}
+                                <div class="col-md-1">
+                                    <i class='bi bi-check-all'></i>
+                                </div>
+                                {{/if}}
+                            </td>
+                            <td>
+                                <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
+                                        class='bi bi-save'></i></button>
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-primary" href='/projeto/mostrarProposta/{{projeto._id}}'
+                                    target="_blank"><i class='bi bi-eye'></i></a>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

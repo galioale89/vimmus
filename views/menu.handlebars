@@ -3,6 +3,7 @@
     font-size: 16px;
     vertical-align: text-top;
   }
+
   th {
     border-collapse: collapse;
     font-size: 12px;
@@ -24,7 +25,7 @@
 <div class='row mt-1' style="width: 100%;font-size: 12px;">
   <div class='col-md-2'>
     <div class="menu" style="height:100%">
-      <img src='img/logovimmus.png' height="75" width="100" style="padding-left: 10%;" />
+      {{!-- <img src='img/logovimmus.png' height="75" width="100" style="padding-left: 10%;" /> --}}
       <div class="menu-interno">
         <div class='titulo-inicio text-center'> CADASTROS</div>
         <div class="row mb-2">
@@ -37,7 +38,7 @@
         </div>
         <div class="row mb-2">
           <div class="col-md-8 text-end">
-            <a href="/projeto/novo" class="contorno-menu"><i class='bi bi-file-arrow-up'></i> Projetos</a><br>
+            <a href="/projeto/selectprojeto" class="contorno-menu"><i class='bi bi-file-arrow-up'></i> Projetos</a><br>
           </div>
           <div class="col-md-1">
             <a href="/projeto/consulta" class="botaomenu"> <i class='bi bi-search'></i> </a>
@@ -51,6 +52,11 @@
             <a href='/pessoa/consulta' class="botaomenu"><i class='bi bi-search'></i> </a>
           </div>
         </div>
+        <div class="row mb-2">
+          <div class="col-md-8 text-end">
+            <a href='/gerenciamento/plano' class="contorno-menu"><i class='bi bi-person-plus'></i> Planos</a>
+          </div>
+        </div>        
         {{!-- <div class="mt-1 text-start" style="padding-left: 25px;">
           <a href='/pessoa/consultaequipepadrao' class="contorno-menu"><i class='bi bi-people'></i> Equipes
             Padrão</a><br>
@@ -75,25 +81,25 @@
       </div>
       <div class='titulo-inicio text-center'>FERRAMENTAS</div>
       <div class="menu-interno" style="padding-right: 5px;">
-        <div style="margin-top: 6%;margin-bottom: 10%;">
+        <div style="margin-top: 6%;margin-bottom: 7%;">
           <a href='/gerenciamento/agenda' class="relatorio titulo-relatorio"><i class='bi bi-columns'></i>
             Agenda</a><br>
         </div>
-        <div style="margin-top: 6%;margin-bottom: 10%;">
+        <div style="margin-top: 6%;margin-bottom: 7%;">
           <a href='/gerenciamento/cenarios' class="relatorio titulo-relatorio"><i class='bi bi-display'></i> Análise de
             Cenários</a>
         </div>
-        <div class="dropend" style="margin-bottom: 10%;">
+        <div class="dropend" style="margin-bottom: 7%;">
           <a class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false"><i
               class='bi bi-clipboard-data'></i> Indicadores <i class="bi bi-caret-right"></i>
           </a>
           <ul class="dropdown-menu">
             <a href='/relatorios/dashboardcustos' class="botao-filter"> Custos</a><br>
-            <a href='/relatorios/dashboardbi' class="botao-filter"> Estatísticas</a><br>
-            <a href='/relatorios/analisegeral' class="botao-filter"> Análise Geral</a><br>            
+            <a href='/relatorios/dashboardbi' class="botao-filter"> Projetos</a><br>
+            <a href='/relatorios/analisegeral' class="botao-filter"> Análise Geral</a><br>
           </ul>
         </div>
-        <div class="dropend " style="margin-bottom: 10%;">
+        <div class="dropend " style="margin-bottom: 7%;">
           <a class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false"><i
               class="bi bi-book"></i> Relatórios <i class="bi bi-caret-right"></i>
           </a>
@@ -102,9 +108,13 @@
             <a href='/relatorios/listarabertos' class="botao-filter"> Lista Abertos</a><br>
           </ul>
         </div>
-        <div style="margin-bottom: 10%;">
+        <div style="margin-bottom: 7%;">
           <a href='/usuario/editar/{{id}}' class="relatorio titulo-relatorio"><i class="bi bi-house-fill"></i> Minha
             Conta</a>
+        </div>
+        <div style="margin-bottom: 7%;">
+          <a href='/pessoa/consultaequipepadrao/' class="relatorio titulo-relatorio"><i class="bi bi-people"></i> Equipe
+            Padrão</a>
         </div>
 
         {{#if ehMaster}}
@@ -188,18 +198,17 @@
           <tr class='contorno-titulo' style='border-bottom: rgba(40,55,89,0.1) solid 1px;'>
             <th>Status</th>
             <th>Cliente</th>
+            <th>Cidade</th>
             <th>Data Instalação</th>
             <th>Previsão Entrega</th>
-            <th>Data Final</th>
-            <th>Markup</th>
-            <th>R$/kWp</th>
+            <th colspan="3">Estágio</th>
             <th>Registros: {{totLista}}</th>
           </tr>
           {{#each dataord}}
           <tr>
             <td>
               {{#if atrasado}}
-              <div id='atrasado'><i class='bi bi-exclamation-triangle mt-1' style="font-size: 12px;"></i>
+              <div id=''><i class='bi bi-exclamation-triangle mt-1' style="font-size: 12px;"></i>
               </div>
               {{else}}
               {{#if executando}}
@@ -218,11 +227,24 @@
               {{/if}}
             </td>
             <td>{{nomecliente}}</td>
+            <td>{{cidade}}</td>
             <td>{{dataIns}}</td>
             <td>{{dataprev}}</td>
-            <td>{{datafim}}</td>
-            <td>{{markup}}%</td>
-            <td>{{vrskwp}}</td>
+            {{#if procAterramento}}
+            <td>CA{{checkAte}}</td>
+            {{else}}
+            <td>UCA{{uncheckAte}}</td>
+            {{/if}}
+            {{#if procTelhado}}
+            <td>CT{{checkTel}}</td>
+            {{else}}
+            <td>UCT{{uncheckTel}}</td>
+            {{/if}}
+            {{#if procEletrica}}
+            <td>CE{{checkEle}}</td>
+            {{else}}
+            <td>UCE{{uncheckEle}}</td>
+            {{/if}}
             <!--<td>{{cliente}}</td>-->
             <td style="padding-top: 3px;">
               <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
@@ -232,12 +254,14 @@
                     class="bi bi-eye icone-tabela"></i></a>
                 <a href='/projeto/edicao/{{_id}}/' class='botao-tabela ativado-tabela'><i
                     class="bi bi-pen icone-tabela"></i></a>
-                <a {{#if orcado}}class='botao-tabela desativado-tabela' {{else}}href='/projeto/realizar/{{_id}}'
+                {{!-- <a {{#if orcado}}class='botao-tabela desativado-tabela' {{else}}href='/projeto/realizar/{{_id}}'
                   class='botao-tabela ativado-tabela' {{/if}}> <i class="bi bi-check2-circle icone-tabela"></i>
-                </a>
+                </a> --}}
+                <!--
                 <a href='/projeto/confirmaexclusao/{{_id}}' class="botao-tabela ativado-tabela"><i
                     class="bi bi-trash icone-tabela"></i>
                 </a>
+                -->
               </div>
             </td>
           </tr>

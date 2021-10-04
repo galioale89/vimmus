@@ -21,23 +21,23 @@
             preview.src = ''
         }
     }
-/*
-    function preview_fotocert() {
-        var imagem = document.querySelector('input[name=fotocert]').files[0]
-        var preview = document.querySelector('img[name=fotocert]')
-
-        var reader = new FileReader()
-        reader.onloadend = function () {
-            preview.src = reader.result
+    /*
+        function preview_fotocert() {
+            var imagem = document.querySelector('input[name=fotocert]').files[0]
+            var preview = document.querySelector('img[name=fotocert]')
+    
+            var reader = new FileReader()
+            reader.onloadend = function () {
+                preview.src = reader.result
+            }
+    
+            if (imagem) {
+                reader.readAsDataURL(imagem)
+            } else {
+                preview.src = ''
+            }
         }
-
-        if (imagem) {
-            reader.readAsDataURL(imagem)
-        } else {
-            preview.src = ''
-        }
-    }
-*/
+    */
     function mascara_data() {
         var data = document.getElementById('data')
         var currenTime = new Date()
@@ -91,7 +91,7 @@
                 numdoc == "99999999999999") {
                 cnpj.value = ''
             }
-            
+
             // Valida DVs
             var tamanho = numdoc.length - 2
             var numeros = numdoc.substring(0, tamanho)
@@ -189,7 +189,7 @@
             estadoVal: '<%=Request("estado") %>',
             cidadeVal: '<%=Request("cidade") %>'
         });
-    };    
+    };
 
 </script>
 
@@ -265,40 +265,60 @@
                         <input type='text ' name='cidade' class='form-control form-control-sm mb-1'>
                         <input type='text ' name='uf' class='form-control form-control-sm mb-1'>
                         -->
-                        <input type='text' class='form-control form-control-sm mb-1 mt-1' maxlength="18" autocomplete="off"
-                            id='cnpj' name='cnpj' onkeyup="valida_cnpj()">
+                        <input type='text' class='form-control form-control-sm mb-1 mt-1' maxlength="18"
+                            autocomplete="off" id='cnpj' name='cnpj' onkeyup="valida_cnpj()">
                         <input type='text' class='form-control form-control-sm mb-1' maxlength="14" autocomplete="off"
                             id='cpf' name='cpf' onkeyup="valida_cpf()">
                         <input type='text' class='form-control form-control-sm mb-1' autocomplete="off" maxlength="7"
                             placeholder='__/____' id='data' name='iniati' maxlength="8" onkeyup="mascara_data()">
-                        <input type='text ' name='celular' id='celular' placeholder='DDD + Número' class='form-control form-control-sm mb-1'
-                            maxlength="16" autocomplete="off">
+                        <input type='text ' name='celular' id='celular' placeholder='DDD + Número'
+                            class='form-control form-control-sm mb-1' maxlength="16" autocomplete="off">
                         <input type='text' name='email' class='form-control form-control-sm mb-1'>
                     </div>
                 </div>
             </div>
             <div class="col-md-5">
-                <div class="container card">
+                <div>
                     <label class='col-form-label col-form-label-sm fw-bold'>Função:</label>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col">
                             <div class="form-check form-switch">
-                                <input name='funges' class="form-check-input" type="checkbox">
-                                <label class="form-check-label">Gestor</label>
+                                <input name='funges' class="form-check-input" type="checkbox" {{pessoa.funges}}>
+                                <label class="form-check-label mt-1" style="font-size: 14px;">Gestor</label>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col">
                             <div class="form-check form-switch">
-                                <input name='funpro' class="form-check-input" type="checkbox">
-                                <label class="form-check-label">Projetista</label>
+                                <input name='funpro' class="form-check-input" type="checkbox" {{pessoa.funpro}}>
+                                <label class="form-check-label mt-1" style="font-size: 14px;">Projetista</label>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col">
                             <div class="form-check form-switch">
-                                <input name='funins' class="form-check-input" type="checkbox">
-                                <label class="form-check-label">Instalador</label>
+                                <input name='funeng' class="form-check-input" type="checkbox" {{pessoa.funeng}}>
+                                <label class="form-check-label mt-1" style="font-size: 14px;">Engenheiro</label>
+                            </div>
+                        </div>                        
+                        <div class="col">
+                            <div class="form-check form-switch">
+                                <input name='funins' class="form-check-input" type="checkbox" {{pessoa.funins}}>
+                                <label class="form-check-label mt-1" style="font-size: 14px;">Instalador</label>
                             </div>
                         </div>
+                        <div class="col">
+                            <div class="form-check form-switch">
+                                <input name='funele' class="form-check-input" type="checkbox" {{pessoa.funele}}>
+                                <label class="form-check-label mt-1" style="font-size: 14px;">Eletricista</label>
+                            </div>
+                        </div>                        
+                    </div>
+                </div>
+                <div class="row mb-1">
+                    <div class="col-md-3">
+                        <label class="col-form-label col-form-label-sm">R$ Custo Dia:</label>
+                    </div>
+                    <div class="col">
+                        <input type='number' name='custo' step='0.010' class="form-control form-control-sm">
                     </div>
                 </div>
                 <div class="row mt-4">
@@ -323,13 +343,15 @@
                     <div class="col-md-4">
                         <div class="form-check form-switch">
                             <input name='maninv' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                            <label class="form-check-label" for="flexSwitchCheckDefault">Manutenção de
+                            <label class="form-check-label mt-1" style='font-size: 13px'
+                                for="flexSwitchCheckDefault">Manutenção de
                                 Inversores</label>
                         </div>
 
                         <div class="form-check form-switch">
                             <input name='subcom' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                            <label class="form-check-label" for="flexSwitchCheckDefault">Substituição de
+                            <label class="form-check-label mt-1" style='font-size: 13px'
+                                for="flexSwitchCheckDefault">Substituição de
                                 Componentes</label>
                         </div>
 
@@ -337,25 +359,29 @@
                     <div class="col-md-4">
                         <div class="form-check form-switch">
                             <input name='repequ' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                            <label class="form-check-label" for="flexSwitchCheckDefault">Reposicionamento de
+                            <label class="form-check-label mt-1" style='font-size: 13px'
+                                for="flexSwitchCheckDefault">Reposicionamento de
                                 Equipamento</label>
                         </div>
 
                         <div class="form-check form-switch">
                             <input name='vistor' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                            <label class="form-check-label" for="flexSwitchCheckDefault">Vistoria de Conexões e
+                            <label class="form-check-label mt-1" style='font-size: 13px'
+                                for="flexSwitchCheckDefault">Vistoria de Conexões e
                                 Instalações</label>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-check form-switch">
                             <input name='dlaudo' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                            <label class="form-check-label" for="flexSwitchCheckDefault">Diagnóstico e Laudos</label>
+                            <label class="form-check-label mt-1" style='font-size: 13px'
+                                for="flexSwitchCheckDefault">Diagnóstico e Laudos</label>
                         </div>
 
                         <div class="form-check form-switch">
                             <input name='limmod' class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                            <label class="form-check-label" for="flexSwitchCheckDefault">Limpeza de
+                            <label class="form-check-label mt-1" style='font-size: 13px'
+                                for="flexSwitchCheckDefault">Limpeza de
                                 Módulos(Painéis)</label>
                         </div>
                     </div>

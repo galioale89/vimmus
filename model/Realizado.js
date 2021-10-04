@@ -128,6 +128,10 @@ const Realizado = new Schema({
         type: Number,
         require: false
     },
+    toteng: {
+        type: Number,
+        require: false
+    },    
     totges: {
         type: Number,
         require: false
@@ -163,7 +167,19 @@ const Realizado = new Schema({
     toteae:{
         type: Number,
         require: false
-    },    
+    },  
+    matate:{
+        type: Number,
+        require: false
+    },
+    vlremp:{
+        type: Number,
+        require: false
+    },   
+    compon:{
+        type: Number,
+        require: false
+    },        
     custofix: {
         type: Number,
         require: false

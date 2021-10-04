@@ -1,0 +1,272 @@
+<style>
+    .lists {
+        display: flex;
+        flex: 1;
+        width: 100%;
+    }
+
+    .lists .list {
+        display: flex;
+        flex-flow: column;
+        flex: 1;
+
+        width: 400px;
+        border-radius: 20px;
+        min-height: 250px;
+
+        background-color: #001263e5;
+        margin: 0 5px;
+        padding: 8px;
+        transition: all 0.2s linear;
+    }
+
+    .lists .list .list-item {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+
+    .lists .list .item-instalacao {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+
+    .lists .list .item {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+</style>
+
+{{!-- {{#if ehSelecao}}
+<form action='/gerenciamento/addmanutencao' method="post">
+
+</form>
+{{else}} --}}
+<div class="container d-flex justify-content-center" style='padding: 10px;margin-top: 2px;'>
+    <form method="post" action='/gerenciamento/addtarefa' style="text-align: center;">
+        <label style="font-size: 15px;font-weight: 600;">Adicionar Manutenção</label><br><br>
+        <div class="row">
+            <div class="col-md-4 text-end">
+                <label class="col-form-label col-form-label-sm fw-bold">Usina:</label>
+            </div>
+            <div class="col-md-4">
+                <select class='form-select form-select-sm' name="usina" id="usina">
+                    {{#each usina}}
+                    <option value="{{_id}}">{{nome}}</option>
+                    {{else}}
+                    <option value="">Não existem usinas cadastradas</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div><br>
+        <div class="row">
+            <div class="col-md-2 text-end">
+                <label class="col-form-label col-form-label-sm fw-bold">Manutenção:</label>
+            </div>
+            <div class="col-md-4">
+                <select class='form-select form-select-sm' name='manutencao'>
+                    <option>Limpeza de Painéis</option><br>
+                    <option>Substituição de Inversor</option>
+                    <option>Substituição de Módulos</option>
+                    <option>Correção de Conexões</option>
+                    <option>Sinistro</option>
+                </select>
+            </div>
+            <div class="col-md-1 text-end">
+                <label class="col-form-label col-form-label-sm fw-bold">Preço:</label>
+            </div>
+            <div class="col-md-3 text-end">
+                <input class="form-control form-control-sm" type="number" step='0.010' name='preo' id='preco'
+                    placeholder="R$">
+            </div>
+        </div><br>
+        <div class="row">
+            <div class="col-md-3 text-end">
+                <label class="col-form-label col-form-label-sm fw-bold">Período da Atividade:</label>
+            </div>
+            <div class="col-md-3">
+                <input class='form-control form-control-sm' type='date' name='dataini' value='{{data}}'>
+            </div>
+            <div class="col-md-1">
+                <label class='col-form-label col-form-label-sm'>a</label>
+            </div>
+            <div class="col-md-3">
+                <input class='form-control form-control-sm' type='date' name='datafim' value='{{data}}'>
+            </div>
+        </div><br>
+        <hr>
+
+        <label class='col-form-label col-form-label-sm'>Lembre-se de verificar a disponibilidade da pessoa para realizar
+            a manutenção!</label>
+        <div class="row mt-1" style="padding-left: 20px;">
+            <div class="row">
+                <div class="lists">
+                    <div class="list">
+                        <label class="col-form-label col-form-label-md fw-bold text-center"
+                            style="color: white">Profissionais Disponíveis</label>
+                        {{#each fora}}
+                        <div class="list-item" style='color: black;' draggable="true">{{ins}}<a
+                                href='/pessoa/vermais/{{id}}' style="padding-left: 5px;"><i class='bi bi-eye'></i></a>
+                        </div>
+                        {{/each}}
+                    </div>
+                    <div class="list">
+                        <label class="col-form-label col-form-label-md fw-bold text-center"
+                            style="color: white">Profissionais Alocados</label>
+                        {{#each dentro}}
+                        <div class="item-instalacao" style='color: black;' draggable="true">{{ins}}<a
+                                href='/pessoa/vermais/{{id}}' style="padding-left: 5px;"><i class='bi bi-eye'></i></a>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <input type='hidden' class='ins0' name='ins0' id='ins0' value=''>
+        <input type='hidden' class='ins1' name='ins1' id='ins1' value=''>
+        <input type='hidden' class='ins2' name='ins2' id='ins2' value=''>
+        <input type='hidden' class='ins3' name='ins3' id='ins3' value=''>
+        <input type='hidden' class='ins4' name='ins4' id='ins4' value=''>
+        <input type='hidden' class='ins5' name='ins5' id='ins5' value=''>
+        <button type="submit" style="width: 200px;margin-top: 4px;" class="btn btn-sm btn-primary"
+            onclick="getItemValue()">Inserir</button>
+    </form>
+</div>
+{{!-- {{/if}} --}}
+<script>
+    const list_items = document.querySelectorAll('.list-item');
+    const lists = document.querySelectorAll('.list');
+    const list_instalacao = document.querySelectorAll('.item-instalacao');
+
+    let draggedItem = null;
+
+    for (let i = 0; i < list_items.length; i++) {
+        const item = list_items[i];
+
+        item.addEventListener('dragstart', function () {
+            draggedItem = item;
+            setTimeout(function () {
+                item.style.display = 'none';
+            }, 0)
+        });
+
+        item.addEventListener('dragend', function () {
+            this.className = 'item-instalacao';
+            setTimeout(function () {
+                draggedItem.style.display = 'block';
+                draggedItem = null;
+            }, 0);
+        })
+
+        for (let j = 0; j < lists.length; j++) {
+            const list = lists[j];
+
+            list.addEventListener('dragover', function (e) {
+                e.preventDefault();
+            });
+
+            list.addEventListener('dragenter', function (e) {
+                e.preventDefault();
+                this.style.backgroundColor = 'rgba(40, 55, 89, 1)';
+            });
+
+            list.addEventListener('dragleave', function (e) {
+                this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+            });
+
+            list.addEventListener('drop', function (e) {
+                console.log('drop');
+                this.append(draggedItem);
+                this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+            });
+        }
+    }
+
+    if (list_instalacao.length > 0 || list_instalacao.length != '') {
+
+        for (let x = 0; x < list_instalacao.length; x++) {
+            const instalacao = list_instalacao[x];
+
+            instalacao.addEventListener('dragstart', function () {
+                draggedItem = instalacao;
+                setTimeout(function () {
+                    item.style.display = 'none';
+                }, 0)
+            });
+
+            instalacao.addEventListener('dragend', function () {
+                this.className = 'item';
+                setTimeout(function () {
+                    draggedItem.style.display = 'block';
+                    draggedItem = null;
+                }, 0);
+            })
+
+            for (let y = 0; y < lists.length; y++) {
+                const list = lists[y];
+
+                list.addEventListener('dragover', function (e) {
+                    e.preventDefault();
+                });
+
+                list.addEventListener('dragenter', function (e) {
+                    e.preventDefault();
+                    this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+                });
+
+                list.addEventListener('dragleave', function (e) {
+                    this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+                });
+
+                list.addEventListener('drop', function (e) {
+                    console.log('drop');
+                    this.append(draggedItem);
+                    this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+                });
+            }
+        }
+    }
+
+    function getItemValue() {
+        const item = document.querySelectorAll('.item-instalacao');
+        for (i = 0; i < item.length; i++) {
+            const insitem = document.getElementsByClassName(item[i].getAttribute('class'));
+            var element = insitem[i].innerText;
+            switch (i) {
+                case 0:
+                    var insdes = document.getElementById('ins0');
+                    insdes.value = element
+                    break;
+                case 1:
+                    var insdes = document.getElementById('ins1');
+                    insdes.value = element
+                    break;
+                case 2:
+                    var insdes = document.getElementById('ins2');
+                    insdes.value = element
+                    break;
+                case 3:
+                    var insdes = document.getElementById('ins3');
+                    insdes.value = element
+                    break;
+                case 4:
+                    var insdes = document.getElementById('ins4');
+                    insdes.value = element
+                    break;
+                case 5:
+                    var insdes = document.getElementById('ins5');
+                    insdes.value = element
+                    break;
+            }
+        }
+    }
+</script>

@@ -1,0 +1,614 @@
+<style>
+    .lists-ins {
+        display: flex;
+        flex: 1;
+        width: 100%;
+    }
+
+    .lists-ins .list-ins {
+        display: flex;
+        flex-flow: column;
+        flex: 1;
+
+        border-radius: 20px;
+        min-height: 100px;
+
+        background-color: #001263e5;
+        margin: 0 15px;
+        padding: 8px;
+        transition: all 0.2s linear;
+    }
+
+    .lists-ins .list-ins .list-item-ins {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+
+    .lists-ins .list-ins .item-instalacao {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+
+    .lists-ins .list-ins .item-ins {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+
+    .lists-ele {
+        display: flex;
+        flex: 1;
+        width: 100%;
+    }
+
+    .lists-ele .list-ele {
+        display: flex;
+        flex-flow: column;
+        flex: 1;
+
+        border-radius: 20px;
+        min-height: 150px;
+
+        background-color: #001263e5;
+        margin: 0 15px;
+        padding: 8px;
+        transition: all 0.2s linear;
+    }
+
+    .lists-ele .list-ele .list-item-ele {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+
+    .lists-ele .list-ele .item-eletricista {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+
+    .lists-ele .list-ele .item-ele {
+        background-color: #706060;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+
+    table {
+        font-size: 14px;
+        text-align: center;
+    }
+
+    td {
+        border: 5px solid transparent;
+    }
+</style>
+<div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
+    <div style="width: 100%;">
+        <h5 class="header">{{cliente.nome}} </h5>
+    </div>
+
+    <!--<div class='btn-group col-12 mx-auto'>-->
+    {{#if projeto._id}}
+    <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'><i class="bi bi-house"></i>
+        Principal</a>
+    <a href="/projeto/alocacao/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i class="bi bi-layers"></i>
+        Alocação de Recursos</a>
+    <a href="/projeto/custos/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+        Custos</a>
+    <a href="/gerenciamento/cronograma/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+        Cronograma</a>
+    <a href="/gerenciamento/documentos/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+        Documentos</a>
+    {{else}}
+    <a style="cursor: unset" class='btn btn-sm botao-menu ativo'><i class="bi bi-house"></i>
+        Principal</a>
+    {{/if}}
+    <!--</div>-->
+
+    <form method="post" action='/projeto/salvarele'>
+        <input type="hidden" name="idele" value='{{projeto._id}}'>
+        <div class="row" style="padding:10px;width: 100%;">
+            <div class="col">
+                <div class="row">
+                    <div class="lists-ele">
+                        <div class="list-ele">
+                            <label class="col-form-label col-form-label-sm fw-bold text-center"
+                                style="color: white">Eletricistas Disponíveis</label>
+                            {{#each fora_ele}}
+                            <div class="list-item-ele" style='color: black;' draggable="true">{{nome}}<a
+                                    href='/pessoa/vermais/{{id}}' style="padding-left: 5px;"
+                                    onchange="getItemValueEle()"><i class='bi bi-eye'></i></a>
+                            </div>
+                            {{/each}}
+                        </div>
+                        <div class="list-ele">
+                            <label class="col-form-label col-form-label-sm fw-bold text-center"
+                                style="color: white">Eletricistas Alocados</label>
+                            {{#each dentro_ele}}
+                            <div class="item-eletricista" style='color: black;' draggable="true">{{nome}}<a
+                                    href='/pessoa/vermais/{{id}}' style="padding-left: 5px;"
+                                    onchange="getItemValueEle()"><i class='bi bi-eye'></i></a>
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col" style="padding-left: 10px, padding-right: 10px">
+                <div class="row mt-1">
+                    <table>
+                        <tr>
+                            <th style="width: 15%;">Atividades</th>
+                            <th>Aterramento</th>
+                            <th>StringBox</th>
+                            <th>Inversores</th>
+                        </tr>
+                        <tr>
+                            <td>Data Inicial</td>
+                            <td><input class='form-control form-control-sm' type="date" name='dateAteIni'
+                                    value='{{cronograma.dateateini}}'></td>
+                            <td><input class='form-control form-control-sm' type="date" name='dateStbIni'
+                                    value='{{cronograma.datestbini}}'></td>
+                            <td><input class='form-control form-control-sm' type="date" name='dateInvIni'
+                                    value='{{cronograma.dateinvini}}'></td>
+                        </tr>
+                        <tr>
+                            <td>Data Final</td>
+                            <td><input class='form-control form-control-sm' type="date" name='dateAteFim'
+                                    value='{{cronograma.dateatefim}}'></td>
+                            <td><input class='form-control form-control-sm' type="date" name='dateStbFim'
+                                    value='{{cronograma.datestbfim}}'></td>
+                            <td><input class='form-control form-control-sm' type="date" name='dateInvFim'
+                                    value='{{cronograma.dateinvfim}}'></td>
+                        </tr>
+                    </table>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-5 text-end">
+                        <label class='col-form-label col-form-label-sm'>Custo Diário Total:</label>
+                    </div>
+                    <div class="col-md-3">
+                        <input class='form-control form-control-sm' name='custoEle' id='custoEle' value='{{custoEle}}'>
+                    </div>
+                    <div class="col">
+                        <button type="submit" class='btn btn-sm btn-success'
+                            onmousedown="getItemValueEle()">Próximo>></button>
+                    </div>
+                </div>
+            </div>
+            <input type='hidden' class='ele0' name='ele0' id='ele0' value=''>
+            <input type='hidden' name='custoEle0' id='custoEle0' value='{{custoEle0}}'>
+            <input type='hidden' class='ele1' name='ele1' id='ele1' value=''>
+            <input type='hidden' name='custoEle1' id='custoEle1' value='{{custoEle1}}'>
+        </div>
+    </form>
+    {{#if cronograma.dateinvfim}}
+    <form action='/projeto/salvarequipe/' method='post'>
+        <input type="hidden" name="id" value='{{projeto._id}}'>
+        <div class="row mt-1">
+            <div class="col-md-1 text-end">
+                <label for="nome" class=" fw-bold col-form-label col-form-label-sm mt-1"> Equipe:
+                </label>
+            </div>
+            <div class="col">
+                <select class='form-select form-select-sm mb-1 mt-1' name='equipe'>
+                    <option style="font-weight: bold;" value={{lista_equipe._id}}>{{lista_equipe.nome}}</option>
+                    {{#each equipes}}
+                    <option value="{{_id}}">{{nome}}</option>
+                    {{else}}
+                    <option value=''>Nenhuma equipe cadastrada.</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="col">
+                <button type="submit" class='btn btn-sm btn-success mt-1'>Próximo>></button>
+            </div>
+        </div>
+    </form>
+    {{/if}}
+    {{#if projeto.equipe}}
+    <form method="post" action='/projeto/salvarins/'>
+        <input type="hidden" name="idins" value='{{projeto._id}}'>
+        <div class="row" style="padding-left:10px;padding-right: 10px;width: 100%;">
+            <div class="col">
+                <div class="row">
+                    <div class="lists-ins">
+                        <div class="list-ins">
+                            <label class="col-form-label col-form-label-sm fw-bold text-center"
+                                style="color: white">Instaladores Disponíveis</label>
+                            {{#each fora_ins}}
+                            <div class="list-item-ins" style='color: black;' draggable="true">{{nome}}<a
+                                    href='/pessoa/vermais/{{id}}' style="padding-left: 5px;"><i
+                                        class='bi bi-eye'></i></a>
+                            </div>
+                            {{/each}}
+                        </div>
+                        <div class="list-ins">
+                            <label class="col-form-label col-form-label-sm fw-bold text-center"
+                                style="color: white">Instaladores Alocados</label>
+                            {{#each dentro_ins}}
+                            <div class="item-instalacao" style='color: black;' draggable="true">{{nome}}<a
+                                    href='/pessoa/vermais/{{id}}' style="padding-left: 5px;"><i
+                                        class='bi bi-eye'></i></a>
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col" style="padding: 10px">
+                <div class="row mt-4">
+                    <table>
+                        <tr>
+                            <th style="width: 15%;">Atividades</th>
+                            <th>Estruturas</th>
+                            <th>Módulos</th>
+                        </tr>
+                        <tr>
+                            <td>Data Inicial</td>
+                            <td><input class='form-control form-control-sm' type="date" name='dateEstIni'
+                                    value='{{cronograma.dateestini}}'></td>
+                            <td><input class='form-control form-control-sm' type="date" name='dateModIni'
+                                    value='{{cronograma.datemodini}}'></td>
+                        </tr>
+                        <tr>
+                            <td>Data Final</td>
+                            <td><input class='form-control form-control-sm' type="date" name='dateEstFim'
+                                    value='{{cronograma.dateestfim}}'></td>
+                            <td><input class='form-control form-control-sm' type="date" name='dateModFim'
+                                    value='{{cronograma.datemodfim}}'></td>
+                        </tr>
+                    </table>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-5 text-end">
+                        <label class='col-form-label col-form-label-sm'>Custo Diário Total:</label>
+                    </div>
+                    <div class="col-md-3">
+                        <input class='form-control form-control-sm' name='custoIns' id='custoIns' value='{{custoIns}}'>
+                    </div>
+                    <div class="col">
+                        <button type="submit" class='btn btn-sm btn-success'
+                            onclick="getItemValueIns()">Próximo>></button>
+                    </div>
+                </div>
+            </div>
+            <input type='hidden' class='ins0' name='ins0' id='ins0' value=''>
+            <input type='hidden' class='ins1' name='ins1' id='ins1' value=''>
+            <input type='hidden' class='ins2' name='ins2' id='ins2' value=''>
+            <input type='hidden' class='ins3' name='ins3' id='ins3' value=''>
+            <input type='hidden' class='ins4' name='ins4' id='ins4' value=''>
+            <input type='hidden' class='ins5' name='ins5' id='ins5' value=''>
+            <input type='hidden' name='custoIns0' id='custoIns0' value='{{custoIns0}}'>
+            <input type='hidden' name='custoIns1' id='custoIns1' value='{{custoIns1}}'>
+            <input type='hidden' name='custoIns2' id='custoIns2' value='{{custoIns2}}'>
+            <input type='hidden' name='custoIns3' id='custoIns3' value='{{custoIns3}}'>
+            <input type='hidden' name='custoIns4' id='custoIns4' value='{{custoIns4}}'>
+            <input type='hidden' name='custoIns5' id='custoIns5' value='{{custoIns5}}'>
+        </div>
+    </form>
+    {{/if}}
+    {{#if cronograma.dateinvfim}}
+    <form method="post" action='/projeto/salvarcustos' class='d-flex justify-content-end'>
+        <input type='hidden' name='idprj' value='{{projeto._id}}'>
+        <input type='hidden' name='savecustoele' id='savecustoele' value="{{custoEle}}">
+        <input type='hidden' name='savecustoins' id='savecustoins' value="{{custoIns}}">
+        <button type='submit' class="btn btn-sm btn-primary">Salvar Alterações</button>
+    </form>
+    {{/if}}
+</div>
+<script>
+
+    const list_item_ins = document.querySelectorAll('.list-item-ins');
+    const lists_ins = document.querySelectorAll('.list-ins');
+    const list_instalacao = document.querySelectorAll('.item-instalacao');
+
+    let draggedItemIns = null;
+
+    for (let i = 0; i < list_item_ins.length; i++) {
+        const item_ins = list_item_ins[i];
+
+        item_ins.addEventListener('dragstart', function () {
+            draggedItemIns = item_ins;
+            setTimeout(function () {
+                item_ins.style.display = 'none';
+            }, 0)
+        });
+
+        item_ins.addEventListener('dragend', function () {
+            this.className = 'item-instalacao';
+            setTimeout(function () {
+                draggedItemIns.style.display = 'block';
+                draggedItemIns = null;
+            }, 0);
+        })
+
+        for (let j = 0; j < lists_ins.length; j++) {
+            const list_ins = lists_ins[j];
+
+            list_ins.addEventListener('dragover', function (e) {
+                e.preventDefault();
+            });
+
+            list_ins.addEventListener('dragenter', function (e) {
+                e.preventDefault();
+                this.style.backgroundColor = 'rgba(40, 55, 89, 1)';
+            });
+
+            list_ins.addEventListener('dragleave', function (e) {
+                this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+            });
+
+            list_ins.addEventListener('drop', function (e) {
+                console.log('drop');
+                this.append(draggedItem);
+                this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+            });
+        }
+    }
+
+    if (list_instalacao.length > 0 || list_instalacao.length != '') {
+
+        for (let x = 0; x < list_instalacao.length; x++) {
+            const instalacao = list_instalacao[x];
+
+            instalacao.addEventListener('dragstart', function () {
+                draggedItemIns = instalacao;
+                setTimeout(function () {
+                    item_ins.style.display = 'none';
+                }, 0)
+            });
+
+            instalacao.addEventListener('dragend', function () {
+                this.className = 'item-ins';
+                setTimeout(function () {
+                    draggedItemIns.style.display = 'block';
+                    draggedItemIns = null;
+                }, 0);
+            })
+
+            for (let y = 0; y < lists_ins.length; y++) {
+                const list_ins = lists_ins[y];
+
+                list_ins.addEventListener('dragover', function (e) {
+                    e.preventDefault();
+                });
+
+                list_ins.addEventListener('dragenter', function (e) {
+                    e.preventDefault();
+                    this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+                });
+
+                list_ins.addEventListener('dragleave', function (e) {
+                    this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+                });
+
+                list_ins.addEventListener('drop', function (e) {
+                    console.log('drop');
+                    this.append(draggedItemIns);
+                    this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+                });
+            }
+        }
+    }
+
+    function getItemValueIns() {
+        var custoIns0 = document.getElementById('custoIns0')
+        var custoIns1 = document.getElementById('custoIns1')
+        var custoIns2 = document.getElementById('custoIns2')
+        var custoIns3 = document.getElementById('custoIns3')
+        var custoIns4 = document.getElementById('custoIns4')
+        var custoIns5 = document.getElementById('custoIns5')
+        var custoIns = document.getElementById('custoIns')
+        var savecustoins = document.getElementById('savecustoins')
+        var ins0 = 0
+        var ins1 = 0
+        var ins2 = 0
+        var ins3 = 0
+        var ins4 = 0
+        var ins5 = 0
+        if (custoIns0.value != '' && typeof custoIns0.value != 'undefined') {
+            ins0 = custoIns0.value
+        }
+        if (custoIns1.value != '' && typeof custoIns1.value != 'undefined') {
+            ins1 = custoIns1.value
+        }
+        if (custoIns2.value != '' && typeof custoIns2.value != 'undefined') {
+            ins2 = custoIns2.value
+        }
+        if (custoIns3.value != '' && typeof custoIns3.value != 'undefined') {
+            ins3 = custoIns3.value
+        }
+        if (custoIns4.value != '' && typeof custoIns4.value != 'undefined') {
+            ins4 = custoIns4.value
+        }
+        if (custoIns5.value != '' && typeof custoIns5.value != 'undefined') {
+            ins5 = custoIns5.value
+        }
+        custoIns.value = parseFloat(ins0) + parseFloat(ins1) + parseFloat(ins2) + parseFloat(ins3) + parseFloat(ins4) + parseFloat(ins5)
+        savecustoins.value = parseFloat(ins0) + parseFloat(ins1) + parseFloat(ins2) + parseFloat(ins3) + parseFloat(ins4) + parseFloat(ins5)
+
+        const item_ins = document.querySelectorAll('.item-instalacao');
+        for (i = 0; i < item_ins.length; i++) {
+            const insitem = document.getElementsByClassName(item_ins[i].getAttribute('class'));
+            var element = insitem[i].innerText;
+            switch (i) {
+                case 0:
+                    insdes = document.getElementById('ins0');
+                    insdes.value = element
+                    break;
+                case 1:
+                    var insdes = document.getElementById('ins1');
+                    insdes.value = element
+                    break;
+                case 2:
+                    var insdes = document.getElementById('ins2');
+                    insdes.value = element
+                    break;
+                case 3:
+                    var insdes = document.getElementById('ins3');
+                    insdes.value = element
+                    break;
+                case 4:
+                    var insdes = document.getElementById('ins4');
+                    insdes.value = element
+                    break;
+                case 5:
+                    var insdes = document.getElementById('ins5');
+                    insdes.value = element
+                    break;
+            }
+        }
+    }
+    const list_item_ele = document.querySelectorAll('.list-item-ele');
+    const lists_ele = document.querySelectorAll('.list-ele');
+    const list_eletricista = document.querySelectorAll('.item-eletricista');
+
+    let draggedItemEle = null;
+
+    for (let i = 0; i < list_item_ele.length; i++) {
+        const item_ele = list_item_ele[i];
+
+        item_ele.addEventListener('dragstart', function () {
+            draggedItemEle = item_ele;
+            setTimeout(function () {
+                item_ele.style.display = 'none';
+            }, 0)
+        });
+
+        item_ele.addEventListener('dragend', function () {
+            this.className = 'item-eletricista';
+            setTimeout(function () {
+                draggedItemEle.style.display = 'block';
+                draggedItemEle = null;
+            }, 0);
+        })
+
+        for (let j = 0; j < lists_ele.length; j++) {
+            const list_ele = lists_ele[j];
+
+            list_ele.addEventListener('dragover', function (e) {
+                e.preventDefault();
+            });
+
+            list_ele.addEventListener('dragenter', function (e) {
+                e.preventDefault();
+                this.style.backgroundColor = 'rgba(40, 55, 89, 1)';
+            });
+
+            list_ele.addEventListener('dragleave', function (e) {
+                this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+            });
+
+            list_ele.addEventListener('drop', function (e) {
+                console.log('drop');
+                this.append(draggedItemEle);
+                this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+            });
+        }
+    }
+
+    if (list_eletricista.length > 0 || list_eletricista.length != '') {
+
+        for (let x = 0; x < list_eletricista.length; x++) {
+            const eletricista = list_eletricista[x];
+
+            eletricista.addEventListener('dragstart', function () {
+                draggedItemEle = eletricista;
+                setTimeout(function () {
+                    item.style.display = 'none';
+                }, 0)
+            });
+
+            eletricista.addEventListener('dragend', function () {
+                this.className = 'item-ele';
+                setTimeout(function () {
+                    draggedItemEle.style.display = 'block';
+                    draggedItemEle = null;
+                }, 0);
+            })
+
+            for (let y = 0; y < lists_ele.length; y++) {
+                const list_ele = lists_ele[y];
+
+                list_ele.addEventListener('dragover', function (e) {
+                    e.preventDefault();
+                });
+
+                list_ele.addEventListener('dragenter', function (e) {
+                    e.preventDefault();
+                    this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+                });
+
+                list_ele.addEventListener('dragleave', function (e) {
+                    this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+                });
+
+                list_ele.addEventListener('drop', function (e) {
+                    console.log('drop');
+                    this.append(draggedItemEle);
+                    this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+                });
+            }
+        }
+    }
+
+    function getItemValueEle() {
+        var custoEle0 = document.getElementById('custoEle0')
+        var custoEle1 = document.getElementById('custoEle1')
+        var custoEle = document.getElementById('custoEle')
+        var savecustoele = document.getElementById('savecustoele')
+        var ele0 = 0
+        var ele1 = 0
+        var custoTotal = 0
+
+        /*
+        if (custoEle0.value != '' && typeof custoEle0.value != 'undefined') {
+            ele0 = custoEle0.value
+        }
+        if (custoEle1.value != '' && typeof custoEle1.value != 'undefined') {
+            ele1 = custoEle1.value
+        }
+        custoEle.value = parseFloat(ele0) + parseFloat(ele1)
+        savecustoele.value = parseFloat(ele0) + parseFloat(ele1)
+        */
+
+        const item_ele = document.querySelectorAll('.item-eletricista');
+        for (i = 0; i < item_ele.length; i++) {
+            const eleitem = document.getElementsByClassName(item_ele[i].getAttribute('class'));
+            var element = eleitem[i].innerText;
+            switch (i) {
+                case 0:
+                    var eledes = document.getElementById('ele0');
+                    eledes.value = element
+                    custoTotal = parseFloat(custoTotal) + parseFloat(custoEle0.value)
+                    custoEle.value = custoTotal
+                    savecustoele.value = custoTotal
+                    break;
+                case 1:
+                    var eledes = document.getElementById('ele1');
+                    eledes.value = element
+                    custoTotal = parseFloat(custoTotal) + parseFloat(custoEle1.value)
+                    custoEle.value = custoTotal
+                    savecustoele.value = custoTotal
+                    break;
+            }
+        }
+    }
+</script>

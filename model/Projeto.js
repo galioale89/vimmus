@@ -24,6 +24,10 @@ const Projeto = new Schema({
         type: String,
         require: true
     },
+    endereco:{
+        type: String,
+        require: true
+    },
     cliente: {
         type: Schema.Types.ObjectId,
         ref: 'cliente',
@@ -434,6 +438,10 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
+    toteng: {
+        type: Number,
+        require: false
+    },
     trbesc: {
         type: Number,
         require: false
@@ -530,6 +538,18 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
+    matate:{
+        type: Number,
+        require: false
+    },
+    vlremp:{
+        type: Number,
+        require: false
+    },
+    compon:{
+        type: Number,
+        require: false
+    },    
     custofix: {
         type: Number,
         require: false
@@ -722,6 +742,10 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
+    parEngVlr: {
+        type: Number,
+        require: false
+    },    
     parGesVlr: {
         type: Number,
         require: false
@@ -782,6 +806,10 @@ const Projeto = new Schema({
         type: Number,
         require: false
     },
+    parEngNfs: {
+        type: Number,
+        require: false
+    },    
     parGesNfs: {
         type: Number,
         require: false
@@ -878,6 +906,10 @@ const Projeto = new Schema({
         type: Boolean,
         require: true
     },
+    ehVinculo: {
+        type: Boolean,
+        require: true
+    },    
     temCercamento: {
         type: String,
         require: false
@@ -1053,6 +1085,14 @@ const Projeto = new Schema({
         require: true,
         trim: true
     },      
+    numartobra:{
+        type: String,
+        require: true,        
+    },
+    numartexec:{
+        type: String,
+        require: true,        
+    },    
     art: {
         type: String,
         require: true,
@@ -1072,7 +1112,27 @@ const Projeto = new Schema({
         type: String,
         require: true,
         trim: true
-    },         
+    },    
+    pedidoRealizado: {
+        type: String,
+        require: false
+    },
+    dataPedido: {
+        type: String,
+        require: false
+    },
+    procTelhado:{
+        type: Boolean,
+        require: false
+    },
+    procEletrica:{
+        type: Boolean,
+        require: false
+    },
+    procAterramento: {
+        type: Boolean,
+        require: false
+    }    
 })
 
 mongoose.model('projeto', Projeto)

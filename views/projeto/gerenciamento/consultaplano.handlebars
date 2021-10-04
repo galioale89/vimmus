@@ -1,0 +1,49 @@
+<style>
+    table {
+        border: 1px solid rgb(192, 187, 187);
+        width: 800px;
+    }
+
+    th {
+        border: 1px solid rgb(167, 161, 161);
+        text-align: center;
+    }
+
+    td {
+        border: 1px solid rgb(167, 161, 161);
+        text-align: center;
+    }
+</style>
+<div class="cotainer mt-2" style="width: 80%; margin-left: 150px;">
+    <div class="row mt-4">
+        <ul class="nav nav-tabs mb-2">
+            <li class="nav-item">
+                <a class="nav-link" aria-current="page" style="color: black" href="/gerenciamento/plano/">Cadastro de
+                    Plano</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" style="color: black"
+                    href="/gerecimamento/consultaplano/">Todos Planos</a>
+            </li>
+        </ul>
+
+        <table>
+            <tr>
+                <th>Nome</th>
+                <th colspan="2">Intervalo de Módulos</th>
+                <th>Mensalidade</th>
+                <th>Fidelidade</th>
+                <th>Ver Mais</th>
+            </tr>
+            {{#each planos}}
+            <tr>
+                <td>{{nome}}</td>
+                <td colspan="2">{{qtdini}} - {{qtdfim}}</td>
+                <td>{{mensalidade}}</td>
+                <td>{{fidelidade}}</td>
+                <td><a href='/gerenciamento/plano/{{_id}}'><i class='bi bi-eye'></i></a></td>
+            </tr>
+            {{/each}}
+        </table>
+    </div>
+</div>

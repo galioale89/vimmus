@@ -6,23 +6,51 @@ require('../model/Empresa')
 require('../model/Cliente')
 require('../model/CustoDetalhado')
 require('../model/Cronograma')
+require('../model/Tarefas')
+require('../model/Vistoria')
+require('../model/Plano')
 
+const nodemailer = require('nodemailer')
+const bcrypt = require("bcryptjs")
+const passport = require("passport")
+
+//Configurando envio de e-mail
+const transporter = nodemailer.createTransport({ // Configura os parâmetros de conexão com servidor.
+    host: 'smtp.umbler.com',
+    port: 587,
+    secure: false,
+    auth: {
+        user: 'alexandre@vimmus.com.br',
+        pass: '3rdn4x3L@'
+    },
+    tls: {
+        rejectUnauthorized: false
+    }
+})
 
 const mongoose = require('mongoose')
 const Projeto = mongoose.model('projeto')
 const Configuracao = mongoose.model('configuracao')
 const Empresa = mongoose.model('empresa')
-const Equipe = mongoose.model('equipe')
-const Pessoa = mongoose.model('pessoa')
 const Realizado = mongoose.model('realizado')
 const Cliente = mongoose.model('cliente')
+const Usina = mongoose.model('usina')
 const Detalhado = mongoose.model('custoDetalhado')
 const Cronograma = mongoose.model('cronograma')
+const Pessoa = mongoose.model('pessoa')
+const Tarefas = mongoose.model('tarefas')
+const Equipe = mongoose.model('equipe')
+const Vistoria = mongoose.model('vistoria')
+const Plano = mongoose.model('plano')
+
 const comparaDatas = require('../resources/comparaDatas')
 const dataBusca = require('../resources/dataBusca')
 const liberaRecursos = require('../resources/liberaRecursos')
 const setData = require('../resources/setData')
 const dataMensagem = require('../resources/dataMensagem')
+const validaCampos = require('../resources/validaCampos')
+const validaCronograma = require('../resources/validaCronograma')
+const dataHoje = require('../resources/dataHoje')
 
 
 const { ehAdmin } = require('../helpers/ehAdmin')
@@ -111,7 +139,7 @@ router.get('/gerenciamento/:id', ehAdmin, (req, res) => {
             })
         })
     }).catch((err) => {
-        req.flash('error_msg', 'Houve uma flaha ao buscar o projeto.')
+        req.flash('error_msg', 'Houve uma falha ao buscar o projeto.')
         res.redirect('/gerenciamento/gerenciamento/' + req.params.id)
     })
 })
@@ -238,13 +266,20 @@ router.get('/cronograma/:id', ehAdmin, (req, res) => {
     })
 })
 
+router.get('/documentos/:id', ehAdmin, (req, res) => {
+    Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
+        res.render('projeto/gerenciamento/documentos', { projeto })
+    })
+})
+
 router.get('/cenarios/', ehAdmin, (req, res) => {
     res.render('projeto/gerenciamento/cenarios')
 })
 
 router.get('/agenda/', ehAdmin, (req, res) => {
-    var dataini
-    var dataini
+
+    const { _id } = req.user
+
     var hoje = new Date()
     var ano = hoje.getFullYear()
     var mes = parseFloat(hoje.getMonth()) + 1
@@ -298,7 +333,201 @@ router.get('/agenda/', ehAdmin, (req, res) => {
 
     //console.log('julho=>' + julho)
 
-    res.render('projeto/gerenciamento/agenda', { ano, janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro })
+    Cliente.find({ user: _id }).lean().then((cliente) => {
+        res.render('projeto/gerenciamento/agenda', { cliente, ano, mes, janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro, checkInst: 'checked', checkTesk: 'unchecked' })
+    })
+})
+
+router.get('/tarefas/:id', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    Tarefas.findOne({ _id: req.params.id }).lean().then((tarefa) => {
+        Usina.findOne({ _id: tarefa.usina }).lean().then((usina) => {
+            console.log('usina.cliente=>' + usina.cliente)
+            Cliente.findOne({ _id: usina.cliente }).lean().then((cliente) => {
+                console.log('encontrou cliente')
+                var dataini = dataMensagem(tarefa.dataini)
+                var datafim = dataMensagem(tarefa.datafim)
+                Equipe.findOne({ tarefa: tarefa._id }).then((equipe) => {
+                    equipe = equipe.ins0 + '|' + equipe.ins1 + '|' + equipe.ins2 + '|' + equipe.ins3 + '|' + equipe.ins4 + '|' + equipe.ins5
+                    Tarefas.find({ user: _id, concluido: false }).lean().then((todasTarefas) => {
+                        res.render('projeto/gerenciamento/vertarefas', { usina, tarefa, cliente, dataini, datafim, equipe, todasTarefas })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Falha ao encontrar as tarefas.')
+                        res.redirect('/gerenciamento/agenda')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                    res.redirect('/gerenciamento/agenda')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Falha ao encontrar o cliente.')
+                res.redirect('/gerenciamento/agenda')
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha ao encontrar a usina.')
+            res.redirect('/gerenciamento/agenda')
+        })
+
+    }).catch((err) => {
+        req.flash('error_msg', 'Falha ao encontrar a tarefa.')
+        res.redirect('/gerenciamento/agenda')
+    })
+})
+
+router.get('/plano', ehAdmin, (req, res) => {
+    res.render('projeto/gerenciamento/planos')
+})
+
+router.get('/plano/:id', ehAdmin, (req, res) => {
+    Plano.findOne({ _id: req.params.id }).lean().then((plano) => {
+        res.render('projeto/gerenciamento/planos', { plano })
+    }).catch((err) => {
+        req.flash('error_msg', 'Falha ao encontrar o plano.')
+        res.redirect('/gerenciamento/agenda')
+    })
+})
+
+router.get('/consultaplano', ehAdmin, (req,res)=>{
+    const {_id} = req.user
+    Plano.find({user: _id}).lean().then((planos)=>{
+        res.render('projeto/gerenciamento/consultaplano', {planos})
+    }).catch((err) => {
+        req.flash('error_msg', 'Falha ao encontrar o plano.')
+        res.redirect('/gerenciamento/plano')
+    })
+})
+
+router.post('/plano', ehAdmin, (req, res) => {
+    const {_id} = req.user
+    var fidelidade
+    if (req.body.fidelidade == '' || typeof req.body.fidelidade == 'undefined') {
+        fidelidade = 0
+    }else{
+        fidelidade = req.body.fidelidade
+    }
+    console.log('id=>' + req.body.id)
+    console.log('fidelidade=>' + req.body.fidelidade)
+    if (req.body.id != '' && typeof req.body.id != 'undefined') {
+        Plano.findOne({ _id: req.body.id }).then((existeplano) => {
+            existeplano.nome = req.body.nome
+            existeplano.qtdini = req.body.qtdini
+            existeplano.qtdfim = req.body.qtdfim
+            existeplano.mensalidade = req.body.mensalidade
+            existeplano.fidelidade = fidelidade
+            existeplano.save().then(() => {
+                req.flash('success_msg', 'Plano salvo com sucesso.')
+                res.redirect('/gerenciamento/plano/' + req.body.id)
+            }).catch((err) => {
+                req.flash('error_msg', 'Falha ao salvar o plano.')
+                res.redirect('/gerenciamento/plano')
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha ao encontrar o plano.')
+            res.redirect('/gerenciamento/plano')
+        })
+    } else {
+        console.log('novo plano')
+        new Plano({
+            user: _id,
+            nome: req.body.nome,
+            qtdini: req.body.qtdini,
+            qtdfim: req.body.qtdfim,
+            mensalidade: req.body.mensalidade,
+            fidelidade: fidelidade,
+        }).save().then(() => {
+            Plano.findOne().sort({ field: 'asc', _id: -1 }).lean().then((novoplano) => {
+                req.flash('success_msg', 'Plano salvo com sucesso.')
+                res.redirect('/gerenciamento/plano/' + novoplano._id)
+            }).catch((err) => {
+                req.flash('error_msg', 'Falha ao encontrar o plano.')
+                res.redirect('/gerenciamento/plano')
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha ao salvar o plano.')
+            res.redirect('/gerenciamento/plano')
+        })
+    }
+})
+
+router.get('/enviaMensagem/:id', ehAdmin, (req, res) => {
+
+    Projeto.findOne({ _id: req.params.id }).then((projeto) => {
+        Cliente.findOne({ _id: projeto.cliente }).then((cliente) => {
+            Cronograma.findOne({ projeto: projeto._id }).then((cronograma) => {
+                Empresa.findOne({ _id: projeto.empresa }).then((empresa) => {
+                    var telefone = empresa.telefone
+                    var ddd = telefone.substring(0, 2)
+                    var primdig = telefone.substring(2, 6)
+                    var segdig = telefone.substring(6, 12)
+                    telefone = '(' + ddd + ') ' + primdig + ' - ' + segdig
+                    //Enviando SMS                              
+                    var mensagem = 'Olá ' + cliente.nome + ', tudo bem?' + '\n' +
+                        'Segue o cronograma para a instalação de sua usina solar: ' + '\n' +
+                        'Planejamento: ' + dataMensagem(cronograma.dateplaini) + ' a ' + dataMensagem(cronograma.dateplafim) + '\n' +
+                        'Projetista: ' + dataMensagem(cronograma.dateprjini) + ' a ' + dataMensagem(cronograma.dateprjfim) + '\n' +
+                        'Aterramento: ' + dataMensagem(cronograma.dateateini) + ' a ' + dataMensagem(cronograma.dateatefim) + '\n' +
+                        'Inversores e StringBox: ' + dataMensagem(cronograma.dateinvini) + ' a ' + dataMensagem(cronograma.datestbfim) + '\n' +
+                        'Instalação da Estrutura: ' + dataMensagem(cronograma.dateestini) + ' a ' + dataMensagem(cronograma.dateestfim) + '\n' +
+                        'Instalação dos Módulos: ' + dataMensagem(cronograma.datemodini) + ' a ' + dataMensagem(cronograma.datemodfim) + '\n' +
+                        'Vistoria: ' + dataMensagem(cronograma.datevisini) + ' a ' + dataMensagem(cronograma.datevisfim) + '.' + '\n' +
+                        'Para mais detalhes entre em contato com a gente pelo whatsapp:' + telefone
+
+                    //console.log(mensagem)
+                    to = cliente.celular
+                    //console.log(to)
+
+                    console.log('cliente.email=>' + cliente.email)
+
+                    var email = cliente.email
+
+                    const mailOptions = { // Define informações pertinentes ao E-mail que será enviado
+                        from: '"VIMMUS Soluções" <alexandre@vimmus.com.br>',
+                        to: email,
+                        subject: 'Cronograma do Projeto de Instalação do Sistema Fotovoltaico',
+                        //text: 'Nome: ' + req.body.nome + ';' + 'Celular: ' + req.body.celular + ';' + 'E-mail: '+ req.body.email
+                        text: mensagem
+                    }
+
+                    var textMessageService = new TextMessageService(apiKey)
+                    textMessageService.send('Vimmus', mensagem, ['49991832978'], result => {
+                        //console.log(result)
+                        if (result == false) {
+                            req.flash('error_msg', 'Falha interna. Não foi possível enviar a mensagem.')
+                            res.redirect('/gerenciamento/cronograma/' + req.params.id)
+                        } else {
+                            projeto.mensagem = true
+                            projeto.save().then(() => {
+                                req.flash('success_msg', 'Mensagem enviada para: ' + cliente.nome + ' com sucesso.')
+                                transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
+                                    if (err) {
+                                        return //console.log(err)
+                                    } else {
+                                        res.redirect('/gerenciamento/cronograma/' + req.params.id)
+                                    }
+                                })
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Falha ao salvar o projeto.')
+                                res.redirect('/gerenciamento/cronograma/' + req.params.id)
+                            })
+                        }
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Falha ao encontrar a empresa.')
+                    res.redirect('/gerenciamento/cronograma/' + req.params.id)
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Falha ao encontrar o cronograma.')
+                res.redirect('/gerenciamento/cronograma/' + req.params.id)
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha ao encontrar o cliente.')
+            res.redirect('/gerenciamento/cronograma/' + req.params.id)
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Falha ao encontrar o projeto.')
+        res.redirect('/gerenciamento/cronograma/' + req.params.id)
+    })
+
 })
 
 router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
@@ -408,570 +637,467 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
     var mes
     //console.log('dataini=>' + dataini)
     //console.log('datafim=>' + datafim)
-    Cronograma.find({
-        $or: [{ 'agendaPlaFim': { $lte: datafim, $gte: dataini } },
-        { 'agendaPrjFim': { $lte: datafim, $gte: dataini } },
-        { 'agendaAteFim': { $lte: datafim, $gte: dataini } },
-        { 'agendaEstFim': { $lte: datafim, $gte: dataini } },
-        { 'agendaModFim': { $lte: datafim, $gte: dataini } },
-        { 'agendaInsFim': { $lte: datafim, $gte: dataini } },
-        { 'agendaStbFim': { $lte: datafim, $gte: dataini } },
-        { 'agendaPnlFim': { $lte: datafim, $gte: dataini } },
-        { 'agendaEaeFim': { $lte: datafim, $gte: dataini } },
-        { 'agendaVisFim': { $lte: datafim, $gte: dataini } }],
-        user: _id
-    }).lean().then((cronograma) => {
-        cronograma.forEach(element => {
-            //console.log('entrou')
-            const { dateplaini } = element
-            const { dateprjini } = element
-            const { dateateini } = element
-            const { dateestini } = element
-            const { datemodini } = element
-            const { dateinvini } = element
-            const { dateeaeini } = element
-            const { datepnlini } = element
-            const { datestbini } = element
-            const { datevisini } = element
-            const { datepla } = element
-            const { dateprj } = element
-            const { dateate } = element
-            const { dateest } = element
-            const { datemod } = element
-            const { dateinv } = element
-            const { dateeae } = element
-            const { datestb } = element
-            const { datepnl } = element
-            const { datevis } = element
-            const { nome } = element
-            const { projeto } = element
+    if (req.body.selecionado == 'instalacao') {
+        Cronograma.find({
+            $or: [{ 'agendaPlaFim': { $lte: datafim, $gte: dataini } },
+            { 'agendaPrjFim': { $lte: datafim, $gte: dataini } },
+            { 'agendaAteFim': { $lte: datafim, $gte: dataini } },
+            { 'agendaEstFim': { $lte: datafim, $gte: dataini } },
+            { 'agendaModFim': { $lte: datafim, $gte: dataini } },
+            { 'agendaInsFim': { $lte: datafim, $gte: dataini } },
+            { 'agendaStbFim': { $lte: datafim, $gte: dataini } },
+            { 'agendaPnlFim': { $lte: datafim, $gte: dataini } },
+            { 'agendaEaeFim': { $lte: datafim, $gte: dataini } },
+            { 'agendaVisFim': { $lte: datafim, $gte: dataini } }],
+            user: _id
+        }).lean().then((cronograma) => {
+            cronograma.forEach(element => {
+                //console.log('entrou')
+                const { dateplaini } = element
+                const { dateprjini } = element
+                const { dateateini } = element
+                const { dateestini } = element
+                const { datemodini } = element
+                const { dateinvini } = element
+                const { dateeaeini } = element
+                const { datepnlini } = element
+                const { datestbini } = element
+                const { datevisini } = element
+                const { datepla } = element
+                const { dateprj } = element
+                const { dateate } = element
+                const { dateest } = element
+                const { datemod } = element
+                const { dateinv } = element
+                const { dateeae } = element
+                const { datestb } = element
+                const { datepnl } = element
+                const { datevis } = element
+                const { nome } = element
+                const { projeto } = element
 
-            //console.log('nome=>' + nome)
+                //console.log('nome=>' + nome)
 
-            if (nome != '' && typeof nome != 'undefined') {
-                //console.log('projeto=>' + projeto)
-
-                mes_busca = dataini.substring(4, 6)
-                //console.log('mes_busca=>' + mes_busca)
-                mes = dateplaini.substring(5, 7)
-                //console.log('Planejamento')
-                //console.log('mes=>' + mes)
-                if ((mes_busca == mes) && (dateplaini != '' && typeof dateplaini != 'undefined') && (datepla == '' || typeof datepla == 'undefined')) {
-                    dia = dateplaini.substring(8, 11)
-                    //console.log('entrou Planejamento')
-                    if (dia == '01') {
-                        tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '02') {
-                        tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '03') {
-                        tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '04') {
-                        tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '05') {
-                        tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '06') {
-                        tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '07') {
-                        tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '08') {
-                        tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '09') {
-                        tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '10') {
-                        tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '11') {
-                        tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '12') {
-                        tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '13') {
-                        tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '14') {
-                        tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '15') {
-                        tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '16') {
-                        tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '17') {
-                        tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '18') {
-                        tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '19') {
-                        tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '20') {
-                        tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '21') {
-                        tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '22') {
-                        tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '23') {
-                        tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '24') {
-                        tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '25') {
-                        tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '26') {
-                        tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '27') {
-                        tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '28') {
-                        tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '29') {
-                        tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '30') {
-                        tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                    if (dia == '31') {
-                        tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
-                    }
-                }
-
-                mes = dateprjini.substring(5, 7)
-                //console.log('Projetista')
-                //console.log('mes=>' + mes)
-                if ((mes_busca == mes) && (dateprjini != '' && typeof dateprjini != 'undefined') && (dateprj == '' || typeof dateprj == 'undefined')) {
-                    dia = dateprjini.substring(8, 11)
-                    //console.log('entrou Projetista')
-                    if (dia == '01') {
-                        tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '02') {
-                        tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '03') {
-                        tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '04') {
-                        tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '05') {
-                        tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '06') {
-                        tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '07') {
-                        tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '08') {
-                        tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '09') {
-                        tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '10') {
-                        tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '11') {
-                        tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '12') {
-                        tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '13') {
-                        tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '14') {
-                        tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '15') {
-                        tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '16') {
-                        tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '17') {
-                        tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '18') {
-                        tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '19') {
-                        tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '20') {
-                        tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '21') {
-                        tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '22') {
-                        tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '23') {
-                        tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '24') {
-                        tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '25') {
-                        tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '26') {
-                        tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '27') {
-                        tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '28') {
-                        tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '29') {
-                        tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '30') {
-                        tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                    if (dia == '31') {
-                        tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
-                    }
-                }
-
-                mes = dateateini.substring(5, 7)
-                //console.log('Aterramento')
-                //console.log('mes=>' + mes)
-                if ((mes_busca == mes) && (dateateini != '' && typeof dateateini != 'undefined') && (dateate == '' || typeof dateate == 'undefined')) {
-                    dia = dateateini.substring(8, 11)
-                    //console.log('entrou Aterramento')
-                    if (dia == '01') {
-                        tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '02') {
-                        tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '03') {
-                        tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '04') {
-                        tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '05') {
-                        tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '06') {
-                        tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '07') {
-                        tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '08') {
-                        tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '09') {
-                        tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '10') {
-                        tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '11') {
-                        tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '12') {
-                        tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '13') {
-                        tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '14') {
-                        tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '15') {
-                        tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '16') {
-                        tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '17') {
-                        tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '18') {
-                        tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '19') {
-                        tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '20') {
-                        tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '21') {
-                        tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '22') {
-                        tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '23') {
-                        tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '24') {
-                        tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '25') {
-                        tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '26') {
-                        tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '27') {
-                        tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '28') {
-                        tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '29') {
-                        tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '30') {
-                        tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                    if (dia == '31') {
-                        tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
-                    }
-                }
-
-                mes = dateestini.substring(5, 7)
-                //console.log('Estrutura')
-                //console.log('mes=>' + mes)
-                if ((mes_busca == mes) && (dateestini != '' && typeof dateestini != 'undefined') && (dateest == '' || typeof dateest == 'undefined')) {
-                    dia = dateestini.substring(8, 11)
-                    //console.log('entrou Estrutura')
-                    if (dia == '01') {
-                        tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '02') {
-                        tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '03') {
-                        tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '04') {
-                        tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '05') {
-                        tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '06') {
-                        tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '07') {
-                        tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '08') {
-                        tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '09') {
-                        tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '10') {
-                        tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '11') {
-                        tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '12') {
-                        tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '13') {
-                        tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '14') {
-                        tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '15') {
-                        tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '16') {
-                        tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '17') {
-                        tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '18') {
-                        tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '19') {
-                        tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '20') {
-                        tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '21') {
-                        tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '22') {
-                        tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '23') {
-                        tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '24') {
-                        tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '25') {
-                        tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '26') {
-                        tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '27') {
-                        tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '28') {
-                        tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '29') {
-                        tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '30') {
-                        tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                    if (dia == '31') {
-                        tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
-                    }
-                }
-
-                mes = dateinvini.substring(5, 7)
-                //console.log('Inversor')
-                //console.log('mes=>' + mes)
-                //console.log('dateinv=>' + dateinv)
-                //console.log('dateinvini=>' + dateinvini)
-                if ((mes_busca == mes) && (dateinvini != '' && typeof dateinvini != 'undefined') && (dateinv == '' || typeof dateinv == 'undefined')) {
-                    dia = dateinvini.substring(8, 11)
-                    //console.log('entrou Inversor')
-                    //console.log('nome=>' + nome)
+                if (nome != '' && typeof nome != 'undefined') {
                     //console.log('projeto=>' + projeto)
 
-                    if (dia == '01') {
-                        tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '02') {
-                        tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '03') {
-                        tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '04') {
-                        tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '05') {
-                        tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '06') {
-                        tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '07') {
-                        tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '08') {
-                        tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '09') {
-                        tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '10') {
-                        tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '11') {
-                        tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '12') {
-                        tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '13') {
-                        tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '14') {
-                        tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '15') {
-                        tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '16') {
-                        tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '17') {
-                        tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '18') {
-                        tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '19') {
-                        tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '20') {
-                        tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '21') {
-                        tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '22') {
-                        tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '23') {
-                        tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '24') {
-                        tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '25') {
-                        tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '26') {
-                        tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '27') {
-                        tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '28') {
-                        tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '29') {
-                        tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '30') {
-                        tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                    if (dia == '31') {
-                        tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
-                    }
-                }
-
-                if (dateeaeini != '' && typeof dateeaeini != 'undefined') {
-                    mes = dateeaeini.substring(5, 7)
-                    //console.log('Armazenamento')
+                    mes_busca = dataini.substring(4, 6)
+                    //console.log('mes_busca=>' + mes_busca)
+                    mes = dateplaini.substring(5, 7)
+                    //console.log('Planejamento')
                     //console.log('mes=>' + mes)
-                    //console.log('dateeae=>' + dateeae)
-                    //console.log('dateeaeini=>' + dateeaeini)
-                    if ((mes_busca == mes) && (dateeae == '' || typeof dateeae == 'undefined')) {
-                        dia = dateeaeini.substring(8, 11)
-                        //console.log('Entrou Armazenamento')
+                    if ((mes_busca == mes) && (dateplaini != '' && typeof dateplaini != 'undefined') && (datepla == '' || typeof datepla == 'undefined')) {
+                        dia = dateplaini.substring(8, 11)
+                        //console.log('entrou Planejamento')
+                        if (dia == '01') {
+                            tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '02') {
+                            tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '03') {
+                            tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '04') {
+                            tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '05') {
+                            tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '06') {
+                            tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '07') {
+                            tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '08') {
+                            tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '09') {
+                            tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '10') {
+                            tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '11') {
+                            tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '12') {
+                            tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '13') {
+                            tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '14') {
+                            tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '15') {
+                            tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '16') {
+                            tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '17') {
+                            tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '18') {
+                            tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '19') {
+                            tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '20') {
+                            tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '21') {
+                            tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '22') {
+                            tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '23') {
+                            tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '24') {
+                            tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '25') {
+                            tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '26') {
+                            tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '27') {
+                            tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '28') {
+                            tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '29') {
+                            tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '30') {
+                            tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                        if (dia == '31') {
+                            tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
+                        }
+                    }
+
+                    mes = dateprjini.substring(5, 7)
+                    //console.log('Projetista')
+                    //console.log('mes=>' + mes)
+                    if ((mes_busca == mes) && (dateprjini != '' && typeof dateprjini != 'undefined') && (dateprj == '' || typeof dateprj == 'undefined')) {
+                        dia = dateprjini.substring(8, 11)
+                        //console.log('entrou Projetista')
+                        if (dia == '01') {
+                            tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '02') {
+                            tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '03') {
+                            tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '04') {
+                            tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '05') {
+                            tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '06') {
+                            tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '07') {
+                            tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '08') {
+                            tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '09') {
+                            tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '10') {
+                            tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '11') {
+                            tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '12') {
+                            tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '13') {
+                            tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '14') {
+                            tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '15') {
+                            tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '16') {
+                            tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '17') {
+                            tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '18') {
+                            tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '19') {
+                            tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '20') {
+                            tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '21') {
+                            tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '22') {
+                            tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '23') {
+                            tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '24') {
+                            tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '25') {
+                            tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '26') {
+                            tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '27') {
+                            tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '28') {
+                            tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '29') {
+                            tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '30') {
+                            tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                        if (dia == '31') {
+                            tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
+                        }
+                    }
+
+                    mes = dateateini.substring(5, 7)
+                    //console.log('Aterramento')
+                    //console.log('mes=>' + mes)
+                    if ((mes_busca == mes) && (dateateini != '' && typeof dateateini != 'undefined') && (dateate == '' || typeof dateate == 'undefined')) {
+                        dia = dateateini.substring(8, 11)
+                        //console.log('entrou Aterramento')
+                        if (dia == '01') {
+                            tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '02') {
+                            tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '03') {
+                            tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '04') {
+                            tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '05') {
+                            tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '06') {
+                            tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '07') {
+                            tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '08') {
+                            tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '09') {
+                            tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '10') {
+                            tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '11') {
+                            tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '12') {
+                            tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '13') {
+                            tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '14') {
+                            tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '15') {
+                            tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '16') {
+                            tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '17') {
+                            tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '18') {
+                            tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '19') {
+                            tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '20') {
+                            tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '21') {
+                            tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '22') {
+                            tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '23') {
+                            tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '24') {
+                            tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '25') {
+                            tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '26') {
+                            tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '27') {
+                            tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '28') {
+                            tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '29') {
+                            tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '30') {
+                            tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                        if (dia == '31') {
+                            tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
+                        }
+                    }
+
+                    mes = dateestini.substring(5, 7)
+                    //console.log('Estrutura')
+                    //console.log('mes=>' + mes)
+                    if ((mes_busca == mes) && (dateestini != '' && typeof dateestini != 'undefined') && (dateest == '' || typeof dateest == 'undefined')) {
+                        dia = dateestini.substring(8, 11)
+                        //console.log('entrou Estrutura')
+                        if (dia == '01') {
+                            tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '02') {
+                            tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '03') {
+                            tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '04') {
+                            tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '05') {
+                            tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '06') {
+                            tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '07') {
+                            tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '08') {
+                            tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '09') {
+                            tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '10') {
+                            tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '11') {
+                            tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '12') {
+                            tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '13') {
+                            tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '14') {
+                            tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '15') {
+                            tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '16') {
+                            tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '17') {
+                            tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '18') {
+                            tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '19') {
+                            tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '20') {
+                            tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '21') {
+                            tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '22') {
+                            tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '23') {
+                            tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '24') {
+                            tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '25') {
+                            tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '26') {
+                            tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '27') {
+                            tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '28') {
+                            tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '29') {
+                            tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '30') {
+                            tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                        if (dia == '31') {
+                            tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
+                        }
+                    }
+
+                    mes = dateinvini.substring(5, 7)
+                    //console.log('Inversor')
+                    //console.log('mes=>' + mes)
+                    //console.log('dateinv=>' + dateinv)
+                    //console.log('dateinvini=>' + dateinvini)
+                    if ((mes_busca == mes) && (dateinvini != '' && typeof dateinvini != 'undefined') && (dateinv == '' || typeof dateinv == 'undefined')) {
+                        dia = dateinvini.substring(8, 11)
+                        //console.log('entrou Inversor')
+                        //console.log('nome=>' + nome)
+                        //console.log('projeto=>' + projeto)
+
                         if (dia == '01') {
                             tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
                         }
@@ -1066,510 +1192,817 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                             tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
                         }
                     }
-                }
-                mes = datestbini.substring(5, 7)
-                //console.log('StringBox')
-                //console.log('mes=>' + mes)
-                if ((mes_busca == mes) && (datestbini != '' && typeof datestbini != 'undefined') && (datestb == '' || typeof datestb == 'undefined')) {
-                    dia = datestbini.substring(8, 11)
-                    //console.log('Entrou StringBox')
-                    if (dia == '01') {
-                        tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+
+                    if (dateeaeini != '' && typeof dateeaeini != 'undefined') {
+                        mes = dateeaeini.substring(5, 7)
+                        //console.log('Armazenamento')
+                        //console.log('mes=>' + mes)
+                        //console.log('dateeae=>' + dateeae)
+                        //console.log('dateeaeini=>' + dateeaeini)
+                        if ((mes_busca == mes) && (dateeae == '' || typeof dateeae == 'undefined')) {
+                            dia = dateeaeini.substring(8, 11)
+                            //console.log('Entrou Armazenamento')
+                            if (dia == '01') {
+                                tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '02') {
+                                tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '03') {
+                                tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '04') {
+                                tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '05') {
+                                tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '06') {
+                                tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '07') {
+                                tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '08') {
+                                tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '09') {
+                                tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '10') {
+                                tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '11') {
+                                tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '12') {
+                                tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '13') {
+                                tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '14') {
+                                tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '15') {
+                                tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '16') {
+                                tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '17') {
+                                tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '18') {
+                                tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '19') {
+                                tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '20') {
+                                tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '21') {
+                                tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '22') {
+                                tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '23') {
+                                tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '24') {
+                                tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '25') {
+                                tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '26') {
+                                tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '27') {
+                                tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '28') {
+                                tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '29') {
+                                tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '30') {
+                                tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                            if (dia == '31') {
+                                tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
+                            }
+                        }
                     }
-                    if (dia == '02') {
-                        tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '03') {
-                        tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '04') {
-                        tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '05') {
-                        tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '06') {
-                        tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '07') {
-                        tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '08') {
-                        tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '09') {
-                        tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '10') {
-                        tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '11') {
-                        tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '12') {
-                        tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '13') {
-                        tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '14') {
-                        tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '15') {
-                        tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '16') {
-                        tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '17') {
-                        tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '18') {
-                        tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '19') {
-                        tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '20') {
-                        tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '21') {
-                        tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '22') {
-                        tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '23') {
-                        tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '24') {
-                        tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '25') {
-                        tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '26') {
-                        tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '27') {
-                        tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '28') {
-                        tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '29') {
-                        tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '30') {
-                        tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                    if (dia == '31') {
-                        tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
-                    }
-                }
-                mes = datemodini.substring(5, 7)
-                //console.log('Modulos')
-                //console.log('mes=>' + mes)
-                if ((mes_busca == mes) && (datemodini != '' && typeof datemodini != 'undefined') && (datemod == '' || typeof datemod == 'undefined')) {
-                    dia = datemodini.substring(8, 11)
-                    //console.log('Entrou Modulos')
-                    if (dia == '01') {
-                        tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '02') {
-                        tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '03') {
-                        tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '04') {
-                        tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '05') {
-                        tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '06') {
-                        tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '07') {
-                        tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '08') {
-                        tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '09') {
-                        tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '10') {
-                        tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '11') {
-                        tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '12') {
-                        tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '13') {
-                        tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '14') {
-                        tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '15') {
-                        tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '16') {
-                        tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '17') {
-                        tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '18') {
-                        tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '19') {
-                        tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '20') {
-                        tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '21') {
-                        tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '22') {
-                        tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '23') {
-                        tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '24') {
-                        tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '25') {
-                        tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '26') {
-                        tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '27') {
-                        tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '28') {
-                        tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '29') {
-                        tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '30') {
-                        tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                    if (dia == '31') {
-                        tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
-                    }
-                }
-                if (datepnlini != '' && typeof datepnlini != 'undefined') {
-                    mes = datepnlini.substring(5, 7)
-                    //console.log('Painel')
+                    mes = datestbini.substring(5, 7)
+                    //console.log('StringBox')
                     //console.log('mes=>' + mes)
-                    if ((mes_busca == mes) && (datepnl == '' || typeof datepnl == 'undefined')) {
-                        dia = datepnlini.substring(8, 11)
-                        //console.log('Entrou Painel')
+                    if ((mes_busca == mes) && (datestbini != '' && typeof datestbini != 'undefined') && (datestb == '' || typeof datestb == 'undefined')) {
+                        dia = datestbini.substring(8, 11)
+                        //console.log('Entrou StringBox')
                         if (dia == '01') {
-                            tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '02') {
-                            tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '03') {
-                            tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '04') {
-                            tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '05') {
-                            tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '06') {
-                            tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '07') {
-                            tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '08') {
-                            tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '09') {
-                            tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '10') {
-                            tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '11') {
-                            tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '12') {
-                            tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '13') {
-                            tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '14') {
-                            tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '15') {
-                            tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '16') {
-                            tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '17') {
-                            tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '18') {
-                            tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '19') {
-                            tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '20') {
-                            tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '21') {
-                            tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '22') {
-                            tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '23') {
-                            tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '24') {
-                            tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '25') {
-                            tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '26') {
-                            tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '27') {
-                            tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '28') {
-                            tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '29') {
-                            tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '30') {
-                            tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
                         if (dia == '31') {
-                            tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
+                        }
+                    }
+                    mes = datemodini.substring(5, 7)
+                    //console.log('Modulos')
+                    //console.log('mes=>' + mes)
+                    if ((mes_busca == mes) && (datemodini != '' && typeof datemodini != 'undefined') && (datemod == '' || typeof datemod == 'undefined')) {
+                        dia = datemodini.substring(8, 11)
+                        //console.log('Entrou Modulos')
+                        if (dia == '01') {
+                            tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '02') {
+                            tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '03') {
+                            tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '04') {
+                            tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '05') {
+                            tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '06') {
+                            tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '07') {
+                            tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '08') {
+                            tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '09') {
+                            tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '10') {
+                            tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '11') {
+                            tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '12') {
+                            tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '13') {
+                            tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '14') {
+                            tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '15') {
+                            tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '16') {
+                            tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '17') {
+                            tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '18') {
+                            tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '19') {
+                            tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '20') {
+                            tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '21') {
+                            tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '22') {
+                            tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '23') {
+                            tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '24') {
+                            tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '25') {
+                            tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '26') {
+                            tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '27') {
+                            tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '28') {
+                            tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '29') {
+                            tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '30') {
+                            tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                        if (dia == '31') {
+                            tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
+                        }
+                    }
+                    if (datepnlini != '' && typeof datepnlini != 'undefined') {
+                        mes = datepnlini.substring(5, 7)
+                        //console.log('Painel')
+                        //console.log('mes=>' + mes)
+                        if ((mes_busca == mes) && (datepnl == '' || typeof datepnl == 'undefined')) {
+                            dia = datepnlini.substring(8, 11)
+                            //console.log('Entrou Painel')
+                            if (dia == '01') {
+                                tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '02') {
+                                tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '03') {
+                                tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '04') {
+                                tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '05') {
+                                tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '06') {
+                                tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '07') {
+                                tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '08') {
+                                tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '09') {
+                                tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '10') {
+                                tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '11') {
+                                tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '12') {
+                                tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '13') {
+                                tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '14') {
+                                tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '15') {
+                                tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '16') {
+                                tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '17') {
+                                tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '18') {
+                                tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '19') {
+                                tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '20') {
+                                tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '21') {
+                                tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '22') {
+                                tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '23') {
+                                tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '24') {
+                                tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '25') {
+                                tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '26') {
+                                tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '27') {
+                                tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '28') {
+                                tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '29') {
+                                tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '30') {
+                                tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                            if (dia == '31') {
+                                tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
+                            }
+                        }
+                    }
+                    mes = datevisini.substring(5, 7)
+                    //console.log('Vistoria')
+                    //console.log('mes=>' + mes)
+                    if ((mes_busca == mes) && (datevisini != '' && typeof datevisini != 'undefined') && (datevis == '' || typeof datevis == 'undefined')) {
+                        dia = datevisini.substring(8, 11)
+                        //console.log('Entrou Vistoria')
+                        if (dia == '01') {
+                            tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '02') {
+                            tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '03') {
+                            tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '04') {
+                            tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '05') {
+                            tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '06') {
+                            tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '07') {
+                            tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '08') {
+                            tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '09') {
+                            tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '10') {
+                            tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '11') {
+                            tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '12') {
+                            tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '13') {
+                            tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '14') {
+                            tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '15') {
+                            tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '16') {
+                            tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '17') {
+                            tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '18') {
+                            tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '19') {
+                            tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '20') {
+                            tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '21') {
+                            tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '22') {
+                            tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '23') {
+                            tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '24') {
+                            tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '25') {
+                            tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '26') {
+                            tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '27') {
+                            tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '28') {
+                            tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '29') {
+                            tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '30') {
+                            tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
+                        }
+                        if (dia == '31') {
+                            tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
                         }
                     }
                 }
-                mes = datevisini.substring(5, 7)
-                //console.log('Vistoria')
-                //console.log('mes=>' + mes)
-                if ((mes_busca == mes) && (datevisini != '' && typeof datevisini != 'undefined') && (datevis == '' || typeof datevis == 'undefined')) {
-                    dia = datevisini.substring(8, 11)
-                    //console.log('Entrou Vistoria')
-                    if (dia == '01') {
-                        tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '02') {
-                        tarefas02.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '03') {
-                        tarefas03.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '04') {
-                        tarefas04.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '05') {
-                        tarefas05.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '06') {
-                        tarefas06.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '07') {
-                        tarefas07.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '08') {
-                        tarefas08.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '09') {
-                        tarefas09.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '10') {
-                        tarefas10.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '11') {
-                        tarefas11.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '12') {
-                        tarefas12.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '13') {
-                        tarefas13.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '14') {
-                        tarefas14.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '15') {
-                        tarefas15.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '16') {
-                        tarefas16.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '17') {
-                        tarefas17.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '18') {
-                        tarefas18.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '19') {
-                        tarefas19.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '20') {
-                        tarefas20.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '21') {
-                        tarefas21.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '22') {
-                        tarefas22.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '23') {
-                        tarefas23.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '24') {
-                        tarefas24.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '25') {
-                        tarefas25.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '26') {
-                        tarefas26.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '27') {
-                        tarefas27.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '28') {
-                        tarefas28.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '29') {
-                        tarefas29.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '30') {
-                        tarefas30.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                    if (dia == '31') {
-                        tarefas31.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
-                    }
-                }
-            }
+            })
+            /*
+            //console.log('tarefas1=>' + tarefas01)
+            //console.log('tarefas2=>' + tarefas02) 
+            //console.log('tarefas3=>' + tarefas03) 
+            //console.log('tarefas4=>' + tarefas04) 
+            //console.log('tarefas5=>' + tarefas05)                    
+            //console.log('tarefas6=>' + tarefas06)
+            //console.log('tarefas7=>' + tarefas07)
+            //console.log('tarefas8=>' + tarefas08)
+            //console.log('tarefas9=>' + tarefas09)
+            //console.log('tarefas10=>' + tarefas10) 
+            //console.log('tarefas11=>' + tarefas11)                     
+            //console.log('tarefas12=>' + tarefas12)
+            //console.log('tarefas13=>' + tarefas13)
+            //console.log('tarefas14=>' + tarefas14)       
+            //console.log('tarefas15=>' + tarefas15)
+            //console.log('tarefas16=>' + tarefas16)                                     
+            //console.log('tarefas17=>' + tarefas17)
+            //console.log('tarefas18=>' + tarefas18)
+            //console.log('tarefas19=>' + tarefas19)
+            //console.log('tarefas20=>' + tarefas20)
+            //console.log('tarefas21=>' + tarefas21)                    
+            //console.log('tarefas22=>' + tarefas22)
+            //console.log('tarefas23=>' + tarefas23)
+            //console.log('tarefas24=>' + tarefas24)
+            //console.log('tarefas25=>' + tarefas25)
+            //console.log('tarefas26=>' + tarefas26)
+            //console.log('tarefas27=>' + tarefas27)
+            //console.log('tarefas28=>' + tarefas28)
+            //console.log('tarefas29=>' + tarefas29)
+            //console.log('tarefa30=>' + tarefas30)
+            //console.log('tarefa31=>' + tarefas31)
+            */
+            Cliente.find({ user: _id }).lean().then((cliente) => {
+                res.render('projeto/gerenciamento/agenda', {
+                    tarefas01, tarefas02, tarefas03, tarefas04, tarefas05, tarefas06, tarefas07,
+                    tarefas08, tarefas09, tarefas10, tarefas11, tarefas12, tarefas13, tarefas14,
+                    tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
+                    tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
+                    tarefas29, tarefas30, tarefas31, checkTesk: 'unchecked', checkInst: 'checked',
+                    mes: req.body.messel, ano: req.body.mesano, cliente
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar o cliente.')
+                res.redirect('/gerenciamento/agenda/')
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi possível encontrar as tarefas para a data de planejamento inicial.')
+            res.redirect('/gerenciamento/agenda/')
         })
-        /*
-        //console.log('tarefas1=>' + tarefas01)
-        //console.log('tarefas2=>' + tarefas02) 
-        //console.log('tarefas3=>' + tarefas03) 
-        //console.log('tarefas4=>' + tarefas04) 
-        //console.log('tarefas5=>' + tarefas05)                    
-        //console.log('tarefas6=>' + tarefas06)
-        //console.log('tarefas7=>' + tarefas07)
-        //console.log('tarefas8=>' + tarefas08)
-        //console.log('tarefas9=>' + tarefas09)
-        //console.log('tarefas10=>' + tarefas10) 
-        //console.log('tarefas11=>' + tarefas11)                     
-        //console.log('tarefas12=>' + tarefas12)
-        //console.log('tarefas13=>' + tarefas13)
-        //console.log('tarefas14=>' + tarefas14)       
-        //console.log('tarefas15=>' + tarefas15)
-        //console.log('tarefas16=>' + tarefas16)                                     
-        //console.log('tarefas17=>' + tarefas17)
-        //console.log('tarefas18=>' + tarefas18)
-        //console.log('tarefas19=>' + tarefas19)
-        //console.log('tarefas20=>' + tarefas20)
-        //console.log('tarefas21=>' + tarefas21)                    
-        //console.log('tarefas22=>' + tarefas22)
-        //console.log('tarefas23=>' + tarefas23)
-        //console.log('tarefas24=>' + tarefas24)
-        //console.log('tarefas25=>' + tarefas25)
-        //console.log('tarefas26=>' + tarefas26)
-        //console.log('tarefas27=>' + tarefas27)
-        //console.log('tarefas28=>' + tarefas28)
-        //console.log('tarefas29=>' + tarefas29)
-        //console.log('tarefa30=>' + tarefas30)
-        //console.log('tarefa31=>' + tarefas31)
-        */
-        res.render('projeto/gerenciamento/agenda', {
-            tarefas01, tarefas02, tarefas03, tarefas04, tarefas05, tarefas06, tarefas07,
-            tarefas08, tarefas09, tarefas10, tarefas11, tarefas12, tarefas13, tarefas14,
-            tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
-            tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
-            tarefas29, tarefas30, tarefas31,
-            mes: req.body.messel, ano: req.body.mesano
+    } else {
+        console.log('req.body.selecionado=>' + req.body.selecionado)
+        console.log('datafim=>' + datafim)
+        console.log('dataini=>' + dataini)
+        var nova_dataini = dataini
+
+        Tarefas.find({ concluido: false, 'buscadatafim': { $lte: datafim, $gte: dataini }, user: _id }).lean().then((lista_tarefas) => {
+            lista_tarefas.forEach(element => {
+                //console.log('entrou')
+                const { dataini } = element
+
+                console.log('dataini=>' + dataini)
+
+
+                Usina.findOne({ _id: element.usina }).then((usina) => {
+                    //console.log('nome=>' + nome)
+                    //console.log('projeto=>' + projeto)
+
+                    mes_busca = nova_dataini.substring(4, 6)
+                    console.log('mes_busca=>' + mes_busca)
+                    mes = dataini.substring(5, 7)
+                    console.log('mes=>' + mes)
+                    if (mes_busca == mes) {
+                        dia = dataini.substring(8, 11)
+                        console.log('dia=>' + dia)
+                        //console.log('entrou Planejamento')
+                        if (dia == '01') {
+                            tarefas01.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '02') {
+                            tarefas02.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '03') {
+                            tarefas03.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '04') {
+                            tarefas04.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '05') {
+                            tarefas05.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '06') {
+                            tarefas06.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '07') {
+                            tarefas07.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '08') {
+                            tarefas08.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '09') {
+                            tarefas09.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '10') {
+                            tarefas10.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '11') {
+                            tarefas11.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '12') {
+                            tarefas12.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '13') {
+                            tarefas13.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '14') {
+                            tarefas14.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '15') {
+                            tarefas15.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '16') {
+                            tarefas16.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '17') {
+                            tarefas17.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '18') {
+                            tarefas18.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '19') {
+                            tarefas19.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '20') {
+                            tarefas20.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '21') {
+                            tarefas21.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '22') {
+                            tarefas22.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '23') {
+                            tarefas23.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '24') {
+                            tarefas24.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '25') {
+                            tarefas25.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '26') {
+                            tarefas26.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '27') {
+                            tarefas27.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '28') {
+                            tarefas28.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '29') {
+                            tarefas29.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '30') {
+                            tarefas30.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                        if (dia == '31') {
+                            tarefas31.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                        }
+                    }
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi possível encontrar o cliente.')
+                    res.redirect('/gerenciamento/agenda/')
+                })
+
+            })
+            Cliente.find({ user: _id }).lean().then((cliente) => {
+                res.render('projeto/gerenciamento/agenda', {
+                    tarefas01, tarefas02, tarefas03, tarefas04, tarefas05, tarefas06, tarefas07,
+                    tarefas08, tarefas09, tarefas10, tarefas11, tarefas12, tarefas13, tarefas14,
+                    tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
+                    tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
+                    tarefas29, tarefas30, tarefas31, checkTesk: 'checked', checkInst: 'unchecked',
+                    mes: req.body.messel, ano: req.body.mesano, cliente
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar o cliente.')
+                res.redirect('/gerenciamento/agenda/')
+            })
         })
-    }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar as tarefas para a data de planejamento inicial.')
-        res.redirect('/gerenciamento/agenda/')
+    }
+})
+
+router.post('/selecionacliente', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    Cliente.find({ user: _id }).lean().then((cliente) => {
+        var ehSelecao = true
+        res.render('projeto/gerenciamento/tarefas', { cliente, ehSelecao })
+    }).catch(() => {
+        res.flash('error_msg', 'Não há cliente cadastrado.')
+        req.redirect('/agenda')
     })
 })
 
-router.get('/enviaMensagem/:id', ehAdmin, (req, res) => {
+router.post('/addmanutencao', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    var data = ''
+    var dia = ''
+    var ins_fora = []
+    var q = 0
+    var ehSelecao = false
 
-    Projeto.findOne({ _id: req.params.id }).then((projeto) => {
-        Cliente.findOne({ _id: projeto.cliente }).then((cliente) => {
-            Cronograma.findOne({ projeto: projeto._id }).then((cronograma) => {
+    if (parseFloat(req.body.dia) < 10) {
+        dia = '0' + req.body.dia
+    } else {
+        dia = req.body.dia
+    }
 
-                //Enviando SMS                              
-                var mensagem = 'Olá ' + cliente.nome + ', tudo bem?' + '\n' +
-                    'Segue o cronograma para a instalação de sua usina solar: ' + '\n' +
-                    'Planejamento: ' + dataMensagem(cronograma.dateplaini) + ' a ' + dataMensagem(cronograma.dateplafim) + '\n' +
-                    'Projetista: ' + dataMensagem(cronograma.dateprjini) + ' a ' + dataMensagem(cronograma.dateprjfim) + '\n' +
-                    'Aterramento: ' + dataMensagem(cronograma.dateateini) + ' a ' + dataMensagem(cronograma.dateatefim) + '\n' +
-                    'Inversores e StringBox: ' + dataMensagem(cronograma.dateinvini) + ' a ' + dataMensagem(cronograma.datestbfim) + '\n' +
-                    'Instalação da Estrutura: ' + dataMensagem(cronograma.dateestini) + ' a ' + dataMensagem(cronograma.dateestfim) + '\n' +
-                    'Instalação dos Módulos: ' + dataMensagem(cronograma.datemodini) + ' a ' + dataMensagem(cronograma.datemodfim) + '\n' +
-                    'Vistoria: ' + dataMensagem(cronograma.datevisini) + ' a ' + dataMensagem(cronograma.datevisfim) + '.' + '\n' +
-                    'Para mais detalhes entre em contato com a gente pelo whatsapp: (xx) x xxxx-xxxx'
+    console.log('dia=>' + dia)
+    data = (String(req.body.ano) + '-' + String(req.body.messel) + '-' + String(dia)).toString()
+    console.log('data=>' + data)
 
-                //console.log(mensagem)
-                to = cliente.celular
-                //console.log(to)
-
-                var textMessageService = new TextMessageService(apiKey)
-                textMessageService.send('Vimmus', mensagem, ['49991832978'], result => {
-                    //console.log(result)
-                    if (result == false) {
-                        req.flash('error_msg', 'Falha interna. Não foi possível enviar a mensagem.')
-                        res.redirect('/gerenciamento/cronograma/' + req.params.id)
-                    } else {
-                        projeto.mensagem = true
-                        projeto.save().then(() => {
-                            req.flash('success_msg', 'Mensagem enviada para: ' + cliente.nome + ' com sucesso.')
-                            res.redirect('/gerenciamento/cronograma/' + req.params.id)
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Falha ao salvar o projeto.')
-                            res.redirect('/gerenciamento/cronograma/' + req.params.id)
-                        })
-                    }
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Falha ao encontrar o cronograma.')
-                res.redirect('/gerenciamento/cronograma/' + req.params.id)
+    console.log('req.body.cliente=>' + req.body.cliente)
+    Usina.find({ cliente: req.body.cliente }).lean().then((usina) => {
+        Pessoa.find({ funins: 'checked', user: _id }).sort({ nome: 'asc' }).then((instalacao) => {
+            instalacao.forEach((eleint) => {
+                q = q + 1
+                var nome = eleint.nome
+                var id = eleint._id
+                ins_fora.push({ id: id, ins: nome })
+                if (q == instalacao.length) {
+                    res.render('projeto/gerenciamento/tarefas', { data, usina, fora: ins_fora, ehSelecao })
+                }
             })
         }).catch((err) => {
-            req.flash('error_msg', 'Falha ao encontrar o cliente.')
+            req.flash('error_msg', 'Falha ao encontrar o cronograma.')
             res.redirect('/gerenciamento/cronograma/' + req.params.id)
         })
     }).catch((err) => {
-        req.flash('error_msg', 'Falha ao encontrar o projeto.')
+        req.flash('error_msg', 'Falha ao encontrar a usina.')
         res.redirect('/gerenciamento/cronograma/' + req.params.id)
     })
+})
 
+router.post('/addtarefa', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    console.log('user._id=>' + _id)
+    console.log('req.body.manutencao=>' + req.body.manutencao)
+    var dataini = req.body.dataini
+    var datafim = req.body.datafim
+    var cadastro = dataHoje()
+    const equipe = {
+        user: _id,
+        tarefa: tarefa._id,
+        ins0: req.body.ins0,
+        ins1: req.body.ins1,
+        ins2: req.body.ins2,
+        ins3: req.body.ins3,
+        ins4: req.body.ins4,
+        ins5: req.body.ins5,
+    }
+    new Equipe(equipe).save().then(() => {
+        Equipe.findOne({ user: _id }).sort({ field: 'asc', _id: -1 }).then((novaequipe) => {
+            const tarefa = {
+                user: _id,
+                equipe: novaequipe._id,
+                usina: req.body.usina,
+                servico: req.body.manutencao,
+                dataini: dataini,
+                buscadataini: dataBusca(dataini),
+                datafim: datafim,
+                buscacdatafim: dataBusca(datafim),
+                cadastro: cadastro,
+                preco: req.body.preco,
+                concluido: false
+            }
+            new Tarefas(tarefa).save().then(() => {
+                Tarefas.findOne({ user: _id }).sort({ field: 'asc', _id: -1 }).then((tarefa) => {
+                    console.log('tarefa=>' + tarefa)
+                    console.log('tarefa._id=>' + tarefa._id)
+                    console.log('req.body.ins0=>' + req.body.ins0)
+                    console.log('req.body.dataini=>' + req.body.dataini)
+                    console.log('req.body.datafim=>' + req.body.datafim)
+                    req.flash('success_msg', 'Manutenção gerada com sucesso.')
+                    res.redirect('/gerenciamento/agenda')
+
+                }).catch((err) => {
+                    req.flash('error_msg', 'Falha ao encontrar a tarefa.')
+                    res.redirect('/gerenciamento/agenda')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Falha ao salvar a manutenção.')
+                res.redirect('/gerenciamento/agenda')
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha ao encontrar a equipe.')
+            res.redirect('/gerenciamento/agenda')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Falha ao salvar a equipe.')
+        res.redirect('/gerenciamento/agenda')
+    })
 })
 
 router.post('/aplicarcenario/', ehAdmin, (req, res) => {
@@ -1708,6 +2141,7 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             var aux
                             var soma
 
+
                             if (projeto.tipoCustoGes == 'hora') {
                                 plafim = Math.trunc((parseFloat(projeto.trbges) + parseFloat(projeto.desGes)) / conhrs)
                             } else {
@@ -1742,6 +2176,7 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                     prjfim = 0
                                 }
                             }
+                            console.log("projeto.tipoCustoIns=>" + projeto.tipoCustoIns)
                             if (projeto.tipoCustoIns == 'hora') {
                                 if ((parseFloat(projeto.trbpro) + parseFloat(projeto.desIns) + parseFloat(projeto.trbate)) > 8) {
                                     atefim = Math.round(((projeto.trbate + parseFloat(projeto.desIns)) / conhrs), -1)
@@ -1887,15 +2322,15 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 }
                             }
 
-                            //console.log('atefim=>' + atefim)
-                            //console.log('stbfim=>' + stbfim)
-                            //console.log('invfim=>' + invfim)
-                            //console.log('pnlfim=>' + pnlfim)
-                            //console.log('eaefim=>' + eaefim)
-                            //console.log('estfim=>' + estfim)
-                            //console.log('modfim=>' + modfim)
-                            //console.log('plafim=>' + plafim)
-                            //console.log('prjfim=>' + prjfim)
+                            console.log('atefim=>' + atefim)
+                            console.log('stbfim=>' + stbfim)
+                            console.log('invfim=>' + invfim)
+                            console.log('pnlfim=>' + pnlfim)
+                            console.log('eaefim=>' + eaefim)
+                            console.log('estfim=>' + estfim)
+                            console.log('modfim=>' + modfim)
+                            console.log('plafim=>' + plafim)
+                            console.log('prjfim=>' + prjfim)
                             valplafim = setData(projeto.valDataIni, plafim)
                             valprjfim = setData(valplafim, prjfim)
 
@@ -1933,14 +2368,17 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 }
                             }
 
-                            if (cronograma.datepnlini == '' || typeof cronograma.datepnlini == 'undefined' || isNaN(cronograma.datepnlini) && projeto.temPainel == 'checked') {
+                            if ((cronograma.datepnlini == '' || typeof cronograma.datepnlini == 'undefined' || isNaN(cronograma.datepnlini)) && projeto.temPainel == 'checked') {
+                                console.log('tem painel')
                                 valpnlini = setData(valprjfim, 1)
                                 cronograma.datepnlini = valpnlini
                                 if (cronograma.datepnlfim == '' || typeof cronograma.datepnlfim == 'undefined' || isNaN(cronograma.datepnlfim)) {
                                     cronograma.datepnlfim = setData(valpnlini, pnlfim)
                                 }
                             }
-                            if (cronograma.dateeaeini == '' || typeof cronograma.dateeaeini == 'undefined' || isNaN(cronograma.dateeaeini) && projeto.temArmazenamento == 'checked') {
+
+                            if ((cronograma.dateeaeini == '' || typeof cronograma.dateeaeini == 'undefined' || isNaN(cronograma.dateeaeini)) && projeto.temArmazenamento == 'checked') {
+                                console.log('tem armazenamento')
                                 valeaeini = setData(valprjfim, 1)
                                 cronograma.dateeaeini = valeaeini
                                 if (cronograma.dateeaefim == '' || typeof cronograma.dateeaefim == 'undefined' || isNaN(cronograma.dateeaefim)) {
@@ -1957,16 +2395,16 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
 
                                 }
                             }
-                            //console.log("modfim=>" + modfim)
+                            console.log("modfim=>" + modfim)
                             if (cronograma.datemodini == '' || typeof cronograma.datemodini == 'undefined' || isNaN(cronograma.datemodini)) {
                                 cronograma.datemodini = valestfim
                                 valmodini = valestfim
                                 if (cronograma.datemodfim == '' || typeof cronograma.datemodfim == 'undefined' || isNaN(cronograma.datemodfim)) {
-                                    //console.log('valmodini=>' + valmodini)
-                                    //console.log('valmodini=>' + valmodini)
+                                    console.log('valmodini=>' + valmodini)
+                                    console.log('valmodini=>' + valmodini)
                                     cronograma.datemodfim = setData(valmodini, modfim)
-                                    //console.log('modfim=>' + modfim)
-                                    //console.log('setData(valmodini, modfim)=>' + setData(valmodini, modfim))
+                                    console.log('modfim=>' + modfim)
+                                    console.log('setData(valmodini, modfim)=>' + setData(valmodini, modfim))
                                 }
                             }
                             var diasObra
@@ -1976,12 +2414,17 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 diastr = Math.round(parseFloat(projeto.tothrs) / parseFloat(config.hrstrb))
                             } else {
                                 diasObra = projeto.diasIns
-                                diastr = parseFloat(projeto.diasGes) + parseFloat(projeto.diasPro) + parseFloat(projeto.diasIns)
+                                console.log('projeto.diasIns=>' + projeto.diasGes)
+                                console.log('projeto.diasPro=>' + projeto.diasPro)
+                                console.log('projeto.diasPro=>' + projeto.diasPro)
+                                console.log('projeto.desPro=>' + projeto.desPro)
+                                console.log('projeto.desIns=>' + projeto.desIns)
+                                diastr = parseFloat(projeto.diasGes) + parseFloat(projeto.diasPro) + parseFloat(projeto.diasIns) + parseFloat(projeto.desPro) + parseFloat(projeto.desIns)
                             }
                             projeto.diasObra = diasObra
-
+                            console.log('diasObra=>' + diasObra)
                             projeto.diastr = diastr
-                            //console.log('diastr=>'+diastr)
+                            console.log('diastr=>' + diastr)
 
                             //console.log('equipe=>' + equipe)
                             var vlrali
@@ -2012,10 +2455,10 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             projeto.discmb = discmb
                             projeto.ltocmb = ltocmb
                             projeto.vlrdia = vlrdia
-                            //console.log('vlrali=>' + vlrali)
-                            //console.log('discmb=>' + discmb)
-                            //console.log('ltocmb=>' + ltocmb)
-                            //console.log('vlrdia=>' + vlrdia)
+                            console.log('vlrali=>' + vlrali)
+                            console.log('discmb=>' + discmb)
+                            console.log('ltocmb=>' + ltocmb)
+                            console.log('vlrdia=>' + vlrdia)
 
                             var tothtl
                             var totcmb
@@ -2049,10 +2492,10 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             projeto.totdes = totdes.toFixed(2)
                             //--------------------------------------------                               
 
-                            //console.log('totcmb=>' + totcmb)
-                            //console.log('tothtl=>' + tothtl)
-                            //console.log('totali=>' + totali)
-                            //console.log('totdes=>' + totdes)
+                            console.log('totcmb=>' + totcmb)
+                            console.log('tothtl=>' + tothtl)
+                            console.log('totali=>' + totali)
+                            console.log('totdes=>' + totdes)
 
 
                             //Custo de Reserva
@@ -2112,14 +2555,14 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             var reserva = parseFloat(resger) + parseFloat(rescon)
                             projeto.reserva = reserva.toFixed(2)
 
-                            //console.log('rescon=>' + rescon)
-                            //console.log('reserva=>' + reserva)
-                            //console.log('projeto.totint=>' + projeto.totint)
-                            //console.log('projeto.totpro=>' + projeto.totpro)
-                            //console.log('projeto.totges=>' + projeto.totges)
-                            //console.log('projeto.valorCer=>' + projeto.valorCer)
-                            //console.log('projeto.valorPos=>' + projeto.valorPos)
-                            //console.log('projeto.valorOcp=>' + projeto.valorOcp)
+                            console.log('rescon=>' + rescon)
+                            console.log('reserva=>' + reserva)
+                            console.log('projeto.totint=>' + projeto.totint)
+                            console.log('projeto.totpro=>' + projeto.totpro)
+                            console.log('projeto.totges=>' + projeto.totges)
+                            // console.log('projeto.valorCer=>' + projeto.valorCer)
+                            // console.log('projeto.valorPos=>' + projeto.valorPos)
+                            // console.log('projeto.valorOcp=>' + projeto.valorOcp)
 
                             var valorCer
                             var valorPos
@@ -2133,29 +2576,29 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             if (typeof projeto.valorCen == "undefined") {
                                 valorCen = 0
                             }
-                            //console.log('valorCer=>' + valorCer)
-                            //console.log('valorPos=>' + valorPos)
-                            //console.log('valorCen=>' + valorCen)
+                            console.log('valorCer=>' + valorCer)
+                            console.log('valorPos=>' + valorPos)
+                            console.log('valorCen=>' + valorCen)
 
                             var custoFix = parseFloat(projeto.totint) + parseFloat(projeto.totpro) + parseFloat(projeto.vlrart) + parseFloat(projeto.totges)
-                            //console.log('custoFix=>' + custoFix)
+                            console.log('custoFix=>' + custoFix)
                             var custoVar = parseFloat(totdes)
-                            //console.log('custoVar=>' + custoVar)
+                            console.log('custoVar=>' + custoVar)
                             var custoEst = parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen)
-                            //console.log('custoEst=>' + custoEst)
+                            console.log('custoEst=>' + custoEst)
                             var totcop = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
 
                             projeto.custofix = custoFix.toFixed(2)
                             projeto.custovar = custoVar.toFixed(2)
                             projeto.custoest = custoEst.toFixed(2)
                             projeto.totcop = totcop.toFixed(2)
-                            //console.log('totcop=>' + totcop)
+                            console.log('totcop=>' + totcop)
                             var custoPlano = parseFloat(totcop) + parseFloat(reserva)
                             projeto.custoPlano = custoPlano.toFixed(2)
-                            //console.log('custoPlano=>' + custoPlano)
+                            console.log('custoPlano=>' + custoPlano)
                             var custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
                             projeto.custoTotal = custoTotal.toFixed(2)
-                            //console.log('custoTotal=>' + custoTotal)
+                            console.log('custoTotal=>' + custoTotal)
 
                             var desAdm = 0
                             if (parseFloat(empresa.desadm) > 0) {
@@ -2164,7 +2607,9 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 } else {
                                     desAdm = ((parseFloat(empresa.desadm) / parseFloat(empresa.estkwp)) * parseFloat(projeto.potencia)).toFixed(2)
                                 }
-                            } 
+                            }
+
+                            console.log('desAdm=>' + desAdm)
 
                             //Definindo o imposto ISS
                             //console.log('regime_prj.alqNFS=>' + regime_prj.alqNFS)
@@ -2185,16 +2630,16 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                     vlrNFS = (parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)).toFixed(2)
                                     impNFS = (parseFloat(vlrNFS) * (parseFloat(empresa.alqNFS) / 100)).toFixed(2)
                                 }
-                                vlrMarkup = ((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva)) / (1 -(parseFloat(req.body.markup)/ 100))).toFixed(2)
+                                vlrMarkup = (((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva) - parseFloat(projeto.vlrkit)) / (1 - (parseFloat(config.markup)) / 100)) + parseFloat(projeto.vlrkit)).toFixed(2)
                                 projeto.valor = parseFloat(vlrMarkup).toFixed(2)
                                 projeto.markup = config.markup
                                 prjValor = vlrMarkup
                             } else {
-                                //console.log('markup diferente de zero')
-                                //console.log('custoTotal=>'+custoTotal)
-                                //console.log('req.body.markup=>'+req.body.markup)
-                                vlrMarkup = ((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva)) / (1 - ((parseFloat(req.body.markup)) / 100))).toFixed(2)
-                                //console.log('vlrMarkup=>' + vlrMarkup)
+                                console.log('markup diferente de zero')
+                                console.log('custoTotal=>' + custoTotal)
+                                console.log('req.body.markup=>' + req.body.markup)
+                                vlrMarkup = (((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva) - parseFloat(projeto.vlrkit)) / (1 - (parseFloat(req.body.markup)) / 100)) + parseFloat(projeto.vlrkit)).toFixed(2)
+                                console.log('vlrMarkup=>' + vlrMarkup)
                                 if (req.body.checkFatura != null) {
                                     fatequ = true
                                     vlrNFS = parseFloat(vlrMarkup).toFixed(2)
@@ -2208,9 +2653,9 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 projeto.valor = vlrMarkup
                                 prjValor = parseFloat(vlrMarkup).toFixed(2)
                             }
-                            //console.log('vlrNFS=>' + vlrNFS)
-                            //console.log('impNFS=>' + impNFS)
-                            //console.log('prjValor=>' + prjValor)
+                            console.log('vlrNFS=>' + vlrNFS)
+                            console.log('impNFS=>' + impNFS)
+                            console.log('prjValor=>' + prjValor)
                             //kWp médio
                             projeto.vrskwp = (parseFloat(prjValor) / parseFloat(projeto.potencia)).toFixed(2)
                             projeto.fatequ = fatequ
@@ -2221,16 +2666,17 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 vlrcom = parseFloat(vlrNFS) * (parseFloat(projeto.percom) / 100)
                                 projeto.vlrcom = parseFloat(vlrcom).toFixed(2)
                             }
-                            //console.log('vlrcom=>'+vlrcom)
+                            console.log('vlrcom=>' + vlrcom)
 
                             //Definindo o Lucro Bruto
                             var recLiquida = parseFloat(prjValor) - parseFloat(impNFS)
                             projeto.recLiquida = parseFloat(recLiquida).toFixed(2)
 
+                            console.log('recLiquida=>' + recLiquida)
                             var lucroBruto = parseFloat(recLiquida) - parseFloat(projeto.vlrkit)
                             projeto.lucroBruto = parseFloat(lucroBruto).toFixed(2)
 
-                            //console.log('lucroBruto=>' + lucroBruto)
+                            console.log('lucroBruto=>' + lucroBruto)
 
                             var lbaimp = 0
                             if (parseFloat(empresa.desadm) > 0) {
@@ -2249,7 +2695,7 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 lbaimp = parseFloat(lbaimp) - parseFloat(vlrcom)
                             }
                             projeto.lbaimp = lbaimp.toFixed(2)
-                            //console.log('lbaimp=>' + lbaimp)
+                            console.log('lbaimp=>' + lbaimp)
 
                             //Dashboard              
                             //Participação dos componentes
@@ -2294,10 +2740,13 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             projeto.vlrNFS = parseFloat(vlrNFS).toFixed(2)
                             projeto.impNFS = parseFloat(impNFS).toFixed(2)
 
+                            projeto.dataIns = dataMensagem(valateini)
+                            projeto.valDataIns = valateini
+
                             cronograma.save().then(() => {
-                                //console.log('salvou cronograma')
+                                console.log('salvou cronograma')
                                 projeto.save().then(() => {
-                                    //console.log('salvou projeto')
+                                    console.log('salvou projeto')
                                     sucesso = 'Custo de gerenciamento aplicado com sucesso.'
                                     req.flash('success_msg', sucesso)
                                     res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
@@ -2623,6 +3072,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.body.idprojeto }).then((prj_entrega) => {
         Cronograma.findOne({ projeto: req.body.idprojeto }).then((cronograma) => {
             Realizado.findOne({ projeto: req.body.idprojeto }).then((realizado) => {
+                console.log('req.body.perges=>' + req.body.perges)
                 if (req.body.perges != '' && typeof req.body.perges != 'undefined' && req.body.perges != 0) {
                     var AC = 0
                     var ev = 0
@@ -2698,24 +3148,24 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                         evPerPos = 0
                     }
 
-                    if (prj_entrega.ehDireto == 'false') {
+                    if (prj_entrega.ehDireto == false) {
                         evPerDes = 0
                     } else {
                         evPerCmb = 0
                         evPerHtl = 0
                     }
 
-                    //console.log('evPerGes=>' + evPerGes)
-                    //console.log('evPerKit=>' + evPerKit)
-                    //console.log('evPerIns=>' + evPerIns)
-                    //console.log('evPerPro=>' + evPerPro)
-                    //console.log('evPerDes=>' + evPerDes)
-                    //console.log('evPerAli=>' + evPerAli)
-                    //console.log('evPerHtl=>' + evPerHtl)
-                    //console.log('evPerCmb=>' + evPerCmb)
-                    //console.log('evPerCer=>' + evPerCer)
-                    //console.log('evPerCen=>' + evPerCen)
-                    //console.log('evPerPos=>' + evPerPos)
+                    console.log('evPerGes=>' + evPerGes)
+                    console.log('evPerKit=>' + evPerKit)
+                    console.log('evPerIns=>' + evPerIns)
+                    console.log('evPerPro=>' + evPerPro)
+                    console.log('evPerDes=>' + evPerDes)
+                    console.log('evPerAli=>' + evPerAli)
+                    console.log('evPerHtl=>' + evPerHtl)
+                    console.log('evPerCmb=>' + evPerCmb)
+                    console.log('evPerCer=>' + evPerCer)
+                    console.log('evPerCen=>' + evPerCen)
+                    console.log('evPerPos=>' + evPerPos)
 
                     ev = (parseFloat(evPerGes) + parseFloat(evPerKit) + parseFloat(evPerIns) + parseFloat(evPerPro) + parseFloat(evPerAli) + parseFloat(evPerDes) + parseFloat(evPerHtl) + parseFloat(evPerCmb) + parseFloat(evPerCer) + parseFloat(evPerCen) + parseFloat(evPerPos)).toFixed(2)
                     //console.log('ev=>' + ev)
@@ -2743,12 +3193,16 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                     if (isNaN(totint) || totint == '' || totint == null) {
                         totint = 0
                     }
+                    var toteng = 0
+                    var matate = 0
+                    var vlremp = 0
+                    var compon = 0
                     //console.log('totint=>' + totint)
                     var totpro = req.body.totpro
                     if (isNaN(totpro) || totpro == '' || totpro == null) {
                         totpro = 0
                     }
-                    //console.log('totpro=>' + totpro)
+                    console.log('totpro=>' + totpro)
                     var totali = req.body.totali
                     if (isNaN(totali) || totali == '' || totali == null) {
                         totali = 0
@@ -2784,10 +3238,10 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                         postecond = 0
                     }
                     //console.log('postecond=>' + postecond)
-                    if (prj_entrega.ehDireto == 'false') {
-                        custoPlanoRlz = parseFloat(totges) + parseFloat(vlrKitRlz) + parseFloat(totint) + parseFloat(totpro) + parseFloat(totali) + parseFloat(tothtl) + parseFloat(totcmb) + parseFloat(cercamento) + parseFloat(central) + parseFloat(postecond)
+                    if (prj_entrega.ehDireto == false && prj_entrega.ehVinculo == false) {
+                        custoPlanoRlz = parseFloat(totges) + parseFloat(vlrKitRlz) + parseFloat(totint) + parseFloat(toteng) + parseFloat(matate) + parseFloat(vlremp) + parseFloat(compon) + parseFloat(totpro) + parseFloat(totali) + parseFloat(tothtl) + parseFloat(totcmb) + parseFloat(cercamento) + parseFloat(central) + parseFloat(postecond)
                     } else {
-                        custoPlanoRlz = parseFloat(totges) + parseFloat(vlrKitRlz) + parseFloat(totint) + parseFloat(totpro) + parseFloat(totdes) + parseFloat(totali) + parseFloat(cercamento) + parseFloat(central) + parseFloat(postecond)
+                        custoPlanoRlz = parseFloat(totges) + parseFloat(vlrKitRlz) + parseFloat(totint) + parseFloat(toteng) + parseFloat(matate) + parseFloat(vlremp) + parseFloat(compon) + parseFloat(totpro) + parseFloat(totdes) + parseFloat(totali) + parseFloat(cercamento) + parseFloat(central) + parseFloat(postecond)
                     }
                     //Definição do actual cost
 
@@ -2799,6 +3253,8 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                     //console.log('totalTributos=>' + totalTributos)
                     //console.log('margemLL=>' + margemLL)
                     */
+
+                    //Cálculo dos indicadores de conclusão do projeto
                     AC = parseFloat(custoPlanoRlz).toFixed(2)
                     if (isNaN(AC)) {
                         AC = 0
@@ -2811,7 +3267,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                     }
                     cpi = parseFloat(ev) / parseFloat(AC)
                     //console.log('cpi=>' + cpi)
-                    if (cpi == 'Infinity') {
+                    if (cpi == 'Infinity' || isNaN(cpi)) {
                         cpi = 1
                     }
                     tcpi = (parseFloat(prj_entrega.valor) - parseFloat(ev)) / (parseFloat(prj_entrega.valor) - parseFloat(ac))
@@ -2819,21 +3275,34 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                         tcpi = 1
                     }
                     eac = parseFloat(prj_entrega.custoTotal) / parseFloat(cpi)
+                    if (isNaN(eac)) {
+                        eac = 0
+                    }
                     if (cronograma.perPro == 100) {
                         etc = parseFloat(eac) - parseFloat(AC) - parseFloat(prj_entrega.vlrart)
                     } else {
                         etc = parseFloat(eac) - parseFloat(AC)
                     }
+                    if (isNaN(etc)) {
+                        etc = 0
+                    }
                     spi = parseFloat(prj_entrega.hrsprj) * (1 - (parseFloat(perConclusao)))
                     if (isNaN(spi)) {
                         spi = 0
                     }
+                    console.log('Math.round(perConclusao * 100)=>' + Math.round(perConclusao * 100))
                     prj_entrega.perConclusao = Math.round(perConclusao * 100)
+                    console.log('AC=>' + AC)
                     prj_entrega.actualCost = parseFloat(AC).toFixed(2)
+                    console.log('cpi=>' + cpi)
                     prj_entrega.cpi = parseFloat(cpi).toFixed(4)
+                    console.log('tcpi=>' + tcpi)
                     prj_entrega.tcpi = parseFloat(tcpi).toFixed(4)
+                    console.log('etc=>' + etc)
                     prj_entrega.etc = parseFloat(etc).toFixed(2)
+                    console.log('eac=>' + eac)
                     prj_entrega.eac = parseFloat(eac).toFixed(2)
+                    console.log('spi=>' + spi)
                     prj_entrega.spi = parseFloat(spi).toFixed(2)
                     prj_entrega.tspi = 1
                 } else {
@@ -2846,6 +3315,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                     prj_entrega.tspi = 1
                 }
 
+                console.log('req.body.executando=>' + req.body.executando)
                 if (req.body.executando == 'true') {
                     if (req.body.datepla != '' && typeof req.body.datepla != 'undefined') {
                         atrasou = comparaDatas(cronograma.dateplafim, req.body.datepla)
@@ -2885,7 +3355,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                     if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
                         atrasou = comparaDatas(cronograma.datevisfim, req.body.datevis)
                     }
-
+                    console.log('req.body.datevis=>' + req.body.datevis)
                     if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
                         if (req.body.dateEntregaReal != '' && typeof req.body.dateEntregaReal != 'undifined') {
                             if (comparaDatas(req.body.dateEntregaReal, req.body.datevis)) {
@@ -2902,19 +3372,18 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                             }
                         }
                     }
+                    console.log('req.body.dateEntregaReal=>' + req.body.dateEntregaReal)
                 }
 
-                //console.log('atrasou=>' + atrasou)
-
-                //console.log('req.body.dateentrega=>' + req.body.dateentrega)
-                //console.log('req.body.datevisfim=>' + req.body.datevisfim)
-                //console.log('req.body.orcado=>' + req.body.orcado)
+                console.log('req.body.dateentrega=>' + req.body.dateentrega)
+                console.log('req.body.datevisfim=>' + req.body.datevisfim)
+                console.log('req.body.orcado=>' + req.body.orcado)
 
                 if (req.body.orcado == 'true') {
-                    //console.log('entrou orçado')
+                    console.log('entrou orçado')
                     if (req.body.datevisfim == '' || typeof req.body.datevisfim == 'undefined') {
-                        //console.log('prj_entrega.valDataPrev=>' + prj_entrega.valDataPrev)
-                        //console.log('req.body.dateentrega=>' + req.body.dateentrega)
+                        console.log('prj_entrega.valDataPrev=>' + prj_entrega.valDataPrev)
+                        console.log('req.body.dateentrega=>' + req.body.dateentrega)
                         if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && (req.body.dateentrega != prj_entrega.valDataPrev)) {
                             erros = erros + 'A data de entrega poderá ser alterada quando data final da vistoria estiver preenchida.'
                             req.flash('error_msg', erros)
@@ -2933,9 +3402,15 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                         }
                     }
                 }
+
                 prj_entrega.atrasado = atrasou
+                console.log('atrasou=>' + atrasou)
+                console.log('req.body.dateateini=>' + req.body.dateateini)
+                prj_entrega.dataIns = dataMensagem(req.body.dateateini)
+                console.log('dataMensagem(req.body.dateateini)=>' + req.body.dateateini)
+                prj_entrega.valDataIns = req.body.dateateini
                 prj_entrega.save().then(() => {
-                    //console.log('salvou o projeto')
+                    console.log('salvou o projeto')
                     if (req.body.executando == 'true') {
                         //---Validar as datas de realização com data estimada do fim da entrega--//
                         if (req.body.datepla != '' && typeof req.body.datepla != 'undefined') {
@@ -3095,7 +3570,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
 
                     }
                     if (req.body.executando == 'true') {
-                        //console.log('perges=>' + req.body.perges)
+                        console.log('perges=>' + req.body.perges)
                         var perges = req.body.perges
                         var perkit = req.body.perkit
                         var perins = req.body.perins
@@ -3184,23 +3659,26 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                             }
                         }
 
+                        console.log("realizado=>" + realizado)
                         if (realizado != null) {
-                            /*
-                            //console.log('entrou realizado')
-                            //console.log('totint=>' + totint)
-                            //console.log('totges=>' + totges)
-                            //console.log('totpro=>' + totpro)
-                            //console.log('vlrart=>' + vlrart)
-                            //console.log('totali=>' + totali)
-                            //console.log('totdes=>' + totdes)
-                            //console.log('tothtl=>' + tothtl)
-                            //console.log('totcmb=>' + totcmb)
-                            //console.log('cercamento=>' + cercamento)
-                            //console.log('central=>' + central)
-                            //console.log('postecond=>' + postecond)
-                            */
+                            console.log('entrou realizado')
+                            console.log('totint=>' + totint)
+                            console.log('totges=>' + totges)
+                            console.log('totpro=>' + totpro)
+                            console.log('totali=>' + totali)
+                            console.log('totdes=>' + totdes)
+                            console.log('tothtl=>' + tothtl)
+                            console.log('totcmb=>' + totcmb)
+                            console.log('cercamento=>' + cercamento)
+                            console.log('central=>' + central)
+                            console.log('postecond=>' + postecond)
+
                             realizado.vlrkit = vlrKitRlz
                             realizado.totint = totint
+                            realizado.toteng = toteng
+                            realizado.matate = matate
+                            realizado.vlremp = vlremp
+                            realizado.compon = compon
                             realizado.totges = totges
                             realizado.totpro = totpro
                             realizado.totali = totali
@@ -3247,13 +3725,17 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                             })
 
                         } else {
-                            //console.log('novo realizado')
-                            //console.log('req.boy.totint=>' + req.body.totint)
+                            console.log('novo realizado')
+                            console.log('req.boy.totint=>' + req.body.totint)
                             const realizado = {
                                 user: _id,
                                 projeto: req.body.idprojeto,
                                 vlrkit: req.body.vlrKitRlz,
                                 totint: req.body.totint,
+                                toteng: 0,
+                                matate: 0,
+                                vlrwmp: 0,
+                                compon: 0,
                                 totges: req.body.totges,
                                 totpro: req.body.totpro,
                                 totali: req.body.totali,
@@ -3300,7 +3782,6 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                             })
                         }
                     }
-
                 }).catch((err) => {
                     req.flash('error_msg', 'Não foi possível salvar o projeto.')
                     res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
@@ -3316,6 +3797,88 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar o projeto.')
         res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
+    })
+})
+
+router.post('/planejamento', ehAdmin, (req,res)=>{
+    console.log('req.body.id=>'+req.body.id)
+    Vistoria.findOne({projeto: req.body.id}).then((vistoria)=>{
+        vistoria.plaQtdMod = req.body.plaQtdMod
+        vistoria.plaWattMod = req.body.plaWattMod
+        vistoria.plaQtdInv = req.body.plaQtdInv
+        vistoria.plaKwpInv = req.body.plaKwpInv
+        vistoria.plaDimArea = req.body.plaDimArea
+        vistoria.plaQtdString = req.body.plaQtdString
+        vistoria.plaModString = req.body.plaModString
+        vistoria.plaQtdEst = req.body.plaQtdEst
+        vistoria.save().then(()=>{
+            req.flash('success_msg', 'Vistoria salva com sucesso.')
+            res.redirect('/gerenciamento/vistoriaPla/'+req.body.id)
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi possível salvar o planejamento.')
+            res.redirect('/gerenciamento/vistoriaPla/'+req.body.id)
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
+        res.redirect('/gerenciamento/vistoriaPla/'+req.body.id)
+    })
+})
+
+router.get('/vistoriaAte/:id', ehAdmin, (req, res) => {
+    Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
+        Vistoria.findOne({ projeto: req.params.id }).lean().then((vistoria) => {
+            res.render('vistoria/aterramento', { projeto, vistoria })
+        })
+    })
+})
+
+router.get('/vistoriaStb/:id', ehAdmin, (req, res) => {
+    Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
+        Vistoria.findOne({ projeto: req.params.id }).lean().then((vistoria) => {
+            res.render('vistoria/stringbox', { projeto, vistoria })
+        })
+    })
+})
+
+router.get('/vistoriaInv/:id', ehAdmin, (req, res) => {
+    Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
+        Vistoria.findOne({ projeto: req.params.id }).lean().then((vistoria) => {
+            res.render('vistoria/inversor', { projeto, vistoria })
+        })
+    })
+})
+
+router.get('/vistoriaEst/:id', ehAdmin, (req, res) => {
+    Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
+        Vistoria.findOne({ projeto: req.params.id }).lean().then((vistoria) => {
+            res.render('vistoria/estrutura', { projeto, vistoria })
+        })
+    })
+})
+
+router.get('/vistoriaMod/:id', ehAdmin, (req, res) => {
+    Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
+        Vistoria.findOne({ projeto: req.params.id }).lean().then((vistoria) => {
+            res.render('vistoria/modulo', { projeto, vistoria })
+        })
+    })
+})
+
+router.get('/vistoriaPla/:id', ehAdmin, (req, res) => {
+    Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
+        console.log('projeto._id=>'+projeto._id)
+        Vistoria.findOne({ projeto: projeto._id }).lean().then((vistoria) => {
+            console.log('vistoria=>'+vistoria)
+            res.render('vistoria/planejamento', { projeto, vistoria })
+        })
+    })
+})
+
+router.get('/vistoriaFinal/:id', ehAdmin, (req, res) => {
+    Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
+        Vistoria.findOne({ projeto: req.params.id }).lean().then((vistoria) => {
+            res.render('vistoria/vistoriaFinal', { projeto, vistoria })
+        })
     })
 })
 
