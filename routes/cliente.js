@@ -193,23 +193,27 @@ router.get('/usinas/:id', ehAdmin, (req, res) => {
     var qu = 0
     Cliente.findOne({ _id: req.params.id }).lean().then((cliente) => {
         Usina.find({ cliente: req.params.id }).lean().then((usina) => {
-            usina.forEach((element) => {
-                Plano.findOne({ _id: element.plano }).then((plano) => {
-                    lista_usina.push({ _id: element._id, cliente: element.cliente, datalimp: element.datalimp, datarevi: element.datarevi, cadastro: element.cadastro, classificacao: element.classificacao, tipo: element.tipo, nome_plano: plano.nome, mensalidade: plano.mensalidade, nome: element.nome, endereco: element.endereco, area: element.area, qtdmod: element.qtdmod })
-                    qu++
-                    if (usina.length = qu) {
-                        Plano.find({ user: _id }).lean().then((lista_plano) => {
-                            res.render('cliente/usina', { cliente, lista_usina, lista_plano })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Houve uma falha ao encontrar o cliente.')
-                            res.redirect('/cliente/usina/' + req.params.id)
-                        })
-                    }
-                }).catch((err) => {
-                    req.flash('error_msg', 'Houve uma falha ao encontrar o plano.')
-                    res.redirect('/cliente/usina/' + req.params.id)
+            if (typeof usina != 'unedined' && usina != '') {
+                usina.forEach((element) => {
+                    Plano.findOne({ _id: element.plano }).then((plano) => {
+                        lista_usina.push({ _id: element._id, cliente: element.cliente, datalimp: element.datalimp, datarevi: element.datarevi, cadastro: element.cadastro, classificacao: element.classificacao, tipo: element.tipo, nome_plano: plano.nome, mensalidade: plano.mensalidade, nome: element.nome, endereco: element.endereco, area: element.area, qtdmod: element.qtdmod })
+                        qu++
+                        if (usina.length = qu) {
+                            Plano.find({ user: _id }).lean().then((lista_plano) => {
+                                res.render('cliente/usina', { cliente, lista_usina, lista_plano })
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Houve uma falha ao encontrar o cliente.')
+                                res.redirect('/cliente/usina/' + req.params.id)
+                            })
+                        }
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Houve uma falha ao encontrar o plano.')
+                        res.redirect('/cliente/usina/' + req.params.id)
+                    })
                 })
-            })
+            } else {
+                res.render('cliente/usina', { cliente })
+            }
         }).catch((err) => {
             req.flash('error_msg', 'Houve uma falha ao encontrar a usina.')
             res.redirect('/cliente/usina/' + req.params.id)
