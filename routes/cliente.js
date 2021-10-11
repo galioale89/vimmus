@@ -298,26 +298,42 @@ router.get('/historico/:id', (req, res) => {
     concluido = []
     Cliente.findOne({ _id: req.params.id }).lean().then((cliente) => {
         Usina.find({ cliente: req.params.id }).then((usina) => {
-            usina.forEach((ele_usina) => {
-                qu++
-                Tarefa.find({ usina: ele_usina._id }).then((tarefas) => {
-                    tarefas.forEach((ele_tarefa) => {
-                        console.log('ele_tarefa.concluido=>' + ele_tarefa.concluido)
-                        console.log('ele_usina.nome=>' + ele_usina.nome)
-                        console.log('ele_tarefa.servico=>' + ele_tarefa.servico)
-                        if (ele_tarefa.concluido == false) {
-                            emaberto.push({ _id: ele_tarefa._id, usina: ele_usina.nome, servico: ele_tarefa.servico, dataini: dataMensagem(ele_tarefa.dataini), datafim: dataMensagem(ele_tarefa.datafim), situacao: "Em aberto" })
+            if (typeof usina != 'unedined' && usina != '') {
+                usina.forEach((ele_usina) => {
+                    qu++
+                    Tarefa.find({ usina: ele_usina._id }).then((tarefas) => {
+                        if (typeof tarefas != 'unedined' && tarefas != '') {
+                            tarefas.forEach((ele_tarefa) => {
+                                console.log('ele_tarefa.concluido=>' + ele_tarefa.concluido)
+                                console.log('ele_usina.nome=>' + ele_usina.nome)
+                                console.log('ele_tarefa.servico=>' + ele_tarefa.servico)
+                                if (ele_tarefa.concluido == false) {
+                                    emaberto.push({ _id: ele_tarefa._id, usina: ele_usina.nome, servico: ele_tarefa.servico, dataini: dataMensagem(ele_tarefa.dataini), datafim: dataMensagem(ele_tarefa.datafim), situacao: "Em aberto" })
+                                } else {
+                                    concluido.push({ _id: ele_tarefa._id, usina: ele_usina.nome, servico: ele_tarefa.servico, dataini: dataMensagem(ele_tarefa.dataini), datafim: dataMensagem(ele_tarefa.datafim), situacao: "Realizado" })
+                                }
+                                if (usina.length == qu) {
+                                    res.render('cliente/historico', { emaberto, cliente })
+                                }
+                            })
                         } else {
-                            concluido.push({ _id: ele_tarefa._id, usina: ele_usina.nome, servico: ele_tarefa.servico, dataini: dataMensagem(ele_tarefa.dataini), datafim: dataMensagem(ele_tarefa.datafim), situacao: "Realizado" })
+                            res.render('cliente/historico', { cliente })
                         }
-                        if (usina.length == qu) {
-                            res.render('cliente/historico', { emaberto, cliente })
-                        }
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Não foi possível encontrar a tarefa.')
+                        res.redirect('/cliente/edicao/'+req.params.id)
                     })
-
                 })
-            })
+            } else {
+                res.render('cliente/historico', { cliente })
+            }
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi possível encontrar a usina.')
+            res.redirect('/cliente/edicao/'+req.params.id)
         })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar o cliente.')
+        res.redirect('/cliente/edicao/'+req.params.id)
     })
 
 })

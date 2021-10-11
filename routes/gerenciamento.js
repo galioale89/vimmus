@@ -387,10 +387,10 @@ router.get('/plano/:id', ehAdmin, (req, res) => {
     })
 })
 
-router.get('/consultaplano', ehAdmin, (req,res)=>{
-    const {_id} = req.user
-    Plano.find({user: _id}).lean().then((planos)=>{
-        res.render('projeto/gerenciamento/consultaplano', {planos})
+router.get('/consultaplano', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    Plano.find({ user: _id }).lean().then((planos) => {
+        res.render('projeto/gerenciamento/consultaplano', { planos })
     }).catch((err) => {
         req.flash('error_msg', 'Falha ao encontrar o plano.')
         res.redirect('/gerenciamento/plano')
@@ -398,11 +398,11 @@ router.get('/consultaplano', ehAdmin, (req,res)=>{
 })
 
 router.post('/plano', ehAdmin, (req, res) => {
-    const {_id} = req.user
+    const { _id } = req.user
     var fidelidade
     if (req.body.fidelidade == '' || typeof req.body.fidelidade == 'undefined') {
         fidelidade = 0
-    }else{
+    } else {
         fidelidade = req.body.fidelidade
     }
     console.log('id=>' + req.body.id)
@@ -1768,111 +1768,112 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                 Usina.findOne({ _id: element.usina }).then((usina) => {
                     //console.log('nome=>' + nome)
                     //console.log('projeto=>' + projeto)
-
-                    mes_busca = nova_dataini.substring(4, 6)
-                    console.log('mes_busca=>' + mes_busca)
-                    mes = dataini.substring(5, 7)
-                    console.log('mes=>' + mes)
-                    if (mes_busca == mes) {
-                        dia = dataini.substring(8, 11)
-                        console.log('dia=>' + dia)
-                        //console.log('entrou Planejamento')
-                        if (dia == '01') {
-                            tarefas01.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '02') {
-                            tarefas02.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '03') {
-                            tarefas03.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '04') {
-                            tarefas04.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '05') {
-                            tarefas05.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '06') {
-                            tarefas06.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '07') {
-                            tarefas07.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '08') {
-                            tarefas08.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '09') {
-                            tarefas09.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '10') {
-                            tarefas10.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '11') {
-                            tarefas11.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '12') {
-                            tarefas12.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '13') {
-                            tarefas13.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '14') {
-                            tarefas14.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '15') {
-                            tarefas15.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '16') {
-                            tarefas16.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '17') {
-                            tarefas17.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '18') {
-                            tarefas18.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '19') {
-                            tarefas19.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '20') {
-                            tarefas20.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '21') {
-                            tarefas21.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '22') {
-                            tarefas22.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '23') {
-                            tarefas23.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '24') {
-                            tarefas24.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '25') {
-                            tarefas25.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '26') {
-                            tarefas26.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '27') {
-                            tarefas27.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '28') {
-                            tarefas28.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '29') {
-                            tarefas29.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '30') {
-                            tarefas30.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                        }
-                        if (dia == '31') {
-                            tarefas31.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                    if (typeof usina != 'undefined' && usina != '') {
+                        mes_busca = nova_dataini.substring(4, 6)
+                        console.log('mes_busca=>' + mes_busca)
+                        mes = dataini.substring(5, 7)
+                        console.log('mes=>' + mes)
+                        if (mes_busca == mes) {
+                            dia = dataini.substring(8, 11)
+                            console.log('dia=>' + dia)
+                            //console.log('entrou Planejamento')
+                            if (dia == '01') {
+                                tarefas01.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '02') {
+                                tarefas02.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '03') {
+                                tarefas03.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '04') {
+                                tarefas04.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '05') {
+                                tarefas05.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '06') {
+                                tarefas06.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '07') {
+                                tarefas07.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '08') {
+                                tarefas08.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '09') {
+                                tarefas09.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '10') {
+                                tarefas10.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '11') {
+                                tarefas11.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '12') {
+                                tarefas12.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '13') {
+                                tarefas13.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '14') {
+                                tarefas14.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '15') {
+                                tarefas15.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '16') {
+                                tarefas16.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '17') {
+                                tarefas17.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '18') {
+                                tarefas18.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '19') {
+                                tarefas19.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '20') {
+                                tarefas20.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '21') {
+                                tarefas21.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '22') {
+                                tarefas22.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '23') {
+                                tarefas23.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '24') {
+                                tarefas24.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '25') {
+                                tarefas25.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '26') {
+                                tarefas26.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '27') {
+                                tarefas27.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '28') {
+                                tarefas28.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '29') {
+                                tarefas29.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '30') {
+                                tarefas30.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
+                            if (dia == '31') {
+                                tarefas31.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                            }
                         }
                     }
                 }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possível encontrar o cliente.')
+                    req.flash('error_msg', 'Não foi possível encontrar a usina.')
                     res.redirect('/gerenciamento/agenda/')
                 })
 
@@ -3800,9 +3801,9 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
     })
 })
 
-router.post('/planejamento', ehAdmin, (req,res)=>{
-    console.log('req.body.id=>'+req.body.id)
-    Vistoria.findOne({projeto: req.body.id}).then((vistoria)=>{
+router.post('/planejamento', ehAdmin, (req, res) => {
+    console.log('req.body.id=>' + req.body.id)
+    Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
         vistoria.plaQtdMod = req.body.plaQtdMod
         vistoria.plaWattMod = req.body.plaWattMod
         vistoria.plaQtdInv = req.body.plaQtdInv
@@ -3811,16 +3812,16 @@ router.post('/planejamento', ehAdmin, (req,res)=>{
         vistoria.plaQtdString = req.body.plaQtdString
         vistoria.plaModString = req.body.plaModString
         vistoria.plaQtdEst = req.body.plaQtdEst
-        vistoria.save().then(()=>{
+        vistoria.save().then(() => {
             req.flash('success_msg', 'Vistoria salva com sucesso.')
-            res.redirect('/gerenciamento/vistoriaPla/'+req.body.id)
+            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível salvar o planejamento.')
-            res.redirect('/gerenciamento/vistoriaPla/'+req.body.id)
+            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-        res.redirect('/gerenciamento/vistoriaPla/'+req.body.id)
+        res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
     })
 })
 
@@ -3866,9 +3867,9 @@ router.get('/vistoriaMod/:id', ehAdmin, (req, res) => {
 
 router.get('/vistoriaPla/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
-        console.log('projeto._id=>'+projeto._id)
+        console.log('projeto._id=>' + projeto._id)
         Vistoria.findOne({ projeto: projeto._id }).lean().then((vistoria) => {
-            console.log('vistoria=>'+vistoria)
+            console.log('vistoria=>' + vistoria)
             res.render('vistoria/planejamento', { projeto, vistoria })
         })
     })
