@@ -192,10 +192,10 @@ router.get('/usinas/:id', ehAdmin, (req, res) => {
     var lista_usina = []
     var qu = 0
     Cliente.findOne({ _id: req.params.id }).lean().then((cliente) => {
-        Usina.find({ cliente: req.params.id }).lean().then((usina) => {
-            if (typeof usina != 'unedined' && usina != '') {
-                usina.forEach((element) => {
-                    Plano.findOne({ _id: element.plano }).then((plano) => {
+        Plano.findOne({ _id: element.plano }).then((plano) => {
+            Usina.find({ cliente: req.params.id }).lean().then((usina) => {
+                if (typeof usina != 'unedined' && usina != '') {
+                    usina.forEach((element) => {
                         lista_usina.push({ _id: element._id, cliente: element.cliente, datalimp: element.datalimp, datarevi: element.datarevi, cadastro: element.cadastro, classificacao: element.classificacao, tipo: element.tipo, nome_plano: plano.nome, mensalidade: plano.mensalidade, nome: element.nome, endereco: element.endereco, area: element.area, qtdmod: element.qtdmod })
                         qu++
                         if (usina.length = qu) {
@@ -206,20 +206,20 @@ router.get('/usinas/:id', ehAdmin, (req, res) => {
                                 res.redirect('/cliente/usina/' + req.params.id)
                             })
                         }
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Houve uma falha ao encontrar o plano.')
-                        res.redirect('/cliente/usina/' + req.params.id)
                     })
-                })
-            } else {
-                res.render('cliente/usina', { cliente })
-            }
+                } else {
+                    res.render('cliente/usina', { cliente })
+                }
+            }).catch((err) => {
+                req.flash('error_msg', 'Houve uma falha ao encontrar a usina.')
+                res.redirect('/cliente/usina/' + req.params.id)
+            })
         }).catch((err) => {
-            req.flash('error_msg', 'Houve uma falha ao encontrar a usina.')
+            req.flash('error_msg', 'Houve uma falha ao encontrar o plano.')
             res.redirect('/cliente/usina/' + req.params.id)
         })
     }).catch((err) => {
-        req.flash('error_msg', 'Houve uma falha ao encontrar o plano.')
+        req.flash('error_msg', 'Houve uma falha ao encontrar o cliente.')
         res.redirect('/cliente/usina/' + req.params.id)
     })
 })
@@ -321,7 +321,7 @@ router.get('/historico/:id', (req, res) => {
                         }
                     }).catch((err) => {
                         req.flash('error_msg', 'Não foi possível encontrar a tarefa.')
-                        res.redirect('/cliente/edicao/'+req.params.id)
+                        res.redirect('/cliente/edicao/' + req.params.id)
                     })
                 })
             } else {
@@ -329,11 +329,11 @@ router.get('/historico/:id', (req, res) => {
             }
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar a usina.')
-            res.redirect('/cliente/edicao/'+req.params.id)
+            res.redirect('/cliente/edicao/' + req.params.id)
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar o cliente.')
-        res.redirect('/cliente/edicao/'+req.params.id)
+        res.redirect('/cliente/edicao/' + req.params.id)
     })
 
 })
