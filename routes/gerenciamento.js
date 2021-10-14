@@ -301,40 +301,55 @@ router.get('/agenda/', ehAdmin, (req, res) => {
     var outubro
     var novembro
     var dezembro
+    var mestitulo = ''
+
+    console.log('mes=>'+mes)
 
     //console.log('mes=>' + mes)
 
     switch (mes) {
-        case '01': janeiro = 'selected'
+        case 01: janeiro = 'selected';
+            mestitulo = 'Janeiro'
             break;
-        case '02': fevereiro = 'selected'
+        case 02: fevereiro = 'selected';
+            mestitulo = 'Fevereiro'
             break;
-        case '03': marco = 'selected'
+        case 03: marco = 'selected';
+            mestitulo = 'Março'
             break;
-        case '04': abril = 'selected'
+        case 04: abril = 'selected';
+            mestitulo = 'Abril'
             break;
-        case '05': maio = 'selected'
+        case 05: maio = 'selected';
+            mestitulo = 'Maio'
             break;
-        case '06': junho = 'selected'
+        case 06: junho = 'selected';
+            mestitulo = 'Junho'
             break;
-        case '07': julho = 'selected'
+        case 07: julho = 'selected';
+            mestitulo = 'Julho'
             break;
-        case '08': agosto = 'selected'
+        case 08: agosto = 'selected';
+            mestitulo = 'Agosto'
             break;
-        case '09': setembro = 'selected'
+        case 09: setembro = 'selected';
+            mestitulo = 'Setembro'
             break;
-        case '10': outubro = 'selected'
+        case 10: outubro = 'selected';
+            mestitulo = 'Outubro'
             break;
-        case '11': novembro = 'selected'
+        case 11: novembro = 'selected';
+            mestitulo = 'Novembro'
             break;
-        case '12': dezembro = 'selected'
+        case 12: dezembro = 'selected';
+            mestitulo = 'Dezembro'
             break;
     }
 
-    //console.log('julho=>' + julho)
+    console.log('mestitulo=>' + mestitulo)
 
     Cliente.find({ user: _id }).lean().then((cliente) => {
-        res.render('projeto/gerenciamento/agenda', { cliente, ano, mes, janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro, checkInst: 'checked', checkTesk: 'unchecked' })
+        res.render('projeto/gerenciamento/agenda', { cliente, ano, mes, mestitulo, janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro, checkInst: 'checked', checkTesk: 'unchecked' })
     })
 })
 
@@ -538,12 +553,12 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
         case 'Janeiro':
             dataini = ano + '01' + '01'
             datafim = ano + '01' + '31'
-            mestitulo = 'Janeiro de '
+            mestitulo = 'Janeiro '
             break;
         case 'Fevereiro':
             dataini = ano + '02' + '01'
             datafim = ano + '02' + '28'
-            mestitulo = 'Fevereiro de '
+            mestitulo = 'Fevereiro '
             break;
         case 'Março':
             dataini = ano + '03' + '01'
@@ -553,52 +568,52 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
         case 'Abril':
             dataini = ano + '04' + '01'
             datafim = ano + '04' + '30'
-            mestitulo = 'Abril de '
+            mestitulo = 'Abril '
             break;
         case 'Maio':
             dataini = ano + '05' + '01'
             datafim = ano + '05' + '31'
-            mestitulo = 'Maio de '
+            mestitulo = 'Maio '
             break;
         case 'Junho':
             dataini = ano + '06' + '01'
             datafim = ano + '06' + '30'
-            mestitulo = 'Junho de '
+            mestitulo = 'Junho '
             break;
         case 'Julho':
             dataini = ano + '07' + '01'
             datafim = ano + '07' + '31'
-            mestitulo = 'Julho de '
+            mestitulo = 'Julho '
             break;
         case 'Agosto':
             dataini = ano + '08' + '01'
             datafim = ano + '08' + '30'
-            mestitulo = 'Agosto de '
+            mestitulo = 'Agosto '
             break;
         case 'Setembro':
             dataini = ano + '09' + '01'
             datafim = ano + '09' + '31'
-            mestitulo = 'Setembro de '
+            mestitulo = 'Setembro '
             break;
         case 'Outubro':
             dataini = ano + '10' + '01'
             datafim = ano + '10' + '31'
-            mestitulo = 'Outubro de '
+            mestitulo = 'Outubro '
             break;
         case 'Novembro':
             dataini = ano + '11' + '01'
             datafim = ano + '11' + '30'
-            mestitulo = 'Novembro de '
+            mestitulo = 'Novembro '
             break;
         case 'Dezembro':
             dataini = ano + '12' + '01'
             datafim = ano + '12' + '31'
-            mestitulo = 'Dezembro de '
+            mestitulo = 'Dezembro '
             break;
         default:
             dataini = ano + '01' + '01'
             datafim = ano + '12' + '31'
-            mestitulo = 'Todo ano de '
+            mestitulo = 'Todo ano '
     }
     var tarefas01 = []
     var tarefas02 = []
@@ -1741,7 +1756,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                     tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
                     tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
                     tarefas29, tarefas30, tarefas31, checkTesk: 'unchecked', checkInst: 'checked',
-                    mes: req.body.messel, ano: req.body.mesano, cliente
+                    mes: req.body.messel, ano: req.body.mesano, cliente, mestitulo
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar o cliente.')
@@ -1885,7 +1900,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                     tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
                     tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
                     tarefas29, tarefas30, tarefas31, checkTesk: 'checked', checkInst: 'unchecked',
-                    mes: req.body.messel, ano: req.body.mesano, cliente
+                    mes, ano: req.body.mesano, cliente, mestitulo
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar o cliente.')
@@ -1913,6 +1928,7 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
     var ins_fora = []
     var q = 0
     var ehSelecao = false
+    var mes = ''
 
     if (parseFloat(req.body.dia) < 10) {
         dia = '0' + req.body.dia
@@ -1920,8 +1936,14 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
         dia = req.body.dia
     }
 
+    var hoje = new Date()
+    var mes = parseFloat(hoje.getMonth()) + 1
+    if (mes < 10) {
+        mes = '0' + mes
+    }
+
     console.log('dia=>' + dia)
-    data = (String(req.body.ano) + '-' + String(req.body.messel) + '-' + String(dia)).toString()
+    data = (String(req.body.ano) + '-' + String(mes) + '-' + String(dia)).toString()
     console.log('data=>' + data)
 
     console.log('req.body.cliente=>' + req.body.cliente)
@@ -1981,7 +2003,7 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                 Tarefas.findOne({ user: _id }).sort({ field: 'asc', _id: -1 }).then((tarefa) => {
 
                     novaequipe.tarefa = terefa._id
-                    novaequipe.save().then(()=>{
+                    novaequipe.save().then(() => {
                         console.log('tarefa=>' + tarefa)
                         console.log('tarefa._id=>' + tarefa._id)
                         console.log('req.body.ins0=>' + req.body.ins0)
