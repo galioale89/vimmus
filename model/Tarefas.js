@@ -44,7 +44,11 @@ const Tarefas = new Schema({
     cadastro:{
         type: String,
         require:false        
-    }    
+    },
+    preco:{
+        type: Number,
+        require:false        
+    },    
 })
 
 mongoose.model('tarefas', Tarefas)

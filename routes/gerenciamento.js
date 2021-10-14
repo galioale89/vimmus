@@ -303,7 +303,7 @@ router.get('/agenda/', ehAdmin, (req, res) => {
     var dezembro
     var mestitulo = ''
 
-    console.log('mes=>'+mes)
+    //console.log('mes=>'+mes)
 
     //console.log('mes=>' + mes)
 
@@ -346,7 +346,7 @@ router.get('/agenda/', ehAdmin, (req, res) => {
             break;
     }
 
-    console.log('mestitulo=>' + mestitulo)
+    //console.log('mestitulo=>' + mestitulo)
 
     Cliente.find({ user: _id }).lean().then((cliente) => {
         res.render('projeto/gerenciamento/agenda', { cliente, ano, mes, mestitulo, janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro, checkInst: 'checked', checkTesk: 'unchecked' })
@@ -357,9 +357,9 @@ router.get('/tarefas/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
     Tarefas.findOne({ _id: req.params.id }).lean().then((tarefa) => {
         Usina.findOne({ _id: tarefa.usina }).lean().then((usina) => {
-            console.log('usina.cliente=>' + usina.cliente)
+            //console.log('usina.cliente=>' + usina.cliente)
             Cliente.findOne({ _id: usina.cliente }).lean().then((cliente) => {
-                console.log('encontrou cliente')
+                //console.log('encontrou cliente')
                 var dataini = dataMensagem(tarefa.dataini)
                 var datafim = dataMensagem(tarefa.datafim)
                 Equipe.findOne({ tarefa: tarefa._id }).then((equipe) => {
@@ -420,8 +420,8 @@ router.post('/plano', ehAdmin, (req, res) => {
     } else {
         fidelidade = req.body.fidelidade
     }
-    console.log('id=>' + req.body.id)
-    console.log('fidelidade=>' + req.body.fidelidade)
+    //console.log('id=>' + req.body.id)
+    //console.log('fidelidade=>' + req.body.fidelidade)
     if (req.body.id != '' && typeof req.body.id != 'undefined') {
         Plano.findOne({ _id: req.body.id }).then((existeplano) => {
             existeplano.nome = req.body.nome
@@ -441,7 +441,7 @@ router.post('/plano', ehAdmin, (req, res) => {
             res.redirect('/gerenciamento/plano')
         })
     } else {
-        console.log('novo plano')
+        //console.log('novo plano')
         new Plano({
             user: _id,
             nome: req.body.nome,
@@ -491,7 +491,7 @@ router.get('/enviaMensagem/:id', ehAdmin, (req, res) => {
                     to = cliente.celular
                     //console.log(to)
 
-                    console.log('cliente.email=>' + cliente.email)
+                    //console.log('cliente.email=>' + cliente.email)
 
                     var email = cliente.email
 
@@ -650,6 +650,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
     var dia
     var mes_busca
     var mes
+    //console.log('req.body.selecionado=>'+req.body.selecionado)
     //console.log('dataini=>' + dataini)
     //console.log('datafim=>' + datafim)
     if (req.body.selecionado == 'instalacao') {
@@ -1767,17 +1768,17 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
             res.redirect('/gerenciamento/agenda/')
         })
     } else {
-        console.log('req.body.selecionado=>' + req.body.selecionado)
-        console.log('datafim=>' + datafim)
-        console.log('dataini=>' + dataini)
+        //console.log('req.body.selecionado=>' + req.body.selecionado)
+        //console.log('datafim=>' + datafim)
+        //console.log('dataini=>' + dataini)
         var nova_dataini = dataini
 
-        Tarefas.find({ concluido: false, 'buscadatafim': { $lte: datafim, $gte: dataini }, user: _id }).lean().then((lista_tarefas) => {
+        Tarefas.find({ concluido: false, 'buscadataini': { $lte: datafim, $gte: dataini }, user: _id }).lean().then((lista_tarefas) => {
             lista_tarefas.forEach(element => {
                 //console.log('entrou')
                 const { dataini } = element
 
-                console.log('dataini=>' + dataini)
+                //console.log('dataini=>' + dataini)
 
 
                 Usina.findOne({ _id: element.usina }).then((usina) => {
@@ -1785,12 +1786,12 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                     //console.log('projeto=>' + projeto)
                     if (typeof usina != 'undefined' && usina != '') {
                         mes_busca = nova_dataini.substring(4, 6)
-                        console.log('mes_busca=>' + mes_busca)
+                        //console.log('mes_busca=>' + mes_busca)
                         mes = dataini.substring(5, 7)
-                        console.log('mes=>' + mes)
+                        //console.log('mes=>' + mes)
                         if (mes_busca == mes) {
                             dia = dataini.substring(8, 11)
-                            console.log('dia=>' + dia)
+                            //console.log('dia=>' + dia)
                             //console.log('entrou Planejamento')
                             if (dia == '01') {
                                 tarefas01.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
@@ -1942,11 +1943,11 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
         mes = '0' + mes
     }
 
-    console.log('dia=>' + dia)
+    //console.log('dia=>' + dia)
     data = (String(req.body.ano) + '-' + String(mes) + '-' + String(dia)).toString()
-    console.log('data=>' + data)
+    //console.log('data=>' + data)
 
-    console.log('req.body.cliente=>' + req.body.cliente)
+    //console.log('req.body.cliente=>' + req.body.cliente)
     Usina.find({ cliente: req.body.cliente }).lean().then((usina) => {
         Pessoa.find({ funins: 'checked', user: _id }).sort({ nome: 'asc' }).then((instalacao) => {
             instalacao.forEach((eleint) => {
@@ -1970,8 +1971,6 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
 
 router.post('/addtarefa', ehAdmin, (req, res) => {
     const { _id } = req.user
-    console.log('user._id=>' + _id)
-    console.log('req.body.manutencao=>' + req.body.manutencao)
     var dataini = req.body.dataini
     var datafim = req.body.datafim
     var cadastro = dataHoje()
@@ -1999,16 +1998,11 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                 preco: req.body.preco,
                 concluido: false
             }
+            //console.log('tarefa=>'+tarefa)
             new Tarefas(tarefa).save().then(() => {
                 Tarefas.findOne({ user: _id }).sort({ field: 'asc', _id: -1 }).then((tarefa) => {
-
-                    novaequipe.tarefa = terefa._id
+                    novaequipe.tarefa = tarefa._id
                     novaequipe.save().then(() => {
-                        console.log('tarefa=>' + tarefa)
-                        console.log('tarefa._id=>' + tarefa._id)
-                        console.log('req.body.ins0=>' + req.body.ins0)
-                        console.log('req.body.dataini=>' + req.body.dataini)
-                        console.log('req.body.datafim=>' + req.body.datafim)
                         req.flash('success_msg', 'Manutenção gerada com sucesso.')
                         res.redirect('/gerenciamento/agenda')
                     }).catch((err) => {
@@ -2204,7 +2198,7 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                     prjfim = 0
                                 }
                             }
-                            console.log("projeto.tipoCustoIns=>" + projeto.tipoCustoIns)
+                            //console.log("projeto.tipoCustoIns=>" + projeto.tipoCustoIns)
                             if (projeto.tipoCustoIns == 'hora') {
                                 if ((parseFloat(projeto.trbpro) + parseFloat(projeto.desIns) + parseFloat(projeto.trbate)) > 8) {
                                     atefim = Math.round(((projeto.trbate + parseFloat(projeto.desIns)) / conhrs), -1)
@@ -2350,15 +2344,15 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 }
                             }
 
-                            console.log('atefim=>' + atefim)
-                            console.log('stbfim=>' + stbfim)
-                            console.log('invfim=>' + invfim)
-                            console.log('pnlfim=>' + pnlfim)
-                            console.log('eaefim=>' + eaefim)
-                            console.log('estfim=>' + estfim)
-                            console.log('modfim=>' + modfim)
-                            console.log('plafim=>' + plafim)
-                            console.log('prjfim=>' + prjfim)
+                            //console.log('atefim=>' + atefim)
+                            //console.log('stbfim=>' + stbfim)
+                            //console.log('invfim=>' + invfim)
+                            //console.log('pnlfim=>' + pnlfim)
+                            //console.log('eaefim=>' + eaefim)
+                            //console.log('estfim=>' + estfim)
+                            //console.log('modfim=>' + modfim)
+                            //console.log('plafim=>' + plafim)
+                            //console.log('prjfim=>' + prjfim)
                             valplafim = setData(projeto.valDataIni, plafim)
                             valprjfim = setData(valplafim, prjfim)
 
@@ -2397,7 +2391,7 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             }
 
                             if ((cronograma.datepnlini == '' || typeof cronograma.datepnlini == 'undefined' || isNaN(cronograma.datepnlini)) && projeto.temPainel == 'checked') {
-                                console.log('tem painel')
+                                //console.log('tem painel')
                                 valpnlini = setData(valprjfim, 1)
                                 cronograma.datepnlini = valpnlini
                                 if (cronograma.datepnlfim == '' || typeof cronograma.datepnlfim == 'undefined' || isNaN(cronograma.datepnlfim)) {
@@ -2406,7 +2400,7 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             }
 
                             if ((cronograma.dateeaeini == '' || typeof cronograma.dateeaeini == 'undefined' || isNaN(cronograma.dateeaeini)) && projeto.temArmazenamento == 'checked') {
-                                console.log('tem armazenamento')
+                                //console.log('tem armazenamento')
                                 valeaeini = setData(valprjfim, 1)
                                 cronograma.dateeaeini = valeaeini
                                 if (cronograma.dateeaefim == '' || typeof cronograma.dateeaefim == 'undefined' || isNaN(cronograma.dateeaefim)) {
@@ -2423,16 +2417,16 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
 
                                 }
                             }
-                            console.log("modfim=>" + modfim)
+                            //console.log("modfim=>" + modfim)
                             if (cronograma.datemodini == '' || typeof cronograma.datemodini == 'undefined' || isNaN(cronograma.datemodini)) {
                                 cronograma.datemodini = valestfim
                                 valmodini = valestfim
                                 if (cronograma.datemodfim == '' || typeof cronograma.datemodfim == 'undefined' || isNaN(cronograma.datemodfim)) {
-                                    console.log('valmodini=>' + valmodini)
-                                    console.log('valmodini=>' + valmodini)
+                                    //console.log('valmodini=>' + valmodini)
+                                    //console.log('valmodini=>' + valmodini)
                                     cronograma.datemodfim = setData(valmodini, modfim)
-                                    console.log('modfim=>' + modfim)
-                                    console.log('setData(valmodini, modfim)=>' + setData(valmodini, modfim))
+                                    //console.log('modfim=>' + modfim)
+                                    //console.log('setData(valmodini, modfim)=>' + setData(valmodini, modfim))
                                 }
                             }
                             var diasObra
@@ -2442,17 +2436,17 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 diastr = Math.round(parseFloat(projeto.tothrs) / parseFloat(config.hrstrb))
                             } else {
                                 diasObra = projeto.diasIns
-                                console.log('projeto.diasIns=>' + projeto.diasGes)
-                                console.log('projeto.diasPro=>' + projeto.diasPro)
-                                console.log('projeto.diasPro=>' + projeto.diasPro)
-                                console.log('projeto.desPro=>' + projeto.desPro)
-                                console.log('projeto.desIns=>' + projeto.desIns)
+                                //console.log('projeto.diasIns=>' + projeto.diasGes)
+                                //console.log('projeto.diasPro=>' + projeto.diasPro)
+                                //console.log('projeto.diasPro=>' + projeto.diasPro)
+                                //console.log('projeto.desPro=>' + projeto.desPro)
+                                //console.log('projeto.desIns=>' + projeto.desIns)
                                 diastr = parseFloat(projeto.diasGes) + parseFloat(projeto.diasPro) + parseFloat(projeto.diasIns) + parseFloat(projeto.desPro) + parseFloat(projeto.desIns)
                             }
                             projeto.diasObra = diasObra
-                            console.log('diasObra=>' + diasObra)
+                            //console.log('diasObra=>' + diasObra)
                             projeto.diastr = diastr
-                            console.log('diastr=>' + diastr)
+                            //console.log('diastr=>' + diastr)
 
                             //console.log('equipe=>' + equipe)
                             var vlrali
@@ -2483,10 +2477,10 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             projeto.discmb = discmb
                             projeto.ltocmb = ltocmb
                             projeto.vlrdia = vlrdia
-                            console.log('vlrali=>' + vlrali)
-                            console.log('discmb=>' + discmb)
-                            console.log('ltocmb=>' + ltocmb)
-                            console.log('vlrdia=>' + vlrdia)
+                            //console.log('vlrali=>' + vlrali)
+                            //console.log('discmb=>' + discmb)
+                            //console.log('ltocmb=>' + ltocmb)
+                            //console.log('vlrdia=>' + vlrdia)
 
                             var tothtl
                             var totcmb
@@ -2520,10 +2514,10 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             projeto.totdes = totdes.toFixed(2)
                             //--------------------------------------------                               
 
-                            console.log('totcmb=>' + totcmb)
-                            console.log('tothtl=>' + tothtl)
-                            console.log('totali=>' + totali)
-                            console.log('totdes=>' + totdes)
+                            //console.log('totcmb=>' + totcmb)
+                            //console.log('tothtl=>' + tothtl)
+                            //console.log('totali=>' + totali)
+                            //console.log('totdes=>' + totdes)
 
 
                             //Custo de Reserva
@@ -2583,14 +2577,14 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             var reserva = parseFloat(resger) + parseFloat(rescon)
                             projeto.reserva = reserva.toFixed(2)
 
-                            console.log('rescon=>' + rescon)
-                            console.log('reserva=>' + reserva)
-                            console.log('projeto.totint=>' + projeto.totint)
-                            console.log('projeto.totpro=>' + projeto.totpro)
-                            console.log('projeto.totges=>' + projeto.totges)
-                            // console.log('projeto.valorCer=>' + projeto.valorCer)
-                            // console.log('projeto.valorPos=>' + projeto.valorPos)
-                            // console.log('projeto.valorOcp=>' + projeto.valorOcp)
+                            //console.log('rescon=>' + rescon)
+                            //console.log('reserva=>' + reserva)
+                            //console.log('projeto.totint=>' + projeto.totint)
+                            //console.log('projeto.totpro=>' + projeto.totpro)
+                            //console.log('projeto.totges=>' + projeto.totges)
+                            // //console.log('projeto.valorCer=>' + projeto.valorCer)
+                            // //console.log('projeto.valorPos=>' + projeto.valorPos)
+                            // //console.log('projeto.valorOcp=>' + projeto.valorOcp)
 
                             var valorCer
                             var valorPos
@@ -2604,29 +2598,29 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             if (typeof projeto.valorCen == "undefined") {
                                 valorCen = 0
                             }
-                            console.log('valorCer=>' + valorCer)
-                            console.log('valorPos=>' + valorPos)
-                            console.log('valorCen=>' + valorCen)
+                            //console.log('valorCer=>' + valorCer)
+                            //console.log('valorPos=>' + valorPos)
+                            //console.log('valorCen=>' + valorCen)
 
                             var custoFix = parseFloat(projeto.totint) + parseFloat(projeto.totpro) + parseFloat(projeto.vlrart) + parseFloat(projeto.totges)
-                            console.log('custoFix=>' + custoFix)
+                            //console.log('custoFix=>' + custoFix)
                             var custoVar = parseFloat(totdes)
-                            console.log('custoVar=>' + custoVar)
+                            //console.log('custoVar=>' + custoVar)
                             var custoEst = parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen)
-                            console.log('custoEst=>' + custoEst)
+                            //console.log('custoEst=>' + custoEst)
                             var totcop = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
 
                             projeto.custofix = custoFix.toFixed(2)
                             projeto.custovar = custoVar.toFixed(2)
                             projeto.custoest = custoEst.toFixed(2)
                             projeto.totcop = totcop.toFixed(2)
-                            console.log('totcop=>' + totcop)
+                            //console.log('totcop=>' + totcop)
                             var custoPlano = parseFloat(totcop) + parseFloat(reserva)
                             projeto.custoPlano = custoPlano.toFixed(2)
-                            console.log('custoPlano=>' + custoPlano)
+                            //console.log('custoPlano=>' + custoPlano)
                             var custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
                             projeto.custoTotal = custoTotal.toFixed(2)
-                            console.log('custoTotal=>' + custoTotal)
+                            //console.log('custoTotal=>' + custoTotal)
 
                             var desAdm = 0
                             if (parseFloat(empresa.desadm) > 0) {
@@ -2637,7 +2631,7 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 }
                             }
 
-                            console.log('desAdm=>' + desAdm)
+                            //console.log('desAdm=>' + desAdm)
 
                             //Definindo o imposto ISS
                             //console.log('regime_prj.alqNFS=>' + regime_prj.alqNFS)
@@ -2663,11 +2657,11 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 projeto.markup = config.markup
                                 prjValor = vlrMarkup
                             } else {
-                                console.log('markup diferente de zero')
-                                console.log('custoTotal=>' + custoTotal)
-                                console.log('req.body.markup=>' + req.body.markup)
+                                //console.log('markup diferente de zero')
+                                //console.log('custoTotal=>' + custoTotal)
+                                //console.log('req.body.markup=>' + req.body.markup)
                                 vlrMarkup = (((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva) - parseFloat(projeto.vlrkit)) / (1 - (parseFloat(req.body.markup)) / 100)) + parseFloat(projeto.vlrkit)).toFixed(2)
-                                console.log('vlrMarkup=>' + vlrMarkup)
+                                //console.log('vlrMarkup=>' + vlrMarkup)
                                 if (req.body.checkFatura != null) {
                                     fatequ = true
                                     vlrNFS = parseFloat(vlrMarkup).toFixed(2)
@@ -2681,9 +2675,9 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 projeto.valor = vlrMarkup
                                 prjValor = parseFloat(vlrMarkup).toFixed(2)
                             }
-                            console.log('vlrNFS=>' + vlrNFS)
-                            console.log('impNFS=>' + impNFS)
-                            console.log('prjValor=>' + prjValor)
+                            //console.log('vlrNFS=>' + vlrNFS)
+                            //console.log('impNFS=>' + impNFS)
+                            //console.log('prjValor=>' + prjValor)
                             //kWp médio
                             projeto.vrskwp = (parseFloat(prjValor) / parseFloat(projeto.potencia)).toFixed(2)
                             projeto.fatequ = fatequ
@@ -2694,17 +2688,17 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 vlrcom = parseFloat(vlrNFS) * (parseFloat(projeto.percom) / 100)
                                 projeto.vlrcom = parseFloat(vlrcom).toFixed(2)
                             }
-                            console.log('vlrcom=>' + vlrcom)
+                            //console.log('vlrcom=>' + vlrcom)
 
                             //Definindo o Lucro Bruto
                             var recLiquida = parseFloat(prjValor) - parseFloat(impNFS)
                             projeto.recLiquida = parseFloat(recLiquida).toFixed(2)
 
-                            console.log('recLiquida=>' + recLiquida)
+                            //console.log('recLiquida=>' + recLiquida)
                             var lucroBruto = parseFloat(recLiquida) - parseFloat(projeto.vlrkit)
                             projeto.lucroBruto = parseFloat(lucroBruto).toFixed(2)
 
-                            console.log('lucroBruto=>' + lucroBruto)
+                            //console.log('lucroBruto=>' + lucroBruto)
 
                             var lbaimp = 0
                             if (parseFloat(empresa.desadm) > 0) {
@@ -2723,7 +2717,7 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 lbaimp = parseFloat(lbaimp) - parseFloat(vlrcom)
                             }
                             projeto.lbaimp = lbaimp.toFixed(2)
-                            console.log('lbaimp=>' + lbaimp)
+                            //console.log('lbaimp=>' + lbaimp)
 
                             //Dashboard              
                             //Participação dos componentes
@@ -2772,9 +2766,9 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             projeto.valDataIns = valateini
 
                             cronograma.save().then(() => {
-                                console.log('salvou cronograma')
+                                //console.log('salvou cronograma')
                                 projeto.save().then(() => {
-                                    console.log('salvou projeto')
+                                    //console.log('salvou projeto')
                                     sucesso = 'Custo de gerenciamento aplicado com sucesso.'
                                     req.flash('success_msg', sucesso)
                                     res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
@@ -3100,7 +3094,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.body.idprojeto }).then((prj_entrega) => {
         Cronograma.findOne({ projeto: req.body.idprojeto }).then((cronograma) => {
             Realizado.findOne({ projeto: req.body.idprojeto }).then((realizado) => {
-                console.log('req.body.perges=>' + req.body.perges)
+                //console.log('req.body.perges=>' + req.body.perges)
                 if (req.body.perges != '' && typeof req.body.perges != 'undefined' && req.body.perges != 0) {
                     var AC = 0
                     var ev = 0
@@ -3183,17 +3177,17 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                         evPerHtl = 0
                     }
 
-                    console.log('evPerGes=>' + evPerGes)
-                    console.log('evPerKit=>' + evPerKit)
-                    console.log('evPerIns=>' + evPerIns)
-                    console.log('evPerPro=>' + evPerPro)
-                    console.log('evPerDes=>' + evPerDes)
-                    console.log('evPerAli=>' + evPerAli)
-                    console.log('evPerHtl=>' + evPerHtl)
-                    console.log('evPerCmb=>' + evPerCmb)
-                    console.log('evPerCer=>' + evPerCer)
-                    console.log('evPerCen=>' + evPerCen)
-                    console.log('evPerPos=>' + evPerPos)
+                    //console.log('evPerGes=>' + evPerGes)
+                    //console.log('evPerKit=>' + evPerKit)
+                    //console.log('evPerIns=>' + evPerIns)
+                    //console.log('evPerPro=>' + evPerPro)
+                    //console.log('evPerDes=>' + evPerDes)
+                    //console.log('evPerAli=>' + evPerAli)
+                    //console.log('evPerHtl=>' + evPerHtl)
+                    //console.log('evPerCmb=>' + evPerCmb)
+                    //console.log('evPerCer=>' + evPerCer)
+                    //console.log('evPerCen=>' + evPerCen)
+                    //console.log('evPerPos=>' + evPerPos)
 
                     ev = (parseFloat(evPerGes) + parseFloat(evPerKit) + parseFloat(evPerIns) + parseFloat(evPerPro) + parseFloat(evPerAli) + parseFloat(evPerDes) + parseFloat(evPerHtl) + parseFloat(evPerCmb) + parseFloat(evPerCer) + parseFloat(evPerCen) + parseFloat(evPerPos)).toFixed(2)
                     //console.log('ev=>' + ev)
@@ -3230,7 +3224,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                     if (isNaN(totpro) || totpro == '' || totpro == null) {
                         totpro = 0
                     }
-                    console.log('totpro=>' + totpro)
+                    //console.log('totpro=>' + totpro)
                     var totali = req.body.totali
                     if (isNaN(totali) || totali == '' || totali == null) {
                         totali = 0
@@ -3318,19 +3312,19 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                     if (isNaN(spi)) {
                         spi = 0
                     }
-                    console.log('Math.round(perConclusao * 100)=>' + Math.round(perConclusao * 100))
+                    //console.log('Math.round(perConclusao * 100)=>' + Math.round(perConclusao * 100))
                     prj_entrega.perConclusao = Math.round(perConclusao * 100)
-                    console.log('AC=>' + AC)
+                    //console.log('AC=>' + AC)
                     prj_entrega.actualCost = parseFloat(AC).toFixed(2)
-                    console.log('cpi=>' + cpi)
+                    //console.log('cpi=>' + cpi)
                     prj_entrega.cpi = parseFloat(cpi).toFixed(4)
-                    console.log('tcpi=>' + tcpi)
+                    //console.log('tcpi=>' + tcpi)
                     prj_entrega.tcpi = parseFloat(tcpi).toFixed(4)
-                    console.log('etc=>' + etc)
+                    //console.log('etc=>' + etc)
                     prj_entrega.etc = parseFloat(etc).toFixed(2)
-                    console.log('eac=>' + eac)
+                    //console.log('eac=>' + eac)
                     prj_entrega.eac = parseFloat(eac).toFixed(2)
-                    console.log('spi=>' + spi)
+                    //console.log('spi=>' + spi)
                     prj_entrega.spi = parseFloat(spi).toFixed(2)
                     prj_entrega.tspi = 1
                 } else {
@@ -3343,7 +3337,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                     prj_entrega.tspi = 1
                 }
 
-                console.log('req.body.executando=>' + req.body.executando)
+                //console.log('req.body.executando=>' + req.body.executando)
                 if (req.body.executando == 'true') {
                     if (req.body.datepla != '' && typeof req.body.datepla != 'undefined') {
                         atrasou = comparaDatas(cronograma.dateplafim, req.body.datepla)
@@ -3383,7 +3377,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                     if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
                         atrasou = comparaDatas(cronograma.datevisfim, req.body.datevis)
                     }
-                    console.log('req.body.datevis=>' + req.body.datevis)
+                    //console.log('req.body.datevis=>' + req.body.datevis)
                     if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
                         if (req.body.dateEntregaReal != '' && typeof req.body.dateEntregaReal != 'undifined') {
                             if (comparaDatas(req.body.dateEntregaReal, req.body.datevis)) {
@@ -3400,18 +3394,18 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                             }
                         }
                     }
-                    console.log('req.body.dateEntregaReal=>' + req.body.dateEntregaReal)
+                    //console.log('req.body.dateEntregaReal=>' + req.body.dateEntregaReal)
                 }
 
-                console.log('req.body.dateentrega=>' + req.body.dateentrega)
-                console.log('req.body.datevisfim=>' + req.body.datevisfim)
-                console.log('req.body.orcado=>' + req.body.orcado)
+                //console.log('req.body.dateentrega=>' + req.body.dateentrega)
+                //console.log('req.body.datevisfim=>' + req.body.datevisfim)
+                //console.log('req.body.orcado=>' + req.body.orcado)
 
                 if (req.body.orcado == 'true') {
-                    console.log('entrou orçado')
+                    //console.log('entrou orçado')
                     if (req.body.datevisfim == '' || typeof req.body.datevisfim == 'undefined') {
-                        console.log('prj_entrega.valDataPrev=>' + prj_entrega.valDataPrev)
-                        console.log('req.body.dateentrega=>' + req.body.dateentrega)
+                        //console.log('prj_entrega.valDataPrev=>' + prj_entrega.valDataPrev)
+                        //console.log('req.body.dateentrega=>' + req.body.dateentrega)
                         if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && (req.body.dateentrega != prj_entrega.valDataPrev)) {
                             erros = erros + 'A data de entrega poderá ser alterada quando data final da vistoria estiver preenchida.'
                             req.flash('error_msg', erros)
@@ -3432,13 +3426,13 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                 }
 
                 prj_entrega.atrasado = atrasou
-                console.log('atrasou=>' + atrasou)
-                console.log('req.body.dateateini=>' + req.body.dateateini)
+                //console.log('atrasou=>' + atrasou)
+                //console.log('req.body.dateateini=>' + req.body.dateateini)
                 prj_entrega.dataIns = dataMensagem(req.body.dateateini)
-                console.log('dataMensagem(req.body.dateateini)=>' + req.body.dateateini)
+                //console.log('dataMensagem(req.body.dateateini)=>' + req.body.dateateini)
                 prj_entrega.valDataIns = req.body.dateateini
                 prj_entrega.save().then(() => {
-                    console.log('salvou o projeto')
+                    //console.log('salvou o projeto')
                     if (req.body.executando == 'true') {
                         //---Validar as datas de realização com data estimada do fim da entrega--//
                         if (req.body.datepla != '' && typeof req.body.datepla != 'undefined') {
@@ -3598,7 +3592,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
 
                     }
                     if (req.body.executando == 'true') {
-                        console.log('perges=>' + req.body.perges)
+                        //console.log('perges=>' + req.body.perges)
                         var perges = req.body.perges
                         var perkit = req.body.perkit
                         var perins = req.body.perins
@@ -3687,19 +3681,19 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                             }
                         }
 
-                        console.log("realizado=>" + realizado)
+                        //console.log("realizado=>" + realizado)
                         if (realizado != null) {
-                            console.log('entrou realizado')
-                            console.log('totint=>' + totint)
-                            console.log('totges=>' + totges)
-                            console.log('totpro=>' + totpro)
-                            console.log('totali=>' + totali)
-                            console.log('totdes=>' + totdes)
-                            console.log('tothtl=>' + tothtl)
-                            console.log('totcmb=>' + totcmb)
-                            console.log('cercamento=>' + cercamento)
-                            console.log('central=>' + central)
-                            console.log('postecond=>' + postecond)
+                            //console.log('entrou realizado')
+                            //console.log('totint=>' + totint)
+                            //console.log('totges=>' + totges)
+                            //console.log('totpro=>' + totpro)
+                            //console.log('totali=>' + totali)
+                            //console.log('totdes=>' + totdes)
+                            //console.log('tothtl=>' + tothtl)
+                            //console.log('totcmb=>' + totcmb)
+                            //console.log('cercamento=>' + cercamento)
+                            //console.log('central=>' + central)
+                            //console.log('postecond=>' + postecond)
 
                             realizado.vlrkit = vlrKitRlz
                             realizado.totint = totint
@@ -3753,8 +3747,8 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                             })
 
                         } else {
-                            console.log('novo realizado')
-                            console.log('req.boy.totint=>' + req.body.totint)
+                            //console.log('novo realizado')
+                            //console.log('req.boy.totint=>' + req.body.totint)
                             const realizado = {
                                 user: _id,
                                 projeto: req.body.idprojeto,
@@ -3829,7 +3823,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
 })
 
 router.post('/planejamento', ehAdmin, (req, res) => {
-    console.log('req.body.id=>' + req.body.id)
+    //console.log('req.body.id=>' + req.body.id)
     Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
         vistoria.plaQtdMod = req.body.plaQtdMod
         vistoria.plaWattMod = req.body.plaWattMod
@@ -3894,9 +3888,9 @@ router.get('/vistoriaMod/:id', ehAdmin, (req, res) => {
 
 router.get('/vistoriaPla/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
-        console.log('projeto._id=>' + projeto._id)
+        //console.log('projeto._id=>' + projeto._id)
         Vistoria.findOne({ projeto: projeto._id }).lean().then((vistoria) => {
-            console.log('vistoria=>' + vistoria)
+            //console.log('vistoria=>' + vistoria)
             res.render('vistoria/planejamento', { projeto, vistoria })
         })
     })
