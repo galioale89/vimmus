@@ -997,6 +997,8 @@ router.get('/alocacao/:id', ehAdmin, (req, res) => {
      var qe = 0
      var encontrou_ins = false
      var encontrou_ele = false
+     var custoEle0 = 0
+     var custoEle1 = 0
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
           Cliente.findOne({ _id: projeto.cliente }).lean().then((cliente) => {
                Cronograma.findOne({ projeto: projeto._id }).lean().then((cronograma) => {
@@ -1052,8 +1054,6 @@ router.get('/alocacao/:id', ehAdmin, (req, res) => {
                                                   }
                                              }
                                              custoIns = parseFloat(custoIns0) + parseFloat(custoIns1) + parseFloat(custoIns2) + parseFloat(custoIns3) + parseFloat(custoIns4) + parseFloat(custoIns5)
-                                             var custoEle0 = 0
-                                             var custoEle1 = 0
                                              //console.log('lista_eletricistas[1]=>' + lista_eletricistas[1])
 
                                              pessoas_ele.forEach((element) => {
