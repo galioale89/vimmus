@@ -263,7 +263,7 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                }
                var desIns
 
-               console.log('req.body.selecionado=>' + req.body.selecionado)
+               //console.log('req.body.selecionado=>' + req.body.selecionado)
 
                if (req.body.selecionado == 'dia') {
 
@@ -314,16 +314,16 @@ router.post('/instalacao/', ehAdmin, (req, res) => {
                          //console.log('projeto.trbges=>' + projeto.trbges)
                          //console.log('projeto.trbpro=>' + projeto.trbpro)
                          tothrs = trbint
-                         console.log('tothrs=>' + tothrs)
-                         console.log('projeto.trbges=>' + projeto.trbges)
+                         //console.log('tothrs=>' + tothrs)
+                         //console.log('projeto.trbges=>' + projeto.trbges)
                          if (projeto.trbges != null) {
                               tothrs = parseFloat(tothrs) + parseFloat(projeto.trbges)
-                              console.log('tothrs=>' + tothrs)
+                              //console.log('tothrs=>' + tothrs)
                          }
-                         console.log('projeto.trbpro=>' + projeto.trbpro)
+                         //console.log('projeto.trbpro=>' + projeto.trbpro)
                          if (projeto.trbpro != null) {
                               tothrs = parseFloat(tothrs) + parseFloat(projeto.trbpro)
-                              console.log('tothrs=>' + tothrs)
+                              //console.log('tothrs=>' + tothrs)
                          }
                          //console.log('tothrs=>' + tothrs)
                          projeto.tothrs = Math.round(tothrs)
@@ -673,8 +673,8 @@ router.post('/projetista/', ehAdmin, (req, res) => {
 
                var conhrs = configuracao.hrstrb
 
-               console.log('req.body.diasPro=>' + req.body.diasPro)
-               console.log('req.body.selecionado=>' + req.body.selecionado)
+               //console.log('req.body.diasPro=>' + req.body.diasPro)
+               //console.log('req.body.selecionado=>' + req.body.selecionado)
 
                if (req.body.diasPro != '' && req.body.diasPro != 0 && req.body.selecionado == 'dia') {
 
@@ -709,7 +709,7 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                          var diastr
 
                          if (projeto.diasIns != '' && typeof projeto.diasIns != 'undefined') {
-                              console.log('projeto.diasIns=>' + projeto.diasIns)
+                              //console.log('projeto.diasIns=>' + projeto.diasIns)
                               diasObra = projeto.diasIns
                               diastr = parseFloat(projeto.diasGes) + parseFloat(req.body.diasPro) + parseFloat(projeto.diasIns) + parseFloat(projeto.desGes) + parseFloat(projeto.desIns)
                               projeto.diasObra = diasObra
@@ -717,26 +717,26 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                          }
 
 
-                         console.log('req.body.toteng=>' + req.body.toteng)
+                         //console.log('req.body.toteng=>' + req.body.toteng)
                          if (req.body.toteng != '' && typeof req.body.toteng != 'undefined') {
                               toteng = parseFloat(req.body.toteng)
                          } else {
                               toteng = 0
                          }
-                         console.log('toteng=>' + toteng)
+                         //console.log('toteng=>' + toteng)
                          totpro = (parseFloat(req.body.diasPro) * parseFloat(req.body.vlrdrp)) + parseFloat(toteng)//+ parseFloat(totdes)
-                         console.log('totpro=>' + totpro)
+                         //console.log('totpro=>' + totpro)
                          projeto.trbpro = trbpro
-                         console.log('trbpro=>' + trbpro)
+                         //console.log('trbpro=>' + trbpro)
                          projeto.totpro = totpro
-                         console.log('totpro=>' + totpro)
+                         //console.log('totpro=>' + totpro)
                          projeto.tothrs = tothrs
-                         console.log('tothrs=>' + tothrs)
+                         //console.log('tothrs=>' + tothrs)
                          projeto.tipoCustoPro = req.body.selecionado
                          projeto.diasPro = parseFloat(req.body.diasPro)
-                         console.log('req.body.diasPro=>' + req.body.diasPro)
+                         //console.log('req.body.diasPro=>' + req.body.diasPro)
                          projeto.vlrdrp = req.body.vlrdrp
-                         console.log('req.body.vlrdrp=>' + req.body.vlrdrp)
+                         //console.log('req.body.vlrdrp=>' + req.body.vlrdrp)
                          projeto.trbmem = 0
                          projeto.trbart = 0
                          projeto.trbate = 0

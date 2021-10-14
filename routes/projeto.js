@@ -422,7 +422,7 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
      if (id_prj == '') {
           new Dimensionamento(dime).save().then(() => {
                Dimensionamento.findOne().sort({ field: 'asc', _id: -1 }).then((dimensionamento) => {
-                    console.log('novo projeto')
+                    //console.log('novo projeto')
                     const novo_projeto = {
                          dimensionamento: dimensionamento._id,
                          cidade: req.body.cidade,
@@ -438,11 +438,11 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
      } else {
           Dimensionamento.deleteOne({ _id: req.body.id_dime }).then(() => {
                new Dimensionamento(dime).save().then(() => {
-                    console.log('dime=>' + dime)
+                    //console.log('dime=>' + dime)
                     Dimensionamento.findOne().sort({ field: 'asc', _id: -1 }).then((dimensionamento) => {
                          Projeto.findOne({ _id: id_prj }).then((projeto) => {
-                              console.log('projeto existente')
-                              console.log('id_prj=>' + id_prj)
+                              //console.log('projeto existente')
+                              //console.log('id_prj=>' + id_prj)
                               if (req.body.cidade != '' && req.body.cidade != projeto.cidade) {
                                    projeto.cidade = req.body.cidade
                               }
@@ -451,9 +451,9 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
                               }
                               projeto.dimensionamento = dimensionamento._id
                               projeto.potencia = dimensionamento.potencia
-                              console.log('dimensionamento._id=>' + dimensionamento._id)
+                              //console.log('dimensionamento._id=>' + dimensionamento._id)
                               projeto.save().then(() => {
-                                   console.log('projeto salvo')
+                                   //console.log('projeto salvo')
                                    res.redirect('/projeto/dimensionamento/' + dimensionamento._id)
                               }).catch((err) => {
                                    req.flash('error_msg', 'Houve um erro ao salvar o projeto.')
@@ -1000,9 +1000,9 @@ router.get('/alocacao/:id', ehAdmin, (req, res) => {
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
           Cliente.findOne({ _id: projeto.cliente }).lean().then((cliente) => {
                Cronograma.findOne({ projeto: projeto._id }).lean().then((cronograma) => {
-                    // console.log('projeto.equipe=>' + projeto.equipe)
+                    // //console.log('projeto.equipe=>' + projeto.equipe)
                     if (typeof projeto.equipe != 'undefined' && projeto.equipe != '') {
-                         console.log('encontrou equipe no projeto')
+                         //console.log('encontrou equipe no projeto')
                          Equipe.find({ user: _id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
                               Equipe.findOne({ _id: projeto.equipe }).lean().then((lista_equipe) => {
                                    var lista_instaladores = [lista_equipe.ins0, lista_equipe.ins1, lista_equipe.ins2, lista_equipe.ins3, lista_equipe.ins4, lista_equipe.ins5]
@@ -1111,11 +1111,11 @@ router.get('/alocacao/:id', ehAdmin, (req, res) => {
                               res.redirect('/projeto/edicao/' + req.params.id)
                          })
                     } else {
-                         console.log('não encontrou equipe no projeto')
+                         //console.log('não encontrou equipe no projeto')
                          Equipe.find({ user: _id, nome: { $exists: true } }).lean().then((equipes) => {
-                              // console.log('projeto.equipe=>' + projeto.equipe)
+                              // //console.log('projeto.equipe=>' + projeto.equipe)
                               Pessoa.find({ user: _id, funele: 'checked' }).then((pessoas_ele) => {
-                                   // console.log('pessoas_ele=>' + pessoas_ele)
+                                   // //console.log('pessoas_ele=>' + pessoas_ele)
                                    var t = 0
                                    pessoas_ele.forEach((element) => {
                                         fora_ele.push({ nome: element.nome })
@@ -1126,10 +1126,10 @@ router.get('/alocacao/:id', ehAdmin, (req, res) => {
                                              custoEle1 = element.custo
                                         }
                                         t++
-                                        console.log('t=>' + t)
+                                        //console.log('t=>' + t)
                                         if (t == pessoas_ele.length) {
-                                             console.log('custoEle0=>' + custoEle0)
-                                             console.log('custoEle1=>' + custoEle1)
+                                             //console.log('custoEle0=>' + custoEle0)
+                                             //console.log('custoEle1=>' + custoEle1)
                                              res.render('projeto/alocacao', { projeto, equipes, cliente, cronograma, equipes, fora_ele, custoEle0, custoEle1 })
                                         }
                                    })
@@ -1143,7 +1143,7 @@ router.get('/alocacao/:id', ehAdmin, (req, res) => {
                               res.redirect('/projeto/edicao/' + req.params.id)
                          })
 
-                         // console.log('busca eletricistas')
+                         // //console.log('busca eletricistas')
                          // Pessoa.find({ user: _id, funele: 'checked' }).lean().then((pessoas_ele) => {
                          //      res.render('projeto/alocacao', { projeto, cliente, cronograma, pessoas_ele })
                          // }).catch((err) => {
@@ -1257,7 +1257,7 @@ router.post('/salvarcustos/', ehAdmin, (req, res) => {
           Equipe.findOne({ projeto: req.body.idprj }).then((equipe) => {
                Cronograma.findOne({ projeto: req.body.idprj }).then((cronograma) => {
                     dias = (parseFloat(cronograma.agendaModFim) - parseFloat(cronograma.agendaAteIni)) + 1
-                    console.log('req.body.savecustoins=>' + req.body.savecustoins)
+                    //console.log('req.body.savecustoins=>' + req.body.savecustoins)
                     totint = (parseFloat(req.body.savecustoins) + parseFloat(req.body.savecustoele)) * dias
                     projeto.totint = totint
                     projeto.custoPlano = totint
@@ -1663,9 +1663,9 @@ router.post("/novo", ehAdmin, (req, res) => {
                }
           }
           //console.log('erros=>' + erros)
-          console.log('tipoprj=>' + tipoprj)
+          //console.log('tipoprj=>' + tipoprj)
           if (erros.length > 0) {
-               console.log('encontrou erro')
+               //console.log('encontrou erro')
                //console.log('id_prj=>' + req.body.id_prj)
                //console.log('id_dime=>' + req.body.id_dime)
                if (req.body.id_dime != '' && req.body.id_prj != '') {
@@ -1853,11 +1853,11 @@ router.post("/novo", ehAdmin, (req, res) => {
                                    desc_escopo = ''
                               }
 
-                              console.log('desc_escopo=>' + desc_escopo)
-                              console.log('req.body.id_dime=>' + req.body.id_dime)
+                              //console.log('desc_escopo=>' + desc_escopo)
+                              //console.log('req.body.id_dime=>' + req.body.id_dime)
 
                               if (req.body.id_dime == '' || typeof req.body.id_dime == 'undefined') {
-                                   console.log('sem dimensionamento')
+                                   //console.log('sem dimensionamento')
                                    var prj
                                    var corpo
                                    prj = {
@@ -1918,13 +1918,13 @@ router.post("/novo", ehAdmin, (req, res) => {
                                         corpo = prj
                                    }
 
-                                   console.log(corpo)
+                                   //console.log(corpo)
                                    new Projeto(corpo).save().then(() => {
-                                        console.log('salvou projeto')
+                                        //console.log('salvou projeto')
                                         Projeto.findOne({ user: _id }).sort({ field: 'asc', _id: -1 }).lean().then((projeto) => {
                                              // Projeto.find().limit(1).sort({$_id: -1}).lean().then((projeto) => {
-                                             console.log('projeto=>' + projeto)
-                                             console.log('projeto._id=>' + projeto._id)
+                                             //console.log('projeto=>' + projeto)
+                                             //console.log('projeto._id=>' + projeto._id)
                                              Empresa.findOne({ _id: projeto.empresa }).lean().then((rp) => {
                                                   Pessoa.find({ vendedor: true, user: _id }).lean().then((vendedor) => {
                                                        //console.log('vlrTotal=>' + vlrequ)
@@ -2027,7 +2027,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                             valorOcp: valorOcp
                                                        }
                                                        new Detalhado(detalhado).save().then(() => {
-                                                            console.log('salvou detalhado')
+                                                            //console.log('salvou detalhado')
 
                                                             var cronograma_novo = {
                                                                  user: _id,
@@ -2037,7 +2037,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                  dateentrega: req.body.valDataPrev,
                                                             }
                                                             new Cronograma(cronograma_novo).save().then(() => {
-                                                                 console.log('salvou cronograma')
+                                                                 //console.log('salvou cronograma')
                                                                  Configuracao.findOne({ _id: req.body.configuracao }).lean().then((configuracao) => {
                                                                       Cliente.findOne({ _id: req.body.cliente }).lean().then((cliente) => {
                                                                            Pessoa.findOne({ _id: req.body.gestor }).lean().then((gestao) => {
@@ -2086,7 +2086,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                                                plaModString:0,
                                                                                                plaQtdEst:0
                                                                                           }).save().then(() => {
-                                                                                               // console.log('salvou equipe')
+                                                                                               // //console.log('salvou equipe')
                                                                                                if (tipoprj == 1) {
                                                                                                     if (req.body.tipoEntrada == 'Proprio') {
                                                                                                          res.render("projeto/customdo/gestao", {
@@ -2101,10 +2101,10 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                                                          })
                                                                                                     }
                                                                                                } else {
-                                                                                                    console.log('projeto.configuracao=>' + projeto.configuracao)
-                                                                                                    console.log('projeto.empresa=>' + projeto.empresa)
-                                                                                                    console.log('projeto.vendedor=>' + projeto.vendedor)
-                                                                                                    console.log('projeto.funres=>' + projeto.funres)
+                                                                                                    //console.log('projeto.configuracao=>' + projeto.configuracao)
+                                                                                                    //console.log('projeto.empresa=>' + projeto.empresa)
+                                                                                                    //console.log('projeto.vendedor=>' + projeto.vendedor)
+                                                                                                    //console.log('projeto.funres=>' + projeto.funres)
                                                                                                     Configuracao.findOne({ _id: projeto.configuracao }).lean().then((config) => {
                                                                                                          Empresa.findOne({ _id: projeto.empresa }).lean().then((rp) => {
                                                                                                               Pessoa.findOne({ _id: projeto.vendedor }).lean().then((pv) => {
@@ -2191,11 +2191,11 @@ router.post("/novo", ehAdmin, (req, res) => {
                                         res.redirect('/menu')
                                    })
                               } else {
-                                   console.log('req.body.id_prj=>' + req.body.id_prj)
+                                   //console.log('req.body.id_prj=>' + req.body.id_prj)
                                    Projeto.findOne({ _id: req.body.id_prj }).then((projeto) => {
-                                        console.log('com dimensionamento')
+                                        //console.log('com dimensionamento')
                                         projeto.nome = req.body.nome
-                                        console.log('cliente.nome=>' + cliente.nome)
+                                        //console.log('cliente.nome=>' + cliente.nome)
                                         projeto.nomecliente = cliente.nome
                                         projeto.configuracao = req.body.configuracao
                                         projeto.markup = config.markup
@@ -2203,13 +2203,13 @@ router.post("/novo", ehAdmin, (req, res) => {
                                         projeto.tipoConexao = req.body.tipoConexao
                                         projeto.classUsina = req.body.classUsina
                                         projeto.tipoUsina = req.body.tipoUsina
-                                        console.log('tipoCustoGes=>' + tipoCustoGes)
+                                        //console.log('tipoCustoGes=>' + tipoCustoGes)
                                         projeto.tipoCustoGes = tipoCustoGes
-                                        console.log('tipoCustoPro=>' + tipoCustoPro)
+                                        //console.log('tipoCustoPro=>' + tipoCustoPro)
                                         projeto.tipoCustoPro = tipoCustoPro
-                                        console.log('tipoCustoIns=>' + tipoCustoIns)
+                                        //console.log('tipoCustoIns=>' + tipoCustoIns)
                                         projeto.tipoCustoIns = tipoCustoIns
-                                        console.log('valorProjeto=>' + valorProjeto)
+                                        //console.log('valorProjeto=>' + valorProjeto)
                                         projeto.valor = valorProjeto
                                         projeto.vlrnormal = valorProjeto
                                         projeto.data = dia + '/' + mes + '/' + ano
@@ -2403,10 +2403,10 @@ router.post("/novo", ehAdmin, (req, res) => {
 
 router.post("/salvarequipe", ehAdmin, (req, res) => {
      const { _id } = req.user
-     // console.log('req.body.id=>' + req.body.id)
+     // //console.log('req.body.id=>' + req.body.id)
      Projeto.findOne({ _id: req.body.id }).then((projeto) => {
           Equipe.findOne({ _id: req.body.equipe }).then((equipe) => {
-               // console.log('projeto.equipe=>' + projeto.equipe)
+               // //console.log('projeto.equipe=>' + projeto.equipe)
                // if (typeof projeto.equipe == 'undefined' || projeto.equipe == '') {
                //      projeto.
                // Equipe.findOne({ projeto: req.body.id }).then((equipe) => {
@@ -2415,7 +2415,7 @@ router.post("/salvarequipe", ehAdmin, (req, res) => {
                //           req.flash('error_msg', 'Houve erro ao remover a equipe.')
                //           res.redirect('/projeto/alocacao/' + req.body.id)
                //      })
-               //      console.log('projeto removido')
+               //      //console.log('projeto removido')
                // new Equipe({
                //      projeto: projeto._id,
                //      nome: equipe.nome,
@@ -2428,9 +2428,9 @@ router.post("/salvarequipe", ehAdmin, (req, res) => {
                //      ins4: equipe.ins4,
                //      ins5: equipe.ins5,
                // }).save().then(() => {
-               //      console.log('salvou equipe')
+               //      //console.log('salvou equipe')
                //      Equipe.findOne().sort({ field: 'asc', _id: -1 }).then((ult_equipe) => {
-               //           console.log('ult_equipe=>' + ult_equipe)
+               //           //console.log('ult_equipe=>' + ult_equipe)
                //           projeto.equipe = ult_equipe._id
                //           projeto.save().then(() => {
                //                equipe.save().then(() => {
@@ -2550,7 +2550,7 @@ router.post("/salvarins", ehAdmin, (req, res) => {
                                    if (equipe.custoele != '' && typeof equipe.custoele != 'undefined') {
                                         equipe.custoins = req.body.custoIns
                                         dias = (parseFloat(dataBusca(req.body.dateModFim)) - parseFloat(cronograma.agendaAteIni)) + 1
-                                        console.log('dias=>' + dias)
+                                        //console.log('dias=>' + dias)
                                         totint = (parseFloat(req.body.custoIns) + parseFloat(equipe.custoele)) * dias
                                         if (projeto.totint != totint) {
                                              projeto.totint = totint
@@ -2629,21 +2629,21 @@ router.post("/salvarele", ehAdmin, (req, res) => {
                          equipe.ele0 = req.body.ele0
                          equipe.ele1 = req.body.ele1
                          // projeto.equipe = equipe._id
-                         console.log('req.body.ele0=>' + req.body.ele0)
-                         console.log('req.body.ele1=>' + req.body.ele1)
-                         console.log('req.body.custoEle0=>' + req.body.custoEle0)
-                         console.log('req.body.custoEle1=>' + req.body.custoEle1)
-                         console.log('req.body.custoEle=>' + req.body.custoEle)
+                         //console.log('req.body.ele0=>' + req.body.ele0)
+                         //console.log('req.body.ele1=>' + req.body.ele1)
+                         //console.log('req.body.custoEle0=>' + req.body.custoEle0)
+                         //console.log('req.body.custoEle1=>' + req.body.custoEle1)
+                         //console.log('req.body.custoEle=>' + req.body.custoEle)
                          equipe.custoele = req.body.custoEle
                          if (cronograma.agendaModFim != '0' && typeof cronograma.agendaModFim != 'undefined') {
                               dias = (parseFloat(cronograma.agendaModFim) - parseFloat(dataBusca(req.body.dateAteIni))) + 1
-                              console.log('dias=>' + dias)
+                              //console.log('dias=>' + dias)
                               if (equipe.custoins != '' && typeof equipe.custoins != 'undefined') {
                                    totint = (parseFloat(equipe.custoins) + parseFloat(req.body.custoEle)) * dias
                                    if (projeto.totint != totint) {
                                         totint = totint
                                    }
-                                   console.log('totint=>' + totint)
+                                   //console.log('totint=>' + totint)
                                    projeto.custoPlano = totint
                                    projeto.trbint = dias
                                    projeto.diastr = dias
@@ -2658,9 +2658,9 @@ router.post("/salvarele", ehAdmin, (req, res) => {
                          projeto.totint = totint
                          projeto.equipe = equipe._id
                          projeto.save().then(() => {
-                              console.log('salvou o projeto')
+                              //console.log('salvou o projeto')
                               equipe.save().then(() => {
-                                   console.log('salvou a equipe')
+                                   //console.log('salvou a equipe')
                                    cronograma.dateateini = req.body.dateAteIni
                                    cronograma.dateatefim = req.body.dateAteFim
                                    cronograma.datestbini = req.body.dateStbIni
@@ -2703,12 +2703,12 @@ router.post("/salvarele", ehAdmin, (req, res) => {
 })
 
 router.post('/salvarescopo', ehAdmin, (req, res) => {
-     console.log('req.body.id=>' + req.body.id)
+     //console.log('req.body.id=>' + req.body.id)
      Projeto.findOne({ _id: req.body.id }).then((projeto) => {
           projeto.escopo = req.body.escopo
           projeto.save().then(() => {
-               console.log('salvou projeto')
-               console.log('req.body.id=>' + req.body.id)
+               //console.log('salvou projeto')
+               //console.log('req.body.id=>' + req.body.id)
                res.redirect('/projeto/vermais/' + req.body.id)
           }).catch((err) => {
                req.flash('error_msg', 'Nenhum empresa encontrado.')
@@ -3260,17 +3260,17 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                         projeto.dataIns = req.body.datains
                                         projeto.valDataIns = req.body.valDataIns
                                         //Altera o vendedor                          
-                                        // console.log('req.body.vende=>' + req.body.vendedor)
-                                        // console.log('projeto.vendedor=>' + projeto.vendedor)
+                                        // //console.log('req.body.vende=>' + req.body.vendedor)
+                                        // //console.log('projeto.vendedor=>' + projeto.vendedor)
                                         if (req.body.vendedor != projeto.vendedor) {
                                              projeto.vendedor = req.body.vendedor
                                              projeto.percom = prj_vendedor.percom
                                         }
-                                        // console.log('vendedor=>'+vendedor)
-                                        // console.log('percom=>'+percom)
+                                        // //console.log('vendedor=>'+vendedor)
+                                        // //console.log('percom=>'+percom)
 
-                                        // console.log('req.body.empresa=>' + req.body.empresa)
-                                        // console.log('projeto.empresa=>' + projeto.empresa)
+                                        // //console.log('req.body.empresa=>' + req.body.empresa)
+                                        // //console.log('projeto.empresa=>' + projeto.empresa)
                                         //Altera a empresa 
                                         if (req.body.empresa != projeto.empresa) {
                                              projeto.empresa = req.body.empresa
@@ -3279,8 +3279,8 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                              projeto.configuracao = req.body.configuracao
                                         }
 
-                                        console.log('req.body.uf=>' + req.body.uf)
-                                        console.log('req.body.cidade=>' + req.body.cidade)
+                                        //console.log('req.body.uf=>' + req.body.uf)
+                                        //console.log('req.body.cidade=>' + req.body.cidade)
                                         if (req.body.uf != '' && req.body.cidade != '' && typeof req.body.uf != 'undefined' && typeof req.body.cidade != 'undefined') {
                                              if (req.body.uf != projeto.uf && req.body.uf != projeto.cidade) {
                                                   projeto.uf = req.body.uf
@@ -3292,23 +3292,23 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                              //Validando o markup
                                         }
 
-                                        console.log('req.body.valor=>' + req.body.valor)
-                                        console.log('projeto.valor=>' + projeto.valor)
+                                        //console.log('req.body.valor=>' + req.body.valor)
+                                        //console.log('projeto.valor=>' + projeto.valor)
                                         var valor = 0
                                         var markup = 0
                                         if (req.body.valor != projeto.valor && req.body.valor != '') {
-                                             console.log('markup calculado')
+                                             //console.log('markup calculado')
                                              markup = (((parseFloat(req.body.valor) - parseFloat(vlrkit) - parseFloat(projeto.custoPlano) - parseFloat(projeto.desAdm) + parseFloat(projeto.reserva)) / parseFloat(req.body.valor)) * 100).toFixed(2)
                                              valor = req.body.valor
                                         } else {
-                                             console.log('req.body.valor=>' + req.body.valor)
+                                             //console.log('req.body.valor=>' + req.body.valor)
                                              if (req.body.valor == '' || req.body.valor == 0) {
-                                                  console.log('markup configuração')
-                                                  console.log('config.markup=>' + config.markup)
+                                                  //console.log('markup configuração')
+                                                  //console.log('config.markup=>' + config.markup)
                                                   markup = config.markup
-                                                  console.log('projeto.custofix=>' + projeto.custofix)
-                                                  console.log('projeto.custovar=>' + projeto.custovar)
-                                                  console.log('projeto.desAdm=>' + projeto.desAdm)
+                                                  //console.log('projeto.custofix=>' + projeto.custofix)
+                                                  //console.log('projeto.custovar=>' + projeto.custovar)
+                                                  //console.log('projeto.desAdm=>' + projeto.desAdm)
                                                   valor = (((parseFloat(projeto.custofix) + parseFloat(projeto.custovar) + parseFloat(projeto.desAdm)) / (1 - (parseFloat(config.markup)) / 100)) + parseFloat(vlrkit)).toFixed(2)
                                              } else {
                                                   valor = projeto.valor
@@ -3339,29 +3339,29 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                              projeto.dataPedido = ''
                                         }
 
-                                        console.log('valor=>' + valor)
-                                        console.log('markup=>' + markup)
+                                        //console.log('valor=>' + valor)
+                                        //console.log('markup=>' + markup)
                                         projeto.valor = valor
                                         projeto.vlrnormal = valor
                                         projeto.markup = markup
-                                        console.log('vlrequ=>' + vlrequ)
+                                        //console.log('vlrequ=>' + vlrequ)
                                         projeto.vlrequ = vlrequ
-                                        console.log('vlrkit=>' + vlrkit)
+                                        //console.log('vlrkit=>' + vlrkit)
                                         projeto.vlrkit = vlrkit
-                                        console.log('vlrNFS=>' + vlrNFS)
+                                        //console.log('vlrNFS=>' + vlrNFS)
                                         projeto.vlrNFS = vlrNFS
                                         projeto.potencia = req.body.potencia
-                                        console.log('cercamento=>' + cercamento)
+                                        //console.log('cercamento=>' + cercamento)
                                         projeto.temCercamento = cercamento
-                                        console.log('central=>' + central)
+                                        //console.log('central=>' + central)
                                         projeto.temCentral = central
-                                        console.log('poste=>' + poste)
+                                        //console.log('poste=>' + poste)
                                         projeto.temPosteCond = poste
-                                        console.log('estsolo=>' + estsolo)
+                                        //console.log('estsolo=>' + estsolo)
                                         projeto.temEstSolo = estsolo
-                                        console.log('armazenamento=>' + armazenamento)
+                                        //console.log('armazenamento=>' + armazenamento)
                                         projeto.temArmazenamento = armazenamento
-                                        console.log('painel=>' + painel)
+                                        //console.log('painel=>' + painel)
                                         projeto.temPainel = painel
                                         projeto.endereco = req.body.endereco
                                         if (req.body.pedido != null) {
@@ -3370,7 +3370,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                              projeto.pedido = false
                                         }
 
-                                        console.log('ehVinculo=>' + projeto.ehVinculo)
+                                        //console.log('ehVinculo=>' + projeto.ehVinculo)
                                         if (projeto.ehVinculo) {
                                              var responsavel = req.body.responsavel
                                              if (projeto.funres != req.body.responsavel) {
@@ -3379,9 +3379,9 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                         }
 
                                         projeto.save().then(() => {
-                                             console.log('salvou projeto')
+                                             //console.log('salvou projeto')
                                              cronograma.save().then(() => {
-                                                  console.log('salvou cronograma')
+                                                  //console.log('salvou cronograma')
                                                   if (projeto.ehVinculo) {
                                                        Pessoa.findOne({ _id: responsavel }).then((pessoa) => {
                                                             equipe.pla0 = pessoa.nome
@@ -3669,21 +3669,21 @@ router.post('/direto', ehAdmin, (req, res) => {
                                              //console.log('estfim=>'+estfim)
                                         }
                                         var diasIns = 0
-                                        console.log('cronograma.datemodini=>' + cronograma.datemodini)
+                                        //console.log('cronograma.datemodini=>' + cronograma.datemodini)
                                         if (cronograma.datemodini == '' || typeof cronograma.datemodini == 'undefined' || isNaN(cronograma.datemodini)) {
                                              modini = estfim
                                              cronograma.datemodini = modini
-                                             console.log('projeto.diasIns=>' + projeto.diasIns)
+                                             //console.log('projeto.diasIns=>' + projeto.diasIns)
                                              if (req.body.lancaHora != null) {
                                                   diasIns = Math.round(parseFloat(trbint) / parseFloat(config.hrstrb), -1)
                                              } else {
                                                   diasIns = trbint
                                              }
-                                             console.log('diasIns=>' + diasIns)
+                                             //console.log('diasIns=>' + diasIns)
                                              modfim = setData(modini, parseFloat(diasIns))
                                              if (projeto.ehVinculo == false) {
-                                                  console.log('não é vinculo')
-                                                  console.log('modfim=>' + modfim)
+                                                  //console.log('não é vinculo')
+                                                  //console.log('modfim=>' + modfim)
                                                   cronograma.datemodfim = modfim
                                              }
                                              //console.log('modfim=>'+modfim)
@@ -3717,7 +3717,7 @@ router.post('/direto', ehAdmin, (req, res) => {
                                         var outcer = req.body.outcer
                                         var outpos = req.body.outpos
 
-                                        console.log('req.body.totint=>' + req.body.totint)
+                                        //console.log('req.body.totint=>' + req.body.totint)
                                         var totint = req.body.totint
                                         var toteng = req.body.toteng
                                         // var matate = req.body.matate
@@ -3727,7 +3727,7 @@ router.post('/direto', ehAdmin, (req, res) => {
                                         var totges = req.body.totges
                                         var totali = req.body.totali
                                         var totdes = req.body.totdes
-                                        console.log('totint=>' + totint)
+                                        //console.log('totint=>' + totint)
 
                                         //--> se for vazio salva zero(0)
                                         if (ehVinculo == false) {
@@ -3836,26 +3836,26 @@ router.post('/direto', ehAdmin, (req, res) => {
                                              reserva = parseFloat(resger) + parseFloat(rescon)
                                         }
 
-                                        console.log('totint=>' + totint)
-                                        console.log('toteng=>' + toteng)
-                                        console.log('totpro=>' + totpro)
-                                        console.log('vlrart=>' + vlrart)
-                                        console.log('totges=>' + totges)
+                                        //console.log('totint=>' + totint)
+                                        //console.log('toteng=>' + toteng)
+                                        //console.log('totpro=>' + totpro)
+                                        //console.log('vlrart=>' + vlrart)
+                                        //console.log('totges=>' + totges)
 
-                                        console.log('totdes=>' + totdes)
-                                        console.log('totali=>' + totali)
-                                        console.log('matate=>' + matate)
-                                        console.log('vlremp=>' + vlremp)
+                                        //console.log('totdes=>' + totdes)
+                                        //console.log('totali=>' + totali)
+                                        //console.log('matate=>' + matate)
+                                        //console.log('vlremp=>' + vlremp)
 
-                                        console.log('detalhe.valorOcp=>' + detalhe.valorOcp)
-                                        console.log('detalhe.valorCer=>' + detalhe.valorCer)
-                                        console.log('detalhe.valorPos=>' + detalhe.valorPos)
+                                        //console.log('detalhe.valorOcp=>' + detalhe.valorOcp)
+                                        //console.log('detalhe.valorCer=>' + detalhe.valorCer)
+                                        //console.log('detalhe.valorPos=>' + detalhe.valorPos)
                                         var custoFix = parseFloat(totint) + parseFloat(toteng) + parseFloat(totpro) + parseFloat(vlrart) + parseFloat(totges)
                                         var custoVar = parseFloat(totdes) + parseFloat(totali) + parseFloat(matate) + parseFloat(vlremp) + parseFloat(compon)
                                         var custoEst = parseFloat(detalhe.valorCer) + parseFloat(detalhe.valorPos) + parseFloat(detalhe.valorCen)
                                         var totcop = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
 
-                                        console.log('reserva=>' + reserva)
+                                        //console.log('reserva=>' + reserva)
                                         projeto.reserva = parseFloat(reserva)
                                         projeto.matate = parseFloat(matate)
                                         projeto.vlremp = parseFloat(vlremp)
@@ -3905,11 +3905,11 @@ router.post('/direto', ehAdmin, (req, res) => {
                                              projeto.markup = config.markup
                                              prjValor = vlrMarkup
                                         } else {
-                                             console.log('custoTotal=>' + custoTotal)
-                                             console.log('req.body.markup=>' + req.body.markup)
+                                             //console.log('custoTotal=>' + custoTotal)
+                                             //console.log('req.body.markup=>' + req.body.markup)
                                              // vlrMarkup = (((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva) - parseFloat(projeto.vlrkit)) / (1 - (parseFloat(req.body.markup)) / 100)) + parseFloat(projeto.vlrkit)).toFixed(2)
                                              vlrMarkup = (((parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(desAdm)) / (1 - (parseFloat(req.body.markup)) / 100)) + parseFloat(projeto.vlrkit)).toFixed(2)
-                                             console.log('vlrMarkup=>' + vlrMarkup)
+                                             //console.log('vlrMarkup=>' + vlrMarkup)
                                              if (req.body.checkFatura != null) {
                                                   fatequ = true
                                                   vlrNFS = parseFloat(vlrMarkup).toFixed(2)
@@ -3936,15 +3936,15 @@ router.post('/direto', ehAdmin, (req, res) => {
                                              projeto.vlrcom = vlrcom.toFixed(2)
                                         }
 
-                                        console.log('prjValor=>' + prjValor)
-                                        console.log('vlrcom=>' + vlrcom)
-                                        console.log('impNFS=>' + impNFS)
-                                        console.log('vlrNFS=>' + vlrNFS)
-                                        console.log('totcop=>' + totcop)
-                                        console.log('reserva=>' + reserva)
-                                        console.log('custoPlano=>' + custoPlano)
-                                        console.log('custoTotal=>' + custoTotal)
-                                        console.log('projeto.vlrkit=>' + projeto.vlrkit)
+                                        //console.log('prjValor=>' + prjValor)
+                                        //console.log('vlrcom=>' + vlrcom)
+                                        //console.log('impNFS=>' + impNFS)
+                                        //console.log('vlrNFS=>' + vlrNFS)
+                                        //console.log('totcop=>' + totcop)
+                                        //console.log('reserva=>' + reserva)
+                                        //console.log('custoPlano=>' + custoPlano)
+                                        //console.log('custoTotal=>' + custoTotal)
+                                        //console.log('projeto.vlrkit=>' + projeto.vlrkit)
 
                                         projeto.vlrNFS = parseFloat(vlrNFS).toFixed(2)
                                         projeto.impNFS = parseFloat(impNFS).toFixed(2)
@@ -3954,11 +3954,11 @@ router.post('/direto', ehAdmin, (req, res) => {
                                         var recLiquida = 0
                                         var lucroBruto = 0
                                         recLiquida = parseFloat(prjValor) - parseFloat(impNFS)
-                                        console.log('recLiquida=>' + recLiquida)
+                                        //console.log('recLiquida=>' + recLiquida)
                                         projeto.recLiquida = parseFloat(recLiquida).toFixed(2)
                                         lucroBruto = parseFloat(recLiquida) - parseFloat(projeto.vlrkit)
                                         projeto.lucroBruto = parseFloat(lucroBruto).toFixed(2)
-                                        console.log('lucroBruto=>' + lucroBruto)
+                                        //console.log('lucroBruto=>' + lucroBruto)
 
                                         var lbaimp = 0
                                         if (parseFloat(empresa_prj.desadm) > 0) {
@@ -4079,16 +4079,16 @@ router.post('/direto', ehAdmin, (req, res) => {
                                         }
                                         projeto.impostoICMS = impostoICMS.toFixed(2)
 
-                                        console.log('totalImposto=>' + totalImposto)
+                                        //console.log('totalImposto=>' + totalImposto)
                                         projeto.totalImposto = parseFloat(totalImposto).toFixed(2)
-                                        console.log('totalTributos=>' + totalTributos)
+                                        //console.log('totalTributos=>' + totalTributos)
                                         projeto.totalTributos = parseFloat(totalTributos).toFixed(2)
 
                                         //Lucro Líquido descontados os impostos
                                         var lucroLiquido = 0
                                         lucroLiquido = parseFloat(lbaimp) - parseFloat(totalImposto)
                                         projeto.lucroLiquido = parseFloat(lucroLiquido).toFixed(2)
-                                        console.log('lucroLiquido=>' + lucroLiquido)
+                                        //console.log('lucroLiquido=>' + lucroLiquido)
 
                                         //Dashboard              
                                         //Participação dos componentes
@@ -4129,7 +4129,7 @@ router.post('/direto', ehAdmin, (req, res) => {
                                         var parPosEqu = parseFloat(detalhe.valorPos) / parseFloat(detalhe.vlrTotal) * 100
                                         projeto.parPosEqu = parseFloat(parPosEqu).toFixed(2)
 
-                                        console.log('prjValor=>' + prjValor)
+                                        //console.log('prjValor=>' + prjValor)
                                         //Participação sobre o valor total do projeto
                                         var parLiqVlr = parseFloat(lucroLiquido) / parseFloat(prjValor) * 100
                                         projeto.parLiqVlr = parseFloat(parLiqVlr).toFixed(2)
@@ -4173,8 +4173,8 @@ router.post('/direto', ehAdmin, (req, res) => {
                                         //Participação sobre o Faturamento  
                                         var parLiqNfs = parseFloat(lucroLiquido) / parseFloat(vlrNFS) * 100
                                         projeto.parLiqNfs = parseFloat(parLiqNfs).toFixed(2)
-                                        console.log('parLiqNfs=>' + parLiqNfs)
-                                        console.log('projeto.fatequ=>' + projeto.fatequ)
+                                        //console.log('parLiqNfs=>' + parLiqNfs)
+                                        //console.log('projeto.fatequ=>' + projeto.fatequ)
                                         var parKitNfs
                                         if (req.body.checkFatura != null) {
                                              parKitNfs = parseFloat(projeto.vlrkit) / parseFloat(vlrNFS) * 100
@@ -4190,7 +4190,7 @@ router.post('/direto', ehAdmin, (req, res) => {
                                         //console.log('parIntNfs=>' + parIntNfs)
                                         var parEngNfs = parseFloat(toteng) / parseFloat(vlrNFS) * 100
                                         projeto.parEngNfs = parseFloat(parEngNfs).toFixed(2)
-                                        console.log('parEngNfs=>' + parEngNfs)
+                                        //console.log('parEngNfs=>' + parEngNfs)
                                         var parGesNfs = parseFloat(totges) / parseFloat(vlrNFS) * 100
                                         projeto.parGesNfs = parseFloat(parGesNfs).toFixed(2)
                                         //console.log('parGesNfs=>' + parGesNfs)
@@ -4318,7 +4318,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
 
      if (parseFloat(req.body.orcCP) == 0) {
           erros = 'Para realizar o projeto é necessário que os custos orçados sejam maiores que zero.'
-          console.log(erros)
+          //console.log(erros)
           req.flash('error_msg', erros)
           res.redirect('/projetos/realizar/' + req.body.id)
 
@@ -4474,20 +4474,20 @@ router.post('/realizar', ehAdmin, (req, res) => {
                                         valorCen = detalhe.valorCen
                                    }
 
-                                   console.log('totint=>' + totint)
-                                   console.log('toteng=>' + toteng)
-                                   console.log('matate=>' + matate)
-                                   console.log('vlremp=>' + toteng)
-                                   console.log('compon=>' + toteng)
-                                   console.log('totges=>' + totges)
-                                   console.log('totpro=>' + totpro)
-                                   console.log('vlrart=>' + vlrart)
-                                   console.log('toteae=>' + toteae)
-                                   console.log('totpnl=>' + totpnl)
-                                   console.log('totali=>' + totali)
-                                   console.log('totdes=>' + totdes)
+                                   //console.log('totint=>' + totint)
+                                   //console.log('toteng=>' + toteng)
+                                   //console.log('matate=>' + matate)
+                                   //console.log('vlremp=>' + toteng)
+                                   //console.log('compon=>' + toteng)
+                                   //console.log('totges=>' + totges)
+                                   //console.log('totpro=>' + totpro)
+                                   //console.log('vlrart=>' + vlrart)
+                                   //console.log('toteae=>' + toteae)
+                                   //console.log('totpnl=>' + totpnl)
+                                   //console.log('totali=>' + totali)
+                                   //console.log('totdes=>' + totdes)
                                    var custoFix = parseFloat(totint) + parseFloat(toteng) + parseFloat(totges) + parseFloat(totpro) + parseFloat(vlrart) + parseFloat(toteae) + parseFloat(totpnl)
-                                   console.log('custoFix=>' + custoFix)
+                                   //console.log('custoFix=>' + custoFix)
                                    var custoVar
 
                                    if (projeto.ehDireto == true || projeto.ehVinculo == true) {
@@ -4495,15 +4495,15 @@ router.post('/realizar', ehAdmin, (req, res) => {
                                    } else {
                                         custoVar = (parseFloat(totali) + parseFloat(totcmb) + parseFloat(tothtl)).toFixed(2)
                                    }
-                                   console.log('custoVar=>' + custoVar)
+                                   //console.log('custoVar=>' + custoVar)
 
-                                   console.log('valorCer=>' + valorCer)
-                                   console.log('valorPos=>' + valorPos)
-                                   console.log('valorCen=>' + valorCen)
+                                   //console.log('valorCer=>' + valorCer)
+                                   //console.log('valorPos=>' + valorPos)
+                                   //console.log('valorCen=>' + valorCen)
 
                                    var custoEst = parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen)
                                    totalPlano = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
-                                   console.log('totalPlano=>' + totalPlano)
+                                   //console.log('totalPlano=>' + totalPlano)
 
                                    var vlrequ
                                    var impISSNfs
@@ -4573,10 +4573,10 @@ router.post('/realizar', ehAdmin, (req, res) => {
                                         vlrcom = req.body.vlrcom
                                    }
 
-                                   console.log('prjLucroBruto=>' + prjLucroBruto)
-                                   console.log('totalPlano=>' + totalPlano)
-                                   console.log('projeto.desAdm=>' + projeto.desAdm)
-                                   console.log('vlrcom=>' + vlrcom)
+                                   //console.log('prjLucroBruto=>' + prjLucroBruto)
+                                   //console.log('totalPlano=>' + totalPlano)
+                                   //console.log('projeto.desAdm=>' + projeto.desAdm)
+                                   //console.log('vlrcom=>' + vlrcom)
                                    var lbaimp = 0
                                    if (parseFloat(projeto.desAdm) > 0) {
                                         lbaimp = (parseFloat(prjLucroBruto) - parseFloat(totalPlano) - parseFloat(projeto.desAdm) - parseFloat(vlrcom)).toFixed(2)
@@ -4909,21 +4909,21 @@ router.post('/realizar', ehAdmin, (req, res) => {
 
                                    var datareg = ano + mes + dia
                                    if (realizado != null) {
-                                        console.log('lbaimp=>' + lbaimp)
-                                        console.log('lucroLiquido=>' + lucroLiquido)
-                                        console.log('varLL=>' + varLL)
-                                        console.log('parDesVlr=>' + parDesVlr)
-                                        console.log('parAliVlr=>' + parAliVlr)
-                                        console.log('parCmbVlr=>' + parCmbVlr)
-                                        console.log('parEstVlr=>' + parEstVlr)
-                                        console.log('parDedVlr=>' + parDedVlr)
-                                        console.log('parComVlr=>' + parComVlr)
-                                        console.log('parDesNfs=>' + parDesNfs)
-                                        console.log('parAliNfs=>' + parAliNfs)
-                                        console.log('parCmbNfs=>' + parCmbNfs)
-                                        console.log('parEstNfs=>' + parEstNfs)
-                                        console.log('parDedNfs=>' + parDedNfs)
-                                        console.log('parDesNfs=>' + parComNfs)
+                                        //console.log('lbaimp=>' + lbaimp)
+                                        //console.log('lucroLiquido=>' + lucroLiquido)
+                                        //console.log('varLL=>' + varLL)
+                                        //console.log('parDesVlr=>' + parDesVlr)
+                                        //console.log('parAliVlr=>' + parAliVlr)
+                                        //console.log('parCmbVlr=>' + parCmbVlr)
+                                        //console.log('parEstVlr=>' + parEstVlr)
+                                        //console.log('parDedVlr=>' + parDedVlr)
+                                        //console.log('parComVlr=>' + parComVlr)
+                                        //console.log('parDesNfs=>' + parDesNfs)
+                                        //console.log('parAliNfs=>' + parAliNfs)
+                                        //console.log('parCmbNfs=>' + parCmbNfs)
+                                        //console.log('parEstNfs=>' + parEstNfs)
+                                        //console.log('parDedNfs=>' + parDedNfs)
+                                        //console.log('parDesNfs=>' + parComNfs)
 
                                         realizado.foiRealizado = false
                                         realizado.nome = projeto.nome
@@ -5035,13 +5035,13 @@ router.post('/realizar', ehAdmin, (req, res) => {
                                         realizado.varLucRlz = varLucRlz
 
                                         realizado.save().then(() => {
-                                             console.log('realizou projeto')
+                                             //console.log('realizou projeto')
                                              projeto.foiRealizado = true
                                              projeto.homologado = false
                                              projeto.save().then(() => {
                                                   sucesso = sucesso + 'Projeto realizado com sucesso.'
-                                                  console.log('sucesso=>' + sucesso)
-                                                  console.log('req.body.id=>' + req.body.id)
+                                                  //console.log('sucesso=>' + sucesso)
+                                                  //console.log('req.body.id=>' + req.body.id)
                                                   req.flash('success_msg', sucesso)
                                                   res.redirect('/projeto/realizar/' + req.body.id)
                                              }).catch((err) => {
@@ -5053,7 +5053,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                                              res.redirect('/projeto/realizar/' + req.body.id)
                                         })
                                    } else {
-                                        console.lof('lbaimp=>' + lbaimp)
+                                        //console.lof('lbaimp=>' + lbaimp)
                                         const realizado = {
                                              user: _id,
                                              projeto: prj_id,
@@ -5166,12 +5166,12 @@ router.post('/realizar', ehAdmin, (req, res) => {
                                         }
 
                                         new Realizado(realizado).save().then(() => {
-                                             console.log('foi realizado')
+                                             //console.log('foi realizado')
                                              projeto.foiRealizado = true
                                              projeto.homologado = false
                                              cronograma.save().then(() => {
                                                   projeto.save().then(() => {
-                                                       console.log('sucesso novo realizado=>' + sucesso)
+                                                       //console.log('sucesso novo realizado=>' + sucesso)
                                                        req.flash('success_msg', sucesso)
                                                        res.redirect('/projeto/realizar/' + req.body.id)
                                                   }).catch((err) => {
@@ -5604,7 +5604,7 @@ router.get('/finalizar/:id', ehAdmin, (req, res) => {
                                         }
                                         new Tarefa(tarefa).save().then(() => {
                                              req.flash('success_msg', 'Projeto finalizado com sucesso')
-                                             console.log('projeto._id=>' + projeto._id)
+                                             //console.log('projeto._id=>' + projeto._id)
                                              res.redirect('/projeto/realizar/' + projeto._id)
                                         }).catch((err) => {
                                              req.flash('error_msg', 'Erro ao salvar a tarefa.')
@@ -5688,7 +5688,7 @@ router.get('/executar/:id', ehAdmin, (req, res) => {
                }
                */
                //------------------------------------------------------//
-               console.log('msg=>' + msg)
+               //console.log('msg=>' + msg)
                if (msg == '') {
                     if (parseFloat(prj_sms.totint) > 0) {
                          Cliente.findOne({ _id: prj_sms.cliente }).then((cliente) => {
@@ -5709,7 +5709,7 @@ router.get('/executar/:id', ehAdmin, (req, res) => {
                               prj_sms.orcado = false
                               prj_sms.save().then(() => {
                                    aviso = 'Projeto em execução!'
-                                   console.log(aviso)
+                                   //console.log(aviso)
                                    req.flash('success_msg', aviso)
                                    res.redirect(redirect)
                               }).catch((err) => {
@@ -5814,7 +5814,7 @@ router.get('/homologar/:id', ehAdmin, (req, res) => {
      //const { fantasia } = req.user
      var redirect = '/gerenciamento/cronograma/' + req.params.id
      Cronograma.findOne({ projeto: req.params.id }).then((cronograma) => {
-          console.log('cronograma.dateEntregaReal=>' + cronograma.dateEntregaReal)
+          //console.log('cronograma.dateEntregaReal=>' + cronograma.dateEntregaReal)
           if (cronograma.dateEntregaReal != '' && typeof cronograma.dateEntregaReal != 'undefined') {
                Projeto.findOne({ _id: req.params.id }).then((projeto) => {
                     //console.log('')
@@ -5867,11 +5867,11 @@ router.get('/homologar/:id', ehAdmin, (req, res) => {
                               projeto.orcado = false
                               projeto.homologado = true
                          }
-                         console.log('aviso=>' + aviso)
+                         //console.log('aviso=>' + aviso)
                          projeto.save().then(() => {
                               req.flash('success_msg', aviso)
                               req.flash('error_msg', texto)
-                              console.log('redirect=>' + redirect)
+                              //console.log('redirect=>' + redirect)
                               res.redirect(redirect)
                          }).catch((err) => {
                               req.flash('error_msg', 'Não foi possível salvar o projeto.')
@@ -5908,7 +5908,7 @@ router.get('/homologar/:id', ehAdmin, (req, res) => {
                     res.redirect('/menu')
                })
           } else {
-               console.log('não encontrou data de finalização')
+               //console.log('não encontrou data de finalização')
                req.flash('error_msg', 'Não foi encontrado a data de entrega da finalização do projeto.')
                res.redirect(redirect)
           }
