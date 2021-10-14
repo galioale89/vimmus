@@ -7,7 +7,7 @@
   }
 
   .body {
-    background-color: #847AF4;
+    background-color: white;
     height: 400px;
   }
 
@@ -29,7 +29,7 @@
     height: 100%;
     min-height: 300px;
 
-    background-color: #001263e5;
+    background-color: #847AF4;
     margin: 0 15px;
     padding: 8px;
     transition: all 0.2s linear;
@@ -133,18 +133,18 @@
 
       list.addEventListener('dragenter', function (e) {
         e.preventDefault();
-        this.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
+        this.style.backgroundColor = '#001263e5';
       });
 
       list.addEventListener('dragleave', function (e) {
-        this.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+        this.style.backgroundColor = '#001263e5';
       });
 
       list.addEventListener('drop', function (e) {
 
         console.log('drop');
         this.append(draggedItem);
-        this.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+        this.style.backgroundColor = '#001263e5';
       });
     }
   }
