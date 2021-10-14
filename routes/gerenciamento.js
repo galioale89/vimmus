@@ -1955,7 +1955,6 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
     var cadastro = dataHoje()
     const equipe = {
         user: _id,
-        tarefa: tarefa._id,
         ins0: req.body.ins0,
         ins1: req.body.ins1,
         ins2: req.body.ins2,
@@ -1980,14 +1979,20 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
             }
             new Tarefas(tarefa).save().then(() => {
                 Tarefas.findOne({ user: _id }).sort({ field: 'asc', _id: -1 }).then((tarefa) => {
-                    console.log('tarefa=>' + tarefa)
-                    console.log('tarefa._id=>' + tarefa._id)
-                    console.log('req.body.ins0=>' + req.body.ins0)
-                    console.log('req.body.dataini=>' + req.body.dataini)
-                    console.log('req.body.datafim=>' + req.body.datafim)
-                    req.flash('success_msg', 'Manutenção gerada com sucesso.')
-                    res.redirect('/gerenciamento/agenda')
 
+                    novaequipe.tarefa = terefa._id
+                    novaequipe.save().then(()=>{
+                        console.log('tarefa=>' + tarefa)
+                        console.log('tarefa._id=>' + tarefa._id)
+                        console.log('req.body.ins0=>' + req.body.ins0)
+                        console.log('req.body.dataini=>' + req.body.dataini)
+                        console.log('req.body.datafim=>' + req.body.datafim)
+                        req.flash('success_msg', 'Manutenção gerada com sucesso.')
+                        res.redirect('/gerenciamento/agenda')
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Falha ao salvar a equipe.')
+                        res.redirect('/gerenciamento/agenda')
+                    })
                 }).catch((err) => {
                     req.flash('error_msg', 'Falha ao encontrar a tarefa.')
                     res.redirect('/gerenciamento/agenda')
