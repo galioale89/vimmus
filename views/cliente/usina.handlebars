@@ -5,12 +5,10 @@
         var r = confirm("Tem certeza que deseja excluir a usina?");
         if (r == true) {
             var caminho = '/cliente/excluirusina/' + String(usina.value)
-            alert(caminho)
             window.open(caminho)
         }
         else {
             var caminho = '/cliente/usinas/' + String(cliente.value)
-            alert(caminho)
             window.open(caminho)
         }
     }

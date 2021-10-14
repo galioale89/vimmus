@@ -15,47 +15,50 @@
         </li>
     </ul>
     <div class="card" style="padding: 10px;">
-    <h2 style="font-weight: 600;">Serviços em Aberto</h2><br>
-    {{#each emaberto}}
-    <table>
-        <tr>
-            <th style="20%">Usina</th>
-            <th style="20%">Serviço</th>
-            <th style="20%">Data Inicial</th>
-            <th style="20%">Data Final</th>
-            <th>Ver Mais</th>
-        </tr>
-        <tr>
-            <td>{{usina}}</td>
-            <td>{{servico}}</td>
-            <td>{{dataini}}</td>
-            <td>{{datafim}}</td>
-            <td style="padding-left: 4%"><a href='/gerenciamento/tarefas/{{_id}}' <i class='bi bi-eye'></i></a></td>
-        </tr>
-    </table>
-    {{/each}}
+        <h2 style="font-weight: 600;">Serviços em Aberto</h2><br>
+        {{#each emaberto}}
+        <table>
+            <tr>
+                <th style="20%">Usina</th>
+                <th style="20%">Serviço</th>
+                <th style="20%">Data Inicial</th>
+                <th style="20%">Data Final</th>
+                <th>Ver Mais</th>
+            </tr>
+            <tr>
+                <td>{{usina}}</td>
+                <td>{{servico}}</td>
+                <td>{{dataini}}</td>
+                <td>{{datafim}}</td>
+                <td style="padding-left: 4%"><a href='/gerenciamento/tarefas/{{_id}}' <i class='bi bi-eye'></i></a></td>
+            </tr>
+        </table>
+        {{else}}
+        <h6>Não há histórico de tarefas em aberto</h6>
+        {{/each}}
     </div>
 
     <div class="card mt-2" style="padding: 10px;">
-    <h2 style="font-weight: 600;">Serviços Realizados</h2><br>
-    {{#each concluido}}
-    <table>
-        <tr>
-            <th>Usina</th>
-            <th>Serviço</th>
-            <th>Data Inicial</th>
-            <th>Data Final</th>
-            <th>Ver Mais</th>
-        </tr>
-        <tr>
-            <td>{{usina}}</td>
-            <td>{{servico}}</td>
-            <td>{{dataini}}</td>
-            <td>{{datafim}}</td>
-            <td style="padding-left: 4%"><a href='/gerenciamento/tarefas/{{_id}}' <i class='bi bi-eye'></i></a></td>
-        </tr>
-    </table>
-    {{/each}}
-    </div>    
-
+        <h2 style="font-weight: 600;">Serviços Realizados</h2><br>
+        {{#each concluido}}
+        <table>
+            <tr>
+                <th>Usina</th>
+                <th>Serviço</th>
+                <th>Data Inicial</th>
+                <th>Data Final</th>
+                <th>Ver Mais</th>
+            </tr>
+            <tr>
+                <td>{{usina}}</td>
+                <td>{{servico}}</td>
+                <td>{{dataini}}</td>
+                <td>{{datafim}}</td>
+                <td style="padding-left: 4%"><a href='/gerenciamento/tarefas/{{_id}}' <i class='bi bi-eye'></i></a></td>
+            </tr>
+        </table>
+        {{else}}
+        <h6>Não há histórico de tarefas concluidas</h6>
+        {{/each}}
+    </div>
 </div>
