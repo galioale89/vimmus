@@ -65,20 +65,21 @@
         <input type='hidden' name='id' value='{{projeto._id}}'>
 
         <!--<div class='btn-group col-12 mx-auto'>-->
-            <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'> <i
-                    class="bi bi-house"></i>Projeto</a>
-            <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
-                Gestão</a>
-            <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i
-                    class="bi bi-pencil"></i>
-                Projetista</a>
-            <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"></i>
-                Instalação</a>
-            <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                    class="bi bi-puzzle"></i>
-                Gerenciamento</a>
-            <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                    class="bi bi-calculator"></i> Custos</a>
+        <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'> <i
+                class="bi bi-house"></i>Principal</a>
+        <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
+            Gestão</a>
+        <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i class="bi bi-pencil"></i>
+            Projetista</a>
+        <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"></i>
+            Instalação</a>
+        <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+                class="bi bi-puzzle"></i>
+            Gerenciamento</a>
+        <a href="/gerenciamento/custo/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-calculator"></i>
+            Custos</a>
+        <a href="/projeto/investimento/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+            Investimento</a>
         <!--</div>-->
 
         <div class="row">
@@ -131,8 +132,9 @@
                                 <label class="fw-bold col-form-label col-form-label-sm">Valor ART: </label>
                             </div>
                             <div class="col-md-7">
-                                    <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
-                                        class="form-control form-control-sm" id="vlrart" name="vlrart" value='{{projeto.vlrart}}'>
+                                <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
+                                    class="form-control form-control-sm" id="vlrart" name="vlrart"
+                                    value='{{projeto.vlrart}}'>
                             </div>
                         </div>
                     </div>
@@ -142,7 +144,8 @@
                                 <label class='col-form-label col-form-label-sm fw-bold'>Vistoria:</label>
                             </div>
                             <div class="col">
-                                <input class='form-control form-control-sm' name='toteng' placeholder='R$' value='{{projeto.toteng}}'>
+                                <input class='form-control form-control-sm' name='toteng' placeholder='R$'
+                                    value='{{projeto.toteng}}'>
                             </div>
                         </div>
 

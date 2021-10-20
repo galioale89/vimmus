@@ -25,11 +25,11 @@
             diasGes.type = 'hidden'
             displayTda.style.display = 'none'
             escopo.disabled = false
-            cronograma.disabled= false
-            vistoria.disabled= false
-            comunicacao.disabled= false
-            alocacao.disabled= false
-            aquisicao.disabled= false
+            cronograma.disabled = false
+            vistoria.disabled = false
+            comunicacao.disabled = false
+            alocacao.disabled = false
+            aquisicao.disabled = false
             lblDes.innerHTML = 'Horas:'
         } else {
             selecionado.value = 'dia'
@@ -38,14 +38,14 @@
             hrstrb.style.display = 'none'
             diatrb.style.display = 'inline'
             diasGes.type = 'text'
-            displayTda.style.display = 'inline' 
-            escopo.disabled = true       
+            displayTda.style.display = 'inline'
+            escopo.disabled = true
             cronograma.disabled = true
-            vistoria.disabled= true
-            comunicacao.disabled= true
-            alocacao.disabled= true
-            aquisicao.disabled= true  
-            lblDes.innerHTML = 'Dias:'          
+            vistoria.disabled = true
+            comunicacao.disabled = true
+            alocacao.disabled = true
+            aquisicao.disabled = true
+            lblDes.innerHTML = 'Dias:'
         }
     }
 </script>
@@ -59,22 +59,21 @@
         <input type='hidden' name='id' value='{{projeto._id}}'>
 
         <!--<div class='btn-group col-12 mx-auto'>-->
-            <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'> <i
-                    class="bi bi-house"></i>Projeto</a>
-            <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i
-                    class="bi bi-gear"></i>
-                Gestão</a>
-            <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                    class="bi bi-pencil"></i>
-                Projetista</a>
-            <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                    class="bi bi-tools"></i>
-                Instalação</a>
-            <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                    class="bi bi-puzzle"></i>
-                Gerenciamento</a>
-            <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                    class="bi bi-calculator"></i> Custos</a>
+        <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'> <i
+                class="bi bi-house"></i>Principal</a>
+        <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i class="bi bi-gear"></i>
+            Gestão</a>
+        <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"></i>
+            Projetista</a>
+        <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"></i>
+            Instalação</a>
+        <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+                class="bi bi-puzzle"></i>
+            Gerenciamento</a>
+        <a href="/gerenciamento/custo/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-calculator"></i>
+            Custos</a>
+        <a href="/projeto/investimento/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+            Investimento</a>
         <!--</div>-->
 
 
@@ -85,8 +84,8 @@
                         <div class="row" style="margin-top: 4%;">
                             <div class="col-md-6">
                                 <div class="form-check" onchange="selecionar()">
-                                    <input class="form-check-input" style="margin-top: 0px;" type="radio" name="select" id="selectHora"
-                                        {{checkHora}}>
+                                    <input class="form-check-input" style="margin-top: 0px;" type="radio" name="select"
+                                        id="selectHora" {{checkHora}}>
                                     <label class="form-check-label" style="font-size: 12px;">
                                         R$/hora
                                     </label>
@@ -94,8 +93,8 @@
                             </div>
                             <div class="col-md-6" style="padding-left: 12%;">
                                 <div class="form-check" onchange="selecionar()">
-                                    <input class="form-check-input" style="margin-top: 0px;" type="radio" name="select" id="selectDia"
-                                        {{checkDia}}>
+                                    <input class="form-check-input" style="margin-top: 0px;" type="radio" name="select"
+                                        id="selectDia" {{checkDia}}>
                                     <label class="form-check-label" style="font-size: 12px;">
                                         R$/dia
                                     </label>
@@ -106,16 +105,21 @@
                     <div class="col-md-1">
                         <input type='hidden' name='selecionado' id='selecionado' value='{{selecionado}}'>
                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="{{typeHrg}}" name="vlrhrg"
-                            id='vlrhrg' value='{{#if projeto.vlrhrg}}{{projeto.vlrhrg}}{{else}}{{configuracao.vlrhrg}}{{/if}}' class='form-control form-control-sm'>
+                            id='vlrhrg'
+                            value='{{#if projeto.vlrhrg}}{{projeto.vlrhrg}}{{else}}{{configuracao.vlrhrg}}{{/if}}'
+                            class='form-control form-control-sm'>
                         <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="{{typeDrg}}" name="vlrdrg"
-                            id='vlrdrg' value='{{#if projeto.vlrdrg}}{{projeto.vlrdrg}}{{else}}{{configuracao.vlrdrg}}{{/if}}' class='form-control form-control-sm'>
+                            id='vlrdrg'
+                            value='{{#if projeto.vlrdrg}}{{projeto.vlrdrg}}{{else}}{{configuracao.vlrdrg}}{{/if}}'
+                            class='form-control form-control-sm'>
                     </div>
                     <div class="col-md-3 mt-1" style="padding-left: 18px;">
-                        <label class='col-form-label col-form-label-sm fw-bold' style="display: {{displayTda}};" id='displayTda'>Total de dias das atividades:</label>
+                        <label class='col-form-label col-form-label-sm fw-bold' style="display: {{displayTda}};"
+                            id='displayTda'>Total de dias das atividades:</label>
                     </div>
                     <div class="col-md-1">
-                        <input type="{{typeGes}}" name="diasGes"
-                            id='diasGes' value='{{projeto.diasGes}}' class='form-control form-control-sm'>                        
+                        <input type="{{typeGes}}" name="diasGes" id='diasGes' value='{{projeto.diasGes}}'
+                            class='form-control form-control-sm'>
                     </div>
                     {{#if projeto.funres}}
                     <div class="col-md-5">
@@ -136,8 +140,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col">
-                                        <label for="escopo"
-                                            class="fw-bold  col-form-label col-form-label-sm">Escopo
+                                        <label for="escopo" class="fw-bold  col-form-label col-form-label-sm">Escopo
                                         </label>
                                         <div class="input-group input-group-sm mb-1">
                                             <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
@@ -180,8 +183,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col">
-                                        <label for="vistoria"
-                                            class="fw-bold  col-form-label col-form-label-sm">Vistoria
+                                        <label for="vistoria" class="fw-bold  col-form-label col-form-label-sm">Vistoria
                                         </label>
                                         <div class="input-group input-group-sm mb-1">
                                             <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
@@ -232,8 +234,8 @@
                                 <div class="row">
                                     <div class="col">
 
-                                        <label for="alocacao"
-                                            class="fw-bold col-form-label col-form-label-sm">Alocação de
+                                        <label for="alocacao" class="fw-bold col-form-label col-form-label-sm">Alocação
+                                            de
                                             Recursos</label>
                                         <div class="input-group input-group-sm mb-1">
                                             <input {{#if projeto.orcado}}{{else}}disabled{{/if}} type="text"
@@ -287,7 +289,8 @@
                         <label class='col-form-label col-form-label-sm fw-bold' id='lblDes'>{{lblDes}}</label>
                     </div>
                     <div class="col-md-2">
-                        <input class='form-control form-control-sm' name='desGes' value='{{projeto.desGes}}' type='number' style="0.010">
+                        <input class='form-control form-control-sm' name='desGes' value='{{projeto.desGes}}'
+                            type='number' style="0.010">
                     </div>
                     <div class="col-md-4 text-start">
                         <label class='col-form-label col-form-label-sm fw-bold'>Total R$ {{projeto.vlrDge}}</label>
@@ -311,7 +314,7 @@
                                 de Trabalho</label>
                             <label style='font-size: 17px;font-weight: bold;display: {{displayDia}};' id='diatrb'>Dias
                                 de Trabalho</label>
-                            {{#if mostraHora}}    
+                            {{#if mostraHora}}
                             <div class="quadro-caixa">{{projeto.trbges}}</div>
                             {{else}}
                             <div class="quadro-caixa">{{projeto.diasGes}}</div>

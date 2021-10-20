@@ -1,0 +1,187 @@
+<style>
+    table {
+        font-size: 13px;
+        text-align: center;
+        line-height: 16px;
+    }
+</style>
+<div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
+    <div style="width: 100%;">
+        <h5 class="header">{{cliente.nome}} </h5>
+    </div>
+    {{#if projeto._id}}
+    {{#if projeto.ehDireto}}
+    <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'><i class="bi bi-house"></i>
+        Principal</a>
+    <a href="/projeto/direto/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+        Custos Diretos</a>
+    <a href="/projeto/investimento/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i class="bi bi-layers"></i>
+        Investimento</a>
+    {{else}}
+    {{#if projeto.ehVinculo}}
+    <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'><i class="bi bi-house"></i>
+        Principal</a>
+    <a href="/projeto/alocacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+        Alocação de Recursos</a>
+    <a href="/projeto/custos/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+        Custos</a>
+    <a href="/gerenciamento/cronograma/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+        Cronograma</a>
+    <a href="/gerenciamento/documentos/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+        Documentos</a>
+    <a href="/projeto/investimento/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i class="bi bi-layers"></i>
+        Investimento</a>
+    {{else}}
+    <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'> <i
+            class="bi bi-house"></i>Principal</a>
+    <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
+        Gestão</a>
+    <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"></i>
+        Projetista</a>
+    <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"></i>
+        Instalação</a>
+    <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-puzzle"></i>
+        Gerenciamento</a>
+    <a href="/gerenciamento/custo/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-calculator"></i>
+        Custos</a>
+    <a href="/projeto/investimento/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i class="bi bi-layers"></i>
+        Investimento</a>
+    {{/if}}
+    {{/if}}
+    {{else}}
+    <a style="cursor: unset" class='btn btn-sm botao-menu ativo'><i class="bi bi-house"></i>
+        Principal</a>
+    {{/if}}
+    <form method="post" action='/projeto/investimento'>
+        <input type="hidden" name="id" value='{{projeto._id}}'>
+        <div class="row" style="padding:10px;width: 100%;">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-6 text-end">
+                        <label class='col-form-label col-form-label-sm'>Taxa de Juros Ao Ano:</label>
+                    </div>
+                    <div class="col-md-3">
+                        <input class='form-control form-control-sm' type='number' step='0.00010' name='txjuros' {{#if
+                            txjuros}} value="{{txjuros}}" {{else}} value="{{investimento.txjuros}}" {{/if}}>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col-md-6 text-end">
+                        <label class='col-form-label col-form-label-sm'>Inflação:</label>
+                    </div>
+                    <div class="col-md-3">
+                        <input class='form-control form-control-sm' type='number' step='0.00010' name='ipca' {{#if tma}}
+                            value="{{ipca}}" {{else}} value="{{investimento.ipca}}" {{/if}}>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col-md-6 text-end">
+                        <label class='col-form-label col-form-label-sm'>Número de Parcelas:</label>
+                    </div>
+                    <div class="col-md-3">
+                        <input class='form-control form-control-sm' type='number' step='0.00010' name='numpar' {{#if
+                            numpar}} value="{{numpar}}" {{else}} value="{{investimento.parcelas}}" {{/if}}>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-6 text-end">
+                        <label class='col-form-label fw-bold'>R$ Projeto:</label>
+                    </div>
+                    <div class="col-md-3">
+                        <label class='col-form-label'>{{#if valor}} {{valor}} {{else}} {{projeto.valor}}{{/if}}</label>
+                        <input type='hidden' name='saldo' {{#if valor}} value='{{valor}}' {{else}}
+                            value='{{projeto.valor}}' {{/if}}>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 text-end">
+                        <label class='col-form-label fw-bold'>Média Consumo kW/h:</label>
+                    </div>
+                    <div class="col-md-3">
+                        <input class='form-control' name='medcon' id='medcon' value='{{medcon}}'>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label clas='col-form-label col-form-label-sm'>TE</label>
+                <input type='number' class='form-control form-control-sm' step='0.000010' name='te' {{#if te}}
+                    value='{{te}}' {{else}} value='{{dimensionamento.te}}' {{/if}}>
+            </div>
+            <div class="col">
+                <label clas='col-form-label col-form-label-sm'>TUSD</label>
+                <input type='number' class='form-control form-control-sm' step='0.000010' name='tusd' {{#if tusd}}
+                    value='{{tusd}}' {{else}} value='{{dimensionamento.tusd}}' {{/if}}>
+            </div>
+            <div class="col">
+                <label clas='col-form-label col-form-label-sm'>ICMS</label>
+                <input type='number' class='form-control form-control-sm' step='0.000010' name='icms' {{#if icms}}
+                    value='{{icms}}' {{else}} value='{{dimensionamento.icms}}' {{/if}}>
+            </div>
+            <div class="col">
+                <label clas='col-form-label col-form-label-sm'>PIS</label>
+                <input type='number' class='form-control form-control-sm' step='0.000010' name='pis' {{#if pis}}
+                    value='{{pis}}' {{else}} value='{{dimensionamento.pis}}' {{/if}}>
+            </div>
+            <div class="col">
+                <label clas='col-form-label col-form-label-sm'>COFINS</label>
+                <input type='number' class='form-control form-control-sm' step='0.000010' name='cofins' {{#if cofins}}
+                    value='{{cofins}}' {{else}} value='{{dimensionamento.cofins}}' {{/if}}>
+            </div>
+            <div class="col">
+                <label clas='col-form-label col-form-label-sm'>COSIP</label>
+                <input type='number' class='form-control form-control-sm' step='0.000010' name='cosip' {{#if cosip}}
+                    value='{{cosip}}' {{else}} value='{{dimensionamento.cosip}}' {{/if}}>
+            </div>
+            <div class="col">
+                <label clas='col-form-label col-form-label-sm'>AJUSTE(BANDEIRAS)</label>
+                <input type='number' class='form-control form-control-sm' step='0.000010' name='ajuste' {{#if ajuste}}
+                    value='{{ajuste}}' {{else}} value='{{dimensionamento.ajuste}}' {{/if}}>
+            </div>
+
+        </div>
+        <div class="row justify-content-center">
+            <button type='submit' class='btn btn-sm btn-success mb-2 mt-2' style="width: 300px;">Calcular</button>
+            <div class='quadro-scroll' style="margin-left: 5px;height: 220px">
+                <table>
+                    <tr>
+                        <th style="width: 50px;">Mês</th>
+                        <th style="width: 150px;">Parcela</th>
+                        <th style="width: 150px;">Amortização</th>
+                        <th style="width: 150px;">Juros</th>
+                        <th style="width: 150px;">Saldo</th>
+                        <th style="width: 150px;">Fatura</th>
+                        <th style="width: 150px;">Fatura com MG</th>
+                        <th style="width: 150px;">Economia Mensal</th>
+                        <th style="width: 150px;">Fluxo de Caixa</th>
+                        <th style="width: 200px;">Fluxo de Caixa Acumulado</th>
+                    </tr>
+                    {{#each sac}}
+                    <tr>
+                        <td>{{mes}}</td>
+                        <td>{{pmt}}</td>
+                        <td>{{amort}}</td>
+                        <td>{{juros}}</td>
+                        <td>{{saldo}}</td>
+                        <td>{{fatura}}</td>
+                        <td>{{minimo}}</td>
+                        <td>{{ecomen}}</td>
+                        <td>{{fluxo}}</td>
+                        <td>{{fluxoacc}}</td>
+                    </tr>
+                    {{/each}}
+                    <tr>
+                        <td>Total</td>
+                        <td>{{totpmt}}</td>
+                        <td>{{totamort}}</td>
+                        <td>{{totjuros}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <label class="col-form-label">Parcela Média: R${{parmed}}</label>
+    </form>
+</div>

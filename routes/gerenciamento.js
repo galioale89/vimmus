@@ -144,7 +144,7 @@ router.get('/gerenciamento/:id', ehAdmin, (req, res) => {
     })
 })
 
-router.get('/tributos/:id', ehAdmin, (req, res) => {
+router.get('/custo/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
     var ehSimples = false
     var ehLP = false
@@ -161,7 +161,7 @@ router.get('/tributos/:id', ehAdmin, (req, res) => {
                     break;
             }
             Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
-                res.render('projeto/gerenciamento/tributos', { projeto, empresa, cliente, ehSimples, ehLP, ehLR })
+                res.render('projeto/gerenciamento/custo', { projeto, empresa, cliente, ehSimples, ehLP, ehLR })
             }).catch((err) => {
                 req.flash('error_msg', 'Nenhum cliente encontrado.')
                 res.redirect('/cliente/consulta')
@@ -2803,7 +2803,7 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
     }
 })
 
-router.post('/tributos/', ehAdmin, (req, res) => {
+router.post('/custo/', ehAdmin, (req, res) => {
     const { _id } = req.user
     Projeto.findOne({ _id: req.body.id }).then((projeto) => {
 
@@ -3025,14 +3025,14 @@ router.post('/tributos/', ehAdmin, (req, res) => {
                 var sucesso = []
                 sucesso = 'Projeto salvo com sucesso.'
                 req.flash('success_msg', sucesso)
-                res.redirect('/gerenciamento/tributos/' + req.body.id)
+                res.redirect('/gerenciamento/custo/' + req.body.id)
             }).catch(() => {
                 req.flash('error_msg', 'Houve um erro ao salvar o projeto.')
-                res.redirect('/gerenciamento/tributos/' + req.body.id)
+                res.redirect('/gerenciamento/custo/' + req.body.id)
             })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar o empresa.')
-            res.redirect('/gerenciamento/tributos/' + req.body.id)
+            res.redirect('/gerenciamento/custo/' + req.body.id)
         })
     })
 })
@@ -3823,26 +3823,75 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
 })
 
 router.post('/planejamento', ehAdmin, (req, res) => {
-    //console.log('req.body.id=>' + req.body.id)
+    const { _id } = req.user
+    // console.log('req.body.id=>' + req.body.id)
     Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
-        vistoria.plaQtdMod = req.body.plaQtdMod
-        vistoria.plaWattMod = req.body.plaWattMod
-        vistoria.plaQtdInv = req.body.plaQtdInv
-        vistoria.plaKwpInv = req.body.plaKwpInv
-        vistoria.plaDimArea = req.body.plaDimArea
-        vistoria.plaQtdString = req.body.plaQtdString
-        vistoria.plaModString = req.body.plaModString
-        vistoria.plaQtdEst = req.body.plaQtdEst
-        vistoria.save().then(() => {
-            req.flash('success_msg', 'Vistoria salva com sucesso.')
-            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
-        }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível salvar o planejamento.')
-            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-        res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+        // console.log('vistoria=>' + vistoria)
+        if (vistoria != '' && typeof vistoria != 'undefined' && vistoria != null) {
+            vistoria.plaQtdMod = req.body.plaQtdMod
+            vistoria.plaWattMod = req.body.plaWattMod
+            vistoria.plaQtdInv = req.body.plaQtdInv
+            vistoria.plaKwpInv = req.body.plaKwpInv
+            vistoria.plaDimArea = req.body.plaDimArea
+            vistoria.plaQtdString = req.body.plaQtdString
+            vistoria.plaModString = req.body.plaModString
+            vistoria.plaQtdEst = req.body.plaQtdEst
+            vistoria.save().then(() => {
+                Detalhado.findOne({ projeto: req.body.id }).then((detalhe) => {
+                    if (detalhe != '' && typeof detalhe != 'undefined' && detalhe != null) {
+                        detalhe.projeto = req.body.id
+                        detalhe.unidadeMod = req.body.plaQtdMod
+                        detalhe.save().then(() => {
+                            req.flash('success_msg', 'Vistoria salva com sucesso.')
+                            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+                        })
+                    } else {
+                        const detalhe = {
+                            projeto: req.body.id,
+                            unidadeMod: req.body.plaQtdMod
+                        }
+                        new Detalhado(detalhe).save().then(() => {
+                            req.flash('success_msg', 'Vistoria salva com sucesso.')
+                            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+                        })
+                    }
+                })
+            })
+        } else {
+            const vistoria = {
+                user: _id,
+                projeto: req.body.id,
+                plaQtdMod: req.body.plaQtdMod,
+                plaWattMod: req.body.plaWattMod,
+                plaQtdInv: req.body.plaQtdInv,
+                plaKwpInv: req.body.plaKwpInv,
+                plaDimArea: req.body.plaDimArea,
+                plaQtdString: req.body.plaQtdString,
+                plaModString: req.body.plaModString,
+                plaQtdEst: req.body.plaQtdEst
+            }
+            new Vistoria(vistoria).save().then(() => {
+                Detalhado.findOne({ projeto: req.body.id }).then((detalhe) => {
+                    if (detalhe._id != '' && typeof detalhe._id != 'undefined' && detalhe != null) {
+                        detalhe.projeto = req.body.id
+                        detalhe.unidadeMod = req.body.plaQtdMod
+                        detalhe.save().then(() => {
+                            req.flash('success_msg', 'Vistoria salva com sucesso.')
+                            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+                        })
+                    } else {
+                        const detalhe = {
+                            projeto: req.body.id,
+                            unidadeMod: req.body.plaQtdMod
+                        }
+                        new Detalhado(detalhe).save().then(() => {
+                            req.flash('success_msg', 'Vistoria salva com sucesso.')
+                            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+                        })
+                    }
+                })
+            })
+        }
     })
 })
 
@@ -3890,8 +3939,14 @@ router.get('/vistoriaPla/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         //console.log('projeto._id=>' + projeto._id)
         Vistoria.findOne({ projeto: projeto._id }).lean().then((vistoria) => {
-            //console.log('vistoria=>' + vistoria)
-            res.render('vistoria/planejamento', { projeto, vistoria })
+            Detalhado.findOne({ projeto: req.params.id }).lean().then((detalhe) => {
+                if (detalhe._id != '' && typeof detalhe != 'undefined') {
+                    //console.log('vistoria=>' + vistoria)
+                    res.render('vistoria/planejamento', { projeto, vistoria, detalhe })
+                } else {
+                    res.render('vistoria/planejamento', { projeto, vistoria })
+                }
+            })
         })
     })
 })

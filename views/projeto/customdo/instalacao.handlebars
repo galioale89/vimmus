@@ -6,7 +6,6 @@
         border-radius: 5px;
         background: linear-gradient(135deg, rgb(62, 81, 177), rgb(11, 19, 58, 1), rgb(11, 19, 58, 1));
     }
-
 </style>
 <script>
     function infoEstrutura() {
@@ -23,14 +22,14 @@
         var hrstrb = document.getElementById('hrstrb')
         var diatrb = document.getElementById('diatrb')
         var displayTda = document.getElementById('displayTda')
-        var trbatr = document.getElementById('trbatr')        
-        var trbinv = document.getElementById('trbinv')           
-        var trbpnl = document.getElementById('trbpnl')        
-        var trbest = document.getElementById('trbest')        
-        var trbmod = document.getElementById('trbmod')        
-        var tempo = document.getElementById('tempo')    
-        var trbstb = document.getElementById('trbstb')        
-        var trbeae = document.getElementById('trbeae')             
+        var trbatr = document.getElementById('trbatr')
+        var trbinv = document.getElementById('trbinv')
+        var trbpnl = document.getElementById('trbpnl')
+        var trbest = document.getElementById('trbest')
+        var trbmod = document.getElementById('trbmod')
+        var tempo = document.getElementById('tempo')
+        var trbstb = document.getElementById('trbstb')
+        var trbeae = document.getElementById('trbeae')
         if (selectHora.checked) {
             selecionado.value = 'hora'
             diasIns.type = 'hidden'
@@ -43,7 +42,7 @@
             trbinv.disabled = true
             trbstb.disabled = true
             trbest.disabled = true
-            trbmod.disabled = true            
+            trbmod.disabled = true
             trbeae.disabled = true
             trbpnl.disabled = true
             lblDes.innerHTML = 'Horas:'
@@ -59,9 +58,9 @@
             trbinv.disabled = false
             trbstb.disabled = false
             trbest.disabled = false
-            trbmod.disabled = false           
+            trbmod.disabled = false
             trbeae.disabled = false
-            trbpnl.disabled = false            
+            trbpnl.disabled = false
             lblDes.innerHTML = 'Dias:'
         }
     }
@@ -76,20 +75,21 @@
         <input type='hidden' name='id' value='{{projeto._id}}'>
 
         <!--<div class='btn-group  col-12 mx-auto'>-->
-            <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'> <i
-                    class="bi bi-house"></i>Projeto</a>
-            <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
-                Gestão</a>
-            <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"></i>
-                Projetista</a>
-            <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i
-                    class="bi bi-tools"></i>
-                Instalação</a>
-            <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                    class="bi bi-puzzle"></i>
-                Gerenciamento</a>
-            <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                    class="bi bi-calculator"></i> Custos</a>
+        <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'> <i
+                class="bi bi-house"></i>Principal</a>
+        <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
+            Gestão</a>
+        <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"></i>
+            Projetista</a>
+        <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i class="bi bi-tools"></i>
+            Instalação</a>
+        <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+                class="bi bi-puzzle"></i>
+            Gerenciamento</a>
+        <a href="/gerenciamento/custo/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-calculator"></i>
+            Custos</a>
+        <a href="/projeto/investimento/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+            Investimento</a>
         <!--</div>-->
 
 
@@ -156,8 +156,8 @@
                             <input type='hidden' name='temPainel' value='{{projeto.temPainel}}'>
                             <div class="col-md-6">
                                 <div class="form-check" onchange="selecionar()">
-                                    <input class="form-check-input" style="margin-top: 0px;" type="radio" name="select" id="selectHora"
-                                        {{checkHora}}>
+                                    <input class="form-check-input" style="margin-top: 0px;" type="radio" name="select"
+                                        id="selectHora" {{checkHora}}>
                                     <label class="form-check-label" style="font-size: 12px;">
                                         R$/hora
                                     </label>
@@ -165,8 +165,8 @@
                             </div>
                             <div class="col-md-6" style="padding-left: 12%;">
                                 <div class="form-check" onchange="selecionar()">
-                                    <input class="form-check-input" style="margin-top: 0px;" type="radio" name="select" id="selectDia"
-                                        {{checkDia}}>
+                                    <input class="form-check-input" style="margin-top: 0px;" type="radio" name="select"
+                                        id="selectDia" {{checkDia}}>
                                     <label class="form-check-label" style="font-size: 12px;">
                                         R$/dia
                                     </label>
@@ -186,12 +186,13 @@
                             class='form-control form-control-sm'>
                     </div>
                     <div class="col-md-3 mt-1" style="padding-left: 20px;">
-                        <label class='col-form-label col-form-label-sm fw-bold' style="display: {{displayTda}};" id='displayTda'>Total de dias das atividades:</label>
+                        <label class='col-form-label col-form-label-sm fw-bold' style="display: {{displayTda}};"
+                            id='displayTda'>Total de dias das atividades:</label>
                     </div>
                     <div class="col-md-1">
-                        <input type="{{typeIns}}" name="diasIns"
-                            id='diasIns' value='{{projeto.diasIns}}' step='0.010' class='form-control form-control-sm'>                        
-                    </div>                    
+                        <input type="{{typeIns}}" name="diasIns" id='diasIns' value='{{projeto.diasIns}}' step='0.010'
+                            class='form-control form-control-sm'>
+                    </div>
                     {{#if projeto.funres}}
                     <div class="col-md-5">
                         <div class="row">
@@ -217,7 +218,8 @@
                                 <label for="unidade" class="col-form-label col-form-label-sm fw-bold">Unidade</label>
                             </div>
                             <div class="col text-center" id='tempo'>
-                                <label for="trabalho" class="col-form-label col-form-label-sm fw-bold" id='tempo'>Tempo</label>
+                                <label for="trabalho" class="col-form-label col-form-label-sm fw-bold"
+                                    id='tempo'>Tempo</label>
                             </div>
                             <div class="col text-center">
                                 <label for="total" class="col-form-label col-form-label-sm fw-bold">Pessoas</label>
@@ -238,9 +240,9 @@
                                 </div>
                             </div>
                             <div class="col" id="trbatrcol">
-                                <div class="input-group input-group-sm" >
-                                    <input type='number' {{disabledAtr}} name='trbatr' step='0.010' id="trbatr" value='{{projeto.trbatr}}'
-                                         class="form-control">
+                                <div class="input-group input-group-sm">
+                                    <input type='number' {{disabledAtr}} name='trbatr' step='0.010' id="trbatr"
+                                        value='{{projeto.trbatr}}' class="form-control">
                                 </div>
                             </div>
                             <div class="col">
@@ -271,8 +273,8 @@
                             </div>
                             <div class="col" id="trbinvcol">
                                 <div class="input-group input-group-sm ">
-                                    <input type="number" {{disabledInv}} name='trbinv' step='0.010' id="trbinv" value='{{projeto.trbinv}}'
-                                        class="form-control">
+                                    <input type="number" {{disabledInv}} name='trbinv' step='0.010' id="trbinv"
+                                        value='{{projeto.trbinv}}' class="form-control">
                                 </div>
                             </div>
                             <div class="col">
@@ -302,8 +304,8 @@
                             </div>
                             <div class="col" id="trbstbcol">
                                 <div class="input-group input-group-sm ">
-                                    <input type="number" {{disabledStb}} name='trbstb' step='0.010' id="trbstb" value='{{projeto.trbstb}}'
-                                        class="form-control">
+                                    <input type="number" {{disabledStb}} name='trbstb' step='0.010' id="trbstb"
+                                        value='{{projeto.trbstb}}' class="form-control">
                                 </div>
                             </div>
                             <div class="col">
@@ -335,8 +337,8 @@
                             </div>
                             <div class="col" id="trbeaecol">
                                 <div class="input-group input-group-sm">
-                                    <input type="number" {{disabledEae}} name='trbeae' step='0.010' id="trbeae" value='{{projeto.trbeae}}'
-                                        class="form-control">
+                                    <input type="number" {{disabledEae}} name='trbeae' step='0.010' id="trbeae"
+                                        value='{{projeto.trbeae}}' class="form-control">
                                 </div>
                             </div>
                             <div class="col">
@@ -369,8 +371,8 @@
                             </div>
                             <div class="col" id="trbpnlcol">
                                 <div class="input-group input-group-sm ">
-                                    <input type="number" {{disabledPnl}} name='trbpnl' step='0.010' id="trbpnl" value='{{projeto.trbpnl}}'
-                                        class="form-control">
+                                    <input type="number" {{disabledPnl}} name='trbpnl' step='0.010' id="trbpnl"
+                                        value='{{projeto.trbpnl}}' class="form-control">
                                 </div>
                             </div>
                             <div class="col">
@@ -402,8 +404,8 @@
                             </div>
                             <div class="col" id='trbestcol'>
                                 <div class="input-group input-group-sm ">
-                                    <input type="number" {{disabledEst}} name='trbest' step='0.010' id='trbest' value='{{projeto.trbest}}'
-                                        class="form-control">
+                                    <input type="number" {{disabledEst}} name='trbest' step='0.010' id='trbest'
+                                        value='{{projeto.trbest}}' class="form-control">
                                 </div>
                             </div>
                             <div class="col">
@@ -434,8 +436,8 @@
                             </div>
                             <div class="col" id='trbmodcol'>
                                 <div class="input-group input-group-sm">
-                                    <input type="number" {{disabledMod}} name='trbmod' step='0.010' id='trbmod' value='{{projeto.trbmod}}'
-                                        class="form-control">
+                                    <input type="number" {{disabledMod}} name='trbmod' step='0.010' id='trbmod'
+                                        value='{{projeto.trbmod}}' class="form-control">
                                 </div>
                             </div>
                             <div class="col">
@@ -464,7 +466,8 @@
                         <label class='col-form-label col-form-label-sm fw-bold' id='lblDes'>{{lblDes}}</label>
                     </div>
                     <div class="col-md-2">
-                        <input class='form-control form-control-sm' name='desIns' value='{{projeto.desIns}}' type='number' step='0.010'>
+                        <input class='form-control form-control-sm' name='desIns' value='{{projeto.desIns}}'
+                            type='number' step='0.010'>
                     </div>
                     <div class="col-md-4 text-start">
                         <label class='col-form-label col-form-label-sm fw-bold'>Total R$ {{projeto.vlrDin}}</label>

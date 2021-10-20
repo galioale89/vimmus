@@ -327,12 +327,15 @@
                     Principal</a>
                 <a href="/projeto/direto/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
                     Custos Diretos</a>
+                <a href="/projeto/investimento/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+                        class="bi bi-layers"></i>
+                    Investimento</a>
                 <!--</div>-->
             </div>
             <div class="col-md-2 d-flex justify-content-end">
                 <div class='form-check'>
                     <label class='form-check-label col-form-label col-form-label-sm'>Pedido Realizado?</label>
-                    <input class='form-check-input' style="margin-top: 6%" type="checkbox" name='pedido' >
+                    <input class='form-check-input' style="margin-top: 6%" type="checkbox" name='pedido'>
                 </div>
             </div>
             <div class="col-md-3">
@@ -341,34 +344,42 @@
                         <label class='col-form-label col-form-label-sm'>Data Pedido</label>
                     </div>
                     <div class="col">
-                        <input class='form-control form-control-sm' type="date" name='dataPedido' value='{{projeto.dataPedido}}'>
+                        <input class='form-control form-control-sm' type="date" name='dataPedido'
+                            value='{{projeto.dataPedido}}'>
                     </div>
                 </div>
-            </div>            
+            </div>
         </div>
 
         {{else}}
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-7">
                 <!--<div class='btn-group col-12 mx-auto'>-->
-                <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu ativo'> <i class="bi bi-house"
-                        style="font-size: 14px;vertical-align:text-bottom;"></i> Projeto</a>
-                <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"
-                        style="font-size: 14px;vertical-align:text-bottom;"></i> Gestão</a>
-                <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"
-                        style="font-size: 14px;vertical-align:text-bottom;"></i> Projetista</a>
-                <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"
-                        style="font-size: 14px;vertical-align:text-bottom;"></i> Instalação</a>
+                <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu ativo'> <i
+                        class="bi bi-house"></i>Principal</a>
+                <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+                        class="bi bi-gear"></i>
+                    Gestão</a>
+                <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+                        class="bi bi-pencil"></i>
+                    Projetista</a>
+                <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"></i>
+                    Instalação</a>
                 <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                        class="bi bi-puzzle" style="font-size: 14px;vertical-align:text-bottom;"></i> Gerenciamento</a>
-                <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                        class="bi bi-calculator" style="font-size: 14px;vertical-align:text-bottom;"></i> Custos</a>
+                        class="bi bi-puzzle"></i>
+                    Gerenciamento</a>
+                <a href="/gerenciamento/custo/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+                        class="bi bi-calculator"></i> Custos</a>
+                <a href="/projeto/investimento/{{projeto._id}}" class="btn btn-sm botao-menu"><i
+                        class="bi bi-layers"></i>
+                    Investimento</a>
                 <!--</div>-->
             </div>
             <div class="col-md-2 d-flex justify-content-end">
                 <div class='form-check'>
                     <label class='form-check-label col-form-label col-form-label-sm'>Pedido Realizado?</label>
-                    <input class='form-check-input' style="margin-top: 6%" type="checkbox" name='pedido' {{projeto.pedidoRealizado}}>
+                    <input class='form-check-input' style="margin-top: 6%" type="checkbox" name='pedido'
+                        {{projeto.pedidoRealizado}}>
                 </div>
             </div>
             <div class="col-md-3">
@@ -377,7 +388,8 @@
                         <label class='col-form-label col-form-label-sm'>Data Pedido</label>
                     </div>
                     <div class="col">
-                        <input class='form-control form-control-sm' type="date" name='dataPedido' value='{{projeto.dataPedido}}'>
+                        <input class='form-control form-control-sm' type="date" name='dataPedido'
+                            value='{{projeto.dataPedido}}'>
                     </div>
                 </div>
             </div>
@@ -703,6 +715,8 @@
                         <a href='/gerenciamento/dashboard/{{projeto._id}}' class='btn btn-sm btn-primary'
                             style="border-radius: 40px;"><i class="bi bi-bar-chart"></i> Dashboard</a>
                         {{/if}}
+                        <a class="btn btn-sm btn-primary mb-1" style="border-radius: 30px;" data-bs-toggle="modal" data-bs-target="#custosModal"><i
+                                class='bi bi-list-ul'></i> Detalhar Equipamento</a>                        
                     </div>
                 </div>
             </div>

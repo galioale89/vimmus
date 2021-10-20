@@ -342,23 +342,23 @@
         <input type="hidden" name="id" value='{{projeto._id}}'>
 
         <!--<div class='btn-group col-12 mx-auto'>-->
-            {{#if projeto._id}}
-            <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu ativo'><i class="bi bi-house"></i>
-                Principal</a>
-            <a href="/projeto/alocacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
-                Alocação de Recursos</a>
-            <a href="/projeto/custos/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
-                Custos</a>
-            <a href="/gerenciamento/cronograma/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                    class="bi bi-layers"></i>
-                Cronograma</a>
-            <a href="/gerenciamento/documentos/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                    class="bi bi-layers"></i>
-                Documentos</a>
-            {{else}}
-            <a style="cursor: unset" class='btn btn-sm botao-menu ativo'><i class="bi bi-house"></i>
-                Principal</a>
-            {{/if}}
+        {{#if projeto._id}}
+        <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu ativo'><i class="bi bi-house"></i>
+            Principal</a>
+        <a href="/projeto/alocacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+            Alocação de Recursos</a>
+        <a href="/projeto/custos/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+            Custos</a>
+        <a href="/gerenciamento/cronograma/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+            Cronograma</a>
+        <a href="/gerenciamento/documentos/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+            Documentos</a>
+        <a href="/projeto/investimento/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+            Investimento</a>
+        {{else}}
+        <a style="cursor: unset" class='btn btn-sm botao-menu ativo'><i class="bi bi-house"></i>
+            Principal</a>
+        {{/if}}
         <!--</div>-->
 
         <input type="hidden" name='tipoprj' value='2'>
