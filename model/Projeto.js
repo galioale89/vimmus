@@ -12,6 +12,11 @@ const Projeto = new Schema({
         ref: 'dimensionamento',
         require: false,
     },
+    investimento:{
+        type: Schema.Types.ObjectId,
+        ref: 'investimento',
+        require: false,
+    },    
     nome: {
         type: String,
         require: true

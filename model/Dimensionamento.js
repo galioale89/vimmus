@@ -40,14 +40,6 @@ const Dimensionamento = new Schema({
         type: Number,
         require: false
     },
-    inflacao: {
-        type: Number,
-        require: false
-    },
-    tma: {
-        type: Number,
-        require: false
-    },
     ajuste: {
         type: Number,
         require: false
