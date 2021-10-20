@@ -535,6 +535,8 @@
             Cronograma</a>
         <a href="/gerenciamento/documentos/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
             Documentos</a>
+        <a href="/projeto/investimento/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+            Investimento</a>
         {{else}}
         <a style="cursor: unset" class='btn btn-sm botao-menu ativo'><i class="bi bi-house"></i>
             Principal</a>
@@ -661,8 +663,7 @@
                 </div>
                 <div class="col-md-1">
                     <div class="mt-1 d-flex justify-content-center" style="font-size: 21px;">
-                        <a href='/gerenciamento/vistoriaPla/{{projeto._id}}'><i
-                                class='bi bi-calendar-check'></i></a>
+                        <a href='/gerenciamento/vistoriaPla/{{projeto._id}}'><i class='bi bi-calendar-check'></i></a>
                     </div>
                     <div class="mt-2 d-flex justify-content-center">
                         <a href='/gerenciamento/vistoriaProjeto/{{projeto._id}}' style="font-size: 21px;"><i
@@ -693,7 +694,7 @@
                     </div>
                     {{/if}}
                     <div class="mt-2 d-flex justify-content-center">
-                        <a href='/gerenciamento/vistoriaEst/{{projeto._id}}'style="font-size: 21px;"><i
+                        <a href='/gerenciamento/vistoriaEst/{{projeto._id}}' style="font-size: 21px;"><i
                                 class='bi bi-calendar-check'></i></a>
                     </div>
                     <div class="mt-2 d-flex justify-content-center">
@@ -784,52 +785,52 @@
                 <div class="col-md-1 text-center">
                     {{#if projeto.orcado}}
                     {{else}}
-                    <input type="checkbox" class='form-check-input mt-2' style='font-size: 25px' disabled name='checkPla'
-                        {{cronograma.checkPla}}><br>
+                    <input type="checkbox" class='form-check-input mt-2' style='font-size: 25px' disabled
+                        name='checkPla' {{cronograma.checkPla}}><br>
                     {{/if}}
                     {{#if projeto.orcado}}
                     {{else}}
-                    <input type="checkbox" class='form-check-input mt-2' style='font-size: 25px' disabled name='checkPrj'
-                        {{cronograma.checkPrj}}><br>
+                    <input type="checkbox" class='form-check-input mt-2' style='font-size: 25px' disabled
+                        name='checkPrj' {{cronograma.checkPrj}}><br>
                     {{/if}}
                     {{#if projeto.orcado}}
                     {{else}}
-                    <input type="checkbox" class='form-check-input mt-2' style='font-size: 25px' disabled name='checkAte'
-                        {{cronograma.checkAte}}><br>
+                    <input type="checkbox" class='form-check-input mt-2' style='font-size: 25px' disabled
+                        name='checkAte' {{cronograma.checkAte}}><br>
                     {{/if}}
                     {{#if projeto.orcado}}
                     {{else}}
-                    <input type="checkbox" class='form-check-input mt-2' style='font-size: 25px' disabled name='checkInv'
-                        {{cronograma.checkInv}}><br>
+                    <input type="checkbox" class='form-check-input mt-2' style='font-size: 25px' disabled
+                        name='checkInv' {{cronograma.checkInv}}><br>
                     {{/if}}
                     {{#if projeto.orcado}}
                     {{else}}
-                    <input type="checkbox" class='form-check-input mt-2' style='font-size: 25px' disabled name='checkStb'
-                        {{cronograma.checkStb}}><br>
+                    <input type="checkbox" class='form-check-input mt-2' style='font-size: 25px' disabled
+                        name='checkStb' {{cronograma.checkStb}}><br>
                     {{/if}}
                     {{#if projeto.temArmazenamento}}
                     {{#if projeto.orcado}}
                     {{else}}
-                    <input type="checkbox" class='form-check-input mt-2' style='font-size: 25px' disabled name='checkEae'
-                        {{cronograma.checkEae}}><br>
+                    <input type="checkbox" class='form-check-input mt-2' style='font-size: 25px' disabled
+                        name='checkEae' {{cronograma.checkEae}}><br>
                     {{/if}}
                     {{/if}}
                     {{#if projeto.temPainel}}
                     {{#if projeto.orcado}}
                     {{else}}
-                    <input type="checkbox" class='form-check-input mt-2' style='font-size: 25px' disabled name='checkPnl'
-                        {{cronograma.checkPnl}}><br>
+                    <input type="checkbox" class='form-check-input mt-2' style='font-size: 25px' disabled
+                        name='checkPnl' {{cronograma.checkPnl}}><br>
                     {{/if}}
                     {{/if}}
                     {{#if projeto.orcado}}
                     {{else}}
-                    <input type="checkbox" class='form-check-input mt-2' style='font-size: 25px' disabled name='checkEst'
-                        {{cronograma.checkEst}}><br>
+                    <input type="checkbox" class='form-check-input mt-2' style='font-size: 25px' disabled
+                        name='checkEst' {{cronograma.checkEst}}><br>
                     {{/if}}
                     {{#if projeto.orcado}}
                     {{else}}
-                    <input type="checkbox" class='form-check-input mt-2' style='font-size: 25px' disabled name='checkMod'
-                        {{cronograma.checkMod}}><br>
+                    <input type="checkbox" class='form-check-input mt-2' style='font-size: 25px' disabled
+                        name='checkMod' {{cronograma.checkMod}}><br>
                     {{/if}}
                     {{#if projeto.orcado}}
                     {{else}}

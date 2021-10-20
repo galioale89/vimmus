@@ -96,6 +96,20 @@
         border: 5px solid transparent;
     }
 </style>
+<script>
+    function proximo() {
+        var prx1 = document.getElementById('btnprx1')
+        var prx2 = document.getElementById('btnprx2')
+        var troca = document.getElementById('trocaprx')
+        if (troca.checked) {
+            prx1.style.display = 'none'
+            prx2.style.display = 'flex'
+        } else {
+            prx1.style.display = 'flex'
+            prx2.style.display = 'none'
+        }
+    }
+</script>
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
     <div style="width: 100%;">
         <h5 class="header">{{cliente.nome}} </h5>
@@ -113,6 +127,8 @@
         Cronograma</a>
     <a href="/gerenciamento/documentos/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
         Documentos</a>
+    <a href="/projeto/investimento/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+        Investimento</a>
     {{else}}
     <a style="cursor: unset" class='btn btn-sm botao-menu ativo'><i class="bi bi-house"></i>
         Principal</a>
@@ -277,15 +293,26 @@
                 </div>
                 <hr>
                 <div class="row">
-                    <div class="col-md-5 text-end">
+                    <div class="col-md-3 text-end">
                         <label class='col-form-label col-form-label-sm'>Custo Diário Total:</label>
                     </div>
                     <div class="col-md-3">
                         <input class='form-control form-control-sm' name='custoIns' id='custoIns' value='{{custoIns}}'>
                     </div>
+                    <div style="width: 40px;margin-top: 5px;">
+                        <div class="form-check form-switch" onchange="proximo()">
+                            <input class="form-check-input" type="checkbox" id='trocaprx'>
+                        </div>
+                    </div>
                     <div class="col">
+                        <label class='col-form-label col-form-label-sm'>Lançar Manual</label>
+                    </div>
+                    <div class="col" id='btnprx1'>
                         <button type="submit" class='btn btn-sm btn-success'
-                            onclick="getItemValueIns()">Próximo>></button>
+                            onclick="getItemValueIns()">Próximo1>></button>
+                    </div>
+                    <div class="col" id='btnprx2' style="display: none;">
+                        <button type="submit" class='btn btn-sm btn-success'>Próximo2>></button>
                     </div>
                 </div>
             </div>
