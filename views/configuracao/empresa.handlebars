@@ -251,6 +251,7 @@
 
         if (regime.value == 'Simples') {
             if (tipo.value == 'Anexo III') {
+                
                 simplesiii.forEach((element) => {
                     const { recini } = element
                     const { recfim } = element
@@ -263,14 +264,14 @@
                 })
             }
             if (tipo.value == 'Anexo V') {
+                
                 simplesv.forEach((element) => {
                     const { recini } = element
                     const { recfim } = element
                     const { aliquota } = element
                     const { deducao } = element
                     if (faturamento.value > recini && faturamento.value <= recfim) {
-                        alert('aliquota=>' + aliquota)
-                        alert('dedução=>' + deducao)
+                        
                         alqDasVlr.value = aliquota
                         vlrDeducao.value = deducao
                     }
@@ -499,7 +500,7 @@
                             <input type='number' id='vlrred' name='vlrred' value='{{empresa.vlrred}}'
                                 class='form-control form-control-sm mb-1' placeholder="R$" />
                             <input type='text' id='prjFat' name='prjFat' id='simples' value='{{empresa.prjFat}}'
-                                onchange='aplicar()' class='form-control form-control-sm mb-1' placeholder="R$">
+                                onkeydown='aplicar()' class='form-control form-control-sm mb-1' placeholder="R$">
                             <hr>
                             <input type='text' id='prjLR' name='prjLR' id='real' value='{{empresa.prjLR}}'
                                 class='form-control form-control-sm' style="margin-bottom: 20px;" placeholder="R$">
