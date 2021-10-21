@@ -1718,7 +1718,7 @@ router.post("/novo", ehAdmin, (req, res) => {
 
           if (!prj_id || typeof prj_id != undefined) {
                req.flash('error_msg', 'Projeto: ' + nome + ' já existe')
-               res.redirect('/projeto/novo')
+               res.redirect('/projeto/selectprojeto')
           }
      }).catch(() => {
           //console.log('projeto novo')
@@ -2194,458 +2194,183 @@ router.post("/novo", ehAdmin, (req, res) => {
                     var tipoCustoGes
                     var tipoCustoPro
                     var tipoCustoIns
-                    Configuracao.findOne({ _id: req.body.configuracao }).then((config) => {
-                         Cliente.findOne({ _id: req.body.cliente }).then((cliente) => {
-                              //console.log('config.id=>' + config._id)
-                              //console.log('config.markup=>' + config.markup)
-                              if (req.body.valor == '' || req.body.valor == 0 || req.body.valor == null) {
-                                   if (req.body.equipamento != '' || req.body.equipamento != 0) {
-                                        valorProjeto = (parseFloat(req.body.equipamento) / (1 - (parseFloat(config.markup) / 100))).toFixed(2)
+                    Empresa.findOne({ _id: req.body.empresa }).then((empresa) => {
+                         Configuracao.findOne({ _id: req.body.configuracao }).then((config) => {
+                              Cliente.findOne({ _id: req.body.cliente }).then((cliente) => {
+                                   //console.log('config.id=>' + config._id)
+                                   if (req.body.valor == '' || req.body.valor == 0 || req.body.valor == null) {
+                                        //if (req.body.equipamento != '' || req.body.equipamento != 0) {
+                                        //     valorProjeto = (parseFloat(req.body.equipamento) / (1 - (parseFloat(empresa.markup) / 100))).toFixed(2)
+                                        //} else {
+                                             valorProjeto = 0
+                                        //}
                                    } else {
-                                        valorProjeto = 0
+                                        valorProjeto = req.body.valor
                                    }
-                              } else {
-                                   valorProjeto = req.body.valor
-                              }
-                              //console.log('valorProjeto=>' + valorProjeto)
-                              if (req.body.checkFatura != null) {
-                                   fatequ = true
-                                   vlrNFS = valorProjeto
-                              } else {
-                                   fatequ = false
-                                   vlrNFS = parseFloat(valorProjeto) - parseFloat(vlrkit)
-                              }
-                              //console.log('cliente.nome=>' + cliente.nome)
-
-                              if (req.body.tipoCusto == 'hora') {
-                                   tipoCustoGes = 'hora'
-                                   tipoCustoPro = 'hora'
-                                   tipoCustoIns = 'hora'
-                                   checkHora = 'checked'
-                              } else {
-                                   tipoCustoGes = 'dia'
-                                   tipoCustoPro = 'dia'
-                                   tipoCustoIns = 'dia'
-                                   checkDia = 'checked'
-                                   typeGes = 'text'
-                                   typeDrg = 'text'
-                                   displayDia = 'inline'
-                                   displayTda = 'inline'
-                                   escopo = 'disabled'
-                                   cronograma = 'disabled'
-                                   comunicacao = 'disabled'
-                                   vistoria = 'disabled'
-                                   alocacao = 'disabled'
-                                   aquisicao = 'disabled'
-                                   mostraHora = false
-                              }
-
-                              var markup
-                              if (req.body.valor != '') {
-                                   markup = 0
-                              } else {
-                                   markup = config.markup
-                              }
-
-                              var desc_escopo = ''
-                              if (tipoprj == 1) {
-                                   desc_escopo = req.body.escopo
-                              } else {
-                                   desc_escopo = ''
-                              }
-
-                              //console.log('desc_escopo=>' + desc_escopo)
-                              //console.log('req.body.id_dime=>' + req.body.id_dime)
-
-                              if (req.body.id_dime == '' || typeof req.body.id_dime == 'undefined') {
-                                   //console.log('sem dimensionamento')
-                                   var prj
-                                   var corpo
-                                   prj = {
-                                        user: _id,
-                                        nome: req.body.nome,
-                                        nomecliente: cliente.nome,
-                                        endereco: req.body.endereco,
-                                        configuracao: req.body.configuracao,
-                                        markup: markup,
-                                        grupoUsina: req.body.grupoUsina,
-                                        tipoConexao: req.body.tipoConexao,
-                                        classUsina: req.body.classUsina,
-                                        tipoUsina: req.body.tipoUsina,
-                                        tipoCustoGes: tipoCustoGes,
-                                        tipoCustoPro: tipoCustoPro,
-                                        tipoCustoIns: tipoCustoIns,
-                                        cidade: req.body.cidade,
-                                        uf: req.body.uf,
-                                        valor: valorProjeto,
-                                        vlrnormal: valorProjeto,
-                                        data: dia + '/' + mes + '/' + ano,
-                                        datareg: datareg,
-                                        potencia: req.body.potencia,
-                                        ehDireto: tipoEntrada,
-                                        ehVinculo: ehVinculo,
-                                        vlrequ: vlrequ,
-                                        vlrkit: vlrkit,
-                                        fatequ: fatequ,
-                                        vlrNFS: vlrNFS,
-                                        percom: percom,
-                                        vendedor: req.body.vendedor,
-                                        empresa: req.body.empresa,
-                                        cliente: req.body.cliente,
-                                        temCercamento: cercamento,
-                                        temCentral: central,
-                                        temPosteCond: poste,
-                                        temEstSolo: estsolo,
-                                        temArmazenamento: armazenamento,
-                                        temPainel: painel,
-                                        escopo: desc_escopo,
-                                        vrskwp: (parseFloat(valorProjeto) / parseFloat(req.body.potencia)).toFixed(2),
-                                        dataini: req.body.dataini,
-                                        valDataIni: req.body.valDataIni,
-                                        dataprev: req.body.dataprev,
-                                        valDataPrev: req.body.valDataPrev,
-                                        dataord: req.body.dataord,
-                                        foiRealizado: false,
-                                        executando: false,
-                                        parado: false,
-                                        orcado: true,
-                                   }
-
-                                   if (tipoprj == 2) {
-                                        var funres
-                                        funres = { funres: req.body.responsavel }
-                                        corpo = Object.assign(prj, funres)
+                                   //console.log('valorProjeto=>' + valorProjeto)
+                                   if (req.body.checkFatura != null) {
+                                        fatequ = true
+                                        vlrNFS = valorProjeto
                                    } else {
-                                        corpo = prj
+                                        fatequ = false
+                                        vlrNFS = parseFloat(valorProjeto) - parseFloat(vlrkit)
+                                   }
+                                   //console.log('cliente.nome=>' + cliente.nome)
+
+                                   if (req.body.tipoCusto == 'hora') {
+                                        tipoCustoGes = 'hora'
+                                        tipoCustoPro = 'hora'
+                                        tipoCustoIns = 'hora'
+                                        checkHora = 'checked'
+                                   } else {
+                                        tipoCustoGes = 'dia'
+                                        tipoCustoPro = 'dia'
+                                        tipoCustoIns = 'dia'
+                                        checkDia = 'checked'
+                                        typeGes = 'text'
+                                        typeDrg = 'text'
+                                        displayDia = 'inline'
+                                        displayTda = 'inline'
+                                        escopo = 'disabled'
+                                        cronograma = 'disabled'
+                                        comunicacao = 'disabled'
+                                        vistoria = 'disabled'
+                                        alocacao = 'disabled'
+                                        aquisicao = 'disabled'
+                                        mostraHora = false
                                    }
 
-                                   //console.log(corpo)
-                                   new Projeto(corpo).save().then(() => {
-                                        //console.log('salvou projeto')
-                                        Projeto.findOne({ user: _id }).sort({ field: 'asc', _id: -1 }).lean().then((projeto) => {
-                                             // Projeto.find().limit(1).sort({$_id: -1}).lean().then((projeto) => {
-                                             //console.log('projeto=>' + projeto)
-                                             //console.log('projeto._id=>' + projeto._id)
-                                             Empresa.findOne({ _id: projeto.empresa }).lean().then((rp) => {
-                                                  Pessoa.find({ vendedor: true, user: _id }).lean().then((vendedor) => {
-                                                       //console.log('vlrTotal=>' + vlrequ)
-                                                       //console.log('checkUni=>' + checkUni)
-                                                       //console.log('unidadeEqu=>' + unidadeEqu)
-                                                       //console.log('unidadeMod=>' + unidadeMod)
-                                                       //console.log('unidadeInv=>' + unidadeInv)
-                                                       //console.log('unidadeEst=>' + unidadeEst)
-                                                       //console.log('unidadeCab=>' + unidadeCab)
-                                                       //console.log('unidadeDis=>' + unidadeDis)
-                                                       //console.log('unidadeDPS=>' + unidadeDPS)
-                                                       //console.log('unidadeSB=>' + unidadeSB)
-                                                       //console.log('unidadeCer=>' + unidadeCer)
-                                                       //console.log('unidadeCen=>' + unidadeCen)
-                                                       //console.log('unidadePos=>' + unidadePos)
-                                                       //console.log('unidadeOcp=>' + unidadeOcp)
-                                                       //console.log('vlrUniEqu=>' + vlrUniEqu)
-                                                       //console.log('vlrUniMod=>' + vlrUniMod)
-                                                       //console.log('vlrUniInv=>' + vlrUniInv)
-                                                       //console.log('vlrUniEst=>' + vlrUniEst)
-                                                       //console.log('vlrUniCab=>' + vlrUniCab)
-                                                       //console.log('vlrUniDis=>' + vlrUniDis)
-                                                       //console.log('vlrUniDPS=>' + vlrUniDPS)
-                                                       //console.log('vlrUniSB=>' + vlrUniSB)
-                                                       //console.log('vlrUniCer=>' + vlrUniCer)
-                                                       //console.log('vlrUniCen=>' + vlrUniCen)
-                                                       //console.log('vlrUniPos=>' + vlrUniPos)
-                                                       //console.log('vlrUniOcp=>' + vlrUniOcp)
-                                                       //console.log('valorEqu=>' + valorEqu)
-                                                       //console.log('valorMod=>' + valorMod)
-                                                       //console.log('valorInv=>' + valorInv)
-                                                       //console.log('valorEst=>' + valorEst)
-                                                       //console.log('valorCim=>' + valorCim)
-                                                       //console.log('valorCab=>' + valorCab)
-                                                       //console.log('valorDisCC=>' + valorDisCC)
-                                                       //console.log('valorDPSCC=>' + valorDPSCC)
-                                                       //console.log('valorDisCA=>' + valorDisCA)
-                                                       //console.log('valorDPSCA=>' + valorDPSCA)                                                       
-                                                       //console.log('valorSB=>' + valorSB)
-                                                       //console.log('valorCCA=>' + valorCCA)
-                                                       //console.log('valorCer=>' + valorCer)
-                                                       //console.log('valorCen=>' + valorCen)
-                                                       //console.log('valorPos=>' + valorPos)
-                                                       //console.log('valorOcp=>' + valorOcp)
+                                   var markup
+                                   if (req.body.valor != '') {
+                                        markup = 0
+                                   } else {
+                                        markup = empresa.markup
+                                   }
 
-                                                       const detalhado = {
-                                                            projeto: projeto._id,
-                                                            vlrTotal: vlrequ,
-                                                            checkUni: checkUni,
-                                                            unidadeEqu: unidadeEqu,
-                                                            unidadeMod: unidadeMod,
-                                                            unidadeInv: unidadeInv,
-                                                            unidadeEst: unidadeEst,
-                                                            unidadeCim: unidadeCim,
-                                                            unidadeCab: unidadeCab,
-                                                            unidadeEbt: unidadeEbt,
-                                                            unidadeDisCC: unidadeDisCC,
-                                                            unidadeDPSCC: unidadeDPSCC,
-                                                            unidadeDisCA: unidadeDisCA,
-                                                            unidadeDPSCA: unidadeDPSCA,
-                                                            unidadeSB: unidadeSB,
-                                                            unidadeCCA: unidadeCCA,
-                                                            unidadeCer: unidadeCer,
-                                                            unidadeCen: unidadeCen,
-                                                            unidadePos: unidadePos,
-                                                            unidadeOcp: unidadeOcp,
-                                                            vlrUniEqu: vlrUniEqu,
-                                                            vlrUniMod: vlrUniMod,
-                                                            vlrUniInv: vlrUniInv,
-                                                            vlrUniEst: vlrUniEst,
-                                                            vlrUniCim: vlrUniCim,
-                                                            vlrUniCab: vlrUniCab,
-                                                            vlrUniEbt: vlrUniEbt,
-                                                            vlrUniDisCC: vlrUniDisCC,
-                                                            vlrUniDPSCC: vlrUniDPSCC,
-                                                            vlrUniDisCA: vlrUniDisCA,
-                                                            vlrUniDPSCA: vlrUniDPSCA,
-                                                            vlrUniSB: vlrUniSB,
-                                                            vlrUniCCA: vlrUniCCA,
-                                                            vlrUniCer: vlrUniCer,
-                                                            vlrUniCen: vlrUniCen,
-                                                            vlrUniPos: vlrUniPos,
-                                                            vlrUniOcp: vlrUniOcp,
-                                                            valorEqu: valorEqu,
-                                                            valorMod: valorMod,
-                                                            valorInv: valorInv,
-                                                            valorEst: valorEst,
-                                                            valorCim: valorCim,
-                                                            valorCab: valorCab,
-                                                            valorEbt: valorEbt,
-                                                            valorDisCC: valorDisCC,
-                                                            valorDPSCC: valorDPSCC,
-                                                            valorDisCA: valorDisCA,
-                                                            valorDPSCA: valorDPSCA,
-                                                            valorSB: valorSB,
-                                                            valorCCA: valorCCA,
-                                                            valorCer: valorCer,
-                                                            valorCen: valorCen,
-                                                            valorPos: valorPos,
-                                                            valorOcp: valorOcp
-                                                       }
-                                                       new Detalhado(detalhado).save().then(() => {
-                                                            //console.log('salvou detalhado')
+                                   var desc_escopo = ''
+                                   if (tipoprj == 1) {
+                                        desc_escopo = req.body.escopo
+                                   } else {
+                                        desc_escopo = ''
+                                   }
 
-                                                            var cronograma_novo = {
-                                                                 user: _id,
-                                                                 projeto: projeto._id,
-                                                                 nome: projeto.nome,
-                                                                 dateplaini: req.body.valDataIni,
-                                                                 dateentrega: req.body.valDataPrev,
-                                                            }
-                                                            new Cronograma(cronograma_novo).save().then(() => {
-                                                                 //console.log('salvou cronograma')
-                                                                 Configuracao.findOne({ _id: req.body.configuracao }).lean().then((configuracao) => {
-                                                                      Cliente.findOne({ _id: req.body.cliente }).lean().then((cliente) => {
-                                                                           Pessoa.findOne({ _id: req.body.gestor }).lean().then((gestao) => {
-                                                                                //console.log('salva pessoa')
-                                                                                new Equipe({
-                                                                                     projeto: projeto._id,
-                                                                                     user: _id,
-                                                                                     nome_projeto: projeto.nome,
-                                                                                }).save().then(() => {
-                                                                                     sucesso.push({ texto: 'Projeto criado com sucesso' })
-                                                                                     var fatura
-                                                                                     if (req.body.checkFatura != null) {
-                                                                                          fatura = 'checked'
-                                                                                     } else {
-                                                                                          fatura = 'uncheked'
-                                                                                     }
-                                                                                     Detalhado.findOne().sort({ field: 'asc', _id: -1 }).then((detalhe) => {
-                                                                                          var plaQtdMod = 0
-                                                                                          var plaQtdInv = 0
-                                                                                          var plaQtdEst = 0
-                                                                                          if (detalhe.unidademod == '' || typeof detalhe.unidademod == 'undefined') {
-                                                                                               plaQtdMod = 0
-                                                                                          } else {
-                                                                                               plaQtdMod = detalhe.unidademod
-                                                                                          }
-                                                                                          if (detalhe.unidadeinv == '' || typeof detalhe.unidadeinv == 'undefined') {
-                                                                                               plaQtdInv = 0
-                                                                                          } else {
-                                                                                               plaQtdInv = detalhe.unidadeinv
-                                                                                          }
-                                                                                          if (detalhe.unidadeest == '' || typeof detalhe.unidadeest == 'undefined') {
-                                                                                               plaQtdEst = 0
-                                                                                          } else {
-                                                                                               plaQtdEst = detalhe.unidadeest
-                                                                                          }
-                                                                                          new Vistoria({
-                                                                                               user: _id,
-                                                                                               projeto: projeto._id,
-                                                                                               plaQtdMod: plaQtdMod,
-                                                                                               plaQtdInv: plaQtdInv,
-                                                                                               plaQtdEst: plaQtdEst,
-                                                                                               plaWattMod: 0,
-                                                                                               plaKwpInv: 0,
-                                                                                               plaDimArea: 0,
-                                                                                               plaQtdString: 0,
-                                                                                               plaModString: 0,
-                                                                                               plaQtdEst: 0
-                                                                                          }).save().then(() => {
-                                                                                               // //console.log('salvou equipe')
-                                                                                               if (tipoprj == 1) {
-                                                                                                    if (req.body.tipoEntrada == 'Proprio') {
-                                                                                                         res.render("projeto/customdo/gestao", {
-                                                                                                              projeto, sucesso, configuracao, gestao, cliente, checkHora,
-                                                                                                              typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
-                                                                                                              vistoria, alocacao, aquisicao, typeDrg, displayDia
-                                                                                                         })
-                                                                                                    } else {
-                                                                                                         res.render('projeto/custosdiretos', {
-                                                                                                              projeto, sucesso, configuracao, rp, vendedor, cliente, fatura, checkHora,
-                                                                                                              typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
-                                                                                                         })
-                                                                                                    }
-                                                                                               } else {
-                                                                                                    //console.log('projeto.configuracao=>' + projeto.configuracao)
-                                                                                                    //console.log('projeto.empresa=>' + projeto.empresa)
-                                                                                                    //console.log('projeto.vendedor=>' + projeto.vendedor)
-                                                                                                    //console.log('projeto.funres=>' + projeto.funres)
-                                                                                                    Configuracao.findOne({ _id: projeto.configuracao }).lean().then((config) => {
-                                                                                                         Empresa.findOne({ _id: projeto.empresa }).lean().then((rp) => {
-                                                                                                              Pessoa.findOne({ _id: projeto.vendedor }).lean().then((pv) => {
-                                                                                                                   Pessoa.findOne({ _id: projeto.funres }).lean().then((pr) => {
-                                                                                                                        Cliente.findOne({ _id: projeto.cliente }).lean().then((cli) => {
-                                                                                                                             //console.log('config=>' + config)
-                                                                                                                             //console.log('rp=>' + rp)
-                                                                                                                             //console.log('pv=>' + pv)
-                                                                                                                             //console.log('pr=>' + pr)
-                                                                                                                             //console.log('cli=>' + cli)
-                                                                                                                             res.render('projeto/projetodia', {
-                                                                                                                                  projeto, sucesso, fatura, checkHora, config, rp, pv, pr, cli,
-                                                                                                                                  typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao
-                                                                                                                             })
-                                                                                                                        }).catch((err) => {
-                                                                                                                             req.flash('error_msg', 'Houve uma falha ao encontrar o cliente.')
-                                                                                                                             res.redirect('/pessoa/consulta')
-                                                                                                                        })
-                                                                                                                   }).catch((err) => {
-                                                                                                                        req.flash('error_msg', 'Houve uma falha ao encontrar o responsável.')
-                                                                                                                        res.redirect('/pessoa/consulta')
-                                                                                                                   })
-                                                                                                              }).catch((err) => {
-                                                                                                                   req.flash('error_msg', 'Houve uma falha ao encontrar o vendedor.')
-                                                                                                                   res.redirect('/pessoa/consulta')
-                                                                                                              })
-                                                                                                         }).catch((err) => {
-                                                                                                              req.flash('error_msg', 'Houve uma falha ao encontrar a empresa.')
-                                                                                                              res.redirect('/configuracao/consulta')
-                                                                                                         })
-                                                                                                    }).catch((err) => {
-                                                                                                         req.flash('error_msg', 'Houve uma falha ao encontrar a configuração.')
-                                                                                                         res.redirect('/configuracao/consulta')
-                                                                                                    })
-                                                                                               }
-                                                                                          }).catch(() => {
-                                                                                               req.flash('error_msg', 'Houve um erro ao salvar a vistoria.')
-                                                                                               res.redirect('/menu')
-                                                                                          })
-                                                                                     }).catch(() => {
-                                                                                          req.flash('error_msg', 'Houve um erro ao encontrar os detalhes.')
-                                                                                          res.redirect('/menu')
-                                                                                     })
-                                                                                     //console.log('fatura=>' + fatura)
-                                                                                }).catch(() => {
-                                                                                     req.flash('error_msg', 'Houve um erro ao salvar a equipe.')
-                                                                                     res.redirect('/menu')
-                                                                                })
-                                                                           }).catch(() => {
-                                                                                req.flash('error_msg', 'Houve um erro ao encontrar o gestor.')
-                                                                                res.redirect('/menu')
-                                                                           })
-                                                                      }).catch(() => {
-                                                                           req.flash('error_msg', 'Houve um erro ao encontrar o cliente.')
-                                                                           res.redirect('/menu')
-                                                                      })
-                                                                 }).catch(() => {
-                                                                      req.flash('error_msg', 'Houve um erro ao encontrar os detalhes de custos do projeto.')
-                                                                      res.redirect('/menu')
-                                                                 })
-                                                            }).catch(() => {
-                                                                 req.flash('error_msg', 'Houve um erro ao salvar o cronograma.')
-                                                                 res.redirect('/menu')
-                                                            })
-                                                       }).catch(() => {
-                                                            req.flash('error_msg', 'Houve um erro ao salvar os detalhes de custos do projeto.')
-                                                            res.redirect('/menu')
-                                                       })
+                                   //console.log('desc_escopo=>' + desc_escopo)
+                                   //console.log('req.body.id_dime=>' + req.body.id_dime)
 
-                                                  }).catch((err) => {
-                                                       req.flash('error_msg', 'Houve uma falha ao encontrar um vendedor<detalhe>.')
-                                                       res.redirect('/pessoa/consulta')
-                                                  })
-                                             }).catch((err) => {
-                                                  req.flash('error_msg', 'Ocorreu um erro interno<Configuracao>.')
-                                                  res.redirect('/menu')
-                                             })
-                                        }).catch((err) => {
-                                             req.flash('error_msg', 'Nenhum projeto encontrado.')
-                                             res.redirect('/menu')
-                                        })
-                                   }).catch(() => {
-                                        req.flash('error_msg', 'Houve um erro ao criar o projeto.')
-                                        res.redirect('/menu')
-                                   })
-                              } else {
-                                   //console.log('req.body.id_prj=>' + req.body.id_prj)
-                                   Projeto.findOne({ _id: req.body.id_prj }).then((projeto) => {
-                                        //console.log('com dimensionamento')
-                                        projeto.nome = req.body.nome
-                                        //console.log('cliente.nome=>' + cliente.nome)
-                                        projeto.nomecliente = cliente.nome
-                                        projeto.configuracao = req.body.configuracao
-                                        projeto.markup = config.markup
-                                        projeto.grupoUsina = req.body.grupoUsina
-                                        projeto.tipoConexao = req.body.tipoConexao
-                                        projeto.classUsina = req.body.classUsina
-                                        projeto.tipoUsina = req.body.tipoUsina
-                                        //console.log('tipoCustoGes=>' + tipoCustoGes)
-                                        projeto.tipoCustoGes = tipoCustoGes
-                                        //console.log('tipoCustoPro=>' + tipoCustoPro)
-                                        projeto.tipoCustoPro = tipoCustoPro
-                                        //console.log('tipoCustoIns=>' + tipoCustoIns)
-                                        projeto.tipoCustoIns = tipoCustoIns
-                                        //console.log('valorProjeto=>' + valorProjeto)
-                                        projeto.valor = valorProjeto
-                                        projeto.vlrnormal = valorProjeto
-                                        projeto.data = dia + '/' + mes + '/' + ano
-                                        projeto.datareg = datareg
-                                        projeto.ehDireto = tipoEntrada
-                                        projeto.ehVinculo = ehVinculo
-                                        projeto.vlrequ = vlrequ
-                                        projeto.vlrkit = vlrkit
-                                        projeto.fatequ = fatequ
-                                        projeto.vlrNFS = vlrNFS
-                                        projeto.percom = percom
-                                        projeto.vendedor = req.body.vendedor
-                                        projeto.empresa = req.body.empresa
-                                        projeto.cliente = req.body.cliente
-                                        projeto.temCercamento = cercamento
-                                        projeto.temCentral = central
-                                        projeto.temPosteCond = poste
-                                        projeto.temEstSolo = estsolo
-                                        projeto.temArmazenamento = armazenamento
-                                        projeto.temPainel = painel
-                                        projeto.escopo = req.body.escopo
-                                        projeto.vrskwp = (parseFloat(valorProjeto) / parseFloat(projeto.potencia)).toFixed(2)
-                                        projeto.dataini = req.body.dataini
-                                        projeto.valDataIni = req.body.valDataIni
-                                        projeto.dataprev = req.body.dataprev
-                                        projeto.valDataPrev = req.body.valDataPrev
-                                        projeto.dataord = req.body.dataord
-                                        projeto.foiRealizado = false
-                                        projeto.executando = false
-                                        projeto.parado = false
-                                        projeto.orcado = true
-                                        projeto.save().then(() => {
-                                             Projeto.findOne().sort({ field: 'asc', _id: -1 }).lean().then((projeto) => {
+                                   if (req.body.id_dime == '' || typeof req.body.id_dime == 'undefined') {
+                                        //console.log('sem dimensionamento')
+                                        var prj
+                                        var corpo
+                                        prj = {
+                                             user: _id,
+                                             nome: req.body.nome,
+                                             nomecliente: cliente.nome,
+                                             endereco: req.body.endereco,
+                                             configuracao: req.body.configuracao,
+                                             markup: markup,
+                                             grupoUsina: req.body.grupoUsina,
+                                             tipoConexao: req.body.tipoConexao,
+                                             classUsina: req.body.classUsina,
+                                             tipoUsina: req.body.tipoUsina,
+                                             tipoCustoGes: tipoCustoGes,
+                                             tipoCustoPro: tipoCustoPro,
+                                             tipoCustoIns: tipoCustoIns,
+                                             cidade: req.body.cidade,
+                                             uf: req.body.uf,
+                                             valor: valorProjeto,
+                                             vlrnormal: valorProjeto,
+                                             data: dia + '/' + mes + '/' + ano,
+                                             datareg: datareg,
+                                             potencia: req.body.potencia,
+                                             ehDireto: tipoEntrada,
+                                             ehVinculo: ehVinculo,
+                                             vlrequ: vlrequ,
+                                             vlrkit: vlrkit,
+                                             fatequ: fatequ,
+                                             vlrNFS: vlrNFS,
+                                             percom: percom,
+                                             vendedor: req.body.vendedor,
+                                             empresa: req.body.empresa,
+                                             cliente: req.body.cliente,
+                                             temCercamento: cercamento,
+                                             temCentral: central,
+                                             temPosteCond: poste,
+                                             temEstSolo: estsolo,
+                                             temArmazenamento: armazenamento,
+                                             temPainel: painel,
+                                             escopo: desc_escopo,
+                                             vrskwp: (parseFloat(valorProjeto) / parseFloat(req.body.potencia)).toFixed(2),
+                                             dataini: req.body.dataini,
+                                             valDataIni: req.body.valDataIni,
+                                             dataprev: req.body.dataprev,
+                                             valDataPrev: req.body.valDataPrev,
+                                             dataord: req.body.dataord,
+                                             foiRealizado: false,
+                                             executando: false,
+                                             parado: false,
+                                             orcado: true,
+                                        }
+
+                                        if (tipoprj == 2) {
+                                             var funres
+                                             funres = { funres: req.body.responsavel }
+                                             corpo = Object.assign(prj, funres)
+                                        } else {
+                                             corpo = prj
+                                        }
+
+                                        //console.log(corpo)
+                                        new Projeto(corpo).save().then(() => {
+                                             //console.log('salvou projeto')
+                                             Projeto.findOne({ user: _id }).sort({ field: 'asc', _id: -1 }).lean().then((projeto) => {
+                                                  // Projeto.find().limit(1).sort({$_id: -1}).lean().then((projeto) => {
+                                                  //console.log('projeto=>' + projeto)
+                                                  //console.log('projeto._id=>' + projeto._id)
                                                   Empresa.findOne({ _id: projeto.empresa }).lean().then((rp) => {
                                                        Pessoa.find({ vendedor: true, user: _id }).lean().then((vendedor) => {
+                                                            //console.log('vlrTotal=>' + vlrequ)
+                                                            //console.log('checkUni=>' + checkUni)
+                                                            //console.log('unidadeEqu=>' + unidadeEqu)
+                                                            //console.log('unidadeMod=>' + unidadeMod)
+                                                            //console.log('unidadeInv=>' + unidadeInv)
+                                                            //console.log('unidadeEst=>' + unidadeEst)
+                                                            //console.log('unidadeCab=>' + unidadeCab)
+                                                            //console.log('unidadeDis=>' + unidadeDis)
+                                                            //console.log('unidadeDPS=>' + unidadeDPS)
+                                                            //console.log('unidadeSB=>' + unidadeSB)
+                                                            //console.log('unidadeCer=>' + unidadeCer)
+                                                            //console.log('unidadeCen=>' + unidadeCen)
+                                                            //console.log('unidadePos=>' + unidadePos)
+                                                            //console.log('unidadeOcp=>' + unidadeOcp)
+                                                            //console.log('vlrUniEqu=>' + vlrUniEqu)
+                                                            //console.log('vlrUniMod=>' + vlrUniMod)
+                                                            //console.log('vlrUniInv=>' + vlrUniInv)
+                                                            //console.log('vlrUniEst=>' + vlrUniEst)
+                                                            //console.log('vlrUniCab=>' + vlrUniCab)
+                                                            //console.log('vlrUniDis=>' + vlrUniDis)
+                                                            //console.log('vlrUniDPS=>' + vlrUniDPS)
+                                                            //console.log('vlrUniSB=>' + vlrUniSB)
+                                                            //console.log('vlrUniCer=>' + vlrUniCer)
+                                                            //console.log('vlrUniCen=>' + vlrUniCen)
+                                                            //console.log('vlrUniPos=>' + vlrUniPos)
+                                                            //console.log('vlrUniOcp=>' + vlrUniOcp)
+                                                            //console.log('valorEqu=>' + valorEqu)
+                                                            //console.log('valorMod=>' + valorMod)
+                                                            //console.log('valorInv=>' + valorInv)
+                                                            //console.log('valorEst=>' + valorEst)
+                                                            //console.log('valorCim=>' + valorCim)
+                                                            //console.log('valorCab=>' + valorCab)
+                                                            //console.log('valorDisCC=>' + valorDisCC)
+                                                            //console.log('valorDPSCC=>' + valorDPSCC)
+                                                            //console.log('valorDisCA=>' + valorDisCA)
+                                                            //console.log('valorDPSCA=>' + valorDPSCA)                                                       
+                                                            //console.log('valorSB=>' + valorSB)
+                                                            //console.log('valorCCA=>' + valorCCA)
+                                                            //console.log('valorCer=>' + valorCer)
+                                                            //console.log('valorCen=>' + valorCen)
+                                                            //console.log('valorPos=>' + valorPos)
+                                                            //console.log('valorOcp=>' + valorOcp)
+
                                                             const detalhado = {
                                                                  projeto: projeto._id,
                                                                  vlrTotal: vlrequ,
@@ -2703,6 +2428,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                  valorOcp: valorOcp
                                                             }
                                                             new Detalhado(detalhado).save().then(() => {
+                                                                 //console.log('salvou detalhado')
 
                                                                  var cronograma_novo = {
                                                                       user: _id,
@@ -2712,6 +2438,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                       dateentrega: req.body.valDataPrev,
                                                                  }
                                                                  new Cronograma(cronograma_novo).save().then(() => {
+                                                                      //console.log('salvou cronograma')
                                                                       Configuracao.findOne({ _id: req.body.configuracao }).lean().then((configuracao) => {
                                                                            Cliente.findOne({ _id: req.body.cliente }).lean().then((cliente) => {
                                                                                 Pessoa.findOne({ _id: req.body.gestor }).lean().then((gestao) => {
@@ -2728,20 +2455,100 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                                           } else {
                                                                                                fatura = 'uncheked'
                                                                                           }
-
-                                                                                          if (req.body.tipoEntrada == 'Proprio') {
-                                                                                               res.render("projeto/customdo/gestao", {
-                                                                                                    projeto, sucesso, configuracao, gestao, cliente, checkHora,
-                                                                                                    typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
-                                                                                                    vistoria, alocacao, aquisicao, typeDrg, displayDia
+                                                                                          Detalhado.findOne().sort({ field: 'asc', _id: -1 }).then((detalhe) => {
+                                                                                               var plaQtdMod = 0
+                                                                                               var plaQtdInv = 0
+                                                                                               var plaQtdEst = 0
+                                                                                               if (detalhe.unidademod == '' || typeof detalhe.unidademod == 'undefined') {
+                                                                                                    plaQtdMod = 0
+                                                                                               } else {
+                                                                                                    plaQtdMod = detalhe.unidademod
+                                                                                               }
+                                                                                               if (detalhe.unidadeinv == '' || typeof detalhe.unidadeinv == 'undefined') {
+                                                                                                    plaQtdInv = 0
+                                                                                               } else {
+                                                                                                    plaQtdInv = detalhe.unidadeinv
+                                                                                               }
+                                                                                               if (detalhe.unidadeest == '' || typeof detalhe.unidadeest == 'undefined') {
+                                                                                                    plaQtdEst = 0
+                                                                                               } else {
+                                                                                                    plaQtdEst = detalhe.unidadeest
+                                                                                               }
+                                                                                               new Vistoria({
+                                                                                                    user: _id,
+                                                                                                    projeto: projeto._id,
+                                                                                                    plaQtdMod: plaQtdMod,
+                                                                                                    plaQtdInv: plaQtdInv,
+                                                                                                    plaQtdEst: plaQtdEst,
+                                                                                                    plaWattMod: 0,
+                                                                                                    plaKwpInv: 0,
+                                                                                                    plaDimArea: 0,
+                                                                                                    plaQtdString: 0,
+                                                                                                    plaModString: 0,
+                                                                                                    plaQtdEst: 0
+                                                                                               }).save().then(() => {
+                                                                                                    // //console.log('salvou equipe')
+                                                                                                    if (tipoprj == 1) {
+                                                                                                         if (req.body.tipoEntrada == 'Proprio') {
+                                                                                                              res.render("projeto/customdo/gestao", {
+                                                                                                                   projeto, sucesso, configuracao, gestao, cliente, checkHora,
+                                                                                                                   typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
+                                                                                                                   vistoria, alocacao, aquisicao, typeDrg, displayDia
+                                                                                                              })
+                                                                                                         } else {
+                                                                                                              res.render('projeto/custosdiretos', {
+                                                                                                                   projeto, sucesso, configuracao, rp, vendedor, cliente, fatura, checkHora,
+                                                                                                                   typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
+                                                                                                              })
+                                                                                                         }
+                                                                                                    } else {
+                                                                                                         //console.log('projeto.configuracao=>' + projeto.configuracao)
+                                                                                                         //console.log('projeto.empresa=>' + projeto.empresa)
+                                                                                                         //console.log('projeto.vendedor=>' + projeto.vendedor)
+                                                                                                         //console.log('projeto.funres=>' + projeto.funres)
+                                                                                                         Configuracao.findOne({ _id: projeto.configuracao }).lean().then((config) => {
+                                                                                                              Empresa.findOne({ _id: projeto.empresa }).lean().then((rp) => {
+                                                                                                                   Pessoa.findOne({ _id: projeto.vendedor }).lean().then((pv) => {
+                                                                                                                        Pessoa.findOne({ _id: projeto.funres }).lean().then((pr) => {
+                                                                                                                             Cliente.findOne({ _id: projeto.cliente }).lean().then((cli) => {
+                                                                                                                                  //console.log('config=>' + config)
+                                                                                                                                  //console.log('rp=>' + rp)
+                                                                                                                                  //console.log('pv=>' + pv)
+                                                                                                                                  //console.log('pr=>' + pr)
+                                                                                                                                  //console.log('cli=>' + cli)
+                                                                                                                                  res.render('projeto/projetodia', {
+                                                                                                                                       projeto, sucesso, fatura, checkHora, config, rp, pv, pr, cli,
+                                                                                                                                       typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao
+                                                                                                                                  })
+                                                                                                                             }).catch((err) => {
+                                                                                                                                  req.flash('error_msg', 'Houve uma falha ao encontrar o cliente.')
+                                                                                                                                  res.redirect('/pessoa/consulta')
+                                                                                                                             })
+                                                                                                                        }).catch((err) => {
+                                                                                                                             req.flash('error_msg', 'Houve uma falha ao encontrar o responsável.')
+                                                                                                                             res.redirect('/pessoa/consulta')
+                                                                                                                        })
+                                                                                                                   }).catch((err) => {
+                                                                                                                        req.flash('error_msg', 'Houve uma falha ao encontrar o vendedor.')
+                                                                                                                        res.redirect('/pessoa/consulta')
+                                                                                                                   })
+                                                                                                              }).catch((err) => {
+                                                                                                                   req.flash('error_msg', 'Houve uma falha ao encontrar a empresa.')
+                                                                                                                   res.redirect('/configuracao/consulta')
+                                                                                                              })
+                                                                                                         }).catch((err) => {
+                                                                                                              req.flash('error_msg', 'Houve uma falha ao encontrar a configuração.')
+                                                                                                              res.redirect('/configuracao/consulta')
+                                                                                                         })
+                                                                                                    }
+                                                                                               }).catch(() => {
+                                                                                                    req.flash('error_msg', 'Houve um erro ao salvar a vistoria.')
+                                                                                                    res.redirect('/menu')
                                                                                                })
-                                                                                          } else {
-                                                                                               res.render('projeto/custosdiretos', {
-                                                                                                    projeto, sucesso, configuracao, rp, vendedor, cliente, fatura, checkHora,
-                                                                                                    typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
-                                                                                                    vistoria, alocacao, aquisicao
-                                                                                               })
-                                                                                          }
+                                                                                          }).catch(() => {
+                                                                                               req.flash('error_msg', 'Houve um erro ao encontrar os detalhes.')
+                                                                                               res.redirect('/menu')
+                                                                                          })
                                                                                           //console.log('fatura=>' + fatura)
                                                                                      }).catch(() => {
                                                                                           req.flash('error_msg', 'Houve um erro ao salvar a equipe.')
@@ -2777,29 +2584,226 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                        res.redirect('/menu')
                                                   })
                                              }).catch((err) => {
-                                                  req.flash('error_msg', 'Ocorreu um erro interno<Projeto>.')
+                                                  req.flash('error_msg', 'Nenhum projeto encontrado.')
+                                                  res.redirect('/menu')
+                                             })
+                                        }).catch(() => {
+                                             req.flash('error_msg', 'Houve um erro ao criar o projeto.')
+                                             res.redirect('/menu')
+                                        })
+                                   } else {
+                                        //console.log('req.body.id_prj=>' + req.body.id_prj)
+                                        Projeto.findOne({ _id: req.body.id_prj }).then((projeto) => {
+                                             //console.log('com dimensionamento')
+                                             projeto.nome = req.body.nome
+                                             //console.log('cliente.nome=>' + cliente.nome)
+                                             projeto.nomecliente = cliente.nome
+                                             projeto.configuracao = req.body.configuracao
+                                             projeto.markup = empresa.markup
+                                             projeto.grupoUsina = req.body.grupoUsina
+                                             projeto.tipoConexao = req.body.tipoConexao
+                                             projeto.classUsina = req.body.classUsina
+                                             projeto.tipoUsina = req.body.tipoUsina
+                                             //console.log('tipoCustoGes=>' + tipoCustoGes)
+                                             projeto.tipoCustoGes = tipoCustoGes
+                                             //console.log('tipoCustoPro=>' + tipoCustoPro)
+                                             projeto.tipoCustoPro = tipoCustoPro
+                                             //console.log('tipoCustoIns=>' + tipoCustoIns)
+                                             projeto.tipoCustoIns = tipoCustoIns
+                                             //console.log('valorProjeto=>' + valorProjeto)
+                                             projeto.valor = valorProjeto
+                                             projeto.vlrnormal = valorProjeto
+                                             projeto.data = dia + '/' + mes + '/' + ano
+                                             projeto.datareg = datareg
+                                             projeto.ehDireto = tipoEntrada
+                                             projeto.ehVinculo = ehVinculo
+                                             projeto.vlrequ = vlrequ
+                                             projeto.vlrkit = vlrkit
+                                             projeto.fatequ = fatequ
+                                             projeto.vlrNFS = vlrNFS
+                                             projeto.percom = percom
+                                             projeto.vendedor = req.body.vendedor
+                                             projeto.empresa = req.body.empresa
+                                             projeto.cliente = req.body.cliente
+                                             projeto.temCercamento = cercamento
+                                             projeto.temCentral = central
+                                             projeto.temPosteCond = poste
+                                             projeto.temEstSolo = estsolo
+                                             projeto.temArmazenamento = armazenamento
+                                             projeto.temPainel = painel
+                                             projeto.escopo = req.body.escopo
+                                             projeto.vrskwp = (parseFloat(valorProjeto) / parseFloat(projeto.potencia)).toFixed(2)
+                                             projeto.dataini = req.body.dataini
+                                             projeto.valDataIni = req.body.valDataIni
+                                             projeto.dataprev = req.body.dataprev
+                                             projeto.valDataPrev = req.body.valDataPrev
+                                             projeto.dataord = req.body.dataord
+                                             projeto.foiRealizado = false
+                                             projeto.executando = false
+                                             projeto.parado = false
+                                             projeto.orcado = true
+                                             projeto.save().then(() => {
+                                                  Projeto.findOne().sort({ field: 'asc', _id: -1 }).lean().then((projeto) => {
+                                                       Empresa.findOne({ _id: projeto.empresa }).lean().then((rp) => {
+                                                            Pessoa.find({ vendedor: true, user: _id }).lean().then((vendedor) => {
+                                                                 const detalhado = {
+                                                                      projeto: projeto._id,
+                                                                      vlrTotal: vlrequ,
+                                                                      checkUni: checkUni,
+                                                                      unidadeEqu: unidadeEqu,
+                                                                      unidadeMod: unidadeMod,
+                                                                      unidadeInv: unidadeInv,
+                                                                      unidadeEst: unidadeEst,
+                                                                      unidadeCim: unidadeCim,
+                                                                      unidadeCab: unidadeCab,
+                                                                      unidadeEbt: unidadeEbt,
+                                                                      unidadeDisCC: unidadeDisCC,
+                                                                      unidadeDPSCC: unidadeDPSCC,
+                                                                      unidadeDisCA: unidadeDisCA,
+                                                                      unidadeDPSCA: unidadeDPSCA,
+                                                                      unidadeSB: unidadeSB,
+                                                                      unidadeCCA: unidadeCCA,
+                                                                      unidadeCer: unidadeCer,
+                                                                      unidadeCen: unidadeCen,
+                                                                      unidadePos: unidadePos,
+                                                                      unidadeOcp: unidadeOcp,
+                                                                      vlrUniEqu: vlrUniEqu,
+                                                                      vlrUniMod: vlrUniMod,
+                                                                      vlrUniInv: vlrUniInv,
+                                                                      vlrUniEst: vlrUniEst,
+                                                                      vlrUniCim: vlrUniCim,
+                                                                      vlrUniCab: vlrUniCab,
+                                                                      vlrUniEbt: vlrUniEbt,
+                                                                      vlrUniDisCC: vlrUniDisCC,
+                                                                      vlrUniDPSCC: vlrUniDPSCC,
+                                                                      vlrUniDisCA: vlrUniDisCA,
+                                                                      vlrUniDPSCA: vlrUniDPSCA,
+                                                                      vlrUniSB: vlrUniSB,
+                                                                      vlrUniCCA: vlrUniCCA,
+                                                                      vlrUniCer: vlrUniCer,
+                                                                      vlrUniCen: vlrUniCen,
+                                                                      vlrUniPos: vlrUniPos,
+                                                                      vlrUniOcp: vlrUniOcp,
+                                                                      valorEqu: valorEqu,
+                                                                      valorMod: valorMod,
+                                                                      valorInv: valorInv,
+                                                                      valorEst: valorEst,
+                                                                      valorCim: valorCim,
+                                                                      valorCab: valorCab,
+                                                                      valorEbt: valorEbt,
+                                                                      valorDisCC: valorDisCC,
+                                                                      valorDPSCC: valorDPSCC,
+                                                                      valorDisCA: valorDisCA,
+                                                                      valorDPSCA: valorDPSCA,
+                                                                      valorSB: valorSB,
+                                                                      valorCCA: valorCCA,
+                                                                      valorCer: valorCer,
+                                                                      valorCen: valorCen,
+                                                                      valorPos: valorPos,
+                                                                      valorOcp: valorOcp
+                                                                 }
+                                                                 new Detalhado(detalhado).save().then(() => {
+
+                                                                      var cronograma_novo = {
+                                                                           user: _id,
+                                                                           projeto: projeto._id,
+                                                                           nome: projeto.nome,
+                                                                           dateplaini: req.body.valDataIni,
+                                                                           dateentrega: req.body.valDataPrev,
+                                                                      }
+                                                                      new Cronograma(cronograma_novo).save().then(() => {
+                                                                           Configuracao.findOne({ _id: req.body.configuracao }).lean().then((configuracao) => {
+                                                                                Cliente.findOne({ _id: req.body.cliente }).lean().then((cliente) => {
+                                                                                     Pessoa.findOne({ _id: req.body.gestor }).lean().then((gestao) => {
+                                                                                          //console.log('salva pessoa')
+                                                                                          new Equipe({
+                                                                                               projeto: projeto._id,
+                                                                                               user: _id,
+                                                                                               nome_projeto: projeto.nome,
+                                                                                          }).save().then(() => {
+                                                                                               sucesso.push({ texto: 'Projeto criado com sucesso' })
+                                                                                               var fatura
+                                                                                               if (req.body.checkFatura != null) {
+                                                                                                    fatura = 'checked'
+                                                                                               } else {
+                                                                                                    fatura = 'uncheked'
+                                                                                               }
+
+                                                                                               if (req.body.tipoEntrada == 'Proprio') {
+                                                                                                    res.render("projeto/customdo/gestao", {
+                                                                                                         projeto, sucesso, configuracao, gestao, cliente, checkHora,
+                                                                                                         typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
+                                                                                                         vistoria, alocacao, aquisicao, typeDrg, displayDia
+                                                                                                    })
+                                                                                               } else {
+                                                                                                    res.render('projeto/custosdiretos', {
+                                                                                                         projeto, sucesso, configuracao, rp, vendedor, cliente, fatura, checkHora,
+                                                                                                         typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
+                                                                                                         vistoria, alocacao, aquisicao
+                                                                                                    })
+                                                                                               }
+                                                                                               //console.log('fatura=>' + fatura)
+                                                                                          }).catch(() => {
+                                                                                               req.flash('error_msg', 'Houve um erro ao salvar a equipe.')
+                                                                                               res.redirect('/menu')
+                                                                                          })
+                                                                                     }).catch(() => {
+                                                                                          req.flash('error_msg', 'Houve um erro ao encontrar o gestor.')
+                                                                                          res.redirect('/menu')
+                                                                                     })
+                                                                                }).catch(() => {
+                                                                                     req.flash('error_msg', 'Houve um erro ao encontrar o cliente.')
+                                                                                     res.redirect('/menu')
+                                                                                })
+                                                                           }).catch(() => {
+                                                                                req.flash('error_msg', 'Houve um erro ao encontrar os detalhes de custos do projeto.')
+                                                                                res.redirect('/menu')
+                                                                           })
+                                                                      }).catch(() => {
+                                                                           req.flash('error_msg', 'Houve um erro ao salvar o cronograma.')
+                                                                           res.redirect('/menu')
+                                                                      })
+                                                                 }).catch(() => {
+                                                                      req.flash('error_msg', 'Houve um erro ao salvar os detalhes de custos do projeto.')
+                                                                      res.redirect('/menu')
+                                                                 })
+
+                                                            }).catch((err) => {
+                                                                 req.flash('error_msg', 'Houve uma falha ao encontrar um vendedor<detalhe>.')
+                                                                 res.redirect('/pessoa/consulta')
+                                                            })
+                                                       }).catch((err) => {
+                                                            req.flash('error_msg', 'Ocorreu um erro interno<Configuracao>.')
+                                                            res.redirect('/menu')
+                                                       })
+                                                  }).catch((err) => {
+                                                       req.flash('error_msg', 'Ocorreu um erro interno<Projeto>.')
+                                                       res.redirect('/menu')
+                                                  })
+                                             }).catch((err) => {
+                                                  req.flash('error_msg', 'Houve um erro ao salvar o projeto.')
                                                   res.redirect('/menu')
                                              })
                                         }).catch((err) => {
-                                             req.flash('error_msg', 'Houve um erro ao salvar o projeto.')
+                                             req.flash('error_msg', 'Não foi possível encontrar o projeto.')
                                              res.redirect('/menu')
                                         })
-                                   }).catch((err) => {
-                                        req.flash('error_msg', 'Não foi possível encontrar o projeto.')
-                                        res.redirect('/configuracao/consultaempresa')
-                                   })
-                              }
+                                   }
+                              }).catch((err) => {
+                                   req.flash('error_msg', 'Houve um erro ao encontrar o cliente.')
+                                   res.redirect('/menu')
+                              })
                          }).catch((err) => {
-                              req.flash('error_msg', 'Houve um erro ao encontrar o cliente.')
-                              res.redirect('/configuracao/consultaempresa')
+                              req.flash('error_msg', 'Houve um erro ao encontrar a configuração.')
+                              res.redirect('/menu')
                          })
                     }).catch((err) => {
-                         req.flash('error_msg', 'Houve um erro ao encontrar a configuração.')
-                         res.redirect('/configuracao/consultaempresa')
+                         req.flash('error_msg', 'Houve um erro ao encontrar a empresa.')
+                         res.redirect('/menu')
                     })
                }).catch((err) => {
                     req.flash('error_msg', 'Houve um erro ao encontrar o vendedor<projeto>.')
-                    res.redirect('/configuracao/consultaempresa')
+                    res.redirect('/menu')
                })
           }
      })
@@ -3151,672 +3155,676 @@ router.post('/edicao', ehAdmin, (req, res) => {
                                    //console.log('encontrou cronograma')
                                    Configuracao.findOne({ _id: projeto.configuracao }).then((config) => {
                                         //console.log('encontrou cronograma')
+                                        Empresa.findOne({ _id: projeto.empresa }).then((empresa) => {
 
-                                        var sucesso = ''
-                                        var aviso = ''
-                                        var checkUni = 'unchecked'
+                                             var sucesso = ''
+                                             var aviso = ''
+                                             var checkUni = 'unchecked'
 
-                                        //Validação de check box  
-                                        var cercamento
-                                        var poste
-                                        var estsolo
-                                        var central
-                                        var armazenamento
-                                        var painel
+                                             //Validação de check box  
+                                             var cercamento
+                                             var poste
+                                             var estsolo
+                                             var central
+                                             var armazenamento
+                                             var painel
 
-                                        projeto.nome = req.body.nome
+                                             projeto.nome = req.body.nome
 
-                                        if (req.body.cercamento != null) {
-                                             cercamento = 'checked'
-                                        }
-                                        if (req.body.poste != null) {
-                                             poste = 'checked'
-                                        }
-                                        if (req.body.estsolo != null) {
-                                             estsolo = 'checked'
-                                        }
-                                        if (req.body.central != null) {
-                                             central = 'checked'
-                                        }
-                                        if (req.body.armazenamento != null) {
-                                             armazenamento = 'checked'
-                                        }
-                                        if (req.body.painel != null) {
-                                             painel = 'checked'
-                                        }
-                                        //--Rotina do cadastro dos detalhes
-                                        var unidadeEqu = 0
-                                        var unidadeMod = 0
-                                        var unidadeInv = 0
-                                        var unidadeEst = 0
-                                        var unidadeCim = 0
-                                        var unidadeCab = 0
-                                        var unidadeEbt = 0
-                                        var unidadeDisCC = 0
-                                        var unidadeDPSCC = 0
-                                        var unidadeDisCA = 0
-                                        var unidadeDPSCA = 0
-                                        var unidadeSB = 0
-                                        var unidadeCCA = 0
-                                        var unidadeOcp = 0
-                                        var unidadeCer = 0
-                                        var unidadeCen = 0
-                                        var unidadePos = 0
-                                        var vlrUniEqu = 0
-                                        var vlrUniMod = 0
-                                        var vlrUniInv = 0
-                                        var vlrUniEst = 0
-                                        var vlrUniCim = 0
-                                        var vlrUniCab = 0
-                                        var vlrUniEbt = 0
-                                        var vlrUniDisCC = 0
-                                        var vlrUniDPSCC = 0
-                                        var vlrUniDisCA = 0
-                                        var vlrUniDPSCA = 0
-                                        var vlrUniSB = 0
-                                        var vlrUniCCA = 0
-                                        var vlrUniOcp = 0
-                                        var vlrUniCer = 0
-                                        var vlrUniCen = 0
-                                        var vlrUniPos = 0
-                                        var valorEqu = 0
-                                        var valorMod = 0
-                                        var valorInv = 0
-                                        var valorEst = 0
-                                        var valorCim = 0
-                                        var valorCab = 0
-                                        var valorEbt = 0
-                                        var valorDisCC = 0
-                                        var valorDPSCC = 0
-                                        var valorDisCA = 0
-                                        var valorDPSCA = 0
-                                        var valorSB = 0
-                                        var valorCCA = 0
-                                        var valorOcp = 0
-                                        var valorCer = 0
-                                        var valorCen = 0
-                                        var valorPos = 0
+                                             if (req.body.cercamento != null) {
+                                                  cercamento = 'checked'
+                                             }
+                                             if (req.body.poste != null) {
+                                                  poste = 'checked'
+                                             }
+                                             if (req.body.estsolo != null) {
+                                                  estsolo = 'checked'
+                                             }
+                                             if (req.body.central != null) {
+                                                  central = 'checked'
+                                             }
+                                             if (req.body.armazenamento != null) {
+                                                  armazenamento = 'checked'
+                                             }
+                                             if (req.body.painel != null) {
+                                                  painel = 'checked'
+                                             }
+                                             //--Rotina do cadastro dos detalhes
+                                             var unidadeEqu = 0
+                                             var unidadeMod = 0
+                                             var unidadeInv = 0
+                                             var unidadeEst = 0
+                                             var unidadeCim = 0
+                                             var unidadeCab = 0
+                                             var unidadeEbt = 0
+                                             var unidadeDisCC = 0
+                                             var unidadeDPSCC = 0
+                                             var unidadeDisCA = 0
+                                             var unidadeDPSCA = 0
+                                             var unidadeSB = 0
+                                             var unidadeCCA = 0
+                                             var unidadeOcp = 0
+                                             var unidadeCer = 0
+                                             var unidadeCen = 0
+                                             var unidadePos = 0
+                                             var vlrUniEqu = 0
+                                             var vlrUniMod = 0
+                                             var vlrUniInv = 0
+                                             var vlrUniEst = 0
+                                             var vlrUniCim = 0
+                                             var vlrUniCab = 0
+                                             var vlrUniEbt = 0
+                                             var vlrUniDisCC = 0
+                                             var vlrUniDPSCC = 0
+                                             var vlrUniDisCA = 0
+                                             var vlrUniDPSCA = 0
+                                             var vlrUniSB = 0
+                                             var vlrUniCCA = 0
+                                             var vlrUniOcp = 0
+                                             var vlrUniCer = 0
+                                             var vlrUniCen = 0
+                                             var vlrUniPos = 0
+                                             var valorEqu = 0
+                                             var valorMod = 0
+                                             var valorInv = 0
+                                             var valorEst = 0
+                                             var valorCim = 0
+                                             var valorCab = 0
+                                             var valorEbt = 0
+                                             var valorDisCC = 0
+                                             var valorDPSCC = 0
+                                             var valorDisCA = 0
+                                             var valorDPSCA = 0
+                                             var valorSB = 0
+                                             var valorCCA = 0
+                                             var valorOcp = 0
+                                             var valorCer = 0
+                                             var valorCen = 0
+                                             var valorPos = 0
 
-                                        //Valida valor Equipamento Detalhado
-                                        if (req.body.valorMod == 0) {
-                                             if (req.body.valorEqu != 0 && req.body.unidadeEqu == 0 && req.body.vlrUniEqu == 0) {
-                                                  valorEqu = req.body.valorEqu
-                                             } else {
-                                                  if (req.body.unidadeEqu != 0 && req.body.vlrUniEqu != 0) {
-                                                       unidadeEqu = req.body.unidadeEqu
-                                                       vlrUniEqu = req.body.vlrUniEqu
-                                                       valorEqu = parseFloat(unidadeEqu) * parseFloat(vlrUniEqu)
-                                                       checkUni = 'checked'
-                                                  }
-                                             }
-                                        }
-                                        //Valida valor Módulo Detalhado
-                                        if (req.body.valorMod != 0 && req.body.unidadeMod == 0 && req.body.vlrUniMod == 0) {
-                                             valorMod = req.body.valorMod
-                                        } else {
-                                             if (req.body.unidadeMod != 0 && req.body.vlrUniMod != 0) {
-                                                  unidadeMod = req.body.unidadeMod
-                                                  vlrUniMod = req.body.vlrUniMod
-                                                  valorMod = parseFloat(unidadeMod) * parseFloat(vlrUniMod)
-                                                  checkUni = 'checked'
-                                             }
-                                        }
-                                        //Valida valor Inversor Detalhado
-                                        if (req.body.valorInv != 0 && req.body.unidadeInv == 0 && req.body.vlrUniInv == 0) {
-                                             valorInv = req.body.valorInv
-                                        } else {
-                                             if (req.body.unidadeInv != 0 && req.body.vlrUniInv != 0) {
-                                                  unidadeInv = req.body.unidadeInv
-                                                  vlrUniInv = req.body.vlrUniInv
-                                                  valorInv = parseFloat(unidadeInv) * parseFloat(vlrUniInv)
-                                                  checkUni = 'checked'
-                                             }
-                                        }
-                                        //Valida valor Estrutura Detalhado
-                                        if (req.body.valorEst != 0 && req.body.unidadeEst == 0 && req.body.vlrUniEst == 0) {
-                                             valorEst = req.body.valorEst
-                                        } else {
-                                             if (req.body.unidadeEst != 0 && req.body.vlrUniEst != 0) {
-                                                  unidadeEst = req.body.unidadeEst
-                                                  vlrUniEst = req.body.vlrUniEst
-                                                  valorEst = parseFloat(unidadeEst) * parseFloat(vlrUniEst)
-                                                  checkUni = 'checked'
-                                             }
-                                        }
-                                        //Valida valor Concretagem
-                                        if (req.body.valorCim != 0 && req.body.unidadeCim == 0 && req.body.vlrUniCim == 0) {
-                                             unidadeCim = 0
-                                             vlrUniCim = 0
-                                             valorCim = req.body.valorCim
-                                        } else {
-                                             if (req.body.unidadeCim != '' && req.body.vlrUniCim != '') {
-                                                  unidadeCim = req.body.unidadeCim
-                                                  vlrUniCim = req.body.vlrUniCim
-                                                  valorCim = parseFloat(unidadeCim) * parseFloat(vlrUniCim)
-                                                  checkUni = 'checked'
-                                             }
-                                        }
-                                        //Valida valor Cabos Detalhado
-                                        if (req.body.valorCab != 0 && req.body.unidadeCab == 0 && req.body.vlrUniCab == 0) {
-                                             unidadeCab = 0
-                                             vlrUniCab = 0
-                                             valorCab = req.body.valorCab
-                                        } else {
-                                             if (req.body.unidadeCab != '' && req.body.vlrUniCab != '') {
-                                                  unidadeCab = req.body.unidadeCab
-                                                  vlrUniCab = req.body.vlrUniCab
-                                                  valorCab = parseFloat(unidadeCab) * parseFloat(vlrUniCab)
-                                                  checkUni = 'checked'
-                                             }
-                                        }
-                                        //Valida valor Armazenagem Detalhado
-                                        if (req.body.valorEbt != 0 && req.body.unidadeEbt == 0 && req.body.vlrUniEbt == 0) {
-                                             unidadeEbt = 0
-                                             vlrUniEbt = 0
-                                             valorEbt = req.body.valorEbt
-                                        } else {
-                                             if (req.body.unidadeEbt != '' && req.body.vlrUniEbt != '') {
-                                                  unidadeEbt = req.body.unidadeEbt
-                                                  vlrUniEbt = req.body.vlrUniEbt
-                                                  valorEbt = parseFloat(unidadeEbt) * parseFloat(vlrUniEbt)
-                                                  checkUni = 'checked'
-                                             }
-                                        }
-                                        //Valida valor Disjuntores Detalhado
-                                        if (req.body.valorDisCC != 0 && req.body.unidadeDisCC == 0 && req.body.vlrUniDisCC == 0) {
-                                             unidadeDisCC = 0
-                                             vlrUniDisCC = 0
-                                             valorDisCC = req.body.valorDisCC
-                                        } else {
-                                             if (req.body.unidadeDisCC != '' && req.body.vlrUniDisCC != '') {
-                                                  unidadeDisCC = req.body.unidadeDisCC
-                                                  vlrUniDisCC = req.body.vlrUniDisCC
-                                                  valorDisCC = parseFloat(unidadeDisCC) * parseFloat(vlrUniDisCC)
-                                                  checkUni = 'checked'
-                                             }
-                                        }
-                                        if (req.body.valorDisCA != 0 && req.body.unidadeDisCA == 0 && req.body.vlrUniDisCA == 0) {
-                                             unidadeDisCA = 0
-                                             vlrUniDisCA = 0
-                                             valorDisCA = req.body.valorDisCA
-                                        } else {
-                                             if (req.body.unidadeDisCA != '' && req.body.vlrUniDisCA != '') {
-                                                  unidadeDisCA = req.body.unidadeDisCA
-                                                  vlrUniDisCA = req.body.vlrUniDisCA
-                                                  valorDisCA = parseFloat(unidadeDisCA) * parseFloat(vlrUniDisCA)
-                                                  checkUni = 'checked'
-                                             }
-                                        }
-                                        //Valida valor DPS Detalhado
-                                        if (req.body.valorDPSCC != 0 && req.body.unidadeDPSCC == 0 && req.body.vlrUniDPSCC == 0) {
-                                             unidadeDPSCC = 0
-                                             vlrUniDPSCC = 0
-                                             valorDPSCC = req.body.valorDPSCC
-                                        } else {
-                                             if (req.body.unidadeDPSCC != '' && req.body.vlrUniDPSCC != '') {
-                                                  unidadeDPSCC = req.body.unidadeDPSCC
-                                                  vlrUniDPSCC = req.body.vlrUniDPSCC
-                                                  valorDPSCC = parseFloat(unidadeDPSCC) * parseFloat(vlrUniDPSCC)
-                                                  checkUni = 'checked'
-                                             }
-                                        }
-                                        if (req.body.valorDPSCA != 0 && req.body.unidadeDPSCA == 0 && req.body.vlrUniDPSCA == 0) {
-                                             unidadeDPSCA = 0
-                                             vlrUniDPSCA = 0
-                                             valorDPSCA = req.body.valorDPSCA
-                                        } else {
-                                             if (req.body.unidadeDPSCA != '' && req.body.vlrUniDPSCA != '') {
-                                                  unidadeDPSCA = req.body.unidadeDPSCA
-                                                  vlrUniDPSCA = req.body.vlrUniDPSCA
-                                                  valorDPSCA = parseFloat(unidadeDPSCA) * parseFloat(vlrUniDPSCA)
-                                                  checkUni = 'checked'
-                                             }
-                                        }
-                                        //Valida valor StringBox Detalhado
-                                        if (req.body.valorSB != 0 && req.body.unidadeSB == 0 && req.body.vlrUniSB == 0) {
-                                             unidadeSB = 0
-                                             vlrUniSB = 0
-                                             valorSB = req.body.valorSB
-                                        } else {
-                                             if (req.body.unidadeSB != '' && req.body.vlrUniSB != '') {
-                                                  unidadeSB = req.body.unidadeSB
-                                                  vlrUniSB = req.body.vlrUniSB
-                                                  valorSB = parseFloat(unidadeSB) * parseFloat(vlrUniSB)
-                                                  checkUni = 'checked'
-                                             }
-                                        }
-                                        //Valida valor Caixa Proteção CA Detalhado
-                                        if (req.body.valorCCA != 0 && req.body.unidadeCCA == 0 && req.body.vlrUniCCA == 0) {
-                                             unidadeCCA = 0
-                                             vlrUniCCA = 0
-                                             valorCCA = req.body.valorCCA
-                                        } else {
-                                             if (req.body.unidadeCCA != '' && req.body.vlrUniCCA != '') {
-                                                  unidadeCCA = req.body.unidadeCCA
-                                                  vlrUniCCA = req.body.vlrUniCCA
-                                                  valorCCA = parseFloat(unidadeCCA) * parseFloat(vlrUniCCA)
-                                                  checkUni = 'checked'
-                                             }
-                                        }
-                                        //Valida valor Outros Componentes Detalhado
-                                        if (req.body.valorOcp != 0 && req.body.unidadeOcp == 0 && req.body.vlrUniOcp == 0) {
-                                             valorOcp = req.body.valorOcp
-                                        } else {
-                                             if (req.body.unidadeOcp != 0 && req.body.vlrUniOcp != 0) {
-                                                  unidadeOcp = req.body.unidadeOcp
-                                                  vlrUniOcp = req.body.vlrUniOcp
-                                                  valorOcp = parseFloat(unidadeOcp) * parseFloat(vlrUniOcp)
-                                                  checkUni = 'checked'
-                                             }
-                                        }
-                                        //Valida valor Cercamento Detalhado
-                                        if (req.body.cercamento != null) {
-                                             if (req.body.valorCer != 0 && req.body.unidadeCer == 0 && req.body.vlrUniCer == 0) {
-                                                  valorCer = req.body.valorCer
-                                             } else {
-                                                  if (req.body.unidadeCer != 0 && req.body.vlrUniCer != 0) {
-                                                       unidadeCer = req.body.unidadeCer
-                                                       vlrUniCer = req.body.vlrUniCer
-                                                       valorCer = parseFloat(unidadeCer) * parseFloat(vlrUniCer)
-                                                       checkUni = 'checked'
-                                                  }
-                                             }
-                                        }
-                                        //Valida valor Central Detalhado
-                                        if (req.body.central != null) {
-                                             if (req.body.valorCen != 0 && req.body.unidadeCen == 0 && req.body.vlrUniCen == 0) {
-                                                  valorCen = req.body.valorCen
-                                             } else {
-                                                  if (req.body.unidadeCen != 0 && req.body.vlrUniCen != 0) {
-                                                       unidadeCen = req.body.unidadeCen
-                                                       vlrUniCen = req.body.vlrUniCen
-                                                       valorCen = parseFloat(unidadeCen) * parseFloat(vlrUniCen)
-                                                       checkUni = 'checked'
-                                                  }
-                                             }
-                                        }
-                                        //Valida valor Postes Detalhado
-                                        if (req.body.poste != null) {
-                                             if (req.body.valorPos != 0 && req.body.unidadePos == 0 && req.body.vlrUniPos == 0) {
-                                                  valorPos = req.body.valorPos
-                                             } else {
-                                                  if (req.body.unidadePos != 0 && req.body.vlrUniPos != 0) {
-                                                       unidadePos = req.body.unidadePos
-                                                       vlrUniPos = req.body.vlrUniPos
-                                                       valorPos = parseFloat(unidadePos) * parseFloat(vlrUniPos)
-                                                       checkUni = 'checked'
-                                                  }
-                                             }
-                                        }
-
-                                        //console.log('checkUni=>' + checkUni)
-                                        //console.log('unidadeEqu=>', +unidadeEqu)
-                                        //console.log('unidadeMod=>', +unidadeMod)
-                                        //console.log('unidadeInv=>', +unidadeInv)
-                                        //console.log('unidadeEst=>', +unidadeEst)
-                                        //console.log('unidadeCim=>', +unidadeCim)
-                                        //console.log('unidadeCab=>', +unidadeCab)
-                                        //console.log('unidadeDisCC=>', +unidadeDisCC)
-                                        //console.log('unidadeDPSCC=>', +unidadeDPSCC)
-                                        //console.log('unidadeDisCA=>', +unidadeDisCA)
-                                        //console.log('unidadeDPSCA=>', +unidadeDPSCA)
-                                        //console.log('unidadeSB=>', +unidadeSB)
-                                        //console.log('unidadeCCA=>', +unidadeCCA)
-                                        //console.log('unidadeOcp=>', +unidadeOcp)
-                                        //console.log('unidadeCer=>', +unidadeCer)
-                                        //console.log('unidadeCen=>', +unidadeCen)
-                                        //console.log('unidadePos=>', +unidadePos)
-                                        //console.log('vlrUniEqu=>', +vlrUniEqu)
-                                        //console.log('vlrUniMod=>', +vlrUniMod)
-                                        //console.log('vlrUniInv=>', +vlrUniInv)
-                                        //console.log('vlrUniEst=>', +vlrUniEst)
-                                        //console.log('vlrUniCim=>', +vlrUniCim)
-                                        //console.log('vlrUniCab=>', +vlrUniCab)
-                                        //console.log('vlrUniDisCC=>', +vlrUniDisCC)
-                                        //console.log('vlrUniDPSCC=>', +vlrUniDPSCC)
-                                        //console.log('vlrUniDisCA=>', +vlrUniDisCA)
-                                        //console.log('vlrUniDPSCA=>', +vlrUniDPSCA)
-                                        //console.log('vlrUniSB=>', +vlrUniSB)                         
-                                        //console.log('vlrUniCCA=>', +vlrUniCCA)                         
-                                        //console.log('vlrUniOcp=>', +vlrUniOcp)
-                                        //console.log('vlrUniCer=>', +vlrUniCer)
-                                        //console.log('vlrUniCen=>', +vlrUniCen)
-                                        //console.log('vlrUniPos=>', +vlrUniPos)
-                                        //console.log('valorEqu=>', +valorEqu)
-                                        //console.log('valorMod=>', +valorMod)
-                                        //console.log('valorInv=>', +valorInv)
-                                        //console.log('valorEst=>', +valorEst)
-                                        //console.log('valorCim=>', +valorCim)
-                                        //console.log('valorCab=>', +valorCab)
-                                        //console.log('valorDisCC=>', +valorDisCC)
-                                        //console.log('valorDPSCC=>', +valorDPSCC)
-                                        //console.log('valorDisCA=>', +valorDisCA)
-                                        //console.log('valorDPSCA=>', +valorDPSCA)                         
-                                        //console.log('valorSB=>', +valorSB)
-                                        //console.log('valorCCA=>', +valorCCA)
-                                        //console.log('valorOcp=>', +valorOcp)
-                                        //console.log('valorCer=>', +valorCer)
-                                        //console.log('valorCen=>', +valorCen)
-                                        //console.log('valorPos=>', +valorPos)
-
-                                        var validaequant = 0
-                                        var validaequfut = 0
-                                        var vlrequ = 0
-                                        var vlrkit = 0
-
-                                        var vlrTotal = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorOcp) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos)
-                                        //console.log('vlrTotal=>' + vlrTotal)
-
-                                        //Valida valor do equipameento
-                                        if (parseFloat(valorEqu) != 0 || parseFloat(valorMod) != 0) {
-                                             //console.log('valorEqu != 0')
-                                             vlrequ = vlrTotal
-                                             vlrkit = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorOcp)
-                                        } else {
-                                             //console.log('não tem lançamento manual de kit.')
-                                             validaequant = parseFloat(projeto.vlrkit) - (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorCim) + parseFloat(detalhe.valorDisCC) + parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDisCA) + parseFloat(detalhe.valorDPSCA) + parseFloat(detalhe.valorSB) + parseFloat(detalhe.valorCCA) + parseFloat(detalhe.valorCab) + parseFloat(detalhe.valorEbt))
-                                             //console.log('validaequant=>' + validaequant)
-                                             validaequfut = parseFloat(req.body.equipamento) - (parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorCab) + parseFloat(valorEbt))
-                                             //console.log('validaequfut=>' + validaequfut)
-                                             if (parseFloat(validaequant) != parseFloat(validaequfut)) {
-                                                  //console.log('Os valores dos kits são difentes')
-                                                  if (req.body.equipamento == projeto.vlrkit) {
-                                                       vlrequ = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorOcp)
-                                                       vlrkit = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorCab) + parseFloat(valorEbt)
+                                             //Valida valor Equipamento Detalhado
+                                             if (req.body.valorMod == 0) {
+                                                  if (req.body.valorEqu != 0 && req.body.unidadeEqu == 0 && req.body.vlrUniEqu == 0) {
+                                                       valorEqu = req.body.valorEqu
                                                   } else {
-                                                       vlrequ = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorOcp)
-                                                       vlrkit = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorCab) + parseFloat(valorEbt)
+                                                       if (req.body.unidadeEqu != 0 && req.body.vlrUniEqu != 0) {
+                                                            unidadeEqu = req.body.unidadeEqu
+                                                            vlrUniEqu = req.body.vlrUniEqu
+                                                            valorEqu = parseFloat(unidadeEqu) * parseFloat(vlrUniEqu)
+                                                            checkUni = 'checked'
+                                                       }
                                                   }
-                                             } else {
-                                                  //console.log('Os valores dos kits são iguais')
-                                                  vlrequ = projeto.vlrequ
-                                                  vlrkit = projeto.vlrkit
                                              }
-                                        }
-                                        //console.log('vlrequ=>' + vlrequ)
-                                        //console.log('vlrkit=>' + vlrkit)
-
-                                        //Definie os valores dos detalhes de custo dos equipamentos do projeto
-
-                                        console.log('req.body.unidadeMod=>' + req.body.unidadeMod)
-
-                                        detalhe.vlrTotal = vlrequ
-                                        detalhe.checkUni = checkUni
-                                        detalhe.unidadeEqu = unidadeEqu
-                                        detalhe.unidadeMod = unidadeMod
-                                        detalhe.unidadeInv = unidadeInv
-                                        detalhe.unidadeEst = unidadeEst
-                                        detalhe.unidadeCim = unidadeCim
-                                        detalhe.unidadeCab = unidadeCab
-                                        detalhe.unidadeEbt = unidadeEbt
-                                        detalhe.unidadeDisCC = unidadeDisCC
-                                        detalhe.unidadeDPSCC = unidadeDPSCC
-                                        detalhe.unidadeDisCA = unidadeDisCA
-                                        detalhe.unidadeDPSCA = unidadeDPSCA
-                                        detalhe.unidadeSB = unidadeSB
-                                        detalhe.unidadeCCA = unidadeCCA
-                                        detalhe.unidadeOcp = unidadeOcp
-                                        detalhe.unidadeCer = unidadeCer
-                                        detalhe.unidadeCen = unidadeCen
-                                        detalhe.unidadePos = unidadePos
-                                        detalhe.vlrUniEqu = vlrUniEqu
-                                        detalhe.vlrUniMod = vlrUniMod
-                                        detalhe.vlrUniInv = vlrUniInv
-                                        detalhe.vlrUniEst = vlrUniEst
-                                        detalhe.vlrUniCim = vlrUniCim
-                                        detalhe.vlrUniCab = vlrUniCab
-                                        detalhe.vlrUniEbt = vlrUniEbt
-                                        detalhe.vlrUniDisCC = vlrUniDisCC
-                                        detalhe.vlrUniDPSCC = vlrUniDPSCC
-                                        detalhe.vlrUniDisCA = vlrUniDisCA
-                                        detalhe.vlrUniDPSCA = vlrUniDPSCA
-                                        detalhe.vlrUniSB = vlrUniSB
-                                        detalhe.vlrUniCCA = vlrUniCCA
-                                        detalhe.vlrUniOcp = vlrUniOcp
-                                        detalhe.vlrUniCer = vlrUniCer
-                                        detalhe.vlrUniCen = vlrUniCen
-                                        detalhe.vlrUniPos = vlrUniPos
-                                        detalhe.valorEqu = valorEqu
-                                        detalhe.valorMod = valorMod
-                                        detalhe.valorInv = valorInv
-                                        detalhe.valorEst = valorEst
-                                        detalhe.valorCim = valorCim
-                                        detalhe.valorCab = valorCab
-                                        detalhe.valorEbt = valorEbt
-                                        detalhe.valorDisCC = valorDisCC
-                                        detalhe.valorDPSCC = valorDPSCC
-                                        detalhe.valorDisCA = valorDisCA
-                                        detalhe.valorDPSCA = valorDPSCA
-                                        detalhe.valorSB = valorSB
-                                        detalhe.valorCCA = valorCCA
-                                        detalhe.valorOcp = valorOcp
-                                        detalhe.valorCer = valorCer
-                                        detalhe.valorCen = valorCen
-                                        detalhe.valorPos = valorPos
-
-                                        detalhe.save().then(() => {
-                                             sucesso = 'Detalhes salvos com sucesso. '
-                                        }).catch(() => {
-                                             req.flash('error_msg', 'Houve um erro ao salvar os detalhes do projeto')
-                                             res.redirect('/projeto/consulta')
-                                        })
-
-                                        //------------------------------------------------------------------
-                                        //---------Validação da data de entrega do projeto----------------//
-                                        var ano
-                                        var mes
-                                        var dia
-                                        var datavis
-                                        var dataprev
-                                        if (projeto.valDataPrev != req.body.valDataPrev) {
-                                             //console.log('req.body.checkDatPrev=>' + req.body.checkDatPrev)
-                                             //console.log('req.body.motivo=>' + req.body.motivo)
-                                             if (typeof req.body.checkDatPrev == 'undefined') {
-                                                  erros = 'Para alterar a data prevista de entrega do projeto deve-se marcar o checkbox ALTERAR. '
+                                             //Valida valor Módulo Detalhado
+                                             if (req.body.valorMod != 0 && req.body.unidadeMod == 0 && req.body.vlrUniMod == 0) {
+                                                  valorMod = req.body.valorMod
                                              } else {
+                                                  if (req.body.unidadeMod != 0 && req.body.vlrUniMod != 0) {
+                                                       unidadeMod = req.body.unidadeMod
+                                                       vlrUniMod = req.body.vlrUniMod
+                                                       valorMod = parseFloat(unidadeMod) * parseFloat(vlrUniMod)
+                                                       checkUni = 'checked'
+                                                  }
+                                             }
+                                             //Valida valor Inversor Detalhado
+                                             if (req.body.valorInv != 0 && req.body.unidadeInv == 0 && req.body.vlrUniInv == 0) {
+                                                  valorInv = req.body.valorInv
+                                             } else {
+                                                  if (req.body.unidadeInv != 0 && req.body.vlrUniInv != 0) {
+                                                       unidadeInv = req.body.unidadeInv
+                                                       vlrUniInv = req.body.vlrUniInv
+                                                       valorInv = parseFloat(unidadeInv) * parseFloat(vlrUniInv)
+                                                       checkUni = 'checked'
+                                                  }
+                                             }
+                                             //Valida valor Estrutura Detalhado
+                                             if (req.body.valorEst != 0 && req.body.unidadeEst == 0 && req.body.vlrUniEst == 0) {
+                                                  valorEst = req.body.valorEst
+                                             } else {
+                                                  if (req.body.unidadeEst != 0 && req.body.vlrUniEst != 0) {
+                                                       unidadeEst = req.body.unidadeEst
+                                                       vlrUniEst = req.body.vlrUniEst
+                                                       valorEst = parseFloat(unidadeEst) * parseFloat(vlrUniEst)
+                                                       checkUni = 'checked'
+                                                  }
+                                             }
+                                             //Valida valor Concretagem
+                                             if (req.body.valorCim != 0 && req.body.unidadeCim == 0 && req.body.vlrUniCim == 0) {
+                                                  unidadeCim = 0
+                                                  vlrUniCim = 0
+                                                  valorCim = req.body.valorCim
+                                             } else {
+                                                  if (req.body.unidadeCim != '' && req.body.vlrUniCim != '') {
+                                                       unidadeCim = req.body.unidadeCim
+                                                       vlrUniCim = req.body.vlrUniCim
+                                                       valorCim = parseFloat(unidadeCim) * parseFloat(vlrUniCim)
+                                                       checkUni = 'checked'
+                                                  }
+                                             }
+                                             //Valida valor Cabos Detalhado
+                                             if (req.body.valorCab != 0 && req.body.unidadeCab == 0 && req.body.vlrUniCab == 0) {
+                                                  unidadeCab = 0
+                                                  vlrUniCab = 0
+                                                  valorCab = req.body.valorCab
+                                             } else {
+                                                  if (req.body.unidadeCab != '' && req.body.vlrUniCab != '') {
+                                                       unidadeCab = req.body.unidadeCab
+                                                       vlrUniCab = req.body.vlrUniCab
+                                                       valorCab = parseFloat(unidadeCab) * parseFloat(vlrUniCab)
+                                                       checkUni = 'checked'
+                                                  }
+                                             }
+                                             //Valida valor Armazenagem Detalhado
+                                             if (req.body.valorEbt != 0 && req.body.unidadeEbt == 0 && req.body.vlrUniEbt == 0) {
+                                                  unidadeEbt = 0
+                                                  vlrUniEbt = 0
+                                                  valorEbt = req.body.valorEbt
+                                             } else {
+                                                  if (req.body.unidadeEbt != '' && req.body.vlrUniEbt != '') {
+                                                       unidadeEbt = req.body.unidadeEbt
+                                                       vlrUniEbt = req.body.vlrUniEbt
+                                                       valorEbt = parseFloat(unidadeEbt) * parseFloat(vlrUniEbt)
+                                                       checkUni = 'checked'
+                                                  }
+                                             }
+                                             //Valida valor Disjuntores Detalhado
+                                             if (req.body.valorDisCC != 0 && req.body.unidadeDisCC == 0 && req.body.vlrUniDisCC == 0) {
+                                                  unidadeDisCC = 0
+                                                  vlrUniDisCC = 0
+                                                  valorDisCC = req.body.valorDisCC
+                                             } else {
+                                                  if (req.body.unidadeDisCC != '' && req.body.vlrUniDisCC != '') {
+                                                       unidadeDisCC = req.body.unidadeDisCC
+                                                       vlrUniDisCC = req.body.vlrUniDisCC
+                                                       valorDisCC = parseFloat(unidadeDisCC) * parseFloat(vlrUniDisCC)
+                                                       checkUni = 'checked'
+                                                  }
+                                             }
+                                             if (req.body.valorDisCA != 0 && req.body.unidadeDisCA == 0 && req.body.vlrUniDisCA == 0) {
+                                                  unidadeDisCA = 0
+                                                  vlrUniDisCA = 0
+                                                  valorDisCA = req.body.valorDisCA
+                                             } else {
+                                                  if (req.body.unidadeDisCA != '' && req.body.vlrUniDisCA != '') {
+                                                       unidadeDisCA = req.body.unidadeDisCA
+                                                       vlrUniDisCA = req.body.vlrUniDisCA
+                                                       valorDisCA = parseFloat(unidadeDisCA) * parseFloat(vlrUniDisCA)
+                                                       checkUni = 'checked'
+                                                  }
+                                             }
+                                             //Valida valor DPS Detalhado
+                                             if (req.body.valorDPSCC != 0 && req.body.unidadeDPSCC == 0 && req.body.vlrUniDPSCC == 0) {
+                                                  unidadeDPSCC = 0
+                                                  vlrUniDPSCC = 0
+                                                  valorDPSCC = req.body.valorDPSCC
+                                             } else {
+                                                  if (req.body.unidadeDPSCC != '' && req.body.vlrUniDPSCC != '') {
+                                                       unidadeDPSCC = req.body.unidadeDPSCC
+                                                       vlrUniDPSCC = req.body.vlrUniDPSCC
+                                                       valorDPSCC = parseFloat(unidadeDPSCC) * parseFloat(vlrUniDPSCC)
+                                                       checkUni = 'checked'
+                                                  }
+                                             }
+                                             if (req.body.valorDPSCA != 0 && req.body.unidadeDPSCA == 0 && req.body.vlrUniDPSCA == 0) {
+                                                  unidadeDPSCA = 0
+                                                  vlrUniDPSCA = 0
+                                                  valorDPSCA = req.body.valorDPSCA
+                                             } else {
+                                                  if (req.body.unidadeDPSCA != '' && req.body.vlrUniDPSCA != '') {
+                                                       unidadeDPSCA = req.body.unidadeDPSCA
+                                                       vlrUniDPSCA = req.body.vlrUniDPSCA
+                                                       valorDPSCA = parseFloat(unidadeDPSCA) * parseFloat(vlrUniDPSCA)
+                                                       checkUni = 'checked'
+                                                  }
+                                             }
+                                             //Valida valor StringBox Detalhado
+                                             if (req.body.valorSB != 0 && req.body.unidadeSB == 0 && req.body.vlrUniSB == 0) {
+                                                  unidadeSB = 0
+                                                  vlrUniSB = 0
+                                                  valorSB = req.body.valorSB
+                                             } else {
+                                                  if (req.body.unidadeSB != '' && req.body.vlrUniSB != '') {
+                                                       unidadeSB = req.body.unidadeSB
+                                                       vlrUniSB = req.body.vlrUniSB
+                                                       valorSB = parseFloat(unidadeSB) * parseFloat(vlrUniSB)
+                                                       checkUni = 'checked'
+                                                  }
+                                             }
+                                             //Valida valor Caixa Proteção CA Detalhado
+                                             if (req.body.valorCCA != 0 && req.body.unidadeCCA == 0 && req.body.vlrUniCCA == 0) {
+                                                  unidadeCCA = 0
+                                                  vlrUniCCA = 0
+                                                  valorCCA = req.body.valorCCA
+                                             } else {
+                                                  if (req.body.unidadeCCA != '' && req.body.vlrUniCCA != '') {
+                                                       unidadeCCA = req.body.unidadeCCA
+                                                       vlrUniCCA = req.body.vlrUniCCA
+                                                       valorCCA = parseFloat(unidadeCCA) * parseFloat(vlrUniCCA)
+                                                       checkUni = 'checked'
+                                                  }
+                                             }
+                                             //Valida valor Outros Componentes Detalhado
+                                             if (req.body.valorOcp != 0 && req.body.unidadeOcp == 0 && req.body.vlrUniOcp == 0) {
+                                                  valorOcp = req.body.valorOcp
+                                             } else {
+                                                  if (req.body.unidadeOcp != 0 && req.body.vlrUniOcp != 0) {
+                                                       unidadeOcp = req.body.unidadeOcp
+                                                       vlrUniOcp = req.body.vlrUniOcp
+                                                       valorOcp = parseFloat(unidadeOcp) * parseFloat(vlrUniOcp)
+                                                       checkUni = 'checked'
+                                                  }
+                                             }
+                                             //Valida valor Cercamento Detalhado
+                                             if (req.body.cercamento != null) {
+                                                  if (req.body.valorCer != 0 && req.body.unidadeCer == 0 && req.body.vlrUniCer == 0) {
+                                                       valorCer = req.body.valorCer
+                                                  } else {
+                                                       if (req.body.unidadeCer != 0 && req.body.vlrUniCer != 0) {
+                                                            unidadeCer = req.body.unidadeCer
+                                                            vlrUniCer = req.body.vlrUniCer
+                                                            valorCer = parseFloat(unidadeCer) * parseFloat(vlrUniCer)
+                                                            checkUni = 'checked'
+                                                       }
+                                                  }
+                                             }
+                                             //Valida valor Central Detalhado
+                                             if (req.body.central != null) {
+                                                  if (req.body.valorCen != 0 && req.body.unidadeCen == 0 && req.body.vlrUniCen == 0) {
+                                                       valorCen = req.body.valorCen
+                                                  } else {
+                                                       if (req.body.unidadeCen != 0 && req.body.vlrUniCen != 0) {
+                                                            unidadeCen = req.body.unidadeCen
+                                                            vlrUniCen = req.body.vlrUniCen
+                                                            valorCen = parseFloat(unidadeCen) * parseFloat(vlrUniCen)
+                                                            checkUni = 'checked'
+                                                       }
+                                                  }
+                                             }
+                                             //Valida valor Postes Detalhado
+                                             if (req.body.poste != null) {
+                                                  if (req.body.valorPos != 0 && req.body.unidadePos == 0 && req.body.vlrUniPos == 0) {
+                                                       valorPos = req.body.valorPos
+                                                  } else {
+                                                       if (req.body.unidadePos != 0 && req.body.vlrUniPos != 0) {
+                                                            unidadePos = req.body.unidadePos
+                                                            vlrUniPos = req.body.vlrUniPos
+                                                            valorPos = parseFloat(unidadePos) * parseFloat(vlrUniPos)
+                                                            checkUni = 'checked'
+                                                       }
+                                                  }
+                                             }
+
+                                             //console.log('checkUni=>' + checkUni)
+                                             //console.log('unidadeEqu=>', +unidadeEqu)
+                                             //console.log('unidadeMod=>', +unidadeMod)
+                                             //console.log('unidadeInv=>', +unidadeInv)
+                                             //console.log('unidadeEst=>', +unidadeEst)
+                                             //console.log('unidadeCim=>', +unidadeCim)
+                                             //console.log('unidadeCab=>', +unidadeCab)
+                                             //console.log('unidadeDisCC=>', +unidadeDisCC)
+                                             //console.log('unidadeDPSCC=>', +unidadeDPSCC)
+                                             //console.log('unidadeDisCA=>', +unidadeDisCA)
+                                             //console.log('unidadeDPSCA=>', +unidadeDPSCA)
+                                             //console.log('unidadeSB=>', +unidadeSB)
+                                             //console.log('unidadeCCA=>', +unidadeCCA)
+                                             //console.log('unidadeOcp=>', +unidadeOcp)
+                                             //console.log('unidadeCer=>', +unidadeCer)
+                                             //console.log('unidadeCen=>', +unidadeCen)
+                                             //console.log('unidadePos=>', +unidadePos)
+                                             //console.log('vlrUniEqu=>', +vlrUniEqu)
+                                             //console.log('vlrUniMod=>', +vlrUniMod)
+                                             //console.log('vlrUniInv=>', +vlrUniInv)
+                                             //console.log('vlrUniEst=>', +vlrUniEst)
+                                             //console.log('vlrUniCim=>', +vlrUniCim)
+                                             //console.log('vlrUniCab=>', +vlrUniCab)
+                                             //console.log('vlrUniDisCC=>', +vlrUniDisCC)
+                                             //console.log('vlrUniDPSCC=>', +vlrUniDPSCC)
+                                             //console.log('vlrUniDisCA=>', +vlrUniDisCA)
+                                             //console.log('vlrUniDPSCA=>', +vlrUniDPSCA)
+                                             //console.log('vlrUniSB=>', +vlrUniSB)                         
+                                             //console.log('vlrUniCCA=>', +vlrUniCCA)                         
+                                             //console.log('vlrUniOcp=>', +vlrUniOcp)
+                                             //console.log('vlrUniCer=>', +vlrUniCer)
+                                             //console.log('vlrUniCen=>', +vlrUniCen)
+                                             //console.log('vlrUniPos=>', +vlrUniPos)
+                                             //console.log('valorEqu=>', +valorEqu)
+                                             //console.log('valorMod=>', +valorMod)
+                                             //console.log('valorInv=>', +valorInv)
+                                             //console.log('valorEst=>', +valorEst)
+                                             //console.log('valorCim=>', +valorCim)
+                                             //console.log('valorCab=>', +valorCab)
+                                             //console.log('valorDisCC=>', +valorDisCC)
+                                             //console.log('valorDPSCC=>', +valorDPSCC)
+                                             //console.log('valorDisCA=>', +valorDisCA)
+                                             //console.log('valorDPSCA=>', +valorDPSCA)                         
+                                             //console.log('valorSB=>', +valorSB)
+                                             //console.log('valorCCA=>', +valorCCA)
+                                             //console.log('valorOcp=>', +valorOcp)
+                                             //console.log('valorCer=>', +valorCer)
+                                             //console.log('valorCen=>', +valorCen)
+                                             //console.log('valorPos=>', +valorPos)
+
+                                             var validaequant = 0
+                                             var validaequfut = 0
+                                             var vlrequ = 0
+                                             var vlrkit = 0
+
+                                             var vlrTotal = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorOcp) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos)
+                                             //console.log('vlrTotal=>' + vlrTotal)
+
+                                             //Valida valor do equipameento
+                                             if (parseFloat(valorEqu) != 0 || parseFloat(valorMod) != 0) {
+                                                  //console.log('valorEqu != 0')
+                                                  vlrequ = vlrTotal
+                                                  vlrkit = parseFloat(valorEqu) + parseFloat(valorMod) + parseFloat(valorInv) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorOcp)
+                                             } else {
+                                                  //console.log('não tem lançamento manual de kit.')
+                                                  validaequant = parseFloat(projeto.vlrkit) - (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorCim) + parseFloat(detalhe.valorDisCC) + parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDisCA) + parseFloat(detalhe.valorDPSCA) + parseFloat(detalhe.valorSB) + parseFloat(detalhe.valorCCA) + parseFloat(detalhe.valorCab) + parseFloat(detalhe.valorEbt))
+                                                  //console.log('validaequant=>' + validaequant)
+                                                  validaequfut = parseFloat(req.body.equipamento) - (parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorCab) + parseFloat(valorEbt))
+                                                  //console.log('validaequfut=>' + validaequfut)
+                                                  if (parseFloat(validaequant) != parseFloat(validaequfut)) {
+                                                       //console.log('Os valores dos kits são difentes')
+                                                       if (req.body.equipamento == projeto.vlrkit) {
+                                                            vlrequ = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorOcp)
+                                                            vlrkit = parseFloat(validaequant) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorCab) + parseFloat(valorEbt)
+                                                       } else {
+                                                            vlrequ = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorCer) + parseFloat(valorCen) + parseFloat(valorPos) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorCab) + parseFloat(valorEbt) + parseFloat(valorOcp)
+                                                            vlrkit = parseFloat(req.body.equipamento) + parseFloat(valorEst) + parseFloat(valorCim) + parseFloat(valorDisCC) + parseFloat(valorDPSCC) + parseFloat(valorDisCA) + parseFloat(valorDPSCA) + parseFloat(valorSB) + parseFloat(valorCCA) + parseFloat(valorCab) + parseFloat(valorEbt)
+                                                       }
+                                                  } else {
+                                                       //console.log('Os valores dos kits são iguais')
+                                                       vlrequ = projeto.vlrequ
+                                                       vlrkit = projeto.vlrkit
+                                                  }
+                                             }
+                                             //console.log('vlrequ=>' + vlrequ)
+                                             //console.log('vlrkit=>' + vlrkit)
+
+                                             //Definie os valores dos detalhes de custo dos equipamentos do projeto
+
+                                             console.log('req.body.unidadeMod=>' + req.body.unidadeMod)
+
+                                             detalhe.vlrTotal = vlrequ
+                                             detalhe.checkUni = checkUni
+                                             detalhe.unidadeEqu = unidadeEqu
+                                             detalhe.unidadeMod = unidadeMod
+                                             detalhe.unidadeInv = unidadeInv
+                                             detalhe.unidadeEst = unidadeEst
+                                             detalhe.unidadeCim = unidadeCim
+                                             detalhe.unidadeCab = unidadeCab
+                                             detalhe.unidadeEbt = unidadeEbt
+                                             detalhe.unidadeDisCC = unidadeDisCC
+                                             detalhe.unidadeDPSCC = unidadeDPSCC
+                                             detalhe.unidadeDisCA = unidadeDisCA
+                                             detalhe.unidadeDPSCA = unidadeDPSCA
+                                             detalhe.unidadeSB = unidadeSB
+                                             detalhe.unidadeCCA = unidadeCCA
+                                             detalhe.unidadeOcp = unidadeOcp
+                                             detalhe.unidadeCer = unidadeCer
+                                             detalhe.unidadeCen = unidadeCen
+                                             detalhe.unidadePos = unidadePos
+                                             detalhe.vlrUniEqu = vlrUniEqu
+                                             detalhe.vlrUniMod = vlrUniMod
+                                             detalhe.vlrUniInv = vlrUniInv
+                                             detalhe.vlrUniEst = vlrUniEst
+                                             detalhe.vlrUniCim = vlrUniCim
+                                             detalhe.vlrUniCab = vlrUniCab
+                                             detalhe.vlrUniEbt = vlrUniEbt
+                                             detalhe.vlrUniDisCC = vlrUniDisCC
+                                             detalhe.vlrUniDPSCC = vlrUniDPSCC
+                                             detalhe.vlrUniDisCA = vlrUniDisCA
+                                             detalhe.vlrUniDPSCA = vlrUniDPSCA
+                                             detalhe.vlrUniSB = vlrUniSB
+                                             detalhe.vlrUniCCA = vlrUniCCA
+                                             detalhe.vlrUniOcp = vlrUniOcp
+                                             detalhe.vlrUniCer = vlrUniCer
+                                             detalhe.vlrUniCen = vlrUniCen
+                                             detalhe.vlrUniPos = vlrUniPos
+                                             detalhe.valorEqu = valorEqu
+                                             detalhe.valorMod = valorMod
+                                             detalhe.valorInv = valorInv
+                                             detalhe.valorEst = valorEst
+                                             detalhe.valorCim = valorCim
+                                             detalhe.valorCab = valorCab
+                                             detalhe.valorEbt = valorEbt
+                                             detalhe.valorDisCC = valorDisCC
+                                             detalhe.valorDPSCC = valorDPSCC
+                                             detalhe.valorDisCA = valorDisCA
+                                             detalhe.valorDPSCA = valorDPSCA
+                                             detalhe.valorSB = valorSB
+                                             detalhe.valorCCA = valorCCA
+                                             detalhe.valorOcp = valorOcp
+                                             detalhe.valorCer = valorCer
+                                             detalhe.valorCen = valorCen
+                                             detalhe.valorPos = valorPos
+
+                                             detalhe.save().then(() => {
+                                                  sucesso = 'Detalhes salvos com sucesso. '
+                                             }).catch(() => {
+                                                  req.flash('error_msg', 'Houve um erro ao salvar os detalhes do projeto')
+                                                  res.redirect('/projeto/consulta')
+                                             })
+
+                                             //------------------------------------------------------------------
+                                             //---------Validação da data de entrega do projeto----------------//
+                                             var ano
+                                             var mes
+                                             var dia
+                                             var datavis
+                                             var dataprev
+                                             if (projeto.valDataPrev != req.body.valDataPrev) {
+                                                  //console.log('req.body.checkDatPrev=>' + req.body.checkDatPrev)
                                                   //console.log('req.body.motivo=>' + req.body.motivo)
-                                                  if (req.body.motivo != '') {
-                                                       //console.log('tem motivo')
-                                                       //console.log('cronograma.datevis=>' + cronograma.datevis)
-                                                       //---Validando datas para comparação----//
-                                                       if (cronograma.datevis != '' && typeof cronograma.datevis != 'undefined') {
-                                                            datavis = cronograma.datevis
-                                                            ano = datavis.substring(0, 4)
-                                                            mes = datavis.substring(5, 7)
-                                                            dia = datavis.substring(8, 11)
-                                                            datavis = ano + mes + dia
-                                                       } else {
-                                                            datavis = req.body.dataprev
-                                                       }
-
-                                                       dataprev = req.body.valDataPrev
-                                                       ano = dataprev.substring(0, 4)
-                                                       mes = dataprev.substring(5, 7)
-                                                       dia = dataprev.substring(8, 11)
-                                                       dataprev = ano + mes + dia
-                                                       //console.log('dataprev=>' + dataprev)
-                                                       //---Validando datas para comparação----//
-
-                                                       if (parseFloat(datavis) <= parseFloat(dataprev) && req.body.dataprev != '') {
-                                                            //console.log('req.body.dataprev=>' + req.body.dataprev)
-                                                            projeto.motivo = req.body.motivo
-                                                            projeto.dataprev = req.body.dataprev
-                                                            projeto.valDataPrev = req.body.valDataPrev
-                                                            projeto.ultdat = projeto.dataprev
-                                                            projeto.dataord = dataprev
-                                                            cronograma.dateentrega = req.body.valDataPrev
-                                                            //console.log('A data de entrega foi alterada.')
-                                                       } else {
-                                                            erros = erros + 'A data de entrega do projeto deve ser maior que a data de finalização da vistoria. '
-                                                       }
+                                                  if (typeof req.body.checkDatPrev == 'undefined') {
+                                                       erros = 'Para alterar a data prevista de entrega do projeto deve-se marcar o checkbox ALTERAR. '
                                                   } else {
-                                                       erros = erros + 'Para alterar a data prevista de entrega do projeto deve-se discriminar um motivo. '
+                                                       //console.log('req.body.motivo=>' + req.body.motivo)
+                                                       if (req.body.motivo != '') {
+                                                            //console.log('tem motivo')
+                                                            //console.log('cronograma.datevis=>' + cronograma.datevis)
+                                                            //---Validando datas para comparação----//
+                                                            if (cronograma.datevis != '' && typeof cronograma.datevis != 'undefined') {
+                                                                 datavis = cronograma.datevis
+                                                                 ano = datavis.substring(0, 4)
+                                                                 mes = datavis.substring(5, 7)
+                                                                 dia = datavis.substring(8, 11)
+                                                                 datavis = ano + mes + dia
+                                                            } else {
+                                                                 datavis = req.body.dataprev
+                                                            }
+
+                                                            dataprev = req.body.valDataPrev
+                                                            ano = dataprev.substring(0, 4)
+                                                            mes = dataprev.substring(5, 7)
+                                                            dia = dataprev.substring(8, 11)
+                                                            dataprev = ano + mes + dia
+                                                            //console.log('dataprev=>' + dataprev)
+                                                            //---Validando datas para comparação----//
+
+                                                            if (parseFloat(datavis) <= parseFloat(dataprev) && req.body.dataprev != '') {
+                                                                 //console.log('req.body.dataprev=>' + req.body.dataprev)
+                                                                 projeto.motivo = req.body.motivo
+                                                                 projeto.dataprev = req.body.dataprev
+                                                                 projeto.valDataPrev = req.body.valDataPrev
+                                                                 projeto.ultdat = projeto.dataprev
+                                                                 projeto.dataord = dataprev
+                                                                 cronograma.dateentrega = req.body.valDataPrev
+                                                                 //console.log('A data de entrega foi alterada.')
+                                                            } else {
+                                                                 erros = erros + 'A data de entrega do projeto deve ser maior que a data de finalização da vistoria. '
+                                                            }
+                                                       } else {
+                                                            erros = erros + 'Para alterar a data prevista de entrega do projeto deve-se discriminar um motivo. '
+                                                       }
+
                                                   }
 
                                              }
 
-                                        }
-
-                                        //---------Validação da data de entrega do projeto----------------//
+                                             //---------Validação da data de entrega do projeto----------------//
 
 
-                                        //Alterar data de Início da Instalação
-                                        projeto.dataIns = req.body.datains
-                                        projeto.valDataIns = req.body.valDataIns
-                                        //Altera o vendedor                          
-                                        // //console.log('req.body.vende=>' + req.body.vendedor)
-                                        // //console.log('projeto.vendedor=>' + projeto.vendedor)
-                                        if (req.body.vendedor != projeto.vendedor) {
-                                             projeto.vendedor = req.body.vendedor
-                                             projeto.percom = prj_vendedor.percom
-                                        }
-                                        // //console.log('vendedor=>'+vendedor)
-                                        // //console.log('percom=>'+percom)
-
-                                        // //console.log('req.body.empresa=>' + req.body.empresa)
-                                        // //console.log('projeto.empresa=>' + projeto.empresa)
-                                        //Altera a empresa 
-                                        if (req.body.empresa != projeto.empresa) {
-                                             projeto.empresa = req.body.empresa
-                                        }
-                                        if (req.body.configuracao != projeto.configuracao) {
-                                             projeto.configuracao = req.body.configuracao
-                                        }
-
-                                        //console.log('req.body.uf=>' + req.body.uf)
-                                        //console.log('req.body.cidade=>' + req.body.cidade)
-                                        if (req.body.uf != '' && req.body.cidade != '' && typeof req.body.uf != 'undefined' && typeof req.body.cidade != 'undefined') {
-                                             if (req.body.uf != projeto.uf && req.body.uf != projeto.cidade) {
-                                                  projeto.uf = req.body.uf
-                                                  projeto.cidade = req.body.cidade
+                                             //Alterar data de Início da Instalação
+                                             projeto.dataIns = req.body.datains
+                                             projeto.valDataIns = req.body.valDataIns
+                                             //Altera o vendedor                          
+                                             // //console.log('req.body.vende=>' + req.body.vendedor)
+                                             // //console.log('projeto.vendedor=>' + projeto.vendedor)
+                                             if (req.body.vendedor != projeto.vendedor) {
+                                                  projeto.vendedor = req.body.vendedor
+                                                  projeto.percom = prj_vendedor.percom
                                              }
-                                        }
-                                        if (req.body.valor != projeto.valor || req.body.vlrequ != projeto.vlrequ) {
-                                             aviso = 'Aplique as alterações na aba de gerenciamento e de tributos para recalcular o valor da nota de serviço e valor dos tributos estimados.'
-                                             //Validando o markup
-                                        }
+                                             // //console.log('vendedor=>'+vendedor)
+                                             // //console.log('percom=>'+percom)
 
-                                        //console.log('req.body.valor=>' + req.body.valor)
-                                        //console.log('projeto.valor=>' + projeto.valor)
-                                        var valor = 0
-                                        var markup = 0
-                                        if (req.body.valor != projeto.valor && req.body.valor != '') {
-                                             //console.log('markup calculado')
-                                             markup = (((parseFloat(req.body.valor) - parseFloat(vlrkit) - parseFloat(projeto.custoPlano) - parseFloat(projeto.desAdm) + parseFloat(projeto.reserva)) / parseFloat(req.body.valor)) * 100).toFixed(2)
-                                             valor = req.body.valor
-                                        } else {
+                                             // //console.log('req.body.empresa=>' + req.body.empresa)
+                                             // //console.log('projeto.empresa=>' + projeto.empresa)
+                                             //Altera a empresa 
+                                             if (req.body.empresa != projeto.empresa) {
+                                                  projeto.empresa = req.body.empresa
+                                             }
+                                             if (req.body.configuracao != projeto.configuracao) {
+                                                  projeto.configuracao = req.body.configuracao
+                                             }
+
+                                             //console.log('req.body.uf=>' + req.body.uf)
+                                             //console.log('req.body.cidade=>' + req.body.cidade)
+                                             if (req.body.uf != '' && req.body.cidade != '' && typeof req.body.uf != 'undefined' && typeof req.body.cidade != 'undefined') {
+                                                  if (req.body.uf != projeto.uf && req.body.uf != projeto.cidade) {
+                                                       projeto.uf = req.body.uf
+                                                       projeto.cidade = req.body.cidade
+                                                  }
+                                             }
+                                             if (req.body.valor != projeto.valor || req.body.vlrequ != projeto.vlrequ) {
+                                                  aviso = 'Aplique as alterações na aba de gerenciamento e de tributos para recalcular o valor da nota de serviço e valor dos tributos estimados.'
+                                                  //Validando o markup
+                                             }
+
                                              //console.log('req.body.valor=>' + req.body.valor)
-                                             if (req.body.valor == '' || req.body.valor == 0) {
-                                                  //console.log('markup configuração')
-                                                  //console.log('config.markup=>' + config.markup)
-                                                  markup = config.markup
-                                                  //console.log('projeto.custofix=>' + projeto.custofix)
-                                                  //console.log('projeto.custovar=>' + projeto.custovar)
-                                                  //console.log('projeto.desAdm=>' + projeto.desAdm)
-                                                  valor = (((parseFloat(projeto.custofix) + parseFloat(projeto.custovar) + parseFloat(projeto.desAdm)) / (1 - (parseFloat(config.markup)) / 100)) + parseFloat(vlrkit)).toFixed(2)
+                                             //console.log('projeto.valor=>' + projeto.valor)
+                                             var valor = 0
+                                             var markup = 0
+                                             if (req.body.valor != projeto.valor && req.body.valor != '') {
+                                                  //console.log('markup calculado')
+                                                  markup = (((parseFloat(req.body.valor) - parseFloat(vlrkit) - parseFloat(projeto.custoPlano) - parseFloat(projeto.desAdm) + parseFloat(projeto.reserva)) / parseFloat(req.body.valor)) * 100).toFixed(2)
+                                                  valor = req.body.valor
                                              } else {
-                                                  valor = projeto.valor
-                                                  markup = projeto.markup
+                                                  //console.log('req.body.valor=>' + req.body.valor)
+                                                  if (req.body.valor == '' || req.body.valor == 0) {
+                                                       //console.log('markup configuração')
+                                                       markup = empresa.markup
+                                                       //console.log('projeto.custofix=>' + projeto.custofix)
+                                                       //console.log('projeto.custovar=>' + projeto.custovar)
+                                                       //console.log('projeto.desAdm=>' + projeto.desAdm)
+                                                       valor = (((parseFloat(projeto.custofix) + parseFloat(projeto.custovar) + parseFloat(projeto.desAdm)) / (1 - (parseFloat(empresa.markup)) / 100)) + parseFloat(vlrkit)).toFixed(2)
+                                                  } else {
+                                                       valor = projeto.valor
+                                                       markup = projeto.markup
+                                                  }
                                              }
-                                        }
 
-                                        var vlrNFS = 0
-                                        if (projeto.fatequ == true) {
-                                             vlrNFS = (parseFloat(valor)).toFixed(2)
-                                        } else {
-                                             vlrNFS = (parseFloat(valor) - parseFloat(vlrkit)).toFixed(2)
-                                        }
-
-                                        // if (req.body.valor == '' || typeof req.body.valor == 'undefined' || req.body.valor == null) {
-                                        //      projeto.valor = (((parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(desAdm)) / (1 - (parseFloat(config.markup)) / 100)) + parseFloat(projeto.vlrkit)).toFixed(2)
-                                        //      projeto.vlrnormal = (((parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(desAdm)) / (1 - (parseFloat(config.markup)) / 100)) + parseFloat(projeto.vlrkit)).toFixed(2)
-                                        // } else {
-                                        //      projeto.valor = req.body.valor
-                                        //      projeto.vlrnormal = req.body.valor
-                                        // }
-                                        //Valida pedido realizado
-                                        if (req.body.pedido != null) {
-                                             projeto.pedidoRealizado = 'checked'
-                                             projeto.dataPedido = req.body.dataPedido
-                                        } else {
-                                             projeto.pedidoRealizado = 'unchecked'
-                                             projeto.dataPedido = ''
-                                        }
-
-                                        //console.log('valor=>' + valor)
-                                        //console.log('markup=>' + markup)
-                                        projeto.valor = valor
-                                        projeto.vlrnormal = valor
-                                        projeto.markup = markup
-                                        //console.log('vlrequ=>' + vlrequ)
-                                        projeto.vlrequ = vlrequ
-                                        //console.log('vlrkit=>' + vlrkit)
-                                        projeto.vlrkit = vlrkit
-                                        //console.log('vlrNFS=>' + vlrNFS)
-                                        projeto.vlrNFS = vlrNFS
-                                        projeto.potencia = req.body.potencia
-                                        //console.log('cercamento=>' + cercamento)
-                                        projeto.temCercamento = cercamento
-                                        //console.log('central=>' + central)
-                                        projeto.temCentral = central
-                                        //console.log('poste=>' + poste)
-                                        projeto.temPosteCond = poste
-                                        //console.log('estsolo=>' + estsolo)
-                                        projeto.temEstSolo = estsolo
-                                        //console.log('armazenamento=>' + armazenamento)
-                                        projeto.temArmazenamento = armazenamento
-                                        //console.log('painel=>' + painel)
-                                        projeto.temPainel = painel
-                                        projeto.endereco = req.body.endereco
-                                        if (req.body.pedido != null) {
-                                             projeto.pedido = true
-                                        } else {
-                                             projeto.pedido = false
-                                        }
-
-                                        //console.log('ehVinculo=>' + projeto.ehVinculo)
-                                        if (projeto.ehVinculo) {
-                                             var responsavel = req.body.responsavel
-                                             if (projeto.funres != req.body.responsavel) {
-                                                  projeto.funres = req.body.responsavel
+                                             var vlrNFS = 0
+                                             if (projeto.fatequ == true) {
+                                                  vlrNFS = (parseFloat(valor)).toFixed(2)
+                                             } else {
+                                                  vlrNFS = (parseFloat(valor) - parseFloat(vlrkit)).toFixed(2)
                                              }
-                                        }
 
-                                        projeto.save().then(() => {
-                                             //console.log('salvou projeto')
-                                             cronograma.save().then(() => {
-                                                  //console.log('salvou cronograma')
-                                                  if (projeto.ehVinculo) {
-                                                       Pessoa.findOne({ _id: responsavel }).then((pessoa) => {
-                                                            equipe.pla0 = pessoa.nome
-                                                            equipe.save().then(() => {
-                                                                 sucesso = sucesso + 'Projeto salvo com sucesso.'
-                                                                 req.flash('error_msg', erros)
-                                                                 req.flash('success_msg', sucesso)
-                                                                 req.flash('aviso', aviso)
-                                                                 res.redirect(redirect)
+                                             // if (req.body.valor == '' || typeof req.body.valor == 'undefined' || req.body.valor == null) {
+                                             //      projeto.valor = (((parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(desAdm)) / (1 - (parseFloat(empresa_prj.markup)) / 100)) + parseFloat(projeto.vlrkit)).toFixed(2)
+                                             //      projeto.vlrnormal = (((parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(desAdm)) / (1 - (parseFloat(empresa_prj.markup)) / 100)) + parseFloat(projeto.vlrkit)).toFixed(2)
+                                             // } else {
+                                             //      projeto.valor = req.body.valor
+                                             //      projeto.vlrnormal = req.body.valor
+                                             // }
+                                             //Valida pedido realizado
+                                             if (req.body.pedido != null) {
+                                                  projeto.pedidoRealizado = 'checked'
+                                                  projeto.dataPedido = req.body.dataPedido
+                                             } else {
+                                                  projeto.pedidoRealizado = 'unchecked'
+                                                  projeto.dataPedido = ''
+                                             }
+
+                                             //console.log('valor=>' + valor)
+                                             //console.log('markup=>' + markup)
+                                             projeto.valor = valor
+                                             projeto.vlrnormal = valor
+                                             projeto.markup = markup
+                                             //console.log('vlrequ=>' + vlrequ)
+                                             projeto.vlrequ = vlrequ
+                                             //console.log('vlrkit=>' + vlrkit)
+                                             projeto.vlrkit = vlrkit
+                                             //console.log('vlrNFS=>' + vlrNFS)
+                                             projeto.vlrNFS = vlrNFS
+                                             projeto.potencia = req.body.potencia
+                                             //console.log('cercamento=>' + cercamento)
+                                             projeto.temCercamento = cercamento
+                                             //console.log('central=>' + central)
+                                             projeto.temCentral = central
+                                             //console.log('poste=>' + poste)
+                                             projeto.temPosteCond = poste
+                                             //console.log('estsolo=>' + estsolo)
+                                             projeto.temEstSolo = estsolo
+                                             //console.log('armazenamento=>' + armazenamento)
+                                             projeto.temArmazenamento = armazenamento
+                                             //console.log('painel=>' + painel)
+                                             projeto.temPainel = painel
+                                             projeto.endereco = req.body.endereco
+                                             if (req.body.pedido != null) {
+                                                  projeto.pedido = true
+                                             } else {
+                                                  projeto.pedido = false
+                                             }
+
+                                             //console.log('ehVinculo=>' + projeto.ehVinculo)
+                                             if (projeto.ehVinculo) {
+                                                  var responsavel = req.body.responsavel
+                                                  if (projeto.funres != req.body.responsavel) {
+                                                       projeto.funres = req.body.responsavel
+                                                  }
+                                             }
+
+                                             projeto.save().then(() => {
+                                                  //console.log('salvou projeto')
+                                                  cronograma.save().then(() => {
+                                                       //console.log('salvou cronograma')
+                                                       if (projeto.ehVinculo) {
+                                                            Pessoa.findOne({ _id: responsavel }).then((pessoa) => {
+                                                                 equipe.pla0 = pessoa.nome
+                                                                 equipe.save().then(() => {
+                                                                      sucesso = sucesso + 'Projeto salvo com sucesso.'
+                                                                      req.flash('error_msg', erros)
+                                                                      req.flash('success_msg', sucesso)
+                                                                      req.flash('aviso', aviso)
+                                                                      res.redirect(redirect)
+                                                                 }).catch(() => {
+                                                                      req.flash('error_msg', 'Não foi possível salvar a equipe.')
+                                                                      res.redirect('/menu')
+                                                                 })
                                                             }).catch(() => {
-                                                                 req.flash('error_msg', 'Não foi possível salvar a equipe.')
+                                                                 req.flash('error_msg', 'Não foi possível encontrar a pessoa.')
                                                                  res.redirect('/menu')
                                                             })
-                                                       }).catch(() => {
-                                                            req.flash('error_msg', 'Não foi possível encontrar a pessoa.')
-                                                            res.redirect('/menu')
-                                                       })
-                                                  } else {
-                                                       sucesso = sucesso + 'Projeto salvo com sucesso.'
-                                                       req.flash('error_msg', erros)
-                                                       req.flash('success_msg', sucesso)
-                                                       req.flash('aviso', aviso)
-                                                       res.redirect(redirect)
-                                                  }
+                                                       } else {
+                                                            sucesso = sucesso + 'Projeto salvo com sucesso.'
+                                                            req.flash('error_msg', erros)
+                                                            req.flash('success_msg', sucesso)
+                                                            req.flash('aviso', aviso)
+                                                            res.redirect(redirect)
+                                                       }
 
+                                                  }).catch(() => {
+                                                       req.flash('error_msg', 'Não foi possível salvar o cronorgrama.')
+                                                       res.redirect('/menu')
+                                                  })
                                              }).catch(() => {
-                                                  req.flash('error_msg', 'Não foi possível salvar o cronorgrama.')
+                                                  req.flash('error_msg', 'Não foi possível salvar o projeto.')
                                                   res.redirect('/menu')
                                              })
-                                        }).catch(() => {
-                                             req.flash('error_msg', 'Não foi possível salvar o projeto.')
+                                        }).catch((err) => {
+                                             req.flash('error_msg', 'Não foi possivel encontrar a empresa.')
                                              res.redirect('/menu')
                                         })
                                    }).catch((err) => {
@@ -4303,10 +4311,10 @@ router.post('/direto', ehAdmin, (req, res) => {
                                                   vlrNFS = (parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)).toFixed(2)
                                                   impNFS = (parseFloat(vlrNFS) * (parseFloat(empresa_prj.alqNFS) / 100)).toFixed(2)
                                              }
-                                             // vlrMarkup = (((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva) - parseFloat(projeto.vlrkit)) / (1 - (parseFloat(config.markup)) / 100)) + parseFloat(projeto.vlrkit)).toFixed(2)
-                                             vlrMarkup = (((parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(desAdm)) / (1 - (parseFloat(config.markup)) / 100)) + parseFloat(projeto.vlrkit)).toFixed(2)
+                                             // vlrMarkup = (((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva) - parseFloat(projeto.vlrkit)) / (1 - (parseFloat(empresa_prj.markup)) / 100)) + parseFloat(projeto.vlrkit)).toFixed(2)
+                                             vlrMarkup = (((parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(desAdm)) / (1 - (parseFloat(empresa_prj.markup)) / 100)) + parseFloat(projeto.vlrkit)).toFixed(2)
                                              projeto.valor = parseFloat(vlrMarkup).toFixed(2)
-                                             projeto.markup = config.markup
+                                             projeto.markup = empresa_prj.markup
                                              prjValor = vlrMarkup
                                         } else {
                                              //console.log('custoTotal=>' + custoTotal)

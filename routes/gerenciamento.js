@@ -2652,9 +2652,9 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                     vlrNFS = (parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)).toFixed(2)
                                     impNFS = (parseFloat(vlrNFS) * (parseFloat(empresa.alqNFS) / 100)).toFixed(2)
                                 }
-                                vlrMarkup = (((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva) - parseFloat(projeto.vlrkit)) / (1 - (parseFloat(config.markup)) / 100)) + parseFloat(projeto.vlrkit)).toFixed(2)
+                                vlrMarkup = (((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva) - parseFloat(projeto.vlrkit)) / (1 - (parseFloat(empresa.markup)) / 100)) + parseFloat(projeto.vlrkit)).toFixed(2)
                                 projeto.valor = parseFloat(vlrMarkup).toFixed(2)
-                                projeto.markup = config.markup
+                                projeto.markup = empresa.markup
                                 prjValor = vlrMarkup
                             } else {
                                 //console.log('markup diferente de zero')

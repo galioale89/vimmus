@@ -285,6 +285,7 @@ router.post('/addempresa', ehAdmin, (req, res) => {
             desadm: req.body.desadm,
             perdes: req.body.perdes,
             estkwp: req.body.estkwp,
+            markup: req.body.markup
         }
 
         new Empresa(empresa).save().then(() => {
@@ -347,8 +348,7 @@ router.post('/novo', ehAdmin, (req, res) => {
         vlrdrg: req.body.vlrdrg,
         vlrdri: req.body.vlrdri,
         hrstrb: req.body.hrstrb,
-        medkmh: req.body.medkmh,
-        markup: req.body.markup
+        medkmh: req.body.medkmh
     }
 
     new Configuracao(configuracao).save().then(() => {
@@ -403,7 +403,6 @@ router.post('/editconfiguracao/', ehAdmin, (req, res) => {
         configuracao.vlrdri = req.body.vlrdri
         configuracao.hrstrb = req.body.hrstrb
         configuracao.medkmh = req.body.medkmh
-        configuracao.markup = req.body.markup
 
         //console.log('req.body.id=>'+req.body.id)
 
@@ -497,6 +496,7 @@ router.post('/editempresa/', ehAdmin, (req, res) => {
             empresa.empresa = req.body.empresa
             empresa.regime = req.body.regime
             empresa.tipo = req.body.tipo
+            empresa.markup = req.body.markup
 
             //console.log('req.body.alqDAS=>'+req.body.alqDAS)
 

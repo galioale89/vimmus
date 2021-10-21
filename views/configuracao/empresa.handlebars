@@ -251,7 +251,7 @@
 
         if (regime.value == 'Simples') {
             if (tipo.value == 'Anexo III') {
-                
+
                 simplesiii.forEach((element) => {
                     const { recini } = element
                     const { recfim } = element
@@ -264,14 +264,14 @@
                 })
             }
             if (tipo.value == 'Anexo V') {
-                
+
                 simplesv.forEach((element) => {
                     const { recini } = element
                     const { recfim } = element
                     const { aliquota } = element
                     const { deducao } = element
                     if (faturamento.value > recini && faturamento.value <= recfim) {
-                        
+
                         alqDasVlr.value = aliquota
                         vlrDeducao.value = deducao
                     }
@@ -307,47 +307,46 @@
                                 class='form-control form-control-sm mt-1'>
                         </div>
                     </div>
-                        <div class="row"style="padding: 8px;">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-md-3 text-end">
-                                        <label class='fw-bold col-form-label col-form-label-sm'>
-                                            Regime:
-                                        </label>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <select name='regime' class='form-select form-select-sm' id='regime'
-                                            onchange="selecionaRegime()">
-                                            <option style="font-weight: bold;">{{empresa.regime}}</option>
-                                            <option>MEI</option>
-                                            <option>Simples</option>
-                                            <option>Lucro Real</option>
-                                            <option>Lucro Presumido</option>
-                                        </select>
-                                    </div>
+                    <div class="row" style="padding: 8px;">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-3 text-end">
+                                    <label class='fw-bold col-form-label col-form-label-sm'>
+                                        Regime:
+                                    </label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select name='regime' class='form-select form-select-sm' id='regime'
+                                        onchange="selecionaRegime()">
+                                        <option style="font-weight: bold;">{{empresa.regime}}</option>
+                                        <option>MEI</option>
+                                        <option>Simples</option>
+                                        <option>Lucro Real</option>
+                                        <option>Lucro Presumido</option>
+                                    </select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-md-3 text-end">
-                                        <label for='tipo'
-                                            class='fw-bold col-form-label col-form-label-sm mb-2'>
-                                            Tipo:
-                                        </label>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <select name='tipo' class='form-select form-select-sm' id='tipo'
-                                            onchange="selecionaRegime()">
-                                            <option style="font-weight: bold;">{{empresa.tipo}}</option>
-                                            <option>Nenhum</option>
-                                            <option id='anexoiii'>Anexo III</option>
-                                            <option id='anexov'>Anexo V</option>
-                                            <option>Não Cumulativo</option>
-                                            <option>Cumulativo</option>
-                                        </select>
-                                    </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-3 text-end">
+                                    <label for='tipo' class='fw-bold col-form-label col-form-label-sm mb-2'>
+                                        Tipo:
+                                    </label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select name='tipo' class='form-select form-select-sm' id='tipo'
+                                        onchange="selecionaRegime()">
+                                        <option style="font-weight: bold;">{{empresa.tipo}}</option>
+                                        <option>Nenhum</option>
+                                        <option id='anexoiii'>Anexo III</option>
+                                        <option id='anexov'>Anexo V</option>
+                                        <option>Não Cumulativo</option>
+                                        <option>Cumulativo</option>
+                                    </select>
                                 </div>
                             </div>
+                        </div>
                     </div>
                 </div>
                 <div class="card mt-1 mb-2">
@@ -482,18 +481,19 @@
                 <div class="container">
                     <label class='fw-bold col-form-label col-form-label-sm'>Parâmetros </label>
                     <div class="row">
-                        <div class="col-md-7">
+                        <div class="col-md-7 text-end">
                             <label class='col-form-label col-form-label-sm fw-bold'>Simples <i class="bi bi-info-circle"
                                     onmousemove='info_simples()'></i> </label><br>
                             <label class='col-form-label col-form-label-sm mb-1'> Fator de Dedução: </label><br>
-                            <label class='col-form-label col-form-label-sm mb-1'> Projeção de Faturamento:</label><br>
+                            <label class='col-form-label col-form-label-sm'> Projeção de Faturamento:</label><br>
                             <hr>
                             <label class='col-form-label col-form-label-sm mb-1'> Projeção de Lucro Real: </label><br>
                             <hr>
                             <label class='col-form-label col-form-label-sm mb-1'> Projeção de Faturamento Lucro
                                 Presumido:
-                            </label><br>
+                            </label>
                             <hr>
+                        <label class='col-form-label col-form-label-sm mb-1 mt-2'> MarkUp(%):</label>                            
                         </div>
                         <div class="col-md-5">
                             <div style="margin-top: 10px;"></div><br>
@@ -508,6 +508,8 @@
                             <input type='text' id='prjLP' name='prjLP' id='presumido' value='{{empresa.prjLP}}'
                                 class='form-control form-control-sm' style="margin-bottom: 20px;" placeholder="R$">
                             <hr>
+                            <input type='number' id='markup' name='markup' value='{{empresa.markup}}'
+                                class='form-control form-control-sm mt-4'>
                         </div>
                         <div class="row mt-4">
                             <button type='submit' class='btn btn-sm btn-success mx-auto mb-3' onclick="aplicar()">
