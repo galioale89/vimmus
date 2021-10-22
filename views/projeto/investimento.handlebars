@@ -32,8 +32,7 @@
     <a href="/projeto/investimento/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i class="bi bi-layers"></i>
         Investimento</a>
     {{else}}
-    <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'> <i
-            class="bi bi-house"></i>Principal</a>
+    <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'> <i class="bi bi-house"></i>Principal</a>
     <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
         Gestão</a>
     <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"></i>
@@ -53,6 +52,68 @@
         Principal</a>
     {{/if}}
     <form method="post" action='/projeto/investimento'>
+        <div class="modal fade" id="fluxoModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Fluxo de caixa acumulado da geração da usina</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class='quadro-scroll' style="margin-left: 5px;height: 220px;">
+                                <table>
+                                    <tr>
+                                        <th>Ano</th>
+                                        <th>Fatura</th>
+                                        <th>Parcela</th>
+                                        <th>Fatura com MG</th>
+                                        <th>Fluxo</th>
+                                    </tr>
+                                    {{#each fluxoAno25}}
+                                    <tr>
+                                        <td style="width: 5%;">{{y}}</td>
+                                        <td style="width: 5%;">{{fatura}}</td>
+                                        <td style="width: 5%;">{{pmt}}</td>
+                                        <td style="width: 5%;">{{minimo}}</td>
+                                        <td style="width: 5%;">{{ano}}</td>
+                                    </tr>
+                                    {{/each}}
+                                </table>
+                            </div>
+                            <div style="height: 250px;">
+                                <canvas id='chartFluxo' class='mt-1 mb-1' style="height: 250px;"></canvas>
+                                <input type='hidden' id='inv1' value="{{investimento.ano1}}">
+                                <input type='hidden' id='inv2' value="{{investimento.ano2}}">
+                                <input type='hidden' id='inv3' value="{{investimento.ano3}}">
+                                <input type='hidden' id='inv4' value="{{investimento.ano4}}">
+                                <input type='hidden' id='inv5' value="{{investimento.ano5}}">
+                                <input type='hidden' id='inv6' value="{{investimento.ano6}}">
+                                <input type='hidden' id='inv7' value="{{investimento.ano7}}">
+                                <input type='hidden' id='inv8' value="{{investimento.ano8}}">
+                                <input type='hidden' id='inv9' value="{{investimento.ano9}}">
+                                <input type='hidden' id='inv10' value="{{investimento.ano10}}">
+                                <input type='hidden' id='inv11' value="{{investimento.ano11}}">
+                                <input type='hidden' id='inv12' value="{{investimento.ano12}}">
+                                <input type='hidden' id='inv13' value="{{investimento.ano13}}">
+                                <input type='hidden' id='inv14' value="{{investimento.ano14}}">
+                                <input type='hidden' id='inv15' value="{{investimento.ano15}}">
+                                <input type='hidden' id='inv16' value="{{investimento.ano16}}">
+                                <input type='hidden' id='inv17' value="{{investimento.ano17}}">
+                                <input type='hidden' id='inv18' value="{{investimento.ano18}}">
+                                <input type='hidden' id='inv19' value="{{investimento.ano19}}">
+                                <input type='hidden' id='inv20' value="{{investimento.ano20}}">
+                                <input type='hidden' id='inv21' value="{{investimento.ano21}}">
+                                <input type='hidden' id='inv22' value="{{investimento.ano22}}">
+                                <input type='hidden' id='inv23' value="{{investimento.ano23}}">
+                                <input type='hidden' id='inv24' value="{{investimento.ano24}}">
+                                <input type='hidden' id='inv25' value="{{investimento.ano25}}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <input type="hidden" name="id" value='{{projeto._id}}'>
         <div class="row" style="padding:10px;width: 100%;">
             <div class="col-md-6">
@@ -178,6 +239,12 @@
                         <td>{{totpmt}}</td>
                         <td>{{totamort}}</td>
                         <td>{{totjuros}}</td>
+                        <td colspan="8">
+                            <div style="padding-left: 700px;">
+                                <a class="btn btn-sm btn-primary mb-1" data-bs-toggle="modal"
+                                    data-bs-target="#fluxoModal"><i class='bi bi-list-ul'></i> 25 anos</a>
+                            </div>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -185,3 +252,97 @@
         <label class="col-form-label">Parcela Média: R${{parmed}}</label>
     </form>
 </div>
+<script>
+    var inv1 = document.getElementById('inv1')
+    var inv2 = document.getElementById('inv2')
+    var inv3 = document.getElementById('inv3')
+    var inv4 = document.getElementById('inv4')
+    var inv5 = document.getElementById('inv5')
+    var inv6 = document.getElementById('inv6')
+    var inv7 = document.getElementById('inv7')
+    var inv8 = document.getElementById('inv8')
+    var inv9 = document.getElementById('inv9')
+    var inv10 = document.getElementById('inv10')
+    var inv11 = document.getElementById('inv11')
+    var inv12 = document.getElementById('inv12')
+    var inv13 = document.getElementById('inv13')
+    var inv14 = document.getElementById('inv14')
+    var inv15 = document.getElementById('inv15')
+    var inv16 = document.getElementById('inv16')
+    var inv17 = document.getElementById('inv17')
+    var inv18 = document.getElementById('inv18')
+    var inv19 = document.getElementById('inv19')
+    var inv20 = document.getElementById('inv20')
+    var inv21 = document.getElementById('inv21')
+    var inv22 = document.getElementById('inv22')
+    var inv23 = document.getElementById('inv23')
+    var inv24 = document.getElementById('inv24')
+    var inv25 = document.getElementById('inv25')
+
+    var ctxFluxo = document.getElementById('chartFluxo').getContext('2d');
+    var chartFluxo = new Chart(ctxFluxo, {
+        type: 'line',
+        data: {
+            labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25'],
+            datasets: [
+                {
+                    label: '',
+                    data: [inv1.value,
+                    inv2.value,
+                    inv3.value,
+                    inv4.value,
+                    inv5.value,
+                    inv6.value,
+                    inv7.value,
+                    inv8.value,
+                    inv9.value,
+                    inv10.value,
+                    inv11.value,
+                    inv12.value,
+                    inv13.value,
+                    inv14.value,
+                    inv15.value,
+                    inv16.value,
+                    inv17.value,
+                    inv18.value,
+                    inv19.value,
+                    inv20.value,
+                    inv21.value,
+                    inv22.value,
+                    inv23.value,
+                    inv24.value,
+                    inv25.value],
+                    backgroundColor: [
+                        'rgba(13, 40, 148, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(13, 40, 148, 1)'
+                    ],
+                    borderWidth: 1,
+                }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+                title: {
+                    display: true,
+                    text: 'Gráfico de Fluxo de Caixa Acumulado da Usina',
+                },
+            scales: {
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                        }
+                    }]
+                },
+                legend: {
+                    labels: {
+                        usePointStyle: false,
+                        boxWidth: 0,
+                        position: 'top',
+                        display: false,
+                    }
+                },
+            }
+        });
+</script>

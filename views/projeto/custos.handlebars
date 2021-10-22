@@ -186,8 +186,8 @@
             Cronograma</a>
         <a href="/gerenciamento/documentos/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
             Documentos</a>
-<a href="/projeto/investimento/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
-            Investimento</a>            
+        <a href="/projeto/investimento/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+            Investimento</a>
         {{else}}
         <a style="cursor: unset" class='btn btn-sm botao-menu ativo'><i class="bi bi-house"></i>
             Principal</a>
@@ -390,7 +390,8 @@
                                     <label
                                         class="fw-bold col-form-label col-form-label-sm mb-1">Empilhadeira:</label><br>
                                     <label class="fw-bold col-form-label col-form-label-sm mt-1">Reservas:</label><br>
-                                    <label class="fw-bold col-form-label col-form-label-sm mt-1">Componentes:</label><br>
+                                    <label
+                                        class="fw-bold col-form-label col-form-label-sm mt-1">Componentes:</label><br>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="input-group input-group-sm mb-1">
@@ -420,7 +421,7 @@
                                             class="form-control" id="compon" name="compon" value='{{projeto.compon}}'
                                             aria-label="R$ " step='0.010'>
                                         <span class="input-group-text">.00</span>
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
                         </div>

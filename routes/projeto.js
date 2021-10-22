@@ -1174,7 +1174,9 @@ router.get('/alocacao/:id', ehAdmin, (req, res) => {
 })
 
 router.get('/investimento/:id', ehAdmin, (req, res) => {
-     sac = []
+     var sac = []
+     var fluxo25 = []
+     var fluxoAno25 = []
      var numpar = 0
      var txjuros = 0
      var jurosmes = 0
@@ -1217,6 +1219,47 @@ router.get('/investimento/:id', ehAdmin, (req, res) => {
      var fez8 = false
      var fez9 = false
      var fez10 = false
+     var fez11 = false
+     var fez12 = false
+     var fez13 = false
+     var fez14 = false
+     var fez15 = false
+     var fez16 = false
+     var fez17 = false
+     var fez18 = false
+     var fez19 = false
+     var fez20 = false
+     var fez21 = false
+     var fez22 = false
+     var fez23 = false
+     var fez24 = false
+     var fez25 = false
+     var ano = 0
+     var ano1 = 0
+     var ano2 = 0
+     var ano3 = 0
+     var ano4 = 0
+     var ano5 = 0
+     var ano6 = 0
+     var ano7 = 0
+     var ano8 = 0
+     var ano9 = 0
+     var ano10 = 0
+     var ano11 = 0
+     var ano12 = 0
+     var ano13 = 0
+     var ano14 = 0
+     var ano15 = 0
+     var ano16 = 0
+     var ano17 = 0
+     var ano18 = 0
+     var ano19 = 0
+     var ano20 = 0
+     var ano21 = 0
+     var ano22 = 0
+     var ano23 = 0
+     var ano24 = 0
+     var ano25 = 0
      var ajuste = 0
 
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
@@ -1225,107 +1268,109 @@ router.get('/investimento/:id', ehAdmin, (req, res) => {
                     // console.log('projeto.dimensionamento=>' + projeto.dimensionamento)
                     // console.log('projeto.investimento=>' + projeto.investimento)
                     Investimento.findOne({ _id: projeto.investimento }).lean().then((investimento) => {
-                         Dimensionamento.findOne({ _id: projeto.dimensionamento }).lean().then((dimensionamento) => {
-                              //console.log('entrou')
-                              numpar = investimento.parcelas
-                              txjuros = investimento.txjuros
-                              jurosmes = Math.pow((1 + (txjuros / 100)), (1 / 12)) - 1
-                              valor = projeto.valor
-                              amort = (parseFloat(valor) / parseFloat(numpar)).toFixed(2)
-                              ipca = investimento.ipca
-                              te = dimensionamento.te
-                              tusd = dimensionamento.tusd
-                              icms = dimensionamento.icms
-                              pis = dimensionamento.pis
-                              cofins = dimensionamento.cofins
-                              cosip = dimensionamento.cosip
-                              if (dimensionamento.ajuste == '' || typeof dimensionamento.ajuste == 'undefined') {
-                                   ajuste = 1
-                              } else {
-                                   ajuste = 1 + (parseFloat(dimensionamento.ajuste) / 100)
-                              }
-                              // console.log('dimensionamento.totconsumo=>' + dimensionamento.totconsumo)
-                              medcon = parseFloat(dimensionamento.totconsumo) / 12
-
-                              trbte = (parseFloat(icms) + parseFloat(cofins) + parseFloat(pis)) / 100
-                              trbtusd = (parseFloat(cofins) + parseFloat(pis)) / 100
-                              trfte = ((parseFloat(te) * ajuste) / (1 - trbte))
-                              trftusd = ((parseFloat(tusd) * ajuste) / (1 - trbtusd))
-                              tarifa = parseFloat(trfte) + parseFloat(trftusd)
-
-                              // console.log('numpar=>' + numpar)
-                              for (i = 1; i <= numpar; i++) {
-                                   //console.log('sac=>' + sac)
-
-                                   if (i > 12 && fez1 == false) {
-                                        te = dimensionamento.te * (1 + (ipca / 100))
-                                        // console.log('te1=>' + te)
-                                        tusd = dimensionamento.tusd * (1 + (ipca / 100))
-                                        // medcon = medcon * (Math.pow((1 - 0.00875), 1))
-                                        fez1 = true
+                         Investimento.findOne({ _id: projeto.investimento }).then((invest_ano) => {
+                              Dimensionamento.findOne({ _id: projeto.dimensionamento }).lean().then((dimensionamento) => {
+                                   //console.log('entrou')
+                                   numpar = investimento.parcelas
+                                   txjuros = investimento.txjuros
+                                   jurosmes = Math.pow((1 + (txjuros / 100)), (1 / 12)) - 1
+                                   valor = projeto.valor
+                                   amort = (parseFloat(valor) / parseFloat(numpar)).toFixed(2)
+                                   ipca = investimento.ipca
+                                   te = dimensionamento.te
+                                   tusd = dimensionamento.tusd
+                                   icms = dimensionamento.icms
+                                   pis = dimensionamento.pis
+                                   cofins = dimensionamento.cofins
+                                   cosip = dimensionamento.cosip
+                                   if (dimensionamento.ajuste == '' || typeof dimensionamento.ajuste == 'undefined') {
+                                        ajuste = 1
                                    } else {
-                                        if (i > 24 && fez2 == false) {
-                                             te = te * (1 + (ipca / 100))
-                                             // console.log('te2=>' + te)
-                                             tusd = tusd * (1 + (ipca / 100))
+                                        ajuste = 1 + (parseFloat(dimensionamento.ajuste) / 100)
+                                   }
+                                   // console.log('dimensionamento.totconsumo=>' + dimensionamento.totconsumo)
+                                   medcon = parseFloat(dimensionamento.totconsumo) / 12
+
+                                   trbte = (parseFloat(icms) + parseFloat(cofins) + parseFloat(pis)) / 100
+                                   trbtusd = (parseFloat(cofins) + parseFloat(pis)) / 100
+                                   trfte = ((parseFloat(te) * ajuste) / (1 - trbte))
+                                   trftusd = ((parseFloat(tusd) * ajuste) / (1 - trbtusd))
+                                   tarifa = parseFloat(trfte) + parseFloat(trftusd)
+
+                                   // console.log('numpar=>' + numpar)
+                                   for (i = 1; i <= numpar; i++) {
+                                        //console.log('sac=>' + sac)
+
+                                        if (i > 12 && fez1 == false) {
+                                             te = dimensionamento.te * (1 + (ipca / 100))
+                                             // console.log('te1=>' + te)
+                                             tusd = dimensionamento.tusd * (1 + (ipca / 100))
                                              // medcon = medcon * (Math.pow((1 - 0.00875), 1))
-                                             fez2 = true
+                                             fez1 = true
                                         } else {
-                                             if (i > 36 && fez3 == false) {
+                                             if (i > 24 && fez2 == false) {
                                                   te = te * (1 + (ipca / 100))
-                                                  // console.log('te3=>' + te)
+                                                  // console.log('te2=>' + te)
                                                   tusd = tusd * (1 + (ipca / 100))
                                                   // medcon = medcon * (Math.pow((1 - 0.00875), 1))
-                                                  fez3 = true
+                                                  fez2 = true
                                              } else {
-                                                  if (i > 48 && fez4 == false) {
+                                                  if (i > 36 && fez3 == false) {
                                                        te = te * (1 + (ipca / 100))
                                                        // console.log('te3=>' + te)
                                                        tusd = tusd * (1 + (ipca / 100))
                                                        // medcon = medcon * (Math.pow((1 - 0.00875), 1))
-                                                       fez4 = true
+                                                       fez3 = true
                                                   } else {
-                                                       if (i > 60 && fez5 == false) {
+                                                       if (i > 48 && fez4 == false) {
                                                             te = te * (1 + (ipca / 100))
                                                             // console.log('te3=>' + te)
                                                             tusd = tusd * (1 + (ipca / 100))
                                                             // medcon = medcon * (Math.pow((1 - 0.00875), 1))
-                                                            fez5 = true
+                                                            fez4 = true
                                                        } else {
-                                                            if (i > 72 && fez6 == false) {
+                                                            if (i > 60 && fez5 == false) {
                                                                  te = te * (1 + (ipca / 100))
                                                                  // console.log('te3=>' + te)
                                                                  tusd = tusd * (1 + (ipca / 100))
                                                                  // medcon = medcon * (Math.pow((1 - 0.00875), 1))
-                                                                 fez6 = true
+                                                                 fez5 = true
                                                             } else {
-                                                                 if (i > 84 && fez7 == false) {
+                                                                 if (i > 72 && fez6 == false) {
                                                                       te = te * (1 + (ipca / 100))
                                                                       // console.log('te3=>' + te)
                                                                       tusd = tusd * (1 + (ipca / 100))
                                                                       // medcon = medcon * (Math.pow((1 - 0.00875), 1))
-                                                                      fez7 = true
+                                                                      fez6 = true
                                                                  } else {
-                                                                      if (i > 96 && fez8 == false) {
+                                                                      if (i > 84 && fez7 == false) {
                                                                            te = te * (1 + (ipca / 100))
                                                                            // console.log('te3=>' + te)
                                                                            tusd = tusd * (1 + (ipca / 100))
                                                                            // medcon = medcon * (Math.pow((1 - 0.00875), 1))
-                                                                           fez8 = true
+                                                                           fez7 = true
                                                                       } else {
-                                                                           if (i > 108 && fez9 == false) {
+                                                                           if (i > 96 && fez8 == false) {
                                                                                 te = te * (1 + (ipca / 100))
                                                                                 // console.log('te3=>' + te)
                                                                                 tusd = tusd * (1 + (ipca / 100))
                                                                                 // medcon = medcon * (Math.pow((1 - 0.00875), 1))
-                                                                                fez9 = true
+                                                                                fez8 = true
                                                                            } else {
-                                                                                if (i > 120 && fez10 == false) {
+                                                                                if (i > 108 && fez9 == false) {
                                                                                      te = te * (1 + (ipca / 100))
                                                                                      // console.log('te3=>' + te)
                                                                                      tusd = tusd * (1 + (ipca / 100))
                                                                                      // medcon = medcon * (Math.pow((1 - 0.00875), 1))
-                                                                                     fez10 = true
+                                                                                     fez9 = true
+                                                                                } else {
+                                                                                     if (i > 120 && fez10 == false) {
+                                                                                          te = te * (1 + (ipca / 100))
+                                                                                          // console.log('te3=>' + te)
+                                                                                          tusd = tusd * (1 + (ipca / 100))
+                                                                                          // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                                          fez10 = true
+                                                                                     }
                                                                                 }
                                                                            }
                                                                       }
@@ -1335,66 +1380,672 @@ router.get('/investimento/:id', ehAdmin, (req, res) => {
                                                   }
                                              }
                                         }
+
+                                        minimo = (((30 * (parseFloat(te) + parseFloat(tusd))) / (1 - trbte)) + parseFloat(cosip)).toFixed(2)
+                                        // console.log('i=>' + i)
+                                        // if (i <= 12) {
+                                        //      fatura = ((parseFloat(medcon) * (((parseFloat(te) + parseFloat(tusd)) * ajuste) / (1 - trbte))) + parseFloat(cosip)).toFixed(2)
+                                        //      fatura1 = fatura
+                                        // }
+                                        // if (i > 12 && i <= 24) {
+                                        //      console.log('fatura1=>' + fatura1)
+                                        //      console.log('medcon=>' + medcon)
+                                        //      console.log('te=>' + te)
+                                        //      console.log('tusd=>' + tusd)
+                                        //      console.log('ajuste=>' + ajuste)
+                                        //      console.log('trbte=>' + trbte)
+                                        //      console.log('cosip=>' + cosip)
+                                        //      fatura = (parseFlaot(fatura1) + (parseFloat(medcon) * (((parseFloat(te) + parseFloat(tusd)) * ajuste) / (1 - trbte))) + parseFloat(cosip)).toFixed(2)
+                                        //      fatura2 = fatura
+                                        // }
+                                        // if (i > 24 && i <= 36) {
+                                        //      console.log('fatura2=>' + fatura2)
+                                        //      fatura = (parseFloat(fatura2) + (parseFloat(medcon) * (((parseFloat(te) + parseFloat(tusd)) * ajuste) / (1 - trbte))) + parseFloat(cosip)).toFixed(2)
+                                        // }
+
+                                        if (sac != '' && typeof sac != 'undefined') {
+                                             var ultimo = sac[sac.length - 1]
+                                             juros = (parseFloat((parseFloat(ultimo.saldo) * parseFloat(jurosmes)))).toFixed(2)
+                                             pmt = (parseFloat(amort) + parseFloat(juros)).toFixed(2)
+                                             saldo = (parseFloat(ultimo.saldo) - parseFloat(amort)).toFixed(2)
+                                        } else {
+                                             juros = (parseFloat((parseFloat(valor) * parseFloat(jurosmes)))).toFixed(2)
+                                             pmt = (parseFloat(amort) + parseFloat(juros)).toFixed(2)
+                                             saldo = (parseFloat(valor) - parseFloat(amort)).toFixed(2)
+                                        }
+
+                                        fatura = ((parseFloat(medcon) * (((parseFloat(te) + parseFloat(tusd)) * ajuste) / (1 - trbte))) + parseFloat(cosip)).toFixed(2)
+                                        fluxo = (parseFloat(fatura) - parseFloat(pmt) - parseFloat(minimo)).toFixed(2)
+                                        fluxoacc = (parseFloat(fluxoacc) + parseFloat(fluxo)).toFixed(2)
+                                        deste = parseFloat(medcon) * (parseFloat(te) / (1 - parseFloat(trbte)))
+                                        destusd = parseFloat(medcon) * (parseFloat(tusd) / (1 - parseFloat(trbtusd)))
+                                        ecomen = (parseFloat(fatura) - parseFloat(deste) - parseFloat(destusd) + parseFloat(minimo)).toFixed(2)
+
+                                        sac.push({ mes: i, pmt, amort, juros, saldo, fluxo, ecomen, fatura, minimo, fluxo, fluxoacc })
                                    }
 
-                                   minimo = (((30 * (parseFloat(te) + parseFloat(tusd))) / (1 - trbte)) + parseFloat(cosip)).toFixed(2)
-                                   // console.log('i=>' + i)
-                                   // if (i <= 12) {
-                                   //      fatura = ((parseFloat(medcon) * (((parseFloat(te) + parseFloat(tusd)) * ajuste) / (1 - trbte))) + parseFloat(cosip)).toFixed(2)
-                                   //      fatura1 = fatura
-                                   // }
-                                   // if (i > 12 && i <= 24) {
-                                   //      console.log('fatura1=>' + fatura1)
-                                   //      console.log('medcon=>' + medcon)
-                                   //      console.log('te=>' + te)
-                                   //      console.log('tusd=>' + tusd)
-                                   //      console.log('ajuste=>' + ajuste)
-                                   //      console.log('trbte=>' + trbte)
-                                   //      console.log('cosip=>' + cosip)
-                                   //      fatura = (parseFlaot(fatura1) + (parseFloat(medcon) * (((parseFloat(te) + parseFloat(tusd)) * ajuste) / (1 - trbte))) + parseFloat(cosip)).toFixed(2)
-                                   //      fatura2 = fatura
-                                   // }
-                                   // if (i > 24 && i <= 36) {
-                                   //      console.log('fatura2=>' + fatura2)
-                                   //      fatura = (parseFloat(fatura2) + (parseFloat(medcon) * (((parseFloat(te) + parseFloat(tusd)) * ajuste) / (1 - trbte))) + parseFloat(cosip)).toFixed(2)
-                                   // }
 
-                                   if (sac != '' && typeof sac != 'undefined') {
-                                        var ultimo = sac[sac.length - 1]
-                                        juros = (parseFloat((parseFloat(ultimo.saldo) * parseFloat(jurosmes)))).toFixed(2)
-                                        pmt = (parseFloat(amort) + parseFloat(juros)).toFixed(2)
-                                        saldo = (parseFloat(ultimo.saldo) - parseFloat(amort)).toFixed(2)
-                                   } else {
-                                        juros = (parseFloat((parseFloat(valor) * parseFloat(jurosmes)))).toFixed(2)
-                                        pmt = (parseFloat(amort) + parseFloat(juros)).toFixed(2)
-                                        saldo = (parseFloat(valor) - parseFloat(amort)).toFixed(2)
+                                   for (t = 0; t < sac.length; t++) {
+
+                                        totpmt = (parseFloat(totpmt) + parseFloat(sac[t].pmt)).toFixed(2)
+                                        totamort = (parseFloat(totamort) + parseFloat(sac[t].amort)).toFixed(2)
+                                        totjuros = (parseFloat(totjuros) + parseFloat(sac[t].juros)).toFixed(2)
                                    }
 
-                                   fatura = ((parseFloat(medcon) * (((parseFloat(te) + parseFloat(tusd)) * ajuste) / (1 - trbte))) + parseFloat(cosip)).toFixed(2)
-                                   fluxo = (parseFloat(fatura) - parseFloat(pmt) - parseFloat(minimo)).toFixed(2)
-                                   fluxoacc = (parseFloat(fluxoacc) + parseFloat(fluxo)).toFixed(2)
-                                   deste = parseFloat(medcon) * (parseFloat(te) / (1 - parseFloat(trbte)))
-                                   destusd = parseFloat(medcon) * (parseFloat(tusd) / (1 - parseFloat(trbtusd)))
-                                   ecomen = (parseFloat(fatura) - parseFloat(deste) - parseFloat(destusd) + parseFloat(minimo)).toFixed(2)
+                                   parmed = (parseFloat(totpmt) / parseFloat(numpar)).toFixed(2)
+                                   medcon = parseFloat(dimensionamento.totconsumo) / 12
 
-                                   sac.push({ mes: i, pmt, amort, juros, saldo, fluxo, ecomen, fatura, minimo, fluxo, fluxoacc })
-                              }
+                                   fez1 = false
+                                   fez2 = false
+                                   fez3 = false
+                                   fez4 = false
+                                   fez5 = false
+                                   fez6 = false
+                                   fez7 = false
+                                   fez8 = false
+                                   fez9 = false
+                                   fez10 = false
+                                   fez11 = false
+                                   fez12 = false
+                                   fez13 = false
+                                   fez14 = false
+                                   fez15 = false
+                                   fez16 = false
+                                   fez17 = false
+                                   fez18 = false
+                                   fez19 = false
+                                   fez20 = false
+                                   fez21 = false
+                                   fez22 = false
+                                   fez23 = false
+                                   fez24 = false
+                                   fluxoacc = 0
+                                   te = dimensionamento.te
+                                   tusd = dimensionamento.tusd
 
-                              // console.log('sac=>' + sac)
+                                   // console.log('ipca=>'+ipca)
 
-                              for (a = 0; a < sac.length; a++) {
-                                   totpmt = (parseFloat(totpmt) + parseFloat(sac[a].pmt)).toFixed(2)
-                                   totamort = (parseFloat(totamort) + parseFloat(sac[a].amort)).toFixed(2)
-                                   totjuros = (parseFloat(totjuros) + parseFloat(sac[a].juros)).toFixed(2)
-                              }
+                                   for (b = 1; b <= 301; b++) {
+                                        if (b > 12 && fez1 == false) {
+                                             te = dimensionamento.te * (1 + (ipca / 100))
+                                             //  console.log('te1=>' + te)
+                                             tusd = dimensionamento.tusd * (1 + (ipca / 100))
+                                             //  medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                             fez1 = true
+                                        } else {
+                                             if (b > 24 && fez2 == false) {
+                                                  te = te * (1 + (ipca / 100))
+                                                  // console.log('te2=>' + te)
+                                                  tusd = tusd * (1 + (ipca / 100))
+                                                  // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                  fez2 = true
+                                             } else {
+                                                  if (b > 36 && fez3 == false) {
+                                                       te = te * (1 + (ipca / 100))
+                                                       // console.log('te3=>' + te)
+                                                       tusd = tusd * (1 + (ipca / 100))
+                                                       // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                       fez3 = true
+                                                  } else {
+                                                       if (b > 48 && fez4 == false) {
+                                                            te = te * (1 + (ipca / 100))
+                                                            // console.log('te3=>' + te)
+                                                            tusd = tusd * (1 + (ipca / 100))
+                                                            // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                            fez4 = true
+                                                       } else {
+                                                            if (b > 60 && fez5 == false) {
+                                                                 te = te * (1 + (ipca / 100))
+                                                                 // console.log('te3=>' + te)
+                                                                 tusd = tusd * (1 + (ipca / 100))
+                                                                 // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                 fez5 = true
+                                                            } else {
+                                                                 if (b > 72 && fez6 == false) {
+                                                                      te = te * (1 + (ipca / 100))
+                                                                      // console.log('te3=>' + te)
+                                                                      tusd = tusd * (1 + (ipca / 100))
+                                                                      // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                      fez6 = true
+                                                                 } else {
+                                                                      if (b > 84 && fez7 == false) {
+                                                                           te = te * (1 + (ipca / 100))
+                                                                           // console.log('te3=>' + te)
+                                                                           tusd = tusd * (1 + (ipca / 100))
+                                                                           // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                           fez7 = true
+                                                                      } else {
+                                                                           if (b > 96 && fez8 == false) {
+                                                                                te = te * (1 + (ipca / 100))
+                                                                                // console.log('te3=>' + te)
+                                                                                tusd = tusd * (1 + (ipca / 100))
+                                                                                // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                                fez8 = true
+                                                                           } else {
+                                                                                if (b > 108 && fez9 == false) {
+                                                                                     te = te * (1 + (ipca / 100))
+                                                                                     // console.log('te3=>' + te)
+                                                                                     tusd = tusd * (1 + (ipca / 100))
+                                                                                     // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                                     fez9 = true
+                                                                                } else {
+                                                                                     if (b > 120 && fez10 == false) {
+                                                                                          te = te * (1 + (ipca / 100))
+                                                                                          // console.log('te3=>' + te)
+                                                                                          tusd = tusd * (1 + (ipca / 100))
+                                                                                          // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                                          fez10 = true
+                                                                                     } else {
+                                                                                          if (b > 132 && fez11 == false) {
+                                                                                               te = te * (1 + (ipca / 100))
+                                                                                               // console.log('te3=>' + te)
+                                                                                               tusd = tusd * (1 + (ipca / 100))
+                                                                                               // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                                               fez11 = true
+                                                                                          } else {
+                                                                                               if (b > 144 && fez12 == false) {
+                                                                                                    te = te * (1 + (ipca / 100))
+                                                                                                    // console.log('te3=>' + te)
+                                                                                                    tusd = tusd * (1 + (ipca / 100))
+                                                                                                    // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                                                    fez12 = true
+                                                                                               } else {
+                                                                                                    if (b > 156 && fez13 == false) {
+                                                                                                         te = te * (1 + (ipca / 100))
+                                                                                                         // console.log('te3=>' + te)
+                                                                                                         tusd = tusd * (1 + (ipca / 100))
+                                                                                                         // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                                                         fez13 = true
+                                                                                                    } else {
+                                                                                                         if (b > 168 && fez14 == false) {
+                                                                                                              te = te * (1 + (ipca / 100))
+                                                                                                              // console.log('te3=>' + te)
+                                                                                                              tusd = tusd * (1 + (ipca / 100))
+                                                                                                              // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                                                              fez14 = true
+                                                                                                         } else {
+                                                                                                              if (b > 180 && fez15 == false) {
+                                                                                                                   te = te * (1 + (ipca / 100))
+                                                                                                                   // console.log('te3=>' + te)
+                                                                                                                   tusd = tusd * (1 + (ipca / 100))
+                                                                                                                   // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                                                                   fez15 = true
+                                                                                                              } else {
+                                                                                                                   if (b > 192 && fez16 == false) {
+                                                                                                                        te = te * (1 + (ipca / 100))
+                                                                                                                        // console.log('te3=>' + te)
+                                                                                                                        tusd = tusd * (1 + (ipca / 100))
+                                                                                                                        // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                                                                        fez16 = true
+                                                                                                                   } else {
+                                                                                                                        if (b > 204 && fez17 == false) {
+                                                                                                                             te = te * (1 + (ipca / 100))
+                                                                                                                             // console.log('te3=>' + te)
+                                                                                                                             tusd = tusd * (1 + (ipca / 100))
+                                                                                                                             // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                                                                             fez17 = true
+                                                                                                                        } else {
+                                                                                                                             if (b > 216 && fez18 == false) {
+                                                                                                                                  te = te * (1 + (ipca / 100))
+                                                                                                                                  // console.log('te3=>' + te)
+                                                                                                                                  tusd = tusd * (1 + (ipca / 100))
+                                                                                                                                  // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                                                                                  fez18 = true
+                                                                                                                             } else {
+                                                                                                                                  if (b > 228 && fez19 == false) {
+                                                                                                                                       te = te * (1 + (ipca / 100))
+                                                                                                                                       // console.log('te3=>' + te)
+                                                                                                                                       tusd = tusd * (1 + (ipca / 100))
+                                                                                                                                       // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                                                                                       fez19 = true
+                                                                                                                                  } else {
+                                                                                                                                       if (b > 240 && fez20 == false) {
+                                                                                                                                            te = te * (1 + (ipca / 100))
+                                                                                                                                            // console.log('te3=>' + te)
+                                                                                                                                            tusd = tusd * (1 + (ipca / 100))
+                                                                                                                                            // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                                                                                            fez20 = true
+                                                                                                                                       } else {
+                                                                                                                                            if (b > 252 && fez21 == false) {
+                                                                                                                                                 te = te * (1 + (ipca / 100))
+                                                                                                                                                 // console.log('te3=>' + te)
+                                                                                                                                                 tusd = tusd * (1 + (ipca / 100))
+                                                                                                                                                 // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                                                                                                 fez21 = true
+                                                                                                                                            } else {
+                                                                                                                                                 if (b > 264 && fez22 == false) {
+                                                                                                                                                      te = te * (1 + (ipca / 100))
+                                                                                                                                                      // console.log('te3=>' + te)
+                                                                                                                                                      tusd = tusd * (1 + (ipca / 100))
+                                                                                                                                                      // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                                                                                                      fez22 = true
+                                                                                                                                                 } else {
+                                                                                                                                                      if (b > 276 && fez23 == false) {
+                                                                                                                                                           te = te * (1 + (ipca / 100))
+                                                                                                                                                           // console.log('te3=>' + te)
+                                                                                                                                                           tusd = tusd * (1 + (ipca / 100))
+                                                                                                                                                           // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                                                                                                           fez23 = true
+                                                                                                                                                      } else {
+                                                                                                                                                           if (b > 288 && fez24 == false) {
+                                                                                                                                                                te = te * (1 + (ipca / 100))
+                                                                                                                                                                // console.log('te3=>' + te)
+                                                                                                                                                                tusd = tusd * (1 + (ipca / 100))
+                                                                                                                                                                // medcon = medcon * (Math.pow((1 - 0.00875), 1))
+                                                                                                                                                                fez24 = true
+                                                                                                                                                           }
+                                                                                                                                                      }
+                                                                                                                                                 }
+                                                                                                                                            }
+                                                                                                                                       }
+                                                                                                                                  }
+                                                                                                                             }
+                                                                                                                        }
+                                                                                                                   }
+                                                                                                              }
+                                                                                                         }
+                                                                                                    }
+                                                                                               }
+                                                                                          }
+                                                                                     }
+                                                                                }
 
-                              parmed = (parseFloat(totpmt) / parseFloat(numpar)).toFixed(2)
-                              medcon = parseFloat(dimensionamento.totconsumo) / 12
+                                                                           }
+                                                                      }
+                                                                 }
+                                                            }
+                                                       }
+                                                  }
+                                             }
+                                        }
 
-                              res.render('projeto/investimento', { sac, cliente, projeto, investimento, dimensionamento, medcon, parmed, totpmt, totamort, totjuros })
+                                        // console.log('fluxo25.length=>'+fluxo25.length)
+                                        // console.log('te=>'+te)
+                                        // console.log('tusd=>'+tusd)
+                                        // console.log('trbte=>'+trbte)
+                                        // console.log('cosip=>'+cosip)
+                                        minimo = (((30 * (parseFloat(te) + parseFloat(tusd))) / (1 - trbte)) + parseFloat(cosip)).toFixed(2)
+                                        if (b <= numpar) {
+                                             if (fluxo25 != '' && typeof fluxo25 != 'undefined') {
+                                                  var ultimo = fluxo25[fluxo25.length - 1]
+                                                  // console.log('ultimo.saldo=>'+ultimo.saldo)
+                                                  juros = (parseFloat((parseFloat(ultimo.saldo) * parseFloat(jurosmes)))).toFixed(2)
+                                                  pmt = (parseFloat(amort) + parseFloat(juros)).toFixed(2)
+                                                  saldo = (parseFloat(ultimo.saldo) - parseFloat(amort)).toFixed(2)
+                                             } else {
+                                                  juros = (parseFloat((parseFloat(valor) * parseFloat(jurosmes)))).toFixed(2)
+                                                  pmt = (parseFloat(amort) + parseFloat(juros)).toFixed(2)
+                                                  saldo = (parseFloat(valor) - parseFloat(amort)).toFixed(2)
+                                             }
+                                        } else {
+                                             amort = 0
+                                             juros = 0
+                                             pmt = 0
+                                             saldo = 0
+                                        }
 
+                                        fatura = ((parseFloat(medcon) * (((parseFloat(te) + parseFloat(tusd)) * ajuste) / (1 - trbte))) + parseFloat(cosip)).toFixed(2)
+                                        // console.log('fatura=>' + fatura)
+                                        fluxo = (parseFloat(fatura) - parseFloat(pmt) - parseFloat(minimo)).toFixed(2)
+                                        // console.log('fluxo=>' + fluxo)
+                                        fluxoacc = (parseFloat(fluxoacc) + parseFloat(fluxo)).toFixed(2)
+                                        deste = parseFloat(medcon) * (parseFloat(te) / (1 - parseFloat(trbte)))
+                                        destusd = parseFloat(medcon) * (parseFloat(tusd) / (1 - parseFloat(trbtusd)))
+                                        ecomen = (parseFloat(fatura) - parseFloat(deste) - parseFloat(destusd) + parseFloat(minimo)).toFixed(2)
+
+                                        fluxo25.push({ mes: b, pmt, amort, juros, saldo, fluxo, ecomen, fatura, minimo, fluxo, fluxoacc })
+
+                                   }
+
+                                   fatura = 0
+                                   minimo = 0
+                                   pmt = 0
+                                   fez1 = false
+                                   fez2 = false
+                                   fez3 = false
+                                   fez4 = false
+                                   fez5 = false
+                                   fez6 = false
+                                   fez7 = false
+                                   fez8 = false
+                                   fez9 = false
+                                   fez10 = false
+                                   fez11 = false
+                                   fez12 = false
+                                   fez13 = false
+                                   fez14 = false
+                                   fez15 = false
+                                   fez16 = false
+                                   fez17 = false
+                                   fez18 = false
+                                   fez19 = false
+                                   fez20 = false
+                                   fez21 = false
+                                   fez22 = false
+                                   fez23 = false
+                                   fez24 = false
+                                   for (y = 1; y <= 25; y++) {
+                                        for (x = 0; x <= 300; x++) {
+
+                                             if (x >= 0 && x <= 11 && y == 1) {
+                                                  ano1 = (parseFloat(ano1) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                             }
+                                             if (x > 11 && x <= 23 && y == 2) {
+                                                  if (fez1 == false) {
+                                                       ano2 = ano1
+                                                  }
+                                                  ano2 = (parseFloat(ano2) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez1 = true
+                                             }
+                                             if (x > 23 && x <= 35 && y == 3) {
+                                                  if (fez2 == false) {
+                                                       ano3 = ano2
+                                                  }    
+                                                  ano3 = (parseFloat(ano3) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez2 = true
+                                             }
+                                             if (x > 35 && x <= 47 && y == 4) {
+                                                  if (fez3 == false) {
+                                                       ano4 = ano3
+                                                  }
+                                                  console.log(ano4)
+                                                  console.log(ano)
+                                                  console.log(fluxo25[x].fatura)
+                                                  console.log(fluxo25[x].pmt)
+                                                  console.log(fluxo25[x].minimo )                                                  
+                                                  ano4 = (parseFloat(ano4) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  console.log(ano4)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  console.log(ano)
+                                                  fez3 = true
+                                             }
+                                             if (x > 47 && x <= 59 && y == 5) {
+                                                  if (fez4 == false) {
+                                                       ano5 = ano4
+                                                  }
+                                                  ano5 = (parseFloat(ano5) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez4 = true
+                                             }
+                                             if (x > 59 && x <= 71 && y == 6) {
+                                                  if (fez5 == false) {
+                                                       ano6 = ano5
+                                                  }
+                                                  ano6 = (parseFloat(ano6) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez5 = true
+                                             }
+                                             if (x > 71 && x <= 83 && y == 7) {
+                                                  if (fez6 == false) {
+                                                       ano7 = ano6
+                                                  }
+                                                  ano7 = (parseFloat(ano7) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez6 = true
+                                             }
+                                             if (x > 83 && x <= 95 && y == 8) {
+                                                  if (fez7 == false) {
+                                                       ano8 = ano7
+                                                  }
+                                                  ano8 = (parseFloat(ano8) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez7 = true
+                                             }
+                                             if (x > 95 && x <= 107 && y == 9) {
+                                                  if (fez8 == false) {
+                                                       ano9 = ano8
+                                                  }
+                                                  ano9 = (parseFloat(ano9) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez8 = true
+                                             }
+                                             if (x > 107 && x <= 119 && y == 10) {
+                                                  if (fez9 == false) {
+                                                       ano10 = ano9
+                                                  }
+                                                  ano10 = (parseFloat(ano10) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez9 = true
+                                             }
+                                             if (x > 119 && x <= 131 && y == 11) {
+                                                  if (fez10 == false) {
+                                                       ano11 = ano10
+                                                  }
+                                                  ano11 = (parseFloat(ano11) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez10 = true
+                                             }
+                                             if (x > 131 && x <= 143 && y == 12) {
+                                                  if (fez11 == false) {
+                                                       ano12 = ano11
+                                                  }
+                                                  ano12 = (parseFloat(ano12) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez11 = true
+                                             }
+                                             if (x > 143 && x <= 155 && y == 13) {
+                                                  if (fez12 == false) {
+                                                       ano13 = ano12
+                                                  }
+                                                  ano13 = (parseFloat(ano13) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez12 = true
+                                             }
+                                             if (x > 155 && x <= 167 && y == 14) {
+                                                  if (fez13 == false) {
+                                                       ano14 = ano13
+                                                  }
+                                                  ano14 = (parseFloat(ano14) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez13 = true
+                                             }
+                                             if (x > 167 && x <= 169 && y == 15) {
+                                                  if (fez14 == false) {
+                                                       ano15 = ano14
+                                                  }
+                                                  ano15 = (parseFloat(ano15) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez14 = true
+                                             }
+                                             if (x > 169 && x <= 181 && y == 16) {
+                                                  if (fez15 == false) {
+                                                       ano16 = ano15
+                                                  }
+                                                  ano16 = (parseFloat(ano16) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez15 = true
+                                             }
+                                             if (x > 181 && x <= 193 && y == 17) {
+                                                  if (fez16 == false) {
+                                                       ano17 = ano16
+                                                  }
+                                                  ano17 = (parseFloat(ano17) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez16 = true
+                                             }
+                                             if (x > 193 && x <= 215 && y == 18) {
+                                                  if (fez17 == false) {
+                                                       ano18 = ano17
+                                                  }
+                                                  ano18 = (parseFloat(ano18) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez17 = true
+                                             }
+                                             if (x > 205 && x <= 227 && y == 19) {
+                                                  if (fez18 == false) {
+                                                       ano19 = ano18
+                                                  }
+                                                  ano19 = (parseFloat(ano19) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez18 = true
+                                             }
+                                             if (x > 227 && x <= 239 && y == 20) {
+                                                  if (fez19 == false) {
+                                                       ano20 = ano19
+                                                  }
+                                                  ano20 = (parseFloat(ano20) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez19 = true
+                                             }
+                                             if (x > 239 && x <= 251 && y == 21) {
+                                                  if (fez20 == false) {
+                                                       ano21 = ano20
+                                                  }
+                                                  ano21 = (parseFloat(ano21) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez20 = true
+                                             }
+                                             if (x > 251 && x <= 263 && y == 22) {
+                                                  if (fez21 == false) {
+                                                       ano22 = ano21
+                                                  }
+                                                  ano22 = (parseFloat(ano22) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez21 = true
+                                             }
+                                             if (x > 263 && x <= 275 && y == 23) {
+                                                  if (fez22 == false) {
+                                                       ano23 = ano22
+                                                  }
+                                                  ano23 = (parseFloat(ano23) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez22 = true
+                                             }
+                                             if (x > 275 && x <= 287 && y == 24) {
+                                                  if (fez23 == false) {
+                                                       ano24 = ano23
+                                                  }
+                                                  ano24 = (parseFloat(ano24) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez23 = true
+                                             }
+                                             if (x > 287 && y == 25) {
+                                                  if (fez24 == false) {
+                                                       ano25 = ano24
+                                                  }
+                                                  ano25 = (parseFloat(ano25) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
+                                                  fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
+                                                  minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
+                                                  fez24 = true
+                                             }
+                                        }
+                                        fluxoAno25.push({ y, ano, fatura, minimo, pmt })
+                                   }
+                                   invest_ano.ano1 = ano1
+                                   invest_ano.ano2 = ano2
+                                   invest_ano.ano3 = ano3
+                                   invest_ano.ano4 = ano4
+                                   invest_ano.ano5 = ano5
+                                   invest_ano.ano6 = ano6
+                                   invest_ano.ano7 = ano7
+                                   invest_ano.ano8 = ano8
+                                   invest_ano.ano9 = ano9
+                                   invest_ano.ano10 = ano10
+                                   invest_ano.ano11 = ano11
+                                   invest_ano.ano12 = ano12
+                                   invest_ano.ano13 = ano13
+                                   invest_ano.ano14 = ano14
+                                   invest_ano.ano15 = ano15
+                                   invest_ano.ano16 = ano16
+                                   invest_ano.ano17 = ano17
+                                   invest_ano.ano18 = ano18
+                                   invest_ano.ano19 = ano19
+                                   invest_ano.ano20 = ano20
+                                   invest_ano.ano21 = ano21
+                                   invest_ano.ano22 = ano22
+                                   invest_ano.ano23 = ano23
+                                   invest_ano.ano24 = ano24
+                                   invest_ano.ano25 = ano25
+                                   invest_ano.save().then(() => {
+
+                                        res.render('projeto/investimento', { sac, fluxoAno25, fluxo25, cliente, projeto, investimento, dimensionamento, medcon, parmed, totpmt, totamort, totjuros })
+                                   }).catch((err) => {
+                                        req.flash('error_msg', 'Falha ao salvar o investimento.')
+                                        res.redirect('/projeto/investimento/' + req.params.id)
+                                   })
+                              }).catch((err) => {
+                                   req.flash('error_msg', 'Falha ao encontrar o dimensionamento.')
+                                   res.redirect('/projeto/investimento/' + req.params.id)
+                              })
                          }).catch((err) => {
-                              req.flash('error_msg', 'Falha ao encontrar o dimensionamento.')
+                              req.flash('error_msg', 'Falha ao encontrar o investimento.')
                               res.redirect('/projeto/investimento/' + req.params.id)
                          })
                     }).catch((err) => {
@@ -1782,7 +2433,7 @@ router.post("/novo", ehAdmin, (req, res) => {
 
           var valorOcp = 0
 
-          var checkUni = 'unckeched'
+          var checkUnb = 'unckeched'
 
           //Valida valor Equipamento Detalhado
           if (req.body.valorEqu != '') {
@@ -2202,7 +2853,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                         //if (req.body.equipamento != '' || req.body.equipamento != 0) {
                                         //     valorProjeto = (parseFloat(req.body.equipamento) / (1 - (parseFloat(empresa.markup) / 100))).toFixed(2)
                                         //} else {
-                                             valorProjeto = 0
+                                        valorProjeto = 0
                                         //}
                                    } else {
                                         valorProjeto = req.body.valor
