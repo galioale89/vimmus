@@ -20,20 +20,22 @@ router.get('/analisegeral/', ehAdmin, (req, res) => {
     Realizado.find({ user: _id }).sort({ datafim: 'asc' }).lean().then((realizado) => {
         realizado.forEach((element) => {
             Projetos.findOne({ _id: element.projeto }).then((projeto) => {
-                if (projeto.ehDireto) {
+
+                // if (projeto.ehDireto) {
                     if (projeto.qtdmod > 0) {
                         qtdmod = qtdmod + projeto.qtdmod
                     } else {
                         qtdmod = qtdmod + 0
                     }
-                } else {
-                    if (projeto.unimod != '' || typeof projeto.unimod != 'undefined'){
-                        qtdmod = qtdmod + projeto.unimod
-                    }
-
-                }
-                console.log('projeto._id=>'+element._id)
+                // }
+                // } else {
+                //     if (projeto.unimod != '' || typeof projeto.unimod != 'undefined'){
+                //         qtdmod = qtdmod + projeto.unimod
+                //     }
+                // }
+                console.log('realizado._id=>'+element._id)
                 console.log("potencia=>"+element.potencia)
+                console.log("qtdmod=>"+qtdmod)
                 if (element.potencia != '' && typeof element.potencia != 'undefined'){
                     potencia = parseFloat(potencia) + parseFloat(element.potencia)
                 }

@@ -41,8 +41,8 @@
                                     <label class='col-form-label col-form-label-sm'>Quantidade de Módulos: </label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type='Number' class="form-control form-control-sm" name='plaQtdMod'
-                                        value='{{vistoria.plaQtdMod}}'>
+                                    <input type='number' class="form-control form-control-sm" name='plaQtdMod'
+                                        {{#if vistoria.plaQtdMod}}value='{{vistoria.plaQtdMod}}'{{else}}{{#if projeto.qtdmod}}value='{{projeto.qtdmod}}'{{else}}value='{{detalhe.unidadeMod}}'{{/if}}{{/if}}>
                                 </div>
                             </div>
                             <div class='row mt-1'>
@@ -50,7 +50,7 @@
                                     <label class='col-form-label col-form-label-sm'>Potência dos Módulos: </label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type='Number' class="form-control form-control-sm" name='plaWattMod'
+                                    <input type='number' class="form-control form-control-sm" name='plaWattMod'
                                         value='{{vistoria.plaWattMod}}'>
                                 </div>
                             </div>
@@ -59,7 +59,7 @@
                                     <label class='col-form-label col-form-label-sm'>Quantidade de Inversores: </label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type='Number' class="form-control form-control-sm" name='plaQtdInv'
+                                    <input type='number' class="form-control form-control-sm" name='plaQtdInv'
                                         value='{{vistoria.plaQtdInv}}'>
                                 </div>
                             </div>
@@ -68,7 +68,7 @@
                                     <label class='col-form-label col-form-label-sm'>Potência do Inversor: </label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type='Number' class="form-control form-control-sm" name='plaKwpInv'
+                                    <input type='number' class="form-control form-control-sm" name='plaKwpInv'
                                         value='{{vistoria.plaKwpInv}}'>
                                 </div>
                             </div>
@@ -79,7 +79,7 @@
                                     <label class='col-form-label col-form-label-sm'>Dimensão Área(m2): </label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type='Number' class="form-control form-control-sm" name='plaDimArea'
+                                    <input type='number' class="form-control form-control-sm" name='plaDimArea'
                                         value='{{vistoria.plaDimArea}}'>
                                 </div>
                                 </table>
@@ -89,7 +89,7 @@
                                     <label class='col-form-label col-form-label-sm'>Quantidade de String: </label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type='Number' class="form-control form-control-sm" name='plaQtdString'
+                                    <input type='number' class="form-control form-control-sm" name='plaQtdString'
                                         value='{{vistoria.plaQtdString}}'>
                                 </div>
                             </div>
@@ -98,7 +98,7 @@
                                     <label class='col-form-label col-form-label-sm'>Módulos por String: </label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type='Number' class="form-control form-control-sm" name='plaModString'
+                                    <input type='number' class="form-control form-control-sm" name='plaModString'
                                         value='{{vistoria.plaModString}}'>
                                 </div>
                             </div>
@@ -107,7 +107,7 @@
                                     <label class='col-form-label col-form-label-sm'>Quantidade de Estruturas: </label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type='Number' class="form-control form-control-sm" name='plaQtdEst'
+                                    <input type='number' class="form-control form-control-sm" name='plaQtdEst'
                                         value='{{vistoria.plaQtdEst}}'>
                                 </div>
                             </div>

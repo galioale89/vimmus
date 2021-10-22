@@ -3825,73 +3825,92 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
 router.post('/planejamento', ehAdmin, (req, res) => {
     const { _id } = req.user
     // console.log('req.body.id=>' + req.body.id)
-    Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
-        // console.log('vistoria=>' + vistoria)
-        if (vistoria != '' && typeof vistoria != 'undefined' && vistoria != null) {
-            vistoria.plaQtdMod = req.body.plaQtdMod
-            vistoria.plaWattMod = req.body.plaWattMod
-            vistoria.plaQtdInv = req.body.plaQtdInv
-            vistoria.plaKwpInv = req.body.plaKwpInv
-            vistoria.plaDimArea = req.body.plaDimArea
-            vistoria.plaQtdString = req.body.plaQtdString
-            vistoria.plaModString = req.body.plaModString
-            vistoria.plaQtdEst = req.body.plaQtdEst
-            vistoria.save().then(() => {
-                Detalhado.findOne({ projeto: req.body.id }).then((detalhe) => {
-                    if (detalhe != '' && typeof detalhe != 'undefined' && detalhe != null) {
-                        detalhe.projeto = req.body.id
-                        detalhe.unidadeMod = req.body.plaQtdMod
-                        detalhe.save().then(() => {
-                            req.flash('success_msg', 'Vistoria salva com sucesso.')
-                            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+    Projeto.findOne({ _id: req.body.id }).then((projeto) => {
+        Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
+            // console.log('vistoria=>' + vistoria)
+            if (vistoria != '' && typeof vistoria != 'undefined' && vistoria != null) {
+                vistoria.plaQtdMod = req.body.plaQtdMod
+                vistoria.plaWattMod = req.body.plaWattMod
+                vistoria.plaQtdInv = req.body.plaQtdInv
+                vistoria.plaKwpInv = req.body.plaKwpInv
+                vistoria.plaDimArea = req.body.plaDimArea
+                vistoria.plaQtdString = req.body.plaQtdString
+                vistoria.plaModString = req.body.plaModString
+                vistoria.plaQtdEst = req.body.plaQtdEst
+                vistoria.save().then(() => {
+                    projeto.qtdmod = req.body.plaQtdMod
+                    projeto.totint = parseFloat(req.body.plaQtdMod) * parseFloat(projeto.rspmod)
+                    projeto.save().then(() => {
+                        Detalhado.findOne({ projeto: req.body.id }).then((detalhe) => {
+                            if (detalhe != '' && typeof detalhe != 'undefined' && detalhe != null) {
+                                detalhe.projeto = req.body.id
+                                detalhe.unidadeMod = req.body.plaQtdMod
+                                detalhe.save().then(() => {
+                                    req.flash('success_msg', 'Vistoria salva com sucesso.')
+                                    res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+                                })
+                            } else {
+                                const detalhe = {
+                                    projeto: req.body.id,
+                                    unidadeMod: req.body.plaQtdMod
+                                }
+                                new Detalhado(detalhe).save().then(() => {
+                                    projeto.qtdmod = req.body.plaQtdMod
+                                    projeto.totint = parseFloat(req.body.plaQtdMod) * parseFloat(projeto.rspmod)
+                                    projeto.save().then(()=>{
+                                        req.flash('success_msg', 'Vistoria salva com sucesso.')
+                                        res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+                                    })
+
+                                })
+                            }
                         })
-                    } else {
-                        const detalhe = {
-                            projeto: req.body.id,
-                            unidadeMod: req.body.plaQtdMod
-                        }
-                        new Detalhado(detalhe).save().then(() => {
-                            req.flash('success_msg', 'Vistoria salva com sucesso.')
-                            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
-                        })
-                    }
+                    })
                 })
-            })
-        } else {
-            const vistoria = {
-                user: _id,
-                projeto: req.body.id,
-                plaQtdMod: req.body.plaQtdMod,
-                plaWattMod: req.body.plaWattMod,
-                plaQtdInv: req.body.plaQtdInv,
-                plaKwpInv: req.body.plaKwpInv,
-                plaDimArea: req.body.plaDimArea,
-                plaQtdString: req.body.plaQtdString,
-                plaModString: req.body.plaModString,
-                plaQtdEst: req.body.plaQtdEst
+            } else {
+                const vistoria = {
+                    user: _id,
+                    projeto: req.body.id,
+                    plaQtdMod: req.body.plaQtdMod,
+                    plaWattMod: req.body.plaWattMod,
+                    plaQtdInv: req.body.plaQtdInv,
+                    plaKwpInv: req.body.plaKwpInv,
+                    plaDimArea: req.body.plaDimArea,
+                    plaQtdString: req.body.plaQtdString,
+                    plaModString: req.body.plaModString,
+                    plaQtdEst: req.body.plaQtdEst
+                }
+                new Vistoria(vistoria).save().then(() => {
+                    Detalhado.findOne({ projeto: req.body.id }).then((detalhe) => {
+                        if (detalhe._id != '' && typeof detalhe._id != 'undefined' && detalhe != null) {
+                            detalhe.projeto = req.body.id
+                            detalhe.unidadeMod = req.body.plaQtdMod
+                            detalhe.save().then(() => {
+                                projeto.qtdmod = req.body.plaQtdMod
+                                projeto.totint = parseFloat(req.body.plaQtdMod) * parseFloat(projeto.rspmod)
+                                projeto.save().then(() => {
+                                    req.flash('success_msg', 'Vistoria salva com sucesso.')
+                                    res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+                                })
+                            })
+                        } else {
+                            const detalhe = {
+                                projeto: req.body.id,
+                                unidadeMod: req.body.plaQtdMod
+                            }
+                            new Detalhado(detalhe).save().then(() => {
+                                projeto.qtdmod = req.body.plaQtdMod
+                                projeto.totint = parseFloat(req.body.plaQtdMod) * parseFloat(projeto.rspmod)
+                                projeto.save().then(() => {
+                                    req.flash('success_msg', 'Vistoria salva com sucesso.')
+                                    res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+                                })
+                            })
+                        }
+                    })
+                })
             }
-            new Vistoria(vistoria).save().then(() => {
-                Detalhado.findOne({ projeto: req.body.id }).then((detalhe) => {
-                    if (detalhe._id != '' && typeof detalhe._id != 'undefined' && detalhe != null) {
-                        detalhe.projeto = req.body.id
-                        detalhe.unidadeMod = req.body.plaQtdMod
-                        detalhe.save().then(() => {
-                            req.flash('success_msg', 'Vistoria salva com sucesso.')
-                            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
-                        })
-                    } else {
-                        const detalhe = {
-                            projeto: req.body.id,
-                            unidadeMod: req.body.plaQtdMod
-                        }
-                        new Detalhado(detalhe).save().then(() => {
-                            req.flash('success_msg', 'Vistoria salva com sucesso.')
-                            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
-                        })
-                    }
-                })
-            })
-        }
+        })
     })
 })
 
