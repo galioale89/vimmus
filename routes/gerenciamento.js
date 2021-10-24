@@ -9,6 +9,7 @@ require('../model/Cronograma')
 require('../model/Tarefas')
 require('../model/Vistoria')
 require('../model/Plano')
+require('../model/Componente')
 
 const nodemailer = require('nodemailer')
 const bcrypt = require("bcryptjs")
@@ -42,6 +43,7 @@ const Tarefas = mongoose.model('tarefas')
 const Equipe = mongoose.model('equipe')
 const Vistoria = mongoose.model('vistoria')
 const Plano = mongoose.model('plano')
+const Componente = mongoose.model('componente')
 
 const comparaDatas = require('../resources/comparaDatas')
 const dataBusca = require('../resources/dataBusca')
@@ -3431,6 +3433,9 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                 prj_entrega.dataIns = dataMensagem(req.body.dateateini)
                 //console.log('dataMensagem(req.body.dateateini)=>' + req.body.dateateini)
                 prj_entrega.valDataIns = req.body.dateateini
+                prj_entrega.checkAte = checkAte
+                prj_entrega.checkInv = checkInv
+                prj_entrega.checkMod = checkMod
                 prj_entrega.save().then(() => {
                     //console.log('salvou o projeto')
                     if (req.body.executando == 'true') {
@@ -3959,12 +3964,14 @@ router.get('/vistoriaPla/:id', ehAdmin, (req, res) => {
         //console.log('projeto._id=>' + projeto._id)
         Vistoria.findOne({ projeto: projeto._id }).lean().then((vistoria) => {
             Detalhado.findOne({ projeto: req.params.id }).lean().then((detalhe) => {
-                if (detalhe._id != '' && typeof detalhe != 'undefined') {
-                    //console.log('vistoria=>' + vistoria)
-                    res.render('vistoria/planejamento', { projeto, vistoria, detalhe })
-                } else {
-                    res.render('vistoria/planejamento', { projeto, vistoria })
-                }
+                Componente.find().lean().then((componentes)=>{
+                    if (detalhe._id != '' && typeof detalhe != 'undefined') {
+                        //console.log('vistoria=>' + vistoria)
+                        res.render('vistoria/planejamento', { projeto, vistoria, detalhe, componentes })
+                    } else {
+                        res.render('vistoria/planejamento', { projeto, vistoria })
+                    }
+                })
             })
         })
     })

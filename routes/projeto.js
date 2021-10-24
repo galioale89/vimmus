@@ -92,7 +92,7 @@ router.get("/consulta", ehAdmin, (req, res) => {
      })
 })
 
-router.get('/dimensionamento/:id', ehAdmin, (req, res) => {
+router.get('/dimensiona/:id', ehAdmin, (req, res) => {
      var td2 = 'none'
      var td3 = 'none'
      var select1 = 'selected'
@@ -122,16 +122,16 @@ router.get('/dimensionamento/:id', ehAdmin, (req, res) => {
      })
 })
 
-router.get('/dimensionamento/', ehAdmin, (req, res) => {
+router.get('/dimensionamento/:tipo', ehAdmin, (req, res) => {
      var td2 = 'none'
      var td3 = 'none'
-     res.render('projeto/dimensionamento', { td2, td3 })
+     res.render('projeto/dimensionamento', { td2, td3, tipo: req.params.id })
 })
 
 router.post('/dimensionar', ehAdmin, (req, res) => {
      const { _id } = req.user
      const id_prj = req.body.id_prj
-
+     var ehVinculo 
      var dime1
      var dime2
      var consumo1
@@ -422,6 +422,11 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
      var dime = Object.assign(dime2, dime1)
 
      if (id_prj == '') {
+          if (req.body.tipo == 1){
+               ehVinculo = false
+          }else{
+               ehVinculo = true
+          }
           new Dimensionamento(dime).save().then(() => {
                Dimensionamento.findOne().sort({ field: 'asc', _id: -1 }).then((dimensionamento) => {
                     //console.log('novo projeto')
@@ -430,10 +435,11 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
                          cidade: req.body.cidade,
                          uf: req.body.uf,
                          potencia: potencia,
+                         ehVinculo: ehVinculo,
                          user: _id
                     }
                     new Projeto(novo_projeto).save().then(() => {
-                         res.redirect('/projeto/dimensionamento/' + dimensionamento._id)
+                         res.redirect('/projeto/dimensiona/' + dimensionamento._id)
                     })
                })
           })
@@ -456,7 +462,7 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
                               //console.log('dimensionamento._id=>' + dimensionamento._id)
                               projeto.save().then(() => {
                                    //console.log('projeto salvo')
-                                   res.redirect('/projeto/dimensionamento/' + dimensionamento._id)
+                                   res.redirect('/projeto/dimensiona/' + dimensionamento._id)
                               }).catch((err) => {
                                    req.flash('error_msg', 'Houve um erro ao salvar o projeto.')
                                    res.redirect('/configuracao/consultaempresa')
@@ -717,6 +723,46 @@ router.get('/projetotarefa', ehAdmin, (req, res) => {
           })
      }).catch((err) => {
           req.flash('error_msg', 'houve um erro ao encontrar a empresa.')
+          res.redirect('/projeto/novo')
+     })
+})
+
+router.get('/projetotarefa/:id', ehAdmin, (req, res) => {
+     const { _id } = req.user
+     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
+          Dimensionamento.findOne({ _id: projeto.dimensionamento }).lean().then((dimensionamento) => {
+               Empresa.find({ user: _id }).lean().then((empresa) => {
+                    Configuracao.find({ user: _id }).lean().then((configuracao) => {
+                         Pessoa.find({ ehVendedor: true, user: _id }).lean().then((vendedor) => {
+                              Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {
+                                   Cliente.find({ user: _id, sissolar: 'checked' }).lean().then((cliente) => {
+                                        res.render("projeto/projetodia", { projeto, dimensionamento, empresa, configuracao, vendedor, responsavel, cliente, troca_dim: 'checked' })
+                                   }).catch((err) => {
+                                        req.flash('error_msg', 'Houve um erro ao encontrar um cliente.')
+                                        res.redirect('/projeto/novo')
+                                   })
+                              }).catch((err) => {
+                                   req.flash('error_msg', 'Houve um erro ao encontrar o responsável.')
+                                   res.redirect('/projeto/novo')
+                              })
+                         }).catch((err) => {
+                              req.flash('error_msg', 'Houve um erro ao encontrar um vendedor.')
+                              res.redirect('/projeto/novo')
+                         })
+                    }).catch((err) => {
+                         req.flash('error_msg', 'Houve um erro ao encontrar a configuração.')
+                         res.redirect('/projeto/novo')
+                    })
+               }).catch((err) => {
+                    req.flash('error_msg', 'houve um erro ao encontrar a empresa.')
+                    res.redirect('/projeto/novo')
+               })
+          }).catch((err) => {
+               req.flash('error_msg', 'houve um erro ao encontrar o dimensionamento.')
+               res.redirect('/projeto/novo')
+          })
+     }).catch((err) => {
+          req.flash('error_msg', 'houve um erro ao encontrar o projeto.')
           res.redirect('/projeto/novo')
      })
 })
@@ -1018,12 +1064,12 @@ router.get('/alocacao/:id', ehAdmin, (req, res) => {
                                                   encontrou_ins = false
                                                   for (i = 0; i < lista_instaladores.length; i++) {
                                                        if (lista_instaladores[i] == element.nome) {
-                                                            dentro_ins.push({ nome: element.nome, custo: element.custo })
+                                                            dentro_ins.push({ id: element._id, nome: element.nome, custo: element.custo })
                                                             encontrou_ins = true
                                                        }
                                                   }
                                                   if (encontrou_ins == false) {
-                                                       fora_ins.push({ nome: element.nome })
+                                                       fora_ins.push({ id: element._id, nome: element.nome })
                                                   }
                                                   qi++
                                              })
@@ -1069,12 +1115,12 @@ router.get('/alocacao/:id', ehAdmin, (req, res) => {
                                                   encontrou_ele = false
                                                   for (i = 0; i < lista_eletricistas.length; i++) {
                                                        if (lista_eletricistas[i] == element.nome) {
-                                                            dentro_ele.push({ nome: element.nome, custo: element.custo })
+                                                            dentro_ele.push({ id: element._id, nome: element.nome, custo: element.custo })
                                                             encontrou_ele = true
                                                        }
                                                   }
                                                   if (encontrou_ele == false) {
-                                                       fora_ele.push({ nome: element.nome })
+                                                       fora_ele.push({ id: element._id, nome: element.nome })
                                                   }
                                                   qe++
                                              })
@@ -1748,7 +1794,7 @@ router.get('/investimento/:id', ehAdmin, (req, res) => {
                                              if (x > 23 && x <= 35 && y == 3) {
                                                   if (fez2 == false) {
                                                        ano3 = ano2
-                                                  }    
+                                                  }
                                                   ano3 = (parseFloat(ano3) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
                                                   pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
                                                   fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
@@ -1764,7 +1810,7 @@ router.get('/investimento/:id', ehAdmin, (req, res) => {
                                                   console.log(ano)
                                                   console.log(fluxo25[x].fatura)
                                                   console.log(fluxo25[x].pmt)
-                                                  console.log(fluxo25[x].minimo )                                                  
+                                                  console.log(fluxo25[x].minimo)
                                                   ano4 = (parseFloat(ano4) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
                                                   console.log(ano4)
                                                   pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
@@ -3509,7 +3555,7 @@ router.post("/salvarequipe", ehAdmin, (req, res) => {
                // })                                       
                // })
                Equipe.findOne({ projeto: req.body.id }).then((equipe_prj) => {
-                    equipe_prj.nome = equipe.nome
+                    equipe_prj.nome_equipe = equipe.nome
                     equipe_prj.custoins = req.body.custoIns
                     equipe_prj.ins0 = equipe.ins0
                     equipe_prj.ins1 = equipe.ins1

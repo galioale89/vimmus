@@ -98,7 +98,7 @@ router.post('/novo', ehAdmin, (req, res) => {
             })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível cadastrar o cliente.')
-            res.redirect('/Cliente/novo')
+            res.redirect('/cliente/novo')
         })
     }
 })

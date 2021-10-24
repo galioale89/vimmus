@@ -3887,6 +3887,7 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
     Pessoa.find({ user: _id }).lean().then((pessoas) => {
         Pessoa.findOne({ _id: req.params.id, user: _id }).lean().then((pessoa) => {
+            console.log('pessoa.funins=>'+pessoa.funins)
             if (pessoa.ehVendedor) {
                 //console.log(pessoa.nome)
                 //console.log('user=>' + _id)
