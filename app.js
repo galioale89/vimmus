@@ -19,6 +19,7 @@ const cliente = require('./routes/cliente')
 const usuario = require('./routes/usuario')
 const administrador = require('./routes/administrador')
 const relatorios = require('./routes/relatorios')
+const componente = require('./routes/componente')
 
 const Projeto = mongoose.model('projeto')
 const Realizado = mongoose.model('realizado')
@@ -282,6 +283,7 @@ app.use('/cliente', cliente)
 app.use('/usuario', usuario)
 app.use('/administrador', administrador)
 app.use('/relatorios/', relatorios)
+app.use('/componente/', componente)
 
 //Outros
 //Acesso ao localhost

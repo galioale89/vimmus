@@ -1113,7 +1113,17 @@ const Projeto = new Schema({
         require: true,
         trim: true
     },   
-    situacao: {
+    checkMod: {
+        type: String,
+        require: true,
+        trim: true
+    },    
+    checkInv: {
+        type: String,
+        require: true,
+        trim: true
+    },        
+    checkAte: {
         type: String,
         require: true,
         trim: true

@@ -33,6 +33,10 @@ const Equipe = new Schema({
     type: String,
     require: false
   },
+  nome_equipe: {
+    type: String,
+    require: false
+  },  
   custoins: {
     type: Number,
     require: false
