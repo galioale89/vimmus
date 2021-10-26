@@ -362,7 +362,7 @@ const Vistoria = new Schema({
         require: false
     },    
     fotoPlaSombra:{
-        type: Date,
+        type: String,
         require: false
     },     
     plaAte:{
@@ -386,7 +386,7 @@ const Vistoria = new Schema({
         require: false
     },     
     fotoPlaArea:{
-        type: Date,
+        type: String,
         require: false
     },        
     plaLocalStb:{

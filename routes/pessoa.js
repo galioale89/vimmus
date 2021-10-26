@@ -6,6 +6,7 @@ const router = express.Router()
 
 //const path = require('path')
 const app = express()
+
 app.set('view engine', 'ejs')
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -4731,7 +4732,7 @@ router.post('/novo', uploadfoto.single('foto'), ehAdmin, (req, res) => {
                 sucesso.push({ texto: 'Pessoa adicionada com sucesso' })
             }
             Pessoa.findOne({ user: _id }).sort({ field: 'asc', _id: -1 }).lean().then((pessoa) => {
-                res.render('mdo/editpessoas', { sucesso: sucesso, pessoa: pessoa })
+                res.render('mdo/editpessoas', { sucesso, pessoa })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar a pessoa')
                 res.redirect('/pessoa/novo')

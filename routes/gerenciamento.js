@@ -1,6 +1,3 @@
-const express = require('express')
-const router = express.Router()
-
 require('../app')
 require('../model/Empresa')
 require('../model/Cliente')
@@ -10,6 +7,23 @@ require('../model/Tarefas')
 require('../model/Vistoria')
 require('../model/Plano')
 require('../model/Componente')
+
+const express = require('express')
+const router = express.Router()
+const app = express()
+const multer = require('multer')
+
+app.set('view engine', 'ejs')
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/upload/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname)
+    }
+})
+const uploadfoto = multer({ storage })
 
 const nodemailer = require('nodemailer')
 const bcrypt = require("bcryptjs")
@@ -58,7 +72,9 @@ const dataHoje = require('../resources/dataHoje')
 const { ehAdmin } = require('../helpers/ehAdmin')
 
 //Configurando pasta de imagens 
-router.use(express.static('imagens'))
+// router.use(express.static('imagens'))
+// router.use(express.static('public/'))
+router.use(express.static('public/upload'))
 
 const TextMessageService = require('comtele-sdk').TextMessageService
 const apiKey = "8dbd4fb5-79af-45d6-a0b7-583a3c2c7d30"
@@ -3036,6 +3052,9 @@ router.post('/custo/', ehAdmin, (req, res) => {
             req.flash('error_msg', 'Não foi possível encontrar o empresa.')
             res.redirect('/gerenciamento/custo/' + req.body.id)
         })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar o projeto.')
+        res.redirect('/gerenciamento/custo/' + req.body.id)
     })
 })
 
@@ -3862,7 +3881,7 @@ router.post('/planejamento', ehAdmin, (req, res) => {
                                 new Detalhado(detalhe).save().then(() => {
                                     projeto.qtdmod = req.body.plaQtdMod
                                     projeto.totint = parseFloat(req.body.plaQtdMod) * parseFloat(projeto.rspmod)
-                                    projeto.save().then(()=>{
+                                    projeto.save().then(() => {
                                         req.flash('success_msg', 'Vistoria salva com sucesso.')
                                         res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
                                     })
@@ -3919,11 +3938,124 @@ router.post('/planejamento', ehAdmin, (req, res) => {
     })
 })
 
+router.post('/salvarSombra', uploadfoto.single('fotoPlaSombra'), ehAdmin, (req, res) => {
+
+    Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
+        
+        // console.log('req.file=>' + req.file.filename)
+        var foto
+        if (req.file.filename != null) {
+            foto = req.file.filename
+        } else {
+            foto = ''
+        }
+
+        console.log('foto=>'+foto)
+
+        vistoria.fotoPlaSombra = foto
+        vistoria.plaSombra = 'checked'
+        vistoria.dtPlaSombra = dataHoje()
+        vistoria.save().then(() => {
+            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi possível salvar a vistoria.')
+            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
+        res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+    })
+})
+
+router.post('/salvarArea', uploadfoto.single('fotoPlaArea'), ehAdmin, (req, res) => {
+
+    Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
+        // console.log('req.file=>' + req.file.filename)
+        var foto
+        if (req.file.filename != null) {
+            foto = req.file.filename
+        } else {
+            foto = ''
+        }
+
+        vistoria.fotoPlaArea = foto
+        vistoria.plaArea = 'checked'
+        vistoria.dtPlaArea = dataHoje()
+        vistoria.save().then(() => {
+            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi possível salvar a vistoria.')
+            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
+        res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+    })
+})
+
+router.post('/salvarInvStb', uploadfoto.single('fotoPlaInvStb'), ehAdmin, (req, res) => {
+
+    Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
+        // console.log('req.file=>' + req.file.filename)
+        var foto
+        if (req.file.filename != null) {
+            foto = req.file.filename
+        } else {
+            foto = ''
+        }
+
+        vistoria.fotoPlaInvStb = foto
+        vistoria.plaInvStb = 'checked'
+        vistoria.dtPlaInvStb = dataHoje()
+        vistoria.save().then(() => {
+            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi possível salvar a vistoria.')
+            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
+        res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+    })
+})
+
+router.post('/salvarAte', uploadfoto.single('fotoPlaAte'), ehAdmin, (req, res) => {
+
+    Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
+        // console.log('req.file=>' + req.file.filename)
+        var foto
+        if (req.file.filename != null) {
+            foto = req.file.filename
+        } else {
+            foto = ''
+        }
+
+        vistoria.fotoPlaAte = foto
+        vistoria.plaAte = 'checked'
+        vistoria.dtPlaAte = dataHoje()
+        vistoria.save().then(() => {
+            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi possível salvar a vistoria.')
+            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
+        res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+    })
+})
+
 router.get('/vistoriaAte/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         Vistoria.findOne({ projeto: req.params.id }).lean().then((vistoria) => {
             res.render('vistoria/aterramento', { projeto, vistoria })
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi encontrar a vistoria.')
+            res.redirect('/menu/')
         })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi encontrar a projeto.')
+        res.redirect('/menu/')
     })
 })
 
@@ -3931,7 +4063,13 @@ router.get('/vistoriaStb/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         Vistoria.findOne({ projeto: req.params.id }).lean().then((vistoria) => {
             res.render('vistoria/stringbox', { projeto, vistoria })
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi encontrar a vistoria.')
+            res.redirect('/menu/')
         })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi encontrar o projeto.')
+        res.redirect('/menu/')
     })
 })
 
@@ -3939,7 +4077,13 @@ router.get('/vistoriaInv/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         Vistoria.findOne({ projeto: req.params.id }).lean().then((vistoria) => {
             res.render('vistoria/inversor', { projeto, vistoria })
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi encontrar a vistoria.')
+            res.redirect('/menu/')
         })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi encontrar o projeto.')
+        res.redirect('/menu/')
     })
 })
 
@@ -3947,7 +4091,13 @@ router.get('/vistoriaEst/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         Vistoria.findOne({ projeto: req.params.id }).lean().then((vistoria) => {
             res.render('vistoria/estrutura', { projeto, vistoria })
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi encontrar a vistoria.')
+            res.redirect('/menu/')
         })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi encontrar o projeto.')
+        res.redirect('/menu/')
     })
 })
 
@@ -3955,7 +4105,13 @@ router.get('/vistoriaMod/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         Vistoria.findOne({ projeto: req.params.id }).lean().then((vistoria) => {
             res.render('vistoria/modulo', { projeto, vistoria })
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi encontrar a vistoria.')
+            res.redirect('/menu/')
         })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi encontrar o projeto.')
+        res.redirect('/menu/')
     })
 })
 
@@ -3964,16 +4120,28 @@ router.get('/vistoriaPla/:id', ehAdmin, (req, res) => {
         //console.log('projeto._id=>' + projeto._id)
         Vistoria.findOne({ projeto: projeto._id }).lean().then((vistoria) => {
             Detalhado.findOne({ projeto: req.params.id }).lean().then((detalhe) => {
-                Componente.find().lean().then((componentes)=>{
+                Componente.find().lean().then((componentes) => {
                     if (detalhe._id != '' && typeof detalhe != 'undefined') {
-                        //console.log('vistoria=>' + vistoria)
+                        // console.log('vistoria.fotoPlaSombra=>' + vistoria.fotoPlaSombra)
                         res.render('vistoria/planejamento', { projeto, vistoria, detalhe, componentes })
                     } else {
                         res.render('vistoria/planejamento', { projeto, vistoria })
                     }
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi encontrado o componente.')
+                    res.redirect('/menu/')
                 })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi encontrado os detalhes.')
+                res.redirect('/menu/')
             })
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi encontrado a vistoria.')
+            res.redirect('/menu/')
         })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi encontrado o projeto.')
+        res.redirect('/menu/')
     })
 })
 
@@ -3981,7 +4149,13 @@ router.get('/vistoriaFinal/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         Vistoria.findOne({ projeto: req.params.id }).lean().then((vistoria) => {
             res.render('vistoria/vistoriaFinal', { projeto, vistoria })
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi encontrado a vistoria.')
+            res.redirect('/menu/')
         })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi encontrado o projeto.')
+        res.redirect('/menu/')
     })
 })
 

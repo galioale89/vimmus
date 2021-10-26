@@ -78,6 +78,7 @@ router.get('/gestao/:id', ehAdmin, (req, res) => {
                               lblDes = 'Dias:'
                               selecionado = 'dia'
                          }
+                         console.log('seleiconado=>'+selecionado)
                          res.render('projeto/customdo/gestao', { projeto, gestor, configuracao, cliente, checkHora, checkDia, typeHrg, typeDrg, typeGes, displayHrs, displayDia, displayTda, escopo, cronograma, vistoria, comunicacao, aquisicao, alocacao, mostraHora, lblDes, selecionado })
                     }).catch((err) => {
                          req.flash('error_msg', 'Nenhum cliente encontrado.')
@@ -656,6 +657,7 @@ router.post('/projetista/', ehAdmin, (req, res) => {
      Projeto.findOne({ _id: req.body.id }).then((projeto) => {
 
           var tothrs = 0
+          var hrsprj = 0
           var totmem
           var totart
           var totate
@@ -667,14 +669,13 @@ router.post('/projetista/', ehAdmin, (req, res) => {
           var toteng = 0
           // var totdes
 
-          //console.log('req.body.selecionado=>' + req.body.selecionado)
+          console.log('req.body.selecionado=>' + req.body.selecionado)
 
           Configuracao.findOne({ _id: projeto.configuracao }).then((configuracao) => {
 
                var conhrs = configuracao.hrstrb
 
-               //console.log('req.body.diasPro=>' + req.body.diasPro)
-               //console.log('req.body.selecionado=>' + req.body.selecionado)
+               console.log('req.body.diasPro=>' + req.body.diasPro)
 
                if (req.body.diasPro != '' && req.body.diasPro != 0 && req.body.selecionado == 'dia') {
 
@@ -767,7 +768,7 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                     }
 
                } else {
-
+                    console.log('tipoCustoPro=>'+projeto.tipoCustoPro)
                     if (projeto.tipoCustoPro == 'hora') {
                          if (!req.body.trbmem || req.body.trbmem == null || typeof req.body.trbmem == undefined) {
                               erros = erros + 'Preencher a unidade de tempo do memorial descritivo.'
@@ -811,51 +812,84 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                          //console.log('totuni=>' + totuni)
                          totsit = (parseFloat(req.body.trbsit) * parseFloat(req.body.vlrhrp)).toFixed(2)
                          //console.log('totsit=>' + totsit)
-                         trbpro = parseFloat(req.body.diasPro) * conhrs
-                         if (req.body.desPro != '' && req.body.desPro != 0 && typeof req.body.desPro != 'undefined') {
-                              totdes = (parseFloat(req.body.desPro) * parseFloat(req.body.vlrhrp)).toFixed(2)
-                              desPro = parseFloat(req.body.desPro)
-                         } else {
-                              desPro = 0
-                         }
+                         // if (req.body.diasPro != ''){
+                         //      trbpro = parseFloat(req.body.diasPro) * conhrs
+                         // }else{
+                         //      trbpro = 0
+                         // }
+                         
 
+                         // if (req.body.desPro != '' && req.body.desPro != 0 && typeof req.body.desPro != 'undefined') {
+                         //      totdes = (parseFloat(req.body.desPro) * parseFloat(req.body.vlrhrp)).toFixed(2)
+                         //      desPro = parseFloat(req.body.desPro)
+                         // } else {
+                         //      desPro = 0
+                         // }
 
                          if (req.body.toteng != '' && typeof req.body.toteng != 'undefined') {
                               toteng = parseFloat(req.body.toteng)
                          } else {
                               toteng = 0
                          }
-                         totpro = (parseFloat(totmem) + parseFloat(totart) + parseFloat(totate) + parseFloat(totdis) + parseFloat(totuni) + parseFloat(totsit) + parseFloat(totdes) + parseFloat(toteng)).toFixed(2)
-                         trbpro = Math.round(parseFloat(req.body.trbmem) + parseFloat(req.body.trbart) + parseFloat(req.body.trbate) + parseFloat(req.body.trbdis) + parseFloat(req.body.trbuni) + parseFloat(req.body.trbsit) + parseFloat(desPro))
-                         //console.log('totpro=>' + totpro)
-                         //console.log('trbpro=>' + trbpro)
+                         totpro = (parseFloat(totmem) + parseFloat(totart) + parseFloat(totate) + parseFloat(totdis) + parseFloat(totuni) + parseFloat(totsit) + parseFloat(toteng)).toFixed(2)
+                         trbpro = Math.round(parseFloat(req.body.trbmem) + parseFloat(req.body.trbart) + parseFloat(req.body.trbate) + parseFloat(req.body.trbdis) + parseFloat(req.body.trbuni) + parseFloat(req.body.trbsit))
+                         console.log('totpro=>' + totpro)
+                         console.log('trbpro=>' + trbpro)
 
                          tothrs = parseFloat(trbpro)
-                         //console.log('tothrs=>' + tothrs)
-                         //console.log('projeto.trbges=>' + projeto.trbges)
-                         //console.log('projeto.trbint=>' + projeto.trbint)
-                         if (projeto.trbges != null) {
+                         console.log('tothrs=>' + tothrs)
+                         console.log('projeto.trbges=>' + projeto.trbges)
+                         
+                         console.log('projeto.trbmod=>' + projeto.trbmod)
+
+                         if (projeto.trbmod != null && projeto.trbmod != '' ) {     
+                              hrsprj = parseFloat(hrsprj) + parseFloat(projeto.trbmod)
+                              tothrs = parseFloat(tothrs) + parseFloat(projeto.trbmod)
+                         }else{
+                              hrsprj = parseFloat(hrsprj) + 0
+                              tothrs = parseFloat(tothrs) + 0
+                         }
+                         if (projeto.trbest != null && projeto.trbest != '') {
+                              hrsprj = parseFloat(hrsprj) + parseFloat(projeto.trbest)
+                              tothrs = parseFloat(tothrs) + parseFloat(projeto.trbest)
+                              //console.log('tothrs=>' + tothrs)
+                         }else{
+                              hrsprj = parseFloat(hrsprj) + 0
+                              tothrs = parseFloat(tothrs) + 0                              
+                         }
+                         if (projeto.trbinv != null && projeto.trbinv != '') {
+                              tothrs = parseFloat(tothrs) + parseFloat(projeto.trbinv)
+                              //console.log('tothrs=>' + tothrs)
+                         }else{
+                              tothrs = parseFloat(tothrs) + 0
+                         }
+                         if (projeto.trbatr != null && projeto.trbatr != '') {
+                              tothrs = parseFloat(tothrs) + parseFloat(projeto.trbatr)
+                              //console.log('tothrs=>' + tothrs)
+                         }else{
+                              tothrs = parseFloat(tothrs) + 0
+                         }                                                         
+                         if (projeto.trbges != null && projeto.trbges != '') {
+                              hrsprj = parseFloat(hrsprj) + parseFloat(projeto.trbges)
                               tothrs = parseFloat(tothrs) + parseFloat(projeto.trbges)
                               //console.log('tothrs=>' + tothrs)
-                         }
-                         if (projeto.trbint != null) {
-                              tothrs = parseFloat(tothrs) + parseFloat(projeto.trbint)
-                              //console.log('tothrs=>' + tothrs)
+                         }else{
+                              hrsprj = parseFloat(hrsprj) + 0
+                              tothrs = parseFloat(tothrs) + 0
                          }
 
-                         var diasObra
-                         var diastr
-                         diasObra = Math.round(parseFloat((projeto.trbmod) + parseFloat(projeto.trbest)) / parseFloat(config.hrstrb))
-                         diastr = Math.round(parseFloat(projeto.tothrs) / parseFloat(config.hrstrb))
+                         
+                         console.log('tothrs=>' + tothrs)
+                         console.log('hrsprj=>' + hrsprj)
 
-                         projeto.diasObra = diasObra
-                         projeto.diastr = diastr
+                         projeto.tothrs = Math.round(tothrs)
+                         projeto.hrsprj = Math.round(hrsprj)
+
 
                          projeto.trbpro = trbpro
-                         //console.log('totpro=>' + totpro)
+                         
                          projeto.totpro = totpro
-                         //console.log('tothrs=>' + tothrs)
-                         projeto.tothrs = tothrs
+                         
                          projeto.tipoCustoPro = req.body.selecionado
                          projeto.vlrhrp = req.body.vlrhrp
                          projeto.trbmem = req.body.trbmem
@@ -873,10 +907,11 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                          projeto.vlrart = req.body.vlrart
                          projeto.totpro_art = parseFloat(totpro) + parseFloat(req.body.vlrart)
                          projeto.desPro = desPro
-                         projeto.vlrDpr = totdes
+                         projeto.toteng = toteng
+                         // projeto.vlrDpr = totdes
 
                          //console.log('req.body.fileMemo=>' + fileMemo)
-                         salvaArquivo('memorial', req.body.fileMemo)
+                         // salvaArquivo('memorial', req.body.fileMemo)
 
                          projeto.save().then(() => {
                               req.flash('success_msg', 'Projeto salvo com sucesso. Aplicar o gerenciamento e os tributos.')
@@ -906,6 +941,7 @@ router.post('/gestao/', ehAdmin, (req, res) => {
      Projeto.findOne({ _id: req.body.id }).then((projeto) => {
 
           var tothrs = 0
+          var hrsprj = 0
           var totesc
           var totvis
           var totcom
@@ -920,7 +956,7 @@ router.post('/gestao/', ehAdmin, (req, res) => {
           Configuracao.findOne({ _id: projeto.configuracao }).then((configuracao) => {
 
                var conhrs = configuracao.hrstrb
-               //console.log('req.body.selecionado=>' + req.body.selecionado)
+               console.log('req.body.selecionado=>' + req.body.selecionado)
                //console.log('req.body.diasGes=>' + req.body.diasGes)
 
                if (req.body.diasGes != '' && req.body.diasGes != 0 && (req.body.selecionado == 'dia')) {
@@ -953,7 +989,6 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                          projeto.totges = (parseFloat(req.body.diasGes) * parseFloat(req.body.vlrdrg)) + parseFloat(totdes)
                          projeto.tothrs = parseFloat(tothrs)
                          //console.log('tothrs=>' + tothrs)
-                         projeto.tipoCustoGes = req.body.selecionado
                          //console.log('req.body.selecionado=>' + req.body.selecionado)
                          projeto.diasGes = parseFloat(req.body.diasGes)
                          //console.log('req.body.diasGes=>' + req.body.diasGes)
@@ -986,6 +1021,7 @@ router.post('/gestao/', ehAdmin, (req, res) => {
 
                } else {
 
+                    
                     if (projeto.tipoCustoGes == 'hora') {
                          if (!req.body.trbvis || req.body.trbvis == null || typeof req.body.trbvis == undefined) {
                               erros = erros + 'Preencher as horas de vistoria.'
@@ -1023,23 +1059,62 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                               totdes = 0
                          }
 
+                         console.log('totvis=>'+totvis)
+                         console.log('totcom=>'+totcom)
+                         console.log('totcro=>'+totcro)
+                         console.log('totaqi=>'+totaqi)
+                         console.log('totrec=>'+totrec)
+                         console.log('totesc=>'+totesc)
+                         console.log('totdes=>'+totdes)
                          totges = (parseFloat(totvis) + parseFloat(totcom) + parseFloat(totcro) + parseFloat(totaqi) + parseFloat(totrec) + parseFloat(totesc) + parseFloat(totdes)).toFixed(2)
                          trbges = Math.round(parseFloat(req.body.trbvis) + parseFloat(req.body.trbcom) + parseFloat(req.body.trbcro) + parseFloat(req.body.trbaqi) + parseFloat(req.body.trbrec) + parseFloat(req.body.trbesc))
 
                          tothrs = parseFloat(trbges)
-                         if (projeto.trbpro != null) {
-                              tothrs = tothrs + parseFloat(projeto.trbpro)
+
+                         console.log('tothrs=>'+tothrs)
+
+                         if (projeto.trbmod != null && projeto.trbmod != '' ) {
+                              hrsprj = parseFloat(hrsprj) + parseFloat(projeto.trbmod)
+                              tothrs = parseFloat(tothrs) + parseFloat(projeto.trbmod)
+                              //console.log('tothrs=>' + tothrs)
+                         }else{
+                              hrsprj = parseFloat(hrsprj) + parseFloat(0)
+                              tothrs = parseFloat(tothrs) + parseFloat(0)
                          }
-                         if (projeto.trbint != null) {
-                              tothrs = tothrs + parseFloat(projeto.trbint)
+                         if (projeto.trbest != null && projeto.trbest != '') {
+                              hrsprj = parseFloat(hrsprj) + parseFloat(projeto.trbest)
+                              tothrs = parseFloat(tothrs) + parseFloat(projeto.trbest)
+                              //console.log('tothrs=>' + tothrs)
+                         }else{
+                              hrsprj = parseFloat(hrsprj) + parseFloat(0)
+                              tothrs = parseFloat(tothrs) + parseFloat(0)                              
+                         }
+                         if (projeto.trbinv != null && projeto.trbinv != '') {
+                              tothrs = parseFloat(tothrs) + parseFloat(projeto.trbinv)
+                              //console.log('tothrs=>' + tothrs)
+                         }else{
+                              tothrs = parseFloat(tothrs) + parseFloat(0)
+                         }
+                         if (projeto.trbatr != null && projeto.trbatr != '') {
+                              tothrs = parseFloat(tothrs) + parseFloat(projeto.trbatr)
+                              //console.log('tothrs=>' + tothrs)
+                         }else{
+                              tothrs = parseFloat(tothrs) + parseFloat(0)
+                         }                                                         
+                         if (projeto.trbpro != null && projeto.trbpro != '') {
+                              hrsprj = parseFloat(hrsprj) + parseFloat(projeto.trbpro)
+                              tothrs = parseFloat(tothrs) + parseFloat(projeto.trbpro)
+                              //console.log('tothrs=>' + tothrs)
+                         }else{
+                              hrsprj = parseFloat(hrsprj) + parseFloat(0)
+                              tothrs = parseFloat(tothrs) + parseFloat(0)
                          }
 
-                         var diasObra
-                         var diastr
-                         diasObra = projeto.diasIns
-                         diastr = parseFloat(req.body.diasGes) + parseFloat(projeto.diasPro) + parseFloat(projeto.diasIns) + parseFloat(req.body.desGes) + parseFloat(projeto.desPro) + parseFloat(projeto.desIns)
-                         projeto.diasObra = diasObra
-                         projeto.diastr = diastr
+                         console.log('tothrs=>'+tothrs)
+                         console.log('hrsprj=>'+hrsprj)
+                         
+                         projeto.tothrs = Math.round(tothrs)
+                         projeto.hrsprj = Math.round(hrsprj)
 
                          projeto.vlrhrg = req.body.vlrhrg
                          projeto.trbvis = req.body.trbvis
@@ -1048,7 +1123,7 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                          projeto.trbaqi = req.body.trbaqi
                          projeto.trbrec = req.body.trbrec
                          projeto.trbesc = req.body.trbesc
-                         projeto.tothrs = tothrs
+                         console.log('req.body.selecionado=>'+req.body.selecionado)
                          projeto.tipoCustoGes = req.body.selecionado
                          projeto.totesc = totesc
                          projeto.totvis = totvis

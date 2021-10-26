@@ -1,6 +1,5 @@
-
 <script>
-        function info_markup() {
+    function info_markup() {
         alert('O percentual de MarkUp representa o ISS, a comissão, os Tributos à recolher e a margem de lucro liquido do projeto .')
     }
 </script>
@@ -10,25 +9,25 @@
     </div>
 
     <form action='/gerenciamento/gerenciamento/' method='post'>
-    
+
         <input type='hidden' name='id' value='{{projeto._id}}'></input>
 
         <!--<div class='btn-group col-12 mx-auto'>-->
-            <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'> <i
-                    class="bi bi-house"></i>Principal</a>
-            <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
-                Gestão</a>
-            <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"></i>
-                Projetista</a>
-            <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"></i>
-                Instalação</a>
-            <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i
-                    class="bi bi-puzzle"></i>
-                Gerenciamento</a>
-            <a href="/gerenciamento/tributos/{{projeto._id}}" class="btn btn-sm botao-menu"><i
-                    class="bi bi-calculator"></i> Custos</a>
-<a href="/projeto/investimento/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
-            Investimento</a>                    
+        <a href='/projeto/edicao/{{projeto._id}}/' class='btn btn-sm botao-menu'> <i
+                class="bi bi-house"></i>Principal</a>
+        <a href="/customdo/gestao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-gear"></i>
+            Gestão</a>
+        <a href="/customdo/projetista/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-pencil"></i>
+            Projetista</a>
+        <a href="/customdo/instalacao/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-tools"></i>
+            Instalação</a>
+        <a href="/gerenciamento/gerenciamento/{{projeto._id}}" class="btn btn-sm botao-menu ativo"><i
+                class="bi bi-puzzle"></i>
+            Gerenciamento</a>
+        <a href="/gerenciamento/custo/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-calculator"></i>
+            Custos</a>
+        <a href="/projeto/investimento/{{projeto._id}}" class="btn btn-sm botao-menu"><i class="bi bi-layers"></i>
+            Investimento</a>
         <!--</div>-->
         <div class="row mt-2">
             <div class="col-md-7">
@@ -38,27 +37,28 @@
                             <div class="row">
                                 <div class="col-md-7">
                                     <label class="fw-bold col-form-label col-form-label-sm">Horas Totais do Projeto:
-                                    </label><br>                
+                                    </label><br>
                                     <label class="mt-1 fw-bold col-form-label col-form-label-sm">Dias Totais do Projeto:
-                                    </label><br>                                                                        
+                                    </label><br>
                                     <label class="mt-2 fw-bold col-form-label col-form-label-sm">Número de Instaladores:
-                                    </label><br>                         
+                                    </label><br>
                                     <label class="mt-1 fw-bold col-form-label col-form-label-sm">Dias de Obras Estimado:
                                     </label>
                                 </div>
                                 <div class="col-md-5 text-center">
-                                    <div class=""
-                                        style="border:rgba(68, 96, 238,0.5) 1px solid;border-radius: 5px;">
+                                    <div class="" style="border:rgba(68, 96, 238,0.5) 1px solid;border-radius: 5px;">
                                         <label class="col-form-label col-form-label-sm"> {{projeto.tothrs}} </label>
-                                    </div>    
-                                    <div class="mt-1" style="border:rgba(68, 96, 238,0.5) 1px solid;border-radius: 5px;">
+                                    </div>
+                                    <div class="mt-1"
+                                        style="border:rgba(68, 96, 238,0.5) 1px solid;border-radius: 5px;">
                                         <label class="col-form-label col-form-label-sm"> {{projeto.diastr}} </label>
-                                    </div>                                                                    
+                                    </div>
                                     <div class="mt-1"
                                         style="border:rgba(68, 96, 238,0.5) 1px solid;border-radius: 5px;">
                                         <label class="col-form-label col-form-label-sm">{{projeto.qtdins}}</label>
                                     </div>
-                                    <div class="mt-1" style="border:rgba(68, 96, 238,0.5) 1px solid;border-radius: 5px;">
+                                    <div class="mt-1"
+                                        style="border:rgba(68, 96, 238,0.5) 1px solid;border-radius: 5px;">
                                         <label class="col-form-label col-form-label-sm"> {{projeto.diasObra}} </label>
                                     </div>
                                 </div>
@@ -169,8 +169,8 @@
                     <div class="col-md-6">
                         <div class="row">
                             <div class="col-md-5 text-center">
-                                <label class="fw-bold col-form-label col-form-label-sm">MarkUp(%)<i class="bi bi-info-circle"
-                                    onmousemove='info_markup()'></i></label>
+                                <label class="fw-bold col-form-label col-form-label-sm">MarkUp(%)<i
+                                        class="bi bi-info-circle" onmousemove='info_markup()'></i></label>
                             </div>
                             <div class="col-md-7 text-center">
                                 <label class="fw-bold col-form-label col-form-label-sm">Faturar Material?</label>

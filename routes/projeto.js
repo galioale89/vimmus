@@ -125,7 +125,7 @@ router.get('/dimensiona/:id', ehAdmin, (req, res) => {
 router.get('/dimensionamento/:tipo', ehAdmin, (req, res) => {
      var td2 = 'none'
      var td3 = 'none'
-     res.render('projeto/dimensionamento', { td2, td3, tipo: req.params.id })
+     res.render('projeto/dimensionamento', { td2, td3, tipo: req.params.tipo })
 })
 
 router.post('/dimensionar', ehAdmin, (req, res) => {
@@ -490,19 +490,19 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
      var equipeins = 'Nenhuma pessoa alocada.'
      var equipevis = 'Nenhuma pessoa alocada.'
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
-          //console.log('encontrou projeto')
+          console.log('encontrou projeto')
           Realizado.findOne({ projeto: projeto._id }).lean().then((realizado) => {
-               //console.log('encontrou realizado')
+               console.log('encontrou realizado')
                Pessoa.findOne({ _id: projeto.funres }).lean().then((responsavel) => {
-                    //console.log('encontrou pessoa')
+                    console.log('encontrou pessoa')
                     Cliente.findOne({ _id: projeto.cliente }).lean().then((cliente) => {
-                         //console.log('encontrou cliente')
+                         console.log('encontrou cliente')
                          Empresa.findOne({ _id: projeto.empresa }).lean().then((empresa) => {
-                              //console.log('encontrou empresa')
+                              console.log('encontrou empresa')
                               Cronograma.findOne({ projeto: projeto._id }).lean().then((cronograma) => {
-                                   //console.log('encontrou cronograma')
+                                   console.log('encontrou cronograma')
                                    Equipe.findOne({ projeto: projeto._id }).lean().then((equipe) => {
-                                        //console.log('equipe.pla0=>' + equipe.pla0)
+                                        console.log('equipe.pla0=>' + equipe.pla0)
                                         if (typeof equipe.pla0 != 'undefined') {
                                              equipepla = equipe.pla0 + '|' + equipe.pla1 + '|' + equipe.pla2 + '|' + equipe.pla3 + '|' + equipe.pla4 + '|' + equipe.pla5
                                         }
@@ -565,7 +565,7 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
                                              equipepla, equipepro, equipeate, equipeinv, equipepnl, equipeeae, equipeins, equipevis
                                         })
                                    }).catch((err) => {
-                                        req.flash('error_msg', 'Nenhum cronograma encontrado.')
+                                        req.flash('error_msg', 'Nenhuma equipe encontrada.')
                                         res.redirect('/projeto/consulta')
                                    })
                               }).catch((err) => {
@@ -2479,7 +2479,7 @@ router.post("/novo", ehAdmin, (req, res) => {
 
           var valorOcp = 0
 
-          var checkUnb = 'unckeched'
+          var checkUni = 'unckeched'
 
           //Valida valor Equipamento Detalhado
           if (req.body.valorEqu != '') {
@@ -2919,13 +2919,16 @@ router.post("/novo", ehAdmin, (req, res) => {
                                         tipoCustoPro = 'hora'
                                         tipoCustoIns = 'hora'
                                         checkHora = 'checked'
+                                        displayHrs = 'inline'
+                                        typeHrg = 'text'
+                                        typeDrg = 'hidden'
+                                        selecionado = 'hora'
                                    } else {
                                         tipoCustoGes = 'dia'
                                         tipoCustoPro = 'dia'
                                         tipoCustoIns = 'dia'
                                         checkDia = 'checked'
                                         typeGes = 'text'
-                                        typeDrg = 'text'
                                         displayDia = 'inline'
                                         displayTda = 'inline'
                                         escopo = 'disabled'
@@ -2935,6 +2938,9 @@ router.post("/novo", ehAdmin, (req, res) => {
                                         alocacao = 'disabled'
                                         aquisicao = 'disabled'
                                         mostraHora = false
+                                        typeHrg = 'hidden'
+                                        typeDrg = 'text'
+                                        selecionado = 'dia'
                                    }
 
                                    var markup
@@ -3025,48 +3031,52 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                   //console.log('projeto._id=>' + projeto._id)
                                                   Empresa.findOne({ _id: projeto.empresa }).lean().then((rp) => {
                                                        Pessoa.find({ vendedor: true, user: _id }).lean().then((vendedor) => {
-                                                            //console.log('vlrTotal=>' + vlrequ)
-                                                            //console.log('checkUni=>' + checkUni)
-                                                            //console.log('unidadeEqu=>' + unidadeEqu)
-                                                            //console.log('unidadeMod=>' + unidadeMod)
-                                                            //console.log('unidadeInv=>' + unidadeInv)
-                                                            //console.log('unidadeEst=>' + unidadeEst)
-                                                            //console.log('unidadeCab=>' + unidadeCab)
-                                                            //console.log('unidadeDis=>' + unidadeDis)
-                                                            //console.log('unidadeDPS=>' + unidadeDPS)
-                                                            //console.log('unidadeSB=>' + unidadeSB)
-                                                            //console.log('unidadeCer=>' + unidadeCer)
-                                                            //console.log('unidadeCen=>' + unidadeCen)
-                                                            //console.log('unidadePos=>' + unidadePos)
-                                                            //console.log('unidadeOcp=>' + unidadeOcp)
-                                                            //console.log('vlrUniEqu=>' + vlrUniEqu)
-                                                            //console.log('vlrUniMod=>' + vlrUniMod)
-                                                            //console.log('vlrUniInv=>' + vlrUniInv)
-                                                            //console.log('vlrUniEst=>' + vlrUniEst)
-                                                            //console.log('vlrUniCab=>' + vlrUniCab)
-                                                            //console.log('vlrUniDis=>' + vlrUniDis)
-                                                            //console.log('vlrUniDPS=>' + vlrUniDPS)
-                                                            //console.log('vlrUniSB=>' + vlrUniSB)
-                                                            //console.log('vlrUniCer=>' + vlrUniCer)
-                                                            //console.log('vlrUniCen=>' + vlrUniCen)
-                                                            //console.log('vlrUniPos=>' + vlrUniPos)
-                                                            //console.log('vlrUniOcp=>' + vlrUniOcp)
-                                                            //console.log('valorEqu=>' + valorEqu)
-                                                            //console.log('valorMod=>' + valorMod)
-                                                            //console.log('valorInv=>' + valorInv)
-                                                            //console.log('valorEst=>' + valorEst)
-                                                            //console.log('valorCim=>' + valorCim)
-                                                            //console.log('valorCab=>' + valorCab)
-                                                            //console.log('valorDisCC=>' + valorDisCC)
-                                                            //console.log('valorDPSCC=>' + valorDPSCC)
-                                                            //console.log('valorDisCA=>' + valorDisCA)
-                                                            //console.log('valorDPSCA=>' + valorDPSCA)                                                       
-                                                            //console.log('valorSB=>' + valorSB)
-                                                            //console.log('valorCCA=>' + valorCCA)
-                                                            //console.log('valorCer=>' + valorCer)
-                                                            //console.log('valorCen=>' + valorCen)
-                                                            //console.log('valorPos=>' + valorPos)
-                                                            //console.log('valorOcp=>' + valorOcp)
+                                                            // console.log('vlrTotal=>' + vlrequ)
+                                                            // console.log('checkUni=>' + checkUni)
+                                                            // console.log('unidadeEqu=>' + unidadeEqu)
+                                                            // console.log('unidadeMod=>' + unidadeMod)
+                                                            // console.log('unidadeInv=>' + unidadeInv)
+                                                            // console.log('unidadeEst=>' + unidadeEst)
+                                                            // console.log('unidadeCab=>' + unidadeCab)
+                                                            // console.log('unidadeDisCA=>' + unidadeDisCA)
+                                                            // console.log('unidadeDisCC=>' + unidadeDisCC)
+                                                            // console.log('unidadeDPSCA=>' + unidadeDPSCA)
+                                                            // console.log('unidadeDPSCC=>' + unidadeDPSCC)
+                                                            // console.log('unidadeSB=>' + unidadeSB)
+                                                            // console.log('unidadeCer=>' + unidadeCer)
+                                                            // console.log('unidadeCen=>' + unidadeCen)
+                                                            // console.log('unidadePos=>' + unidadePos)
+                                                            // console.log('unidadeOcp=>' + unidadeOcp)
+                                                            // console.log('vlrUniEqu=>' + vlrUniEqu)
+                                                            // console.log('vlrUniMod=>' + vlrUniMod)
+                                                            // console.log('vlrUniInv=>' + vlrUniInv)
+                                                            // console.log('vlrUniEst=>' + vlrUniEst)
+                                                            // console.log('vlrUniCab=>' + vlrUniCab)
+                                                            // console.log('vlrUniDisCA=>' + vlrUniDisCA)
+                                                            // console.log('vlrUniDisCC=>' + vlrUniDisCC)
+                                                            // console.log('vlrUniDPSCA=>' + vlrUniDPSCA)
+                                                            // console.log('vlrUniDPSCC=>' + vlrUniDPSCC)
+                                                            // console.log('vlrUniSB=>' + vlrUniSB)
+                                                            // console.log('vlrUniCer=>' + vlrUniCer)
+                                                            // console.log('vlrUniCen=>' + vlrUniCen)
+                                                            // console.log('vlrUniPos=>' + vlrUniPos)
+                                                            // console.log('vlrUniOcp=>' + vlrUniOcp)
+                                                            // console.log('valorEqu=>' + valorEqu)
+                                                            // console.log('valorMod=>' + valorMod)
+                                                            // console.log('valorInv=>' + valorInv)
+                                                            // console.log('valorEst=>' + valorEst)
+                                                            // console.log('valorCim=>' + valorCim)
+                                                            // console.log('valorCab=>' + valorCab)
+                                                            // console.log('valorDisCC=>' + valorDisCC)
+                                                            // console.log('valorDPSCC=>' + valorDPSCC)
+                                                            // console.log('valorDisCA=>' + valorDisCA)
+                                                            // console.log('valorDPSCA=>' + valorDPSCA)                                                       
+                                                            // console.log('valorSB=>' + valorSB)
+                                                            // console.log('valorCCA=>' + valorCCA)
+                                                            // console.log('valorCer=>' + valorCer)
+                                                            // console.log('valorCen=>' + valorCen)
+                                                            // console.log('valorPos=>' + valorPos)
+                                                            // console.log('valorOcp=>' + valorOcp)
 
                                                             const detalhado = {
                                                                  projeto: projeto._id,
@@ -3125,7 +3135,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                  valorOcp: valorOcp
                                                             }
                                                             new Detalhado(detalhado).save().then(() => {
-                                                                 //console.log('salvou detalhado')
+                                                                 console.log('salvou detalhado')
 
                                                                  var cronograma_novo = {
                                                                       user: _id,
@@ -3135,11 +3145,11 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                       dateentrega: req.body.valDataPrev,
                                                                  }
                                                                  new Cronograma(cronograma_novo).save().then(() => {
-                                                                      //console.log('salvou cronograma')
+                                                                      console.log('salvou cronograma')
                                                                       Configuracao.findOne({ _id: req.body.configuracao }).lean().then((configuracao) => {
                                                                            Cliente.findOne({ _id: req.body.cliente }).lean().then((cliente) => {
                                                                                 Pessoa.findOne({ _id: req.body.gestor }).lean().then((gestao) => {
-                                                                                     //console.log('salva pessoa')
+                                                                                     console.log('salva pessoa')
                                                                                      new Equipe({
                                                                                           projeto: projeto._id,
                                                                                           user: _id,
@@ -3184,13 +3194,13 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                                                     plaModString: 0,
                                                                                                     plaQtdEst: 0
                                                                                                }).save().then(() => {
-                                                                                                    // //console.log('salvou equipe')
+                                                                                                     //console.log('salvou equipe')
                                                                                                     if (tipoprj == 1) {
                                                                                                          if (req.body.tipoEntrada == 'Proprio') {
                                                                                                               res.render("projeto/customdo/gestao", {
                                                                                                                    projeto, sucesso, configuracao, gestao, cliente, checkHora,
                                                                                                                    typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
-                                                                                                                   vistoria, alocacao, aquisicao, typeDrg, displayDia
+                                                                                                                   vistoria, alocacao, aquisicao, typeDrg, displayDia, selecionado
                                                                                                               })
                                                                                                          } else {
                                                                                                               res.render('projeto/custosdiretos', {
@@ -3199,10 +3209,10 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                                                               })
                                                                                                          }
                                                                                                     } else {
-                                                                                                         //console.log('projeto.configuracao=>' + projeto.configuracao)
-                                                                                                         //console.log('projeto.empresa=>' + projeto.empresa)
-                                                                                                         //console.log('projeto.vendedor=>' + projeto.vendedor)
-                                                                                                         //console.log('projeto.funres=>' + projeto.funres)
+                                                                                                         console.log('projeto.configuracao=>' + projeto.configuracao)
+                                                                                                         console.log('projeto.empresa=>' + projeto.empresa)
+                                                                                                         console.log('projeto.vendedor=>' + projeto.vendedor)
+                                                                                                         console.log('projeto.funres=>' + projeto.funres)
                                                                                                          Configuracao.findOne({ _id: projeto.configuracao }).lean().then((config) => {
                                                                                                               Empresa.findOne({ _id: projeto.empresa }).lean().then((rp) => {
                                                                                                                    Pessoa.findOne({ _id: projeto.vendedor }).lean().then((pv) => {
