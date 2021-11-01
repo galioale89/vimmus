@@ -46,7 +46,6 @@ const Equipe = mongoose.model('equipe')
 //Chamando função de validação de autenticação do usuário pela função passport
 const passport = require("passport")
 require("./config/auth")(passport)
-const { ehAdmin } = require('./helpers/ehAdmin')
 global.projeto_id
 global.configuracao_id
 global.user_id
