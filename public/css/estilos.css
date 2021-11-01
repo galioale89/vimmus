@@ -305,6 +305,14 @@ height: 100%;
 margin-left: 100px;
 }
 
+.sessao-status {
+    border: #847AF4 solid 8px ;
+    border-radius: 100px;
+    width: 50px;
+    height: 50px;
+    box-shadow: 1px 1px 2px rgba(26, 25, 25, 0.77);   
+    }
+
 .sessao-status-aberto {
 border: rgba(255, 255, 0, 0.2) solid 8px ;
 border-radius: 100px;
@@ -440,7 +448,6 @@ box-shadow: 1px 4px 5px rgba(26, 25, 25, 0.77);
 height: 30px;
 width: 100%;
 text-decoration: none;
-border-radius: 5px;
 color: rgb(40,55,89);
 padding: 5px;
 font-size: 12px;
@@ -451,6 +458,15 @@ height: 30px;
 font-weight: bold;
 text-decoration: none;
 font-weight: 800;
+}
+
+.numero{
+    border: rgb(40,55,86) 3px solid; 
+    border-radius: 30px;
+    width: 30px;
+    padding-left: 8px;
+    padding-top: 5px;
+    font-weight: 600;
 }
 
 .botao-tabela{
@@ -470,47 +486,31 @@ opacity: 0.5;
 font-size: 20px;
 }
 
-.checkAte {
+.check {
     font-weight: 700;
     padding-top: 4px;
     color: white;      
     background-color: rgb(55, 216, 23);
 }
 
-.uncheckAte {
+.check-menu {
+    font-weight: 600;
+    padding-top: 4px;
+    border: white solid 1px;
+    background-color: rgb(55, 216, 23);
+}
+
+.check-menu:hover {
+    font-weight: 700;
+    padding-top: 4px;
+    border: white solid 1px;
+    background-color: rgb(55, 216, 23);
+}
+
+.uncheck {
     font-weight: 700;
     padding-top: 4px;
     color: white;
-    background-color: rgb(247, 163, 38);
-}
-
-
-.checkMod {
-    font-weight: 700;
-    padding-top: 4px;
-    color: white;      
-    background-color: rgb(55, 216, 23);
-}
-
-.uncheckMod {
-    font-weight: 700;
-    padding-top: 4px;
-    color: white;    
-    background-color: rgb(247, 163, 38);
-}
-
-
-.checkInv {
-    font-weight: 700;
-    padding-top: 4px;
-    color: white;      
-    background-color: rgb(55, 216, 23);
-}
-
-.uncheckInv {
-    font-weight: 700;
-    padding-top: 4px;
-    color: white;    
     background-color: rgb(247, 163, 38);
 }
 
@@ -822,7 +822,6 @@ padding: 5px;
 .botao-menu {
     background-color: rgb(40, 55, 86);
     border: white solid 1px;
-    border-radius: 5px;
     color: white;
 }
 
@@ -835,6 +834,7 @@ padding: 5px;
 }
 
 .ativo {
+    font-weight: 600;
     background-color: #847AF4;
     font-weight: 600;
     color:rgb(40, 55, 86);
