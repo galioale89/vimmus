@@ -1,0 +1,271 @@
+<div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
+    {{#if proposta._id}}
+    <div style="width: 100%;">
+        <h5 class="header">{{cliente_proposta.nome}} </h5>
+    </div>
+    {{/if}}
+
+       <div class='btn-group col-12'>
+        <div class='numero'>1</div>
+        <a href='/gerenciamento/proposta/{{proposta._id}}/' class='btn btn-sm{{#if proposta.feito}} check-menu {{else}} botao-menu {{/if}}' style="border-bottom-left-radius: 30px;"> <i
+                class="bi bi-house"></i> Proposta</a>
+        <div class='numero ativo'>2</div>
+        <a href="/gerenciamento/visita/{{proposta._id}}" class="btn btn-sm {{#if vistoria.feito}} check-menu {{else}} botao-menu ativo{{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-gear"></i>
+            Visita Técnica</a>
+        <div class='numero'>3</div>
+        <a href="/gerenciamento/assinatura/{{proposta._id}}" class="btn btn-sm {{#if proposta.assinado}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i
+                class="bi bi-pencil"></i>
+            Assinatura</a>
+        <div class='numero'>4</div>
+        <a href="/gerenciamento/compra/{{proposta._id}}" class="btn btn-sm {{#if compra.feitonota}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-cart-check"></i>
+            Compra Sistema</a>
+        <div class='numero'>5</div>
+        <a href="/gerenciamento/trt/{{proposta._id}}" class="btn btn-sm {{#if documento.feitotrt}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-tools"></i>
+            TRT</a>
+        <div class='numero'>6</div>
+        <a href="/gerenciamento/execucao/{{proposta._id}}" class="btn btn-sm {{#if documento.protocolado}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i
+                class="bi bi-file-earmark-check"></i>
+            Execução</a>
+        <div class='numero'>7</div>
+        <a href="/gerenciamento/equipe/{{proposta._id}}" class="btn btn-sm {{#if lista_equipe.feito}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-people"></i>
+            Equipes</a>
+        <div class='numero'>8</div>
+        <a href="/gerenciamento/financeiro/{{proposta._id}}" class="btn btn-sm botao-menu" style="border-bottom-left-radius: 30px;"><i class="bi bi-layers"></i>
+            Financeiro</a>
+            <div class='numero'>9</div>
+        <a href="/gerenciamento/posvenda/{{proposta._id}}" class="btn btn-sm botao-menu" style="border-bottom-left-radius: 30px;"><i class="bi bi-layers"></i>
+            Pós Venda</a>            
+    </div>
+
+    <div style="padding: 15px;">
+        <div class="row mb-1">
+            <form action='/gerenciamento/visita/' method="post">
+                <input type='hidden' name='id' value="{{proposta._id}}">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class='row mt-1'>
+                            <div class="col-md-8 text-end">
+                                <label class='col-form-label col-form-label-sm'>Quantidade de Módulos: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type='number' class="form-control form-control-sm" name='plaQtdMod'
+                                    value='{{vistoria.plaQtdMod}}'>
+                            </div>
+                        </div>
+                        <div class='row mt-1'>
+                            <div class="col-md-8 text-end">
+                                <label class='col-form-label col-form-label-sm'>Potência dos Módulos: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type='number' class="form-control form-control-sm" name='plaWattMod'
+                                    value='{{vistoria.plaWattMod}}'>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class='row mt-1'>
+                            <div class="col-md-8 text-end">
+                                <label class='col-form-label col-form-label-sm'>Quantidade de Inversores: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type='number' class="form-control form-control-sm" name='plaQtdInv'
+                                    value='{{vistoria.plaQtdInv}}'>
+                            </div>
+                        </div>
+                        <div class='row mt-1'>
+                            <div class="col-md-8 text-end">
+                                <label class='col-form-label col-form-label-sm'>Potência do Inversor: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type='number' class="form-control form-control-sm" name='plaKwpInv'
+                                    value='{{vistoria.plaKwpInv}}'>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class='row mt-1'>
+                            <div class="col-md-8 text-end">
+                                <label class='col-form-label col-form-label-sm'>Dimensão Área(m2): </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type='number' class="form-control form-control-sm" name='plaDimArea'
+                                    value='{{vistoria.plaDimArea}}'>
+                            </div>
+                            </table>
+                        </div>
+                        <div class='row mt-1'>
+                            <div class="col-md-8 text-end">
+                                <label class='col-form-label col-form-label-sm'>Quantidade de String: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type='number' class="form-control form-control-sm" name='plaQtdString'
+                                    value='{{vistoria.plaQtdString}}'>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class='row mt-1'>
+                            <div class="col-md-8 text-end">
+                                <label class='col-form-label col-form-label-sm'>Módulos por String: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type='number' class="form-control form-control-sm" name='plaModString'
+                                    value='{{vistoria.plaModString}}'>
+                            </div>
+                        </div>
+                        <div class='row mt-1'>
+                            <div class="col-md-8 text-end">
+                                <label class='col-form-label col-form-label-sm'>Quantidade de Estruturas: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type='number' class="form-control form-control-sm" name='plaQtdEst'
+                                    value='{{vistoria.plaQtdEst}}'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <button class='btn btn-sm btn-success' type="submi">Aplicar</button>
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <form action='/gerenciamento/salvarSombra' method="post" enctype="multipart/form-data">
+                    <input type='hidden' name='id' value="{{proposta._id}}">
+                    <div class="form-check">
+                        <input class='form-check-input' style="margin-top: 7px;" type="checkbox" name='plaSombra'
+                            {{vistoria.plaSombra}}>
+                        <label class='col-form-label col-form-label-sm form-check-label'>Sombreamento</label>
+                    </div>
+                    <div class="row">
+                        <div class="row mt-2" style="width: 100%;">
+                            <img src='/{{vistoria.fotoPlaSombra}}' id='fotoPlaSombra' name='fotoPlaSombra'
+                                style="height: 190px;" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div style="max-width: 85px;">
+                            <input type="file" name='fotoPlaSombra' id="fotoPlaSombra"
+                                class='form-control form-control-sm' style="font-size: 12px;"
+                                onchange="preview_fotoPlaSombra ()">
+                        </div>
+                        <div style="max-width: 60px;">
+                            <input type='hidden' name='carregaFotoSombra' id='carregaFotoSombra'
+                                value='{{vistoria.fotoPlaSombra}}'>
+                            <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
+                                    class='bi bi-save'></i></button>
+                        </div>
+                        <div class="col-md-6">
+                            <input name='dtPlaSombra' value='{{vistoria.dtPlaSombra}}' type="date"
+                                style='font-size: 12px;' class='form-control form-control-sm'>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-6">
+                <form action='/gerenciamento/salvarArea' method="post" enctype="multipart/form-data">
+                    <input type='hidden' name='id' value="{{proposta._id}}">
+                    <div class="form-check">
+                        <input class='form-check-input' style="margin-top: 7px;" type="checkbox" name='plaArea'
+                            {{vistoria.plaArea}}>
+                        <label class='col-form-label col-form-label-sm form-check-label'>Area</label>
+                    </div>
+                    <div class="row">
+                        <div class="row mt-2" style="width: 100%;">
+                            <img src='/{{vistoria.fotoPlaArea}}' id='fotoPlaArea' name='fotoPlaArea'
+                                style="height: 190px;" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div style="max-width: 85px;">
+                            <input type="file" name='fotoPlaArea' id="fotoPlaArea" class='form-control form-control-sm'
+                                style="font-size: 12px;" onchange="preview_fotoPlaArea ()">
+                        </div>
+                        <div style="max-width: 60px;">
+                            <input type='hidden' name='carregaFotoArea' id='carregaFotoArea'
+                                value='{{vistoria.fotoPlaArea}}'>
+                            <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
+                                    class='bi bi-save'></i></button>
+                        </div>
+                        <div class="col-md-6">
+                            <input name='dtPlaArea' value='{{vistoria.dtPlaArea}}' type="date" style='font-size: 12px;'
+                                class='form-control form-control-sm'>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <form action='/gerenciamento/salvarInvStb' method="post" enctype="multipart/form-data">
+                    <input type='hidden' name='id' value="{{proposta._id}}">
+                    <div class="form-check">
+                        <input class='form-check-input' style="margin-top: 7px;" type="checkbox" name='plaSombra'
+                            {{vistoria.plaInvStb}}>
+                        <label class='col-form-label col-form-label-sm form-check-label'>Local Inversor e
+                            StringBox</label>
+                    </div>
+                    <div class="row">
+                        <div class="row mt-2" style="width: 100%;">
+                            <img src='/{{vistoria.fotoPlaInvStb}}' id='fotoPlaInvStb' name='fotoPlaInvStb'
+                                style="height: 190px;" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div style="max-width: 85px;">
+                            <input type="file" name='fotoPlaInvStb' id="fotoPlaInvStb"
+                                class='form-control form-control-sm' style="font-size: 12px;"
+                                onchange="preview_fotoPlaInvStb ()">
+                        </div>
+                        <div style="max-width: 60px;">
+                            <input type='hidden' name='carregaFotoInvStb' id='carregaFotoInvStb'
+                                value='{{vistoria.fotoPlaInvStb}}'>
+                            <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
+                                    class='bi bi-save'></i></button>
+                        </div>
+                        <div class="col-md-6">
+                            <input name='dtPlaInvStb' value='{{vistoria.dtPlaInvStb}}' type="date"
+                                style='font-size: 12px;' class='form-control form-control-sm'>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-6">
+                <form action='/gerenciamento/salvarAte' method="post" enctype="multipart/form-data">
+                    <input type='hidden' name='id' value="{{proposta._id}}">
+                    <div class="form-check">
+                        <input class='form-check-input' style="margin-top: 7px;" type="checkbox" name='plaSombra'
+                            {{vistoria.plaAte}}>
+                        <label class='col-form-label col-form-label-sm form-check-label'>Local
+                            Aterramento</label>
+                    </div>
+                    <div class="row">
+                        <div class="row mt-2" style="width: 100%;">
+                            <img src='/{{vistoria.fotoPlaAte}}' id='fotoPlaAte' name='fotoPlaAte'
+                                style="height: 190px;" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div style="max-width: 85px;">
+                            <input type="file" name='fotoPlaAte' id="fotoPlaAte" class='form-control form-control-sm'
+                                style="font-size: 12px;" onchange="preview_fotoPlaAte ()">
+                        </div>
+                        <div style="max-width: 60px;">
+                            <input type='hidden' name='carregaFotoAte' id='carregaFotoAte'
+                                value='{{vistoria.fotoPlaAte}}'>
+                            <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
+                                    class='bi bi-save'></i></button>
+                        </div>
+                        <div class="col-md-6">
+                            <input name='dtPlaAte' value='{{vistoria.dtPlaAte}}' type="date" style='font-size: 12px;'
+                                class='form-control form-control-sm'>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

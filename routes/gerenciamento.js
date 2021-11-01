@@ -1,4 +1,5 @@
 require('../app')
+require('../model/Proposta')
 require('../model/Empresa')
 require('../model/Cliente')
 require('../model/CustoDetalhado')
@@ -7,6 +8,8 @@ require('../model/Tarefas')
 require('../model/Vistoria')
 require('../model/Plano')
 require('../model/Componente')
+require('../model/Documento')
+require('../model/Compra')
 
 const express = require('express')
 const router = express.Router()
@@ -15,11 +18,12 @@ const multer = require('multer')
 
 app.set('view engine', 'ejs')
 
+// app.set('view engine', 'ejs')
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/upload/')
+        cb(null, 'public/arquivos/')
     },
-    filename: function (req, file, cb) {
+    filename: (req, file, cb) => {
         cb(null, file.originalname)
     }
 })
@@ -58,6 +62,9 @@ const Equipe = mongoose.model('equipe')
 const Vistoria = mongoose.model('vistoria')
 const Plano = mongoose.model('plano')
 const Componente = mongoose.model('componente')
+const Proposta = mongoose.model('proposta')
+const Documento = mongoose.model('documento')
+const Compra = mongoose.model('compra')
 
 const comparaDatas = require('../resources/comparaDatas')
 const dataBusca = require('../resources/dataBusca')
@@ -74,10 +81,464 @@ const { ehAdmin } = require('../helpers/ehAdmin')
 //Configurando pasta de imagens 
 // router.use(express.static('imagens'))
 // router.use(express.static('public/'))
-router.use(express.static('public/upload'))
+// router.use(express.static('public/upload'))
 
 const TextMessageService = require('comtele-sdk').TextMessageService
 const apiKey = "8dbd4fb5-79af-45d6-a0b7-583a3c2c7d30"
+
+
+router.get('/consulta', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    var status = ''
+    lista = []
+    Proposta.find({ user: _id }).sort({ dataord: 'asc' }).then((proposta) => {
+        proposta.forEach((element) => {
+            var dtcadastro = ''
+            var dtinicio = ''
+            var dtfim = ''
+            Proposta.findOne({ _id: element._id }).then((lista_proposta) => {
+                Cliente.findOne({ _id: element.cliente }).then((lista_cliente) => {
+                    Pessoa.findOne({ _id: element.responsavel }).then((lista_responsavel) => {
+                        Equipe.findOne({ _id: element.equipe }).then((equipe) => {
+                            Documento.findOne({ proposta: element._id }).then((documento) => {
+                                Compra.findOne({ proposta: element._id }).then((compra) => {
+                                    console.log('lista_proposta=>' + lista_proposta._id)
+                                    if (typeof lista_proposta.proposta6 != 'undefined') {
+                                        dtcadastro = lista_proposta.dtcadastro6
+                                    } else {
+                                        if (typeof lista_proposta.proposta5 != 'undefined') {
+                                            dtcadastro = lista_proposta.dtcadastro5
+                                        } else {
+                                            if (typeof lista_proposta.proposta4 != 'undefined') {
+                                                dtcadastro = lista_proposta.dtcadastro4
+                                            } else {
+                                                if (typeof lista_proposta.proposta3 != 'undefined') {
+                                                    dtcadastro = lista_proposta.dtcadastro3
+                                                } else {
+                                                    if (typeof lista_proposta.proposta2 != 'undefined') {
+                                                        dtcadastro = lista_proposta.dtcadastro2
+                                                    } else {
+                                                        dtcadastro = lista_proposta.dtcadastro1
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    // console.log('dtcadastro=>'+dtcadastro)
+                                    // console.log('equipe=>' + equipe)
+                                    // console.log('documento=>' + documento)
+                                    // console.log('compra=>' + compra)
+                                    // console.log('lista_proposta=>' + lista_proposta)
+                                    // console.log('equipe.feito=>' + equipe.feito)
+                                    // console.log('documento.protocolado=>' + documento.protocolado)
+                                    // console.log('documento.feitotrt=>' + documento.feitotrt)
+                                    // console.log('compra.feitonota=>' + compra.feitonota)
+                                    // console.log('compra.feitopedido =>' + compra.feitopedido)
+                                    // console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
+                                    if (equipe.feito == true && equipe != null) {
+                                        console.log('equipe')
+                                        dtinicio = equipe.dtinicio
+                                        dtfim = equipe.dtfim
+                                        status = 'Equipe'
+                                    } else {
+                                        if (documento.protocolado == true && documento != null) {
+                                            console.log('protocolado')
+                                            status = 'Protocolado'
+                                        } else {
+                                            if (documento.feitotrt == true && documento != null) {
+                                                console.log('trt')
+                                                status = 'TRT'
+                                            } else {
+                                                if (compra.feitonota == true && compra != null) {
+                                                    console.log('nf')
+                                                    status = 'NF'
+                                                } else {
+                                                    if (compra.feitopedido == true && compra != null) {
+                                                        console.log('pedido')
+                                                        status = 'Pedido'
+                                                    } else {
+                                                        if (lista_proposta.assinado == true && lista_proposta != null) {
+                                                            console.log('assinado')
+                                                            status = 'Assinado'
+                                                        } else {
+                                                            console.log('proposta enviada')
+                                                            status = 'Proposta Enviada'
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    console.log('status=>' + status)
+                                    lista.push({ status, id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, dtcadastro: dataMensagem(dtcadastro), dtinicio: dataMensagem(dtinicio), dtfim: dataMensagem(dtfim) })
+                                    res.render('principal/consulta', { lista })
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Nenhuma compra encontrada.')
+                                    res.redirect('/menu')
+                                })
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Nenhum documento encontrado.')
+                                res.redirect('/menu')
+                            })
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Nenhuma equipe encontrada.')
+                            res.redirect('/menu')
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Nenhuma pessoa encontrada.')
+                        res.redirect('/menu')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Nenhuma cliente encontrado.')
+                    res.redirect('/menu')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Nenhuma proposta encontrada.')
+                res.redirect('/menu')
+            })
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Nenhuma proposta encontrado<todas>')
+        res.redirect('/projeto/consulta')
+    })
+})
+
+router.get('/proposta/', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    Cliente.find({ user: _id }).lean().then((cliente) => {
+        Pessoa.find({ user: _id, funges: 'checked' }).lean().then((responsavel) => {
+            res.render('principal/proposta', { cliente, responsavel })
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi possível encontrar o responsável.')
+            res.redirect('/menu')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar clientes cadastrados.')
+        res.redirect('/menu')
+    })
+})
+
+router.get('/proposta/:id', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        Cliente.find({ user: _id }).lean().then((cliente) => {
+            Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
+                Pessoa.find({ user: _id, funges: 'checked' }).lean().then((responsavel) => {
+                    Pessoa.findOne({ _id: proposta.responsavel }).lean().then((res_proposta) => {
+                        Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
+                            Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
+                                Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
+                                    Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                                        res.render('principal/proposta', { cliente, cliente_proposta, res_proposta, responsavel, proposta, vistoria, documento, compra, lista_equipe })
+                                    }).catch((err) => {
+                                        req.flash('error_msg', 'Não foi possível encontrar a equipe.')
+                                        res.redirect('/menu')
+                                    })
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Não foi possível encontrar a compra.')
+                                    res.redirect('/menu')
+                                })
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Não foi possível encontrar o documento.')
+                                res.redirect('/menu')
+                            })
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Não foi possível encontrar a vistoria da proposta.')
+                            res.redirect('/menu')
+                        })
+
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Não foi possível encontrar o responsável da proposta.')
+                        res.redirect('/menu')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi possível encontrar o responsável.')
+                    res.redirect('/menu')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar o cliente da prosposta.')
+                res.redirect('/menu')
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi possível encontrar clientes cadastrados.')
+            res.redirect('/menu')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar a proposta.')
+        res.redirect('/menu')
+    })
+})
+
+router.get('/visita/:id', ehAdmin, (req, res) => {
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
+            Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
+                Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
+                    Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
+                        Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
+                            Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                                res.render('principal/visita', { vistoria, cliente_proposta, proposta, documento, vistoria, compra, lista_equipe })
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Não foi possível encontrar a equipe.')
+                                res.redirect('/menu')
+                            })
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Não foi possível encontrar a compra.')
+                            res.redirect('/menu')
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Não foi possível encontrar o documento.')
+                        res.redirect('/menu')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
+                    res.redirect('/menu')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar o cliente da prosposta.')
+                res.redirect('/menu')
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
+            res.redirect('/menu')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar a proposta.')
+        res.redirect('/menu')
+    })
+})
+
+router.get('/assinatura/:id', ehAdmin, (req, res) => {
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
+            Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
+                Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
+                    Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
+                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                            res.render('principal/assinatura', { cliente_proposta, proposta, documento, vistoria, compra, lista_equipe })
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Não foi possível encontrar a compra.')
+                            res.redirect('/menu')
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Não foi possível encontrar a compra.')
+                        res.redirect('/menu')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi possível encontrar o documento.')
+                    res.redirect('/menu')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
+                res.redirect('/menu')
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi possível encontrar clientes cadastrados.')
+            res.redirect('/menu')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar a proposta.')
+        res.redirect('/menu')
+    })
+})
+
+router.get('/compra/:id', ehAdmin, (req, res) => {
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
+            Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
+                Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
+                    Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
+                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                            res.render('principal/compra', { cliente_proposta, proposta, compra, documento, vistoria, lista_equipe })
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Não foi possível encontrar a equipe.')
+                            res.redirect('/menu')
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Não foi possível encontrar o documento.')
+                        res.redirect('/menu')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
+                    res.redirect('/menu')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar os documentos de compra.')
+                res.redirect('/menu')
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi possível encontrar o responsável da proposta.')
+            res.redirect('/menu')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar a proposta.')
+        res.redirect('/menu')
+    })
+})
+
+router.get('/trt/:id', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
+            Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
+                Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
+                    Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
+                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                            res.render('principal/trt', { cliente_proposta, proposta, documento, vistoria, compra, lista_equipe })
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Não foi possível encontrar a equipe.')
+                            res.redirect('/menu')
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
+                        res.redirect('/menu')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi possível encontrar a compra.')
+                    res.redirect('/menu')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar o documento.')
+                res.redirect('/menu')
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi possível encontrar o cliente da proposta.')
+            res.redirect('/menu')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar a prposta.')
+        res.redirect('/menu')
+    })
+})
+
+router.get('/execucao/:id', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    var check = 'unchecked'
+    var salva = 'none'
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
+            Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
+                Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
+                    Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
+                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                            // console.log('documento.protocolado=>' + documento.protocolado)
+                            if (documento.protocolado) {
+                                check = 'checked'
+                                salva = 'inline'
+                            }
+                            res.render('principal/execucao', { cliente_proposta, documento, proposta, check, salva, compra, vistoria, lista_equipe })
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Não foi possível encontrar a equipe.')
+                            res.redirect('/menu')
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
+                        res.redirect('/menu')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi possível encontrar a compra.')
+                    res.redirect('/menu')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar o documento.')
+                res.redirect('/menu')
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi possível encontrar o responsável da proposta.')
+            res.redirect('/menu')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar o responsável.')
+        res.redirect('/menu')
+    })
+})
+
+router.get('/equipe/:id', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    var dentro_ins = []
+    var fora_ins = []
+    var qi = 0
+    var encontrou_ins = false
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente) => {
+            Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
+                Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
+                    Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
+                        Equipe.find({ user: _id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
+                            console.log('documento.protocolado=>' + documento.protocolado)
+                            if (typeof proposta.equipe != 'undefined' && proposta.equipe != '') {
+                                console.log('proposta.equipe=>' + proposta.equipe)
+                                Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                                    console.log('encontrou equipe na proposta')
+                                    var lista_instaladores = [lista_equipe.ins0, lista_equipe.ins1, lista_equipe.ins2, lista_equipe.ins3, lista_equipe.ins4, lista_equipe.ins5, lista_equipe.ele0, lista_equipe.ele1]
+                                    Pessoa.find({ user: _id, $or: [{ funins: 'checked' }, { funele: 'checked' }] }).then((instaladores) => {
+                                        console.log('encontrou instaladores')
+                                        instaladores.forEach((element) => {
+                                            encontrou_ins = false
+                                            for (i = 0; i < lista_instaladores.length; i++) {
+                                                if (lista_instaladores[i] == element.nome) {
+                                                    dentro_ins.push({ id: element._id, nome: element.nome })
+                                                    encontrou_ins = true
+                                                }
+                                            }
+                                            if (encontrou_ins == false) {
+                                                fora_ins.push({ id: element._id, nome: element.nome })
+                                            }
+                                            qi++
+                                            console.log('qi=>' + qi)
+                                            console.log('instaladores.length=>' + instaladores.length)
+                                            if (qi == instaladores.length) {
+                                                res.render('principal/equipe', { proposta, cliente, equipes, lista_equipe, dentro_ins, fora_ins, compra, vistoria, documento })
+                                            }
+                                        })
+                                    }).catch((err) => {
+                                        req.flash('error_msg', 'Falha ao encontrar os instadores.')
+                                        res.redirect('/gerenciamento/equipe/' + req.params.id)
+                                    })
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                                    res.redirect('/gerenciamento/equipe/' + req.params.id)
+                                })
+                            } else {
+                                res.render('principal/equipe', { proposta, cliente, compra, vistoria, documento, equipes })
+                            }
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                        res.redirect('/gerenciamento/equipe/' + req.params.id)
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
+                    res.redirect('/menu')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar a compra.')
+                res.redirect('/menu')
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi possível encontrar o documento.')
+            res.redirect('/menu')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Falha ao encontrar a proposta.')
+        res.redirect('/gerenciamento/proposta/' + req.params.id)
+    })
+})
+
+router.get('/financeiro/:id', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
+            res.render('principal/financeiro', { cliente_proposta, proposta })
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi possível encontrar o responsável da proposta.')
+            res.redirect('/menu')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar a proposta.')
+        res.redirect('/menu')
+    })
+})
 
 router.get('/dashboard/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
@@ -367,7 +828,8 @@ router.get('/agenda/', ehAdmin, (req, res) => {
     //console.log('mestitulo=>' + mestitulo)
 
     Cliente.find({ user: _id }).lean().then((cliente) => {
-        res.render('projeto/gerenciamento/agenda', { cliente, ano, mes, mestitulo, janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro, checkInst: 'checked', checkTesk: 'unchecked' })
+        // res.render('projeto/gerenciamento/agenda', { cliente, ano, mes, mestitulo, janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro, checkInst: 'checked', checkTesk: 'unchecked' })
+        res.render('projeto/gerenciamento/agenda', { cliente, ano, mes, mestitulo, janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro, checkTesk: 'checked' })
     })
 })
 
@@ -427,6 +889,747 @@ router.get('/consultaplano', ehAdmin, (req, res) => {
     }).catch((err) => {
         req.flash('error_msg', 'Falha ao encontrar o plano.')
         res.redirect('/gerenciamento/plano')
+    })
+})
+
+router.post('/trt', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    var trtfile
+    var upload = multer({ storage }).single('trt')
+    upload(req, res, function (err) {
+        if (err) {
+            return res.end("Error uploading file.");
+        } else {
+            console.log('req.file=>' + req.file)
+            if (req.file != null) {
+                trtfile = req.file.filename
+            } else {
+                trtfile = ''
+            }
+
+            Documento.findOne({ proposta: req.body.id }).then((documento) => {
+                console.log()
+                if (documento != null) {
+                    console.log('entrou')
+                    documento.trt = trtfile
+                    documento.dttrt = String(req.body.dttrt)
+                } else {
+                    const trt = {
+                        user: _id,
+                        proposta: req.body.id,
+                        trt: trtfile,
+                        dttrt: String(req.body.dttrt),
+                        data: dataBusca(dataHoje()),
+                        feitotrt: true
+                    }
+                    new Documento(trt).save().then(() => {
+                        req.flash('success_msg', 'TRT salvo com sucesso')
+                        res.redirect('/gerenciamento/trt/' + req.body.id)
+                    })
+                }
+            })
+        }
+    })
+})
+
+router.get('/mostrarTrt/:id', ehAdmin, (req, res) => {
+    Documento.findOne({ proposta: req.params.id }).then((documento) => {
+        var doc = documento.trt
+        var path = __dirname
+        //console.log(path)
+        path = path.replace('routes', '')
+        res.sendFile(path + '/public/arquivos/' + doc)
+    })
+})
+
+router.post('/proposta1', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    var propostafile
+    var upload = multer({ storage }).single('proposta1')
+    upload(req, res, function (err) {
+        if (err) {
+            return res.end("Error uploading file.");
+        } else {
+            console.log('req.file=>' + req.file)
+            if (req.file != null) {
+                propostafile = req.file.filename
+            } else {
+                propostafile = ''
+            }
+
+            Proposta.findOne({ _id: req.body.id }).then((proposta) => {
+                if (proposta != null) {
+                    proposta.cliente = req.body.cliente
+                    proposta.responsavel = req.body.responsavel
+                    proposta.proposta1 = String(propostafile)
+                    proposta.dtcadastro1 = String(req.body.dtcadastro1)
+                    proposta.dtvalidade1 = String(req.body.dtvalidade1)
+                    proposta.data = dataBusca(dataHoje())
+                } else {
+                    const proposta1 = {
+                        user: _id,
+                        cliente: req.body.cliente,
+                        responsavel: req.body.responsavel,
+                        proposta1: String(propostafile),
+                        dtcadastro1: String(req.body.dtcadastro1),
+                        dtvalidade1: String(req.body.dtvalidade1),
+                        data: dataBusca(dataHoje()),
+                        feito: true
+                    }
+                    new Proposta(proposta1).save().then(() => {
+                        Proposta.findOne().sort({ field: 'asc', _id: -1 }).then((nova_proposta) => {
+                            Cliente.findOne({ _id: nova_proposta.cliente }).then((cliente) => {
+                                new Equipe({
+                                    user: _id,
+                                    nome_projeto: cliente.nome,
+                                }).save().then(() => {
+                                    Equipe.findOne().sort({ field: 'asc', _id: -1 }).then((nova_equipe) => {
+                                        console.log('nova_proposta._id=>' + nova_proposta._id)
+                                        console.log('nova_equipe._id=>' + nova_equipe._id)
+                                        nova_proposta.equipe = nova_equipe._id
+                                        nova_proposta.save().then(() => {
+                                            new Vistoria({
+                                                proposta: nova_proposta._id
+                                            }).save().then(() => {
+                                                new Compra({
+                                                    proposta: nova_proposta._id
+                                                }).save().then(() => {
+                                                    new Documento({
+                                                        proposta: nova_proposta._id
+                                                    }).save((then) => {
+                                                        req.flash('success_msg', 'Proposta salva com sucesso')
+                                                        res.redirect('/gerenciamento/proposta/' + nova_proposta._id)
+                                                    })
+                                                })
+                                            })
+
+                                        })
+                                    })
+                                })
+                            })
+                        })
+
+                    })
+                }
+            })
+        }
+    })
+})
+
+router.get('/mostrarProposta1/:id', ehAdmin, (req, res) => {
+    Proposta.findOne({ _id: req.params.id }).then((proposta) => {
+        var doc = proposta.proposta1
+        var path = __dirname
+        //console.log(path)
+        path = path.replace('routes', '')
+        res.sendFile(path + '/public/arquivos/' + doc)
+    })
+})
+
+router.post('/proposta2', ehAdmin, (req, res) => {
+    var propostafile
+    var upload = multer({ storage }).single('proposta2')
+    upload(req, res, function (err) {
+        if (err) {
+            return res.end("Error uploading file.");
+        } else {
+            if (req.file != null) {
+                propostafile = req.file.filename
+            } else {
+                propostafile = ''
+            }
+            Proposta.findOne({ _id: req.body.id }).then((proposta) => {
+                proposta.proposta2 = propostafile
+                proposta.dtcadastro2 = String(req.body.dtcadastro2)
+                proposta.dtvalidade2 = String(req.body.dtvalidade2)
+                proposta.data = dataBusca(dataHoje())
+                proposta.save().then(() => {
+                    req.flash('success_msg', 'Proposta salva com sucesso')
+                    res.redirect('/gerenciamento/proposta/' + req.body.id)
+                })
+            })
+        }
+    })
+})
+
+router.get('/mostrarProposta2/:id', ehAdmin, (req, res) => {
+    Proposta.findOne({ _id: req.params.id }).then((proposta) => {
+        var doc = proposta.proposta2
+        var path = __dirname
+        //console.log(path)
+        path = path.replace('routes', '')
+        res.sendFile(path + '/public/arquivos/' + doc)
+    })
+})
+
+router.post('/proposta3', ehAdmin, (req, res) => {
+    var propostafile
+    var upload = multer({ storage }).single('proposta3')
+    upload(req, res, function (err) {
+        if (err) {
+            return res.end("Error uploading file.");
+        } else {
+            if (req.file != null) {
+                propostafile = req.file.filename
+            } else {
+                propostafile = ''
+            }
+            Proposta.findOne({ _id: req.body.id }).then((proposta) => {
+                proposta.proposta3 = propostafile
+                proposta.dtcadastro3 = String(req.body.dtcadastro3)
+                proposta.dtvalidade3 = String(req.body.dtvalidade3)
+                proposta.data = dataBusca(dataHoje())
+                proposta.save().then(() => {
+                    req.flash('success_msg', 'Proposta salva com sucesso')
+                    res.redirect('/gerenciamento/proposta/' + req.body.id)
+                })
+            })
+        }
+    })
+})
+
+router.get('/mostrarProposta3/:id', ehAdmin, (req, res) => {
+    Proposta.findOne({ _id: req.params.id }).then((proposta) => {
+        var doc = proposta.proposta3
+        var path = __dirname
+        //console.log(path)
+        path = path.replace('routes', '')
+        res.sendFile(path + '/public/arquivos/' + doc)
+    })
+})
+
+router.post('/proposta4', ehAdmin, (req, res) => {
+    var propostafile
+    var upload = multer({ storage }).single('proposta4')
+    upload(req, res, function (err) {
+        if (err) {
+            return res.end("Error uploading file.");
+        } else {
+            if (req.file != null) {
+                propostafile = req.file.filename
+            } else {
+                propostafile = ''
+            }
+            Proposta.findOne({ _id: req.body.id }).then((proposta) => {
+                proposta.proposta4 = propostafile
+                proposta.dtcadastro4 = String(req.body.dtcadastro4)
+                proposta.dtvalidade4 = String(req.body.dtvalidade4)
+                proposta.data = dataBusca(dataHoje())
+                proposta.save().then(() => {
+                    req.flash('success_msg', 'Proposta salva com sucesso')
+                    res.redirect('/gerenciamento/proposta/' + req.body.id)
+                })
+            })
+        }
+    })
+})
+
+router.get('/mostrarProposta4/:id', ehAdmin, (req, res) => {
+    Proposta.findOne({ _id: req.params.id }).then((proposta) => {
+        var doc = proposta.proposta4
+        var path = __dirname
+        //console.log(path)
+        path = path.replace('routes', '')
+        res.sendFile(path + '/public/arquivos/' + doc)
+    })
+})
+
+router.post('/proposta5', ehAdmin, (req, res) => {
+    var propostafile
+    var upload = multer({ storage }).single('proposta5')
+    upload(req, res, function (err) {
+        if (err) {
+            return res.end("Error uploading file.");
+        } else {
+            if (req.file != null) {
+                propostafile = req.file.filename
+            } else {
+                propostafile = ''
+            }
+            Proposta.findOne({ _id: req.body.id }).then((proposta) => {
+                proposta.proposta5 = propostafile
+                proposta.dtcadastro5 = String(req.body.dtcadastro5)
+                proposta.dtvalidade5 = String(req.body.dtvalidade5)
+                proposta.data = dataBusca(dataHoje())
+                proposta.save().then(() => {
+                    req.flash('success_msg', 'Proposta salva com sucesso')
+                    res.redirect('/gerenciamento/proposta/' + req.body.id)
+                })
+            })
+        }
+    })
+})
+
+router.get('/mostrarProposta5/:id', ehAdmin, (req, res) => {
+    Proposta.findOne({ _id: req.params.id }).then((proposta) => {
+        var doc = proposta.proposta5
+        var path = __dirname
+        //console.log(path)
+        path = path.replace('routes', '')
+        res.sendFile(path + '/public/arquivos/' + doc)
+    })
+})
+
+router.post('/proposta6', ehAdmin, (req, res) => {
+    var propostafile
+    var upload = multer({ storage }).single('proposta6')
+    upload(req, res, function (err) {
+        if (err) {
+            return res.end("Error uploading file.");
+        } else {
+            if (req.file != null) {
+                propostafile = req.file.filename
+            } else {
+                propostafile = ''
+            }
+            Proposta.findOne({ _id: req.body.id }).then((proposta) => {
+                proposta.proposta6 = propostafile
+                proposta.dtcadastro6 = String(req.body.dtcadastro6)
+                proposta.dtvalidade6 = String(req.body.dtvalidade6)
+                proposta.data = dataBusca(dataHoje())
+                proposta.save().then(() => {
+                    req.flash('success_msg', 'Proposta salva com sucesso')
+                    res.redirect('/gerenciamento/proposta/' + req.body.id)
+                })
+            })
+        }
+    })
+})
+
+router.get('/mostrarProposta6/:id', ehAdmin, (req, res) => {
+    Proposta.findOne({ _id: req.params.id }).then((proposta) => {
+        var doc = proposta.proposta6
+        var path = __dirname
+        //console.log(path)
+        path = path.replace('routes', '')
+        res.sendFile(path + '/public/arquivos/' + doc)
+    })
+})
+
+router.get('/mostrarProposta/:id', ehAdmin, (req, res) => {
+
+    Proposta.findOne({ _id: req.params.id }).then((proposta) => {
+        var doc = proposta.assinatura
+        var path = __dirname
+        //console.log(path)
+        path = path.replace('routes', '')
+        res.sendFile(path + '/public/arquivos/' + doc)
+    })
+})
+
+router.post('/visita', ehAdmin, (req, res) => {
+
+    const { _id } = req.user
+
+    Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
+        // console.log('vistoria=>' + vistoria)
+        if (vistoria != '' && typeof vistoria != 'undefined' && vistoria != null) {
+            vistoria.plaQtdMod = req.body.plaQtdMod
+            vistoria.plaWattMod = req.body.plaWattMod
+            vistoria.plaQtdInv = req.body.plaQtdInv
+            vistoria.plaKwpInv = req.body.plaKwpInv
+            vistoria.plaDimArea = req.body.plaDimArea
+            vistoria.plaQtdString = req.body.plaQtdString
+            vistoria.plaModString = req.body.plaModString
+            vistoria.plaQtdEst = req.body.plaQtdEst
+            vistoria.feito = true
+            vistoria.save().then(() => {
+                req.flash('success_msg', 'Vistoria salva com sucesso.')
+                res.redirect('/gerenciamento/visita/' + req.body.id)
+            })
+        } else {
+            const vistoria = {
+                user: _id,
+                proposta: req.body.id,
+                plaQtdMod: req.body.plaQtdMod,
+                plaWattMod: req.body.plaWattMod,
+                plaQtdInv: req.body.plaQtdInv,
+                plaKwpInv: req.body.plaKwpInv,
+                plaDimArea: req.body.plaDimArea,
+                plaQtdString: req.body.plaQtdString,
+                plaModString: req.body.plaModString,
+                plaQtdEst: req.body.plaQtdEst,
+                feito: true
+            }
+            new Vistoria(vistoria).save().then(() => {
+
+                req.flash('success_msg', 'Vistoria salva com sucesso.')
+                res.redirect('/gerenciamento/visita/' + req.body.id)
+
+            })
+        }
+    })
+})
+
+router.post('/assinatura', ehAdmin, (req, res) => {
+    var propostafile
+    var upload = multer({ storage }).single('assinado')
+    upload(req, res, function (err) {
+        if (err) {
+            return res.end("Error uploading file.");
+        } else {
+            if (req.file != null) {
+                propostafile = req.file.filename
+            } else {
+                propostafile = ''
+            }
+            Proposta.findOne({ _id: req.body.id }).then((proposta) => {
+                proposta.assinatura = propostafile
+                proposta.dtassinatura = String(req.body.dtassinado)
+                proposta.assinado = true
+                proposta.save().then(() => {
+                    req.flash('success_msg', 'Documento salvo com sucesso.')
+                    res.redirect('/gerenciamento/assinatura/' + req.body.id)
+                })
+            })
+        }
+    })
+})
+
+router.post('/pedido', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    var propostafile
+    var upload = multer({ storage }).single('pedido')
+    upload(req, res, function (err) {
+        if (err) {
+            return res.end("Error uploading file.");
+        } else {
+            if (req.file != null) {
+                propostafile = req.file.filename
+            } else {
+                propostafile = ''
+            }
+            Compra.findOne({ _id: req.body.id }).then((compra) => {
+                console.log('compra=>' + compra)
+                if (compra == null) {
+                    const pedido = {
+                        user: _id,
+                        fornecedor: req.body.fornecedor,
+                        proposta: req.body.id,
+                        pedido: propostafile,
+                        dtcadastro: String(req.body.dtcadastro),
+                        feitopedido: true,
+                        data: dataBusca(dataHoje())
+                    }
+                    new Compra(pedido).save().then(() => {
+                        req.flash('success_msg', 'Pedido salvo com sucesso.')
+                        res.redirect('/gerenciamento/compra/' + req.body.id)
+                    })
+                } else {
+                    compra.pedido = propostafile
+                    compra.dtcadastro = String(req.body.dtcadastro)
+                    compra.save().then(() => {
+                        req.flash('success_msg', 'Documento salvo com sucesso.')
+                        res.redirect('/gerenciamento/compra/' + req.body.id)
+                    })
+                }
+            })
+        }
+    })
+})
+
+router.get('/mostrarPedido/:id', ehAdmin, (req, res) => {
+    Compra.findOne({ proposta: req.params.id }).then((compra) => {
+        var doc = compra.pedido
+        var path = __dirname
+        //console.log(path)
+        path = path.replace('routes', '')
+        res.sendFile(path + '/public/arquivos/' + doc)
+    })
+})
+
+router.post('/nota', ehAdmin, (req, res) => {
+    var propostafile
+    var upload = multer({ storage }).single('nota')
+    upload(req, res, function (err) {
+        if (err) {
+            return res.end("Error uploading file.");
+        } else {
+            if (req.file != null) {
+                propostafile = req.file.filename
+            } else {
+                propostafile = ''
+            }
+            Compra.findOne({ proposta: req.body.id }).then((compra) => {
+                compra.nota = propostafile
+                compra.dtrecebimento = String(req.body.dtrecebimento)
+                compra.feitonota = true
+                compra.save().then(() => {
+                    req.flash('success_msg', 'Nota salva com sucesso.')
+                    res.redirect('/gerenciamento/compra/' + req.body.id)
+                })
+            })
+        }
+    })
+})
+
+router.get('/mostrarNota/:id', ehAdmin, (req, res) => {
+    Compra.findOne({ proposta: req.params.id }).then((compra) => {
+        var doc = compra.nota
+        var path = __dirname
+        //console.log(path)
+        path = path.replace('routes', '')
+        res.sendFile(path + '/public/arquivos/' + doc)
+    })
+})
+
+router.post('/salvarpadrao', ehAdmin, (req, res) => {
+    Proposta.findOne({ _id: req.body.id }).then((proposta) => {
+        Equipe.findOne({ _id: req.body.equipe }).then((equipe) => {
+            Equipe.findOne({ _id: proposta.equipe }).then((equipe_prj) => {
+                equipe_prj.nome_equipe = equipe.nome
+                equipe_prj.ins0 = equipe.ins0
+                equipe_prj.ins1 = equipe.ins1
+                equipe_prj.ins2 = equipe.ins2
+                equipe_prj.ins3 = equipe.ins3
+                equipe_prj.ins4 = equipe.ins4
+                equipe_prj.ins5 = equipe.ins5
+                equipe_prj.save().then(() => {
+                    res.redirect('/gerenciamento/equipe/' + req.body.id)
+                }).catch((err) => {
+                    req.flash('error_msg', 'Houve erro ao salvar a equipe.')
+                    res.redirect('/gerenciamento/equipe/' + req.body.id)
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Houve erro ao encontrar a equipe<tem equipe>.')
+                res.redirect('/gerenciamento/equipe/' + req.body.id)
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Houve erro ao encontrar a equipe.')
+            res.redirect('/gerenciamento/equipe/' + req.body.id)
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Houve erro ao encontrar o projeto.')
+        res.redirect('/gerenciamento/equipe/' + req.body.id)
+    })
+})
+
+router.post("/salvarequipe", ehAdmin, (req, res) => {
+
+    Proposta.findOne({ _id: req.body.id }).then((proposta) => {
+        Equipe.findOne({ _id: proposta.equipe }).then((equipe) => {
+            equipe.ins0 = req.body.ins0
+            equipe.ins1 = req.body.ins1
+            equipe.ins2 = req.body.ins2
+            equipe.ins3 = req.body.ins3
+            equipe.ins4 = req.body.ins4
+            equipe.ins5 = req.body.ins5
+            equipe.dtinicio = req.body.dtinicio
+            equipe.dtfim = req.body.dtfim
+            equipe.feito = true
+            equipe.save().then(() => {
+
+                res.redirect('/gerenciamento/equipe/' + req.body.id)
+
+            }).catch((err) => {
+                req.flash('error_msg', 'Houve erro ao salvar a equipe.')
+                res.redirect('/gerenciamento/equipe/' + req.body.id)
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Houve erro ao encontrar a equipe.')
+            res.redirect('/gerenciamento/equipe/' + req.body.id)
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Houve erro ao encontrar a proposta.')
+        res.redirect('/gerenciamento/equipe/' + req.body.id)
+    })
+})
+
+router.get('/enviarequipe/:id', ehAdmin, (req, res) => {
+    var liberar
+    var mensagem
+    var tipo
+    Proposta.findOne({ _id: req.params.id }).then((proposta) => {
+        Equipe.findOne({ _id: proposta.equipe }).then((equipe) => {
+            if (equipe.liberar == true) {
+                liberar = false
+                mensagem = 'Envio cancelado.'
+                tipo = 'error_msg'
+            } else {
+                liberar = true
+                mensagem = 'Equipe liberada para a obra.'
+                tipo = 'success_msg'
+            }
+            equipe.liberar = liberar
+            equipe.save().then(() => {
+                req.flash(tipo, mensagem)
+                res.redirect('/gerenciamento/equipe/' + req.params.id)
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Houve erro ao encontrar a equipe.')
+            res.redirect('/gerenciamento/equipe/' + req.body.id)
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Houve erro ao encontrar a proposta.')
+        res.redirect('/gerenciamento/equipe/' + req.body.id)
+    })
+})
+
+router.post('/salvarMemorial', ehAdmin, (req, res) => {
+    var memorialfile
+    var upload = multer({ storage }).single('memorial')
+    upload(req, res, function (err) {
+        if (err) {
+            return res.end('Error uploading file.')
+        } else {
+            if (req.file != null) {
+                memorialfile = req.file.filename
+            } else {
+                memorialfile = ''
+            }
+
+            Documento.findOne({ proposta: req.body.id }).then((documento) => {
+                documento.memorial = memorialfile
+                documento.dtmemorial = req.body.dtmemorial
+                documento.save().then(() => {
+                    req.flash('success_msg', 'Memorial descritivo salvo com sucesso.')
+                    res.redirect('/gerenciamento/execucao/' + req.body.id)
+                })
+            })
+        }
+    })
+})
+
+router.get('/mostrarMesmorial/:id', ehAdmin, (req, res) => {
+    Documento.findOne({ proposta: req.params.id }).then((documento) => {
+        var doc = documento.memorial
+        var path = __dirname
+        //console.log(path)
+        path = path.replace('routes', '')
+        res.sendFile(path + '/public/arquivos/' + doc)
+    })
+})
+
+router.post('/salvarSituacao', ehAdmin, (req, res) => {
+    var situacaofile
+    var upload = multer({ storage }).single('situacao')
+    upload(req, res, function (err) {
+        if (err) {
+            return res.end('Error uploading file.')
+        } else {
+            if (req.file != null) {
+                situacaofile = req.file.filename
+            } else {
+                situacaofile = ''
+            }
+            Documento.findOne({ proposta: req.body.id }).then((documento) => {
+                console.log('situacaofile=>' + situacaofile)
+                documento.situacao = situacaofile
+                documento.dtsituacao = req.body.dtsituacao
+                documento.save().then(() => {
+                    req.flash('success_msg', 'Plano de situação salvo com sucesso.')
+                    res.redirect('/gerenciamento/execucao/' + req.body.id)
+                })
+            })
+        }
+    })
+})
+
+router.get('/mostrarSituacao/:id', ehAdmin, (req, res) => {
+    Documento.findOne({ proposta: req.params.id }).then((documento) => {
+        var doc = documento.situacao
+        var path = __dirname
+        //console.log(path)
+        path = path.replace('routes', '')
+        res.sendFile(path + '/public/arquivos/' + doc)
+    })
+})
+
+router.post('/salvarTrifilar', ehAdmin, (req, res) => {
+    var trifilarfile
+    var upload = multer({ storage }).single('trifilar')
+    upload(req, res, function (err) {
+        if (err) {
+            return res.end('Error uploading file.')
+        } else {
+            if (req.file != null) {
+                trifilarfile = req.file.filename
+            } else {
+                trifilarfile = ''
+            }
+            Documento.findOne({ proposta: req.body.id }).then((documento) => {
+                documento.trifilar = trifilarfile
+                documento.dttrifilar = req.body.dttrifilar
+                documento.save().then(() => {
+                    req.flash('success_msg', 'Diagrama trifilar salvo com sucesso.')
+                    res.redirect('/gerenciamento/execucao/' + req.body.id)
+                })
+            })
+        }
+    })
+})
+
+router.get('/mostrarTrifilar/:id', ehAdmin, (req, res) => {
+    Documento.findOne({ proposta: req.params.id }).then((documento) => {
+        var doc = documento.trifilar
+        var path = __dirname
+        //console.log(path)
+        path = path.replace('routes', '')
+        res.sendFile(path + '/public/arquivos/' + doc)
+    })
+})
+
+router.post('/salvarUnifilar', ehAdmin, (req, res) => {
+    var unifilarfile
+    var upload = multer({ storage }).single('unifilar')
+    upload(req, res, function (err) {
+        if (err) {
+            return res.end('Error uploading file.')
+        } else {
+            if (req.file != null) {
+                unifilarfile = req.file.filename
+            } else {
+                unifilarfile = ''
+            }
+            Documento.findOne({ proposta: req.body.id }).then((documento) => {
+                documento.unifilar = unifilarfile
+                documento.dtunifilar = req.body.dtunifilar
+                documento.save().then(() => {
+                    req.flash('success_msg', 'Diagrama unifilar salvo com sucesso.')
+                    res.redirect('/gerenciamento/execucao/' + req.body.id)
+                })
+            })
+        }
+    })
+})
+
+router.get('/mostrarUnifilar/:id', ehAdmin, (req, res) => {
+    Documento.findOne({ proposta: req.params.id }).then((documento) => {
+        var doc = documento.unifilar
+        var path = __dirname
+        //console.log(path)
+        path = path.replace('routes', '')
+        res.sendFile(path + '/public/arquivos/' + doc)
+    })
+})
+
+router.post('/protocolar', ehAdmin, (req, res) => {
+    Documento.findOne({ proposta: req.body.id }).then((documento) => {
+        var valida = new Date()
+        var date = new Date(req.body.dtprotocolo)
+        valida.setDate(date.getDate() + 14)
+        console.log('valida=>' + valida)
+        documento.protocolado = true
+        documento.dtprotocolo = req.body.dtprotocolo
+        var dia = valida.getDate()
+        if (parseFloat(dia) < 10) {
+            dia = '0' + dia
+        }
+        var mes = valida.getMonth()
+        if ((31 - parseFloat(date.getDate()) < 14)) {
+            mes = parseFloat(mes) + 1
+        }
+        if (parseFloat(mes) < 10) {
+            mes = '0' + mes
+        }
+        var ano = valida.getFullYear()
+        var valida = dia + '/' + mes + '/' + ano
+        console.log('valida=>' + valida)
+        documento.dtdeadline = valida
+        documento.save().then(() => {
+            req.flash('success_msg', 'Projeto homologado na concessionária.')
+            res.redirect('/gerenciamento/execucao/' + req.body.id)
+        })
     })
 })
 
@@ -668,9 +1871,9 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
     var dia
     var mes_busca
     var mes
-    //console.log('req.body.selecionado=>'+req.body.selecionado)
-    //console.log('dataini=>' + dataini)
-    //console.log('datafim=>' + datafim)
+    console.log('req.body.selecionado=>' + req.body.selecionado)
+    console.log('dataini=>' + dataini)
+    console.log('datafim=>' + datafim)
     if (req.body.selecionado == 'instalacao') {
         Cronograma.find({
             $or: [{ 'agendaPlaFim': { $lte: datafim, $gte: dataini } },
@@ -685,8 +1888,9 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
             { 'agendaVisFim': { $lte: datafim, $gte: dataini } }],
             user: _id
         }).lean().then((cronograma) => {
+            console.log('cronograma.length=>' + cronograma.length)
             cronograma.forEach(element => {
-                //console.log('entrou')
+                console.log('entrou')
                 const { dateplaini } = element
                 const { dateprjini } = element
                 const { dateateini } = element
@@ -722,7 +1926,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                     //console.log('mes=>' + mes)
                     if ((mes_busca == mes) && (dateplaini != '' && typeof dateplaini != 'undefined') && (datepla == '' || typeof datepla == 'undefined')) {
                         dia = dateplaini.substring(8, 11)
-                        //console.log('entrou Planejamento')
+                        console.log('entrou Planejamento')
                         if (dia == '01') {
                             tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
                         }
@@ -819,7 +2023,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                     }
 
                     mes = dateprjini.substring(5, 7)
-                    //console.log('Projetista')
+                    console.log('Projetista')
                     //console.log('mes=>' + mes)
                     if ((mes_busca == mes) && (dateprjini != '' && typeof dateprjini != 'undefined') && (dateprj == '' || typeof dateprj == 'undefined')) {
                         dia = dateprjini.substring(8, 11)
@@ -924,7 +2128,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                     //console.log('mes=>' + mes)
                     if ((mes_busca == mes) && (dateateini != '' && typeof dateateini != 'undefined') && (dateate == '' || typeof dateate == 'undefined')) {
                         dia = dateateini.substring(8, 11)
-                        //console.log('entrou Aterramento')
+                        console.log('entrou Aterramento')
                         if (dia == '01') {
                             tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
                         }
@@ -1025,7 +2229,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                     //console.log('mes=>' + mes)
                     if ((mes_busca == mes) && (dateestini != '' && typeof dateestini != 'undefined') && (dateest == '' || typeof dateest == 'undefined')) {
                         dia = dateestini.substring(8, 11)
-                        //console.log('entrou Estrutura')
+                        console.log('entrou Estrutura')
                         if (dia == '01') {
                             tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
                         }
@@ -1128,7 +2332,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                     //console.log('dateinvini=>' + dateinvini)
                     if ((mes_busca == mes) && (dateinvini != '' && typeof dateinvini != 'undefined') && (dateinv == '' || typeof dateinv == 'undefined')) {
                         dia = dateinvini.substring(8, 11)
-                        //console.log('entrou Inversor')
+                        console.log('entrou Inversor')
                         //console.log('nome=>' + nome)
                         //console.log('projeto=>' + projeto)
 
@@ -1229,7 +2433,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
 
                     if (dateeaeini != '' && typeof dateeaeini != 'undefined') {
                         mes = dateeaeini.substring(5, 7)
-                        //console.log('Armazenamento')
+                        console.log('Armazenamento')
                         //console.log('mes=>' + mes)
                         //console.log('dateeae=>' + dateeae)
                         //console.log('dateeaeini=>' + dateeaeini)
@@ -1638,7 +2842,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                     //console.log('mes=>' + mes)
                     if ((mes_busca == mes) && (datevisini != '' && typeof datevisini != 'undefined') && (datevis == '' || typeof datevis == 'undefined')) {
                         dia = datevisini.substring(8, 11)
-                        //console.log('Entrou Vistoria')
+                        console.log('Entrou Vistoria')
                         if (dia == '01') {
                             tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
                         }
@@ -1735,39 +2939,39 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                     }
                 }
             })
-            /*
-            //console.log('tarefas1=>' + tarefas01)
-            //console.log('tarefas2=>' + tarefas02) 
-            //console.log('tarefas3=>' + tarefas03) 
-            //console.log('tarefas4=>' + tarefas04) 
-            //console.log('tarefas5=>' + tarefas05)                    
-            //console.log('tarefas6=>' + tarefas06)
-            //console.log('tarefas7=>' + tarefas07)
-            //console.log('tarefas8=>' + tarefas08)
-            //console.log('tarefas9=>' + tarefas09)
-            //console.log('tarefas10=>' + tarefas10) 
-            //console.log('tarefas11=>' + tarefas11)                     
-            //console.log('tarefas12=>' + tarefas12)
-            //console.log('tarefas13=>' + tarefas13)
-            //console.log('tarefas14=>' + tarefas14)       
-            //console.log('tarefas15=>' + tarefas15)
-            //console.log('tarefas16=>' + tarefas16)                                     
-            //console.log('tarefas17=>' + tarefas17)
-            //console.log('tarefas18=>' + tarefas18)
-            //console.log('tarefas19=>' + tarefas19)
-            //console.log('tarefas20=>' + tarefas20)
-            //console.log('tarefas21=>' + tarefas21)                    
-            //console.log('tarefas22=>' + tarefas22)
-            //console.log('tarefas23=>' + tarefas23)
-            //console.log('tarefas24=>' + tarefas24)
-            //console.log('tarefas25=>' + tarefas25)
-            //console.log('tarefas26=>' + tarefas26)
-            //console.log('tarefas27=>' + tarefas27)
-            //console.log('tarefas28=>' + tarefas28)
-            //console.log('tarefas29=>' + tarefas29)
-            //console.log('tarefa30=>' + tarefas30)
-            //console.log('tarefa31=>' + tarefas31)
-            */
+
+            console.log('tarefas1=>' + tarefas01)
+            console.log('tarefas2=>' + tarefas02)
+            console.log('tarefas3=>' + tarefas03)
+            console.log('tarefas4=>' + tarefas04)
+            console.log('tarefas5=>' + tarefas05)
+            console.log('tarefas6=>' + tarefas06)
+            console.log('tarefas7=>' + tarefas07)
+            console.log('tarefas8=>' + tarefas08)
+            console.log('tarefas9=>' + tarefas09)
+            console.log('tarefas10=>' + tarefas10)
+            console.log('tarefas11=>' + tarefas11)
+            console.log('tarefas12=>' + tarefas12)
+            console.log('tarefas13=>' + tarefas13)
+            console.log('tarefas14=>' + tarefas14)
+            console.log('tarefas15=>' + tarefas15)
+            console.log('tarefas16=>' + tarefas16)
+            console.log('tarefas17=>' + tarefas17)
+            console.log('tarefas18=>' + tarefas18)
+            console.log('tarefas19=>' + tarefas19)
+            console.log('tarefas20=>' + tarefas20)
+            console.log('tarefas21=>' + tarefas21)
+            console.log('tarefas22=>' + tarefas22)
+            console.log('tarefas23=>' + tarefas23)
+            console.log('tarefas24=>' + tarefas24)
+            console.log('tarefas25=>' + tarefas25)
+            console.log('tarefas26=>' + tarefas26)
+            console.log('tarefas27=>' + tarefas27)
+            console.log('tarefas28=>' + tarefas28)
+            console.log('tarefas29=>' + tarefas29)
+            console.log('tarefa30=>' + tarefas30)
+            console.log('tarefa31=>' + tarefas31)
+
             Cliente.find({ user: _id }).lean().then((cliente) => {
                 res.render('projeto/gerenciamento/agenda', {
                     tarefas01, tarefas02, tarefas03, tarefas04, tarefas05, tarefas06, tarefas07,
@@ -1775,7 +2979,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                     tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
                     tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
                     tarefas29, tarefas30, tarefas31, checkTesk: 'unchecked', checkInst: 'checked',
-                    mes: req.body.messel, ano: req.body.mesano, cliente, mestitulo
+                    mes: req.body.messel, ano, cliente, mestitulo
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar o cliente.')
@@ -1786,145 +2990,153 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
             res.redirect('/gerenciamento/agenda/')
         })
     } else {
-        //console.log('req.body.selecionado=>' + req.body.selecionado)
-        //console.log('datafim=>' + datafim)
+        console.log('req.body.selecionado=>' + req.body.selecionado)
+        console.log('datafim=>' + datafim)
         //console.log('dataini=>' + dataini)
         var nova_dataini = dataini
 
         Tarefas.find({ concluido: false, 'buscadataini': { $lte: datafim, $gte: dataini }, user: _id }).lean().then((lista_tarefas) => {
-            lista_tarefas.forEach(element => {
-                //console.log('entrou')
-                const { dataini } = element
-
-                //console.log('dataini=>' + dataini)
-
-
-                Usina.findOne({ _id: element.usina }).then((usina) => {
-                    //console.log('nome=>' + nome)
-                    //console.log('projeto=>' + projeto)
-                    if (typeof usina != 'undefined' && usina != '') {
-                        mes_busca = nova_dataini.substring(4, 6)
-                        //console.log('mes_busca=>' + mes_busca)
-                        mes = dataini.substring(5, 7)
-                        //console.log('mes=>' + mes)
-                        if (mes_busca == mes) {
-                            dia = dataini.substring(8, 11)
-                            //console.log('dia=>' + dia)
-                            //console.log('entrou Planejamento')
-                            if (dia == '01') {
-                                tarefas01.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '02') {
-                                tarefas02.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '03') {
-                                tarefas03.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '04') {
-                                tarefas04.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '05') {
-                                tarefas05.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '06') {
-                                tarefas06.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '07') {
-                                tarefas07.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '08') {
-                                tarefas08.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '09') {
-                                tarefas09.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '10') {
-                                tarefas10.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '11') {
-                                tarefas11.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '12') {
-                                tarefas12.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '13') {
-                                tarefas13.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '14') {
-                                tarefas14.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '15') {
-                                tarefas15.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '16') {
-                                tarefas16.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '17') {
-                                tarefas17.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '18') {
-                                tarefas18.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '19') {
-                                tarefas19.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '20') {
-                                tarefas20.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '21') {
-                                tarefas21.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '22') {
-                                tarefas22.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '23') {
-                                tarefas23.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '24') {
-                                tarefas24.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '25') {
-                                tarefas25.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '26') {
-                                tarefas26.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '27') {
-                                tarefas27.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '28') {
-                                tarefas28.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '29') {
-                                tarefas29.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '30') {
-                                tarefas30.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                            if (dia == '31') {
-                                tarefas31.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
-                            }
-                        }
-                    }
+            console.log(lista_tarefas)
+            if (lista_tarefas == null) {
+                Cliente.find({ user: _id }).lean().then((cliente) => {
+                    res.render('projeto/gerenciamento/agenda', {checkTesk: 'checked', mes, ano: req.body.mesano, cliente, mestitulo})
                 }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possível encontrar a usina.')
+                    req.flash('error_msg', 'Não foi possível encontrar o cliente.')
                     res.redirect('/gerenciamento/agenda/')
                 })
+            } else {
+                lista_tarefas.forEach(element => {
+                    //console.log('entrou')
+                    const { dataini } = element
 
-            })
-            Cliente.find({ user: _id }).lean().then((cliente) => {
-                res.render('projeto/gerenciamento/agenda', {
-                    tarefas01, tarefas02, tarefas03, tarefas04, tarefas05, tarefas06, tarefas07,
-                    tarefas08, tarefas09, tarefas10, tarefas11, tarefas12, tarefas13, tarefas14,
-                    tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
-                    tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
-                    tarefas29, tarefas30, tarefas31, checkTesk: 'checked', checkInst: 'unchecked',
-                    mes, ano: req.body.mesano, cliente, mestitulo
+                    //console.log('dataini=>' + dataini)
+                    Usina.findOne({ _id: element.usina }).then((usina) => {
+                        //console.log('nome=>' + nome)
+                        //console.log('projeto=>' + projeto)
+                        if (typeof usina != 'undefined' && usina != '') {
+                            mes_busca = nova_dataini.substring(4, 6)
+                            //console.log('mes_busca=>' + mes_busca)
+                            mes = dataini.substring(5, 7)
+                            //console.log('mes=>' + mes)
+                            if (mes_busca == mes) {
+                                dia = dataini.substring(8, 11)
+                                //console.log('dia=>' + dia)
+                                //console.log('entrou Planejamento')
+                                if (dia == '01') {
+                                    tarefas01.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '02') {
+                                    tarefas02.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '03') {
+                                    tarefas03.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '04') {
+                                    tarefas04.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '05') {
+                                    tarefas05.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '06') {
+                                    tarefas06.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '07') {
+                                    tarefas07.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '08') {
+                                    tarefas08.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '09') {
+                                    tarefas09.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '10') {
+                                    tarefas10.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '11') {
+                                    tarefas11.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '12') {
+                                    tarefas12.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '13') {
+                                    tarefas13.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '14') {
+                                    tarefas14.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '15') {
+                                    tarefas15.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '16') {
+                                    tarefas16.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '17') {
+                                    tarefas17.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '18') {
+                                    tarefas18.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '19') {
+                                    tarefas19.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '20') {
+                                    tarefas20.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '21') {
+                                    tarefas21.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '22') {
+                                    tarefas22.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '23') {
+                                    tarefas23.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '24') {
+                                    tarefas24.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '25') {
+                                    tarefas25.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '26') {
+                                    tarefas26.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '27') {
+                                    tarefas27.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '28') {
+                                    tarefas28.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '29') {
+                                    tarefas29.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '30') {
+                                    tarefas30.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                                if (dia == '31') {
+                                    tarefas31.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
+                                }
+                            }
+                        }
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Não foi possível encontrar a usina.')
+                        res.redirect('/gerenciamento/agenda/')
+                    })
+
                 })
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foi possível encontrar o cliente.')
-                res.redirect('/gerenciamento/agenda/')
-            })
+                Cliente.find({ user: _id }).lean().then((cliente) => {
+                    res.render('projeto/gerenciamento/agenda', {
+                        tarefas01, tarefas02, tarefas03, tarefas04, tarefas05, tarefas06, tarefas07,
+                        tarefas08, tarefas09, tarefas10, tarefas11, tarefas12, tarefas13, tarefas14,
+                        tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
+                        tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
+                        tarefas29, tarefas30, tarefas31, checkTesk: 'checked', checkInst: 'unchecked',
+                        mes, ano: req.body.mesano, cliente, mestitulo
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi possível encontrar o cliente.')
+                    res.redirect('/gerenciamento/agenda/')
+                })
+            }
         })
     }
 })
@@ -3940,8 +5152,9 @@ router.post('/planejamento', ehAdmin, (req, res) => {
 
 router.post('/salvarSombra', uploadfoto.single('fotoPlaSombra'), ehAdmin, (req, res) => {
 
-    Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
-        
+    // Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
+    Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
+
         // console.log('req.file=>' + req.file.filename)
         var foto
         if (req.file.filename != null) {
@@ -3950,26 +5163,27 @@ router.post('/salvarSombra', uploadfoto.single('fotoPlaSombra'), ehAdmin, (req, 
             foto = ''
         }
 
-        console.log('foto=>'+foto)
+        console.log('foto=>' + foto)
 
         vistoria.fotoPlaSombra = foto
         vistoria.plaSombra = 'checked'
         vistoria.dtPlaSombra = dataHoje()
         vistoria.save().then(() => {
-            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+            res.redirect('/gerenciamento/visita/' + req.body.id)
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível salvar a vistoria.')
-            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+            res.redirect('/gerenciamento/visita/' + req.body.id)
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-        res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+        res.redirect('/gerenciamento/visita/' + req.body.id)
     })
 })
 
 router.post('/salvarArea', uploadfoto.single('fotoPlaArea'), ehAdmin, (req, res) => {
 
-    Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
+    // Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
+    Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
         // console.log('req.file=>' + req.file.filename)
         var foto
         if (req.file.filename != null) {
@@ -3982,20 +5196,21 @@ router.post('/salvarArea', uploadfoto.single('fotoPlaArea'), ehAdmin, (req, res)
         vistoria.plaArea = 'checked'
         vistoria.dtPlaArea = dataHoje()
         vistoria.save().then(() => {
-            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+            res.redirect('/gerenciamento/visita/' + req.body.id)
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível salvar a vistoria.')
-            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+            res.redirect('/gerenciamento/visita/' + req.body.id)
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-        res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+        res.redirect('/gerenciamento/visita/' + req.body.id)
     })
 })
 
 router.post('/salvarInvStb', uploadfoto.single('fotoPlaInvStb'), ehAdmin, (req, res) => {
 
-    Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
+    // Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
+    Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
         // console.log('req.file=>' + req.file.filename)
         var foto
         if (req.file.filename != null) {
@@ -4008,20 +5223,21 @@ router.post('/salvarInvStb', uploadfoto.single('fotoPlaInvStb'), ehAdmin, (req, 
         vistoria.plaInvStb = 'checked'
         vistoria.dtPlaInvStb = dataHoje()
         vistoria.save().then(() => {
-            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+            res.redirect('/gerenciamento/visita/' + req.body.id)
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível salvar a vistoria.')
-            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+            res.redirect('/gerenciamento/visita/' + req.body.id)
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-        res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+        res.redirect('/gerenciamento/visita/' + req.body.id)
     })
 })
 
 router.post('/salvarAte', uploadfoto.single('fotoPlaAte'), ehAdmin, (req, res) => {
 
-    Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
+    // Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
+    Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
         // console.log('req.file=>' + req.file.filename)
         var foto
         if (req.file.filename != null) {
@@ -4034,14 +5250,14 @@ router.post('/salvarAte', uploadfoto.single('fotoPlaAte'), ehAdmin, (req, res) =
         vistoria.plaAte = 'checked'
         vistoria.dtPlaAte = dataHoje()
         vistoria.save().then(() => {
-            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+            res.redirect('/gerenciamento/visita/' + req.body.id)
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível salvar a vistoria.')
-            res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+            res.redirect('/gerenciamento/visita/' + req.body.id)
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-        res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
+        res.redirect('/gerenciamento/visita/' + req.body.id)
     })
 })
 

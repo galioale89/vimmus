@@ -261,6 +261,22 @@ const Equipe = new Schema({
     type: String,
     require: false
   },
+  feito: {
+    type: Boolean,
+    require: false    
+  },
+  liberar: {
+    type: Boolean,
+    require: false    
+  },
+  dtinicio:{
+    type: String,
+    require: false   
+  },
+  dtfim:{
+    type: String,
+    require: false   
+  }  
 })
 
 mongoose.model('equipe', Equipe)

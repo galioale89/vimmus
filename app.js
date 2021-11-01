@@ -21,10 +21,27 @@ const administrador = require('./routes/administrador')
 const relatorios = require('./routes/relatorios')
 const componente = require('./routes/componente')
 
+const validaCampos = require('./resources/validaCampos')
+const dataBusca = require('./resources/dataBusca')
+const comparaDatas = require('./resources/comparaDatas')
+const validaCronograma = require('./resources/validaCronograma')
+const liberaRecursos = require('./resources/liberaRecursos')
+const setData = require('./resources/setData')
+const dataMensagem = require('./resources/dataMensagem')
+const dataHoje = require('./resources/dataHoje')
+const { ehAdmin } = require('./helpers/ehAdmin')
+
+const Proposta = mongoose.model('proposta')
+const Cliente = mongoose.model('cliente')
+const Pessoa = mongoose.model('pessoa')
 const Projeto = mongoose.model('projeto')
 const Realizado = mongoose.model('realizado')
 const Configuracao = mongoose.model('configuracao')
 const Empresa = mongoose.model('empresa')
+const Documento = mongoose.model('documento')
+const Compra = mongoose.model('compra')
+const Vistoria = mongoose.model('vistoria')
+const Equipe = mongoose.model('equipe')
 
 //Chamando função de validação de autenticação do usuário pela função passport
 const passport = require("passport")
@@ -96,179 +113,153 @@ app.get('/termo', (req, res) => {
 })  
 //Direcionando para página principal
 app.get('/menu', ehAdmin, (req, res) => {
-  var perVlr = 0
-  var somaLL = 0
-  var somaVF = 0
-  var somaVT = 0
-  var perRealizado = 0
-  var aviso = []
-
   const { _id } = req.user
   const { ehAdmin } = req.user
+  var numprj = 0
 
-  Projeto.find({ user: _id }).then((projetos) => {
-    Realizado.find({ user: _id }).then((prj_vlr) => {
-      for (i = 0; i < prj_vlr.length; i++) {
-        perVlr = prj_vlr[i]
-        if (perVlr.parLiqVlr != undefined && perVlr.parLiqNfs != undefined) {
-          somaLL = parseFloat(somaLL) + parseFloat(perVlr.lucroLiquido)
-          somaVF = parseFloat(somaVF) + parseFloat(perVlr.vlrNFS)
-          somaVT = parseFloat(somaVT) + parseFloat(perVlr.valor)
-        }
-      }
-      var perVlrMed = (parseFloat(somaLL) / parseFloat(somaVT) * 100).toFixed(1)
-      var perNfsMed = (parseFloat(somaLL) / parseFloat(somaVF) * 100).toFixed(1)
-      if (isNaN(perNfsMed)){
-        perNfsMed = 0
-      }
-      const { _id } = req.user
-      aviso.push({texto: 'Para todos os campos de valor utilizar ponto para separar os decimais e não usar ponto para separar os milhares.'})
-      Projeto.find({ foiRealizado: false, user: _id }).sort({ dataord: 'asc' }).lean().then((dataord) => {
-        var numprj = projetos.length
-        Projeto.find({ foiRealizado: true, user: _id }).then((foiRealizado) => {
-          var numprjrlz = foiRealizado.length
-          Projeto.find({ foiRealizado: false, user: _id }).then((naoRealizado) => {
-            var numprjnrl = naoRealizado.length
-            Projeto.find({ orcado: true, user: _id }).lean().then((aberto) => {
-              var qtdAberto = aberto.length
-              Projeto.find({ executando: true, user: _id }).lean().then((executando) => {
-                var qtdExecucao = executando.length
-                Projeto.find({ parado: true, user: _id }).lean().then((parado) => {
-                  var qtdParado = parado.length
-                  Projeto.find({ homologado: true, user: _id }).lean().then((homologado) => {
-                    var qtdHomologado = homologado.length
-                    Realizado.find({ user: _id, foiRealizado: true }).lean().then((foiEntregue) => {
-                      var qtdEntregue = foiEntregue.length
-                      perRealizado = ((parseFloat(numprjrlz) / parseFloat(projetos.length)) * 100).toFixed(2)
-                      var perEntregue = ((parseFloat(qtdEntregue) / parseFloat(projetos.length)) * 100).toFixed(2)
-                      if (ehAdmin == 0) {
-                        ehMaster = true
+  var q = 0
+  var lista = []
+  var status = ''
+  var dtcadastro = ''
+  var dtvalidade = ''
+  var qtdpro = 0
+  var qtdvis = 0
+  var qtdass = 0
+  var qtdnot = 0
+  var qtdped = 0
+  var qtdtrt = 0
+  var qtdpcl= 0
+  var qtdequ = 0
+  var qtdfin = 0
+
+  Proposta.find({ user: _id }).sort({ data: 'asc' }).then((todasProposta) => {
+    if (todasProposta != '') {
+      todasProposta.forEach((element) => {
+        q++
+        Proposta.findOne({ _id: element._id }).then((proposta) => {
+          Cliente.findOne({ _id: element.cliente }).then((cliente) => {
+            Pessoa.findOne({ _id: element.responsavel }).then((pessoa) => {
+              Documento.findOne({ proposta: element._id }).then((documento) => {
+                Compra.findOne({ proposta: element._id }).then((compra) => {
+                  Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
+                    Equipe.findOne({ _id: element.equipe }).then((equipe) => {
+
+                      if (typeof proposta.proposta6 != 'undefined') {
+                        dtcadastro = proposta.dtcadastro6
+                        dtvalidade = proposta.dtvalidade6
                       } else {
-                        ehMaster = false
-                      }
-                      if (isNaN(perRealizado)){
-                        perRealizado = 0
-                      }
-                      if (isNaN(perEntregue)){
-                        perEntregue = 0
-                      }                      
-                      var totLista = parseFloat(qtdAberto) + parseFloat(qtdExecucao) + parseFloat(qtdParado) + parseFloat(qtdHomologado)
-
-                      Configuracao.findOne({ user: _id, slug: 'Padrão' }).then((config) => {
-                        console.log('encontrou algo')
-                        if (!config) {
-                          const configuracao = {
-                            user: _id,
-                            slug: 'Padrão',
-                            potencia: 'Todas',
-                            minatr: 120,
-                            minest: 60,
-                            minmod: 60,
-                            mininv: 60,
-                            hrstrb: '6.5',
-                            /*
-                            minart: req.body.minart,
-                            minmem: req.body.minmem,
-                            minsit: req.body.minsit,
-                            minuni: req.body.minuni,
-                            mindis: req.body.mindis,
-                            minate: req.body.minate,
-                            */
-                            medkmh: 12
+                        if (typeof proposta.proposta5 != 'undefined') {
+                          dtcadastro = proposta.dtcadastro5
+                          dtvalidade = proposta.dtvalidade5
+                        } else {
+                          if (typeof proposta.proposta4 != 'undefined') {
+                            dtcadastro = proposta.dtcadastro4
+                            dtvalidade = proposta.dtvalidade4
+                          } else {
+                            if (typeof proposta.proposta3 != 'undefined') {
+                              dtcadastro = proposta.dtcadastro3
+                              dtvalidade = proposta.dtvalidade3
+                            } else {
+                              if (typeof proposta.proposta2 != 'undefined') {
+                                dtcadastro = proposta.dtcadastro2
+                                dtvalidade = proposta.dtvalidade2
+                              } else {
+                                dtcadastro = proposta.dtcadastro1
+                                dtvalidade = proposta.dtvalidade1
+                              }
+                            }
                           }
-                    
-                          new Configuracao(configuracao).save().then(() => {
-                            res.render("menu", { aviso:aviso, numprjrlz: numprjrlz, numprjnrl: numprjnrl, numprj: numprj, foiRealizado: foiRealizado, naoRealizado: naoRealizado, dataord: dataord, perVlrMed: perVlrMed, perNfsMed: perNfsMed, perRealizado: perRealizado, id: _id, ehMaster: ehMaster, qtdAberto: qtdAberto, qtdExecucao: qtdExecucao, qtdParado: qtdParado, qtdHomologado: qtdHomologado, qtdEntregue: qtdEntregue, perEntregue: perEntregue, totLista: totLista })
-                          }).catch((err) => {
-                            req.flash('error_msg', 'Houve um erro ao salvar as configurações.')
-                            res.redirect('/configuracao/novo')
-                          })
-                        }else{
-                          res.render("menu", { aviso: aviso, numprjrlz: numprjrlz, numprjnrl: numprjnrl, numprj: numprj, foiRealizado: foiRealizado, naoRealizado: naoRealizado, dataord: dataord, perVlrMed: perVlrMed, perNfsMed: perNfsMed, perRealizado: perRealizado, id: _id, ehMaster: ehMaster, qtdAberto: qtdAberto, qtdExecucao: qtdExecucao, qtdParado: qtdParado, qtdHomologado: qtdHomologado, qtdEntregue: qtdEntregue, perEntregue: perEntregue, totLista: totLista })
                         }
-                      })       
-                      Empresa.findOne({ user: _id, nome: 'Padrão' }).then((empresa) => {
-                        if (!empresa) {
-                          const empresa = {
-                            user: _id,
-                            nome: 'Padrão',
-                            cnpj: '',
-                            empresa: '',
-                            regime: 'Simples',
-                            tipo: '',
-                            alqDAS: '19.5',
-                            alqICMS: 0,
-                            alqIRPJ: 0,
-                            alqIRPJAdd: 0,
-                            alqCSLL: 0,
-                            alqPIS: 0,
-                            alqCOFINS: 0,
-                            alqNFS: 4,
-                            vlrred: 9900,
-                            prjLR: 0,
-                            prjFat: 500000,
-                            prjLP: 0,
-                            alqINSS: 0,
-                            vlrDAS: 0,
-                            tipodesp: 'potencia',
-                            desadm: 15000,
-                            perdes: 0,
-                            estkwp: 200,
-                          }
+                      }
 
-                          new Empresa(empresa).save().then(() => {
-                            Empresa.findOne({ user: _id }).sort({ field: 'asc', _id: -1 }).then((empresa) => {
-                              req.flash('success_msg', 'Configurações de tributos salvas com sucesso')
-                              res.redirect('/configuracao/editempresa/' + empresa._id)
-                            }).catch((err) => {
-                              req.flash('error_msg', 'Houve um erro ao encontrar a empresa.')
-                              res.redirect('/configuracao/empresa')
-                            })
-                          }).catch((err) => {
-                            req.flash('error_msg', 'Houve um erro ao salvar a empresa.')
-                            res.redirect('/configuracao/empresa')
-                          })
+                      if (equipe.feito == true) {
+                        status = 'Equipe'
+                        qtdequ++
+                      } else {
+                        if (documento.protocolado == true) {
+                          status = 'Protocolado'
+                          qtdpcl++
+                        } else {
+                          if (documento.feitotrt == true) {
+                            status = 'TRT'
+                            qtdtrt++
+                          } else {
+                            if (compra.feitonota == true) {
+                              status = 'NF'
+                              qtdnot++
+                            } else {
+                              if (compra.feitopedido == true) {
+                                status = 'Pedido'
+                                qtdped++
+                              } else {
+                                if (proposta.assinado == true) {
+                                  status = 'Assinado'
+                                  qtdass++
+                                } else {
+                                  if (vistoria.feito == true) {
+                                    status = 'Vistoria'
+                                    qtdvis++
+                                  } else {
+                                    status = 'Proposta Enviada'
+                                    qtdpro++
+                                  }
+                                }
+                              }
+                            }
+                          }
                         }
-                      })                                     
-                      
+                      }
+
+                      console.log('qtdequ=>'+qtdequ)
+                      console.log('qtdpro=>'+qtdpro)
+                      // console.log('dtvalidade1=>'+dtvalidade)
+                      numprj = todasProposta.length
+
+                      lista.push({ status, id: proposta._id, cliente: cliente.nome, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade)})
+
+                      if (q == todasProposta.length) {
+                        if (ehAdmin == 0) {
+                          ehMaster = true
+                        } else {
+                          ehMaster = false
+                        }
+                        res.render('menuproposta', { lista, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfin})
+                      }
                     }).catch((err) => {
-                      req.flash("error_msg", "Ocorreu uma falha interna<Homologado>")
-                      res.redirect("/")
+                      req.flash('error_msg', 'Houve um erro ao encontrar a equipe.')
+                      res.redirect('/')
                     })
                   }).catch((err) => {
-                    req.flash("error_msg", "Ocorreu uma falha interna<Homologado>")
-                    res.redirect("/")
+                    req.flash('error_msg', 'Houve um erro ao encontrar a vistoria.')
+                    res.redirect('/')
                   })
                 }).catch((err) => {
-                  req.flash("error_msg", "Ocorreu uma falha interna<Parado>")
-                  res.redirect("/")
+                  req.flash('error_msg', 'Houve um erro ao encontrar a compra.')
+                  res.redirect('/')
                 })
               }).catch((err) => {
-                req.flash("error_msg", "Ocorreu uma falha interna<Executando>")
-                res.redirect("/")
+                req.flash('error_msg', 'Houve um erro ao encontrar o documento.')
+                res.redirect('/')
               })
             }).catch((err) => {
-              req.flash("error_msg", "Ocorreu uma falha interna<Aberto>")
-              res.redirect("/")
+              req.flash('error_msg', 'Houve um erro ao encontrar as pessoas.')
+              res.redirect('/')
             })
           }).catch((err) => {
-            req.flash("error_msg", "Ocorreu uma falha interna<Não foi Realizado>")
-            res.redirect("/")
+            req.flash('error_msg', 'Houve um erro ao encontrar os clientes.')
+            res.redirect('/')
           })
         }).catch((err) => {
-          req.flash("error_msg", "Ocorreu uma falha interna<Foi Realizado>")
-          res.redirect("/")
+          req.flash('error_msg', 'Houve um erro ao encontrar a proposta.')
+          res.redirect('/')
         })
-      }).catch((err) => {
-        req.flash("error_msg", "Ocorreu uma falha interna<Realizado por Data>")
-        res.redirect("/")
       })
-    }).catch((err) => {
-      req.flash("error_msg", "Ocorreu uma falha interna<Realizado Percentuais>")
-      res.redirect("/")
-    })
+    } else {
+      console.log('entrou')
+      res.render('menuproposta', { ehMaster })
+    }
   }).catch((err) => {
-    req.flash("error_msg", "Ocorreu uma falha interna par aencontrar projetos")
+    req.flash("error_msg", "Ocorreu uma falha interna para encontrar a proposta.")
     res.redirect("/")
   })
 })

@@ -1,0 +1,128 @@
+<style>
+    button {
+        line-height: 0px;
+    }
+
+    #header {
+        width: 100%;
+        border-bottom: rgb(40, 55, 86) 0, 1px solid;
+        color: rgb(40, 55, 86);
+    }
+
+    .filtro-selecao {
+        width: fit-content;
+        height: fit-content;
+        background: white;
+        border: solid 1px;
+        border-radius: 10px;
+        margin-left: 5px;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    th {
+        text-align: center;
+    }
+
+    tr {
+        font-size: 12px;
+        border-bottom: rgba(120, 120, 120, 0.4) solid 1px;
+    }
+</style>
+<div class='row' style="width: 100%;padding-left: 2%;">
+    <div id='header'>
+        <div class="row mt-4">
+            <form action='/projeto/filtrar/' method='post'>
+                <div class="col-md-4">
+                    <h5 class="mt-2 titulo-inicio">Lista de Projetos </h5>
+                </div>
+                <div class="row" style="margin-left: 10px">
+                    <div class="col-md-3">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Classificação</label>
+                        <select class='form-select form-select-sm' name='classificacao'>
+                            <option>Todos</option>
+                            <option>Rural</option>
+                            <option>Rural Residencial</option>
+                            <option>Rural Granja</option>
+                            <option>Rural Irrigação</option>
+                            <option>Residencial</option>
+                            <option>Industrial</option>
+                            <option>Comercial</option>
+                            <option>Público</option>
+                        </select>
+                    </div>
+                    <div class='col-md-3'>
+                        <label class='col-form-label col-form-label-sm fw-bold'>Status</label>
+                        <select class='form-select form-select-sm' name='status'>
+                            <option>Todos</option>
+                            <option>Em Aberto</option>
+                            <option>Em Execução</option>
+                            <option>Parado</option>
+                            <option>Homologado</option>
+                            <option>Realizado</option>
+                        </select>
+                    </div>
+                    <div class='col-md-3'>
+                        <label class='col-form-label col-form-label-sm fw-bold'>Responsável</label>
+                        <select name='funres' class='form-select form-select-sm'>
+                            <option>Todos</option>
+                            {{#each responsavel}}
+                            <option name='{{_id}}'>{{nome}}</option>
+                            {{else}}
+                            <option>Nenhum responsável cadastrato</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        <button type='submit' class='mt-3 botaofiltrar'><i
+                                class='bi bi-search iconefiltrar'></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="row mt-4">
+            <div class='filtro-selecao' style="margin-left: 30px;">Classificação: {{classificacao}}</div>
+            <div class='filtro-selecao'>Realizado: {{filStatus}}</div>
+            {{#if pr.nome}}
+            <div class='filtro-selecao'>Responsável: {{pr.nome}}</div>
+            {{else}}
+            <div class='filtro-selecao'>Responsável: Todos</div>
+            {{/if}}
+        </div>
+    </div>
+
+    <div style="margin-bottom: 4%;margin-top: 1%;">
+        <table>
+            <tr>
+                <th style="width: 7%;">Status</th>
+                <th style="width: 5%;">Proposta</th>
+                <th style="width: 10%;">Cliente</th>
+                <th style="width: 10%;">Responsável</th>
+                <th style="width: 5%">Data Cadastro</th>
+                <th style="width: 10%">Data Inicio Instalação</th>
+                <th style="width: 6%">Data Fim Instalação</th>
+                <th style="width: 5%;"></th>
+            </tr>
+            {{#each lista}}
+            <tr style="line-height: 30px;">
+                <td style="text-align: center;">{{status}}</td>
+                <td style="text-align: center;">{{id}}</td>
+                <td style="text-align: center;">{{cliente}}</td>
+                <td style="text-align: center;">{{responsavel}}</td>
+                <td style="text-align: center;">{{dtcadastro}}</td>
+                <td style="text-align: center;">{{dtinicio}}</td>
+                <td style="text-align: center;">{{dtfim}}</td>
+                <td>    
+                    <div style="margin: auto" class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
+                    <a href='/gerenciamento/proposta/{{_id}}' class='botao-tabela ativado-tabela'><i class="bi bi-pen icone"></i></a>
+                    </div>
+                </td>
+            </tr>
+            {{else}}
+            <h6>Nenhum projeto encontrado</h6>
+            {{/each}}
+        </table>
+    </div>
+</div>

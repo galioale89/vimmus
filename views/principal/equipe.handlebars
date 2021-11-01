@@ -1,0 +1,335 @@
+<style>
+    .lists-ins {
+        display: flex;
+        flex: 1;
+        width: 100%;
+    }
+
+    .lists-ins .list-ins {
+        display: flex;
+        flex-flow: column;
+        flex: 1;
+
+        border-radius: 20px;
+        min-height: 100px;
+
+        background-color: #001263e5;
+        margin: 0 15px;
+        padding: 8px;
+        transition: all 0.2s linear;
+    }
+
+    .lists-ins .list-ins .list-item-ins {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+
+    .lists-ins .list-ins .item-instalacao {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+
+    .lists-ins .list-ins .item-ins {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+
+    table {
+        font-size: 14px;
+        text-align: center;
+    }
+
+    td {
+        border: 5px solid transparent;
+    }
+</style>
+<script>
+    function proximo() {
+        var prx1 = document.getElementById('btnprx1')
+        var prx2 = document.getElementById('btnprx2')
+        var troca = document.getElementById('trocaprx')
+        if (troca.checked) {
+            prx1.style.display = 'none'
+            prx2.style.display = 'flex'
+        } else {
+            prx1.style.display = 'flex'
+            prx2.style.display = 'none'
+        }
+    }
+</script>
+<div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
+    {{#if proposta._id}}
+    <div style="width: 100%;">
+        <h5 class="header">{{cliente.nome}} </h5>
+    </div>
+    {{/if}}
+
+    <div class='btn-group col-12'>
+        <div class='numero'>1</div>
+        <a href='/gerenciamento/proposta/{{proposta._id}}/'
+            class='btn btn-sm{{#if proposta.feito}} check-menu {{else}} botao-menu {{/if}}'
+            style="border-bottom-left-radius: 30px;"> <i class="bi bi-house"></i> Proposta</a>
+        <div class='numero'>2</div>
+        <a href="/gerenciamento/visita/{{proposta._id}}"
+            class="btn btn-sm {{#if vistoria.feito}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-gear"></i>
+            Visita Técnica</a>
+        <div class='numero '>3</div>
+        <a href="/gerenciamento/assinatura/{{proposta._id}}"
+            class="btn btn-sm {{#if proposta.assinado}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-pencil"></i>
+            Assinatura</a>
+        <div class='numero'>4</div>
+        <a href="/gerenciamento/compra/{{proposta._id}}"
+            class="btn btn-sm {{#if compra.feitonota}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-cart-check"></i>
+            Compra Sistema</a>
+        <div class='numero'>5</div>
+        <a href="/gerenciamento/trt/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitotrt}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-tools"></i>
+            TRT</a>
+        <div class='numero'>6</div>
+        <a href="/gerenciamento/execucao/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.protocolado}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-file-earmark-check"></i>
+            Execução</a>
+        <div class='numero ativo'>7</div>
+        <a href="/gerenciamento/equipe/{{proposta._id}}"
+            class="btn btn-sm {{#if lista_equipe.feito}} check-menu {{else}} botao-menu ativo {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-people"></i>
+            Equipes</a>
+        <div class='numero'>8</div>
+        <a href="/gerenciamento/financeiro/{{proposta._id}}" class="btn btn-sm botao-menu"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-layers"></i>
+            Financeiro</a>
+            <div class='numero'>9</div>
+        <a href="/gerenciamento/posvenda/{{proposta._id}}" class="btn btn-sm botao-menu" style="border-bottom-left-radius: 30px;"><i class="bi bi-layers"></i>
+            Pós Venda</a>               
+    </div>
+
+    <form action='/gerenciamento/salvarpadrao/' method='post'>
+        <input type="hidden" name="id" value='{{proposta._id}}'>
+        <div class="row mt-4 mb-4">
+            <div class="col-md-1 text-end">
+                <label for="nome" class=" fw-bold col-form-label col-form-label-sm mt-1"> Equipe:
+                </label>
+            </div>
+            <div class="col">
+                <select class='form-select form-select-sm mb-1 mt-1' name='equipe'>
+                    <option style="font-weight: bold;" value={{lista_equipe._id}}>{{lista_equipe.nome_equipe}}</option>
+                    {{#each equipes}}
+                    <option value="{{_id}}">{{nome}}</option>
+                    {{else}}
+                    <option value=''>Nenhuma equipe cadastrada.</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="col">
+                <button type="submit" class='btn btn-sm btn-success mt-1'>Próximo>></button>
+            </div>
+        </div>
+    </form>
+    <form method="post" action='/gerenciamento/salvarequipe/'>
+        <input type="hidden" name="id" value='{{proposta._id}}'>
+        <div class="row" style="padding-left:10px;padding-right: 10px;width: 100%;">
+            <div class="col">
+                <div class="row">
+                    <div class="lists-ins">
+                        <div class="list-ins">
+                            <label class="col-form-label col-form-label-sm fw-bold text-center"
+                                style="color: white">Instaladores Disponíveis</label>
+                            {{#each fora_ins}}
+                            <div class="list-item-ins" style='color: black;' draggable="true">{{nome}}<a
+                                    href='/pessoa/vermais/{{id}}' style="padding-left: 5px;"><i
+                                        class='bi bi-eye'></i></a>
+                            </div>
+                            {{/each}}
+                        </div>
+                        <div class="list-ins">
+                            <label class="col-form-label col-form-label-sm fw-bold text-center"
+                                style="color: white">Instaladores Alocados</label>
+                            {{#each dentro_ins}}
+                            <div class="item-instalacao" style='color: black;' draggable="true">{{nome}}<a
+                                    href='/pessoa/vermais/{{id}}' style="padding-left: 5px;"><i
+                                        class='bi bi-eye'></i></a>
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4" style="max-width: 70%;margin-left: 30px;">
+            <div class="col">
+                <label class="col-form-label col-form-label-sm">Previsão Inicio das Obras</label>
+                <input type='date' name='dtinicio' class='form-control' value='{{lista_equipe.dtinicio}}'>
+            </div>
+            <div class="col">
+                <label class="col-form-label col-form-label-sm">Previsão Fim das Obras</label>
+                <input type='date' name='dtfim' class='form-control' value='{{lista_equipe.dtfim}}'>
+            </div>
+            <div class="col">
+                <div style="margin-top: 25px;">
+                    <button type="submit" class='btn btn-success' onclick="getItemValueIns()">Aplicar</button>
+                    <a href='/gerenciamento/enviarequipe/{{proposta._id}}' class="btn btn-primary">{{#if
+                        lista_equipe.liberar}}
+                        Cancelar{{else}}Envia Equipe{{/if}}</a>
+                </div>
+
+            </div>
+            <input type='hidden' class='ins0' name='ins0' id='ins0' value=''>
+            <input type='hidden' class='ins1' name='ins1' id='ins1' value=''>
+            <input type='hidden' class='ins2' name='ins2' id='ins2' value=''>
+            <input type='hidden' class='ins3' name='ins3' id='ins3' value=''>
+            <input type='hidden' class='ins4' name='ins4' id='ins4' value=''>
+            <input type='hidden' class='ins5' name='ins5' id='ins5' value=''>
+        </div>
+    </form>
+</div>
+<script>
+
+    const list_item_ins = document.querySelectorAll('.list-item-ins');
+    const lists_ins = document.querySelectorAll('.list-ins');
+    const list_instalacao = document.querySelectorAll('.item-instalacao');
+
+    let draggedItemIns = null;
+
+    for (let i = 0; i < list_item_ins.length; i++) {
+        const item_ins = list_item_ins[i];
+
+        item_ins.addEventListener('dragstart', function () {
+            draggedItemIns = item_ins;
+            setTimeout(function () {
+                item_ins.style.display = 'none';
+            }, 0)
+        });
+
+        item_ins.addEventListener('dragend', function () {
+            this.className = 'item-instalacao';
+            setTimeout(function () {
+                draggedItemIns.style.display = 'block';
+                draggedItemIns = null;
+            }, 0);
+        })
+
+        for (let j = 0; j < lists_ins.length; j++) {
+            const list_ins = lists_ins[j];
+
+            list_ins.addEventListener('dragover', function (e) {
+                e.preventDefault();
+            });
+
+            list_ins.addEventListener('dragenter', function (e) {
+                e.preventDefault();
+                this.style.backgroundColor = 'rgba(40, 55, 89, 1)';
+            });
+
+            list_ins.addEventListener('dragleave', function (e) {
+                this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+            });
+
+            list_ins.addEventListener('drop', function (e) {
+                console.log('drop');
+                this.append(draggedItem);
+                this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+            });
+        }
+    }
+
+    if (list_instalacao.length > 0 || list_instalacao.length != '') {
+
+        for (let x = 0; x < list_instalacao.length; x++) {
+            const instalacao = list_instalacao[x];
+
+            instalacao.addEventListener('dragstart', function () {
+                draggedItemIns = instalacao;
+                setTimeout(function () {
+                    item_ins.style.display = 'none';
+                }, 0)
+            });
+
+            instalacao.addEventListener('dragend', function () {
+                this.className = 'item-ins';
+                setTimeout(function () {
+                    draggedItemIns.style.display = 'block';
+                    draggedItemIns = null;
+                }, 0);
+            })
+
+            for (let y = 0; y < lists_ins.length; y++) {
+                const list_ins = lists_ins[y];
+
+                list_ins.addEventListener('dragover', function (e) {
+                    e.preventDefault();
+                });
+
+                list_ins.addEventListener('dragenter', function (e) {
+                    e.preventDefault();
+                    this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+                });
+
+                list_ins.addEventListener('dragleave', function (e) {
+                    this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+                });
+
+                list_ins.addEventListener('drop', function (e) {
+                    console.log('drop');
+                    this.append(draggedItemIns);
+                    this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+                });
+            }
+        }
+    }
+
+    function getItemValueIns() {
+
+        var ins0 = 0
+        var ins1 = 0
+        var ins2 = 0
+        var ins3 = 0
+        var ins4 = 0
+        var ins5 = 0
+
+        const item_ins = document.querySelectorAll('.item-instalacao');
+        for (i = 0; i < item_ins.length; i++) {
+            const insitem = document.getElementsByClassName(item_ins[i].getAttribute('class'));
+            var element = insitem[i].innerText;
+            switch (i) {
+                case 0:
+                    insdes = document.getElementById('ins0');
+                    insdes.value = element
+                    break;
+                case 1:
+                    var insdes = document.getElementById('ins1');
+                    insdes.value = element
+                    break;
+                case 2:
+                    var insdes = document.getElementById('ins2');
+                    insdes.value = element
+                    break;
+                case 3:
+                    var insdes = document.getElementById('ins3');
+                    insdes.value = element
+                    break;
+                case 4:
+                    var insdes = document.getElementById('ins4');
+                    insdes.value = element
+                    break;
+                case 5:
+                    var insdes = document.getElementById('ins5');
+                    insdes.value = element
+                    break;
+            }
+        }
+    }
+</script>

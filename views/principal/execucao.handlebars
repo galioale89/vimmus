@@ -1,0 +1,180 @@
+<script>
+    function mostraSalvar(){
+        var check = document.getElementById('checkProtocolo')
+        var salvar = document.getElementById('salvar')
+        if (check.checked){
+            salvar.style.display = 'inline'
+        }else{
+            salvar.style.display = 'none'
+        }
+    }
+</script>
+<div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
+    {{#if proposta._id}}
+    <div style="width: 100%;">
+        <h5 class="header">{{cliente_proposta.nome}} </h5>
+    </div>
+    {{/if}}
+
+    <div class='btn-group col-12'>
+        <div class='numero'>1</div>
+        <a href='/gerenciamento/proposta/{{proposta._id}}/' class='btn btn-sm{{#if proposta.feito}} check-menu {{else}} botao-menu {{/if}}' style="border-bottom-left-radius: 30px;"> <i
+                class="bi bi-house"></i> Proposta</a>
+        <div class='numero'>2</div>
+        <a href="/gerenciamento/visita/{{proposta._id}}" class="btn btn-sm {{#if vistoria.feito}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-gear"></i>
+            Visita Técnica</a>
+        <div class='numero '>3</div>
+        <a href="/gerenciamento/assinatura/{{proposta._id}}" class="btn btn-sm {{#if proposta.assinado}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i
+                class="bi bi-pencil"></i>
+            Assinatura</a>
+        <div class='numero'>4</div>
+        <a href="/gerenciamento/compra/{{proposta._id}}" class="btn btn-sm {{#if compra.feitonota}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-cart-check"></i>
+            Compra Sistema</a>
+        <div class='numero'>5</div>
+        <a href="/gerenciamento/trt/{{proposta._id}}" class="btn btn-sm {{#if documento.feitotrt}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-tools"></i>
+            TRT</a>
+        <div class='numero ativo'>6</div>
+        <a href="/gerenciamento/execucao/{{proposta._id}}" class="btn btn-sm {{#if documento.protocolado}} check-menu {{else}} botao-menu {{/if}}"  style="border-bottom-left-radius: 30px;"><i
+                class="bi bi-file-earmark-check"></i>
+            Execução</a>
+        <div class='numero'>7</div>
+        <a href="/gerenciamento/equipe/{{proposta._id}}" class="btn btn-sm {{#if lista_equipe.feito}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-people"></i>
+            Equipes</a>
+        <div class='numero'>8</div>
+        <a href="/gerenciamento/financeiro/{{proposta._id}}" class="btn btn-sm botao-menu" style="border-bottom-left-radius: 30px;"><i class="bi bi-layers"></i>
+            Financeiro</a>
+            <div class='numero'>9</div>
+        <a href="/gerenciamento/posvenda/{{proposta._id}}" class="btn btn-sm botao-menu" style="border-bottom-left-radius: 30px;"><i class="bi bi-layers"></i>
+            Pós Venda</a>            
+    </div>
+
+    <div class="row mt-4">
+        <form action='/gerenciamento/salvarMemorial' enctype="multipart/form-data" method="post">
+            <input type='hidden' name='id' value='{{proposta._id}}'>
+            <table>
+                <tr>
+                    <td>
+                        <label class="col-form-label fw-bold">Memorial Descritivo:</label>
+                        <label class='col-form-label'>{{documento.memorial}}</label>
+                        <input class="form-control" type="file" name='memorial'>
+                    </td>
+                    <td>
+                        <label class="col-form-label fw-bold">Data</label>
+                        <input type="date" class='form-control' name='dtmemorial' value='{{documento.dtmemorial}}'>
+                    </td>
+                    <td style="width: 5%;text-align: center;">
+                        <label class="col-form-label fw-bold">Salva</label>
+                        <button type='submit' class="btn btn-success" name='aplicar'><i class='bi bi-save'></i></button>
+                    </td>
+                    <td style="width: 5%;text-align: center;">
+                        <label class="col-form-label fw-bold">Ver</label>
+                        <a class="btn btn-primary" href='/gerenciamento/mostrarMemorial/{{proposta._id}}'
+                            target="_blank"><i class='bi bi-eye'></i></a>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <form action='/gerenciamento/salvarSituacao' enctype="multipart/form-data" method="post">
+            <input type='hidden' name='id' value='{{proposta._id}}'>
+            <table>
+                <tr>
+                    <td>
+                        <label class="col-form-label fw-bold">Planta de Situação:</label>
+                        <label class='col-form-label'>{{documento.situacao}}</label>
+                        <input class="form-control" type="file" name='situacao'>
+                    </td>
+                    <td>
+                        <label class="col-form-label fw-bold">Data</label>
+                        <input type="date" class='form-control' name='dtsituacao' value='{{documento.dtsituacao}}'>
+                    </td>
+                    <td style="width: 5%;text-align: center;">
+                        <label class="col-form-label fw-bold">Salva</label>
+                        <button type='submit' class="btn btn-success" name='aplicar'><i class='bi bi-save'></i></button>
+                    </td>
+                    <td style="width: 5%;text-align: center;">
+                        <label class="col-form-label fw-bold">Ver</label>
+                        <a class="btn btn-primary" href='/gerenciamento/mostrarSituacao/{{proposta._id}}'
+                            target="_blank"><i class='bi bi-eye'></i></a>
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+        <form action='/gerenciamento/salvarUnifilar' enctype="multipart/form-data" method="post">
+            <input type='hidden' name='id' value='{{proposta._id}}'>
+            <table>
+                <tr>
+                    <td>
+                        <label class="col-form-label fw-bold">Diagrama Unifilar:</label>
+                        <label class='col-form-label'>{{documento.unifilar}}</label>
+                        <input class="form-control" type="file" name='unifilar'>
+                    </td>
+                    <td style="width: 29.5%;">
+                        <label class="col-form-label fw-bold">Data</label>
+                        <input type="date" class='form-control' name='dtunifilar' value='{{documento.dtunifilar}}'>
+                    </td>
+                    <td style="width: 5%;text-align: center;">
+                        <label class="col-form-label fw-bold">Salva</label>
+                        <button type='submit' class="btn btn-success" name='aplicar'><i class='bi bi-save'></i></button>
+                    </td>
+                    <td style="width: 5%;text-align: center;">
+                        <label class="col-form-label fw-bold">Ver</label>
+                        <a class="btn btn-primary" href='/gerenciamento/mostrarUnifilar/{{proposta._id}}'
+                            target="_blank"><i class='bi bi-eye'></i></a>
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+
+        <form action='/gerenciamento/salvarTrifilar' enctype="multipart/form-data" method="post">
+            <input type='hidden' name='id' value='{{proposta._id}}'>
+            <table>
+                <tr>
+                    <td>
+                        <label class="col-form-label fw-bold">Diagrama Trifilar:</label>
+                        <label class='col-form-label'>{{documento.trifilar}}</label>
+                        <input class="form-control" type="file" name='trifilar'>
+                    </td>
+                    <td>
+                        <label class="col-form-label fw-bold">Data</label>
+                        <input type="date" class='form-control' name='dttrifilar' value='{{documento.dttrifilar}}'>
+                    </td>
+                    <td style="width: 5%;text-align: center;">
+                        <label class="col-form-label fw-bold">Salva</label>
+                        <button type='submit' class="btn btn-success" name='aplicar'><i class='bi bi-save'></i></button>
+                    </td>
+                    <td style="width: 5%;text-align: center;">
+                        <label class="col-form-label fw-bold">Ver</label>
+                        <a class="btn btn-primary" href='/gerenciamento/mostrarTrifilar/{{proposta._id}}'
+                            target="_blank"><i class='bi bi-eye'></i></a>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <form action='/gerenciamento/protocolar' method="post">
+    <input type='hidden' name='id' value='{{proposta._id}}'>
+        <div class="row mt-4">
+            <div class="col-md-4 mt-4">
+                <div class="form-check" style="font-size: 20px;" id='checkProto' onchange="mostraSalvar()">
+                    <input class="form-check-input" type="checkbox" {{check}} id="checkProtocolo">
+                    <label class="form-check-label mt-1" style="font-size: 20px;">
+                        Projeto protocolado na concessionária
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <label>Data Envio</label>
+                <input type="date" class='form-control' name='dtprotocolo' value='{{documento.dtprotocolo}}'>
+            </div>
+            <div class="col-md-1">
+                <label>Deadline</label><br>
+                <label class='col-form-label'>{{documento.dtdeadline}}</label>
+            </div>            
+            <div class="col-md-1 mt-3" id='salvar' style="display: {{salva}}">
+                <button type="submit" class='btn btn-success'>Salvar</button>
+            </div>
+        </div>
+    </form>
+</div>

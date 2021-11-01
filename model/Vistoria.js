@@ -7,6 +7,11 @@ const Vistoria = new Schema({
         ref: 'usuario',
         require: false,
     },
+    proposta:{
+        type: Schema.Types.ObjectId,
+        ref: 'proposta',
+        require: false,
+    },    
     projeto:{
         type: Schema.Types.ObjectId,
         ref: 'projeto',
@@ -358,7 +363,7 @@ const Vistoria = new Schema({
         require: false
     },
     dtPlaSombra:{
-        type: Date,
+        type: String,
         require: false
     },    
     fotoPlaSombra:{
@@ -370,11 +375,11 @@ const Vistoria = new Schema({
         require: false
     },
     dtPlaAte:{
-        type: Date,
+        type: String,
         require: false
     },    
     fotoPlaAte:{
-        type: Date,
+        type: String,
         require: false
     },    
     plaArea:{
@@ -382,23 +387,23 @@ const Vistoria = new Schema({
         require: false
     },
     dtPlaArea:{
-        type: Date,
+        type: String,
         require: false
     },     
     fotoPlaArea:{
         type: String,
         require: false
     },        
-    plaLocalStb:{
+    plaInvStb:{
         type: String,
         require: false
     },
-    dtPlaLocalStb:{
-        type: Date,
+    dtPlaInvStb:{
+        type: String,
         require: false
     },  
-    fotoPlaLocalStb:{
-        type: Date,
+    fotoPlaInvStb:{
+        type: String,
         require: false
     },      
     plaDimArea:{
@@ -441,6 +446,10 @@ const Vistoria = new Schema({
         type: Number,
         require: false  
     }, 
+    feito:{
+            type: Boolean,
+            require:false        
+    }
 })
 
 Mongoose.model('vistoria', Vistoria)
