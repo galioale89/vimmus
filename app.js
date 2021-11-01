@@ -131,6 +131,12 @@ app.get('/menu', ehAdmin, (req, res) => {
   var qtdequ = 0
   var qtdfin = 0
 
+  if (ehAdmin == 0) {
+    ehMaster = true
+  } else {
+    ehMaster = false
+  }
+
   Proposta.find({ user: _id }).sort({ data: 'asc' }).then((todasProposta) => {
     if (todasProposta != '') {
       todasProposta.forEach((element) => {
@@ -217,11 +223,6 @@ app.get('/menu', ehAdmin, (req, res) => {
                       lista.push({ status, id: proposta._id, cliente: cliente.nome, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade)})
 
                       if (q == todasProposta.length) {
-                        if (ehAdmin == 0) {
-                          ehMaster = true
-                        } else {
-                          ehMaster = false
-                        }
                         res.render('menuproposta', { lista, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfin})
                       }
                     }).catch((err) => {
