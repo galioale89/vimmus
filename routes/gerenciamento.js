@@ -555,7 +555,6 @@ router.get('/posvenda/:id', ehAdmin, (req, res) => {
     })
 })
 
-
 router.get('/dashboard/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         res.render('projeto/gerenciamento/dashboard', { projeto: projeto })
@@ -929,6 +928,8 @@ router.post('/trt', ehAdmin, (req, res) => {
                     console.log('entrou')
                     documento.trt = trtfile
                     documento.dttrt = String(req.body.dttrt)
+                    documento.data = dataBusca(dataHoje()),
+                    documento.feitotrt = true
                 } else {
                     const trt = {
                         user: _id,
@@ -1036,8 +1037,9 @@ router.get('/mostrarProposta1/:id', ehAdmin, (req, res) => {
     Proposta.findOne({ _id: req.params.id }).then((proposta) => {
         var doc = proposta.proposta1
         var path = __dirname
-        //console.log(path)
+        console.log(path)
         path = path.replace('routes', '')
+        console.log(path)
         res.sendFile(path + '/public/arquivos/' + doc)
     })
 })
@@ -1332,8 +1334,12 @@ router.post('/pedido', ehAdmin, (req, res) => {
                         res.redirect('/gerenciamento/compra/' + req.body.id)
                     })
                 } else {
+                    compra.fornecedor = req.body.fornecedor,
+                    compra.feitopedido = true,
+                    compra.data = dataBusca(dataHoje())                    
                     compra.pedido = propostafile
                     compra.dtcadastro = String(req.body.dtcadastro)
+                    compra.feitopedido = true,
                     compra.save().then(() => {
                         req.flash('success_msg', 'Documento salvo com sucesso.')
                         res.redirect('/gerenciamento/compra/' + req.body.id)
