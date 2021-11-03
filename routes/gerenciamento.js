@@ -1229,8 +1229,9 @@ router.get('/mostrarProposta/:id', ehAdmin, (req, res) => {
     Proposta.findOne({ _id: req.params.id }).then((proposta) => {
         var doc = proposta.assinatura
         var path = __dirname
-        //console.log(path)
+        console.log(path)
         path = path.replace('routes', '')
+        console.log(path)
         res.sendFile(path + '/public/arquivos/' + doc)
     })
 })
