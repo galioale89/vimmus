@@ -1318,7 +1318,7 @@ router.post('/pedido', ehAdmin, (req, res) => {
             } else {
                 propostafile = ''
             }
-            Compra.findOne({ _id: req.body.id }).then((compra) => {
+            Compra.findOne({ proposta: req.body.id }).then((compra) => {
                 console.log('compra=>' + compra)
                 if (compra == null) {
                     const pedido = {
