@@ -540,6 +540,22 @@ router.get('/financeiro/:id', ehAdmin, (req, res) => {
     })
 })
 
+router.get('/posvenda/:id', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
+            res.render('principal/posvenda', { cliente_proposta, proposta })
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi possível encontrar o responsável da proposta.')
+            res.redirect('/menu')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar a proposta.')
+        res.redirect('/menu')
+    })
+})
+
+
 router.get('/dashboard/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         res.render('projeto/gerenciamento/dashboard', { projeto: projeto })
