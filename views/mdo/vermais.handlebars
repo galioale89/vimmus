@@ -74,11 +74,12 @@
             <div class="quadro">
                 <table>
                     <tr>
-                        <th style="width: 20%;text-align: center;" >Função</th>
-                        <th style="width: 20%;text-align: center;" >Cliente</th>
-                        <th style="width: 30%;text-align: center;" >Projeto</th>
+                        <th style="width: 25%;text-align: center;">Função</th>
+                        <th style="width: 15%;text-align: center;">Cliente</th>
+                        <th style="width: 20%;text-align: center;">Projeto</th>
                         <th style="width: 10%;text-align: center;">Data Inicio</th>
                         <th style="width: 10%;text-align: center;">Data Fim</th>
+                        <th style="width: 10%;text-align: center;">Estágio</th>
                         <th style="text-align: center;">Foi Realizado?</th>
                     </tr>
                     {{#each projetos_ven}}
@@ -88,6 +89,25 @@
                         <td><a href='/projeto/edicao/{{id}}' style="font-size: 13px;" class='selecao'>{{nome}}</a></td>
                         <td>{{dataini}}</td>
                         <td>{{datafim}}</td>
+                        <td>
+                        <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
+                            {{#if checkAte}}
+                            <div class='botao-tabela checkAte'>A</div>
+                            {{else}}
+                            <div class='botao-tabela uncheckAte'>A</div>
+                            {{/if}}
+                            {{#if checkTel}}
+                            <div class='botao-tabela checkMod' M></div>
+                            {{else}}
+                            <div class='botao-tabela uncheckMod'>M</div>
+                            {{/if}}
+                            {{#if chechInv}}
+                            <div class='botao-tabela checkInv'>I</div>
+                            {{else}}
+                            <div class='botao-tabela uncheckInv'>I</div>
+                            {{/if}}
+                        </div>
+                        </td>
                         {{#if foiRealizado}}
                         <td>Sim</td>
                         {{else}}
@@ -98,7 +118,8 @@
                     {{/each}}
                     {{#if projetos_ven}}
                     <tr>
-                        <td colspan="6" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{total_ven}}
+                        <td colspan="7" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total:
+                            {{total_ven}}
                         </td>
                     </tr>
                     {{/if}}
@@ -109,6 +130,25 @@
                         <td><a href='/projeto/edicao/{{id}}' style="font-size: 13px;" class='selecao'>{{nome}}</a></td>
                         <td>{{dataini}}</td>
                         <td>{{datafim}}</td>
+                        <td>
+                        <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
+                            {{#if checkAte}}
+                            <div class='botao-tabela checkAte'>A</div>
+                            {{else}}
+                            <div class='botao-tabela uncheckAte'>A</div>
+                            {{/if}}
+                            {{#if checkTel}}
+                            <div class='botao-tabela checkMod' M></div>
+                            {{else}}
+                            <div class='botao-tabela uncheckMod'>M</div>
+                            {{/if}}
+                            {{#if chechInv}}
+                            <div class='botao-tabela checkInv'>I</div>
+                            {{else}}
+                            <div class='botao-tabela uncheckInv'>I</div>
+                            {{/if}}
+                        </div>
+                        </td>                        
                         {{#if foiRealizado}}
                         <td>Sim</td>
                         {{else}}
@@ -119,10 +159,11 @@
                     {{/each}}
                     {{#if projetos_pro}}
                     <tr>
-                        <td colspan="6" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{total_pro}}
+                        <td colspan="7" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total:
+                            {{total_pro}}
                         </td>
-                    </tr>   
-                    {{/if}}    
+                    </tr>
+                    {{/if}}
                     {{#each projetos_pla}}
                     <tr style="text-align: center;">
                         <td>{{funcao}}</a></td>
@@ -130,6 +171,25 @@
                         <td><a href='/projeto/edicao/{{id}}' style="font-size: 13px;" class='selecao'>{{nome}}</a></td>
                         <td>{{dataini}}</td>
                         <td>{{datafim}}</td>
+                        <td>
+                        <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
+                            {{#if checkAte}}
+                            <div class='botao-tabela checkAte'>A</div>
+                            {{else}}
+                            <div class='botao-tabela uncheckAte'>A</div>
+                            {{/if}}
+                            {{#if checkTel}}
+                            <div class='botao-tabela checkMod' M></div>
+                            {{else}}
+                            <div class='botao-tabela uncheckMod'>M</div>
+                            {{/if}}
+                            {{#if chechInv}}
+                            <div class='botao-tabela checkInv'>I</div>
+                            {{else}}
+                            <div class='botao-tabela uncheckInv'>I</div>
+                            {{/if}}
+                        </div>
+                        </td>
                         {{#if foiRealizado}}
                         <td>Sim</td>
                         {{else}}
@@ -140,10 +200,11 @@
                     {{/each}}
                     {{#if projetos_pla}}
                     <tr>
-                        <td colspan="6" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{total_pla}}
+                        <td colspan="7" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total:
+                            {{total_pla}}
                         </td>
-                    </tr>   
-                    {{/if}} 
+                    </tr>
+                    {{/if}}
                     {{#each projetos_ate}}
                     <tr style="text-align: center;">
                         <td>{{funcao}}</a></td>
@@ -151,6 +212,25 @@
                         <td><a href='/projeto/edicao/{{id}}' style="font-size: 13px;" class='selecao'>{{nome}}</a></td>
                         <td>{{dataini}}</td>
                         <td>{{datafim}}</td>
+                        <td>
+                        <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
+                            {{#if checkAte}}
+                            <div class='botao-tabela checkAte'>A</div>
+                            {{else}}
+                            <div class='botao-tabela uncheckAte'>A</div>
+                            {{/if}}
+                            {{#if checkTel}}
+                            <div class='botao-tabela checkMod' M></div>
+                            {{else}}
+                            <div class='botao-tabela uncheckMod'>M</div>
+                            {{/if}}
+                            {{#if chechInv}}
+                            <div class='botao-tabela checkInv'>I</div>
+                            {{else}}
+                            <div class='botao-tabela uncheckInv'>I</div>
+                            {{/if}}
+                        </div>
+                        </td>
                         {{#if foiRealizado}}
                         <td>Sim</td>
                         {{else}}
@@ -161,10 +241,11 @@
                     {{/each}}
                     {{#if projetos_ate}}
                     <tr>
-                        <td colspan="6" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{total_ate}}
+                        <td colspan="7" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total:
+                            {{total_ate}}
                         </td>
-                    </tr>   
-                    {{/if}}   
+                    </tr>
+                    {{/if}}
                     {{#each projetos_inv}}
                     <tr style="text-align: center;">
                         <td>{{funcao}}</a></td>
@@ -172,6 +253,25 @@
                         <td><a href='/projeto/edicao/{{id}}' style="font-size: 13px;" class='selecao'>{{nome}}</a></td>
                         <td>{{dataini}}</td>
                         <td>{{datafim}}</td>
+                        <td>
+                        <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
+                            {{#if checkAte}}
+                            <div class='botao-tabela checkAte'>A</div>
+                            {{else}}
+                            <div class='botao-tabela uncheckAte'>A</div>
+                            {{/if}}
+                            {{#if checkTel}}
+                            <div class='botao-tabela checkMod' M></div>
+                            {{else}}
+                            <div class='botao-tabela uncheckMod'>M</div>
+                            {{/if}}
+                            {{#if chechInv}}
+                            <div class='botao-tabela checkInv'>I</div>
+                            {{else}}
+                            <div class='botao-tabela uncheckInv'>I</div>
+                            {{/if}}
+                        </div>
+                        </td>
                         {{#if foiRealizado}}
                         <td>Sim</td>
                         {{else}}
@@ -182,10 +282,11 @@
                     {{/each}}
                     {{#if projetos_inv}}
                     <tr>
-                        <td colspan="6" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{total_inv}}
+                        <td colspan="7" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total:
+                            {{total_inv}}
                         </td>
-                    </tr>   
-                    {{/if}}      
+                    </tr>
+                    {{/if}}
                     {{#each projetos_pnl}}
                     <tr style="text-align: center;">
                         <td>{{funcao}}</a></td>
@@ -193,6 +294,25 @@
                         <td><a href='/projeto/edicao/{{id}}' style="font-size: 13px;" class='selecao'>{{nome}}</a></td>
                         <td>{{dataini}}</td>
                         <td>{{datafim}}</td>
+                        <td>
+                        <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
+                            {{#if checkAte}}
+                            <div class='botao-tabela checkAte'>A</div>
+                            {{else}}
+                            <div class='botao-tabela uncheckAte'>A</div>
+                            {{/if}}
+                            {{#if checkTel}}
+                            <div class='botao-tabela checkMod' M></div>
+                            {{else}}
+                            <div class='botao-tabela uncheckMod'>M</div>
+                            {{/if}}
+                            {{#if chechInv}}
+                            <div class='botao-tabela checkInv'>I</div>
+                            {{else}}
+                            <div class='botao-tabela uncheckInv'>I</div>
+                            {{/if}}
+                        </div>
+                        </td>
                         {{#if foiRealizado}}
                         <td>Sim</td>
                         {{else}}
@@ -203,10 +323,11 @@
                     {{/each}}
                     {{#if projetos_pnl}}
                     <tr>
-                        <td colspan="6" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{total_pnl}}
+                        <td colspan="7" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total:
+                            {{total_pnl}}
                         </td>
-                    </tr>   
-                    {{/if}}   
+                    </tr>
+                    {{/if}}
                     {{#each projetos_eae}}
                     <tr style="text-align: center;">
                         <td>{{funcao}}</a></td>
@@ -214,6 +335,25 @@
                         <td><a href='/projeto/edicao/{{id}}' style="font-size: 13px;" class='selecao'>{{nome}}</a></td>
                         <td>{{dataini}}</td>
                         <td>{{datafim}}</td>
+                        <td>
+                        <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
+                            {{#if checkAte}}
+                            <div class='botao-tabela checkAte'>A</div>
+                            {{else}}
+                            <div class='botao-tabela uncheckAte'>A</div>
+                            {{/if}}
+                            {{#if checkTel}}
+                            <div class='botao-tabela checkMod' M></div>
+                            {{else}}
+                            <div class='botao-tabela uncheckMod'>M</div>
+                            {{/if}}
+                            {{#if chechInv}}
+                            <div class='botao-tabela checkInv'>I</div>
+                            {{else}}
+                            <div class='botao-tabela uncheckInv'>I</div>
+                            {{/if}}
+                        </div>
+                        </td>
                         {{#if foiRealizado}}
                         <td>Sim</td>
                         {{else}}
@@ -224,10 +364,11 @@
                     {{/each}}
                     {{#if projetos_eae}}
                     <tr>
-                        <td colspan="6" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{total_eae}}
+                        <td colspan="7" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total:
+                            {{total_eae}}
                         </td>
-                    </tr>   
-                    {{/if}} 
+                    </tr>
+                    {{/if}}
                     {{#each projetos_ins}}
                     <tr style="text-align: center;">
                         <td>{{funcao}}</a></td>
@@ -235,6 +376,25 @@
                         <td><a href='/projeto/edicao/{{id}}' style="font-size: 13px;" class='selecao'>{{nome}}</a></td>
                         <td>{{dataini}}</td>
                         <td>{{datafim}}</td>
+                        <td>
+                        <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
+                            {{#if checkAte}}
+                            <div class='botao-tabela checkAte'>A</div>
+                            {{else}}
+                            <div class='botao-tabela uncheckAte'>A</div>
+                            {{/if}}
+                            {{#if checkTel}}
+                            <div class='botao-tabela checkMod' M></div>
+                            {{else}}
+                            <div class='botao-tabela uncheckMod'>M</div>
+                            {{/if}}
+                            {{#if chechInv}}
+                            <div class='botao-tabela checkInv'>I</div>
+                            {{else}}
+                            <div class='botao-tabela uncheckInv'>I</div>
+                            {{/if}}
+                        </div>
+                        </td>
                         {{#if foiRealizado}}
                         <td>Sim</td>
                         {{else}}
@@ -245,10 +405,11 @@
                     {{/each}}
                     {{#if projetos_ins}}
                     <tr>
-                        <td colspan="6" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total: {{total_ins}}
+                        <td colspan="7" style="background: rgba(98, 75, 230, 0.2);font-weight: bold;">Total:
+                            {{total_ins}}
                         </td>
-                    </tr>   
-                    {{/if}}                                                                                                                              
+                    </tr>
+                    {{/if}}
                 </table>
             </div>
         </div>

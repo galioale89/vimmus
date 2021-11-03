@@ -23,6 +23,8 @@
 </style>
 
 <div class='row mt-1' style="width: 100%;font-size: 12px;">
+  {{#if block}}
+  {{else}}
   <div class='col-md-2'>
     <div class="menu" style="height:100%">
       {{!-- <img src='img/logovimmus.png' height="75" width="100" style="padding-left: 10%;" /> --}}
@@ -37,7 +39,7 @@
         <div class="row mb-2">
           <div class="text-start">
             <a href="/gerenciamento/proposta" class="contorno-menu"><i class='bi bi-file-arrow-up'></i> Proposta</a>
-            <a href="/gerenciamento/consulta" class="botaomenu"> <i class='bi bi-search'></i> </a>
+            <a href="/gerenciamento/consultaproposta" class="botaomenu"> <i class='bi bi-search'></i> </a>
           </div>
         </div>
         <div class="row mb-2">
@@ -132,11 +134,11 @@
       </div>
     </div>
   </div>
-
-  <div class='col-md-3 mt-3'>
+  {{/if}}
+  <div class='{{#if block}}col-md-5{{else}}col-md-3{{/if}} mt-3'>
     <div class="row contorno-titulo" style="margin-top: 5%;">
       <div class="row">
-        <label style="font-size: 21px;color:#847AF4;;margin-top: 10%"> Total de Projetos</label>
+        <label style="font-size: 21px;color:#847AF4{{#if block}}{{else}};margin-top: 10%{{/if}}"> Total de Projetos</label>
         <label class="mt-2" style="font-size: 50px;">{{numprj}}</label>
       </div>
       <div style="width: 100%;">
@@ -268,8 +270,11 @@
                 <a href='/projeto/vermais/{{_id}}' class='botao-tabela ativado-tabela'><i
                     class="bi bi-eye icone-tabela"></i></a>
                 --}}
+                {{#if block}}
+                {{else}}
                 <a href='/gerenciamento/proposta/{{id}}/' class='botao-tabela ativado-tabela'><i
                     class="bi bi-pen icone-tabela"></i></a>
+                {{/if}}
                 {{!-- <a {{#if orcado}}class='botao-tabela desativado-tabela' {{else}}href='/projeto/realizar/{{_id}}'
                   class='botao-tabela ativado-tabela' {{/if}}> <i class="bi bi-check2-circle icone-tabela"></i>
                 </a>

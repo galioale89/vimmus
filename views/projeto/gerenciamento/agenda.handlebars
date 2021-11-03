@@ -108,12 +108,12 @@
 </script>
 <div class='row' style="padding: 10px;width: 100%;">
     <form action="/gerenciamento/aplicaAgenda/" method="post">
-        <input type='hidden' name='selecionado' id='selecionado' value='instalacao'>
+        <input type='hidden' name='selecionado' id='selecionado' value='tarefa'>
         <div class='row mb-2'>
             <div class="col mt-1">
                 <label style="font-size: 16px;font-weight: bold;"> Agenda: {{#if mes}}{{mestitulo}} de {{ano}}{{/if}}</label>
             </div>
-            <div class="col-md-1">
+            {{!-- <div class="col-md-1">
                 <div class="form-check" onchange="selecionar()">
                     <input class="form-check-input" type="radio" name="select" id="selectInst" {{checkInst}}>
                     <label class="form-check-label" style="font-size: 13px;margin-top: 5px;">
@@ -128,7 +128,7 @@
                         Tarefas
                     </label>
                 </div>
-            </div>
+            </div> --}}
             <div class="col text-end">
                 <label class='col-form-label fw-bold col-form-label-sm'>Selecione o mês e digite o ano:<label>
             </div>
