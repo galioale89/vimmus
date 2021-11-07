@@ -30,11 +30,21 @@
         <a href="/gerenciamento/equipe/{{proposta._id}}" class="btn btn-sm {{#if lista_equipe.feito}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-people"></i>
             Equipes</a>
         <div class='numero'>8</div>
-        <a href="/gerenciamento/financeiro/{{proposta._id}}" class="btn btn-sm botao-menu" style="border-bottom-left-radius: 30px;"><i class="bi bi-layers"></i>
+        <a href="/gerenciamento/aceite/{{proposta._id}}" class="btn btn-sm {{#if documento.feitoaceite}} check-menu {{else}} botao-menu{{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-check2-square"></i>
+            Aceite Obra</a>
+        <div class='numero'>9</div>
+        <a href="/gerenciamento/almoxarifado/{{proposta._id}}" class="btn btn-sm {{#if documento.feitoalmox}} check-menu {{else}} botao-menu{{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-layers"></i>
+            Almoxarifado</a>
+        <div class='numero'>10</div>
+        <a href="/gerenciamento/financeiro/{{proposta._id}}" class="btn btn-sm {{#if documento.feitofaturado}} check-menu {{else}} botao-menu{{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-calculator"></i>
             Financeiro</a>
-            <div class='numero'>9</div>
-        <a href="/gerenciamento/posvenda/{{proposta._id}}" class="btn btn-sm botao-menu" style="border-bottom-left-radius: 30px;"><i class="bi bi-layers"></i>
-            Pós Venda</a>            
+        <div class='numero'>11</div>
+        <a href="/gerenciamento/posvenda/{{proposta._id}}" class="btn btn-sm {{#if posvenda.feito}} check-menu {{else}} botao-menu{{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-door-open"></i>
+            Pós Venda</a>           
     </div>
 
     <div style="padding: 15px;">

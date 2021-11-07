@@ -106,11 +106,15 @@ const Proposta = new Schema({
         type: Boolean,
         require:false
     },
+    ganho: {
+        type: Boolean,
+        require:false
+    },
     assinado:{
         type: Boolean,
         require:false        
     },
-    compra:{
+    encerrado:{
         type: Boolean,
         require:false        
     },    

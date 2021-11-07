@@ -1,45 +1,41 @@
 const Mongoose = require("mongoose")
 const Schema = Mongoose.Schema
 
-const Acesso = new Schema({
+const Posvenda = new Schema({  
     user: {
         type: Schema.Types.ObjectId,
         ref: 'usuario',
+        require: false,
+    },  
+    proposta: {
+        type: Schema.Types.ObjectId,
+        ref: 'proposta',
+        require: false,
+    },     
+    config:{
+        type: String,
+        require: false
+    },    
+    demo:{
+        type: String,
+        require: false
+    },    
+    leitura:{
+        type: String,
         require: false
     },   
-    pessoa: {
-        type: Schema.Types.ObjectId,
-        ref: 'pessoa',
-        require: false
-    },      
-    usuario: {
+    laudo:{
         type: String,
         require: false
-    },
-    senha: {
-        type: String,
-        require: false
-    },
-    ehAdmin: {
-        type: Number,
-        default: 1
-    },
-    funges:{
+    }, 
+    feito: {
         type: Boolean,
         require: false
     },
-    data: {
-        type: String,
-        require: false
-    },
-    datalib: {
-        type: String,
-        require: false
-    },
-    dataexp: {
+    data:{
         type: String,
         require: false
     }
 })
 
-Mongoose.model("acesso", Acesso)
+Mongoose.model('posvenda', Posvenda)

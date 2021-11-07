@@ -2,146 +2,146 @@ const Mongoose = require("mongoose")
 const Schema = Mongoose.Schema
 
 const Vistoria = new Schema({
-    user:{
+    user: {
         type: Schema.Types.ObjectId,
         ref: 'usuario',
         require: false,
     },
-    proposta:{
+    proposta: {
         type: Schema.Types.ObjectId,
         ref: 'proposta',
         require: false,
-    },    
-    projeto:{
+    },
+    projeto: {
         type: Schema.Types.ObjectId,
         ref: 'projeto',
         require: false,
     },
-    tecnico:{
+    tecnico: {
         type: Schema.Types.ObjectId,
         ref: 'pessoa',
         require: false,
-    },    
+    },
     ateFuracao: {
         type: String,
         require: false
     },
-    dtAteFuracao:{
+    dtAteFuracao: {
         type: Date,
         require: false,
     },
-    fotoAteFuracao:{
+    fotoAteFuracao: {
         type: Date,
         require: false,
-    },    
+    },
     ateDistancia: {
         type: String,
         require: false
     },
-    dtAteDistancia:{
+    dtAteDistancia: {
         type: Date,
         require: false,
     },
-    fotoAteDistancia:{
+    fotoAteDistancia: {
         type: Date,
         require: false,
-    },    
+    },
     ateFixarHaste: {
         type: String,
         require: false
     },
-    dtAteFixarHaste:{
+    dtAteFixarHaste: {
         type: Date,
         require: false,
-    },    
-    fotoAteFixarHaste:{
+    },
+    fotoAteFixarHaste: {
         type: Date,
         require: false,
-    }, 
+    },
     ateConexao: {
         type: String,
         require: false
     },
-    dtAteConexao:{
+    dtAteConexao: {
         type: Date,
         require: false,
-    },  
-    fotoAteConexao:{
+    },
+    fotoAteConexao: {
         type: Date,
         require: false,
-    },       
+    },
     stbDisjutores: {
         type: String,
         require: false
     },
-    dtStbDisjutores:{
+    dtStbDisjutores: {
         type: Date,
         require: false,
-    },  
+    },
     stbEletrocalhas: {
         type: String,
         require: false
     },
-    dtStbEletrocalhas:{
+    dtStbEletrocalhas: {
         type: Date,
         require: false,
-    }, 
-    dtStbEletrocalhas:{
+    },
+    dtStbEletrocalhas: {
         type: Date,
         require: false,
-    },          
-    fotoStbEletrocalhas:{
+    },
+    fotoStbEletrocalhas: {
         type: Date,
         require: false,
-    },     
+    },
     stbLigacaoAC: {
         type: String,
         require: false
     },
-    dtStbLigacaoAC:{
+    dtStbLigacaoAC: {
         type: Date,
         require: false,
     },
-    fotoStbLigacaoAC:{
+    fotoStbLigacaoAC: {
         type: Date,
         require: false,
-    },         
+    },
     stbLigacaoDC: {
         type: String,
         require: false
     },
-    dtStbLigacaoDC:{
+    dtStbLigacaoDC: {
         type: Date,
         require: false,
-    },    
-    fotoStbLigacaoDC:{
+    },
+    fotoStbLigacaoDC: {
         type: Date,
         require: false,
-    },  
+    },
     stbInstalDPS: {
         type: String,
         require: false
     },
-    dtStbInstalDPS:{
+    dtStbInstalDPS: {
         type: Date,
         require: false,
-    },     
-    fotoStbInstalDPS:{
+    },
+    fotoStbInstalDPS: {
         type: Date,
         require: false,
-    },     
+    },
     stbInstalCaixa: {
         type: String,
         require: false
     },
-    dtStbInstalCaixa:{
+    dtStbInstalCaixa: {
         type: Date,
         require: false,
-    },    
-    fotoStbInstalCaixa:{
+    },
+    fotoStbInstalCaixa: {
         type: Date,
         require: false,
-    },   
+    },
     invFixar: {
         type: String,
         require: false
@@ -149,11 +149,11 @@ const Vistoria = new Schema({
     dtInvFixar: {
         type: Date,
         require: false
-    },       
+    },
     fotoInvFixar: {
         type: Date,
         require: false
-    },     
+    },
     invCabos: {
         type: String,
         require: false
@@ -161,11 +161,11 @@ const Vistoria = new Schema({
     dtInvCabos: {
         type: Date,
         require: false
-    },    
+    },
     fotoInvCabos: {
         type: Date,
         require: false
-    },        
+    },
     invFrequencia: {
         type: String,
         require: false
@@ -173,11 +173,11 @@ const Vistoria = new Schema({
     dtInvFrequencia: {
         type: Date,
         require: false
-    }, 
+    },
     fotoInvFrequencia: {
         type: Date,
         require: false
-    },       
+    },
     invTensao: {
         type: String,
         require: false
@@ -185,11 +185,11 @@ const Vistoria = new Schema({
     dtInvTensao: {
         type: Date,
         require: false
-    },    
+    },
     fotoInvTensao: {
         type: Date,
         require: false
-    },        
+    },
     invString: {
         type: String,
         require: false
@@ -197,11 +197,11 @@ const Vistoria = new Schema({
     dtInvString: {
         type: Date,
         require: false
-    },  
+    },
     fotoInvString: {
         type: Date,
         require: false
-    },      
+    },
     invCorrente: {
         type: String,
         require: false
@@ -209,11 +209,11 @@ const Vistoria = new Schema({
     dtInvCorrente: {
         type: Date,
         require: false
-    },    
+    },
     fotoInvCorrente: {
         type: Date,
         require: false
-    },    
+    },
     invPontoConexao: {
         type: String,
         require: false
@@ -221,11 +221,11 @@ const Vistoria = new Schema({
     dtInvPontoConexao: {
         type: Date,
         require: false
-    }, 
+    },
     fotoInvPontoConexao: {
         type: Date,
         require: false
-    },     
+    },
     estFixar: {
         type: String,
         require: false
@@ -233,11 +233,11 @@ const Vistoria = new Schema({
     dtEstFixar: {
         type: Date,
         require: false
-    },        
+    },
     fotoEstFixar: {
         type: Date,
         require: false
-    },    
+    },
     estFuracao: {
         type: String,
         require: false
@@ -245,11 +245,11 @@ const Vistoria = new Schema({
     dtEstFuracao: {
         type: Date,
         require: false
-    },    
+    },
     fotoEstFuracao: {
         type: Date,
         require: false
-    },    
+    },
     estAnalise: {
         type: String,
         require: false
@@ -261,7 +261,7 @@ const Vistoria = new Schema({
     fotoEstAnalise: {
         type: Date,
         require: false
-    },        
+    },
     estLinhaVida: {
         type: String,
         require: false
@@ -269,11 +269,11 @@ const Vistoria = new Schema({
     dtEstLinhaVida: {
         type: Date,
         require: false
-    }, 
+    },
     fotoEstLinhaVida: {
         type: Date,
         require: false
-    },       
+    },
     estVerificacao: {
         type: String,
         require: false
@@ -281,11 +281,11 @@ const Vistoria = new Schema({
     dtEstVerificacao: {
         type: Date,
         require: false
-    },  
+    },
     fotoEstVerificacao: {
         type: Date,
         require: false
-    },        
+    },
     modFixar: {
         type: String,
         require: false
@@ -293,11 +293,11 @@ const Vistoria = new Schema({
     dtModFixar: {
         type: Date,
         require: false
-    },  
+    },
     fotoModFixar: {
         type: Date,
         require: false
-    },      
+    },
     modCabos: {
         type: String,
         require: false
@@ -309,7 +309,7 @@ const Vistoria = new Schema({
     fotoModCabos: {
         type: Date,
         require: false
-    },           
+    },
     modConexao: {
         type: String,
         require: false
@@ -317,11 +317,11 @@ const Vistoria = new Schema({
     dtModConexao: {
         type: Date,
         require: false
-    }, 
+    },
     fotoModConexao: {
         type: Date,
         require: false
-    },      
+    },
     modCanaletas: {
         type: String,
         require: false
@@ -329,11 +329,11 @@ const Vistoria = new Schema({
     dtModCanaletas: {
         type: Date,
         require: false
-    },    
+    },
     fotoModCanaletas: {
         type: Date,
         require: false
-    },      
+    },
     modAmarra: {
         type: String,
         require: false
@@ -341,11 +341,11 @@ const Vistoria = new Schema({
     dtModAmarra: {
         type: Date,
         require: false
-    },    
+    },
     fotoModAmarra: {
         type: Date,
         require: false
-    },       
+    },
     modConInv: {
         type: String,
         require: false
@@ -357,98 +357,98 @@ const Vistoria = new Schema({
     fotoModConInv: {
         type: Date,
         require: false
-    },    
-    plaSombra:{
+    },
+    plaSombra: {
         type: String,
         require: false
     },
-    dtPlaSombra:{
-        type: String,
-        require: false
-    },    
-    fotoPlaSombra:{
-        type: String,
-        require: false
-    },     
-    plaAte:{
+    dtPlaSombra: {
         type: String,
         require: false
     },
-    dtPlaAte:{
-        type: String,
-        require: false
-    },    
-    fotoPlaAte:{
-        type: String,
-        require: false
-    },    
-    plaArea:{
+    fotoPlaSombra: {
         type: String,
         require: false
     },
-    dtPlaArea:{
-        type: String,
-        require: false
-    },     
-    fotoPlaArea:{
-        type: String,
-        require: false
-    },        
-    plaInvStb:{
+    plaAte: {
         type: String,
         require: false
     },
-    dtPlaInvStb:{
+    dtPlaAte: {
         type: String,
         require: false
-    },  
-    fotoPlaInvStb:{
+    },
+    fotoPlaAte: {
         type: String,
         require: false
-    },      
-    plaDimArea:{
-        type: Number,
+    },
+    plaArea: {
+        type: String,
         require: false
-    },     
-    plaQtdMod:{
+    },
+    dtPlaArea: {
+        type: String,
+        require: false
+    },
+    fotoPlaArea: {
+        type: String,
+        require: false
+    },
+    plaInvStb: {
+        type: String,
+        require: false
+    },
+    dtPlaInvStb: {
+        type: String,
+        require: false
+    },
+    fotoPlaInvStb: {
+        type: String,
+        require: false
+    },
+    plaDimArea: {
         type: Number,
         require: false
     },
-    plaWattMod:{
+    plaQtdMod: {
         type: Number,
         require: false
-    },   
-    plaQtdInv:{
-        type: Number,
-        require: false        
-    },       
-    plaKwpInv:{
-        type: Number,
-        require: false        
-    },     
-    plaQtdString:{
-        type: Number,
-        require: false  
     },
-    plaModString:{
+    plaWattMod: {
         type: Number,
-        require: false  
-    },    
-    plaComponentes:{
+        require: false
+    },
+    plaQtdInv: {
+        type: Number,
+        require: false
+    },
+    plaKwpInv: {
+        type: Number,
+        require: false
+    },
+    plaQtdString: {
+        type: Number,
+        require: false
+    },
+    plaModString: {
+        type: Number,
+        require: false
+    },
+    plaComponentes: {
         type: String,
-        require: false        
-    },        
-    plaQtdComponentes:{
+        require: false
+    },
+    plaQtdComponentes: {
         type: Number,
-        require: false        
-    },        
-    plaQtdEst:{
+        require: false
+    },
+    plaQtdEst: {
         type: Number,
-        require: false  
-    }, 
-    feito:{
-            type: Boolean,
-            require:false        
+        require: false
+    },
+    feito: {
+        type: Boolean,
+        require: false
     }
 })
 

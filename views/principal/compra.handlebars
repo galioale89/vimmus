@@ -8,34 +8,59 @@
 
     <div class='btn-group col-12'>
         <div class='numero'>1</div>
-        <a href='/gerenciamento/proposta/{{proposta._id}}/' class='btn btn-sm{{#if proposta.feito}} check-menu {{else}} botao-menu {{/if}}' style="border-bottom-left-radius: 30px;"> <i
-                class="bi bi-house"></i> Proposta</a>
+        <a href='/gerenciamento/proposta/{{proposta._id}}/'
+            class='btn btn-sm{{#if proposta.feito}} check-menu {{else}} botao-menu {{/if}}'
+            style="border-bottom-left-radius: 30px;"> <i class="bi bi-house"></i> Proposta</a>
         <div class='numero'>2</div>
-        <a href="/gerenciamento/visita/{{proposta._id}}" class="btn btn-sm {{#if vistoria.feito}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-gear"></i>
+        <a href="/gerenciamento/visita/{{proposta._id}}"
+            class="btn btn-sm {{#if vistoria.feito}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-gear"></i>
             Visita Técnica</a>
         <div class='numero '>3</div>
-        <a href="/gerenciamento/assinatura/{{proposta._id}}" class="btn btn-sm {{#if proposta.assinado}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i
-                class="bi bi-pencil"></i>
+        <a href="/gerenciamento/assinatura/{{proposta._id}}"
+            class="btn btn-sm {{#if proposta.assinado}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-pencil"></i>
             Assinatura</a>
         <div class='numero ativo'>4</div>
-        <a href="/gerenciamento/compra/{{proposta._id}}" class="btn btn-sm {{#if compra.feitonota}} check-menu {{else}} botao-menu  ativo {{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-cart-check"></i>
+        <a href="/gerenciamento/compra/{{proposta._id}}"
+            class="btn btn-sm {{#if compra.feitonota}} check-menu {{else}} botao-menu  ativo {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-cart-check"></i>
             Compra Sistema</a>
         <div class='numero'>5</div>
-        <a href="/gerenciamento/trt/{{proposta._id}}" class="btn btn-sm {{#if documento.feitotrt}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-tools"></i>
+        <a href="/gerenciamento/trt/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitotrt}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-tools"></i>
             TRT</a>
         <div class='numero'>6</div>
-        <a href="/gerenciamento/execucao/{{proposta._id}}" class="btn btn-sm {{#if documento.protocolado}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i
-                class="bi bi-file-earmark-check"></i>
+        <a href="/gerenciamento/execucao/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.protocolado}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-file-earmark-check"></i>
             Execução</a>
         <div class='numero'>7</div>
-        <a href="/gerenciamento/equipe/{{proposta._id}}" class="btn btn-sm {{#if lista_equipe.feito}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-people"></i>
+        <a href="/gerenciamento/equipe/{{proposta._id}}"
+            class="btn btn-sm {{#if lista_equipe.feito}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-people"></i>
             Equipes</a>
         <div class='numero'>8</div>
-        <a href="/gerenciamento/financeiro/{{proposta._id}}" class="btn btn-sm botao-menu" style="border-bottom-left-radius: 30px;"><i class="bi bi-layers"></i>
+        <a href="/gerenciamento/aceite/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitoaceite}} check-menu {{else}} botao-menu{{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-check2-square"></i>
+            Aceite Obra</a>
+        <div class='numero'>9</div>
+        <a href="/gerenciamento/almoxarifado/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitoalmox}} check-menu {{else}} botao-menu{{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-layers"></i>
+            Almoxarifado</a>
+        <div class='numero'>10</div>
+        <a href="/gerenciamento/financeiro/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitofaturado}} check-menu {{else}} botao-menu{{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-calculator"></i>
             Financeiro</a>
-            <div class='numero'>9</div>
-        <a href="/gerenciamento/posvenda/{{proposta._id}}" class="btn btn-sm botao-menu" style="border-bottom-left-radius: 30px;"><i class="bi bi-layers"></i>
-            Pós Venda</a>            
+        <div class='numero'>11</div>
+        <a href="/gerenciamento/posvenda/{{proposta._id}}"
+            class="btn btn-sm {{#if posvenda.feito}} check-menu {{else}} botao-menu{{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-door-open"></i>
+            Pós Venda</a>
     </div>
 
     <div class="row mt-4">
@@ -55,19 +80,28 @@
                     <option>Sem fornecedores cadastrados</option>
                     {{/each}}
                 </select><br> --}}
-                <input type="text" class='form-control' name='fornecedor' value='{{compra.fornecedor}}'>
+                <input type="text" class='form-control' style="width: 90%;" name='fornecedor' value='{{compra.fornecedor}}'>
                 <div class="row mt-1">
-                    <div class="col">
-                        <div class="">
-                            <label>{{compra.pedido}}</label>
-                            <input type='file' class='form-control' name='pedido' value='{{compra.pedido}}'>
+                    {{#if compra.pedido}}
+                    <div class="col-md-5">
+                        <div class="row mt-2">
+                            <label class='col-form-label'>{{compra.pedido}}</label>
                         </div>
                     </div>
+                    <div class="col-md-2 mt-3">
+                        <input style="max-width: 150px;" type='file' class='form-control' name='pedido'
+                            value='{{compra.pedido}}'>
+                    </div>
+                    {{else}}
+                    <div class="col-md-7 mt-3">
+                        <input type='file' class='form-control' name='pedido' value='{{compra.pedido}}'>
+                    </div>
+                    {{/if}}
                     <div class="col-md-1 mt-3">
                         <a class="btn btn-primary" href='/gerenciamento/mostrarPedido/{{proposta._id}}'
                             target="_blank"><i class='bi bi-eye'></i></a>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label> Data Pedido</label>
                         <input type='date' class='form-control' name='dtcadastro' value='{{compra.dtcadastro}}'>
                     </div>
@@ -79,17 +113,26 @@
             <form action='/gerenciamento/nota' method='post' enctype="multipart/form-data">
                 <input type="hidden" name='id' value='{{proposta._id}}'>
                 <div class="row">
-                    <div class="col">
-                        <div class="">
-                            <label>{{compra.nota}}</label>
-                                <input type='file' class='form-control' name='nota' value='{{compra.nota}}'>
+                    {{#if compra.nota}}
+                    <div class="col-md-5">
+                        <div class="row mt-2">
+                            <label class='col-form-label'>{{compra.nota}}</label>
                         </div>
                     </div>
+                    <div class="col-md-2 mt-3">
+                        <input style="max-width: 150px;" type='file' class='form-control' name='nota'
+                            value='{{compra.nota}}'>
+                    </div>
+                    {{else}}
+                    <div class="col-md-7 mt-3">
+                        <input type='file' class='form-control' name='nota' value='{{compra.nota}}'>
+                    </div>
+                    {{/if}}
                     <div class="col-md-1 mt-3">
                         <a class="btn btn-primary" href='/gerenciamento/mostrarNota/{{proposta._id}}' target="_blank"><i
                                 class='bi bi-eye'></i></a>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label>Data Recebimento</label>
                         <input type='date' class='form-control' name='dtrecebimento' value='{{compra.dtrecebimento}}'>
                     </div>
@@ -98,6 +141,18 @@
                     </div>
                 </div>
             </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <object data="/gerenciamento/mostrarPedido/{{proposta._id}}" type="application/pdf" width="100%" height="260px">
+                <p>Seu navegador não tem um plugin pra PDF</p>
+            </object>
+        </div>
+        <div class="col">
+            <object data="/gerenciamento/mostrarNota/{{proposta._id}}" type="application/pdf" width="100%" height="260px">
+                <p>Seu navegador não tem um plugin pra PDF</p>
+            </object>            
         </div>
     </div>
 </div>

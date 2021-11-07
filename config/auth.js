@@ -49,11 +49,11 @@ module.exports = function (passport) {
 
     passport.serializeUser((usuario, done) => {
         done(null, usuario.id)
-        console.log(usuario.id)
+        // console.log(usuario.id)
     })
 
     passport.deserializeUser((_id, done) => {
-        console.log(_id)
+        // console.log(_id)
         Usuario.findOne({_id: _id}).then((usuario)=>{
             if (!usuario){
                 Acesso.findById(_id, (err, usuario) => {

@@ -84,6 +84,46 @@ const Documento = new Schema({
         type: String,
         require: false  
     },
+    aceite:{
+        type: String,
+        require: false
+    },
+    dtaceite:{
+        type: String,
+        require: false
+    },  
+    feitoaceite:{
+        type: Boolean,
+        require: false
+    },          
+    almoxarifado:{
+        type: String,
+        require: false
+    },
+    dtalmoxarifado:{
+        type: String,
+        require: false
+    },  
+    feitoalmox: {
+        type: Boolean,
+        require: false
+    }, 
+    enviaalmox:{
+        type: Boolean,
+        require: false
+    },
+    faturado:{
+        type: String,
+        require: false
+    },
+    dtfaturado:{
+        type: String,
+        require: false
+    },  
+    feitofaturado:{
+        type: Boolean,
+        require: false
+    },         
     data:{
         type: String,
         require: false
