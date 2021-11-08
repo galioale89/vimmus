@@ -119,7 +119,7 @@ app.get('/menu', ehAdmin, (req, res) => {
   const { user } = req.user
   const { ehAdmin } = req.user
   const { funges } = req.user
-  const { nome } = req.user
+
   var numprj = 0
 
   var q = 0
@@ -299,7 +299,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                           //console.log('qtdorcado=>' + qtdorcado)
                           //console.log('qtdaberto=>' + qtdaberto)
                           //console.log('qtdencerrado=>' + qtdencerrado)
-                          res.render('menuproposta', { listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, nome: nome })
+                          res.render('menuproposta', { listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado})
                         }
                       }).catch((err) => {
                         req.flash('error_msg', 'Houve um erro ao encontrar o pós venda.')
@@ -490,7 +490,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                   //console.log('qtdorcado=>' + qtdorcado)
                                   //console.log('qtdaberto=>' + qtdaberto)
                                   //console.log('qtdencerrado=>' + qtdencerrado)
-                                  res.render('menuproposta', { listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, nome: nome })
+                                  res.render('menuproposta', { listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado})
                                 }
                               }).catch((err) => {
                                 req.flash('error_msg', 'Houve um erro ao encontrar o pós venda.')
@@ -714,11 +714,11 @@ app.get('/menu', ehAdmin, (req, res) => {
               }
             })
           } else {
-            res.render('menuproposta', { ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, block: true, nome: nome })
+            res.render('menuproposta', { ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, block: true})
           }
         })
       } else {
-        res.render('menuproposta', { ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, nome: nome })
+        res.render('menuproposta', { ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj})
       }
     }
   }).catch((err) => {
