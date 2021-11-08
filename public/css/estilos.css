@@ -691,14 +691,13 @@ color: rgb(40, 55, 86);
 .titulo {
 font-size: 15px;
 text-decoration: none;
-color: white;
+color: rgb(40, 55, 86);
 }
 
 .titulo:hover {
 font-size: 15px;
 text-decoration: none;
 font-weight: 700;
-color: rgb(40, 55, 86);
 }
 
 .header {
