@@ -721,7 +721,7 @@ app.get('/menu', ehAdmin, (req, res) => {
         })
       } else {
         console.log('entrou')
-        res.render('menuproposta', { ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj})
+        res.render('menuproposta', { ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdaberto, qtdorcado, qtdencerrado})
       }
     }
   }).catch((err) => {
