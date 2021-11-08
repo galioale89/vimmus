@@ -152,6 +152,8 @@ app.get('/menu', ehAdmin, (req, res) => {
     ehMaster = false
   }
 
+  console.log(user)
+
   Proposta.find({ user: _id }).sort({ data: 'asc' }).then((todasProposta) => {
     if (todasProposta != '') {
       todasProposta.forEach((element) => {
@@ -335,7 +337,7 @@ app.get('/menu', ehAdmin, (req, res) => {
         })
       })
     } else {
-      if (user != '') {
+      if (user != ''&& typeof user !='undefined')  {
         var instalador = ''
         
         console.log('user=>'+user)
@@ -718,6 +720,7 @@ app.get('/menu', ehAdmin, (req, res) => {
           }
         })
       } else {
+        console.log('entrou')
         res.render('menuproposta', { ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj})
       }
     }
