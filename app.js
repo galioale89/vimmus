@@ -270,7 +270,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                 } else {
                                                   status = 'Preparado para a Vistoria'
                                                   qtdpro++
-                                                  qtdorcado++
+                                                  qtdaberto++
                                                   listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                 }
                                               }
@@ -461,7 +461,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                         } else {
                                                           status = 'Preparado para a Vistoria'
                                                           qtdpro++
-                                                          qtdorcado++
+                                                          qtdaberto++
                                                           listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                         }
                                                       }
