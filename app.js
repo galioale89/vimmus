@@ -49,9 +49,7 @@ const Posvenda = mongoose.model('posvenda')
 //Chamando função de validação de autenticação do usuário pela função passport
 const passport = require("passport")
 require("./config/auth")(passport)
-global.projeto_id
-global.configuracao_id
-global.user_id
+
 
 //Configuração
 //Sessions
@@ -113,6 +111,7 @@ app.get('/politica', (req, res) => {
 app.get('/termo', (req, res) => {
   res.render('termo')
 })  
+
 //Direcionando para página principal
 app.get('/menu', ehAdmin, (req, res) => {
 
@@ -164,7 +163,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                   Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
                     Equipe.findOne({ _id: element.equipe }).then((equipe) => {
                       Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
-                        //console.log('element._id=>' + element._id)
+                        console.log('element._id=>' + element._id)
                         // if (typeof proposta.proposta6 != 'undefined') {
                         //   dtcadastro = proposta.dtcadastro6
                         //   dtvalidade = proposta.dtvalidade6
