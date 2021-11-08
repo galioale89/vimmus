@@ -1,6 +1,7 @@
 <div style="width: 100%;">
     <form method="post" action='/usuario/enviar'>
     <input type='hidden' name='pgto' value='0'>
+    <input type='hidden' name='id' value='{{id}}'>
         <div class='formulario' style="width: 50%;">
             <div style="margin-top: 20px;margin-left: 35%;">
                 <h6>Cadastre o nome, e-mail e telefone para receber a senha de acesso</h6>
@@ -8,7 +9,7 @@
                     <tr align="right">
                         <td><label class="col-form-label col-form-label-sm mb-1">Nome:</label><br></td>
                         <td><input type="text" name='nome' style="width: 320px;"
-                                class="form-control form-control-sm mb-1">
+                                class="form-control form-control-sm mb-1" value='{{nome}}'>
                         </td>
                     </tr>
                     <tr align="right">
@@ -16,18 +17,18 @@
                         </td>
                         <td><input type="text" class="form-control form-control-sm mb-1" name='celular' id='celular'
                                 placeholder="DDD + Número" maxlength="16" autocomplete="off"
-                                onkeyup="valida_celular()">
+                                onkeyup="valida_celular()" value='{{celular}}'>
                         </td>
                     </tr>
                     <tr align="right">
                         <td><label class="col-form-label col-form-label-sm">Email:</label></td>
-                        <td><input type="email" name='email' class="form-control form-control-sm"></td>
+                        <td><input type="email" name='email' class="form-control form-control-sm" value="{{email}}"></td>
                     </tr>
                 </table>
             </div>
             <div class="input-group gap-2 mt-2 ">
             <button type="submit" class="btn btn-sm btn-success" style='margin-left: 42%'>Enviar</button>
-            <a href='/administrador' class='btn btn-sm btn-primary'>Voltar</a>
+            <a href='/administrador/acesso' class='btn btn-sm btn-primary'>Voltar</a>
             </div>
     </form>
 </div>

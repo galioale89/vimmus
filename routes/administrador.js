@@ -7,13 +7,22 @@ const mongoose = require('mongoose');
 
 const Usuarios = mongoose.model('usuario')
 const Projeto = mongoose.model('projeto')
+const Acesso = mongoose.model('acesso')
 
 const { ehMaster } = require('../helpers/ehMaster')
+const { ehAdmin } = require('../helpers/ehAdmin')
 
 router.get('/', ehMaster, (req, res) => {
-    Usuarios.find().sort({ data: 'desc' }).lean().then((usuarios) => {
-        res.render('usuario/administrador', { usuarios: usuarios })
+    Usuarios.find({}).sort({ data: 'desc' }).lean().then((usuarios) => {
+        res.render('usuario/administrador', { usuarios })
     })
+})
+
+router.get('/acesso', ehMaster, (req,res)=>{
+    const {_id} = req.user
+    Acesso.find({user: _id}).sort({ data: 'desc' }).lean().then((usuarios) => {
+        res.render('usuario/administrador', { usuarios })
+    }) 
 })
 
 router.get('/confirmaexclusao/:id', ehMaster, (req, res) => {

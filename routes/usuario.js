@@ -45,13 +45,13 @@ router.get('/novousuario/:id', ehAdmin, (req, res) => {
 
 router.get('/editar/:id', ehAdmin, (req, res) => {
     const { ehAdmin } = req.user
-    Usuario.findOne({ _id: req.params.id }).lean().then((usuario) => {
+    Acesso.findOne({ _id: req.params.id }).lean().then((usuario) => {
         if (ehAdmin == 0) {
             ehUserMaster = true
         } else {
             ehUserMaster = false
         }
-        res.render('usuario/editregistro', { usuario: usuario, ehUserMaster: ehUserMaster })
+        res.render('usuario/editregistro', { usuario, ehUserMaster })
     })
 })
 
