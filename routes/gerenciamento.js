@@ -103,10 +103,10 @@ router.get('/consulta', ehAdmin, (req, res) => {
     var dtinicio = ''
     var dtfim = ''
 
-    Proposta.find({ user: id }).sort({ dataord: 'asc' }).then((proposta) => {
+    Proposta.find({ user: _id }).sort({ dataord: 'asc' }).then((proposta) => {
         if (proposta != '') {
-            Cliente.find({ user: id }).lean().then((todos_clientes) => {
-                Pessoa.find({ user: id, funges: 'checked' }).lean().then((todos_responsaveis) => {
+            Cliente.find({ user: _id }).lean().then((todos_clientes) => {
+                Pessoa.find({ user: _id, funges: 'checked' }).lean().then((todos_responsaveis) => {
                     proposta.forEach((element) => {
                         //  console.log(element)
                         var dtcadastro = ''
