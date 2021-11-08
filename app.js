@@ -30,6 +30,7 @@ const setData = require('./resources/setData')
 const dataMensagem = require('./resources/dataMensagem')
 const dataHoje = require('./resources/dataHoje')
 const { ehAdmin } = require('./helpers/ehAdmin')
+require('./model/Posvenda')
 
 
 const Proposta = mongoose.model('proposta')

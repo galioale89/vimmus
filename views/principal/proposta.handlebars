@@ -84,16 +84,16 @@
             <form action='/gerenciamento/proposta1' method='post' enctype="multipart/form-data">
                 <select class='form-select' name='cliente'>
                     <option class='fw-bold'>{{cliente_proposta.nome}}</option>
-                    {{#each cliente}}
-                    <option value={{_id}}>{{nome}}</option>
+                    {{#each todos_clientes}}
+                    <option value='{{_id}}'>{{nome}}</option>
                     {{else}}
                     <option>Sem clientes cadastrados</option>
                     {{/each}}
                 </select><br>
                 <select class='form-select' name='responsavel'>
                     <option class='fw-bold'>{{res_proposta.nome}}</option>
-                    {{#each responsavel}}
-                    <option value={{_id}}>{{nome}}</option>
+                    {{#each todos_responsaveis}}
+                    <option value='{{_id}}'>{{nome}}</option>
                     {{else}}
                     <option>Sem responsáveis cadastrados</option>
                     {{/each}}
