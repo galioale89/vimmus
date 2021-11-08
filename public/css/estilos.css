@@ -464,8 +464,8 @@ font-weight: 800;
     border: rgb(40,55,86) 3px solid; 
     border-radius: 30px;
     width: 30px;
-    padding-left: 8px;
-    padding-top: 5px;
+    padding-left: 7px;
+    padding-top: 2px;
     font-weight: 600;
 }
 
@@ -496,6 +496,7 @@ font-size: 20px;
 .check-menu {
     font-weight: 600;
     padding-top: 4px;
+    font-size: 10px;
     border: white solid 1px;
     background-color: rgb(55, 216, 23);
 }
@@ -641,7 +642,9 @@ padding-bottom: 5px;
 font-size: 15px;
 color: #847AF4;
 font-weight: 600;
-padding: 10px;
+padding-right: 10px;
+padding-top: 10px;
+padding-bottom: 10px;
 }
 
 
@@ -699,6 +702,7 @@ font-size: 15px;
 text-decoration: none;
 font-weight: 700;
 }
+
 
 .header {
 padding: 10px;
@@ -820,6 +824,7 @@ padding: 5px;
 
 .botao-menu {
     background-color: rgb(40, 55, 86);
+    font-size: 10px;
     border: white solid 1px;
     color: white;
 }
