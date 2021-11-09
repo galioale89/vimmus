@@ -34,13 +34,16 @@
   <div class="col-md-2">
     <h4 style="margin-left: 40px;margin-top: 45px">Controle de Acesso</h4>
   </div>
+  {{#if owner}}
   <div class="col-md-4">
     <a href='/usuario/novousuario' class="btn mt-3 text-start" style="font-size: 30px;"><i
         class='bi bi-clipboard-plus'></i></a>
   </div>
+  {{/if}}
 </div>
 
 <table style="margin-left: 20px;margin-top: 20px;">
+  {{#if lista}}
   <tr>
     <th>Usuário</th>
     <th>Nome</th>
@@ -82,4 +85,47 @@
     <label class='col-form-label'>Nenhum registro de acesso.</h6>
   </div>
   {{/each}}
+  {{else}}
+  <tr>
+    <th>Usuário</th>
+    <th>Nome</th>
+    <th>E-mail</th>
+    <th>Telefone</th>
+    <th>Razazão Social</th>
+    <th>Nome Fantasia</th>
+    <th>Endereço</th>
+    <th>Cidade</th>
+    <th>Estado</th>
+    <th>Tipo Admin</th>
+    <th>Função</th>
+    <th>Lib.</th>
+    <th>Exp.</th>
+    <th>.</th>
+  </tr>
+  {{#each usuarios}}
+  <tr>
+    <td>{{usuario}}</td>
+    <td>{{nome}}</td>
+    <td>{{email}}</td>
+    <td>{{celular}}</td>
+    <td>{{razao}}</td>
+    <td>{{fantasia}}</td>
+    <td>{{endereco}}</td>
+    <td>{{cidade}}</td>
+    <td>{{uf}}</td>
+    <td>{{ehAdmin}}</td>
+    <td>{{funcao}}</td>
+    <td>{{datalib}}</td>
+    <td>{{dataexp}}</td>
+    <td>
+      <a href='/usuario/editar/{{_id}}/' class=''><i class="bi bi-pen icone"></i></a>
+      <a href='/administrador/confirmaexclusao/{{_id}}/' class=''><i class="bi bi-trash icone"></i></a>
+    </td>
+  </tr>
+  {{else}}
+  <div class="row" style="padding-left: 20px;">
+    <label class='col-form-label'>Nenhum registro de acesso.</h6>
+  </div>
+  {{/each}}
+  {{/if}}
 </table>

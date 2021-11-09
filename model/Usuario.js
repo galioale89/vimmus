@@ -50,6 +50,10 @@ const Usuario = new Schema({
         type: Number,
         default: 3
     },
+    owner: {
+        type: Boolean,
+        default: false,
+    },    
     data: {
         type: String,
         require: false
@@ -69,7 +73,19 @@ const Usuario = new Schema({
     pricont:{
         type: String,
         require: false
-    }
+    },
+    pricont:{
+        type: String,
+        require: false
+    },
+    proposta:{
+        type: Boolean,
+        require: false
+    },
+    projeto:{
+        type: Boolean,
+        require: false
+    }    
 })
 
 Mongoose.model("usuario", Usuario)
