@@ -119,6 +119,7 @@ app.get('/menu', ehAdmin, (req, res) => {
   const { user } = req.user
   const { ehAdmin } = req.user
   const { funges } = req.user
+  const { owner } = req.user
 
   var numprj = 0
 
@@ -301,7 +302,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                           //console.log('qtdorcado=>' + qtdorcado)
                           //console.log('qtdaberto=>' + qtdaberto)
                           //console.log('qtdencerrado=>' + qtdencerrado)
-                          res.render('menuproposta', {id: _id, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado})
+                          res.render('menuproposta', {id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado})
                         }
                       }).catch((err) => {
                         req.flash('error_msg', 'Houve um erro ao encontrar o pós venda.')
@@ -492,7 +493,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                   //console.log('qtdorcado=>' + qtdorcado)
                                   //console.log('qtdaberto=>' + qtdaberto)
                                   //console.log('qtdencerrado=>' + qtdencerrado)
-                                  res.render('menuproposta', {id: _id, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado})
+                                  res.render('menuproposta', {id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado})
                                 }
                               }).catch((err) => {
                                 req.flash('error_msg', 'Houve um erro ao encontrar o pós venda.')
@@ -700,7 +701,7 @@ app.get('/menu', ehAdmin, (req, res) => {
 
                                         console.log(listaAberto)
                                         numprj = numprj
-                                        res.render('menuproposta', { id: _id, listaOrcado, listaAberto, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdorcado, qtdaberto, qtdencerrado, block: true})
+                                        res.render('menuproposta', { id: _id, owner: owner, listaOrcado, listaAberto, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdorcado, qtdaberto, qtdencerrado, block: true})
                                       }
                                     })
                                   })
@@ -716,12 +717,12 @@ app.get('/menu', ehAdmin, (req, res) => {
               }
             })
           } else {
-            res.render('menuproposta', {id: _id, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, block: true})
+            res.render('menuproposta', {id: _id, owner: owner, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado, block: true})
           }
         })
       } else {
         console.log('entrou')
-        res.render('menuproposta', { id: _id, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdaberto, qtdorcado, qtdencerrado})
+        res.render('menuproposta', { id: _id, owner: owner, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdaberto, qtdorcado, qtdencerrado})
       }
     }
   }).catch((err) => {
