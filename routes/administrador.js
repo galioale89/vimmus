@@ -24,7 +24,7 @@ router.get('/acesso', ehMaster, (req, res) => {
     var lista = []
     var q = 0
     Acesso.find({ user: _id }).sort({ data: 'desc' }).then((acesso) => {
-        if (acesso != null) {
+        if (acesso.length > 0) {
             acesso.forEach((element) => {
                 Pessoa.findOne({ _id: element.pessoa }).then((pessoa) => {
                     if (element.funges == true) {
