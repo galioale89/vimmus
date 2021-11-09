@@ -68,7 +68,7 @@
         </div>
         <div class="col-md-10 text-start">
             <form action='/gerenciamento/aceite' method='post' enctype="multipart/form-data">
-                <input type='hidden' name='id' value={{proposta._id}}>
+                <input type='hidden' name='id' value='{{proposta._id}}'>
                 <div class="row">
                     {{#if documento.aceite}}
                     <div class="col-md-5">
@@ -99,11 +99,76 @@
                 </div><br>
             </form>
         </div>
-        <div class="row" style="height: 380px;">
-            <object data="/gerenciamento/mostrarAceite/{{proposta._id}}" type="application/pdf">
-                <p>Seu navegador não tem um plugin pra PDF</p>
-            </object>
+        <div class="row">
+            <div class="col">
+                <div class="row" style="height: 380px;">
+                    <object data="/gerenciamento/mostrarAceite/{{proposta._id}}" type="application/pdf">
+                        <p>Seu navegador não tem um plugin pra PDF</p>
+                    </object>
+                </div>
+            </div>
+            <div class="col">
+                <form action="/gerenciamento/caminhoAte" method="post" enctype="multipart/form-data">
+                    <input type='hidden' name='id' value='{{proposta._id}}'>
+                    <label class='col-form-label col-form-label-sm'>Aterramento: {{vistoria.caminhoAte}}</label>
+                    <div class="row">
+                        <div class="col">
+                            <input type='file' multiple name='fileate' class='form-control form-control-sm'>
+                        </div>
+                        <div class="col-md-2">
+                            <button type='submit' class='btn btn-sm btn-success'><i class='bi bi-save'></i></button>
+                            <a href='/gerenciamento/mostrarAte/{{proposta._id}}' class='btn btn-sm btn-primary'><i
+                                    class='bi bi-eye'></i></a>
+                        </div>
+                    </div>
+                </form>
+                <hr>
+                <form action="/gerenciamento/caminhoInv" method="post" enctype="multipart/form-data">
+                    <input type='hidden' name='id' value='{{proposta._id}}'>    
+                    <label class='col-form-label col-form-label-sm'>Inversor: {{vistoria.caminhoInv}}</label>
+                    <div class="row">
+                        <div class="col">
+                            <input type='file' multiple name='fileinv' class='form-control form-control-sm'>
+                        </div>
+                        <div class="col-md-2">
+                            <button type='submit' class='btn btn-sm btn-success'><i class='bi bi-save'></i></button>
+                            <a href='/gerenciamento/mostrarInv/{{proposta._id}}' class='btn btn-sm btn-primary'><i
+                                    class='bi bi-eye'></i></a>
+                        </div>
+                    </div>
+                </form>
+                <hr>
+                <form action="/gerenciamento/caminhoStb" method="post" enctype="multipart/form-data">
+                    <input type='hidden' name='id' value='{{proposta._id}}'>    
+                    <label class='col-form-label col-form-label-sm'>Inversor: {{vistoria.caminhoStb}}</label>
+                    <div class="row">
+                        <div class="col">
+                            <input type='file' multiple name='filestb' class='form-control form-control-sm'>
+                        </div>
+                        <div class="col-md-2">
+                            <button type='submit' class='btn btn-sm btn-success'><i class='bi bi-save'></i></button>
+                            <a href='/gerenciamento/mostrarStb/{{proposta._id}}' class='btn btn-sm btn-primary'><i
+                                    class='bi bi-eye'></i></a>
+                        </div>
+                    </div>
+                </form>
+                <hr>
+                <form action="/gerenciamento/caminhoMod" method="post" enctype="multipart/form-data">
+                    <input type='hidden' name='id' value='{{proposta._id}}'>    
+                    <label class='col-form-label col-form-label-sm'>Inversor: {{vistoria.caminhoMod}}</label>
+                    <div class="row">
+                        <div class="col">
+                            <input type='file' multiple name='filemod' class='form-control form-control-sm'>
+                        </div>
+                        <div class="col-md-2">
+                            <button type='submit' class='btn btn-sm btn-success'><i class='bi bi-save'></i></button>
+                            <a href='/gerenciamento/mostrarMod/{{proposta._id}}' class='btn btn-sm btn-primary'><i
+                                    class='bi bi-eye'></i></a>
+                        </div>
+                    </div>
+                </form>
+                <br>
+            </div>
         </div>
     </div>
-</div>
 </div>

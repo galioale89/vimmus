@@ -1,0 +1,74 @@
+
+<div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
+    {{#if proposta._id}}
+    <div style="width: 100%;">
+        <h5 class="header">{{cliente_proposta.nome}} </h5>
+    </div>
+    {{/if}}
+    <div class='btn-group col-12'>
+        <div class='numero'>1</div>
+        <a href='/gerenciamento/proposta/{{proposta._id}}/'
+            class='btn btn-sm{{#if proposta.feito}} check-menu {{else}} botao-menu {{/if}}'
+            style="border-bottom-left-radius: 30px;"> <i class="bi bi-house"></i> Proposta</a>
+        <div class='numero'>2</div>
+        <a href="/gerenciamento/visita/{{proposta._id}}"
+            class="btn btn-sm {{#if vistoria.feito}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-gear"></i>
+            Visita Técnica</a>
+        <div class='numero '>3</div>
+        <a href="/gerenciamento/assinatura/{{proposta._id}}"
+            class="btn btn-sm {{#if proposta.assinado}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-pencil"></i>
+            Assinatura</a>
+        <div class='numero'>4</div>
+        <a href="/gerenciamento/compra/{{proposta._id}}"
+            class="btn btn-sm {{#if compra.feitonota}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-cart-check"></i>
+            Compra Sistema</a>
+        <div class='numero'>5</div>
+        <a href="/gerenciamento/trt/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitotrt}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-tools"></i>
+            TRT</a>
+        <div class='numero'>6</div>
+        <a href="/gerenciamento/execucao/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.protocolado}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-file-earmark-check"></i>
+            Execução</a>
+        <div class='numero'>7</div>
+        <a href="/gerenciamento/equipe/{{proposta._id}}"
+            class="btn btn-sm {{#if lista_equipe.feito}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-people"></i>
+            Equipes</a>
+        <div class='numero ativo'>8</div>
+        <a href="/gerenciamento/aceite/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitoaceite}} check-menu {{else}} botao-menu ativo{{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-check2-square"></i>
+            Aceite Obra</a>
+        <div class='numero'>9</div>
+        <a href="/gerenciamento/almoxarifado/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitoalmox}} check-menu {{else}} botao-menu{{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-layers"></i>
+            Almoxarifado</a>
+        <div class='numero'>10</div>
+        <a href="/gerenciamento/financeiro/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitofaturado}} check-menu {{else}} botao-menu{{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-calculator"></i>
+            Financeiro</a>
+        <div class='numero'>11</div>
+        <a href="/gerenciamento/posvenda/{{proposta._id}}"
+            class="btn btn-sm {{#if posvenda.feito}} check-menu {{else}} botao-menu{{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-door-open"></i>
+            Pós Venda</a>
+    </div>
+
+    <div class="row text-center" style="margin-top: 20px;">
+        <label style="font-size: 35px;font-weight: 700;margin-bottom: 10px;">{{titulo}}</label>
+    {{#each lista_imagens}}
+    <div class="row text-center mt-2">
+        <a href='/gerenciamento/mostrarImagens/{{imagem}}' style="font-size: 25px;">{{seq}} - {{imagem}}</a>
+        {{!-- <img src="/arquivos/{{imagem}}" height="200px" width="20px"/> --}}
+    </div>
+    {{/each}}
+    </div>
+</div>

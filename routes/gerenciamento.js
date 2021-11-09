@@ -16,6 +16,7 @@ const express = require('express')
 const router = express.Router()
 const app = express()
 const multer = require('multer')
+const path = require("path")
 
 app.set('view engine', 'ejs')
 
@@ -47,6 +48,7 @@ const transporter = nodemailer.createTransport({ // Configura os parâmetros de 
         rejectUnauthorized: false
     }
 })
+
 
 const mongoose = require('mongoose')
 const Projeto = mongoose.model('projeto')
@@ -87,6 +89,8 @@ const { ehAdmin } = require('../helpers/ehAdmin')
 
 const TextMessageService = require('comtele-sdk').TextMessageService
 const apiKey = "8dbd4fb5-79af-45d6-a0b7-583a3c2c7d30"
+
+router.use(express.static(path.join(__dirname, 'public')))
 
 
 router.get('/consulta', ehAdmin, (req, res) => {
@@ -4016,6 +4020,326 @@ router.post('/aceite', ehAdmin, (req, res) => {
     })
 })
 
+router.post('/caminhoAte', ehAdmin, uploadfoto.array('fileate', 10), (req, res) => {
+
+    var arquivos = req.files
+    var q = 0
+
+            Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoAte: 1 } }).then(() => {
+                Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
+                    arquivos.forEach((element) => {
+                        console.log(element.filename)
+                        vistoria.caminhoAte[q] = element.filename
+                        q++
+                    })
+                    vistoria.save().then(() => {
+                        req.flash('success_msg', 'Caminho do aterramento salvo com sucesso.')
+                        res.redirect('/gerenciamento/aceite/' + req.body.id)
+                    }).catch(() => {
+                        req.flash('error_msg', 'Falha ao salvar a vistoria.')
+                        res.redirect('/gerenciamento/aceite/' + req.body.id)
+                    })
+                }).catch(() => {
+                    req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+                    res.redirect('/gerenciamento/aceite/' + req.body.id)
+                })
+            })
+})
+
+router.post('/caminhoInv', ehAdmin, uploadfoto.array('fileinv', 10), (req, res) => {
+
+    var arquivos = req.files
+    var q = 0
+
+            Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoInv: 1 } }).then    (() => {
+                Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
+                    arquivos.forEach((element) => {
+                        console.log(element.filename)
+                        vistoria.caminhoInv[q] = element.filename
+                        q++
+                    })
+                    vistoria.save().then(() => {
+                        req.flash('success_msg', 'Caminho do aterramento salvo com sucesso.')
+                        res.redirect('/gerenciamento/aceite/' + req.body.id)
+                    }).catch(() => {
+                        req.flash('error_msg', 'Falha ao salvar a vistoria.')
+                        res.redirect('/gerenciamento/aceite/' + req.body.id)
+                    })
+                }).catch(() => {
+                    req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+                    res.redirect('/gerenciamento/aceite/' + req.body.id)
+                })
+            })
+        
+})
+
+router.post('/caminhoStb', ehAdmin, uploadfoto.array('filestb', 10), (req, res) => {
+
+    var arquivos = req.files
+    var q = 0
+
+            Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoStb: 1 } }).then    (() => {
+                Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
+                    arquivos.forEach((element) => {
+                        console.log(element.filename)
+                        vistoria.caminhoStb[q] = element.filename
+                        q++
+                    })
+                    vistoria.save().then(() => {
+                        req.flash('success_msg', 'Caminho da strng box salvo com sucesso.')
+                        res.redirect('/gerenciamento/aceite/' + req.body.id)
+                    }).catch(() => {
+                        req.flash('error_msg', 'Falha ao salvar a vistoria.')
+                        res.redirect('/gerenciamento/aceite/' + req.body.id)
+                    })
+                }).catch(() => {
+                    req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+                    res.redirect('/gerenciamento/aceite/' + req.body.id)
+                })
+            })
+        
+})
+
+router.post('/caminhoMod', ehAdmin, uploadfoto.array('filemod', 10), (req, res) => {
+
+    var arquivos = req.files
+    var q = 0
+
+            Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoMod: 1 } }).then(() => {
+                Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
+                    arquivos.forEach((element) => {
+                        console.log(element.filename)
+                        vistoria.caminhoMod[q] = element.filename
+                        q++
+                    })
+                    vistoria.save().then(() => {
+                        req.flash('success_msg', 'Caminho da estrutura e módulos salvo com sucesso.')
+                        res.redirect('/gerenciamento/aceite/' + req.body.id)
+                    }).catch(() => {
+                        req.flash('error_msg', 'Falha ao salvar a vistoria.')
+                        res.redirect('/gerenciamento/aceite/' + req.body.id)
+                    })
+                }).catch(() => {
+                    req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+                    res.redirect('/gerenciamento/aceite/' + req.body.id)
+                })
+            })
+        
+})
+
+router.get('/mostrarInv/:id', ehAdmin, (req, res) => {
+    var lista_imagens = []
+    var img
+    var q = 1
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
+            Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
+                Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
+                    Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
+                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                            Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
+                                img = vistoria.caminhoInv
+                                img.forEach((e) => {
+                                    console.log(e)
+                                    lista_imagens.push({ seq: 'Foto' + q, imagem: e })
+                                    q++
+                                })
+
+                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens dos Inversores'})
+                            }).catch(() => {
+                                req.flash('error_msg', 'Falha ao encontrar o pós venda.')
+                                res.redirect('/gerenciamento/aceite/' + req.body.id)
+                            })
+                        }).catch(() => {
+                            req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                            res.redirect('/gerenciamento/aceite/' + req.body.id)
+                        })
+                    }).catch(() => {
+                        req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+                        res.redirect('/gerenciamento/aceite/' + req.body.id)
+                    })
+                }).catch(() => {
+                    req.flash('error_msg', 'Falha ao encontrar a compra.')
+                    res.redirect('/gerenciamento/aceite/' + req.body.id)
+                })
+            }).catch(() => {
+                req.flash('error_msg', 'Falha ao encontrar o documento.')
+                res.redirect('/gerenciamento/aceite/' + req.body.id)
+            })
+        }).catch(() => {
+            req.flash('error_msg', 'Falha ao encontrar o cliente.')
+            res.redirect('/gerenciamento/aceite/' + req.body.id)
+        })
+    }).catch(() => {
+        req.flash('error_msg', 'Falha ao encontrar a proposta.')
+        res.redirect('/gerenciamento/aceite/' + req.body.id)
+    })
+
+})
+
+router.get('/mostrarAte/:id', ehAdmin, (req, res) => {
+    var lista_imagens = []
+    var img
+    var q = 1
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
+            Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
+                Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
+                    Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
+                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                            Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
+                                img = vistoria.caminhoAte
+                                img.forEach((e) => {
+                                    console.log(e)
+                                    lista_imagens.push({ seq: 'Foto' + q, imagem: e })
+                                    q++
+                                })
+
+                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens de Aterramento'})
+                            }).catch(() => {
+                                req.flash('error_msg', 'Falha ao encontrar o pós venda.')
+                                res.redirect('/gerenciamento/aceite/' + req.body.id)
+                            })
+                        }).catch(() => {
+                            req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                            res.redirect('/gerenciamento/aceite/' + req.body.id)
+                        })
+                    }).catch(() => {
+                        req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+                        res.redirect('/gerenciamento/aceite/' + req.body.id)
+                    })
+                }).catch(() => {
+                    req.flash('error_msg', 'Falha ao encontrar a compra.')
+                    res.redirect('/gerenciamento/aceite/' + req.body.id)
+                })
+            }).catch(() => {
+                req.flash('error_msg', 'Falha ao encontrar o documento.')
+                res.redirect('/gerenciamento/aceite/' + req.body.id)
+            })
+        }).catch(() => {
+            req.flash('error_msg', 'Falha ao encontrar o cliente.')
+            res.redirect('/gerenciamento/aceite/' + req.body.id)
+        })
+    }).catch(() => {
+        req.flash('error_msg', 'Falha ao encontrar a proposta.')
+        res.redirect('/gerenciamento/aceite/' + req.body.id)
+    })
+
+})
+
+router.get('/mostrarStb/:id', ehAdmin, (req, res) => {
+    var lista_imagens = []
+    var img
+    var q = 1
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
+            Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
+                Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
+                    Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
+                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                            Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
+                                img = vistoria.caminhoStb
+                                img.forEach((e) => {
+                                    console.log(e)
+                                    lista_imagens.push({ seq: 'Foto' + q, imagem: e })
+                                    q++
+                                })
+
+                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens de Saidas e Conexões'})
+                            }).catch(() => {
+                                req.flash('error_msg', 'Falha ao encontrar o pós venda.')
+                                res.redirect('/gerenciamento/aceite/' + req.body.id)
+                            })
+                        }).catch(() => {
+                            req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                            res.redirect('/gerenciamento/aceite/' + req.body.id)
+                        })
+                    }).catch(() => {
+                        req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+                        res.redirect('/gerenciamento/aceite/' + req.body.id)
+                    })
+                }).catch(() => {
+                    req.flash('error_msg', 'Falha ao encontrar a compra.')
+                    res.redirect('/gerenciamento/aceite/' + req.body.id)
+                })
+            }).catch(() => {
+                req.flash('error_msg', 'Falha ao encontrar o documento.')
+                res.redirect('/gerenciamento/aceite/' + req.body.id)
+            })
+        }).catch(() => {
+            req.flash('error_msg', 'Falha ao encontrar o cliente.')
+            res.redirect('/gerenciamento/aceite/' + req.body.id)
+        })
+    }).catch(() => {
+        req.flash('error_msg', 'Falha ao encontrar a proposta.')
+        res.redirect('/gerenciamento/aceite/' + req.body.id)
+    })
+
+})
+
+router.get('/mostrarMod/:id', ehAdmin, (req, res) => {
+    var lista_imagens = []
+    var img
+    var q = 1
+    var titulo
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
+            Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
+                Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
+                    Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
+                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                            Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
+                                img = vistoria.caminhoMod
+                                img.forEach((e) => {
+                                    console.log(e)
+                                    lista_imagens.push({ seq: 'Foto' + q, imagem: e })
+                                    q++
+                                })
+
+                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens de Estruturas e Módulos'})
+                            }).catch(() => {
+                                req.flash('error_msg', 'Falha ao encontrar o pós venda.')
+                                res.redirect('/gerenciamento/aceite/' + req.body.id)
+                            })
+                        }).catch(() => {
+                            req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                            res.redirect('/gerenciamento/aceite/' + req.body.id)
+                        })
+                    }).catch(() => {
+                        req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+                        res.redirect('/gerenciamento/aceite/' + req.body.id)
+                    })
+                }).catch(() => {
+                    req.flash('error_msg', 'Falha ao encontrar a compra.')
+                    res.redirect('/gerenciamento/aceite/' + req.body.id)
+                })
+            }).catch(() => {
+                req.flash('error_msg', 'Falha ao encontrar o documento.')
+                res.redirect('/gerenciamento/aceite/' + req.body.id)
+            })
+        }).catch(() => {
+            req.flash('error_msg', 'Falha ao encontrar o cliente.')
+            res.redirect('/gerenciamento/aceite/' + req.body.id)
+        })
+    }).catch(() => {
+        req.flash('error_msg', 'Falha ao encontrar a proposta.')
+        res.redirect('/gerenciamento/aceite/' + req.body.id)
+    })
+
+})
+
+router.get('/mostrarImagens/:foto', ehAdmin, (req, res) => {
+    var path = __dirname
+    // var doc = vistoria.caminhoAte
+    // for (i = 0; i < doc.length; i++) {
+    // console.log(vistoria.caminhoAte[i])
+    path = path.replace('routes', '')
+    // txt = vistoria.caminhoAte[i]
+    // console.log('/public/arquivos/' + txt, {root: path})
+    res.sendFile('/public/arquivos/' + req.params.foto, { root: path })
+    // }
+})
+
 router.get('/mostrarAceite/:id', ehAdmin, (req, res) => {
     Documento.findOne({ proposta: req.params.id }).then((documento) => {
         var doc = documento.aceite
@@ -4184,11 +4508,11 @@ router.post('/posvenda', ehAdmin, (req, res) => {
 })
 
 router.post('/checkposvenda', ehAdmin, (req, res) => {
-    Posvenda.findOne({ _id: req.body.idpos }).then((posvenda) => {
+    Posvenda.find({ _id: req.body.idpos }).then((posvenda) => {
         console.log('entrou')
-        console.log('req.body.checkconfig=>'+req.body.checkconfig)
-        console.log('req.body.checkdemo=>'+req.body.checkdemo)
-        console.log('req.body.checkleitura=>'+req.body.checkleitura)
+        console.log('req.body.checkconfig=>' + req.body.checkconfig)
+        console.log('req.body.checkdemo=>' + req.body.checkdemo)
+        console.log('req.body.checkleitura=>' + req.body.checkleitura)
 
         if (req.body.checkconfig == 'on') {
             console.log('checked')
@@ -4208,10 +4532,9 @@ router.post('/checkposvenda', ehAdmin, (req, res) => {
         } else {
             posvenda.leitura = 'unchecked'
         }
-        console.log(req.body.id)
         posvenda.save().then(() => {
             req.flash('success_msg', 'Check List salvo com sucesso.')
-            res.redirect('/gerenciamento/posvenda/'+ req.body.id)
+            res.redirect('/gerenciamento/posvenda' + req.body.id)
         }).catch(() => {
             req.flash('error_msg', 'Falha ao salvar o pós venda.')
             res.redirect('/gerenciamento/posvenda/' + req.body.id)
