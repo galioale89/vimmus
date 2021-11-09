@@ -45,33 +45,35 @@
       <th>Nome</th>
       <th>E-mail</th>
       <th>Telefone</th>
-      <th>Razazão Social</th>
-      <th>Nome Fantasia</th>
+      {{!-- <th>Razazão Social</th>
+      <th>Nome Fantasia</th> --}}
       <th>Endereço</th>
       <th>Cidade</th>
       <th>Estado</th>
       <th>Tipo Admin</th>
-      <th>Lib.</th>
-      <th>Exp.</th>
+      <th>Função</th>
+      {{!-- <th>Lib.</th>
+      <th>Exp.</th> --}}
       <th>.</th>
     </tr>
-    {{#each usuarios}}
+    {{#each lista}}
     <tr>
       <td>{{usuario}}</td>
       <td>{{nome}}</td>
       <td>{{email}}</td>
-      <td>{{telefone}}</td>
-      <td>{{razao}}</td>
-      <td>{{fantasia}}</td>
+      <td>{{celular}}</td>
+      {{!-- <td>{{razao}}</td>
+      <td>{{fantasia}}</td> --}}
       <td>{{endereco}}</td>
       <td>{{cidade}}</td>
       <td>{{uf}}</td>
       <td>{{ehAdmin}}</td>
-      <td>{{datalib}}</td>
-      <td>{{dataexp}}</td>
+      <td>{{funcao}}</td>
+      {{!-- <td>{{datalib}}</td>
+      <td>{{dataexp}}</td> --}}
       <td>
-        <a href='/usuario/editar/{{_id}}/' class=''><i class="bi bi-pen icone"></i></a>
-        <a href='/administrador/confirmaexclusao/{{_id}}/' class=''><i class="bi bi-trash icone"></i></a>
+        <a href='/usuario/editar/{{id}}/' class=''><i class="bi bi-pen icone"></i></a>
+        <a href='/administrador/confirmaexclusao/{{id}}/' class=''><i class="bi bi-trash icone"></i></a>
       </td>
     </tr>
     {{else}}

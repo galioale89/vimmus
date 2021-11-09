@@ -64,7 +64,7 @@
                 numdoc == "99999999999999") {
                 cnpj.value = ''
             }
-            
+
             // Valida DVs
             var tamanho = numdoc.length - 2
             var numeros = numdoc.substring(0, tamanho)
@@ -116,9 +116,9 @@
     <div class='card' style="width: 50%;margin-left: 300px;margin-top: 10px;">
         <h6 class="text-center header">Minha Conta</h6>
 
-        <form {{#if ehUserMaster}} action="/administrador/editregistro" {{else}} action="/usuario/editregistro" {{/if}}
-            method="post">
+        <form action="/administrador/editregistro" method="post">
 
+            <input type='hidden' name='id' value='{{usuario._id}}'>
             <!-- Modal Alterar Senha -->
             <div class="modal fade" tabindex="-1" id='senha' aria-hidden="true">
                 <div class="modal-dialog modal-md">
@@ -152,8 +152,26 @@
                 </div>
             </div>
             <!-- -->
+            {{#if usuario.user}}
+            <div class="row mb-2">
+                <div class="col-md-4 text-end">
+                    <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Nome de Usuário: </label><br>
 
-            <input type='hidden' name='id' value='{{usuario._id}}'>
+                </div>
+                <div class="col-md-7">
+
+                    <input name="usuario" id="usuario" class="form-control form-control-sm mt-1"
+                        value='{{usuario.usuario}}'>
+                    <label for="email" class="col-form-label col-form-label-sm">{{usuario.email}}</label>
+                </div>
+                <div class="btn-group btn-group-sm mx-auto gap-2 col-6">
+                    <a class="mt-2 btn btn-sm btn-primary" data-bs-toggle='modal' data-bs-target='#senha'>Alterar
+                        Senha</a>
+                    <button type="submit" class="btn btn-sm btn-success mt-2">Registrar</button>
+                    <a href='/menu' class="btn btn-sm btn-primary mt-2">Voltar</a>
+                </div>
+            </div>
+            {{else}}
             <div class="row mb-2">
                 <div class="col-md-4 text-end">
                     <label class='col-form-label col-form-label-sm' for="razao">Nome: </label><br>
@@ -236,13 +254,14 @@
                     <a class="mt-2 btn btn-sm btn-primary" data-bs-toggle='modal' data-bs-target='#senha'>Alterar
                         Senha</a>
                     <button type="submit" class="btn btn-sm btn-success mt-2">Registrar</button>
-                    {{#if ehUserMaster}}
+                    {{!-- {{#if ehUserMaster}}
                     <a href='/administrador/' class="btn btn-sm btn-primary mt-2">Voltar</a>
-                    {{else}}
+                    {{else}} --}}
                     <a href='/menu' class="btn btn-sm btn-primary mt-2">Voltar</a>
-                    {{/if}}
+                    {{!-- {{/if}} --}}
                 </div>
             </div>
+            {{/if}}
         </form>
     </div>
 </div>

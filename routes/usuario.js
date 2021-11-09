@@ -45,13 +45,28 @@ router.get('/novousuario/:id', ehAdmin, (req, res) => {
 
 router.get('/editar/:id', ehAdmin, (req, res) => {
     const { ehAdmin } = req.user
-    Acesso.findOne({ _id: req.params.id }).lean().then((usuario) => {
-        if (ehAdmin == 0) {
-            ehUserMaster = true
+    Acesso.findOne({ _id: req.params.id }).lean().then((acesso) => {
+        console.log(acesso)
+        if (acesso == null) {
+            console.log('usuario')
+            Usuario.findOne({ _id: req.params.id }).lean().then((usuario) => {
+                if (ehAdmin == 0) {
+                    ehUserMaster = true
+                } else {
+                    ehUserMaster = false
+                }
+                res.render('usuario/editregistro', { usuario, ehUserMaster })
+            })            
         } else {
-            ehUserMaster = false
+            
+            console.log('acesso')
+            if (ehAdmin == 0) {
+                ehUserMaster = true
+            } else {
+                ehUserMaster = false
+            }
+            res.render('usuario/editregistro', { usuario: acesso, ehUserMaster })
         }
-        res.render('usuario/editregistro', { usuario, ehUserMaster })
     })
 })
 
@@ -398,248 +413,6 @@ router.post("/login", (req, res, next) => {
         failureRedirect: "/usuario/login",
         failureFlash: true
     })(req, res, next)
-})
-
-router.post("/editregistro", ehAdmin, (req, res) => {
-    var erros = []
-    var sucesso = []
-
-    Usuario.findOne({ usuario: req.body.usuario }).then((usuario_existe) => {
-
-        if (usuario_existe == null) {
-            //console.log('Usuário não existe.')
-            //console.log('existe: usuario_existe=>' + usuario_existe)
-            if (!req.body.usuario || typeof req.body.usuario == undefined || req.body.usuario == true) {
-                erros.push({ texto: "É necessário cadastrar um nome de usuário" })
-            }
-            if (!req.body.razao || typeof req.body.razao == undefined || req.body.razao == true) {
-                erros.push({ texto: "É necessário cadastrar a Razão Social" })
-            }
-            if (!req.body.cnpj || typeof req.body.cnpj == undefined || req.body.cnpj == true) {
-                erros.push({ texto: "É necessário cadastrar o CNPJ da empresa" })
-            }
-
-            if (!req.body.telefone || typeof req.body.telefone == undefined || req.body.telefone == true) {
-                erros.push({ texto: "É necessário cadastrar um telefone" })
-            }
-
-            if ((req.body.senha != '' && req.body.senharep == '') || (req.body.senha == '' && req.body.senharep != '')) {
-                if (!req.body.senha || typeof req.body.senha == undefined || req.body.senha == true) {
-                    erros.push({ texto: "Senha Inválida" })
-                }
-                if (validaSenha.length < 5) {
-                    erros.push({ texto: "A senha deve ter ao menos 6 caracteres." })
-                }
-
-                if (req.body.senha != req.body.senharep) {
-                    erros.push({ texto: "Senhas diferentes. Verificar." })
-                }
-            }
-            if (erros.length > 0) {
-                Usuario.findOne({ _id: req.body.id }).lean().then((usuarios) => {
-                    res.render("usuario/editregistro", { erros: erros, usuario: usuarios })
-                })
-            } else {
-
-                Usuario.findOne({ _id: req.body.id }).then((usuario) => {
-
-                    //console.log('req.body.nome=>'+req.body.nome)
-                    //console.log('razao=>'+req.body.razao)
-                    //console.log('fantasia=>'+req.body.fantasia)
-                    //console.log('cnpj=>'+req.body.cnpj)
-                    //console.log('endereco=>'+req.body.endereco)
-                    //console.log('cidade=>'+req.body.cidade)
-                    //console.log('uf=>'+req.body.uf)
-                    //console.log('telefone=>'+req.body.telefone)
-                    //console.log('req.body.usuario=>'+req.body.usuario)
-                    var cidade = 0
-                    var uf = 0
-
-                    if (req.body.cidade == '') {
-                        cidade = 0
-                    } else {
-                        cidade = req.body.cidade
-                    }
-                    if (req.body.uf == '') {
-                        uf = 0
-                    } else {
-                        uf = req.body.uf
-                    }
-
-
-                    usuario.nome = req.body.nome
-                    usuario.razao = req.body.razao
-                    usuario.fantasia = req.body.fantasia
-                    usuario.cnpj = req.body.cnpj
-                    usuario.endereco = req.body.endereco
-                    if (req.body.cidade != '') {
-                        usuario.cidade = cidade
-                    }
-                    if (req.body.uf != '') {
-                        usuario.uf = uf
-                    }
-                    usuario.telefone = req.body.telefone
-                    usuario.usuario = req.body.usuario
-
-                    if (req.body.senha != '' && req.body.senharep != '') {
-                        usuario.senha = req.body.senha
-
-                        bcrypt.genSalt(10, (erro, salt) => {
-                            bcrypt.hash(usuario.senha, salt, (erro, hash) => {
-                                if (erro) {
-                                    req.flash("error_msg", "Houve um erro durante o salvamento do usuário")
-                                    res.redirect("/")
-                                }
-
-                                usuario.senha = hash
-
-                                usuario.save().then(() => {
-                                    sucesso.push({ texto: "Usuário salvo com sucesso!" })
-                                    Usuario.findOne({ _id: req.body.id }).lean().then((usuario) => {
-                                        res.render("usuario/editregistro", { usuario: usuario, sucesso: sucesso })
-                                    }).catch((err) => {
-                                        req.flash("error_msg", "Ocorreu uma falha interna")
-                                        res.redirect("/")
-                                    })
-                                }).catch((err) => {
-                                    req.flash("error_msg", "Não foi possível salvar o registro")
-                                    res.redirect("/")
-                                })
-                            })
-                        })
-                    } else {
-                        usuario.save().then(() => {
-                            Usuario.findOne({ _id: req.body.id }).lean().then((usuario) => {
-                                sucesso.push({ texto: "Alterações do usuário realizadas com sucesso!" })
-                                res.render("usuario/editregistro", { usuario: usuario, sucesso: sucesso })
-                            }).catch((err) => {
-                                req.flash("error_msg", "Ocorreu uma falha interna.")
-                                res.redirect("/menu")
-                            })
-                        }).catch((err) => {
-                            req.flash("error_msg", "Não foi possível salvar o registro.")
-                            res.redirect("/menu")
-                        })
-                    }
-
-                }).catch((err) => {
-                    req.flash("error_msg", "Houve uma falha ao encontrar o usuário.")
-                    res.redirect("/")
-                })
-
-            }
-        } else {
-            //console.log('Usuário existe')
-            Usuario.findOne({ _id: req.body.id }).lean().then((usuario_atual) => {
-                //console.log('Usuário existe.')
-                //console.log('atual: usuario_existe=>' + usuario_existe.usuario)
-                //console.log('usuario_atual=>' + usuario_atual.usuario)
-                if (usuario_existe.usuario != usuario_atual.usuario) {
-                    erros.push({ texto: 'Me desculpe, este nome de usuario já existe. Por favor tente outro.' })
-                    const { ehAdmin } = req.user
-                    if (ehAdmin == 0) {
-                        ehUserMaster = true
-                    } else {
-                        ehUserMaster = false
-                    }
-                    res.render("usuario/editregistro", { erros: erros, usuario: usuario_atual, ehUsermaster: ehUserMaster })
-                } else {
-
-                    Usuario.findOne({ _id: req.body.id }).then((usuario) => {
-
-                        //console.log('req.body.nome=>'+req.body.nome)
-                        //console.log('razao=>'+req.body.razao)
-                        //console.log('fantasia=>'+req.body.fantasia)
-                        //console.log('cnpj=>'+req.body.cnpj)
-                        //console.log('endereco=>'+req.body.endereco)
-                        //console.log('cidade=>'+req.body.cidade)
-                        //console.log('uf=>'+req.body.uf)
-                        //console.log('telefone=>'+req.body.telefone)
-                        //console.log('req.body.usuario=>'+req.body.usuario)
-                        var cidade = 0
-                        var uf = 0
-
-                        if (req.body.cidade == '') {
-                            cidade = 0
-                        } else {
-                            cidade = req.body.cidade
-                        }
-                        if (req.body.uf == '') {
-                            uf = 0
-                        } else {
-                            uf = req.body.uf
-                        }
-
-                        usuario.nome = req.body.nome
-                        usuario.razao = req.body.razao
-                        usuario.fantasia = req.body.fantasia
-                        usuario.cnpj = req.body.cnpj
-                        usuario.endereco = req.body.endereco
-                        if (req.body.cidade != '') {
-                            usuario.cidade = cidade
-                        }
-                        if (req.body.uf != '') {
-                            usuario.uf = uf
-                        }
-                        usuario.telefone = req.body.telefone
-                        usuario.usuario = req.body.usuario
-
-                        if (req.body.senha != '' && req.body.senharep != '') {
-                            usuario.senha = req.body.senha
-
-                            bcrypt.genSalt(10, (erro, salt) => {
-                                bcrypt.hash(usuario.senha, salt, (erro, hash) => {
-                                    if (erro) {
-                                        req.flash("error_msg", "Houve um erro durante o salvamento do usuário")
-                                        res.redirect("/")
-                                    }
-
-                                    usuario.senha = hash
-
-                                    usuario.save().then(() => {
-                                        sucesso.push({ texto: "Usuário salvo com sucesso!" })
-                                        Usuario.findOne({ _id: req.body.id }).lean().then((usuario) => {
-                                            res.render("usuario/editregistro", { usuario: usuario, sucesso: sucesso })
-                                        }).catch((err) => {
-                                            req.flash("error_msg", "Ocorreu uma falha interna")
-                                            res.redirect("/")
-                                        })
-                                    }).catch((err) => {
-                                        req.flash("error_msg", "Não foi possível salvar o registro")
-                                        res.redirect("/")
-                                    })
-                                })
-                            })
-                        } else {
-                            usuario.save().then(() => {
-                                Usuario.findOne({ _id: req.body.id }).lean().then((usuario) => {
-                                    sucesso.push({ texto: "Alterações do usuário realizadas com sucesso!" })
-                                    res.render("usuario/editregistro", { usuario: usuario, sucesso: sucesso })
-                                }).catch((err) => {
-                                    req.flash("error_msg", "Ocorreu uma falha interna.")
-                                    res.redirect("/menu")
-                                })
-                            }).catch((err) => {
-                                req.flash("error_msg", "Não foi possível salvar o registro.")
-                                res.redirect("/menu")
-                            })
-                        }
-
-                    }).catch((err) => {
-                        req.flash("error_msg", "Houve uma falha ao encontrar o usuário.")
-                        res.redirect("/")
-                    })
-                }
-
-            }).catch((err) => {
-                req.flash("error_msg", "Houve uma falha ao encontrar o usuário.")
-                res.redirect("/administrador")
-            })
-        }
-    }).catch((err) => {
-        req.flash("error_msg", "Houve uma falha ao encontrar o usuário.")
-        res.redirect("/")
-    })
 })
 
 module.exports = router
