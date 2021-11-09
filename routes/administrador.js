@@ -24,23 +24,27 @@ router.get('/acesso', ehMaster, (req, res) => {
     var lista = []
     var q = 0
     Acesso.find({ user: _id }).sort({ data: 'desc' }).then((acesso) => {
-        acesso.forEach((element) => {
-            Pessoa.findOne({ _id: element.pessoa }).then((pessoa) => {
-                if (element.funges == true){
-                    funcao = 'Gestão'
-                }else{
-                    funcao = 'Técnico'
-                }
-                lista.push({ id: element._id, usuario: element.usuario, nome: pessoa.nome, email: pessoa.email, celular: pessoa.celular, endereco: pessoa.endereco, cidade: pessoa.cidade, uf: pessoa.uf, ehAdmin: element.ehAdmin, funcao})
-                q++
-                if (q == acesso.length) {
-                    res.render('usuario/administrador', { lista })
-                }
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foi possível encontrar a pessoa.')
-                res.redirect('/menu')
+        if (acesso != null) {
+            acesso.forEach((element) => {
+                Pessoa.findOne({ _id: element.pessoa }).then((pessoa) => {
+                    if (element.funges == true) {
+                        funcao = 'Gestão'
+                    } else {
+                        funcao = 'Técnico'
+                    }
+                    lista.push({ id: element._id, usuario: element.usuario, nome: pessoa.nome, email: pessoa.email, celular: pessoa.celular, endereco: pessoa.endereco, cidade: pessoa.cidade, uf: pessoa.uf, ehAdmin: element.ehAdmin, funcao })
+                    q++
+                    if (q == acesso.length) {
+                        res.render('usuario/administrador', { lista })
+                    }
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi possível encontrar a pessoa.')
+                    res.redirect('/menu')
+                })
             })
-        })
+        } else {
+            res.render('usuario/administrador')
+        }
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar o acesso.')
         res.redirect('/menu')
