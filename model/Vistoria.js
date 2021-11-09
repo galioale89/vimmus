@@ -446,10 +446,26 @@ const Vistoria = new Schema({
         type: Number,
         require: false
     },
+    caminhoAte:{
+        type: Array,
+        require: false,
+    },
+    caminhoInv:{
+        type: Array,
+        require: false,
+    },
+    caminhoStb:{
+        type: Array,
+        require: false,
+    },
+    caminhoMod:{
+        type: Array,
+        require: false,
+    },                      
     feito: {
         type: Boolean,
         require: false
-    }
+    },    
 })
 
 Mongoose.model('vistoria', Vistoria)
