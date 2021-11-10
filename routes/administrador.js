@@ -14,8 +14,9 @@ const { ehMaster } = require('../helpers/ehMaster')
 const { ehAdmin } = require('../helpers/ehAdmin')
 
 router.get('/', ehMaster, (req, res) => {
+    const {owner} = req.user
     Usuarios.find({}).sort({ data: 'desc' }).lean().then((usuarios) => {
-        res.render('usuario/administrador', { usuarios })
+        res.render('usuario/administrador', { usuarios, owner })
     })
 })
 
