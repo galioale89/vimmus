@@ -483,6 +483,7 @@ router.get('/consulta/:tipo', ehAdmin, (req, res) => {
     Cliente.find({ user: id }).lean().then((todos_clientes) => {
         Pessoa.find({ user: id, funges: 'checked' }).lean().then((todos_responsaveis) => {
             Proposta.find({ user: id }).sort({ dataord: 'asc' }).then((proposta) => {
+                if (proposta != ''){
                 proposta.forEach((element) => {
                     Proposta.findOne({ _id: element._id }).then((lista_proposta) => {
                         Cliente.findOne({ _id: element.cliente }).then((lista_cliente) => {
@@ -550,7 +551,6 @@ router.get('/consulta/:tipo', ehAdmin, (req, res) => {
                                                                 res.render('principal/consulta', { listaEncerrado, todos_clientes, todos_responsaveis, tipo: 'encerrado', titulo: ': Encerrado' })
                                                             }
                                                         }
-
                                                     }
 
                                                 }).catch((err) => {
@@ -586,6 +586,17 @@ router.get('/consulta/:tipo', ehAdmin, (req, res) => {
                         res.redirect('/gerenciamento/consulta')
                     })
                 })
+            }else{
+                if (req.params.tipo == 'orcado') {
+                    res.render('principal/consulta', { listaOrcado, todos_clientes, todos_responsaveis, tipo: 'orcado', titulo: ': Orçamentos Enviados' })
+                } else {
+                    if (req.params.tipo == 'aberto') {
+                        res.render('principal/consulta', { listaAberto, todos_clientes, todos_responsaveis, tipo: 'aberto', titulo: ': Em Aberto' })
+                    } else {
+                        res.render('principal/consulta', { listaEncerrado, todos_clientes, todos_responsaveis, tipo: 'encerrado', titulo: ': Encerrado' })
+                    }
+                }                
+            }
             }).catch((err) => {
                 req.flash('error_msg', 'Nenhuma proposta encontrado<todas>')
                 res.redirect('/gerenciamento/consulta')
