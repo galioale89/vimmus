@@ -15,7 +15,7 @@ const { ehAdmin } = require('../helpers/ehAdmin')
 
 router.get('/', ehMaster, (req, res) => {
     const {owner} = req.user
-    Usuarios.find({}).sort({ data: 'desc' }).lean().then((usuarios) => {
+    Usuarios.find().sort({ data: 'desc' }).lean().then((usuarios) => {
         res.render('usuario/administrador', { usuarios, owner })
     })
 })
@@ -117,7 +117,7 @@ router.post("/registro", ehMaster, (req, res) => {
     if (erros.length > 0) {
         res.render("usuario/registro", { erros })
     } else {
-        Usuario.findOne({ email: req.body.email }).then((usuario) => {
+        Usuarios.findOne({ email: req.body.email }).then((usuario) => {
             if (usuario) {
                 req.flash("error_msg", "Já existe uma conta com este e-mail.")
                 res.redirect("/registro")
@@ -172,6 +172,8 @@ router.post("/editregistro", ehAdmin, (req, res) => {
     var erros = []
     var sucesso = []
 
+    const {owner} = req.user
+
     Usuarios.findOne({ usuario: req.body.usuario }).then((usuario_existe) => {
         if (usuario_existe == null) {
             Acesso.findOne({ usuario: req.body.usuario }).then((acesso_existe) => {
@@ -201,7 +203,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                             } else {
                                 ehUserMaster = false
                             }
-                            res.render("usuario/editregistro", { erros, usuario: usuarios, ehUserMaster })
+                            res.render("usuario/editregistro", { erros, usuarios, ehUserMaster, owner })
                         })
 
                     } else {
@@ -309,7 +311,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                         usuario.save().then(() => {
                                             Usuarios.find().sort({ data: 'desc' }).lean().then((usuarios) => {
                                                 sucesso.push({ texto: "Alterações do usuário realizadas com sucesso!" })
-                                                res.render("usuario/administrador/", { usuarios: usuarios, sucesso })
+                                                res.render("usuario/administrador/", { usuarios, sucesso, owner})
                                             }).catch((err) => {
                                                 req.flash("error_msg", "Ocorreu uma falha interna.")
                                                 res.redirect("/administrador/acesso/")
@@ -325,7 +327,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                 usuario.save().then(() => {
                                     Usuarios.find().sort({ data: 'desc' }).lean().then((usuarios) => {
                                         sucesso.push({ texto: "Alterações do usuário realizadas com sucesso!" })
-                                        res.render("usuario/administrador/", { usuarios: usuarios, sucesso })
+                                        res.render("usuario/administrador/", { usuarios, sucesso, owner })
                                     }).catch((err) => {
                                         req.flash("error_msg", "Ocorreu uma falha interna.")
                                         res.redirect("/administrador/acesso/")
@@ -342,9 +344,9 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                     }
                 } else {
                     Acesso.findOne({ _id: req.body.id }).lean().then((acesso_atual) => {
-                        console.log('Acesso existe.')
-                        console.log('atual: acesso_existe=>' + acesso_existe.usuario)
-                        console.log('acesso_atual=>' + acesso_atual.usuario)
+                        //console.log('Acesso existe.')
+                        //console.log('atual: acesso_existe=>' + acesso_existe.usuario)
+                        //console.log('acesso_atual=>' + acesso_atual.usuario)
                         if (acesso_existe.usuario != acesso_atual.usuario) {
                             erros.push({ texto: 'Me desculpe, este nome de usuario já existe. Por favor tente outro.' })
                             const { ehAdmin } = req.user
@@ -353,7 +355,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                             } else {
                                 ehUserMaster = false
                             }
-                            res.render("usuario/editregistro", { erros, usuario: usuario_atual, ehUserMaster })
+                            res.render("usuario/editregistro", { erros, usuario: usuario_atual, ehUserMaster, owner })
                         } else {
                             if ((req.body.senha != '' && req.body.senharep == '') || (req.body.senha == '' && req.body.senharep != '')) {
                                 if (!req.body.senha || typeof req.body.senha == undefined || req.body.senha == true) {
@@ -379,11 +381,11 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                     } else {
                                         ehUserMaster = false
                                     }
-                                    res.render("usuario/editregistro", { erros, usuario: acesso, ehUserMaster })
+                                    res.render("usuario/editregistro", { erros, usuario: acesso, ehUserMaster, owner })
                                 })
 
                             } else {
-                                console.log('atualizou')
+                                //console.log('atualizou')
                                 Acesso.findOne({ _id: req.body.id }).then((acesso) => {
 
                                     acesso.usuario = req.body.usuario
@@ -419,7 +421,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                                 acesso.save().then(() => {
                                                     Acesso.find().sort({ data: 'desc' }).lean().then((acesso) => {
                                                         sucesso.push({ texto: "Alterações do usuário realizadas com sucesso!" })
-                                                        res.render("usuario/administrador/", { usuarios: acesso, sucesso })
+                                                        res.render("usuario/administrador/", { usuarios: acesso, sucesso, owner})
                                                     }).catch((err) => {
                                                         req.flash("error_msg", "Ocorreu uma falha interna.")
                                                         res.redirect("/administrador/acesso/")
@@ -433,10 +435,10 @@ router.post("/editregistro", ehAdmin, (req, res) => {
 
                                     } else {
                                         acesso.save().then(() => {
-                                            console.log('atualizou')
+                                            //console.log('atualizou')
                                             Acesso.find().sort({ data: 'desc' }).lean().then((acesso) => {
                                                 sucesso.push({ texto: "Alterações do usuário realizadas com sucesso!" })
-                                                res.render("usuario/administrador/", { usuarios: acesso, sucesso })
+                                                res.render("usuario/administrador/", { usuarios: acesso, sucesso, owner })
                                             }).catch((err) => {
                                                 req.flash("error_msg", "Ocorreu uma falha interna.")
                                                 res.redirect("/administrador/acesso/")
@@ -474,7 +476,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                     } else {
                         ehUserMaster = false
                     }
-                    res.render("usuario/editregistro", { erros, usuario: usuario_atual, ehUserMaster })
+                    res.render("usuario/editregistro", { erros, usuario: usuario_atual, ehUserMaster, owner })
                 } else {
                     if ((req.body.senha != '' && req.body.senharep == '') || (req.body.senha == '' && req.body.senharep != '')) {
                         if (!req.body.senha || typeof req.body.senha == undefined || req.body.senha == true) {
@@ -502,7 +504,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                             } else {
                                 ehUserMaster = false
                             }
-                            res.render("usuario/editregistro", { erros, usuario: usuarios, ehUserMaster })
+                            res.render("usuario/editregistro", { erros, usuarios, ehUserMaster, owner })
                         })
 
                     } else {
@@ -606,7 +608,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                             res.redirect("/usuario/editar/" + req.body.id)
                                         }
                                         usuario.senha = hash
-                                        console.log('hash=>' + hash)
+                                        //console.log('hash=>' + hash)
                                         usuario.save().then(() => {
                                             // Usuarios.find().sort({ data: 'desc' }).lean().then((usuarios) => {
                                             //     sucesso.push({ texto: "Alterações do usuário realizadas com sucesso!" })
@@ -628,7 +630,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                 usuario.save().then(() => {
                                     Usuarios.find().sort({ data: 'desc' }).lean().then((usuarios) => {
                                         sucesso.push({ texto: "Alterações do usuário realizadas com sucesso!" })
-                                        res.render("usuario/administrador", { usuarios: usuarios, sucesso })
+                                        res.render("usuario/administrador", { usuarios, sucesso, owner })
                                     }).catch((err) => {
                                         req.flash("error_msg", "Ocorreu uma falha interna.")
                                         res.redirect("/usuario/editar/" + req.body.id)

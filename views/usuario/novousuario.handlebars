@@ -28,7 +28,11 @@
             </div>
             <div class="input-group gap-2 mt-2 ">
             <button type="submit" class="btn btn-sm btn-success" style='margin-left: 42%'>Enviar</button>
+            {{#if owner}}
+            <a href='/administrador/' class='btn btn-sm btn-primary'>Voltar</a>
+            {{else}}
             <a href='/administrador/acesso' class='btn btn-sm btn-primary'>Voltar</a>
+            {{/if}}
             </div>
     </form>
 </div>
