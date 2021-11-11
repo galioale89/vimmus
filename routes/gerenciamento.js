@@ -483,120 +483,120 @@ router.get('/consulta/:tipo', ehAdmin, (req, res) => {
     Cliente.find({ user: id }).lean().then((todos_clientes) => {
         Pessoa.find({ user: id, funges: 'checked' }).lean().then((todos_responsaveis) => {
             Proposta.find({ user: id }).sort({ dataord: 'asc' }).then((proposta) => {
-                if (proposta != ''){
-                proposta.forEach((element) => {
-                    Proposta.findOne({ _id: element._id }).then((lista_proposta) => {
-                        Cliente.findOne({ _id: element.cliente }).then((lista_cliente) => {
-                            Pessoa.findOne({ _id: element.responsavel }).then((lista_responsavel) => {
-                                Equipe.findOne({ _id: element.equipe }).then((equipe) => {
-                                    Documento.findOne({ proposta: element._id }).then((documento) => {
-                                        Compra.findOne({ proposta: element._id }).then((compra) => {
-                                            Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
-                                                Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
-                                                    //  console.log('lista_proposta=>' + lista_proposta._id)
-                                                    if (typeof lista_proposta.proposta6 != 'undefined') {
-                                                        dtcadastro = lista_proposta.dtcadastro6
-                                                    } else {
-                                                        if (typeof lista_proposta.proposta5 != 'undefined') {
-                                                            dtcadastro = lista_proposta.dtcadastro5
+                if (proposta != '') {
+                    proposta.forEach((element) => {
+                        Proposta.findOne({ _id: element._id }).then((lista_proposta) => {
+                            Cliente.findOne({ _id: element.cliente }).then((lista_cliente) => {
+                                Pessoa.findOne({ _id: element.responsavel }).then((lista_responsavel) => {
+                                    Equipe.findOne({ _id: element.equipe }).then((equipe) => {
+                                        Documento.findOne({ proposta: element._id }).then((documento) => {
+                                            Compra.findOne({ proposta: element._id }).then((compra) => {
+                                                Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
+                                                    Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
+                                                        //  console.log('lista_proposta=>' + lista_proposta._id)
+                                                        if (typeof lista_proposta.proposta6 != 'undefined') {
+                                                            dtcadastro = lista_proposta.dtcadastro6
                                                         } else {
-                                                            if (typeof lista_proposta.proposta4 != 'undefined') {
-                                                                dtcadastro = lista_proposta.dtcadastro4
+                                                            if (typeof lista_proposta.proposta5 != 'undefined') {
+                                                                dtcadastro = lista_proposta.dtcadastro5
                                                             } else {
-                                                                if (typeof lista_proposta.proposta3 != 'undefined') {
-                                                                    dtcadastro = lista_proposta.dtcadastro3
+                                                                if (typeof lista_proposta.proposta4 != 'undefined') {
+                                                                    dtcadastro = lista_proposta.dtcadastro4
                                                                 } else {
-                                                                    if (typeof lista_proposta.proposta2 != 'undefined') {
-                                                                        dtcadastro = lista_proposta.dtcadastro2
+                                                                    if (typeof lista_proposta.proposta3 != 'undefined') {
+                                                                        dtcadastro = lista_proposta.dtcadastro3
                                                                     } else {
-                                                                        dtcadastro = lista_proposta.dtcadastro1
+                                                                        if (typeof lista_proposta.proposta2 != 'undefined') {
+                                                                            dtcadastro = lista_proposta.dtcadastro2
+                                                                        } else {
+                                                                            dtcadastro = lista_proposta.dtcadastro1
+                                                                        }
                                                                     }
                                                                 }
                                                             }
                                                         }
-                                                    }
-                                                    //  console.log('dtcadastro=>'+dtcadastro)
-                                                    //  console.log('equipe=>' + equipe)
-                                                    //  console.log('documento=>' + documento)
-                                                    //  console.log('compra=>' + compra)
-                                                    //  console.log('lista_proposta=>' + lista_proposta)
-                                                    //  console.log('equipe.feito=>' + equipe.feito)
-                                                    //  console.log('documento.protocolado=>' + documento.protocolado)
-                                                    //  console.log('documento.feitotrt=>' + documento.feitotrt)
-                                                    //  console.log('compra.feitonota=>' + compra.feitonota)
-                                                    //  console.log('compra.feitopedido =>' + compra.feitopedido)
-                                                    //  console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
+                                                        //  console.log('dtcadastro=>'+dtcadastro)
+                                                        //  console.log('equipe=>' + equipe)
+                                                        //  console.log('documento=>' + documento)
+                                                        //  console.log('compra=>' + compra)
+                                                        //  console.log('lista_proposta=>' + lista_proposta)
+                                                        //  console.log('equipe.feito=>' + equipe.feito)
+                                                        //  console.log('documento.protocolado=>' + documento.protocolado)
+                                                        //  console.log('documento.feitotrt=>' + documento.feitotrt)
+                                                        //  console.log('compra.feitonota=>' + compra.feitonota)
+                                                        //  console.log('compra.feitopedido =>' + compra.feitopedido)
+                                                        //  console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
 
-                                                    //  console.log('lista_proposta.feito=>' + lista_proposta.feito)
-                                                    //  console.log('lista_proposta.ganho=>' + lista_proposta.ganho)
+                                                        //  console.log('lista_proposta.feito=>' + lista_proposta.feito)
+                                                        //  console.log('lista_proposta.ganho=>' + lista_proposta.ganho)
 
-                                                    if (lista_proposta.feito == true && lista_proposta.ganho == false && lista_proposta.encerrado == false) {
-                                                        listaOrcado.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
-                                                    } else {
-                                                        if (lista_proposta.feito == true && lista_proposta.ganho == true && lista_proposta.encerrado == false) {
-                                                            listaAberto.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
+                                                        if (lista_proposta.feito == true && lista_proposta.ganho == false && lista_proposta.encerrado == false) {
+                                                            listaOrcado.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
                                                         } else {
-                                                            listaEncerrado.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
-                                                        }
-                                                    }
-                                                    //  console.log('status=>' + status)
-                                                    q++
-                                                    if (q == proposta.length) {
-                                                        if (req.params.tipo == 'orcado') {
-                                                            res.render('principal/consulta', { listaOrcado, todos_clientes, todos_responsaveis, tipo: 'orcado', titulo: ': Orçamentos Enviados' })
-                                                        } else {
-                                                            if (req.params.tipo == 'aberto') {
-                                                                res.render('principal/consulta', { listaAberto, todos_clientes, todos_responsaveis, tipo: 'aberto', titulo: ': Em Aberto' })
+                                                            if (lista_proposta.feito == true && lista_proposta.ganho == true && lista_proposta.encerrado == false) {
+                                                                listaAberto.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
                                                             } else {
-                                                                res.render('principal/consulta', { listaEncerrado, todos_clientes, todos_responsaveis, tipo: 'encerrado', titulo: ': Encerrado' })
+                                                                listaEncerrado.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
                                                             }
                                                         }
-                                                    }
+                                                        //  console.log('status=>' + status)
+                                                        q++
+                                                        if (q == proposta.length) {
+                                                            if (req.params.tipo == 'orcado') {
+                                                                res.render('principal/consulta', { listaOrcado, todos_clientes, todos_responsaveis, tipo: 'orcado', titulo: ': Orçamentos Enviados' })
+                                                            } else {
+                                                                if (req.params.tipo == 'aberto') {
+                                                                    res.render('principal/consulta', { listaAberto, todos_clientes, todos_responsaveis, tipo: 'aberto', titulo: ': Em Aberto' })
+                                                                } else {
+                                                                    res.render('principal/consulta', { listaEncerrado, todos_clientes, todos_responsaveis, tipo: 'encerrado', titulo: ': Encerrado' })
+                                                                }
+                                                            }
+                                                        }
 
+                                                    }).catch((err) => {
+                                                        req.flash('error_msg', 'Nenhum pós venda encontrado.')
+                                                        res.redirect('/gerenciamento/consulta')
+                                                    })
                                                 }).catch((err) => {
-                                                    req.flash('error_msg', 'Nenhum pós venda encontrado.')
+                                                    req.flash('error_msg', 'Nenhuma vistoria encontrada.')
                                                     res.redirect('/gerenciamento/consulta')
                                                 })
                                             }).catch((err) => {
-                                                req.flash('error_msg', 'Nenhuma vistoria encontrada.')
+                                                req.flash('error_msg', 'Nenhuma compra encontrada.')
                                                 res.redirect('/gerenciamento/consulta')
                                             })
                                         }).catch((err) => {
-                                            req.flash('error_msg', 'Nenhuma compra encontrada.')
+                                            req.flash('error_msg', 'Nenhum documento encontrado.')
                                             res.redirect('/gerenciamento/consulta')
                                         })
                                     }).catch((err) => {
-                                        req.flash('error_msg', 'Nenhum documento encontrado.')
+                                        req.flash('error_msg', 'Nenhuma equipe encontrada.')
                                         res.redirect('/gerenciamento/consulta')
                                     })
                                 }).catch((err) => {
-                                    req.flash('error_msg', 'Nenhuma equipe encontrada.')
+                                    req.flash('error_msg', 'Nenhuma pessoa encontrada.')
                                     res.redirect('/gerenciamento/consulta')
                                 })
                             }).catch((err) => {
-                                req.flash('error_msg', 'Nenhuma pessoa encontrada.')
+                                req.flash('error_msg', 'Nenhuma cliente encontrado.')
                                 res.redirect('/gerenciamento/consulta')
                             })
                         }).catch((err) => {
-                            req.flash('error_msg', 'Nenhuma cliente encontrado.')
+                            req.flash('error_msg', 'Nenhuma proposta encontrada.')
                             res.redirect('/gerenciamento/consulta')
                         })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Nenhuma proposta encontrada.')
-                        res.redirect('/gerenciamento/consulta')
                     })
-                })
-            }else{
-                if (req.params.tipo == 'orcado') {
-                    res.render('principal/consulta', { listaOrcado, todos_clientes, todos_responsaveis, tipo: 'orcado', titulo: ': Orçamentos Enviados' })
                 } else {
-                    if (req.params.tipo == 'aberto') {
-                        res.render('principal/consulta', { listaAberto, todos_clientes, todos_responsaveis, tipo: 'aberto', titulo: ': Em Aberto' })
+                    if (req.params.tipo == 'orcado') {
+                        res.render('principal/consulta', { listaOrcado, todos_clientes, todos_responsaveis, tipo: 'orcado', titulo: ': Orçamentos Enviados' })
                     } else {
-                        res.render('principal/consulta', { listaEncerrado, todos_clientes, todos_responsaveis, tipo: 'encerrado', titulo: ': Encerrado' })
+                        if (req.params.tipo == 'aberto') {
+                            res.render('principal/consulta', { listaAberto, todos_clientes, todos_responsaveis, tipo: 'aberto', titulo: ': Em Aberto' })
+                        } else {
+                            res.render('principal/consulta', { listaEncerrado, todos_clientes, todos_responsaveis, tipo: 'encerrado', titulo: ': Encerrado' })
+                        }
                     }
-                }                
-            }
+                }
             }).catch((err) => {
                 req.flash('error_msg', 'Nenhuma proposta encontrado<todas>')
                 res.redirect('/gerenciamento/consulta')
@@ -4036,25 +4036,25 @@ router.post('/caminhoAte', ehAdmin, uploadfoto.array('fileate', 10), (req, res) 
     var arquivos = req.files
     var q = 0
 
-            Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoAte: 1 } }).then(() => {
-                Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
-                    arquivos.forEach((element) => {
-                        console.log(element.filename)
-                        vistoria.caminhoAte[q] = element.filename
-                        q++
-                    })
-                    vistoria.save().then(() => {
-                        req.flash('success_msg', 'Caminho do aterramento salvo com sucesso.')
-                        res.redirect('/gerenciamento/aceite/' + req.body.id)
-                    }).catch(() => {
-                        req.flash('error_msg', 'Falha ao salvar a vistoria.')
-                        res.redirect('/gerenciamento/aceite/' + req.body.id)
-                    })
-                }).catch(() => {
-                    req.flash('error_msg', 'Falha ao encontrar a vistoria.')
-                    res.redirect('/gerenciamento/aceite/' + req.body.id)
-                })
+    Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoAte: 1 } }).then(() => {
+        Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
+            arquivos.forEach((element) => {
+                console.log(element.filename)
+                vistoria.caminhoAte[q] = element.filename
+                q++
             })
+            vistoria.save().then(() => {
+                req.flash('success_msg', 'Caminho do aterramento salvo com sucesso.')
+                res.redirect('/gerenciamento/aceite/' + req.body.id)
+            }).catch(() => {
+                req.flash('error_msg', 'Falha ao salvar a vistoria.')
+                res.redirect('/gerenciamento/aceite/' + req.body.id)
+            })
+        }).catch(() => {
+            req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+            res.redirect('/gerenciamento/aceite/' + req.body.id)
+        })
+    })
 })
 
 router.post('/caminhoInv', ehAdmin, uploadfoto.array('fileinv', 10), (req, res) => {
@@ -4062,26 +4062,26 @@ router.post('/caminhoInv', ehAdmin, uploadfoto.array('fileinv', 10), (req, res) 
     var arquivos = req.files
     var q = 0
 
-            Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoInv: 1 } }).then    (() => {
-                Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
-                    arquivos.forEach((element) => {
-                        console.log(element.filename)
-                        vistoria.caminhoInv[q] = element.filename
-                        q++
-                    })
-                    vistoria.save().then(() => {
-                        req.flash('success_msg', 'Caminho do aterramento salvo com sucesso.')
-                        res.redirect('/gerenciamento/aceite/' + req.body.id)
-                    }).catch(() => {
-                        req.flash('error_msg', 'Falha ao salvar a vistoria.')
-                        res.redirect('/gerenciamento/aceite/' + req.body.id)
-                    })
-                }).catch(() => {
-                    req.flash('error_msg', 'Falha ao encontrar a vistoria.')
-                    res.redirect('/gerenciamento/aceite/' + req.body.id)
-                })
+    Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoInv: 1 } }).then(() => {
+        Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
+            arquivos.forEach((element) => {
+                console.log(element.filename)
+                vistoria.caminhoInv[q] = element.filename
+                q++
             })
-        
+            vistoria.save().then(() => {
+                req.flash('success_msg', 'Caminho do aterramento salvo com sucesso.')
+                res.redirect('/gerenciamento/aceite/' + req.body.id)
+            }).catch(() => {
+                req.flash('error_msg', 'Falha ao salvar a vistoria.')
+                res.redirect('/gerenciamento/aceite/' + req.body.id)
+            })
+        }).catch(() => {
+            req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+            res.redirect('/gerenciamento/aceite/' + req.body.id)
+        })
+    })
+
 })
 
 router.post('/caminhoStb', ehAdmin, uploadfoto.array('filestb', 10), (req, res) => {
@@ -4089,26 +4089,26 @@ router.post('/caminhoStb', ehAdmin, uploadfoto.array('filestb', 10), (req, res) 
     var arquivos = req.files
     var q = 0
 
-            Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoStb: 1 } }).then    (() => {
-                Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
-                    arquivos.forEach((element) => {
-                        console.log(element.filename)
-                        vistoria.caminhoStb[q] = element.filename
-                        q++
-                    })
-                    vistoria.save().then(() => {
-                        req.flash('success_msg', 'Caminho da strng box salvo com sucesso.')
-                        res.redirect('/gerenciamento/aceite/' + req.body.id)
-                    }).catch(() => {
-                        req.flash('error_msg', 'Falha ao salvar a vistoria.')
-                        res.redirect('/gerenciamento/aceite/' + req.body.id)
-                    })
-                }).catch(() => {
-                    req.flash('error_msg', 'Falha ao encontrar a vistoria.')
-                    res.redirect('/gerenciamento/aceite/' + req.body.id)
-                })
+    Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoStb: 1 } }).then(() => {
+        Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
+            arquivos.forEach((element) => {
+                console.log(element.filename)
+                vistoria.caminhoStb[q] = element.filename
+                q++
             })
-        
+            vistoria.save().then(() => {
+                req.flash('success_msg', 'Caminho da strng box salvo com sucesso.')
+                res.redirect('/gerenciamento/aceite/' + req.body.id)
+            }).catch(() => {
+                req.flash('error_msg', 'Falha ao salvar a vistoria.')
+                res.redirect('/gerenciamento/aceite/' + req.body.id)
+            })
+        }).catch(() => {
+            req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+            res.redirect('/gerenciamento/aceite/' + req.body.id)
+        })
+    })
+
 })
 
 router.post('/caminhoMod', ehAdmin, uploadfoto.array('filemod', 10), (req, res) => {
@@ -4116,26 +4116,26 @@ router.post('/caminhoMod', ehAdmin, uploadfoto.array('filemod', 10), (req, res) 
     var arquivos = req.files
     var q = 0
 
-            Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoMod: 1 } }).then(() => {
-                Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
-                    arquivos.forEach((element) => {
-                        console.log(element.filename)
-                        vistoria.caminhoMod[q] = element.filename
-                        q++
-                    })
-                    vistoria.save().then(() => {
-                        req.flash('success_msg', 'Caminho da estrutura e módulos salvo com sucesso.')
-                        res.redirect('/gerenciamento/aceite/' + req.body.id)
-                    }).catch(() => {
-                        req.flash('error_msg', 'Falha ao salvar a vistoria.')
-                        res.redirect('/gerenciamento/aceite/' + req.body.id)
-                    })
-                }).catch(() => {
-                    req.flash('error_msg', 'Falha ao encontrar a vistoria.')
-                    res.redirect('/gerenciamento/aceite/' + req.body.id)
-                })
+    Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoMod: 1 } }).then(() => {
+        Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
+            arquivos.forEach((element) => {
+                console.log(element.filename)
+                vistoria.caminhoMod[q] = element.filename
+                q++
             })
-        
+            vistoria.save().then(() => {
+                req.flash('success_msg', 'Caminho da estrutura e módulos salvo com sucesso.')
+                res.redirect('/gerenciamento/aceite/' + req.body.id)
+            }).catch(() => {
+                req.flash('error_msg', 'Falha ao salvar a vistoria.')
+                res.redirect('/gerenciamento/aceite/' + req.body.id)
+            })
+        }).catch(() => {
+            req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+            res.redirect('/gerenciamento/aceite/' + req.body.id)
+        })
+    })
+
 })
 
 router.get('/mostrarInv/:id', ehAdmin, (req, res) => {
@@ -4156,7 +4156,7 @@ router.get('/mostrarInv/:id', ehAdmin, (req, res) => {
                                     q++
                                 })
 
-                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens dos Inversores'})
+                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens dos Inversores' })
                             }).catch(() => {
                                 req.flash('error_msg', 'Falha ao encontrar o pós venda.')
                                 res.redirect('/gerenciamento/aceite/' + req.body.id)
@@ -4206,7 +4206,7 @@ router.get('/mostrarAte/:id', ehAdmin, (req, res) => {
                                     q++
                                 })
 
-                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens de Aterramento'})
+                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens de Aterramento' })
                             }).catch(() => {
                                 req.flash('error_msg', 'Falha ao encontrar o pós venda.')
                                 res.redirect('/gerenciamento/aceite/' + req.body.id)
@@ -4256,7 +4256,7 @@ router.get('/mostrarStb/:id', ehAdmin, (req, res) => {
                                     q++
                                 })
 
-                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens de Saidas e Conexões'})
+                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens de Saidas e Conexões' })
                             }).catch(() => {
                                 req.flash('error_msg', 'Falha ao encontrar o pós venda.')
                                 res.redirect('/gerenciamento/aceite/' + req.body.id)
@@ -4307,7 +4307,7 @@ router.get('/mostrarMod/:id', ehAdmin, (req, res) => {
                                     q++
                                 })
 
-                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens de Estruturas e Módulos'})
+                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens de Estruturas e Módulos' })
                             }).catch(() => {
                                 req.flash('error_msg', 'Falha ao encontrar o pós venda.')
                                 res.redirect('/gerenciamento/aceite/' + req.body.id)
@@ -4734,26 +4734,38 @@ router.get('/mostrarUnifilar/:id', ehAdmin, (req, res) => {
 
 router.post('/protocolar', ehAdmin, (req, res) => {
     Documento.findOne({ proposta: req.body.id }).then((documento) => {
-        var valida = new Date()
+        var novadata = new Date(req.body.dtprotocolo)
+        var ajustadata = new Date(req.body.dtprotocolo)
         var date = new Date(req.body.dtprotocolo)
-        valida.setDate(date.getDate() + 14)
-        //  console.log('valida=>' + valida)
-        documento.protocolado = true
-        documento.dtprotocolo = req.body.dtprotocolo
-        var dia = valida.getDate()
-        if (parseFloat(dia) < 10) {
-            dia = '0' + dia
+        ajustadata.setDate(date.getDate() + 1)
+        console.log('diainicio=>' + ajustadata.getDate())
+        console.log('ajustadata=>' + ajustadata)
+        novadata.setDate(ajustadata.getDate() + 14)
+        var ano = novadata.getFullYear()
+        var mes = novadata.getMonth()
+        var dia = novadata.getDate()
+        console.log('ano=>' + ano)
+        console.log('mes=>' + mes)
+        console.log('dia=>' + dia)
+        // documento.protocolado = true
+        // documento.dtprotocolo = req.body.dtprotocolo        
+        console.log('novadata=>' + novadata)
+        if (dia == 1) {
+
         }
-        var mes = valida.getMonth()
-        if ((31 - parseFloat(date.getDate()) < 14)) {
-            mes = parseFloat(mes) + 1
+        if (ajustadata.getDate() == 1) {
+            mes = mes + 2
+        } else {
+            mes = mes + 1
         }
-        if (parseFloat(mes) < 10) {
+        if (mes < 10) {
             mes = '0' + mes
         }
-        var ano = valida.getFullYear()
+        if (dia < 10) {
+            dia = '0' + dia
+        }
         var valida = dia + '/' + mes + '/' + ano
-        //  console.log('valida=>' + valida)
+        documento.dtprotocolo = req.body.dtprotocolo
         documento.dtdeadline = valida
         documento.save().then(() => {
             req.flash('success_msg', 'Projeto homologado na concessionária.')
