@@ -4519,33 +4519,66 @@ router.post('/posvenda', ehAdmin, (req, res) => {
 })
 
 router.post('/checkposvenda', ehAdmin, (req, res) => {
-    Posvenda.find({ _id: req.body.idpos }).then((posvenda) => {
-        console.log('entrou')
-        console.log('req.body.checkconfig=>' + req.body.checkconfig)
-        console.log('req.body.checkdemo=>' + req.body.checkdemo)
-        console.log('req.body.checkleitura=>' + req.body.checkleitura)
+    Posvenda.findOne({ _id: req.body.idpos }).then((posvenda) => {
+        // console.log('entrou')
+        // console.log('req.body.checkconfig=>' + req.body.checkconfig)
+        // console.log('req.body.checkdemo=>' + req.body.checkdemo)
+        // console.log('req.body.checkleitura=>' + req.body.checkleitura)
 
-        if (req.body.checkconfig == 'on') {
-            console.log('checked')
-            posvenda.config = 'checked'
+        if (req.body.checkalerta == 'on') {
+            // console.log('checked')
+            posvenda.alerta = 'checked'
         } else {
-            posvenda.config = 'unchecked'
+            posvenda.alerta = 'unchecked'
         }
-        if (req.body.checkdemo == 'on') {
-            console.log('checked')
-            posvenda.demo = 'checked'
+        if (req.body.checkenergia == 'on') {
+            // console.log('checked')
+            posvenda.energia = 'checked'
         } else {
-            posvenda.demo = 'unchecked'
-        }
-        if (req.body.checkleitura == 'on') {
-            console.log('checked')
-            posvenda.leitura = 'checked'
+            posvenda.energia = 'unchecked'
+        }    
+        if (req.body.checkmanut == 'on') {
+            // console.log('checked')
+            posvenda.manut = 'checked'
         } else {
-            posvenda.leitura = 'unchecked'
+            posvenda.manut = 'unchecked'
         }
+        if (req.body.checksombra == 'on') {
+            console.log('checked')
+            posvenda.sombra = 'checked'
+        } else {
+            posvenda.sombra = 'unchecked'
+        }  
+        if (req.body.checkmonitora == 'on') {
+            //console.log('checked')
+            posvenda.monitora = 'checked'
+        } else {
+            posvenda.monitora = 'unchecked'
+        }    
+        if (req.body.checkconexao == 'on') {
+            //console.log('checked')
+            posvenda.conexao = 'checked'
+        } else {
+            posvenda.conexao = 'unchecked'
+        }     
+        if (req.body.checkgerador == 'on') {
+            //console.log('checked')
+            posvenda.gerador = 'checked'
+        } else {
+            posvenda.gerador = 'unchecked'
+        }  
+        if (req.body.checkanalise == 'on') {
+            //console.log('checked')
+            posvenda.analise = 'checked'
+        } else {
+            posvenda.analise = 'unchecked'
+        }          
+        
+        posvenda.duvidas = req.body.duvidas
+
         posvenda.save().then(() => {
             req.flash('success_msg', 'Check List salvo com sucesso.')
-            res.redirect('/gerenciamento/posvenda' + req.body.id)
+            res.redirect('/gerenciamento/posvenda/' + req.body.id)
         }).catch(() => {
             req.flash('error_msg', 'Falha ao salvar o pós venda.')
             res.redirect('/gerenciamento/posvenda/' + req.body.id)
@@ -4557,7 +4590,7 @@ router.post('/checkposvenda', ehAdmin, (req, res) => {
 })
 
 router.get('/mostrarPosvenda/:id', ehAdmin, (req, res) => {
-    Posvenda.findOne({ proposta: req.params.id }).then((posvenda) => {
+    Posvenda.findOne({ _id: req.params.id }).then((posvenda) => {
         var doc = posvenda.laudo
         var path = __dirname
         //  console.log(path)
