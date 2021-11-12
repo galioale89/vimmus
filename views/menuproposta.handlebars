@@ -21,212 +21,304 @@
     cursor: pointer;
   }
 </style>
+<div class="modal fade" id="atrasados" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Proposta a 1 dia de expirar</h5>
+        <button type="button" class="btn btn-sm btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <label class="col-form-label">Propostas a Vencer</label>
+        <table>
+          <tr>
+            <th style="width: 10%;text-align: center">Cliente</th>
+            <th style="width: 10%;text-align: center">Data Cadastro</th>
+            <th style="width: 10%;text-align: center">Data Validade</th>
+            <th style="width: 10%;text-align: center"></th>
+          </tr>
+          {{#each notpro}}
+          <tr style="font-size: 15px;">
+            <input type='hidden' name='cliav[]' value='{{cliente}}'>
+            <input type='hidden' name='valav[]' value='{{validade}}'>
+            <input type='hidden' name='idav[]' value='{{id}}'>
+            <td>{{cliente}}</td>
+            <td>{{cadastro}}</td>
+            <td>{{validade}}</td>
+            <td><a href='/gerenciamento/proposta/{{id}}'><i style='color:rgba(44,55,89)'
+                  class="bi bi-pen icone-tabela"></i></a></td>
+          </tr>
+          {{/each}}
+        </table>
+        <label class="col-form-label">Propostas Vencidas</label>
+        <table>
+          <tr>
+            <th style="width: 10%;text-align: center">Cliente</th>
+            <th style="width: 10%;text-align: center">Data Cadastro</th>
+            <th style="width: 10%;text-align: center">Data Validade</th>
+            <th style="width: 10%;text-align: center"></th>
+          </tr>
+          {{#each atrasado}}
+          <tr style="font-size: 15px;">
+            <input type='hidden' name='cliven[]' value='{{cliente}}'>
+            <input type='hidden' name='valven[]' value='{{validade}}'>
+            <input type='hidden' name='idven[]' value='{{id}}'>
+            <td>{{cliente}}</td>
+            <td>{{cadastro}}</td>
+            <td>{{validade}}</td>
+            <td><a href='/gerenciamento/proposta/{{id}}'><i style='color:rgba(44,55,89)'
+                  class="bi bi-pen icone-tabela"></i></a></td>
+          </tr>
+          {{/each}}
+        </table>
 
-<div class='row mt-1' style="width: 100%;font-size: 12px;">
-  {{#if block}}
-  {{else}}
-  <div class='col-md-2'>
-    {{nome}}
-    <div class="menu" style="height:100%">
-      {{!-- <img src='img/logovimmus.png' height="75" width="100" style="padding-left: 10%;" /> --}}
-      <div class="menu-interno">
-        <div class='titulo-inicio text-left'> CADASTROS</div>
-        <div class="row mb-2">
-          <div class="text-start">
-            <a href="/cliente/novo" class="contorno-menu"><i class='bi bi-person-plus'></i> Cliente</a>
-            <a href="/cliente/consulta" class="botaomenu text-start"> <i class='bi bi-search'></i> </a>
+        {{!-- <div class="toast-container">
+          {{#each notpro}}
+          <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+              <strong class="me-auto">Propostas a Vencer </strong>
+              <small class="text-muted">Prazo: {{data}}</small>
+              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+              <label>Proposta do {{cliente}} vence amanhã!</label>
+            </div>
+          </div> --}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class='row mt-1' style="width: 100%;font-size: 12px;">
+    {{#if block}}
+    {{else}}
+    <div class='col-md-2'>
+      {{nome}}
+      <div class="menu" style="height:100%">
+        {{!-- <img src='img/logovimmus.png' height="75" width="100" style="padding-left: 10%;" /> --}}
+        <div class="menu-interno">
+          <div class='titulo-inicio text-left'> CADASTROS</div>
+          <div class="row mb-2">
+            <div class="text-start">
+              <a href="/cliente/novo" class="contorno-menu"><i class='bi bi-person-plus'></i> Cliente</a>
+              <a href="/cliente/consulta" class="botaomenu text-start"> <i class='bi bi-search'></i> </a>
+            </div>
           </div>
-        </div>
-        <div class="row mb-2">
-          <div class="text-start">
-            <a href="/gerenciamento/proposta" class="contorno-menu"><i class='bi bi-file-arrow-up'></i> Proposta</a>
-            <a href="/gerenciamento/consulta" class="botaomenu"> <i class='bi bi-search'></i> </a>
+          <div class="row mb-2">
+            <div class="text-start">
+              <a href="/gerenciamento/proposta" class="contorno-menu"><i class='bi bi-file-arrow-up'></i> Proposta</a>
+              <a href="/gerenciamento/consulta" class="botaomenu"> <i class='bi bi-search'></i> </a>
+            </div>
           </div>
-        </div>
-        <div class="row mb-2">
-          <div class="text-start">
-            <a href='/pessoa/novo' class="contorno-menu"><i class='bi bi-person-plus'></i> Pessoas</a>
-            <a href='/pessoa/consulta' class="botaomenu"><i class='bi bi-search'></i> </a>
+          <div class="row mb-2">
+            <div class="text-start">
+              <a href='/pessoa/novo' class="contorno-menu"><i class='bi bi-person-plus'></i> Pessoas</a>
+              <a href='/pessoa/consulta' class="botaomenu"><i class='bi bi-search'></i> </a>
+            </div>
           </div>
-        </div>
-        <div class="row mb-2">
-          <div class="text-start">
-            <a href='/componente/novo' class="contorno-menu"><i class='bi bi-file-arrow-up'></i>Componentes</a>
-            <a href='/componente/consulta' class="botaomenu"><i class='bi bi-search'></i> </a>
+          <div class="row mb-2">
+            <div class="text-start">
+              <a href='/componente/novo' class="contorno-menu"><i class='bi bi-file-arrow-up'></i>Componentes</a>
+              <a href='/componente/consulta' class="botaomenu"><i class='bi bi-search'></i> </a>
+            </div>
           </div>
-        </div>
-        <div style="margin-bottom: 1%;margin-top: 6%;">
-          <a href='/gerenciamento/plano' class="relatorio titulo-relatorio" style="padding-right: 20%;"><i
-              class="bi bi-file-arrow-up"></i> Planos</a>
-        </div>
-        <div style="margin-bottom: 1%;margin-top: 6%;">
-          <a href='/pessoa/consultaequipepadrao/' class="relatorio titulo-relatorio" style="padding-right: 20%;"><i
-              class="bi bi-people"></i> Equipe
-            Padrão</a>
-        </div>
-        <div class='titulo-inicio text-left mt-4'>CONFIGURAÇÕES</div>
-        <div class="row mb-2">
-          <div class="text-start">
-            <a href='/configuracao/addempresa' class="contorno-menu"><i class='bi bi-calculator'></i> Empresa </a>
-            <a href='/configuracao/consultaempresa' class="botaomenu"><i class='bi bi-search'></i></a>
+          <div style="margin-bottom: 1%;margin-top: 6%;">
+            <a href='/gerenciamento/plano' class="relatorio titulo-relatorio" style="padding-right: 20%;"><i
+                class="bi bi-file-arrow-up"></i> Planos</a>
           </div>
-        </div>
-        <div class="row mb-2">
-          <div class="text-start">
-            <a href='/configuracao/novo' class="contorno-menu"><i class='bi bi-clock'></i> Básicas</a>
-            <a href='/configuracao/consulta' class="botaomenu"><i class='bi bi-search'></i> </a>
+          <div style="margin-bottom: 1%;margin-top: 6%;">
+            <a href='/pessoa/consultaequipepadrao/' class="relatorio titulo-relatorio" style="padding-right: 20%;"><i
+                class="bi bi-people"></i> Equipe
+              Padrão</a>
           </div>
-        </div>
+          <div class='titulo-inicio text-left mt-4'>CONFIGURAÇÕES</div>
+          <div class="row mb-2">
+            <div class="text-start">
+              <a href='/configuracao/addempresa' class="contorno-menu"><i class='bi bi-calculator'></i> Empresa </a>
+              <a href='/configuracao/consultaempresa' class="botaomenu"><i class='bi bi-search'></i></a>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="text-start">
+              <a href='/configuracao/novo' class="contorno-menu"><i class='bi bi-clock'></i> Básicas</a>
+              <a href='/configuracao/consulta' class="botaomenu"><i class='bi bi-search'></i> </a>
+            </div>
+          </div>
 
-        <div class='titulo-inicio mt-3'>FERRAMENTAS</div>
-        <div class="menu-interno" style="padding-right: 5px;">
-          <div style="margin-top: 6%;margin-bottom: 7%;">
-            <a href='/gerenciamento/agenda' class="relatorio titulo-relatorio"><i class='bi bi-columns'></i>
-              Agenda</a><br>
-          </div>
-          <div style="margin-top: 6%;margin-bottom: 7%;">
-            <a href='/gerenciamento/cenarios' class="relatorio titulo-relatorio"><i class='bi bi-display'></i> Análise
-              de
-              Cenários</a>
-          </div>
-          <div style="margin-bottom: 7%;">
-            <a href='/usuario/editar/{{id}}' class="relatorio titulo-relatorio"><i class="bi bi-house-fill"></i> Minha
-              Conta</a>
-          </div>
+          <div class='titulo-inicio mt-3'>FERRAMENTAS</div>
+          <div class="menu-interno" style="padding-right: 5px;">
+            <div style="margin-top: 6%;margin-bottom: 7%;">
+              <a href='/gerenciamento/agenda' class="relatorio titulo-relatorio"><i class='bi bi-columns'></i>
+                Agenda</a><br>
+            </div>
+            <div style="margin-top: 6%;margin-bottom: 7%;">
+              <a href='/gerenciamento/cenarios' class="relatorio titulo-relatorio"><i class='bi bi-display'></i> Análise
+                de
+                Cenários</a>
+            </div>
+            <div style="margin-bottom: 7%;">
+              <a href='/usuario/editar/{{id}}' class="relatorio titulo-relatorio"><i class="bi bi-house-fill"></i> Minha
+                Conta</a>
+            </div>
 
-          {{#if ehMaster}}
-          <div class="row">
-            <div class="dropend">
-              <a class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false">Admin <i
-                  class="bi bi-caret-right"></i></i>
-              </a>
-              <ul class="dropdown-menu">
-                <a href='/administrador/acesso' class='botao-filter'><i class='bi bi-people-fill'></i> Controle Usuários
+            {{#if ehMaster}}
+            <div class="row">
+              <div class="dropend">
+                <a class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false">Admin <i
+                    class="bi bi-caret-right"></i></i>
                 </a>
-              </ul>
+                <ul class="dropdown-menu">
+                  <a href='/administrador/acesso' class='botao-filter'><i class='bi bi-people-fill'></i> Controle
+                    Usuários
+                  </a>
+                </ul>
+              </div>
             </div>
-          </div>
-          {{/if}}
-          {{#if owner}}
-          <div style="margin-bottom: 7%;margin-top: 10%">
-            <a href='/administrador' class="relatorio titulo-relatorio"> Novos</a>
-          </div>          
-          {{/if}}
-        </div>
-      </div>
-    </div>
-  </div>
-  {{/if}}
-  <div class='col-md-2 mt-3'>
-    <div class="text-center">
-      <div class="row">
-        <label style="font-size: 21px;color:#6557fc{{#if block}}{{else}};margin-top: 10%{{/if}}"> Total de
-          Projetos</label>
-        <label class="mt-2" style="font-size: 50px;">{{numprj}}</label>
-      </div>
-      <div class="row mt-4">
-        <a href='/gerenciamento/consulta/orcado' class='titulo'>Orçamentos Enviados</a>
-        <div style="padding-left: 39%;">
-          <div class='sessao-status mb-2'>
-            <label class='mt-2' style="font-size: 20px;font-weight: bold;">{{qtdorcado}}</label>
-          </div>
-        </div>
-      </div>
-      <div class="row mt-2">
-        <a href='/gerenciamento/consulta/aberto' class='titulo'>Em Aberto</a>
-        <div style="padding-left: 39%;">
-          <div class='sessao-status mb-2'>
-            <label class='mt-2' style="font-size: 20px; font-weight: bold;">{{qtdaberto}}</label>
-          </div>
-        </div>
-
-      </div>
-      <div class="row mt-2">
-        <a href='/gerenciamento/consulta/encerrado' class='titulo'>Encerrado</a>
-        <div style="padding-left: 39%;">
-          <div class='sessao-status mb-2'>
-            <label class='mt-2' style="font-size: 20px;font-weight: bold;">{{qtdencerrado}}</label>
+            {{/if}}
+            {{#if owner}}
+            <div style="margin-bottom: 7%;margin-top: 10%">
+              <a href='/administrador' class="relatorio titulo-relatorio"> Novos</a>
+            </div>
+            {{/if}}
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class='{{#if block}}col-md-10{{else}}col-md-8{{/if}}'>
-    <div class='row' style="height: 100%;">
-      <div class='quadro-scroll' style="margin-left: 5px;height: 100%;">
+    {{/if}}
+    <div class='col-md-2 mt-3'>
+      <div class="text-center">
         <div class="row">
-          <div class="col">
-            <div class="text-center mt-1 mb-3">
-              <label style="font-size: 15px;font-weight: 600;">Orçamentos Enviados</label>
+          <label style="font-size: 21px;color:#6557fc{{#if block}}{{else}};margin-top: 10%{{/if}}"> Total de
+            Projetos</label>
+          <label class="mt-2" style="font-size: 50px;">{{numprj}}</label>
+        </div>
+        <div class="row mt-4">
+          <a href='/gerenciamento/consulta/orcado' class='titulo'>Orçamentos Enviados</a>
+          <div style="padding-left: 39%;">
+            <div class='sessao-status mb-2'>
+              <label class='mt-2' style="font-size: 20px;font-weight: bold;">{{qtdorcado}}</label>
             </div>
-            <table style="width: 100%;">
-              <tr class='contorno-titulo' style='border-bottom: rgba(40,55,89,0.1) solid 1px;'>
-                <th>Cliente</th>
-                <th>Telefone</th>
-                <th>E-mail</th>
-                {{!-- <th>Estágio</th> --}}
-                <th></th>
-              </tr>
-              {{#each listaOrcado}}
-              <tr>
-                <td>{{cliente}}</td>
-                <td>{{telefone}}</td>
-                <td>{{email}}</td>
-                {{#if block}}
-                {{else}}
-                <td style="padding-top: 3px;">
-                  <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
-
-                    <a href='/gerenciamento/proposta/{{id}}/' class='botao-tabela ativado-tabela'><i
-                        class="bi bi-pen icone-tabela"></i></a>
-                    <a href='/gerenciamento/ganho/{{id}}/' class='botao-tabela ativado-tabela'><i
-                        class="bi bi-file-earmark-check icone-tabela"></i></a>
-
-                  </div>
-                </td>
-                {{/if}}
-              </tr>
-              {{else}}
-              {{/each}}
-            </table>
           </div>
-          <div class="col">
-            <div class="text-center mt-1 mb-3">
-              <label style="font-size: 15px;font-weight: 600;">Propostas Aceitas</label>
+        </div>
+        <div class="row mt-2">
+          <a href='/gerenciamento/consulta/aberto' class='titulo'>Em Aberto</a>
+          <div style="padding-left: 39%;">
+            <div class='sessao-status mb-2'>
+              <label class='mt-2' style="font-size: 20px; font-weight: bold;">{{qtdaberto}}</label>
             </div>
-            <table style="width: 100%;">
-              <tr class='contorno-titulo' style='border-bottom: rgba(40,55,89,0.1) solid 1px;'>
-                <th>Status</th>
-                <th>Cliente</th>
-                <th>Telefone</th>
-                <th>E-mail</th>
-                {{!-- <th>Estágio</th> --}}
-                {{#if block}}
+          </div>
+
+        </div>
+        <div class="row mt-2">
+          <a href='/gerenciamento/consulta/encerrado' class='titulo'>Encerrado</a>
+          <div style="padding-left: 39%;">
+            <div class='sessao-status mb-2'>
+              <label class='mt-2' style="font-size: 20px;font-weight: bold;">{{qtdencerrado}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <a class="btn btn-sm btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#atrasados"> Propostas Vencidas e
+          a Vencer</a>
+      </div>
+    </div>
+    <div class='{{#if block}}col-md-10{{else}}col-md-8{{/if}}'>
+      <div class='row' style="height: 100%;">
+        <div class='quadro-scroll' style="margin-left: 5px;height: 100%;">
+          <div class="row">
+            <div class="col">
+              <div class="text-center mt-1 mb-3">
+                <label style="font-size: 15px;font-weight: 600;">Orçamentos Enviados</label>
+              </div>
+              <table style="width: 100%;">
+                <tr class='contorno-titulo' style='border-bottom: rgba(40,55,89,0.1) solid 1px;'>
+                  <th>Cliente</th>
+                  <th>Telefone</th>
+                  <th>E-mail</th>
+                  {{!-- <th>Estágio</th> --}}
+                  <th></th>
+                </tr>
+                {{#each listaOrcado}}
+                <tr>
+                  <td>{{cliente}}</td>
+                  <td>{{telefone}}</td>
+                  <td>{{email}}</td>
+                  {{#if block}}
+                  {{else}}
+                  <td style="padding-top: 3px;">
+                    <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
+
+                      <a href='/gerenciamento/proposta/{{id}}/' class='botao-tabela ativado-tabela'><i
+                          class="bi bi-pen icone-tabela"></i></a>
+                      <a href='/gerenciamento/ganho/{{id}}/' class='botao-tabela ativado-tabela'><i
+                          class="bi bi-file-earmark-check icone-tabela"></i></a>
+
+                    </div>
+                  </td>
+                  {{/if}}
+                </tr>
                 {{else}}
-                <th></th>
-                {{/if}}
-              </tr>
-              {{#each listaAberto}}
-              <tr>
-                <td>{{status}}</td>
-                <td>{{cliente}}</td>
-                <td>{{telefone}}</td>
-                <td>{{email}}</td>
-                <td style="padding-top: 3px;">
-                  <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
-                    {{#if block}}
-                    {{else}}
-                    <a href='/gerenciamento/proposta/{{id}}/' class='botao-tabela ativado-tabela'><i
-                        class="bi bi-pen icone-tabela"></i></a>
-                    {{/if}}
-                  </div>
-                </td>
-              </tr>
-              {{/each}}
-            </table>
+                {{/each}}
+              </table>
+            </div>
+            <div class="col">
+              <div class="text-center mt-1 mb-3">
+                <label style="font-size: 15px;font-weight: 600;">Propostas Aceitas</label>
+              </div>
+              <table style="width: 100%;">
+                <tr class='contorno-titulo' style='border-bottom: rgba(40,55,89,0.1) solid 1px;'>
+                  <th>Status</th>
+                  <th>Cliente</th>
+                  <th>Telefone</th>
+                  <th>E-mail</th>
+                  {{!-- <th>Estágio</th> --}}
+                  {{#if block}}
+                  {{else}}
+                  <th></th>
+                  {{/if}}
+                </tr>
+                {{#each listaAberto}}
+                <tr>
+                  <td>{{status}}</td>
+                  <td>{{cliente}}</td>
+                  <td>{{telefone}}</td>
+                  <td>{{email}}</td>
+                  <td style="padding-top: 3px;">
+                    <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
+                      {{#if block}}
+                      {{else}}
+                      <a href='/gerenciamento/proposta/{{id}}/' class='botao-tabela ativado-tabela'><i
+                          class="bi bi-pen icone-tabela"></i></a>
+                      {{/if}}
+                    </div>
+                  </td>
+                </tr>
+                {{/each}}
+              </table>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+<script>
+  var txt = ''
+  var cliav = document.getElementsByName('cliav[]')
+  var valav = document.getElementsByName('valav[]')
+  var idav = document.getElementsByName('idav[]')
+  const wrapperini = document.createElement('div');
+  var htmlini = '<table style="font-size:15px"><tr><th style="width: 10%;text-align:center">Cliente</th><th style="width: 10%;text-align:center">Data Validade</th><th style="width: 10%;text-align:center">Opções</th></tr><tr>'
+  var htmlfim = '</table>'
+  for (var i = 0; i < cliav.length; i++) {
+    var txt = txt + '<tr><td>' + cliav[i].value + '</td><td>' + valav[i].value + '</td><td><a href="/gerenciamento/proposta/' + idav[i].value + '"><i style="color: rgb(44,55,89)" class="bi bi-pen icone-tabela"></i></a></td>'
+  }
+  wrapperini.innerHTML = htmlini + txt + htmlfim
+  if (cliav.length > 0) {
+    swal({
+      text: 'Propostas com 1 dia para expirar',
+      content: wrapperini
+    })
+  }
+</script>
