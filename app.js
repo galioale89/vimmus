@@ -127,6 +127,8 @@ app.get('/menu', ehAdmin, (req, res) => {
   var listaOrcado = []
   var listaAberto = []
   var listaEncerrado = []
+  var notpro = []
+  var atrasado = []
   var status = ''
   var dtcadastro = ''
   var dtvalidade = ''
@@ -495,7 +497,20 @@ app.get('/menu', ehAdmin, (req, res) => {
                                   qtdorcado++
                                   listaOrcado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                 }
-
+                                if (typeof documento != undefined || documento !=''){
+                                  var hoje = dataHoje()      
+                                  var dtnovo = setData(dtcadastro,7)
+                                  var data1 = dataBusca(dtnovo)           
+                                  var data2 = dataBusca(hoje)      
+                                  var compara = parseFloat(data1) - parseFloat(data2)
+                                  if (compara == 3){
+                                    notpro.push({id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo)})
+                                  }else{
+                                    if (compara < 0){
+                                      atrasado.push({id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo)})
+                                    }
+                                  }
+                                }
 
                                 console.log('status=>' + status)
                                 q++
@@ -506,7 +521,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                   //console.log('qtdorcado=>' + qtdorcado)
                                   //console.log('qtdaberto=>' + qtdaberto)
                                   //console.log('qtdencerrado=>' + qtdencerrado)
-                                  res.render('menuproposta', {id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado})
+                                  res.render('menuproposta', {id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, notpro, atrasado})
                                 }
                               }).catch((err) => {
                                 req.flash('error_msg', 'Houve um erro ao encontrar o pós venda.')
