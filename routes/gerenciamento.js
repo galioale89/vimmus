@@ -92,6 +92,9 @@ const apiKey = "8dbd4fb5-79af-45d6-a0b7-583a3c2c7d30"
 
 router.use(express.static(path.join(__dirname, 'public')))
 
+router.get('/selecao', ehAdmin, (req, res) => {
+    res.render('principal/selecao')
+})
 
 router.get('/consulta', ehAdmin, (req, res) => {
     var id
@@ -2442,16 +2445,16 @@ router.get('/proposta/:id', ehAdmin, (req, res) => {
         id = user
     }
     Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
-        Cliente.find({ user: id }).lean().then((cliente) => {
-            Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
-                Pessoa.find({ user: id, funges: 'checked' }).lean().then((responsavel) => {
+        Cliente.find({ user: id }).lean().then((todos_clientes) => {
+            Pessoa.find({ user: id, funges: 'checked' }).lean().then((todos_responsaveis) => {
+                Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
                     Pessoa.findOne({ _id: proposta.responsavel }).lean().then((res_proposta) => {
                         Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
                             Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
                                 Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
                                     Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
                                         Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
-                                            res.render('principal/proposta', { cliente, cliente_proposta, res_proposta, responsavel, proposta, vistoria, documento, compra, lista_equipe, posvenda })
+                                            res.render('principal/proposta', { todos_clientes, cliente_proposta, res_proposta, todos_responsaveis, proposta, vistoria, documento, compra, lista_equipe, posvenda })
                                         }).catch((err) => {
                                             req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
                                             res.redirect('/menu')
@@ -2478,11 +2481,11 @@ router.get('/proposta/:id', ehAdmin, (req, res) => {
                         res.redirect('/menu')
                     })
                 }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possível encontrar o responsável.')
+                    req.flash('error_msg', 'Não foi possível encontrar o cliente da prosposta.')
                     res.redirect('/menu')
                 })
             }).catch((err) => {
-                req.flash('error_msg', 'Não foi possível encontrar o cliente da prosposta.')
+                req.flash('error_msg', 'Não foi possível encontrar o responsável.')
                 res.redirect('/menu')
             })
         }).catch((err) => {
@@ -3419,13 +3422,28 @@ router.post('/proposta1', ehAdmin, (req, res) => {
             }
 
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
+                console.log(proposta)
                 if (proposta != null) {
+                    console.log(req.body.cliente)
+                    console.log(req.body.responsavel)
+                    if (req.body.cliente != ''){
                     proposta.cliente = req.body.cliente
+                    }
+                    if (req.body.responsavel != ''){
                     proposta.responsavel = req.body.responsavel
-                    proposta.proposta1 = String(propostafile)
+                    }
+                    if (propostafile != '') {
+                        proposta.proposta1 = String(propostafile)
+                    }
                     proposta.dtcadastro1 = String(req.body.dtcadastro1)
                     proposta.dtvalidade1 = String(req.body.dtvalidade1)
                     proposta.data = dataBusca(dataHoje())
+                    proposta.save().then(() => {
+                        res.redirect('/gerenciamento/proposta/' + req.body.id)
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Falha ao salvar a proposta.')
+                        res.redirect('/gerenciamento/proposta/' + req.body.id)
+                    })
                 } else {
                     const proposta1 = {
                         user: id,
@@ -4536,7 +4554,7 @@ router.post('/checkposvenda', ehAdmin, (req, res) => {
             posvenda.energia = 'checked'
         } else {
             posvenda.energia = 'unchecked'
-        }    
+        }
         if (req.body.checkmanut == 'on') {
             //console.log('checked')
             posvenda.manut = 'checked'
@@ -4548,32 +4566,32 @@ router.post('/checkposvenda', ehAdmin, (req, res) => {
             posvenda.sombra = 'checked'
         } else {
             posvenda.sombra = 'unchecked'
-        }  
+        }
         if (req.body.checkmonitora == 'on') {
             //console.log('checked')
             posvenda.monitora = 'checked'
         } else {
             posvenda.monitora = 'unchecked'
-        }    
+        }
         if (req.body.checkconexao == 'on') {
             //console.log('checked')
             posvenda.conexao = 'checked'
         } else {
             posvenda.conexao = 'unchecked'
-        }     
+        }
         if (req.body.checkgerador == 'on') {
             //console.log('checked')
             posvenda.gerador = 'checked'
         } else {
             posvenda.gerador = 'unchecked'
-        }  
+        }
         if (req.body.checkanalise == 'on') {
             //console.log('checked')
             posvenda.analise = 'checked'
         } else {
             posvenda.analise = 'unchecked'
-        }          
-        
+        }
+
         posvenda.duvidas = req.body.duvidas
 
         posvenda.save().then(() => {
@@ -4781,7 +4799,7 @@ router.post('/protocolar', ehAdmin, (req, res) => {
         //console.log('mes=>' + mes)
         //console.log('dia=>' + dia)
         documento.protocolado = true
-        documento.dtprotocolo = req.body.dtprotocolo        
+        documento.dtprotocolo = req.body.dtprotocolo
         //console.log('novadata=>' + novadata)
         if (ajustadata.getDate() == 1) {
             mes = mes + 2

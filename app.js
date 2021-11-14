@@ -499,7 +499,8 @@ app.get('/menu', ehAdmin, (req, res) => {
                                 }
                                 if (typeof documento != undefined || documento !=''){
                                   var hoje = dataHoje()      
-                                  var dtnovo = setData(dtcadastro,7)
+                                  // var dtnovo = setData(dtcadastro,7)
+                                  var dtnovo = dtvalidade
                                   var data1 = dataBusca(dtnovo)           
                                   var data2 = dataBusca(hoje)      
                                   var compara = parseFloat(data1) - parseFloat(data2)

@@ -228,8 +228,9 @@
         </div>
         <div class="col-md-10 text-start">
             <form action='/gerenciamento/proposta1' method='post' enctype="multipart/form-data">
+            <input type='hidden' name='id' value='{{proposta._id}}'>
                 <select class='form-select' name='cliente'>
-                    <option class='fw-bold'>{{cliente_proposta.nome}}</option>
+                    <option class='fw-bold' value='{{cliente.proposta._id}}'>{{cliente_proposta.nome}}</option>
                     {{#each todos_clientes}}
                     <option value='{{_id}}'>{{nome}}</option>
                     {{else}}
@@ -237,7 +238,7 @@
                     {{/each}}
                 </select><br>
                 <select class='form-select' name='responsavel'>
-                    <option class='fw-bold'>{{res_proposta.nome}}</option>
+                    <option class='fw-bold' value='{{res_proposta._id}}'>{{res_proposta.nome}}</option>
                     {{#each todos_responsaveis}}
                     <option value='{{_id}}'>{{nome}}</option>
                     {{else}}
