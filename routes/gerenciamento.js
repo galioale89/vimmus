@@ -115,7 +115,7 @@ router.get('/consulta', ehAdmin, (req, res) => {
             Cliente.find({ user: _id }).lean().then((todos_clientes) => {
                 Pessoa.find({ user: _id, funges: 'checked' }).lean().then((todos_responsaveis) => {
                     proposta.forEach((element) => {
-                        //  //console.log(element)
+                        //console.log(element)
                         var dtcadastro = ''
                         var dtinicio = ''
                         var dtfim = ''
@@ -127,7 +127,7 @@ router.get('/consulta', ehAdmin, (req, res) => {
                                             Compra.findOne({ proposta: element._id }).then((compra) => {
                                                 Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
                                                     Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
-                                                        //  //console.log('lista_proposta=>' + lista_proposta._id)
+                                                        //console.log('lista_proposta=>' + lista_proposta._id)
                                                         if (typeof lista_proposta.proposta6 != 'undefined') {
                                                             dtcadastro = lista_proposta.dtcadastro6
                                                         } else {
@@ -149,17 +149,17 @@ router.get('/consulta', ehAdmin, (req, res) => {
                                                                 }
                                                             }
                                                         }
-                                                        //  //console.log('dtcadastro=>'+dtcadastro)
-                                                        //  //console.log('equipe=>' + equipe)
-                                                        //  //console.log('documento=>' + documento)
-                                                        //  //console.log('compra=>' + compra)
-                                                        //  //console.log('lista_proposta=>' + lista_proposta)
-                                                        //  //console.log('equipe.feito=>' + equipe.feito)
-                                                        //  //console.log('documento.protocolado=>' + documento.protocolado)
-                                                        //  //console.log('documento.feitotrt=>' + documento.feitotrt)
-                                                        //  //console.log('compra.feitonota=>' + compra.feitonota)
-                                                        //  //console.log('compra.feitopedido =>' + compra.feitopedido)
-                                                        //  //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
+                                                        //console.log('dtcadastro=>'+dtcadastro)
+                                                        //console.log('equipe=>' + equipe)
+                                                        //console.log('documento=>' + documento)
+                                                        //console.log('compra=>' + compra)
+                                                        //console.log('lista_proposta=>' + lista_proposta)
+                                                        //console.log('equipe.feito=>' + equipe.feito)
+                                                        //console.log('documento.protocolado=>' + documento.protocolado)
+                                                        //console.log('documento.feitotrt=>' + documento.feitotrt)
+                                                        //console.log('compra.feitonota=>' + compra.feitonota)
+                                                        //console.log('compra.feitopedido =>' + compra.feitopedido)
+                                                        //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
 
                                                         if (lista_proposta.ganho == true) {
                                                             if (lista_proposta.encerrado == true) {
@@ -232,7 +232,7 @@ router.get('/consulta', ehAdmin, (req, res) => {
                                                             dtfim = '0000-00-00'
                                                         }
 
-                                                        //  //console.log('status=>' + status)
+                                                        //console.log('status=>' + status)
                                                         lista.push({ s: status, id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
                                                         q++
                                                         if (q == proposta.length) {
@@ -318,17 +318,17 @@ router.get('/consulta', ehAdmin, (req, res) => {
                                                                             }
                                                                         }
                                                                     }
-                                                                    //  //console.log('dtcadastro=>'+dtcadastro)
-                                                                    //  //console.log('equipe=>' + equipe)
-                                                                    //  //console.log('documento=>' + documento)
-                                                                    //  //console.log('compra=>' + compra)
-                                                                    //  //console.log('lista_proposta=>' + lista_proposta)
-                                                                    //  //console.log('equipe.feito=>' + equipe.feito)
-                                                                    //  //console.log('documento.protocolado=>' + documento.protocolado)
-                                                                    //  //console.log('documento.feitotrt=>' + documento.feitotrt)
-                                                                    //  //console.log('compra.feitonota=>' + compra.feitonota)
-                                                                    //  //console.log('compra.feitopedido =>' + compra.feitopedido)
-                                                                    //  //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
+                                                                    //console.log('dtcadastro=>'+dtcadastro)
+                                                                    //console.log('equipe=>' + equipe)
+                                                                    //console.log('documento=>' + documento)
+                                                                    //console.log('compra=>' + compra)
+                                                                    //console.log('lista_proposta=>' + lista_proposta)
+                                                                    //console.log('equipe.feito=>' + equipe.feito)
+                                                                    //console.log('documento.protocolado=>' + documento.protocolado)
+                                                                    //console.log('documento.feitotrt=>' + documento.feitotrt)
+                                                                    //console.log('compra.feitonota=>' + compra.feitonota)
+                                                                    //console.log('compra.feitopedido =>' + compra.feitopedido)
+                                                                    //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
 
                                                                     if (lista_proposta.ganho == true) {
                                                                         if (lista_proposta.encerrado == true) {
@@ -400,7 +400,7 @@ router.get('/consulta', ehAdmin, (req, res) => {
                                                                         dtfim = '0000-00-00'
                                                                     }
 
-                                                                    //  //console.log('status=>' + status)
+                                                                    //console.log('status=>' + status)
                                                                     lista.push({ s: status, id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
                                                                     q++
                                                                     //console.log('q=>' + q)
@@ -496,7 +496,7 @@ router.get('/consulta/:tipo', ehAdmin, (req, res) => {
                                             Compra.findOne({ proposta: element._id }).then((compra) => {
                                                 Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
                                                     Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
-                                                        //  //console.log('lista_proposta=>' + lista_proposta._id)
+                                                        //console.log('lista_proposta=>' + lista_proposta._id)
                                                         if (typeof lista_proposta.proposta6 != 'undefined') {
                                                             dtcadastro = lista_proposta.dtcadastro6
                                                         } else {
@@ -518,20 +518,20 @@ router.get('/consulta/:tipo', ehAdmin, (req, res) => {
                                                                 }
                                                             }
                                                         }
-                                                        //  //console.log('dtcadastro=>'+dtcadastro)
-                                                        //  //console.log('equipe=>' + equipe)
-                                                        //  //console.log('documento=>' + documento)
-                                                        //  //console.log('compra=>' + compra)
-                                                        //  //console.log('lista_proposta=>' + lista_proposta)
-                                                        //  //console.log('equipe.feito=>' + equipe.feito)
-                                                        //  //console.log('documento.protocolado=>' + documento.protocolado)
-                                                        //  //console.log('documento.feitotrt=>' + documento.feitotrt)
-                                                        //  //console.log('compra.feitonota=>' + compra.feitonota)
-                                                        //  //console.log('compra.feitopedido =>' + compra.feitopedido)
-                                                        //  //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
+                                                        //console.log('dtcadastro=>'+dtcadastro)
+                                                        //console.log('equipe=>' + equipe)
+                                                        //console.log('documento=>' + documento)
+                                                        //console.log('compra=>' + compra)
+                                                        //console.log('lista_proposta=>' + lista_proposta)
+                                                        //console.log('equipe.feito=>' + equipe.feito)
+                                                        //console.log('documento.protocolado=>' + documento.protocolado)
+                                                        //console.log('documento.feitotrt=>' + documento.feitotrt)
+                                                        //console.log('compra.feitonota=>' + compra.feitonota)
+                                                        //console.log('compra.feitopedido =>' + compra.feitopedido)
+                                                        //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
 
-                                                        //  //console.log('lista_proposta.feito=>' + lista_proposta.feito)
-                                                        //  //console.log('lista_proposta.ganho=>' + lista_proposta.ganho)
+                                                        //console.log('lista_proposta.feito=>' + lista_proposta.feito)
+                                                        //console.log('lista_proposta.ganho=>' + lista_proposta.ganho)
 
                                                         if (lista_proposta.feito == true && lista_proposta.ganho == false && lista_proposta.encerrado == false) {
                                                             listaOrcado.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
@@ -542,7 +542,7 @@ router.get('/consulta/:tipo', ehAdmin, (req, res) => {
                                                                 listaEncerrado.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
                                                             }
                                                         }
-                                                        //  //console.log('status=>' + status)
+                                                        //console.log('status=>' + status)
                                                         q++
                                                         if (q == proposta.length) {
                                                             if (req.params.tipo == 'orcado') {
@@ -656,7 +656,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
 
     var q = 0
 
-    //  //console.log('req.body.tipo=>' + req.body.tipo)
+    //console.log('req.body.tipo=>' + req.body.tipo)
     Cliente.find({ user: id }).lean().then((todos_clientes) => {
         Pessoa.find({ user: id, funges: 'checked' }).lean().then((todos_responsaveis) => {
             if (req.body.tipo != '') {
@@ -666,7 +666,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                             Proposta.findOne({ _id: element._id }).then((lista_proposta) => {
                                 Cliente.findOne({ _id: element.cliente }).then((lista_cliente) => {
                                     Pessoa.findOne({ _id: element.responsavel }).then((lista_responsavel) => {
-                                        //  //console.log('lista_proposta=>' + lista_proposta._id)
+                                        //console.log('lista_proposta=>' + lista_proposta._id)
                                         if (typeof lista_proposta.proposta6 != 'undefined') {
                                             dtcadastro = lista_proposta.dtcadastro6
                                         } else {
@@ -689,20 +689,20 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                             }
                                         }
 
-                                        //  //console.log('dtcadastro=>'+dtcadastro)
-                                        //  //console.log('equipe=>' + equipe)
-                                        //  //console.log('documento=>' + documento)
-                                        //  //console.log('compra=>' + compra)
-                                        //  //console.log('lista_proposta=>' + lista_proposta)
-                                        //  //console.log('equipe.feito=>' + equipe.feito)
-                                        //  //console.log('documento.protocolado=>' + documento.protocolado)
-                                        //  //console.log('documento.feitotrt=>' + documento.feitotrt)
-                                        //  //console.log('compra.feitonota=>' + compra.feitonota)
-                                        //  //console.log('compra.feitopedido =>' + compra.feitopedido)
-                                        //  //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
+                                        //console.log('dtcadastro=>'+dtcadastro)
+                                        //console.log('equipe=>' + equipe)
+                                        //console.log('documento=>' + documento)
+                                        //console.log('compra=>' + compra)
+                                        //console.log('lista_proposta=>' + lista_proposta)
+                                        //console.log('equipe.feito=>' + equipe.feito)
+                                        //console.log('documento.protocolado=>' + documento.protocolado)
+                                        //console.log('documento.feitotrt=>' + documento.feitotrt)
+                                        //console.log('compra.feitonota=>' + compra.feitonota)
+                                        //console.log('compra.feitopedido =>' + compra.feitopedido)
+                                        //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
 
-                                        //  //console.log('lista_proposta.feito=>' + lista_proposta.feito)
-                                        //  //console.log('lista_proposta.ganho=>' + lista_proposta.ganho)
+                                        //console.log('lista_proposta.feito=>' + lista_proposta.feito)
+                                        //console.log('lista_proposta.ganho=>' + lista_proposta.ganho)
 
                                         if (lista_proposta.feito == true && lista_proposta.ganho == false && lista_proposta.encerrado == false) {
                                             listaOrcado.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
@@ -747,7 +747,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                 })
                                             }
                                         }
-                                        //  //console.log('status=>' + status)
+                                        //console.log('status=>' + status)
                                         q++
                                         if (q == proposta.length) {
                                             if (req.body.tipo == 'orcado') {
@@ -785,7 +785,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                 Proposta.findOne({ _id: element._id }).then((lista_proposta) => {
                                     Cliente.findOne({ _id: element.cliente }).then((lista_cliente) => {
                                         Pessoa.findOne({ _id: element.responsavel }).then((lista_responsavel) => {
-                                            //  //console.log('lista_proposta=>' + lista_proposta._id)
+                                            //console.log('lista_proposta=>' + lista_proposta._id)
                                             if (typeof lista_proposta.proposta6 != 'undefined') {
                                                 dtcadastro = lista_proposta.dtcadastro6
                                             } else {
@@ -807,20 +807,20 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                     }
                                                 }
                                             }
-                                            //  //console.log('dtcadastro=>'+dtcadastro)
-                                            //  //console.log('equipe=>' + equipe)
-                                            //  //console.log('documento=>' + documento)
-                                            //  //console.log('compra=>' + compra)
-                                            //  //console.log('lista_proposta=>' + lista_proposta)
-                                            //  //console.log('equipe.feito=>' + equipe.feito)
-                                            //  //console.log('documento.protocolado=>' + documento.protocolado)
-                                            //  //console.log('documento.feitotrt=>' + documento.feitotrt)
-                                            //  //console.log('compra.feitonota=>' + compra.feitonota)
-                                            //  //console.log('compra.feitopedido =>' + compra.feitopedido)
-                                            //  //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
+                                            //console.log('dtcadastro=>'+dtcadastro)
+                                            //console.log('equipe=>' + equipe)
+                                            //console.log('documento=>' + documento)
+                                            //console.log('compra=>' + compra)
+                                            //console.log('lista_proposta=>' + lista_proposta)
+                                            //console.log('equipe.feito=>' + equipe.feito)
+                                            //console.log('documento.protocolado=>' + documento.protocolado)
+                                            //console.log('documento.feitotrt=>' + documento.feitotrt)
+                                            //console.log('compra.feitonota=>' + compra.feitonota)
+                                            //console.log('compra.feitopedido =>' + compra.feitopedido)
+                                            //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
 
-                                            //  //console.log('lista_proposta.feito=>' + lista_proposta.feito)
-                                            //  //console.log('lista_proposta.ganho=>' + lista_proposta.ganho)
+                                            //console.log('lista_proposta.feito=>' + lista_proposta.feito)
+                                            //console.log('lista_proposta.ganho=>' + lista_proposta.ganho)
 
                                             if (lista_proposta.feito == true && lista_proposta.ganho == false && lista_proposta.encerrado == false) {
                                                 listaOrcado.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
@@ -865,7 +865,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                     })
                                                 }
                                             }
-                                            //  //console.log('status=>' + status)
+                                            //console.log('status=>' + status)
                                             q++
                                             if (q == proposta.length) {
                                                 if (req.body.tipo == 'orcado') {
@@ -897,13 +897,13 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                         })
                     } else {
                         if (responsavel == 'Todos' && cliente != 'Todos') {
-                            //  //console.log('mudou cliente')
+                            //console.log('mudou cliente')
                             Proposta.find({ user: id, cliente: req.body.cliente }).sort({ dataord: 'asc' }).then((proposta) => {
                                 proposta.forEach((element) => {
                                     Proposta.findOne({ _id: element._id }).then((lista_proposta) => {
                                         Cliente.findOne({ _id: element.cliente }).then((lista_cliente) => {
                                             Pessoa.findOne({ _id: element.responsavel }).then((lista_responsavel) => {
-                                                //  //console.log('lista_proposta=>' + lista_proposta._id)
+                                                //console.log('lista_proposta=>' + lista_proposta._id)
                                                 if (typeof lista_proposta.proposta6 != 'undefined') {
                                                     dtcadastro = lista_proposta.dtcadastro6
                                                 } else {
@@ -926,20 +926,20 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                     }
                                                 }
 
-                                                //  //console.log('dtcadastro=>'+dtcadastro)
-                                                //  //console.log('equipe=>' + equipe)
-                                                //  //console.log('documento=>' + documento)
-                                                //  //console.log('compra=>' + compra)
-                                                //  //console.log('lista_proposta=>' + lista_proposta)
-                                                //  //console.log('equipe.feito=>' + equipe.feito)
-                                                //  //console.log('documento.protocolado=>' + documento.protocolado)
-                                                //  //console.log('documento.feitotrt=>' + documento.feitotrt)
-                                                //  //console.log('compra.feitonota=>' + compra.feitonota)
-                                                //  //console.log('compra.feitopedido =>' + compra.feitopedido)
-                                                //  //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
+                                                //console.log('dtcadastro=>'+dtcadastro)
+                                                //console.log('equipe=>' + equipe)
+                                                //console.log('documento=>' + documento)
+                                                //console.log('compra=>' + compra)
+                                                //console.log('lista_proposta=>' + lista_proposta)
+                                                //console.log('equipe.feito=>' + equipe.feito)
+                                                //console.log('documento.protocolado=>' + documento.protocolado)
+                                                //console.log('documento.feitotrt=>' + documento.feitotrt)
+                                                //console.log('compra.feitonota=>' + compra.feitonota)
+                                                //console.log('compra.feitopedido =>' + compra.feitopedido)
+                                                //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
 
-                                                //  //console.log('lista_proposta.feito=>' + lista_proposta.feito)
-                                                //  //console.log('lista_proposta.ganho=>' + lista_proposta.ganho)
+                                                //console.log('lista_proposta.feito=>' + lista_proposta.feito)
+                                                //console.log('lista_proposta.ganho=>' + lista_proposta.ganho)
 
                                                 if (lista_proposta.feito == true && lista_proposta.ganho == false && lista_proposta.encerrado == false) {
                                                     listaOrcado.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem('0000-00-00'), fim: dataMensagem('0000-00-00') })
@@ -984,7 +984,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                         })
                                                     }
                                                 }
-                                                //  //console.log('status=>' + status)
+                                                //console.log('status=>' + status)
                                                 q++
                                                 if (q == proposta.length) {
                                                     if (req.body.tipo == 'orcado') {
@@ -1015,14 +1015,14 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                 res.redirect('/gerenciamento/consulta')
                             })
                         } else {
-                            //  //console.log('entrou')
+                            //console.log('entrou')
                             Proposta.find({ user: id }).sort({ dataord: 'asc' }).then((proposta) => {
                                 proposta.forEach((element) => {
                                     Proposta.findOne({ _id: element._id }).then((lista_proposta) => {
                                         Cliente.findOne({ _id: element.cliente }).then((lista_cliente) => {
                                             Pessoa.findOne({ _id: element.responsavel }).then((lista_responsavel) => {
 
-                                                //  //console.log('lista_proposta=>' + lista_proposta._id)
+                                                //console.log('lista_proposta=>' + lista_proposta._id)
                                                 if (typeof lista_proposta.proposta6 != 'undefined') {
                                                     dtcadastro = lista_proposta.dtcadastro6
                                                 } else {
@@ -1045,28 +1045,28 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                     }
                                                 }
 
-                                                //  //console.log('dtcadastro=>'+dtcadastro)
-                                                //  //console.log('equipe=>' + equipe)
-                                                //  //console.log('documento=>' + documento)
-                                                //  //console.log('compra=>' + compra)
-                                                //  //console.log('lista_proposta=>' + lista_proposta)
-                                                //  //console.log('equipe.feito=>' + equipe.feito)
-                                                //  //console.log('documento.protocolado=>' + documento.protocolado)
-                                                //  //console.log('documento.feitotrt=>' + documento.feitotrt)
-                                                //  //console.log('compra.feitonota=>' + compra.feitonota)
-                                                //  //console.log('compra.feitopedido =>' + compra.feitopedido)
-                                                //  //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
+                                                //console.log('dtcadastro=>'+dtcadastro)
+                                                //console.log('equipe=>' + equipe)
+                                                //console.log('documento=>' + documento)
+                                                //console.log('compra=>' + compra)
+                                                //console.log('lista_proposta=>' + lista_proposta)
+                                                //console.log('equipe.feito=>' + equipe.feito)
+                                                //console.log('documento.protocolado=>' + documento.protocolado)
+                                                //console.log('documento.feitotrt=>' + documento.feitotrt)
+                                                //console.log('compra.feitonota=>' + compra.feitonota)
+                                                //console.log('compra.feitopedido =>' + compra.feitopedido)
+                                                //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
 
-                                                //  //console.log('lista_proposta.feito=>' + lista_proposta.feito)
-                                                //  //console.log('lista_proposta.ganho=>' + lista_proposta.ganho)
-                                                //  //console.log('dtcadastro=>' + dtcadastro)
+                                                //console.log('lista_proposta.feito=>' + lista_proposta.feito)
+                                                //console.log('lista_proposta.ganho=>' + lista_proposta.ganho)
+                                                //console.log('dtcadastro=>' + dtcadastro)
 
                                                 if (lista_proposta.feito == true && lista_proposta.ganho == false && lista_proposta.encerrado == false) {
                                                     listaOrcado.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
                                                 } else {
                                                     if (lista_proposta.feito == true && lista_proposta.ganho == true && lista_proposta.encerrado == false) {
                                                         Equipe.findOne({ _id: element.equipe }).then((equipe) => {
-                                                            //  //console.log('equipe=>' + equipe)
+                                                            //console.log('equipe=>' + equipe)
                                                             if (equipe != 'null') {
                                                                 if (typeof equipe.dtfim == 'undefined') {
                                                                     dtinicio = '0000-00-00'
@@ -1079,7 +1079,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                 dtinicio = '0000-00-00'
                                                                 dtfim = '0000-00-00'
                                                             }
-                                                            //  //console.log('dtfim=>' + dtfim)
+                                                            //console.log('dtfim=>' + dtfim)
                                                             listaAberto.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
                                                         }).catch((err) => {
                                                             req.flash('error_msg', 'Nenhuma equipe encontrada.')
@@ -1099,7 +1099,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                 dtinicio = '0000-00-00'
                                                                 dtfim = '0000-00-00'
                                                             }
-                                                            //  //console.log('dtfim=>' + dtfim)
+                                                            //console.log('dtfim=>' + dtfim)
                                                             listaEncerrado.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
                                                         }).catch((err) => {
                                                             req.flash('error_msg', 'Nenhuma equipe encontrada.')
@@ -1107,16 +1107,16 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                         })
                                                     }
                                                 }
-                                                //  //console.log('status=>' + status)
+                                                //console.log('status=>' + status)
                                                 q++
-                                                //  //console.log('q=>' + q)
-                                                //  //console.log('proposta.length=>' + proposta.length)
+                                                //console.log('q=>' + q)
+                                                //console.log('proposta.length=>' + proposta.length)
                                                 if (q == proposta.length) {
                                                     if (req.body.tipo == 'orcado') {
                                                         res.render('principal/consulta', { listaOrcado, todos_clientes, todos_responsaveis, tipo: 'orcado', titulo: ': Orçamentos Enviados' })
                                                     } else {
                                                         if (req.body.tipo == 'aberto') {
-                                                            //  //console.log('aberto')
+                                                            //console.log('aberto')
                                                             res.render('principal/consulta', { listaAberto, todos_clientes, todos_responsaveis, tipo: 'aberto', titulo: ': Em Aberto' })
                                                         } else {
                                                             res.render('principal/consulta', { listaEncerrado, todos_clientes, todos_responsaveis, tipo: 'encerrado', titulo: ': Encerrado' })
@@ -1145,12 +1145,12 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                 }
 
             } else {
-                //  //console.log('realizado=>' + realizado)
-                //  //console.log('classificacao=>' + classificacao)
-                //  //console.log('funres=>' + funres)
-                //  //console.log('cliente=>' + cliente)
-                //  //console.log('responsavel=>' + responsavel)
-                //  //console.log('status=>' + stats)
+                //console.log('realizado=>' + realizado)
+                //console.log('classificacao=>' + classificacao)
+                //console.log('funres=>' + funres)
+                //console.log('cliente=>' + cliente)
+                //console.log('responsavel=>' + responsavel)
+                //console.log('status=>' + stats)
 
                 switch (stats) {
                     case 'Proposta Enviada': enviado = true
@@ -1184,12 +1184,12 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                 }
 
                 if (cliente == 'Todos' && responsavel == 'Todos' && stats == 'Todos') {
-                    //  //console.log('t-t-t')
+                    //console.log('t-t-t')
                     res.redirect('/gerenciamento/consulta')
                 } else {
-                    //  //console.log('parametro alterado')
+                    //console.log('parametro alterado')
                     if (cliente != 'Todos' && responsavel != 'Todos' && stats != 'Todos') {
-                        //  //console.log('nt-nt-nt')
+                        //console.log('nt-nt-nt')
                         Proposta.find({ user: id, responsavel: req.body.responsavel, cliente: req.body.cliente, feito: enviado, ganho: ganho, assinado: assinado, encerrado: encerrado }).then((p1) => {
                             if (p1 != '') {
                                 p1.forEach((e1) => {
@@ -1292,7 +1292,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                         status = 'Proposta Enviada'
                                                                     }
 
-                                                                    //  //console.log('status=>'+status)
+                                                                    //console.log('status=>'+status)
                                                                     if (typeof dtinicio == 'undefined') {
                                                                         dtinicio = '0000-00-00'
                                                                     }
@@ -1300,7 +1300,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                         dtfim = '0000-00-00'
                                                                     }
 
-                                                                    //  //console.log('status=>' + status)
+                                                                    //console.log('status=>' + status)
                                                                     lista.push({ s: status, id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
                                                                     q++
                                                                     if (q == p1.length) {
@@ -1349,43 +1349,43 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                         })
                     } else {
                         if (cliente == 'Todos' && responsavel == 'Todos' && stats != 'Todos') {
-                            //  //console.log('t-t-nt')
-                            //  //console.log('enviado=>'+enviado)
-                            //  //console.log('ganho=>'+ganho)
-                            //  //console.log('assinado=>'+assinado)
-                            //  //console.log('encerrado=>'+encerrado)
-                            //  //console.log('vistoria=>'+vistoria)
-                            //  //console.log('execucao=>'+execucao)
-                            //  //console.log('trt=>'+trt)
-                            //  //console.log('protocolo=>'+protocolo)
-                            //  //console.log('almoxarifado=>'+almoxarifado)
-                            //  //console.log('faturado=>'+faturado)
-                            //  //console.log('enviaalmoxarifado=>'+enviaalmoxarifado)
-                            //  //console.log('pedido=>'+pedido)
-                            //  //console.log('nota=>'+nota)
-                            //  //console.log('posvenda=>'+posvenda)
+                            //console.log('t-t-nt')
+                            //console.log('enviado=>'+enviado)
+                            //console.log('ganho=>'+ganho)
+                            //console.log('assinado=>'+assinado)
+                            //console.log('encerrado=>'+encerrado)
+                            //console.log('vistoria=>'+vistoria)
+                            //console.log('execucao=>'+execucao)
+                            //console.log('trt=>'+trt)
+                            //console.log('protocolo=>'+protocolo)
+                            //console.log('almoxarifado=>'+almoxarifado)
+                            //console.log('faturado=>'+faturado)
+                            //console.log('enviaalmoxarifado=>'+enviaalmoxarifado)
+                            //console.log('pedido=>'+pedido)
+                            //console.log('nota=>'+nota)
+                            //console.log('posvenda=>'+posvenda)
                             Proposta.find({ user: id, feito: enviado, ganho: ganho, assinado: assinado, encerrado: encerrado }).then((p2) => {
                                 if (p2 != '') {
-                                    //  //console.log(p2)
+                                    //console.log(p2)
                                     p2.forEach((e2) => {
-                                        //  //console.log(p2)
+                                        //console.log(p2)
                                         Proposta.findOne({ _id: e2._id }).then((lista_proposta) => {
-                                            //  //console.log('encontrou proposta')
+                                            //console.log('encontrou proposta')
                                             Cliente.findOne({ _id: e2.cliente }).then((lista_cliente) => {
-                                                //  //console.log('encontrou cliente')
+                                                //console.log('encontrou cliente')
                                                 Pessoa.findOne({ _id: e2.responsavel }).then((lista_responsavel) => {
-                                                    //  //console.log('encontrou pessoa')
+                                                    //console.log('encontrou pessoa')
                                                     Vistoria.findOne({ proposta: e2._id, feito: vistoria }).then((vistoria) => {
-                                                        //  //console.log('encontrou vistoria')
+                                                        //console.log('encontrou vistoria')
                                                         Equipe.findOne({ _id: e2.equipe, feito: execucao }).then((equipe) => {
-                                                            //  //console.log('encontrou equipe')
+                                                            //console.log('encontrou equipe')
                                                             Documento.findOne({ proposta: e2._id, feitotrt: trt, protocolado: protocolo, feitoalmox: almoxarifado, enviaalmox: enviaalmoxarifado, feitofaturado: faturado }).then((documento) => {
-                                                                //  //console.log('encontrou documento')
+                                                                //console.log('encontrou documento')
                                                                 Compra.findOne({ proposta: e2._id, feitopedido: pedido, feitonota: nota }).then((compra) => {
-                                                                    //  //console.log('encontrou compra')
+                                                                    //console.log('encontrou compra')
                                                                     Posvenda.findOne({ proposta: e2._id, feito: posvenda }).then((posvenda) => {
-                                                                        //  //console.log('equipe=>'+equipe)
-                                                                        //  //console.log('posvenda=>'+posvenda)
+                                                                        //console.log('equipe=>'+equipe)
+                                                                        //console.log('posvenda=>'+posvenda)
                                                                         if (vistoria == null || equipe == null || documento == null || compra == null) {
                                                                             req.flash('error_msg', 'Não foi possível encontrar projetos com o status: ' + stats)
                                                                             res.redirect('/gerenciamento/consulta')
@@ -1412,7 +1412,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                             }
                                                                         }
 
-                                                                        //  //console.log('dtcadastro=>'+dtcadastro)
+                                                                        //console.log('dtcadastro=>'+dtcadastro)
                                                                         if (lista_proposta.ganho == true) {
                                                                             if (lista_proposta.encerrado == true) {
                                                                                 status = 'Encerrado'
@@ -1479,21 +1479,21 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                             status = 'Proposta Enviada'
                                                                         }
 
-                                                                        //  //console.log('status=>'+status)
+                                                                        //console.log('status=>'+status)
                                                                         if (typeof dtinicio == 'undefined') {
                                                                             dtinicio = '0000-00-00'
                                                                         }
                                                                         if (typeof dtfim == 'undefined') {
                                                                             dtfim = '0000-00-00'
                                                                         }
-                                                                        //  //console.log('dtinicio=>'+dtinicio)
-                                                                        //  //console.log('dtfim=>'+dtfim)                                                       
+                                                                        //console.log('dtinicio=>'+dtinicio)
+                                                                        //console.log('dtfim=>'+dtfim)                                                       
 
                                                                         lista.push({ s: status, id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
                                                                         q++
-                                                                        //  //console.log('q=>'+q)
+                                                                        //console.log('q=>'+q)
                                                                         if (q == p2.length) {
-                                                                            //  //console.log(lista)
+                                                                            //console.log(lista)
                                                                             res.render('principal/consulta', { lista, todos_clientes, todos_responsaveis, filtroStatus: stats })
                                                                         }
                                                                     }).catch((err) => {
@@ -1539,7 +1539,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                             })
                         } else {
                             if (cliente != 'Todos' && responsavel == 'Todos' && stats == 'Todos') {
-                                //  //console.log('t-nt-t')
+                                //console.log('t-nt-t')
                                 Proposta.find({ user: id, cliente: req.body.cliente }).lean().then((p3) => {
                                     if (p3 != "") {
                                         p3.forEach((e3) => {
@@ -1576,17 +1576,17 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                     }
                                                                                 }
                                                                             }
-                                                                            //  //console.log('dtcadastro=>'+dtcadastro)
-                                                                            //  //console.log('equipe=>' + equipe)
-                                                                            //  //console.log('documento=>' + documento)
-                                                                            //  //console.log('compra=>' + compra)
-                                                                            //  //console.log('lista_proposta=>' + lista_proposta)
-                                                                            //  //console.log('equipe.feito=>' + equipe.feito)
-                                                                            //  //console.log('documento.protocolado=>' + documento.protocolado)
-                                                                            //  //console.log('documento.feitotrt=>' + documento.feitotrt)
-                                                                            //  //console.log('compra.feitonota=>' + compra.feitonota)
-                                                                            //  //console.log('compra.feitopedido =>' + compra.feitopedido)
-                                                                            //  //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
+                                                                            //console.log('dtcadastro=>'+dtcadastro)
+                                                                            //console.log('equipe=>' + equipe)
+                                                                            //console.log('documento=>' + documento)
+                                                                            //console.log('compra=>' + compra)
+                                                                            //console.log('lista_proposta=>' + lista_proposta)
+                                                                            //console.log('equipe.feito=>' + equipe.feito)
+                                                                            //console.log('documento.protocolado=>' + documento.protocolado)
+                                                                            //console.log('documento.feitotrt=>' + documento.feitotrt)
+                                                                            //console.log('compra.feitonota=>' + compra.feitonota)
+                                                                            //console.log('compra.feitopedido =>' + compra.feitopedido)
+                                                                            //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
                                                                             if (lista_proposta.ganho == true) {
                                                                                 if (lista_proposta.encerrado == true) {
                                                                                     status = 'Encerrado'
@@ -1653,7 +1653,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                 status = 'Proposta Enviada'
                                                                             }
 
-                                                                            //  //console.log('status=>'+status)
+                                                                            //console.log('status=>'+status)
                                                                             if (typeof dtinicio == 'undefined') {
                                                                                 dtinicio = '0000-00-00'
                                                                             }
@@ -1661,7 +1661,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                 dtfim = '0000-00-00'
                                                                             }
 
-                                                                            //  //console.log('status=>' + status)
+                                                                            //console.log('status=>' + status)
                                                                             lista.push({ s: status, id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
                                                                             q++
                                                                             if (q == p3.length) {
@@ -1710,33 +1710,33 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                 })
                             } else {
                                 if (cliente == 'Todos' && responsavel != 'Todos' && stats != 'Todos') {
-                                    //  //console.log('t-nt-nt')
+                                    //console.log('t-nt-nt')
                                     Proposta.find({ user: id, responsavel: req.body.responsavel, feito: enviado, ganho: ganho, assinado: assinado, encerrado: encerrado }).then((p4) => {
-                                        //  //console.log('p4=>' + p4)
+                                        //console.log('p4=>' + p4)
                                         if (p4 != '') {
                                             p4.forEach((e4) => {
                                                 Proposta.findOne({ _id: e4._id }).then((lista_proposta) => {
-                                                    //  //console.log('lista_proposta=>'+lista_proposta)
+                                                    //console.log('lista_proposta=>'+lista_proposta)
                                                     Cliente.findOne({ _id: e4.cliente }).then((lista_cliente) => {
-                                                        //  //console.log('lista_cliente=>'+lista_cliente)
+                                                        //console.log('lista_cliente=>'+lista_cliente)
                                                         Pessoa.findOne({ _id: e4.responsavel }).then((lista_responsavel) => {
-                                                            //  //console.log('lista_responsavel=>'+lista_responsavel)
+                                                            //console.log('lista_responsavel=>'+lista_responsavel)
                                                             Vistoria.findOne({ proposta: e4._id, feito: vistoria }).then((vistoria) => {
-                                                                //  //console.log('vistoria=>' + vistoria)
+                                                                //console.log('vistoria=>' + vistoria)
                                                                 Equipe.findOne({ _id: e4.equipe, feito: execucao }).then((equipe) => {
-                                                                    //  //console.log('equipe=>' + equipe)
+                                                                    //console.log('equipe=>' + equipe)
                                                                     Documento.findOne({ proposta: e4._id, feitotrt: trt, protocolado: protocolo, feitoalmox: almoxarifado, enviaalmox: enviaalmoxarifado, feitofaturado: faturado }).then((documento) => {
-                                                                        //  //console.log('documento=>' + documento)
-                                                                        //  //console.log('pedido=>' + pedido)
-                                                                        //  //console.log('nota=>' + nota)
+                                                                        //console.log('documento=>' + documento)
+                                                                        //console.log('pedido=>' + pedido)
+                                                                        //console.log('nota=>' + nota)
                                                                         Compra.findOne({ proposta: e4._id, feitopedido: pedido, feitonota: nota }).then((compra) => {
-                                                                            //  //console.log('compra=>' + compra)
+                                                                            //console.log('compra=>' + compra)
                                                                             Posvenda.findOne({ proposta: e4._id, feito: posvenda }).then((posvenda) => {
                                                                                 if (vistoria == null || equipe == null || documento == null || compra == null) {
                                                                                     req.flash('error_msg', 'Não foi possível encontrar projetos com o status: ' + stats)
                                                                                     res.redirect('/gerenciamento/consulta')
                                                                                 }
-                                                                                //  //console.log('posvenda=>' + posvenda)
+                                                                                //console.log('posvenda=>' + posvenda)
                                                                                 if (typeof lista_proposta.proposta6 != 'undefined') {
                                                                                     dtcadastro = lista_proposta.dtcadastro6
                                                                                 } else {
@@ -1758,7 +1758,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                         }
                                                                                     }
                                                                                 }
-                                                                                //  //console.log('dtcacastro=>'+dtcadastro)
+                                                                                //console.log('dtcacastro=>'+dtcadastro)
                                                                                 if (lista_proposta.ganho == true) {
                                                                                     if (lista_proposta.encerrado == true) {
                                                                                         status = 'Encerrado'
@@ -1824,22 +1824,22 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                 } else {
                                                                                     status = 'Proposta Enviada'
                                                                                 }
-                                                                                //  //console.log('status=>'+status)
+                                                                                //console.log('status=>'+status)
                                                                                 if (typeof dtinicio == 'undefined') {
                                                                                     dtinicio = '0000-00-00'
                                                                                 }
                                                                                 if (typeof dtfim == 'undefined') {
                                                                                     dtfim = '0000-00-00'
                                                                                 }
-                                                                                //  //console.log('dtinicio=>'+dtinicio)
-                                                                                //  //console.log('dtfim=>'+dtfim)                                                       
+                                                                                //console.log('dtinicio=>'+dtinicio)
+                                                                                //console.log('dtfim=>'+dtfim)                                                       
 
                                                                                 lista.push({ s: status, id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
                                                                                 q++
 
-                                                                                //  //console.log('q=>' + q)
-                                                                                //  //console.log('e4=>' + e4.length)
-                                                                                //  //console.log('status=>' + status)
+                                                                                //console.log('q=>' + q)
+                                                                                //console.log('e4=>' + e4.length)
+                                                                                //console.log('status=>' + status)
                                                                                 if (q == p4.length) {
                                                                                     res.render('principal/consulta', { lista, todos_clientes, todos_responsaveis, nomeCliente: lista_cliente.nome })
                                                                                 }
@@ -1886,7 +1886,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                     })
                                 } else {
                                     if (cliente != 'Todos' && responsavel == 'Todos' && stats != 'Todos') {
-                                        //  //console.log('nt-t-nt')
+                                        //console.log('nt-t-nt')
 
                                         Proposta.find({ user: id, cliente: req.body.cliente, feito: enviado, ganho: ganho, assinado: assinado, encerrado: encerrado }).then((p5) => {
                                             if (p5 != '') {
@@ -1990,7 +1990,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                         status = 'Proposta Enviada'
                                                                                     }
 
-                                                                                    //  //console.log('status=>'+status)
+                                                                                    //console.log('status=>'+status)
                                                                                     if (typeof dtinicio == 'undefined') {
                                                                                         dtinicio = '0000-00-00'
                                                                                     }
@@ -1998,7 +1998,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                         dtfim = '0000-00-00'
                                                                                     }
 
-                                                                                    //  //console.log('status=>' + status)
+                                                                                    //console.log('status=>' + status)
                                                                                     lista.push({ s: status, id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
                                                                                     q++
                                                                                     if (q == p5.length) {
@@ -2047,8 +2047,8 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                         })
                                     } else {
                                         if (cliente == 'Todos' && responsavel != 'Todos' && stats == 'Todos') {
-                                            //  //console.log('t-nt-t')
-                                            //  //console.log('req.body.responsavel=>' + req.body.responsavel)
+                                            //console.log('t-nt-t')
+                                            //console.log('req.body.responsavel=>' + req.body.responsavel)
                                             Proposta.find({ user: id, responsavel: req.body.responsavel }).then((p6) => {
                                                 if (p6 != '') {
                                                     p6.forEach((e6) => {
@@ -2085,15 +2085,15 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                                 }
                                                                                             }
                                                                                         }
-                                                                                        //  //console.log('dtcadastro=>'+dtcadastro)
-                                                                                        //  //console.log('lista_proposta=>' + lista_proposta)
-                                                                                        //  //console.log('lista_cliente=>'+lista_cliente)
-                                                                                        //  //console.log('lista_responsavel=>'+lista_responsavel)
-                                                                                        //  //console.log('equipe=>' + equipe)
-                                                                                        //  //console.log('documento=>' + documento)
-                                                                                        //  //console.log('compra=>' + compra)
-                                                                                        //  //console.log('vistoria=>' + vistoria)
-                                                                                        //  //console.log('posvenda=>' + posvenda)
+                                                                                        //console.log('dtcadastro=>'+dtcadastro)
+                                                                                        //console.log('lista_proposta=>' + lista_proposta)
+                                                                                        //console.log('lista_cliente=>'+lista_cliente)
+                                                                                        //console.log('lista_responsavel=>'+lista_responsavel)
+                                                                                        //console.log('equipe=>' + equipe)
+                                                                                        //console.log('documento=>' + documento)
+                                                                                        //console.log('compra=>' + compra)
+                                                                                        //console.log('vistoria=>' + vistoria)
+                                                                                        //console.log('posvenda=>' + posvenda)
 
 
                                                                                         if (lista_proposta.ganho == true) {
@@ -2162,20 +2162,20 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                             status = 'Proposta Enviada'
                                                                                         }
 
-                                                                                        //  //console.log('status=>'+status)
+                                                                                        //console.log('status=>'+status)
                                                                                         if (typeof dtinicio == 'undefined') {
                                                                                             dtinicio = '0000-00-00'
                                                                                         }
                                                                                         if (typeof dtfim == 'undefined') {
                                                                                             dtfim = '0000-00-00'
                                                                                         }
-                                                                                        //  //console.log('status=>' + status)
+                                                                                        //console.log('status=>' + status)
                                                                                         lista.push({ s: status, id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
                                                                                         q++
-                                                                                        //  //console.log('q=>' + q)
-                                                                                        //  //console.log('proposta.length=>' + proposta.length)
+                                                                                        //console.log('q=>' + q)
+                                                                                        //console.log('proposta.length=>' + proposta.length)
                                                                                         if (q == p6.length) {
-                                                                                            //  //console.log(lista[0])
+                                                                                            //console.log(lista[0])
                                                                                             res.render('principal/consulta', { lista, todos_clientes, todos_responsaveis, nomeResponsavel: lista_responsavel.nome })
                                                                                         }
                                                                                     }).catch((err) => {
@@ -2222,7 +2222,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                             })
                                         } else {
                                             if (clientes != 'Todos' && responsavel != 'Todos' && stats == 'Todos') {
-                                                //  //console.log('nt-nt-t')
+                                                //console.log('nt-nt-t')
                                                 Proposta.find({ user: id, cliente: req.body.cliente, responsavel: req.body.responsavel }).then((p7) => {
                                                     if (p7 != '') {
                                                         p7.forEach((e7) => {
@@ -2259,17 +2259,17 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                                     }
                                                                                                 }
                                                                                             }
-                                                                                            //  //console.log('dtcadastro=>'+dtcadastro)
-                                                                                            //  //console.log('equipe=>' + equipe)
-                                                                                            //  //console.log('documento=>' + documento)
-                                                                                            //  //console.log('compra=>' + compra)
-                                                                                            //  //console.log('lista_proposta=>' + lista_proposta)
-                                                                                            //  //console.log('equipe.feito=>' + equipe.feito)
-                                                                                            //  //console.log('documento.protocolado=>' + documento.protocolado)
-                                                                                            //  //console.log('documento.feitotrt=>' + documento.feitotrt)
-                                                                                            //  //console.log('compra.feitonota=>' + compra.feitonota)
-                                                                                            //  //console.log('compra.feitopedido =>' + compra.feitopedido)
-                                                                                            //  //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
+                                                                                            //console.log('dtcadastro=>'+dtcadastro)
+                                                                                            //console.log('equipe=>' + equipe)
+                                                                                            //console.log('documento=>' + documento)
+                                                                                            //console.log('compra=>' + compra)
+                                                                                            //console.log('lista_proposta=>' + lista_proposta)
+                                                                                            //console.log('equipe.feito=>' + equipe.feito)
+                                                                                            //console.log('documento.protocolado=>' + documento.protocolado)
+                                                                                            //console.log('documento.feitotrt=>' + documento.feitotrt)
+                                                                                            //console.log('compra.feitonota=>' + compra.feitonota)
+                                                                                            //console.log('compra.feitopedido =>' + compra.feitopedido)
+                                                                                            //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
                                                                                             if (proposta.ganho == true) {
                                                                                                 if (proposta.encerrado == true) {
                                                                                                     status = 'Encerrado'
@@ -2335,14 +2335,14 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                             } else {
                                                                                                 status = 'Proposta Enviada'
                                                                                             }
-                                                                                            //  //console.log('status=>'+status)
+                                                                                            //console.log('status=>'+status)
                                                                                             if (typeof dtinicio == 'undefined') {
                                                                                                 dtinicio = '0000-00-00'
                                                                                             }
                                                                                             if (typeof dtfim == 'undefined') {
                                                                                                 dtfim = '0000-00-00'
                                                                                             }
-                                                                                            //  //console.log('status=>' + status)
+                                                                                            //console.log('status=>' + status)
                                                                                             lista.push({ s: status, id: lista_proposta._id, cliente: lista_cliente.nome, responsavel: lista_responsavel.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
                                                                                             q++
                                                                                             if (q == p7.length) {
@@ -2419,9 +2419,9 @@ router.get('/proposta/', ehAdmin, (req, res) => {
     } else {
         id = user
     }
-    //  //console.log(_id)
+    //console.log(_id)
     Cliente.find({ user: id }).lean().then((todos_clientes) => {
-        //  //console.log(todos_clientes)
+        //console.log(todos_clientes)
         Pessoa.find({ user: id, funges: 'checked' }).lean().then((todos_responsaveis) => {
             res.render('principal/proposta', { todos_clientes, todos_responsaveis })
         }).catch((err) => {
@@ -2671,7 +2671,7 @@ router.get('/execucao/:id', ehAdmin, (req, res) => {
                     Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
                         Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
                             Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
-                                //  //console.log('documento.protocolado=>' + documento.protocolado)
+                                //console.log('documento.protocolado=>' + documento.protocolado)
                                 if (documento.protocolado) {
                                     check = 'checked'
                                     salva = 'inline'
@@ -2728,14 +2728,14 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                     Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
                         Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
                             Equipe.find({ user: id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
-                                //  //console.log('documento.protocolado=>' + documento.protocolado)
+                                //console.log('documento.protocolado=>' + documento.protocolado)
                                 if (typeof proposta.equipe != 'undefined' && proposta.equipe != '') {
-                                    //  //console.log('proposta.equipe=>' + proposta.equipe)
+                                    //console.log('proposta.equipe=>' + proposta.equipe)
                                     Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
-                                        //  //console.log('encontrou equipe na proposta')
+                                        //console.log('encontrou equipe na proposta')
                                         var lista_instaladores = [lista_equipe.ins0, lista_equipe.ins1, lista_equipe.ins2, lista_equipe.ins3, lista_equipe.ins4, lista_equipe.ins5, lista_equipe.ele0, lista_equipe.ele1]
                                         Pessoa.find({ user: id, $or: [{ funins: 'checked' }, { funele: 'checked' }] }).then((instaladores) => {
-                                            //  //console.log('encontrou instaladores')
+                                            //console.log('encontrou instaladores')
                                             instaladores.forEach((element) => {
                                                 encontrou_ins = false
                                                 for (i = 0; i < lista_instaladores.length; i++) {
@@ -2748,8 +2748,8 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                     fora_ins.push({ id: element._id, nome: element.nome })
                                                 }
                                                 qi++
-                                                //  //console.log('qi=>' + qi)
-                                                //  //console.log('instaladores.length=>' + instaladores.length)
+                                                //console.log('qi=>' + qi)
+                                                //console.log('instaladores.length=>' + instaladores.length)
                                                 if (qi == instaladores.length) {
                                                     res.render('principal/equipe', { proposta, cliente, equipes, lista_equipe, dentro_ins, fora_ins, compra, vistoria, documento, posvenda })
                                                 }
@@ -2801,7 +2801,7 @@ router.get('/aceite/:id', ehAdmin, (req, res) => {
                     Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
                         Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
                             Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
-                                //  //console.log('documento.protocolado=>' + documento.protocolado)
+                                //console.log('documento.protocolado=>' + documento.protocolado)
                                 res.render('principal/aceite', { cliente_proposta, documento, proposta, compra, vistoria, lista_equipe, posvenda })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
@@ -2835,7 +2835,7 @@ router.get('/aceite/:id', ehAdmin, (req, res) => {
 
 router.get('/almoxarifado/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
-    //  //console.log('req.params.id=>' + req.params.id)
+    //console.log('req.params.id=>' + req.params.id)
     Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
         Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
             Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
@@ -2843,7 +2843,7 @@ router.get('/almoxarifado/:id', ehAdmin, (req, res) => {
                     Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
                         Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
                             Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
-                                //  //console.log('documento.protocolado=>' + documento.protocolado)
+                                //console.log('documento.protocolado=>' + documento.protocolado)
                                 res.render('principal/almoxarifado', { cliente_proposta, documento, proposta, compra, vistoria, lista_equipe, posvenda })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
@@ -2884,7 +2884,7 @@ router.get('/financeiro/:id', ehAdmin, (req, res) => {
                     Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
                         Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
                             Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
-                                //  //console.log('documento.protocolado=>' + documento.protocolado)
+                                //console.log('documento.protocolado=>' + documento.protocolado)
                                 res.render('principal/financeiro', { cliente_proposta, documento, proposta, compra, vistoria, lista_equipe, posvenda })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
@@ -2925,7 +2925,7 @@ router.get('/posvenda/:id', ehAdmin, (req, res) => {
                     Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
                         Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
                             Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
-                                //  //console.log('documento.protocolado=>' + documento.protocolado)
+                                //console.log('documento.protocolado=>' + documento.protocolado)
                                 res.render('principal/posvenda', { cliente_proposta, documento, proposta, compra, vistoria, lista_equipe, posvenda })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
@@ -3151,7 +3151,7 @@ router.get('/cronograma/:id', ehAdmin, (req, res) => {
                     cronograma.datestbini, cronograma.datestbfim, cronograma.dateestini, cronograma.dateestfim,
                     cronograma.datemodini, cronograma.datemodfim, cronograma.datevisini, cronograma.datevisfim)
 
-                //  //console.log('libRecursos=>'+libRecursos)                                                
+                //console.log('libRecursos=>'+libRecursos)                                                
                 res.render('projeto/gerenciamento/cronograma', {
                     projeto, cronograma, realizado, cpi, tcpi, libRecursos,
                     evPerGes, evPerKit, evPerIns, evPerPro, evPerArt, evPerAli, evPerDes, evPerHtl, evPerCmb, evPerCer, evPerCen, evPerPos
@@ -3215,9 +3215,9 @@ router.get('/agenda/', ehAdmin, (req, res) => {
     var dezembro
     var mestitulo = ''
 
-    //  //console.log('mes=>'+mes)
+    //console.log('mes=>'+mes)
 
-    //  //console.log('mes=>' + mes)
+    //console.log('mes=>' + mes)
 
     switch (mes) {
         case 01: janeiro = 'selected';
@@ -3258,7 +3258,7 @@ router.get('/agenda/', ehAdmin, (req, res) => {
             break;
     }
 
-    //  //console.log('mestitulo=>' + mestitulo)
+    //console.log('mestitulo=>' + mestitulo)
 
     Cliente.find({ user: id }).lean().then((cliente) => {
         // res.render('projeto/gerenciamento/agenda', { cliente, ano, mes, mestitulo, janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro, checkInst: 'checked', checkTesk: 'unchecked' })
@@ -3278,9 +3278,9 @@ router.get('/tarefas/:id', ehAdmin, (req, res) => {
     }
     Tarefas.findOne({ _id: req.params.id }).lean().then((tarefa) => {
         Usina.findOne({ _id: tarefa.usina }).lean().then((usina) => {
-            //  //console.log('usina.cliente=>' + usina.cliente)
+            //console.log('usina.cliente=>' + usina.cliente)
             Cliente.findOne({ _id: usina.cliente }).lean().then((cliente) => {
-                //  //console.log('encontrou cliente')
+                //console.log('encontrou cliente')
                 var dataini = dataMensagem(tarefa.dataini)
                 var datafim = dataMensagem(tarefa.datafim)
                 Equipe.findOne({ tarefa: tarefa._id }).then((equipe) => {
@@ -3349,7 +3349,7 @@ router.post('/trt', ehAdmin, (req, res) => {
         if (err) {
             return res.end("Error uploading file.");
         } else {
-            //  //console.log('req.file=>' + req.file)
+            //console.log('req.file=>' + req.file)
             if (req.file != null) {
                 trtfile = req.file.filename
             } else {
@@ -3357,7 +3357,7 @@ router.post('/trt', ehAdmin, (req, res) => {
             }
 
             Documento.findOne({ proposta: req.body.id }).then((documento) => {
-                //  //console.log()
+                //console.log()
                 if (documento != null) {
                     if (trtfile != '') {
                         documento.trt = trtfile
@@ -3392,7 +3392,7 @@ router.get('/mostrarTrt/:id', ehAdmin, (req, res) => {
     Documento.findOne({ proposta: req.params.id }).then((documento) => {
         var doc = documento.trt
         var path = __dirname
-        //  //console.log(path)
+        //console.log(path)
         path = path.replace('routes', '')
         res.sendFile(path + '/public/arquivos/' + doc)
     })
@@ -3408,29 +3408,31 @@ router.post('/proposta1', ehAdmin, (req, res) => {
     } else {
         id = user
     }
+    console.log(id)
     var propostafile
     var upload = multer({ storage }).single('proposta1')
     upload(req, res, function (err) {
         if (err) {
             return res.end("Error uploading file.");
         } else {
-            //  //console.log('req.file=>' + req.file)
+            //console.log('req.file=>' + req.file)
             if (req.file != null) {
                 propostafile = req.file.filename
             } else {
                 propostafile = ''
             }
+            console.log(req.body.id)
+            if (req.body.id != '') {
+                Proposta.findOne({ _id: req.body.id }).then((proposta) => {
+                    console.log(proposta)
 
-            Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-                console.log(proposta)
-                if (proposta != null) {
-                    console.log(req.body.cliente)
-                    console.log(req.body.responsavel)
-                    if (req.body.cliente != ''){
-                    proposta.cliente = req.body.cliente
+                    //console.log(req.body.cliente)
+                    //console.log(req.body.responsavel)
+                    if (req.body.cliente != '') {
+                        proposta.cliente = req.body.cliente
                     }
-                    if (req.body.responsavel != ''){
-                    proposta.responsavel = req.body.responsavel
+                    if (req.body.responsavel != '') {
+                        proposta.responsavel = req.body.responsavel
                     }
                     if (propostafile != '') {
                         proposta.proposta1 = String(propostafile)
@@ -3444,78 +3446,80 @@ router.post('/proposta1', ehAdmin, (req, res) => {
                         req.flash('error_msg', 'Falha ao salvar a proposta.')
                         res.redirect('/gerenciamento/proposta/' + req.body.id)
                     })
-                } else {
-                    const proposta1 = {
-                        user: id,
-                        cliente: req.body.cliente,
-                        responsavel: req.body.responsavel,
-                        proposta1: String(propostafile),
-                        dtcadastro1: String(req.body.dtcadastro1),
-                        dtvalidade1: String(req.body.dtvalidade1),
-                        data: dataBusca(dataHoje()),
-                        feito: true,
-                        ganho: false,
-                        assinado: false,
-                        encerrado: false
-                    }
-                    new Proposta(proposta1).save().then(() => {
-                        Proposta.findOne().sort({ field: 'asc', _id: -1 }).then((nova_proposta) => {
-                            Cliente.findOne({ _id: nova_proposta.cliente }).then((cliente) => {
-                                new Equipe({
-                                    user: id,
-                                    nome_projeto: cliente.nome,
-                                    dtinicio: '0000-00-00',
-                                    dtfim: '0000-00-00',
-                                    feito: false
-                                }).save().then(() => {
-                                    Equipe.findOne().sort({ field: 'asc', _id: -1 }).then((nova_equipe) => {
-                                        //  //console.log('nova_proposta._id=>' + nova_proposta._id)
-                                        //  //console.log('nova_equipe._id=>' + nova_equipe._id)
-                                        nova_proposta.equipe = nova_equipe._id
-                                        nova_proposta.save().then(() => {
+                })
 
-                                            new Vistoria({
+            } else {
+                console.log('nova proposta')
+                const proposta1 = {
+                    user: id,
+                    cliente: req.body.cliente,
+                    responsavel: req.body.responsavel,
+                    proposta1: String(propostafile),
+                    dtcadastro1: String(req.body.dtcadastro1),
+                    dtvalidade1: String(req.body.dtvalidade1),
+                    data: dataBusca(dataHoje()),
+                    feito: true,
+                    ganho: false,
+                    assinado: false,
+                    encerrado: false
+                }
+                new Proposta(proposta1).save().then(() => {
+                    Proposta.findOne().sort({ field: 'asc', _id: -1 }).then((nova_proposta) => {
+                        Cliente.findOne({ _id: nova_proposta.cliente }).then((cliente) => {
+                            new Equipe({
+                                user: id,
+                                nome_projeto: cliente.nome,
+                                dtinicio: '0000-00-00',
+                                dtfim: '0000-00-00',
+                                feito: false
+                            }).save().then(() => {
+                                Equipe.findOne().sort({ field: 'asc', _id: -1 }).then((nova_equipe) => {
+                                    //console.log('nova_proposta._id=>' + nova_proposta._id)
+                                    //console.log('nova_equipe._id=>' + nova_equipe._id)
+                                    nova_proposta.equipe = nova_equipe._id
+                                    nova_proposta.save().then(() => {
+
+                                        new Vistoria({
+                                            user: id,
+                                            proposta: nova_proposta._id,
+                                            feito: false
+                                        }).save().then(() => {
+                                            new Compra({
                                                 user: id,
                                                 proposta: nova_proposta._id,
-                                                feito: false
+                                                feitopedido: false,
+                                                feitonota: false
                                             }).save().then(() => {
-                                                new Compra({
+                                                new Documento({
                                                     user: id,
                                                     proposta: nova_proposta._id,
-                                                    feitopedido: false,
-                                                    feitonota: false
-                                                }).save().then(() => {
-                                                    new Documento({
+                                                    feitotrt: false,
+                                                    feitoprotocolado: false,
+                                                    feitoaceite: false,
+                                                    feitoalmox: false,
+                                                    feitofaturado: false,
+                                                    enviaalmox: false
+                                                }).save((then) => {
+                                                    new Posvenda({
                                                         user: id,
                                                         proposta: nova_proposta._id,
-                                                        feitotrt: false,
-                                                        feitoprotocolado: false,
-                                                        feitoaceite: false,
-                                                        feitoalmox: false,
-                                                        feitofaturado: false,
-                                                        enviaalmox: false
+                                                        feito: false
                                                     }).save((then) => {
-                                                        new Posvenda({
-                                                            user: id,
-                                                            proposta: nova_proposta._id,
-                                                            feito: false
-                                                        }).save((then) => {
-                                                            req.flash('success_msg', 'Proposta salva com sucesso')
-                                                            res.redirect('/gerenciamento/proposta/' + nova_proposta._id)
-                                                        })
+                                                        req.flash('success_msg', 'Proposta salva com sucesso')
+                                                        res.redirect('/gerenciamento/proposta/' + nova_proposta._id)
                                                     })
                                                 })
                                             })
-
                                         })
+
                                     })
                                 })
                             })
                         })
-
                     })
-                }
-            })
+                })
+            }
+
         }
     })
 })
@@ -3524,7 +3528,7 @@ router.get('/mostrarProposta1/:id', ehAdmin, (req, res) => {
     Proposta.findOne({ _id: req.params.id }).then((proposta) => {
         var doc = proposta.proposta1
         var path = __dirname
-        //  //console.log(path)
+        //console.log(path)
         path = path.replace('routes', '')
         res.sendFile(path + '/public/arquivos/' + doc)
     })
@@ -3560,7 +3564,7 @@ router.get('/mostrarProposta2/:id', ehAdmin, (req, res) => {
     Proposta.findOne({ _id: req.params.id }).then((proposta) => {
         var doc = proposta.proposta2
         var path = __dirname
-        //  //console.log(path)
+        //console.log(path)
         path = path.replace('routes', '')
         res.sendFile(path + '/public/arquivos/' + doc)
     })
@@ -3596,7 +3600,7 @@ router.get('/mostrarProposta3/:id', ehAdmin, (req, res) => {
     Proposta.findOne({ _id: req.params.id }).then((proposta) => {
         var doc = proposta.proposta3
         var path = __dirname
-        //  //console.log(path)
+        //console.log(path)
         path = path.replace('routes', '')
         res.sendFile(path + '/public/arquivos/' + doc)
     })
@@ -3632,7 +3636,7 @@ router.get('/mostrarProposta4/:id', ehAdmin, (req, res) => {
     Proposta.findOne({ _id: req.params.id }).then((proposta) => {
         var doc = proposta.proposta4
         var path = __dirname
-        //  //console.log(path)
+        //console.log(path)
         path = path.replace('routes', '')
         res.sendFile(path + '/public/arquivos/' + doc)
     })
@@ -3668,7 +3672,7 @@ router.get('/mostrarProposta5/:id', ehAdmin, (req, res) => {
     Proposta.findOne({ _id: req.params.id }).then((proposta) => {
         var doc = proposta.proposta5
         var path = __dirname
-        //  //console.log(path)
+        //console.log(path)
         path = path.replace('routes', '')
         res.sendFile(path + '/public/arquivos/' + doc)
     })
@@ -3704,7 +3708,7 @@ router.get('/mostrarProposta6/:id', ehAdmin, (req, res) => {
     Proposta.findOne({ _id: req.params.id }).then((proposta) => {
         var doc = proposta.proposta6
         var path = __dirname
-        //  //console.log(path)
+        //console.log(path)
         path = path.replace('routes', '')
         res.sendFile(path + '/public/arquivos/' + doc)
     })
@@ -3725,7 +3729,7 @@ router.post('/visita', ehAdmin, (req, res) => {
     const { _id } = req.user
 
     Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
-        //  //console.log('vistoria=>' + vistoria)
+        //console.log('vistoria=>' + vistoria)
         if (vistoria != '' && typeof vistoria != 'undefined' && vistoria != null) {
             vistoria.plaQtdMod = req.body.plaQtdMod
             vistoria.plaWattMod = req.body.plaWattMod
@@ -3822,7 +3826,7 @@ router.post('/pedido', ehAdmin, (req, res) => {
                 propostafile = ''
             }
             Compra.findOne({ proposta: req.body.id }).then((compra) => {
-                //  //console.log('compra=>' + compra)
+                //console.log('compra=>' + compra)
                 if (compra == null) {
                     const pedido = {
                         user: id,
@@ -3869,7 +3873,7 @@ router.get('/mostrarPedido/:id', ehAdmin, (req, res) => {
     Compra.findOne({ proposta: req.params.id }).then((compra) => {
         var doc = compra.pedido
         var path = __dirname
-        //  //console.log(path)
+        //console.log(path)
         path = path.replace('routes', '')
         res.sendFile(path + '/public/arquivos/' + doc)
     }).catch(() => {
@@ -3915,7 +3919,7 @@ router.get('/mostrarNota/:id', ehAdmin, (req, res) => {
     Compra.findOne({ proposta: req.params.id }).then((compra) => {
         var doc = compra.nota
         var path = __dirname
-        //  //console.log(path)
+        //console.log(path)
         path = path.replace('routes', '')
         res.sendFile(path + '/public/arquivos/' + doc)
     }).catch(() => {
@@ -4373,7 +4377,7 @@ router.get('/mostrarAceite/:id', ehAdmin, (req, res) => {
     Documento.findOne({ proposta: req.params.id }).then((documento) => {
         var doc = documento.aceite
         var path = __dirname
-        //  //console.log(path)
+        //console.log(path)
         path = path.replace('routes', '')
         res.sendFile(path + '/public/arquivos/' + doc)
     }).catch(() => {
@@ -4448,7 +4452,7 @@ router.get('/mostrarAlmoxarifado/:id', ehAdmin, (req, res) => {
     Documento.findOne({ proposta: req.params.id }).then((documento) => {
         var doc = documento.almoxarifado
         var path = __dirname
-        //  //console.log(path)
+        //console.log(path)
         path = path.replace('routes', '')
         res.sendFile(path + '/public/arquivos/' + doc)
     }).catch(() => {
@@ -4494,7 +4498,7 @@ router.get('/mostrarFinanceiro/:id', ehAdmin, (req, res) => {
     Documento.findOne({ proposta: req.params.id }).then((documento) => {
         var doc = documento.faturado
         var path = __dirname
-        //  //console.log(path)
+        //console.log(path)
         path = path.replace('routes', '')
         res.sendFile(path + '/public/arquivos/' + doc)
     }).catch(() => {
@@ -4611,7 +4615,7 @@ router.get('/mostrarPosvenda/:id', ehAdmin, (req, res) => {
     Posvenda.findOne({ _id: req.params.id }).then((posvenda) => {
         var doc = posvenda.laudo
         var path = __dirname
-        //  //console.log(path)
+        //console.log(path)
         path = path.replace('routes', '')
         res.sendFile(path + '/public/arquivos/' + doc)
     }).catch(() => {
@@ -4655,7 +4659,7 @@ router.get('/mostrarMesmorial/:id', ehAdmin, (req, res) => {
     Documento.findOne({ proposta: req.params.id }).then((documento) => {
         var doc = documento.memorial
         var path = __dirname
-        //  //console.log(path)
+        //console.log(path)
         path = path.replace('routes', '')
         res.sendFile(path + '/public/arquivos/' + doc)
     }).catch(() => {
@@ -4693,7 +4697,7 @@ router.post('/salvarSituacao', ehAdmin, (req, res) => {
                 situacaofile = ''
             }
             Documento.findOne({ proposta: req.body.id }).then((documento) => {
-                //  //console.log('situacaofile=>' + situacaofile)
+                //console.log('situacaofile=>' + situacaofile)
                 documento.situacao = situacaofile
                 documento.dtsituacao = req.body.dtsituacao
                 documento.save().then(() => {
@@ -4709,7 +4713,7 @@ router.get('/mostrarSituacao/:id', ehAdmin, (req, res) => {
     Documento.findOne({ proposta: req.params.id }).then((documento) => {
         var doc = documento.situacao
         var path = __dirname
-        //  //console.log(path)
+        //console.log(path)
         path = path.replace('routes', '')
         res.sendFile(path + '/public/arquivos/' + doc)
     })
@@ -4743,7 +4747,7 @@ router.get('/mostrarTrifilar/:id', ehAdmin, (req, res) => {
     Documento.findOne({ proposta: req.params.id }).then((documento) => {
         var doc = documento.trifilar
         var path = __dirname
-        //  //console.log(path)
+        //console.log(path)
         path = path.replace('routes', '')
         res.sendFile(path + '/public/arquivos/' + doc)
     })
@@ -4777,7 +4781,7 @@ router.get('/mostrarUnifilar/:id', ehAdmin, (req, res) => {
     Documento.findOne({ proposta: req.params.id }).then((documento) => {
         var doc = documento.unifilar
         var path = __dirname
-        //  //console.log(path)
+        //console.log(path)
         path = path.replace('routes', '')
         res.sendFile(path + '/public/arquivos/' + doc)
     })
@@ -4844,8 +4848,8 @@ router.post('/plano', ehAdmin, (req, res) => {
     } else {
         fidelidade = req.body.fidelidade
     }
-    //  //console.log('id=>' + req.body.id)
-    //  //console.log('fidelidade=>' + req.body.fidelidade)
+    //console.log('id=>' + req.body.id)
+    //console.log('fidelidade=>' + req.body.fidelidade)
     if (req.body.id != '' && typeof req.body.id != 'undefined') {
         Plano.findOne({ _id: req.body.id }).then((existeplano) => {
             existeplano.nome = req.body.nome
@@ -4865,7 +4869,7 @@ router.post('/plano', ehAdmin, (req, res) => {
             res.redirect('/gerenciamento/plano')
         })
     } else {
-        //  //console.log('novo plano')
+        //console.log('novo plano')
         new Plano({
             user: id,
             nome: req.body.nome,
@@ -4911,11 +4915,11 @@ router.get('/enviaMensagem/:id', ehAdmin, (req, res) => {
                         'Vistoria: ' + dataMensagem(cronograma.datevisini) + ' a ' + dataMensagem(cronograma.datevisfim) + '.' + '\n' +
                         'Para mais detalhes entre em contato com a gente pelo whatsapp:' + telefone
 
-                    //  //console.log(mensagem)
+                    //console.log(mensagem)
                     to = cliente.celular
-                    //  //console.log(to)
+                    //console.log(to)
 
-                    //  //console.log('cliente.email=>' + cliente.email)
+                    //console.log('cliente.email=>' + cliente.email)
 
                     var email = cliente.email
 
@@ -4929,7 +4933,7 @@ router.get('/enviaMensagem/:id', ehAdmin, (req, res) => {
 
                     var textMessageService = new TextMessageService(apiKey)
                     textMessageService.send('Vimmus', mensagem, ['49991832978'], result => {
-                        //  //console.log(result)
+                        //console.log(result)
                         if (result == false) {
                             req.flash('error_msg', 'Falha interna. Não foi possível enviar a mensagem.')
                             res.redirect('/gerenciamento/cronograma/' + req.params.id)
@@ -4939,7 +4943,7 @@ router.get('/enviaMensagem/:id', ehAdmin, (req, res) => {
                                 req.flash('success_msg', 'Mensagem enviada para: ' + cliente.nome + ' com sucesso.')
                                 transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
                                     if (err) {
-                                        return  //  //console.log(err)
+                                        return  //console.log(err)
                                     } else {
                                         res.redirect('/gerenciamento/cronograma/' + req.params.id)
                                     }
@@ -5082,9 +5086,9 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
     var dia
     var mes_busca
     var mes
-    //  //console.log('req.body.selecionado=>' + req.body.selecionado)
-    //  //console.log('dataini=>' + dataini)
-    //  //console.log('datafim=>' + datafim)
+    //console.log('req.body.selecionado=>' + req.body.selecionado)
+    //console.log('dataini=>' + dataini)
+    //console.log('datafim=>' + datafim)
     if (req.body.selecionado == 'instalacao') {
         Cronograma.find({
             $or: [{ 'agendaPlaFim': { $lte: datafim, $gte: dataini } },
@@ -5099,9 +5103,9 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
             { 'agendaVisFim': { $lte: datafim, $gte: dataini } }],
             user: id
         }).lean().then((cronograma) => {
-            //  //console.log('cronograma.length=>' + cronograma.length)
+            //console.log('cronograma.length=>' + cronograma.length)
             cronograma.forEach(element => {
-                //  //console.log('entrou')
+                //console.log('entrou')
                 const { dateplaini } = element
                 const { dateprjini } = element
                 const { dateateini } = element
@@ -5125,19 +5129,19 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                 const { nome } = element
                 const { projeto } = element
 
-                //  //console.log('nome=>' + nome)
+                //console.log('nome=>' + nome)
 
                 if (nome != '' && typeof nome != 'undefined') {
-                    //  //console.log('projeto=>' + projeto)
+                    //console.log('projeto=>' + projeto)
 
                     mes_busca = dataini.substring(4, 6)
-                    //  //console.log('mes_busca=>' + mes_busca)
+                    //console.log('mes_busca=>' + mes_busca)
                     mes = dateplaini.substring(5, 7)
-                    //  //console.log('Planejamento')
-                    //  //console.log('mes=>' + mes)
+                    //console.log('Planejamento')
+                    //console.log('mes=>' + mes)
                     if ((mes_busca == mes) && (dateplaini != '' && typeof dateplaini != 'undefined') && (datepla == '' || typeof datepla == 'undefined')) {
                         dia = dateplaini.substring(8, 11)
-                        //  //console.log('entrou Planejamento')
+                        //console.log('entrou Planejamento')
                         if (dia == '01') {
                             tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Planejamento' })
                         }
@@ -5234,11 +5238,11 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                     }
 
                     mes = dateprjini.substring(5, 7)
-                    //  //console.log('Projetista')
-                    //  //console.log('mes=>' + mes)
+                    //console.log('Projetista')
+                    //console.log('mes=>' + mes)
                     if ((mes_busca == mes) && (dateprjini != '' && typeof dateprjini != 'undefined') && (dateprj == '' || typeof dateprj == 'undefined')) {
                         dia = dateprjini.substring(8, 11)
-                        //  //console.log('entrou Projetista')
+                        //console.log('entrou Projetista')
                         if (dia == '01') {
                             tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Projetista' })
                         }
@@ -5335,11 +5339,11 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                     }
 
                     mes = dateateini.substring(5, 7)
-                    //  //console.log('Aterramento')
-                    //  //console.log('mes=>' + mes)
+                    //console.log('Aterramento')
+                    //console.log('mes=>' + mes)
                     if ((mes_busca == mes) && (dateateini != '' && typeof dateateini != 'undefined') && (dateate == '' || typeof dateate == 'undefined')) {
                         dia = dateateini.substring(8, 11)
-                        //  //console.log('entrou Aterramento')
+                        //console.log('entrou Aterramento')
                         if (dia == '01') {
                             tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Aterramento' })
                         }
@@ -5436,11 +5440,11 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                     }
 
                     mes = dateestini.substring(5, 7)
-                    //  //console.log('Estrutura')
-                    //  //console.log('mes=>' + mes)
+                    //console.log('Estrutura')
+                    //console.log('mes=>' + mes)
                     if ((mes_busca == mes) && (dateestini != '' && typeof dateestini != 'undefined') && (dateest == '' || typeof dateest == 'undefined')) {
                         dia = dateestini.substring(8, 11)
-                        //  //console.log('entrou Estrutura')
+                        //console.log('entrou Estrutura')
                         if (dia == '01') {
                             tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Estrutura' })
                         }
@@ -5537,15 +5541,15 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                     }
 
                     mes = dateinvini.substring(5, 7)
-                    //  //console.log('Inversor')
-                    //  //console.log('mes=>' + mes)
-                    //  //console.log('dateinv=>' + dateinv)
-                    //  //console.log('dateinvini=>' + dateinvini)
+                    //console.log('Inversor')
+                    //console.log('mes=>' + mes)
+                    //console.log('dateinv=>' + dateinv)
+                    //console.log('dateinvini=>' + dateinvini)
                     if ((mes_busca == mes) && (dateinvini != '' && typeof dateinvini != 'undefined') && (dateinv == '' || typeof dateinv == 'undefined')) {
                         dia = dateinvini.substring(8, 11)
-                        //  //console.log('entrou Inversor')
-                        //  //console.log('nome=>' + nome)
-                        //  //console.log('projeto=>' + projeto)
+                        //console.log('entrou Inversor')
+                        //console.log('nome=>' + nome)
+                        //console.log('projeto=>' + projeto)
 
                         if (dia == '01') {
                             tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
@@ -5644,13 +5648,13 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
 
                     if (dateeaeini != '' && typeof dateeaeini != 'undefined') {
                         mes = dateeaeini.substring(5, 7)
-                        //  //console.log('Armazenamento')
-                        //  //console.log('mes=>' + mes)
-                        //  //console.log('dateeae=>' + dateeae)
-                        //  //console.log('dateeaeini=>' + dateeaeini)
+                        //console.log('Armazenamento')
+                        //console.log('mes=>' + mes)
+                        //console.log('dateeae=>' + dateeae)
+                        //console.log('dateeaeini=>' + dateeaeini)
                         if ((mes_busca == mes) && (dateeae == '' || typeof dateeae == 'undefined')) {
                             dia = dateeaeini.substring(8, 11)
-                            //  //console.log('Entrou Armazenamento')
+                            //console.log('Entrou Armazenamento')
                             if (dia == '01') {
                                 tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Inversor(es)' })
                             }
@@ -5747,11 +5751,11 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                         }
                     }
                     mes = datestbini.substring(5, 7)
-                    //  //console.log('StringBox')
-                    //  //console.log('mes=>' + mes)
+                    //console.log('StringBox')
+                    //console.log('mes=>' + mes)
                     if ((mes_busca == mes) && (datestbini != '' && typeof datestbini != 'undefined') && (datestb == '' || typeof datestb == 'undefined')) {
                         dia = datestbini.substring(8, 11)
-                        //  //console.log('Entrou StringBox')
+                        //console.log('Entrou StringBox')
                         if (dia == '01') {
                             tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Stringbox' })
                         }
@@ -5847,11 +5851,11 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                         }
                     }
                     mes = datemodini.substring(5, 7)
-                    //  //console.log('Modulos')
-                    //  //console.log('mes=>' + mes)
+                    //console.log('Modulos')
+                    //console.log('mes=>' + mes)
                     if ((mes_busca == mes) && (datemodini != '' && typeof datemodini != 'undefined') && (datemod == '' || typeof datemod == 'undefined')) {
                         dia = datemodini.substring(8, 11)
-                        //  //console.log('Entrou Modulos')
+                        //console.log('Entrou Modulos')
                         if (dia == '01') {
                             tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Módulos' })
                         }
@@ -5948,11 +5952,11 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                     }
                     if (datepnlini != '' && typeof datepnlini != 'undefined') {
                         mes = datepnlini.substring(5, 7)
-                        //  //console.log('Painel')
-                        //  //console.log('mes=>' + mes)
+                        //console.log('Painel')
+                        //console.log('mes=>' + mes)
                         if ((mes_busca == mes) && (datepnl == '' || typeof datepnl == 'undefined')) {
                             dia = datepnlini.substring(8, 11)
-                            //  //console.log('Entrou Painel')
+                            //console.log('Entrou Painel')
                             if (dia == '01') {
                                 tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Painél Elétrico' })
                             }
@@ -6049,11 +6053,11 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                         }
                     }
                     mes = datevisini.substring(5, 7)
-                    //  //console.log('Vistoria')
-                    //  //console.log('mes=>' + mes)
+                    //console.log('Vistoria')
+                    //console.log('mes=>' + mes)
                     if ((mes_busca == mes) && (datevisini != '' && typeof datevisini != 'undefined') && (datevis == '' || typeof datevis == 'undefined')) {
                         dia = datevisini.substring(8, 11)
-                        //  //console.log('Entrou Vistoria')
+                        //console.log('Entrou Vistoria')
                         if (dia == '01') {
                             tarefas01.push({ projeto: nome, id: projeto, tarefa: 'Vistoria' })
                         }
@@ -6151,37 +6155,37 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                 }
             })
 
-            //  //console.log('tarefas1=>' + tarefas01)
-            //  //console.log('tarefas2=>' + tarefas02)
-            //  //console.log('tarefas3=>' + tarefas03)
-            //  //console.log('tarefas4=>' + tarefas04)
-            //  //console.log('tarefas5=>' + tarefas05)
-            //  //console.log('tarefas6=>' + tarefas06)
-            //  //console.log('tarefas7=>' + tarefas07)
-            //  //console.log('tarefas8=>' + tarefas08)
-            //  //console.log('tarefas9=>' + tarefas09)
-            //  //console.log('tarefas10=>' + tarefas10)
-            //  //console.log('tarefas11=>' + tarefas11)
-            //  //console.log('tarefas12=>' + tarefas12)
-            //  //console.log('tarefas13=>' + tarefas13)
-            //  //console.log('tarefas14=>' + tarefas14)
-            //  //console.log('tarefas15=>' + tarefas15)
-            //  //console.log('tarefas16=>' + tarefas16)
-            //  //console.log('tarefas17=>' + tarefas17)
-            //  //console.log('tarefas18=>' + tarefas18)
-            //  //console.log('tarefas19=>' + tarefas19)
-            //  //console.log('tarefas20=>' + tarefas20)
-            //  //console.log('tarefas21=>' + tarefas21)
-            //  //console.log('tarefas22=>' + tarefas22)
-            //  //console.log('tarefas23=>' + tarefas23)
-            //  //console.log('tarefas24=>' + tarefas24)
-            //  //console.log('tarefas25=>' + tarefas25)
-            //  //console.log('tarefas26=>' + tarefas26)
-            //  //console.log('tarefas27=>' + tarefas27)
-            //  //console.log('tarefas28=>' + tarefas28)
-            //  //console.log('tarefas29=>' + tarefas29)
-            //  //console.log('tarefa30=>' + tarefas30)
-            //  //console.log('tarefa31=>' + tarefas31)
+            //console.log('tarefas1=>' + tarefas01)
+            //console.log('tarefas2=>' + tarefas02)
+            //console.log('tarefas3=>' + tarefas03)
+            //console.log('tarefas4=>' + tarefas04)
+            //console.log('tarefas5=>' + tarefas05)
+            //console.log('tarefas6=>' + tarefas06)
+            //console.log('tarefas7=>' + tarefas07)
+            //console.log('tarefas8=>' + tarefas08)
+            //console.log('tarefas9=>' + tarefas09)
+            //console.log('tarefas10=>' + tarefas10)
+            //console.log('tarefas11=>' + tarefas11)
+            //console.log('tarefas12=>' + tarefas12)
+            //console.log('tarefas13=>' + tarefas13)
+            //console.log('tarefas14=>' + tarefas14)
+            //console.log('tarefas15=>' + tarefas15)
+            //console.log('tarefas16=>' + tarefas16)
+            //console.log('tarefas17=>' + tarefas17)
+            //console.log('tarefas18=>' + tarefas18)
+            //console.log('tarefas19=>' + tarefas19)
+            //console.log('tarefas20=>' + tarefas20)
+            //console.log('tarefas21=>' + tarefas21)
+            //console.log('tarefas22=>' + tarefas22)
+            //console.log('tarefas23=>' + tarefas23)
+            //console.log('tarefas24=>' + tarefas24)
+            //console.log('tarefas25=>' + tarefas25)
+            //console.log('tarefas26=>' + tarefas26)
+            //console.log('tarefas27=>' + tarefas27)
+            //console.log('tarefas28=>' + tarefas28)
+            //console.log('tarefas29=>' + tarefas29)
+            //console.log('tarefa30=>' + tarefas30)
+            //console.log('tarefa31=>' + tarefas31)
 
             Cliente.find({ user: id }).lean().then((cliente) => {
                 res.render('projeto/gerenciamento/agenda', {
@@ -6201,13 +6205,13 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
             res.redirect('/gerenciamento/agenda/')
         })
     } else {
-        //  //console.log('req.body.selecionado=>' + req.body.selecionado)
-        //  //console.log('datafim=>' + datafim)
-        //  //console.log('dataini=>' + dataini)
+        //console.log('req.body.selecionado=>' + req.body.selecionado)
+        //console.log('datafim=>' + datafim)
+        //console.log('dataini=>' + dataini)
         var nova_dataini = dataini
 
         Tarefas.find({ concluido: false, 'buscadataini': { $lte: datafim, $gte: dataini }, user: id }).lean().then((lista_tarefas) => {
-            //  //console.log(lista_tarefas)
+            //console.log(lista_tarefas)
             if (lista_tarefas == null) {
                 Cliente.find({ user: id }).lean().then((cliente) => {
                     res.render('projeto/gerenciamento/agenda', { checkTesk: 'checked', mes, ano: req.body.mesano, cliente, mestitulo })
@@ -6217,22 +6221,22 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                 })
             } else {
                 lista_tarefas.forEach(element => {
-                    //  //console.log('entrou')
+                    //console.log('entrou')
                     const { dataini } = element
 
-                    //  //console.log('dataini=>' + dataini)
+                    //console.log('dataini=>' + dataini)
                     Usina.findOne({ _id: element.usina }).then((usina) => {
-                        //  //console.log('nome=>' + nome)
-                        //  //console.log('projeto=>' + projeto)
+                        //console.log('nome=>' + nome)
+                        //console.log('projeto=>' + projeto)
                         if (typeof usina != 'undefined' && usina != '') {
                             mes_busca = nova_dataini.substring(4, 6)
-                            //  //console.log('mes_busca=>' + mes_busca)
+                            //console.log('mes_busca=>' + mes_busca)
                             mes = dataini.substring(5, 7)
-                            //  //console.log('mes=>' + mes)
+                            //console.log('mes=>' + mes)
                             if (mes_busca == mes) {
                                 dia = dataini.substring(8, 11)
-                                //  //console.log('dia=>' + dia)
-                                //  //console.log('entrou Planejamento')
+                                //console.log('dia=>' + dia)
+                                //console.log('entrou Planejamento')
                                 if (dia == '01') {
                                     tarefas01.push({ projeto: usina.nome, ehManutencao: true, id: element._id, tarefa: element.servico })
                                 }
@@ -6384,11 +6388,11 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
         mes = '0' + mes
     }
 
-    //  //console.log('dia=>' + dia)
+    //console.log('dia=>' + dia)
     data = (String(req.body.ano) + '-' + String(mes) + '-' + String(dia)).toString()
-    //  //console.log('data=>' + data)
+    //console.log('data=>' + data)
 
-    //  //console.log('req.body.cliente=>' + req.body.cliente)
+    //console.log('req.body.cliente=>' + req.body.cliente)
     Usina.find({ cliente: req.body.cliente }).lean().then((usina) => {
         Pessoa.find({ funins: 'checked', user: id }).sort({ nome: 'asc' }).then((instalacao) => {
             instalacao.forEach((eleint) => {
@@ -6439,7 +6443,7 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                 preco: req.body.preco,
                 concluido: false
             }
-            //  //console.log('tarefa=>'+tarefa)
+            //console.log('tarefa=>'+tarefa)
             new Tarefas(tarefa).save().then(() => {
                 Tarefas.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((tarefa) => {
                     novaequipe.tarefa = tarefa._id
@@ -6608,15 +6612,15 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             if (projeto.tipoCustoGes == 'hora') {
                                 plafim = Math.trunc((parseFloat(projeto.trbges) + parseFloat(projeto.desGes)) / conhrs)
                             } else {
-                                //  //console.log('projeto.diasGes=>'+projeto.diasGes)
+                                //console.log('projeto.diasGes=>'+projeto.diasGes)
                                 if ((parseFloat(projeto.diasGes) + parseFloat(projeto.desGes)) > 1) {
-                                    //  //console.log('projeto.desGes=>'+projeto.desGes)
+                                    //console.log('projeto.desGes=>'+projeto.desGes)
                                     plafim = (parseFloat(projeto.diasGes) + parseFloat(projeto.desGes) + parseFloat(projeto.desGes)) - 1
                                 } else {
                                     plafim = 0
                                 }
                             }
-                            //  //console.log('plafim=>'+plafim)
+                            //console.log('plafim=>'+plafim)
                             if (projeto.tipoCustoPro == 'hora') {
                                 if ((parseFloat(projeto.trbges) + parseFloat(projeto.desPro) + parseFloat(projeto.trbpro)) > 8) {
                                     prjfim = Math.round(((projeto.trbpro + parseFloat(projeto.desPro)) / conhrs), -1)
@@ -6639,7 +6643,7 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                     prjfim = 0
                                 }
                             }
-                            //  //console.log("projeto.tipoCustoIns=>" + projeto.tipoCustoIns)
+                            //console.log("projeto.tipoCustoIns=>" + projeto.tipoCustoIns)
                             if (projeto.tipoCustoIns == 'hora') {
                                 if ((parseFloat(projeto.trbpro) + parseFloat(projeto.desIns) + parseFloat(projeto.trbate)) > 8) {
                                     atefim = Math.round(((projeto.trbate + parseFloat(projeto.desIns)) / conhrs), -1)
@@ -6785,15 +6789,15 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 }
                             }
 
-                            //  //console.log('atefim=>' + atefim)
-                            //  //console.log('stbfim=>' + stbfim)
-                            //  //console.log('invfim=>' + invfim)
-                            //  //console.log('pnlfim=>' + pnlfim)
-                            //  //console.log('eaefim=>' + eaefim)
-                            //  //console.log('estfim=>' + estfim)
-                            //  //console.log('modfim=>' + modfim)
-                            //  //console.log('plafim=>' + plafim)
-                            //  //console.log('prjfim=>' + prjfim)
+                            //console.log('atefim=>' + atefim)
+                            //console.log('stbfim=>' + stbfim)
+                            //console.log('invfim=>' + invfim)
+                            //console.log('pnlfim=>' + pnlfim)
+                            //console.log('eaefim=>' + eaefim)
+                            //console.log('estfim=>' + estfim)
+                            //console.log('modfim=>' + modfim)
+                            //console.log('plafim=>' + plafim)
+                            //console.log('prjfim=>' + prjfim)
                             valplafim = setData(projeto.valDataIni, plafim)
                             valprjfim = setData(valplafim, prjfim)
 
@@ -6832,7 +6836,7 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             }
 
                             if ((cronograma.datepnlini == '' || typeof cronograma.datepnlini == 'undefined' || isNaN(cronograma.datepnlini)) && projeto.temPainel == 'checked') {
-                                //  //console.log('tem painel')
+                                //console.log('tem painel')
                                 valpnlini = setData(valprjfim, 1)
                                 cronograma.datepnlini = valpnlini
                                 if (cronograma.datepnlfim == '' || typeof cronograma.datepnlfim == 'undefined' || isNaN(cronograma.datepnlfim)) {
@@ -6841,7 +6845,7 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             }
 
                             if ((cronograma.dateeaeini == '' || typeof cronograma.dateeaeini == 'undefined' || isNaN(cronograma.dateeaeini)) && projeto.temArmazenamento == 'checked') {
-                                //  //console.log('tem armazenamento')
+                                //console.log('tem armazenamento')
                                 valeaeini = setData(valprjfim, 1)
                                 cronograma.dateeaeini = valeaeini
                                 if (cronograma.dateeaefim == '' || typeof cronograma.dateeaefim == 'undefined' || isNaN(cronograma.dateeaefim)) {
@@ -6858,16 +6862,16 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
 
                                 }
                             }
-                            //  //console.log("modfim=>" + modfim)
+                            //console.log("modfim=>" + modfim)
                             if (cronograma.datemodini == '' || typeof cronograma.datemodini == 'undefined' || isNaN(cronograma.datemodini)) {
                                 cronograma.datemodini = valestfim
                                 valmodini = valestfim
                                 if (cronograma.datemodfim == '' || typeof cronograma.datemodfim == 'undefined' || isNaN(cronograma.datemodfim)) {
-                                    //  //console.log('valmodini=>' + valmodini)
-                                    //  //console.log('valmodini=>' + valmodini)
+                                    //console.log('valmodini=>' + valmodini)
+                                    //console.log('valmodini=>' + valmodini)
                                     cronograma.datemodfim = setData(valmodini, modfim)
-                                    //  //console.log('modfim=>' + modfim)
-                                    //  //console.log('setData(valmodini, modfim)=>' + setData(valmodini, modfim))
+                                    //console.log('modfim=>' + modfim)
+                                    //console.log('setData(valmodini, modfim)=>' + setData(valmodini, modfim))
                                 }
                             }
                             var diasObra
@@ -6877,19 +6881,19 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 diastr = Math.round(parseFloat(projeto.tothrs) / parseFloat(config.hrstrb))
                             } else {
                                 diasObra = projeto.diasIns
-                                //  //console.log('projeto.diasIns=>' + projeto.diasGes)
-                                //  //console.log('projeto.diasPro=>' + projeto.diasPro)
-                                //  //console.log('projeto.diasPro=>' + projeto.diasPro)
-                                //  //console.log('projeto.desPro=>' + projeto.desPro)
-                                //  //console.log('projeto.desIns=>' + projeto.desIns)
+                                //console.log('projeto.diasIns=>' + projeto.diasGes)
+                                //console.log('projeto.diasPro=>' + projeto.diasPro)
+                                //console.log('projeto.diasPro=>' + projeto.diasPro)
+                                //console.log('projeto.desPro=>' + projeto.desPro)
+                                //console.log('projeto.desIns=>' + projeto.desIns)
                                 diastr = parseFloat(projeto.diasGes) + parseFloat(projeto.diasPro) + parseFloat(projeto.diasIns) + parseFloat(projeto.desPro) + parseFloat(projeto.desIns)
                             }
                             projeto.diasObra = diasObra
-                            //  //console.log('diasObra=>' + diasObra)
+                            //console.log('diasObra=>' + diasObra)
                             projeto.diastr = diastr
-                            //  //console.log('diastr=>' + diastr)
+                            //console.log('diastr=>' + diastr)
 
-                            //  //console.log('equipe=>' + equipe)
+                            //console.log('equipe=>' + equipe)
                             var vlrali
                             var discmb
                             var ltocmb
@@ -6918,10 +6922,10 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             projeto.discmb = discmb
                             projeto.ltocmb = ltocmb
                             projeto.vlrdia = vlrdia
-                            //  //console.log('vlrali=>' + vlrali)
-                            //  //console.log('discmb=>' + discmb)
-                            //  //console.log('ltocmb=>' + ltocmb)
-                            //  //console.log('vlrdia=>' + vlrdia)
+                            //console.log('vlrali=>' + vlrali)
+                            //console.log('discmb=>' + discmb)
+                            //console.log('ltocmb=>' + ltocmb)
+                            //console.log('vlrdia=>' + vlrdia)
 
                             var tothtl
                             var totcmb
@@ -6955,10 +6959,10 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             projeto.totdes = totdes.toFixed(2)
                             //--------------------------------------------                               
 
-                            //  //console.log('totcmb=>' + totcmb)
-                            //  //console.log('tothtl=>' + tothtl)
-                            //  //console.log('totali=>' + totali)
-                            //  //console.log('totdes=>' + totdes)
+                            //console.log('totcmb=>' + totcmb)
+                            //console.log('tothtl=>' + tothtl)
+                            //console.log('totali=>' + totali)
+                            //console.log('totdes=>' + totdes)
 
 
                             //Custo de Reserva
@@ -7005,12 +7009,12 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             projeto.outcer = outcer
                             projeto.outpos = outpos
 
-                            //  //console.log('resger=>' + resger)
-                            //  //console.log('conadd=>' + conadd)
-                            //  //console.log('impele=>' + impele)
-                            //  //console.log('seguro=>' + seguro)
-                            //  //console.log('outcer=>' + outcer)
-                            //  //console.log('outpos=>' + outpos)
+                            //console.log('resger=>' + resger)
+                            //console.log('conadd=>' + conadd)
+                            //console.log('impele=>' + impele)
+                            //console.log('seguro=>' + seguro)
+                            //console.log('outcer=>' + outcer)
+                            //console.log('outpos=>' + outpos)
 
                             var rescon = parseFloat(impele) + parseFloat(seguro) + parseFloat(outcer) + parseFloat(outpos)
                             rescon = parseFloat(rescon) + parseFloat(conadd)
@@ -7018,14 +7022,14 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             var reserva = parseFloat(resger) + parseFloat(rescon)
                             projeto.reserva = reserva.toFixed(2)
 
-                            //  //console.log('rescon=>' + rescon)
-                            //  //console.log('reserva=>' + reserva)
-                            //  //console.log('projeto.totint=>' + projeto.totint)
-                            //  //console.log('projeto.totpro=>' + projeto.totpro)
-                            //  //console.log('projeto.totges=>' + projeto.totges)
-                            //  //  //console.log('projeto.valorCer=>' + projeto.valorCer)
-                            //  //  //console.log('projeto.valorPos=>' + projeto.valorPos)
-                            //  //  //console.log('projeto.valorOcp=>' + projeto.valorOcp)
+                            //console.log('rescon=>' + rescon)
+                            //console.log('reserva=>' + reserva)
+                            //console.log('projeto.totint=>' + projeto.totint)
+                            //console.log('projeto.totpro=>' + projeto.totpro)
+                            //console.log('projeto.totges=>' + projeto.totges)
+                            //console.log('projeto.valorCer=>' + projeto.valorCer)
+                            //console.log('projeto.valorPos=>' + projeto.valorPos)
+                            //console.log('projeto.valorOcp=>' + projeto.valorOcp)
 
                             var valorCer
                             var valorPos
@@ -7039,29 +7043,29 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             if (typeof projeto.valorCen == "undefined") {
                                 valorCen = 0
                             }
-                            //  //console.log('valorCer=>' + valorCer)
-                            //  //console.log('valorPos=>' + valorPos)
-                            //  //console.log('valorCen=>' + valorCen)
+                            //console.log('valorCer=>' + valorCer)
+                            //console.log('valorPos=>' + valorPos)
+                            //console.log('valorCen=>' + valorCen)
 
                             var custoFix = parseFloat(projeto.totint) + parseFloat(projeto.totpro) + parseFloat(projeto.vlrart) + parseFloat(projeto.totges)
-                            //  //console.log('custoFix=>' + custoFix)
+                            //console.log('custoFix=>' + custoFix)
                             var custoVar = parseFloat(totdes)
-                            //  //console.log('custoVar=>' + custoVar)
+                            //console.log('custoVar=>' + custoVar)
                             var custoEst = parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen)
-                            //  //console.log('custoEst=>' + custoEst)
+                            //console.log('custoEst=>' + custoEst)
                             var totcop = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
 
                             projeto.custofix = custoFix.toFixed(2)
                             projeto.custovar = custoVar.toFixed(2)
                             projeto.custoest = custoEst.toFixed(2)
                             projeto.totcop = totcop.toFixed(2)
-                            //  //console.log('totcop=>' + totcop)
+                            //console.log('totcop=>' + totcop)
                             var custoPlano = parseFloat(totcop) + parseFloat(reserva)
                             projeto.custoPlano = custoPlano.toFixed(2)
-                            //  //console.log('custoPlano=>' + custoPlano)
+                            //console.log('custoPlano=>' + custoPlano)
                             var custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
                             projeto.custoTotal = custoTotal.toFixed(2)
-                            //  //console.log('custoTotal=>' + custoTotal)
+                            //console.log('custoTotal=>' + custoTotal)
 
                             var desAdm = 0
                             if (parseFloat(empresa.desadm) > 0) {
@@ -7072,18 +7076,18 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 }
                             }
 
-                            //  //console.log('desAdm=>' + desAdm)
+                            //console.log('desAdm=>' + desAdm)
 
                             //Definindo o imposto ISS
-                            //  //console.log('regime_prj.alqNFS=>' + regime_prj.alqNFS)
+                            //console.log('regime_prj.alqNFS=>' + regime_prj.alqNFS)
                             var fatequ
                             var vlrNFS = 0
                             var impNFS = 0
                             var vlrMarkup = 0
                             var prjValor = 0
                             if (req.body.markup == '' || req.body.markup == 0) {
-                                //  //console.log('markup igual a zero')
-                                //  //console.log('projeto.vlrnormal=>'+projeto.vlrnormal)
+                                //console.log('markup igual a zero')
+                                //console.log('projeto.vlrnormal=>'+projeto.vlrnormal)
                                 if (req.body.checkFatura != null) {
                                     fatequ = true
                                     vlrNFS = parseFloat(projeto.vlrnormal).toFixed(2)
@@ -7098,11 +7102,11 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 projeto.markup = empresa.markup
                                 prjValor = vlrMarkup
                             } else {
-                                //  //console.log('markup diferente de zero')
-                                //  //console.log('custoTotal=>' + custoTotal)
-                                //  //console.log('req.body.markup=>' + req.body.markup)
+                                //console.log('markup diferente de zero')
+                                //console.log('custoTotal=>' + custoTotal)
+                                //console.log('req.body.markup=>' + req.body.markup)
                                 vlrMarkup = (((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva) - parseFloat(projeto.vlrkit)) / (1 - (parseFloat(req.body.markup)) / 100)) + parseFloat(projeto.vlrkit)).toFixed(2)
-                                //  //console.log('vlrMarkup=>' + vlrMarkup)
+                                //console.log('vlrMarkup=>' + vlrMarkup)
                                 if (req.body.checkFatura != null) {
                                     fatequ = true
                                     vlrNFS = parseFloat(vlrMarkup).toFixed(2)
@@ -7116,9 +7120,9 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 projeto.valor = vlrMarkup
                                 prjValor = parseFloat(vlrMarkup).toFixed(2)
                             }
-                            //  //console.log('vlrNFS=>' + vlrNFS)
-                            //  //console.log('impNFS=>' + impNFS)
-                            //  //console.log('prjValor=>' + prjValor)
+                            //console.log('vlrNFS=>' + vlrNFS)
+                            //console.log('impNFS=>' + impNFS)
+                            //console.log('prjValor=>' + prjValor)
                             //kWp médio
                             projeto.vrskwp = (parseFloat(prjValor) / parseFloat(projeto.potencia)).toFixed(2)
                             projeto.fatequ = fatequ
@@ -7129,21 +7133,21 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 vlrcom = parseFloat(vlrNFS) * (parseFloat(projeto.percom) / 100)
                                 projeto.vlrcom = parseFloat(vlrcom).toFixed(2)
                             }
-                            //  //console.log('vlrcom=>' + vlrcom)
+                            //console.log('vlrcom=>' + vlrcom)
 
                             //Definindo o Lucro Bruto
                             var recLiquida = parseFloat(prjValor) - parseFloat(impNFS)
                             projeto.recLiquida = parseFloat(recLiquida).toFixed(2)
 
-                            //  //console.log('recLiquida=>' + recLiquida)
+                            //console.log('recLiquida=>' + recLiquida)
                             var lucroBruto = parseFloat(recLiquida) - parseFloat(projeto.vlrkit)
                             projeto.lucroBruto = parseFloat(lucroBruto).toFixed(2)
 
-                            //  //console.log('lucroBruto=>' + lucroBruto)
+                            //console.log('lucroBruto=>' + lucroBruto)
 
                             var lbaimp = 0
                             if (parseFloat(empresa.desadm) > 0) {
-                                //  //console.log('desAdm=>' + desAdm)
+                                //console.log('desAdm=>' + desAdm)
                                 lbaimp = (parseFloat(lucroBruto) - parseFloat(custoPlano) - parseFloat(desAdm)).toFixed(2)
                                 projeto.desAdm = parseFloat(desAdm).toFixed(2)
                             } else {
@@ -7158,7 +7162,7 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                                 lbaimp = parseFloat(lbaimp) - parseFloat(vlrcom)
                             }
                             projeto.lbaimp = lbaimp.toFixed(2)
-                            //  //console.log('lbaimp=>' + lbaimp)
+                            //console.log('lbaimp=>' + lbaimp)
 
                             //Dashboard              
                             //Participação dos componentes
@@ -7207,9 +7211,9 @@ router.post('/gerenciamento/', ehAdmin, (req, res) => {
                             projeto.valDataIns = valateini
 
                             cronograma.save().then(() => {
-                                //  //console.log('salvou cronograma')
+                                //console.log('salvou cronograma')
                                 projeto.save().then(() => {
-                                    //  //console.log('salvou projeto')
+                                    //console.log('salvou projeto')
                                     sucesso = 'Custo de gerenciamento aplicado com sucesso.'
                                     req.flash('success_msg', sucesso)
                                     res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
@@ -7255,9 +7259,9 @@ router.post('/custo/', ehAdmin, (req, res) => {
             var prjLR = empresa.prjLR
             var prjLP = empresa.prjLP
             //var vlrDAS = empresa.vlrDAS
-            //  //console.log('prjFat=>' + prjFat)
-            //  //console.log('prjLR=>' + prjLR)
-            //  //console.log('prjLP=>' + prjLP)
+            //console.log('prjFat=>' + prjFat)
+            //console.log('prjLR=>' + prjLR)
+            //console.log('prjLP=>' + prjLP)
 
             var impostoIRPJ = 0
             var impostoIRPJAdd = 0
@@ -7272,16 +7276,16 @@ router.post('/custo/', ehAdmin, (req, res) => {
             var fataju
             var aux
 
-            //  //console.log('projeto.vlrNFS=>' + projeto.vlrNFS)
+            //console.log('projeto.vlrNFS=>' + projeto.vlrNFS)
 
             if (empresa.regime == 'Simples') {
-                //  //console.log('Empresa=>Simples')
+                //console.log('Empresa=>Simples')
                 var alqEfe = ((parseFloat(prjFat) * (parseFloat(empresa.alqDAS) / 100)) - (parseFloat(empresa.vlrred))) / parseFloat(prjFat)
-                //  //console.log('alqEfe=>' + alqEfe)
+                //console.log('alqEfe=>' + alqEfe)
                 var totalSimples = parseFloat(projeto.vlrNFS) * (parseFloat(alqEfe))
-                //  //console.log('totalSimples=>' + totalSimples)
+                //console.log('totalSimples=>' + totalSimples)
                 totalImposto = parseFloat(totalSimples).toFixed(2)
-                //  //console.log('totalImposto=>' + totalImposto)
+                //console.log('totalImposto=>' + totalImposto)
                 projeto.impostoSimples = parseFloat(totalImposto).toFixed(2)
                 impostoIRPJAdd = 0
                 projeto.impostoAdd = 0
@@ -7297,11 +7301,11 @@ router.post('/custo/', ehAdmin, (req, res) => {
                 if (empresa.regime == 'Lucro Real') {
                     if ((parseFloat(prjLR) / 12) > 20000) {
                         fatadd = (parseFloat(prjLR) / 12) - 20000
-                        //  //console.log('fatadd=>' + fatadd)
+                        //console.log('fatadd=>' + fatadd)
                         fataju = parseFloat(fatadd) * (parseFloat(empresa.alqIRPJAdd) / 100)
-                        //  //console.log('fataju=>' + fataju)
+                        //console.log('fataju=>' + fataju)
                         aux = parseFloat(fatadd) / parseFloat(projeto.lbaimp)
-                        //  //console.log('aux=>' + aux)
+                        //console.log('aux=>' + aux)
                         impostoIRPJAdd = parseFloat(fataju) / parseFloat(aux)
                         projeto.impostoAdd = impostoIRPJAdd.toFixed(2)
                     } else {
@@ -7319,7 +7323,7 @@ router.post('/custo/', ehAdmin, (req, res) => {
                     projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
                     totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
                 } else {
-                    //  //console.log('Empresa=>Lucro Presumido')
+                    //console.log('Empresa=>Lucro Presumido')
                     if (((parseFloat(prjLP) * 0.32) / 3) > 20000) {
                         fatadd = ((parseFloat(prjLP) * 0.32) / 3) - 20000
                         fataju = parseFloat(fatadd) / 20000
@@ -7329,26 +7333,26 @@ router.post('/custo/', ehAdmin, (req, res) => {
                         impostoIRPJAdd = 0
                         projeto.impostoAdd = 0
                     }
-                    //  //console.log('impostoIRPJAdd=>' + impostoIRPJAdd)
+                    //console.log('impostoIRPJAdd=>' + impostoIRPJAdd)
                     impostoIRPJ = parseFloat(projeto.vlrNFS) * 0.32 * (parseFloat(empresa.alqIRPJ) / 100)
                     projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
-                    //  //console.log('impostoIRPJ=>' + impostoIRPJ)
+                    //console.log('impostoIRPJ=>' + impostoIRPJ)
                     impostoCSLL = parseFloat(projeto.vlrNFS) * 0.32 * (parseFloat(empresa.alqCSLL) / 100)
                     projeto.impostoCSLL = impostoCSLL.toFixed(2)
-                    //  //console.log('impostoCSLL=>' + impostoCSLL)
+                    //console.log('impostoCSLL=>' + impostoCSLL)
                     impostoCOFINS = parseFloat(projeto.vlrNFS) * (parseFloat(empresa.alqCOFINS) / 100)
                     projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
-                    //  //console.log('impostoCOFINS=>' + impostoCOFINS)
+                    //console.log('impostoCOFINS=>' + impostoCOFINS)
                     impostoPIS = parseFloat(projeto.vlrNFS) * (parseFloat(empresa.alqPIS) / 100)
                     projeto.impostoPIS = impostoPIS.toFixed(2)
-                    //  //console.log('impostoPIS=>' + impostoPIS)
+                    //console.log('impostoPIS=>' + impostoPIS)
                     totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
-                    //  //console.log('totalImposto=>' + totalImposto)
+                    //console.log('totalImposto=>' + totalImposto)
                 }
             }
             //Validar ICMS
-            //  //console.log('projeto.fatequ=>' + projeto.fatequ)
-            //  //console.log('empresa.alqICMS=>' + empresa.alqICMS)
+            //console.log('projeto.fatequ=>' + projeto.fatequ)
+            //console.log('empresa.alqICMS=>' + empresa.alqICMS)
             if (projeto.fatequ == true) {
                 if (empresa.alqICMS != null) {
                     impostoICMS = (parseFloat(projeto.vlrNFS)) * (parseFloat(empresa.alqICMS) / 100)
@@ -7360,18 +7364,18 @@ router.post('/custo/', ehAdmin, (req, res) => {
                 totalTributos = parseFloat(totalImposto) + parseFloat(projeto.impNFS)
             }
             projeto.impostoICMS = impostoICMS.toFixed(2)
-            //  //console.log('totalImposto=>' + totalImposto)
+            //console.log('totalImposto=>' + totalImposto)
             projeto.totalImposto = parseFloat(totalImposto).toFixed(2)
-            //  //console.log('totalTributos=>' + totalTributos)
+            //console.log('totalTributos=>' + totalTributos)
             projeto.totalTributos = parseFloat(totalTributos).toFixed(2)
 
             //Lucro Líquido descontados os impostos
             var lucroLiquido = 0
-            //  //console.log('projeto.lbaimp=>'+projeto.lbaimp)
-            //  //console.log('totalImposto=>'+totalImposto)
+            //console.log('projeto.lbaimp=>'+projeto.lbaimp)
+            //console.log('totalImposto=>'+totalImposto)
             lucroLiquido = parseFloat(projeto.lbaimp) - parseFloat(totalImposto)
             projeto.lucroLiquido = parseFloat(lucroLiquido).toFixed(2)
-            //  //console.log('lucroLiquido=>'+lucroLiquido)
+            //console.log('lucroLiquido=>'+lucroLiquido)
 
             //Dashboard
             //Participação sobre o lucro total
@@ -7538,7 +7542,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.body.idprojeto }).then((prj_entrega) => {
         Cronograma.findOne({ projeto: req.body.idprojeto }).then((cronograma) => {
             Realizado.findOne({ projeto: req.body.idprojeto }).then((realizado) => {
-                //  //console.log('req.body.perges=>' + req.body.perges)
+                //console.log('req.body.perges=>' + req.body.perges)
                 if (req.body.perges != '' && typeof req.body.perges != 'undefined' && req.body.perges != 0) {
                     var AC = 0
                     var ev = 0
@@ -7621,40 +7625,40 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                         evPerHtl = 0
                     }
 
-                    //  //console.log('evPerGes=>' + evPerGes)
-                    //  //console.log('evPerKit=>' + evPerKit)
-                    //  //console.log('evPerIns=>' + evPerIns)
-                    //  //console.log('evPerPro=>' + evPerPro)
-                    //  //console.log('evPerDes=>' + evPerDes)
-                    //  //console.log('evPerAli=>' + evPerAli)
-                    //  //console.log('evPerHtl=>' + evPerHtl)
-                    //  //console.log('evPerCmb=>' + evPerCmb)
-                    //  //console.log('evPerCer=>' + evPerCer)
-                    //  //console.log('evPerCen=>' + evPerCen)
-                    //  //console.log('evPerPos=>' + evPerPos)
+                    //console.log('evPerGes=>' + evPerGes)
+                    //console.log('evPerKit=>' + evPerKit)
+                    //console.log('evPerIns=>' + evPerIns)
+                    //console.log('evPerPro=>' + evPerPro)
+                    //console.log('evPerDes=>' + evPerDes)
+                    //console.log('evPerAli=>' + evPerAli)
+                    //console.log('evPerHtl=>' + evPerHtl)
+                    //console.log('evPerCmb=>' + evPerCmb)
+                    //console.log('evPerCer=>' + evPerCer)
+                    //console.log('evPerCen=>' + evPerCen)
+                    //console.log('evPerPos=>' + evPerPos)
 
                     ev = (parseFloat(evPerGes) + parseFloat(evPerKit) + parseFloat(evPerIns) + parseFloat(evPerPro) + parseFloat(evPerAli) + parseFloat(evPerDes) + parseFloat(evPerHtl) + parseFloat(evPerCmb) + parseFloat(evPerCer) + parseFloat(evPerCen) + parseFloat(evPerPos)).toFixed(2)
-                    //  //console.log('ev=>' + ev)
+                    //console.log('ev=>' + ev)
 
-                    //  //console.log('vlrKitPrj=>' + vlrKitPrj)
-                    //  //console.log('custoPlanoPrj=>' + custoPlanoPrj)
+                    //console.log('vlrKitPrj=>' + vlrKitPrj)
+                    //console.log('custoPlanoPrj=>' + custoPlanoPrj)
                     var perConclusao = parseFloat(ev) / (parseFloat(vlrKitPrj) + parseFloat(custoPlanoPrj))
                     if (perConclusao == 100) {
                         texto = 'Projeto Concluído'
                     }
-                    //  //console.log('perConclusao=>' + perConclusao)
+                    //console.log('perConclusao=>' + perConclusao)
                     var custoPlanoRlz
                     var totges = req.body.totges
                     if (isNaN(totges) || totges == '' || totges == null) {
                         totges = 0
                     }
 
-                    //  //console.log('totges=>' + totges)
+                    //console.log('totges=>' + totges)
                     var vlrKitRlz = req.body.vlrkit
                     if (isNaN(vlrKitRlz) || vlrKitRlz == '' || vlrKitRlz == null) {
                         vlrKitRlz = 0
                     }
-                    //  //console.log('vlrKitRlz=>' + vlrKitRlz)
+                    //console.log('vlrKitRlz=>' + vlrKitRlz)
                     var totint = req.body.totint
                     if (isNaN(totint) || totint == '' || totint == null) {
                         totint = 0
@@ -7663,47 +7667,47 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                     var matate = 0
                     var vlremp = 0
                     var compon = 0
-                    //  //console.log('totint=>' + totint)
+                    //console.log('totint=>' + totint)
                     var totpro = req.body.totpro
                     if (isNaN(totpro) || totpro == '' || totpro == null) {
                         totpro = 0
                     }
-                    //  //console.log('totpro=>' + totpro)
+                    //console.log('totpro=>' + totpro)
                     var totali = req.body.totali
                     if (isNaN(totali) || totali == '' || totali == null) {
                         totali = 0
                     }
-                    //  //console.log('totali=>' + totali)
+                    //console.log('totali=>' + totali)
                     var tothtl = req.body.tothtl
                     if (isNaN(tothtl) || tothtl == '' || tothtl == null) {
                         tothtl = 0
                     }
-                    //  //console.log('tothtl=>' + tothtl)
+                    //console.log('tothtl=>' + tothtl)
                     var totcmb = req.body.totcmb
                     if (isNaN(totcmb) || totcmb == '' || totcmb == null) {
                         totcmb = 0
                     }
-                    //  //console.log('totcmb=>' + totcmb)
+                    //console.log('totcmb=>' + totcmb)
                     var totdes = req.body.totdes
                     if (isNaN(totdes) || totdes == '' || totdes == null) {
                         totdes = 0
                     }
-                    //  //console.log('totdes=>' + totdes)
+                    //console.log('totdes=>' + totdes)
                     var cercamento = req.body.cercamento
                     if (isNaN(cercamento) || cercamento == '' || cercamento == null) {
                         cercamento = 0
                     }
-                    //  //console.log('cercamento=>' + cercamento)
+                    //console.log('cercamento=>' + cercamento)
                     var central = req.body.central
                     if (isNaN(central) || central == '' || central == null) {
                         central = 0
                     }
-                    //  //console.log('central=>' + central)
+                    //console.log('central=>' + central)
                     var postecond = req.body.postecond
                     if (isNaN(postecond) || postecond == '' || postecond == null) {
                         postecond = 0
                     }
-                    //  //console.log('postecond=>' + postecond)
+                    //console.log('postecond=>' + postecond)
                     if (prj_entrega.ehDireto == false && prj_entrega.ehVinculo == false) {
                         custoPlanoRlz = parseFloat(totges) + parseFloat(vlrKitRlz) + parseFloat(totint) + parseFloat(toteng) + parseFloat(matate) + parseFloat(vlremp) + parseFloat(compon) + parseFloat(totpro) + parseFloat(totali) + parseFloat(tothtl) + parseFloat(totcmb) + parseFloat(cercamento) + parseFloat(central) + parseFloat(postecond)
                     } else {
@@ -7711,13 +7715,13 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                     }
                     //Definição do actual cost
 
-                    //  //console.log('custoPlanoRlz=>' + custoPlanoRlz)
+                    //console.log('custoPlanoRlz=>' + custoPlanoRlz)
                     /*
-                     //  //console.log('vlrKitRlz=>' + vlrKitRlz)
-                     //  //console.log('desAdm=>' + desAdm)
-                     //  //console.log('vlrcom=>' + vlrcom)
-                     //  //console.log('totalTributos=>' + totalTributos)
-                     //  //console.log('margemLL=>' + margemLL)
+                     //console.log('vlrKitRlz=>' + vlrKitRlz)
+                     //console.log('desAdm=>' + desAdm)
+                     //console.log('vlrcom=>' + vlrcom)
+                     //console.log('totalTributos=>' + totalTributos)
+                     //console.log('margemLL=>' + margemLL)
                     */
 
                     //Cálculo dos indicadores de conclusão do projeto
@@ -7725,14 +7729,14 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                     if (isNaN(AC)) {
                         AC = 0
                     }
-                    //  //console.log('AC=>' + AC)
+                    //console.log('AC=>' + AC)
                     if (AC != '') {
                         ac = AC
                     } else {
                         ac = ev
                     }
                     cpi = parseFloat(ev) / parseFloat(AC)
-                    //  //console.log('cpi=>' + cpi)
+                    //console.log('cpi=>' + cpi)
                     if (cpi == 'Infinity' || isNaN(cpi)) {
                         cpi = 1
                     }
@@ -7756,19 +7760,19 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                     if (isNaN(spi)) {
                         spi = 0
                     }
-                    //  //console.log('Math.round(perConclusao * 100)=>' + Math.round(perConclusao * 100))
+                    //console.log('Math.round(perConclusao * 100)=>' + Math.round(perConclusao * 100))
                     prj_entrega.perConclusao = Math.round(perConclusao * 100)
-                    //  //console.log('AC=>' + AC)
+                    //console.log('AC=>' + AC)
                     prj_entrega.actualCost = parseFloat(AC).toFixed(2)
-                    //  //console.log('cpi=>' + cpi)
+                    //console.log('cpi=>' + cpi)
                     prj_entrega.cpi = parseFloat(cpi).toFixed(4)
-                    //  //console.log('tcpi=>' + tcpi)
+                    //console.log('tcpi=>' + tcpi)
                     prj_entrega.tcpi = parseFloat(tcpi).toFixed(4)
-                    //  //console.log('etc=>' + etc)
+                    //console.log('etc=>' + etc)
                     prj_entrega.etc = parseFloat(etc).toFixed(2)
-                    //  //console.log('eac=>' + eac)
+                    //console.log('eac=>' + eac)
                     prj_entrega.eac = parseFloat(eac).toFixed(2)
-                    //  //console.log('spi=>' + spi)
+                    //console.log('spi=>' + spi)
                     prj_entrega.spi = parseFloat(spi).toFixed(2)
                     prj_entrega.tspi = 1
                 } else {
@@ -7781,7 +7785,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                     prj_entrega.tspi = 1
                 }
 
-                //  //console.log('req.body.executando=>' + req.body.executando)
+                //console.log('req.body.executando=>' + req.body.executando)
                 if (req.body.executando == 'true') {
                     if (req.body.datepla != '' && typeof req.body.datepla != 'undefined') {
                         atrasou = comparaDatas(cronograma.dateplafim, req.body.datepla)
@@ -7821,7 +7825,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                     if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
                         atrasou = comparaDatas(cronograma.datevisfim, req.body.datevis)
                     }
-                    //  //console.log('req.body.datevis=>' + req.body.datevis)
+                    //console.log('req.body.datevis=>' + req.body.datevis)
                     if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
                         if (req.body.dateEntregaReal != '' && typeof req.body.dateEntregaReal != 'undifined') {
                             if (comparaDatas(req.body.dateEntregaReal, req.body.datevis)) {
@@ -7838,18 +7842,18 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                             }
                         }
                     }
-                    //  //console.log('req.body.dateEntregaReal=>' + req.body.dateEntregaReal)
+                    //console.log('req.body.dateEntregaReal=>' + req.body.dateEntregaReal)
                 }
 
-                //  //console.log('req.body.dateentrega=>' + req.body.dateentrega)
-                //  //console.log('req.body.datevisfim=>' + req.body.datevisfim)
-                //  //console.log('req.body.orcado=>' + req.body.orcado)
+                //console.log('req.body.dateentrega=>' + req.body.dateentrega)
+                //console.log('req.body.datevisfim=>' + req.body.datevisfim)
+                //console.log('req.body.orcado=>' + req.body.orcado)
 
                 if (req.body.orcado == 'true') {
-                    //  //console.log('entrou orçado')
+                    //console.log('entrou orçado')
                     if (req.body.datevisfim == '' || typeof req.body.datevisfim == 'undefined') {
-                        //  //console.log('prj_entrega.valDataPrev=>' + prj_entrega.valDataPrev)
-                        //  //console.log('req.body.dateentrega=>' + req.body.dateentrega)
+                        //console.log('prj_entrega.valDataPrev=>' + prj_entrega.valDataPrev)
+                        //console.log('req.body.dateentrega=>' + req.body.dateentrega)
                         if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && (req.body.dateentrega != prj_entrega.valDataPrev)) {
                             erros = erros + 'A data de entrega poderá ser alterada quando data final da vistoria estiver preenchida.'
                             req.flash('error_msg', erros)
@@ -7870,16 +7874,16 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                 }
 
                 prj_entrega.atrasado = atrasou
-                //  //console.log('atrasou=>' + atrasou)
-                //  //console.log('req.body.dateateini=>' + req.body.dateateini)
+                //console.log('atrasou=>' + atrasou)
+                //console.log('req.body.dateateini=>' + req.body.dateateini)
                 prj_entrega.dataIns = dataMensagem(req.body.dateateini)
-                //  //console.log('dataMensagem(req.body.dateateini)=>' + req.body.dateateini)
+                //console.log('dataMensagem(req.body.dateateini)=>' + req.body.dateateini)
                 prj_entrega.valDataIns = req.body.dateateini
                 prj_entrega.checkAte = checkAte
                 prj_entrega.checkInv = checkInv
                 prj_entrega.checkMod = checkMod
                 prj_entrega.save().then(() => {
-                    //  //console.log('salvou o projeto')
+                    //console.log('salvou o projeto')
                     if (req.body.executando == 'true') {
                         //---Validar as datas de realização com data estimada do fim da entrega--//
                         if (req.body.datepla != '' && typeof req.body.datepla != 'undefined') {
@@ -7934,7 +7938,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                         }
                     }
                     if (req.body.orcado == 'true') {
-                        //  //console.log('entrou orçado')
+                        //console.log('entrou orçado')
                         cronograma.dateplaini = req.body.dateplaini
                         if (req.body.dateplaini != '' && typeof req.body.dateplaini != 'undefined') {
                             cronograma.agendaPlaIni = dataBusca(req.body.dateplaini)
@@ -8027,7 +8031,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                             }
                         }
                         cronograma.save().then(() => {
-                            //  //console.log('cronograma salvo.')
+                            //console.log('cronograma salvo.')
                             sucesso = sucesso + 'Cronograma salvo com sucesso. '
                             req.flash('error_msg', erros)
                             req.flash('success_msg', sucesso)
@@ -8039,7 +8043,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
 
                     }
                     if (req.body.executando == 'true') {
-                        //  //console.log('perges=>' + req.body.perges)
+                        //console.log('perges=>' + req.body.perges)
                         var perges = req.body.perges
                         var perkit = req.body.perkit
                         var perins = req.body.perins
@@ -8128,19 +8132,19 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                             }
                         }
 
-                        //  //console.log("realizado=>" + realizado)
+                        //console.log("realizado=>" + realizado)
                         if (realizado != null) {
-                            //  //console.log('entrou realizado')
-                            //  //console.log('totint=>' + totint)
-                            //  //console.log('totges=>' + totges)
-                            //  //console.log('totpro=>' + totpro)
-                            //  //console.log('totali=>' + totali)
-                            //  //console.log('totdes=>' + totdes)
-                            //  //console.log('tothtl=>' + tothtl)
-                            //  //console.log('totcmb=>' + totcmb)
-                            //  //console.log('cercamento=>' + cercamento)
-                            //  //console.log('central=>' + central)
-                            //  //console.log('postecond=>' + postecond)
+                            //console.log('entrou realizado')
+                            //console.log('totint=>' + totint)
+                            //console.log('totges=>' + totges)
+                            //console.log('totpro=>' + totpro)
+                            //console.log('totali=>' + totali)
+                            //console.log('totdes=>' + totdes)
+                            //console.log('tothtl=>' + tothtl)
+                            //console.log('totcmb=>' + totcmb)
+                            //console.log('cercamento=>' + cercamento)
+                            //console.log('central=>' + central)
+                            //console.log('postecond=>' + postecond)
 
                             realizado.vlrkit = vlrKitRlz
                             realizado.totint = totint
@@ -8178,7 +8182,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                             realizado.custoPlano = 0
 
                             cronograma.save().then(() => {
-                                //  //console.log('cronograma salvo.')
+                                //console.log('cronograma salvo.')
                                 realizado.save().then(() => {
                                     sucesso = sucesso + 'Cronograma salvo com sucesso. '
                                     req.flash('error_msg', erros)
@@ -8194,8 +8198,8 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                             })
 
                         } else {
-                            //  //console.log('novo realizado')
-                            //  //console.log('req.boy.totint=>' + req.body.totint)
+                            //console.log('novo realizado')
+                            //console.log('req.boy.totint=>' + req.body.totint)
                             const realizado = {
                                 user: id,
                                 projeto: req.body.idprojeto,
@@ -8271,10 +8275,10 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
 
 router.post('/planejamento', ehAdmin, (req, res) => {
     const { _id } = req.user
-    //  //console.log('req.body.id=>' + req.body.id)
+    //console.log('req.body.id=>' + req.body.id)
     Projeto.findOne({ _id: req.body.id }).then((projeto) => {
         Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
-            //  //console.log('vistoria=>' + vistoria)
+            //console.log('vistoria=>' + vistoria)
             if (vistoria != '' && typeof vistoria != 'undefined' && vistoria != null) {
                 vistoria.plaQtdMod = req.body.plaQtdMod
                 vistoria.plaWattMod = req.body.plaWattMod
@@ -8366,7 +8370,7 @@ router.post('/salvarSombra', uploadfoto.single('fotoPlaSombra'), ehAdmin, (req, 
     // Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
     Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
 
-        //  //console.log('req.file=>' + req.file.filename)
+        //console.log('req.file=>' + req.file.filename)
         var foto
         if (req.file.filename != null) {
             foto = req.file.filename
@@ -8374,7 +8378,7 @@ router.post('/salvarSombra', uploadfoto.single('fotoPlaSombra'), ehAdmin, (req, 
             foto = ''
         }
 
-        //  //console.log('foto=>' + foto)
+        //console.log('foto=>' + foto)
 
         vistoria.fotoPlaSombra = foto
         vistoria.plaSombra = 'checked'
@@ -8395,7 +8399,7 @@ router.post('/salvarArea', uploadfoto.single('fotoPlaArea'), ehAdmin, (req, res)
 
     // Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
     Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
-        //  //console.log('req.file=>' + req.file.filename)
+        //console.log('req.file=>' + req.file.filename)
         var foto
         if (req.file.filename != null) {
             foto = req.file.filename
@@ -8422,7 +8426,7 @@ router.post('/salvarInvStb', uploadfoto.single('fotoPlaInvStb'), ehAdmin, (req, 
 
     // Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
     Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
-        //  //console.log('req.file=>' + req.file.filename)
+        //console.log('req.file=>' + req.file.filename)
         var foto
         if (req.file.filename != null) {
             foto = req.file.filename
@@ -8449,7 +8453,7 @@ router.post('/salvarAte', uploadfoto.single('fotoPlaAte'), ehAdmin, (req, res) =
 
     // Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
     Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
-        //  //console.log('req.file=>' + req.file.filename)
+        //console.log('req.file=>' + req.file.filename)
         var foto
         if (req.file.filename != null) {
             foto = req.file.filename
@@ -8544,12 +8548,12 @@ router.get('/vistoriaMod/:id', ehAdmin, (req, res) => {
 
 router.get('/vistoriaPla/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
-        //  //console.log('projeto._id=>' + projeto._id)
+        //console.log('projeto._id=>' + projeto._id)
         Vistoria.findOne({ projeto: projeto._id }).lean().then((vistoria) => {
             Detalhado.findOne({ projeto: req.params.id }).lean().then((detalhe) => {
                 Componente.find().lean().then((componentes) => {
                     if (detalhe._id != '' && typeof detalhe != 'undefined') {
-                        //  //console.log('vistoria.fotoPlaSombra=>' + vistoria.fotoPlaSombra)
+                        //console.log('vistoria.fotoPlaSombra=>' + vistoria.fotoPlaSombra)
                         res.render('vistoria/planejamento', { projeto, vistoria, detalhe, componentes })
                     } else {
                         res.render('vistoria/planejamento', { projeto, vistoria })
