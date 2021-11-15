@@ -297,14 +297,14 @@ app.get('/menu', ehAdmin, (req, res) => {
                         if (proposta.ganho != true){
                           var hoje = dataHoje()      
                           // var dtnovo = setData(dtcadastro,7)
-                          console.log(dtvalidade)
+                          console.log('dtvalidade=>'+dtvalidade)
                           var dtnovo = dtvalidade
                           var data1 = dataBusca(dtnovo)           
                           var data2 = dataBusca(hoje)      
                           var compara = parseFloat(data1) - parseFloat(data2)
-                          console.log(data1)
-                          console.log(data2)
-                          console.log(compara)
+                          console.log('data1=>'+data1)
+                          console.log('data2=>'+data2)
+                          console.log('compara=>'+compara)
                           if (compara == 1){
                             notpro.push({id: proposta ._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo)})
                           }else{
