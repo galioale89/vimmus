@@ -302,6 +302,8 @@ app.get('/menu', ehAdmin, (req, res) => {
                           var data1 = dataBusca(dtnovo)           
                           var data2 = dataBusca(hoje)      
                           var compara = parseFloat(data1) - parseFloat(data2)
+                          console.log(data1)
+                          console.log(data2)
                           console.log(compara)
                           if (compara == 1){
                             notpro.push({id: proposta ._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo)})
