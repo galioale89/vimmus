@@ -294,14 +294,16 @@ app.get('/menu', ehAdmin, (req, res) => {
                           listaOrcado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                         }
 
-                        if (typeof documento != undefined || documento !=''){
+                        if (proposta.ganho != true){
                           var hoje = dataHoje()      
-                          var dtnovo = setData(dtcadastro,7)
+                          // var dtnovo = setData(dtcadastro,7)
+                          console.log(dtvalidade)
+                          var dtnovo = dtvalidade
                           var data1 = dataBusca(dtnovo)           
                           var data2 = dataBusca(hoje)      
                           var compara = parseFloat(data1) - parseFloat(data2)
-                          if (compara == 3){
-                            notpro.push({id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo)})
+                          if (compara == 1){
+                            notpro.push({id: proposta ._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo)})
                           }else{
                             if (compara < 0){
                               atrasado.push({id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo)})
@@ -723,21 +725,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                         qtdorcado++
                                         listaOrcado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                       }
-                                      if (proposta.ganho != true){
-                                        var hoje = dataHoje()      
-                                        // var dtnovo = setData(dtcadastro,7)
-                                        var dtnovo = dtvalidade
-                                        var data1 = dataBusca(dtnovo)           
-                                        var data2 = dataBusca(hoje)      
-                                        var compara = parseFloat(data1) - parseFloat(data2)
-                                        if (compara == 1){
-                                          notpro.push({id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo)})
-                                        }else{
-                                          if (compara < 0){
-                                            atrasado.push({id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo)})
-                                          }
-                                        }
-                                      }
+
                                       q++
 
                                       if (q == todasProposta.length) {
