@@ -129,8 +129,8 @@
                             <label class='col-form-label form-check-label'>Alertas do Sistema</label>
                         </div>
                         <div class="form-check">
-                            <input class='form-check-input' style="margin-top: 10px;" type="checkbox" name='checkenergia'
-                                {{posvenda.energia}}>
+                            <input class='form-check-input' style="margin-top: 10px;" type="checkbox"
+                                name='checkenergia' {{posvenda.energia}}>
                             <label class='col-form-label form-check-label'>Falta de Energia</label>
                         </div>
                         <div class="form-check">
@@ -151,32 +151,35 @@
                             <label class='col-form-label form-check-label'>Aplicativo de Monitoramento</label>
                         </div>
                         <div class="form-check">
-                            <input class='form-check-input' style="margin-top: 10px;" type="checkbox" name='checkconexao'
-                                {{posvenda.conexao}}>
+                            <input class='form-check-input' style="margin-top: 10px;" type="checkbox"
+                                name='checkconexao' {{posvenda.conexao}}>
                             <label class='col-form-label form-check-label'>Conexão</label>
                         </div>
                         <div class="form-check">
-                            <input class='form-check-input' style="margin-top: 10px;" type="checkbox" name='checkgerador'
-                                {{posvenda.gerador}}>
+                            <input class='form-check-input' style="margin-top: 10px;" type="checkbox"
+                                name='checkgerador' {{posvenda.gerador}}>
                             <label class='col-form-label form-check-label'>Outros Geradores</label>
                         </div>
                         <div class="form-check">
-                            <input class='form-check-input' style="margin-top: 10px;" type="checkbox" name='checkanalise'
-                                {{posvenda.analise}}>
+                            <input class='form-check-input' style="margin-top: 10px;" type="checkbox"
+                                name='checkanalise' {{posvenda.analise}}>
                             <label class='col-form-label form-check-label'>Análise de Geração</label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col">
-                            <label class="col-form-label">Dúvidas do Cliente</label>
-                            <textarea name="duvidas" class="form-control" cols="10" rows="4">{{posvenda.duvidas}}</textarea>
+                            <label class="col-form-label fw-bold">Dúvidas do Cliente:</label>
+                            <textarea name="duvidas" class="form-control" cols="10"
+                                rows="4">{{posvenda.duvidas}}</textarea>
                         </div>
                         <div class="col">
-                            <div class="row" style="margin-top: 50px;">
+                            <div class="row" style="margin-top: 30px;">
                                 <button class='btn btn-success mb-1'>Salvar Chek List</button><br>
-                                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#laudoModal"><i
-                                        class='bi bi-list-ul'></i> Mostrar Laudo</a>
-                                        </div>
+                                {{#if posvenda.feito}}
+                                <a href='/gerenciamento/entrega/{{proposta._id}}' class='btn btn-primary mb-1'>Finalizar</button><br>
+                                {{/if}}
+                                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#laudoModal"> Mostrar Laudo</a>
+                            </div>
                         </div>
                     </div>
                 </div>

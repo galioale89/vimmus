@@ -16,6 +16,10 @@ require('../model/Usina')
 require('../model/Vistoria')
 require('../model/Tarefas')
 require('../model/Investimento')
+require('../model/Proposta')
+require('../model/Compra')
+require('../model/Documento')
+require('../model/Posvenda')
 
 const storage = multer.diskStorage({
      destination: function (req, file, cb) {
@@ -41,6 +45,10 @@ const Usina = mongoose.model('usina')
 const Vistoria = mongoose.model('vistoria')
 const Tarefa = mongoose.model('tarefas')
 const Investimento = mongoose.model('investimento')
+const Proposta = mongoose.model('proposta')
+const Compra = mongoose.model('compra')
+const Documento = mongoose.model('documento')
+const Posvenda = mongoose.model('posvenda')
 
 const validaCampos = require('../resources/validaCampos')
 const dataBusca = require('../resources/dataBusca')
@@ -78,8 +86,16 @@ router.get('/selectprojeto', ehAdmin, (req, res) => {
 
 router.get("/consulta", ehAdmin, (req, res) => {
      const { _id } = req.user
-     Projeto.find({ user: _id }).sort({ dataord: 'asc' }).lean().then((projetos) => {
-          Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
+     Projeto.find({ user: id }).sort({ dataord: 'asc' }).lean().then((projetos) => {
+          Pessoa.find({ funges: 'checked', user: id }).lean().then((responsavel) => {
                res.render('projeto/findprojetos', { projetos: projetos, responsavel: responsavel, filDireto: 'Todos', filReal: 'Todos' })
           }).catch((err) => {
                req.flash('error_msg', 'Nenhum responsável encontrado')
@@ -130,8 +146,16 @@ router.get('/dimensionamento/:tipo', ehAdmin, (req, res) => {
 
 router.post('/dimensionar', ehAdmin, (req, res) => {
      const { _id } = req.user
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
      const id_prj = req.body.id_prj
-     var ehVinculo 
+     var ehVinculo
      var dime1
      var dime2
      var consumo1
@@ -150,7 +174,7 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
      var totaluc2
      var totaluc3
      dime2 = {
-          user: _id,
+          user: id,
           te: req.body.te,
           tusd: req.body.tusd,
           icms: req.body.icms,
@@ -422,9 +446,9 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
      var dime = Object.assign(dime2, dime1)
 
      if (id_prj == '') {
-          if (req.body.tipo == 1){
+          if (req.body.tipo == 1) {
                ehVinculo = false
-          }else{
+          } else {
                ehVinculo = true
           }
           new Dimensionamento(dime).save().then(() => {
@@ -436,7 +460,7 @@ router.post('/dimensionar', ehAdmin, (req, res) => {
                          uf: req.body.uf,
                          potencia: potencia,
                          ehVinculo: ehVinculo,
-                         user: _id
+                         user: id
                     }
                     new Projeto(novo_projeto).save().then(() => {
                          res.redirect('/projeto/dimensiona/' + dimensionamento._id)
@@ -669,11 +693,19 @@ router.get('/realizar/:id', ehAdmin, (req, res) => {
 
 router.get('/novo', ehAdmin, (req, res) => {
      const { _id } = req.user
-     Empresa.find({ user: _id }).lean().then((empresa) => {
-          Configuracao.find({ user: _id }).lean().then((configuracao) => {
-               Pessoa.find({ ehVendedor: true, user: _id }).lean().then((vendedor) => {
-                    Pessoa.find({ user: _id, funges: 'checked' }).lean().then((responsavel) => {
-                         Cliente.find({ user: _id, sissolar: 'checked' }).lean().then((clientes) => {
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
+     Empresa.find({ user: id }).lean().then((empresa) => {
+          Configuracao.find({ user: id }).lean().then((configuracao) => {
+               Pessoa.find({ ehVendedor: true, user: id }).lean().then((vendedor) => {
+                    Pessoa.find({ user: id, funges: 'checked' }).lean().then((responsavel) => {
+                         Cliente.find({ user: id, sissolar: 'checked' }).lean().then((clientes) => {
                               res.render("projeto/addprojeto", { empresa, configuracao, responsavel, vendedor, clientes, troca_dim: 'checked' })
                          }).catch((err) => {
                               req.flash('error_msg', 'Houve um erro ao encontrar um cliente.')
@@ -699,11 +731,19 @@ router.get('/novo', ehAdmin, (req, res) => {
 
 router.get('/projetotarefa', ehAdmin, (req, res) => {
      const { _id } = req.user
-     Empresa.find({ user: _id }).lean().then((empresa) => {
-          Configuracao.find({ user: _id }).lean().then((configuracao) => {
-               Pessoa.find({ ehVendedor: true, user: _id }).lean().then((vendedor) => {
-                    Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {
-                         Cliente.find({ user: _id, sissolar: 'checked' }).lean().then((cliente) => {
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
+     Empresa.find({ user: id }).lean().then((empresa) => {
+          Configuracao.find({ user: id }).lean().then((configuracao) => {
+               Pessoa.find({ ehVendedor: true, user: id }).lean().then((vendedor) => {
+                    Pessoa.find({ funges: 'checked', user: id }).lean().then((responsavel) => {
+                         Cliente.find({ user: id, sissolar: 'checked' }).lean().then((cliente) => {
                               res.render("projeto/projetodia", { empresa, configuracao, vendedor, responsavel, cliente, troca_dim: 'checked' })
                          }).catch((err) => {
                               req.flash('error_msg', 'Houve um erro ao encontrar um cliente.')
@@ -729,13 +769,21 @@ router.get('/projetotarefa', ehAdmin, (req, res) => {
 
 router.get('/projetotarefa/:id', ehAdmin, (req, res) => {
      const { _id } = req.user
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
           Dimensionamento.findOne({ _id: projeto.dimensionamento }).lean().then((dimensionamento) => {
-               Empresa.find({ user: _id }).lean().then((empresa) => {
-                    Configuracao.find({ user: _id }).lean().then((configuracao) => {
-                         Pessoa.find({ ehVendedor: true, user: _id }).lean().then((vendedor) => {
-                              Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {
-                                   Cliente.find({ user: _id, sissolar: 'checked' }).lean().then((cliente) => {
+               Empresa.find({ user: id }).lean().then((empresa) => {
+                    Configuracao.find({ user: id }).lean().then((configuracao) => {
+                         Pessoa.find({ ehVendedor: true, user: id }).lean().then((vendedor) => {
+                              Pessoa.find({ funges: 'checked', user: id }).lean().then((responsavel) => {
+                                   Cliente.find({ user: id, sissolar: 'checked' }).lean().then((cliente) => {
                                         res.render("projeto/projetodia", { projeto, dimensionamento, empresa, configuracao, vendedor, responsavel, cliente, troca_dim: 'checked' })
                                    }).catch((err) => {
                                         req.flash('error_msg', 'Houve um erro ao encontrar um cliente.')
@@ -769,13 +817,21 @@ router.get('/projetotarefa/:id', ehAdmin, (req, res) => {
 
 router.get('/novo/:id', ehAdmin, (req, res) => {
      const { _id } = req.user
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
           Dimensionamento.findOne({ _id: projeto.dimensionamento }).lean().then((dimensionamento) => {
-               Empresa.find({ user: _id }).lean().then((empresa) => {
-                    Configuracao.find({ user: _id }).lean().then((configuracao) => {
-                         Pessoa.find({ ehVendedor: true, user: _id }).lean().then((vendedor) => {
-                              Pessoa.find({ user: _id, funges: 'checked' }).lean().then((responsavel) => {
-                                   Cliente.find({ user: _id, sissolar: 'checked' }).lean().then((clientes) => {
+               Empresa.find({ user: id }).lean().then((empresa) => {
+                    Configuracao.find({ user: id }).lean().then((configuracao) => {
+                         Pessoa.find({ ehVendedor: true, user: id }).lean().then((vendedor) => {
+                              Pessoa.find({ user: id, funges: 'checked' }).lean().then((responsavel) => {
+                                   Cliente.find({ user: id, sissolar: 'checked' }).lean().then((clientes) => {
                                         res.render("projeto/addprojeto", { projeto, dimensionamento, empresa, configuracao, responsavel, vendedor, clientes, troca_dim: 'checked' })
                                    }).catch((err) => {
                                         req.flash('error_msg', 'Houve um erro ao encontrar um cliente.')
@@ -809,6 +865,14 @@ router.get('/novo/:id', ehAdmin, (req, res) => {
 
 router.get('/direto/:id', ehAdmin, (req, res) => {
      const { _id } = req.user
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
      var ehSimples = false
      var ehLP = false
      var ehLR = false
@@ -903,6 +967,14 @@ router.get('/direto/:id', ehAdmin, (req, res) => {
 
 router.get('/edicao/:id', ehAdmin, (req, res) => {
      const { _id } = req.user
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
           Detalhado.findOne({ projeto: projeto._id }).lean().then((detalhe) => {
                Empresa.findOne({ _id: projeto.empresa }).lean().then((rp) => {
@@ -911,10 +983,10 @@ router.get('/edicao/:id', ehAdmin, (req, res) => {
                               Configuracao.findOne({ _id: projeto.configuracao }).lean().then((config) => {
                                    //console.log('config=>' + config)
                                    Pessoa.findOne({ _id: projeto.funres }).lean().then((pr) => {
-                                        Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {
-                                             Pessoa.find({ ehVendedor: true, user: _id }).lean().then((vendedor) => {
-                                                  Empresa.find({ user: _id }).lean().then((empresa) => {
-                                                       Configuracao.find({ user: _id }).lean().then((configuracao) => {
+                                        Pessoa.find({ funges: 'checked', user: id }).lean().then((responsavel) => {
+                                             Pessoa.find({ ehVendedor: true, user: id }).lean().then((vendedor) => {
+                                                  Empresa.find({ user: id }).lean().then((empresa) => {
+                                                       Configuracao.find({ user: id }).lean().then((configuracao) => {
                                                             var pedido
                                                             if (projeto.pedido) {
                                                                  pedido = 'checked'
@@ -1003,7 +1075,7 @@ router.get('/remover/:id', ehAdmin, (req, res) => {
                               Equipe.findOneAndRemove({ projeto: req.params.id }).then(() => {
                                    Cronograma.findOneAndRemove({ projeto: req.params.id }).then(() => {
                                         Dimensionamento.findOneAndRemove({ _id: projeto.dimensionamento }).then(() => {
-                                             req.flash('success_msg', 'Projeto removido com sucesso')
+                                             req.flash('success_msg', 'Projeto removido com sucesso.')
                                              res.redirect('/projeto/consulta')
                                         }).catch(() => {
                                              req.flash('error_msg', 'Não foi possível remover o dimensionamento do projeto.')
@@ -1038,6 +1110,14 @@ router.get('/remover/:id', ehAdmin, (req, res) => {
 
 router.get('/alocacao/:id', ehAdmin, (req, res) => {
      const { _id } = req.user
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
      var dentro_ins = []
      var fora_ins = []
      var dentro_ele = []
@@ -1054,12 +1134,12 @@ router.get('/alocacao/:id', ehAdmin, (req, res) => {
                     // //console.log('projeto.equipe=>' + projeto.equipe)
                     if (typeof projeto.equipe != 'undefined' && projeto.equipe != '') {
                          //console.log('encontrou equipe no projeto')
-                         Equipe.find({ user: _id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
+                         Equipe.find({ user: id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
                               Equipe.findOne({ _id: projeto.equipe }).lean().then((lista_equipe) => {
                                    var lista_instaladores = [lista_equipe.ins0, lista_equipe.ins1, lista_equipe.ins2, lista_equipe.ins3, lista_equipe.ins4, lista_equipe.ins5]
                                    var lista_eletricistas = [lista_equipe.ele0, lista_equipe.ele1]
-                                   Pessoa.find({ user: _id, funins: 'checked' }).then((pessoas_ins) => {
-                                        Pessoa.find({ user: _id, funele: 'checked' }).then((pessoas_ele) => {
+                                   Pessoa.find({ user: id, funins: 'checked' }).then((pessoas_ins) => {
+                                        Pessoa.find({ user: id, funele: 'checked' }).then((pessoas_ele) => {
                                              pessoas_ins.forEach((element) => {
                                                   encontrou_ins = false
                                                   for (i = 0; i < lista_instaladores.length; i++) {
@@ -1166,9 +1246,9 @@ router.get('/alocacao/:id', ehAdmin, (req, res) => {
                          })
                     } else {
                          //console.log('não encontrou equipe no projeto')
-                         Equipe.find({ user: _id, nome: { $exists: true } }).lean().then((equipes) => {
+                         Equipe.find({ user: id, nome: { $exists: true } }).lean().then((equipes) => {
                               // //console.log('projeto.equipe=>' + projeto.equipe)
-                              Pessoa.find({ user: _id, funele: 'checked' }).then((pessoas_ele) => {
+                              Pessoa.find({ user: id, funele: 'checked' }).then((pessoas_ele) => {
                                    // //console.log('pessoas_ele=>' + pessoas_ele)
                                    var t = 0
                                    pessoas_ele.forEach((element) => {
@@ -1198,7 +1278,7 @@ router.get('/alocacao/:id', ehAdmin, (req, res) => {
                          })
 
                          // //console.log('busca eletricistas')
-                         // Pessoa.find({ user: _id, funele: 'checked' }).lean().then((pessoas_ele) => {
+                         // Pessoa.find({ user: id, funele: 'checked' }).lean().then((pessoas_ele) => {
                          //      res.render('projeto/alocacao', { projeto, cliente, cronograma, pessoas_ele })
                          // }).catch((err) => {
                          //      req.flash('error_msg', 'Falha ao encontrar os eletricistas.')
@@ -2136,6 +2216,14 @@ router.get('/investimento/:id', ehAdmin, (req, res) => {
 
 router.get('/custos/:id', ehAdmin, (req, res) => {
      const { _id } = req.user
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
      var ehSimples = false
      var ehLP = false
      var ehLR = false
@@ -2222,6 +2310,14 @@ router.get('/custos/:id', ehAdmin, (req, res) => {
 router.post('/investimento', ehAdmin, (req, res) => {
 
      const { _id } = req.user
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
 
      Projeto.findOne({ _id: req.body.id }).then((projeto) => {
 
@@ -2234,13 +2330,13 @@ router.post('/investimento', ehAdmin, (req, res) => {
           if (projeto.investimento == '' || typeof projeto.investimento == 'undefined') {
 
                const invest = {
-                    user: _id,
+                    user: id,
                     parcelas: req.body.numpar,
                     txjuros: req.body.txjuros,
                     ipca: req.body.ipca,
                }
                const dime = {
-                    user: _id,
+                    user: id,
                     te: req.body.te,
                     tusd: req.body.tusd,
                     icms: req.body.icms,
@@ -2273,7 +2369,7 @@ router.post('/investimento', ehAdmin, (req, res) => {
                                    projeto.investimento = investimento._id
                                    projeto.save().then(() => {
                                         //res.render('projeto/investimento', { sac, txjuros, numpar, valor, totpmt, totamort, totjuros, projeto, parmed, te, tusd, icms, pis, cofins, cosip, ipca, ajuste, medcon, dimensionamento, investimento })
-                                        // console.log('projeto salvo com sucesso')
+                                        // console.log('projeto salvo com sucesso.')
                                         res.redirect('/projeto/investimento/' + projeto._id)
                                    })
                               }).catch((err) => {
@@ -2390,6 +2486,14 @@ router.post('/salvarcustos/', ehAdmin, (req, res) => {
 
 router.post("/novo", ehAdmin, (req, res) => {
      const { _id } = req.user
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
      var tipoprj = req.body.tipoprj
      var prj_id
      var typeGes = 'hidden'
@@ -2410,7 +2514,7 @@ router.post("/novo", ehAdmin, (req, res) => {
 
      //Validação se o projeto já existe
      var nome = req.body.nome
-     Projeto.findOne({ nome: nome, user: _id }).then((projeto) => {
+     Projeto.findOne({ nome: nome, user: id }).then((projeto) => {
           prj_id = projeto._id
 
           if (!prj_id || typeof prj_id != undefined) {
@@ -2772,11 +2876,11 @@ router.post("/novo", ehAdmin, (req, res) => {
                          //console.log('projeto=>' + projeto)
                          Dimensionamento.findOne({ _id: req.body.id_dime }).lean().then((dimensionamento) => {
                               //console.log('dimensionamento=>' + dimensionamento)
-                              Empresa.find({ user: _id }).lean().then((empresa) => {
-                                   Configuracao.find({ user: _id }).lean().then((configuracao) => {
-                                        Pessoa.find({ ehVendedor: true, user: _id }).lean().then((vendedor) => {
-                                             Pessoa.find({ user: _id, funges: 'checked' }).lean().then((responsavel) => {
-                                                  Cliente.find({ user: _id, sissolar: 'checked' }).lean().then((clientes) => {
+                              Empresa.find({ user: id }).lean().then((empresa) => {
+                                   Configuracao.find({ user: id }).lean().then((configuracao) => {
+                                        Pessoa.find({ ehVendedor: true, user: id }).lean().then((vendedor) => {
+                                             Pessoa.find({ user: id, funges: 'checked' }).lean().then((responsavel) => {
+                                                  Cliente.find({ user: id, sissolar: 'checked' }).lean().then((clientes) => {
                                                        res.render("projeto/addprojeto", { erros, empresa, projeto, dimensionamento, configuracao, responsavel, vendedor, clientes, troca_dim: 'checked' })
                                                   }).catch((err) => {
                                                        req.flash('error_msg', 'Houve um erro ao encontrar o cliente.')
@@ -2965,7 +3069,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                         var prj
                                         var corpo
                                         prj = {
-                                             user: _id,
+                                             user: id,
                                              nome: req.body.nome,
                                              nomecliente: cliente.nome,
                                              endereco: req.body.endereco,
@@ -3025,12 +3129,12 @@ router.post("/novo", ehAdmin, (req, res) => {
                                         //console.log(corpo)
                                         new Projeto(corpo).save().then(() => {
                                              //console.log('salvou projeto')
-                                             Projeto.findOne({ user: _id }).sort({ field: 'asc', _id: -1 }).lean().then((projeto) => {
+                                             Projeto.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).lean().then((projeto) => {
                                                   // Projeto.find().limit(1).sort({$_id: -1}).lean().then((projeto) => {
                                                   //console.log('projeto=>' + projeto)
                                                   //console.log('projeto._id=>' + projeto._id)
                                                   Empresa.findOne({ _id: projeto.empresa }).lean().then((rp) => {
-                                                       Pessoa.find({ vendedor: true, user: _id }).lean().then((vendedor) => {
+                                                       Pessoa.find({ vendedor: true, user: id }).lean().then((vendedor) => {
                                                             // console.log('vlrTotal=>' + vlrequ)
                                                             // console.log('checkUni=>' + checkUni)
                                                             // console.log('unidadeEqu=>' + unidadeEqu)
@@ -3138,7 +3242,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                  console.log('salvou detalhado')
 
                                                                  var cronograma_novo = {
-                                                                      user: _id,
+                                                                      user: id,
                                                                       projeto: projeto._id,
                                                                       nome: projeto.nome,
                                                                       dateplaini: req.body.valDataIni,
@@ -3150,12 +3254,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                            Cliente.findOne({ _id: req.body.cliente }).lean().then((cliente) => {
                                                                                 Pessoa.findOne({ _id: req.body.gestor }).lean().then((gestao) => {
                                                                                      console.log('salva pessoa')
-                                                                                     new Equipe({
-                                                                                          projeto: projeto._id,
-                                                                                          user: _id,
-                                                                                          nome_projeto: projeto.nome,
-                                                                                     }).save().then(() => {
-                                                                                          sucesso.push({ texto: 'Projeto criado com sucesso' })
+                                                                                          sucesso.push({ texto: 'Projeto criado com sucesso.' })
                                                                                           var fatura
                                                                                           if (req.body.checkFatura != null) {
                                                                                                fatura = 'checked'
@@ -3181,86 +3280,142 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                                                } else {
                                                                                                     plaQtdEst = detalhe.unidadeest
                                                                                                }
-                                                                                               new Vistoria({
-                                                                                                    user: _id,
-                                                                                                    projeto: projeto._id,
-                                                                                                    plaQtdMod: plaQtdMod,
-                                                                                                    plaQtdInv: plaQtdInv,
-                                                                                                    plaQtdEst: plaQtdEst,
-                                                                                                    plaWattMod: 0,
-                                                                                                    plaKwpInv: 0,
-                                                                                                    plaDimArea: 0,
-                                                                                                    plaQtdString: 0,
-                                                                                                    plaModString: 0,
-                                                                                                    plaQtdEst: 0
-                                                                                               }).save().then(() => {
-                                                                                                     //console.log('salvou equipe')
-                                                                                                    if (tipoprj == 1) {
-                                                                                                         if (req.body.tipoEntrada == 'Proprio') {
-                                                                                                              res.render("projeto/customdo/gestao", {
-                                                                                                                   projeto, sucesso, configuracao, gestao, cliente, checkHora,
-                                                                                                                   typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
-                                                                                                                   vistoria, alocacao, aquisicao, typeDrg, displayDia, selecionado
-                                                                                                              })
-                                                                                                         } else {
-                                                                                                              res.render('projeto/custosdiretos', {
-                                                                                                                   projeto, sucesso, configuracao, rp, vendedor, cliente, fatura, checkHora,
-                                                                                                                   typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
-                                                                                                              })
-                                                                                                         }
-                                                                                                    } else {
-                                                                                                         console.log('projeto.configuracao=>' + projeto.configuracao)
-                                                                                                         console.log('projeto.empresa=>' + projeto.empresa)
-                                                                                                         console.log('projeto.vendedor=>' + projeto.vendedor)
-                                                                                                         console.log('projeto.funres=>' + projeto.funres)
-                                                                                                         Configuracao.findOne({ _id: projeto.configuracao }).lean().then((config) => {
-                                                                                                              Empresa.findOne({ _id: projeto.empresa }).lean().then((rp) => {
-                                                                                                                   Pessoa.findOne({ _id: projeto.vendedor }).lean().then((pv) => {
-                                                                                                                        Pessoa.findOne({ _id: projeto.funres }).lean().then((pr) => {
-                                                                                                                             Cliente.findOne({ _id: projeto.cliente }).lean().then((cli) => {
-                                                                                                                                  //console.log('config=>' + config)
-                                                                                                                                  //console.log('rp=>' + rp)
-                                                                                                                                  //console.log('pv=>' + pv)
-                                                                                                                                  //console.log('pr=>' + pr)
-                                                                                                                                  //console.log('cli=>' + cli)
-                                                                                                                                  res.render('projeto/projetodia', {
-                                                                                                                                       projeto, sucesso, fatura, checkHora, config, rp, pv, pr, cli,
-                                                                                                                                       typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao
+                                                                                               const proposta1 = {
+                                                                                                    user: id,
+                                                                                                    cliente: req.body.cliente,
+                                                                                                    dtcadastro1: String(req.body.valDataIni),
+                                                                                                    dtvalidade1: setData(req.body.valDataIni,14),
+                                                                                                    data: dataBusca(dataHoje()),
+                                                                                                    feito: true,
+                                                                                                    ganho: false,
+                                                                                                    assinado: false,
+                                                                                                    encerrado: false
+                                                                                               }
+                                                                                               new Proposta(proposta1).save().then(() => {
+                                                                                                    Proposta.findOne().sort({ field: 'asc', _id: -1 }).then((nova_proposta) => {
+                                                                                                         Cliente.findOne({ _id: nova_proposta.cliente }).then((cliente) => {
+                                                                                                              new Equipe({
+                                                                                                                   user: id,
+                                                                                                                   projeto: projeto._id,
+                                                                                                                   user: id,                                                                                                                   
+                                                                                                                   nome_projeto: cliente.nome,
+                                                                                                                   dtinicio: '0000-00-00',
+                                                                                                                   dtfim: '0000-00-00',
+                                                                                                                   feito: false
+                                                                                                              }).save().then(() => {
+                                                                                                                   Equipe.findOne().sort({ field: 'asc', _id: -1 }).then((nova_equipe) => {
+                                                                                                                        //console.log('nova_proposta._id=>' + nova_proposta._id)
+                                                                                                                        //console.log('nova_equipe._id=>' + nova_equipe._id)
+                                                                                                                        nova_proposta.equipe = nova_equipe._id
+                                                                                                                        nova_proposta.save().then(() => {
+                                                                                                                             new Vistoria({
+                                                                                                                                  user: id,
+                                                                                                                                  projeto: projeto._id,
+                                                                                                                                  plaQtdMod: plaQtdMod,
+                                                                                                                                  plaQtdInv: plaQtdInv,
+                                                                                                                                  plaQtdEst: plaQtdEst,
+                                                                                                                                  plaWattMod: 0,
+                                                                                                                                  plaKwpInv: 0,
+                                                                                                                                  plaDimArea: 0,
+                                                                                                                                  plaQtdString: 0,
+                                                                                                                                  plaModString: 0,
+                                                                                                                                  plaQtdEst: 0,
+                                                                                                                                  proposta: nova_proposta._id,
+                                                                                                                                  feito: false
+                                                                                                                             }).save().then(() => {
+                                                                                                                                  new Compra({
+                                                                                                                                       user: id,
+                                                                                                                                       proposta: nova_proposta._id,
+                                                                                                                                       feitopedido: false,
+                                                                                                                                       feitonota: false
+                                                                                                                                  }).save().then(() => {
+                                                                                                                                       new Documento({
+                                                                                                                                            user: id,
+                                                                                                                                            proposta: nova_proposta._id,
+                                                                                                                                            feitotrt: false,
+                                                                                                                                            feitoprotocolado: false,
+                                                                                                                                            feitoaceite: false,
+                                                                                                                                            feitoalmox: false,
+                                                                                                                                            feitofaturado: false,
+                                                                                                                                            enviaalmox: false
+                                                                                                                                       }).save(() => {
+                                                                                                                                            new Posvenda({
+                                                                                                                                                 user: id,
+                                                                                                                                                 proposta: nova_proposta._id,
+                                                                                                                                                 feito: false
+                                                                                                                                            }).save(() => {
+                                                                                                                                                 req.flash('success_msg', 'Projeto salvo com sucesso.')
+                                                                                                                                                 res.redirect('/gerenciamento/proposta/' + nova_proposta._id)
+                                                                                                                                            })
+                                                                                                                                       })
                                                                                                                                   })
-                                                                                                                             }).catch((err) => {
-                                                                                                                                  req.flash('error_msg', 'Houve uma falha ao encontrar o cliente.')
-                                                                                                                                  res.redirect('/pessoa/consulta')
+                                                                                                                             })
+
+                                                                                                                        })
+                                                                                                                   })
+                                                                                                              })
+                                                                                                         })
+                                                                                                    })
+                                                                                               })
+                                                                                               //console.log('salvou equipe')
+                                                                                               if (tipoprj == 1) {
+                                                                                                    if (req.body.tipoEntrada == 'Proprio') {
+                                                                                                         res.render("projeto/customdo/gestao", {
+                                                                                                              projeto, sucesso, configuracao, gestao, cliente, checkHora,
+                                                                                                              typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
+                                                                                                              vistoria, alocacao, aquisicao, typeDrg, displayDia, selecionado
+                                                                                                         })
+                                                                                                    } else {
+                                                                                                         res.render('projeto/custosdiretos', {
+                                                                                                              projeto, sucesso, configuracao, rp, vendedor, cliente, fatura, checkHora,
+                                                                                                              typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
+                                                                                                         })
+                                                                                                    }
+                                                                                               } else {
+                                                                                                    console.log('projeto.configuracao=>' + projeto.configuracao)
+                                                                                                    console.log('projeto.empresa=>' + projeto.empresa)
+                                                                                                    console.log('projeto.vendedor=>' + projeto.vendedor)
+                                                                                                    console.log('projeto.funres=>' + projeto.funres)
+                                                                                                    Configuracao.findOne({ _id: projeto.configuracao }).lean().then((config) => {
+                                                                                                         Empresa.findOne({ _id: projeto.empresa }).lean().then((rp) => {
+                                                                                                              Pessoa.findOne({ _id: projeto.vendedor }).lean().then((pv) => {
+                                                                                                                   Pessoa.findOne({ _id: projeto.funres }).lean().then((pr) => {
+                                                                                                                        Cliente.findOne({ _id: projeto.cliente }).lean().then((cli) => {
+                                                                                                                             //console.log('config=>' + config)
+                                                                                                                             //console.log('rp=>' + rp)
+                                                                                                                             //console.log('pv=>' + pv)
+                                                                                                                             //console.log('pr=>' + pr)
+                                                                                                                             //console.log('cli=>' + cli)
+                                                                                                                             res.render('projeto/projetodia', {
+                                                                                                                                  projeto, sucesso, fatura, checkHora, config, rp, pv, pr, cli,
+                                                                                                                                  typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao
                                                                                                                              })
                                                                                                                         }).catch((err) => {
-                                                                                                                             req.flash('error_msg', 'Houve uma falha ao encontrar o responsável.')
+                                                                                                                             req.flash('error_msg', 'Houve uma falha ao encontrar o cliente.')
                                                                                                                              res.redirect('/pessoa/consulta')
                                                                                                                         })
                                                                                                                    }).catch((err) => {
-                                                                                                                        req.flash('error_msg', 'Houve uma falha ao encontrar o vendedor.')
+                                                                                                                        req.flash('error_msg', 'Houve uma falha ao encontrar o responsável.')
                                                                                                                         res.redirect('/pessoa/consulta')
                                                                                                                    })
                                                                                                               }).catch((err) => {
-                                                                                                                   req.flash('error_msg', 'Houve uma falha ao encontrar a empresa.')
-                                                                                                                   res.redirect('/configuracao/consulta')
+                                                                                                                   req.flash('error_msg', 'Houve uma falha ao encontrar o vendedor.')
+                                                                                                                   res.redirect('/pessoa/consulta')
                                                                                                               })
                                                                                                          }).catch((err) => {
-                                                                                                              req.flash('error_msg', 'Houve uma falha ao encontrar a configuração.')
+                                                                                                              req.flash('error_msg', 'Houve uma falha ao encontrar a empresa.')
                                                                                                               res.redirect('/configuracao/consulta')
                                                                                                          })
-                                                                                                    }
-                                                                                               }).catch(() => {
-                                                                                                    req.flash('error_msg', 'Houve um erro ao salvar a vistoria.')
-                                                                                                    res.redirect('/menu')
-                                                                                               })
+                                                                                                    }).catch((err) => {
+                                                                                                         req.flash('error_msg', 'Houve uma falha ao encontrar a configuração.')
+                                                                                                         res.redirect('/configuracao/consulta')
+                                                                                                    })
+                                                                                               }
                                                                                           }).catch(() => {
                                                                                                req.flash('error_msg', 'Houve um erro ao encontrar os detalhes.')
                                                                                                res.redirect('/menu')
                                                                                           })
                                                                                           //console.log('fatura=>' + fatura)
-                                                                                     }).catch(() => {
-                                                                                          req.flash('error_msg', 'Houve um erro ao salvar a equipe.')
-                                                                                          res.redirect('/menu')
-                                                                                     })
                                                                                 }).catch(() => {
                                                                                      req.flash('error_msg', 'Houve um erro ao encontrar o gestor.')
                                                                                      res.redirect('/menu')
@@ -3352,7 +3507,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                              projeto.save().then(() => {
                                                   Projeto.findOne().sort({ field: 'asc', _id: -1 }).lean().then((projeto) => {
                                                        Empresa.findOne({ _id: projeto.empresa }).lean().then((rp) => {
-                                                            Pessoa.find({ vendedor: true, user: _id }).lean().then((vendedor) => {
+                                                            Pessoa.find({ vendedor: true, user: id }).lean().then((vendedor) => {
                                                                  const detalhado = {
                                                                       projeto: projeto._id,
                                                                       vlrTotal: vlrequ,
@@ -3412,7 +3567,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                  new Detalhado(detalhado).save().then(() => {
 
                                                                       var cronograma_novo = {
-                                                                           user: _id,
+                                                                           user: id,
                                                                            projeto: projeto._id,
                                                                            nome: projeto.nome,
                                                                            dateplaini: req.body.valDataIni,
@@ -3423,12 +3578,84 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                                 Cliente.findOne({ _id: req.body.cliente }).lean().then((cliente) => {
                                                                                      Pessoa.findOne({ _id: req.body.gestor }).lean().then((gestao) => {
                                                                                           //console.log('salva pessoa')
-                                                                                          new Equipe({
-                                                                                               projeto: projeto._id,
-                                                                                               user: _id,
-                                                                                               nome_projeto: projeto.nome,
-                                                                                          }).save().then(() => {
-                                                                                               sucesso.push({ texto: 'Projeto criado com sucesso' })
+                                                                                               const proposta1 = {
+                                                                                                    user: id,
+                                                                                                    cliente: req.body.cliente,
+                                                                                                    dtcadastro1: String(req.body.valDataIni),
+                                                                                                    dtvalidade1: setData(req.body.valDataIni,14),
+                                                                                                    data: dataBusca(dataHoje()),
+                                                                                                    feito: true,
+                                                                                                    ganho: false,
+                                                                                                    assinado: false,
+                                                                                                    encerrado: false
+                                                                                               }
+                                                                                               new Proposta(proposta1).save().then(() => {
+                                                                                                    Proposta.findOne().sort({ field: 'asc', _id: -1 }).then((nova_proposta) => {
+                                                                                                         Cliente.findOne({ _id: nova_proposta.cliente }).then((cliente) => {
+                                                                                                              new Equipe({
+                                                                                                                   user: id,
+                                                                                                                   projeto: projeto._id,
+                                                                                                                   user: id,
+                                                                                                                   nome_projeto: cliente.nome,
+                                                                                                                   dtinicio: '0000-00-00',
+                                                                                                                   dtfim: '0000-00-00',
+                                                                                                                   feito: false
+                                                                                                              }).save().then(() => {
+                                                                                                                   Equipe.findOne().sort({ field: 'asc', _id: -1 }).then((nova_equipe) => {
+                                                                                                                        //console.log('nova_proposta._id=>' + nova_proposta._id)
+                                                                                                                        //console.log('nova_equipe._id=>' + nova_equipe._id)
+                                                                                                                        nova_proposta.equipe = nova_equipe._id
+                                                                                                                        nova_proposta.save().then(() => {
+                                                                                                                             new Vistoria({
+                                                                                                                                  user: id,
+                                                                                                                                  projeto: projeto._id,
+                                                                                                                                  plaQtdMod: plaQtdMod,
+                                                                                                                                  plaQtdInv: plaQtdInv,
+                                                                                                                                  plaQtdEst: plaQtdEst,
+                                                                                                                                  plaWattMod: 0,
+                                                                                                                                  plaKwpInv: 0,
+                                                                                                                                  plaDimArea: 0,
+                                                                                                                                  plaQtdString: 0,
+                                                                                                                                  plaModString: 0,
+                                                                                                                                  plaQtdEst: 0,
+                                                                                                                                  proposta: nova_proposta._id,
+                                                                                                                                  feito: false
+                                                                                                                             }).save().then(() => {
+                                                                                                                                  new Compra({
+                                                                                                                                       user: id,
+                                                                                                                                       proposta: nova_proposta._id,
+                                                                                                                                       feitopedido: false,
+                                                                                                                                       feitonota: false
+                                                                                                                                  }).save().then(() => {
+                                                                                                                                       new Documento({
+                                                                                                                                            user: id,
+                                                                                                                                            proposta: nova_proposta._id,
+                                                                                                                                            feitotrt: false,
+                                                                                                                                            feitoprotocolado: false,
+                                                                                                                                            feitoaceite: false,
+                                                                                                                                            feitoalmox: false,
+                                                                                                                                            feitofaturado: false,
+                                                                                                                                            enviaalmox: false
+                                                                                                                                       }).save(() => {
+                                                                                                                                            new Posvenda({
+                                                                                                                                                 user: id,
+                                                                                                                                                 proposta: nova_proposta._id,
+                                                                                                                                                 feito: false
+                                                                                                                                            }).save(() => {
+                                                                                                                                                 req.flash('success_msg', 'Projeto salvo com sucesso.')
+                                                                                                                                                 res.redirect('/gerenciamento/proposta/' + nova_proposta._id)
+                                                                                                                                            })
+                                                                                                                                       })
+                                                                                                                                  })
+                                                                                                                             })
+
+                                                                                                                        })
+                                                                                                                   })
+                                                                                                              })
+                                                                                                         })
+                                                                                                    })
+                                                                                               })
+                                                                                               sucesso.push({ texto: 'Projeto criado com sucesso.' })
                                                                                                var fatura
                                                                                                if (req.body.checkFatura != null) {
                                                                                                     fatura = 'checked'
@@ -3450,10 +3677,6 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                                                     })
                                                                                                }
                                                                                                //console.log('fatura=>' + fatura)
-                                                                                          }).catch(() => {
-                                                                                               req.flash('error_msg', 'Houve um erro ao salvar a equipe.')
-                                                                                               res.redirect('/menu')
-                                                                                          })
                                                                                      }).catch(() => {
                                                                                           req.flash('error_msg', 'Houve um erro ao encontrar o gestor.')
                                                                                           res.redirect('/menu')
@@ -3518,6 +3741,14 @@ router.post("/novo", ehAdmin, (req, res) => {
 
 router.post("/salvarequipe", ehAdmin, (req, res) => {
      const { _id } = req.user
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
      // //console.log('req.body.id=>' + req.body.id)
      Projeto.findOne({ _id: req.body.id }).then((projeto) => {
           Equipe.findOne({ _id: req.body.equipe }).then((equipe) => {
@@ -3602,6 +3833,14 @@ router.post("/salvarequipe", ehAdmin, (req, res) => {
 
 router.post("/salvarins", ehAdmin, (req, res) => {
      const { _id } = req.user
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
      var erros = ''
      var dias = 0
 
@@ -3711,6 +3950,14 @@ router.post("/salvarins", ehAdmin, (req, res) => {
 
 router.post("/salvarele", ehAdmin, (req, res) => {
      const { _id } = req.user
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
      var erros = ''
      var dias = 0
      var totint = 0
@@ -3838,6 +4085,14 @@ router.post('/salvarescopo', ehAdmin, (req, res) => {
 
 router.post('/edicao', ehAdmin, (req, res) => {
      const { _id } = req.user
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
      var erros = ''
      var redirect = '/projeto/edicao/' + req.body.id
 
@@ -4563,6 +4818,14 @@ router.post('/edicao', ehAdmin, (req, res) => {
 
 router.post('/direto', ehAdmin, (req, res) => {
      const { _id } = req.user
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
      var redirect
      var erros = ''
      var fatequ
@@ -4594,7 +4857,7 @@ router.post('/direto', ehAdmin, (req, res) => {
           Projeto.findOne({ _id: req.body.id }).then((projeto) => {
                Cronograma.findOne({ projeto: projeto._id }).then((cronograma) => {
                     Detalhado.findOne({ projeto: req.body.id }).then((detalhe) => {
-                         Cliente.findOne({ user: _id, _id: projeto.cliente }).lean().then((cliente) => {
+                         Cliente.findOne({ user: id, _id: projeto.cliente }).lean().then((cliente) => {
                               Empresa.findOne({ _id: projeto.empresa }).lean().then((empresa_prj) => {
                                    Configuracao.findOne({ _id: projeto.configuracao }).then((config) => {
                                         //console.log('entrou')
@@ -5357,7 +5620,7 @@ router.post('/direto', ehAdmin, (req, res) => {
                                         cronograma.save().then(() => {
                                              projeto.save().then(() => {
                                                   //console.log('salvou')
-                                                  req.flash('success_msg', 'Projeto Salvo com sucesso')
+                                                  req.flash('success_msg', 'Projeto Salvo com sucesso.')
                                                   if (projeto.ehVinculo) {
                                                        res.redirect('/projeto/custos/' + req.body.id)
                                                   } else {
@@ -5432,6 +5695,14 @@ router.post('/direto', ehAdmin, (req, res) => {
 
 router.post('/realizar', ehAdmin, (req, res) => {
      const { _id } = req.user
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
      var erros = ''
      var sucesso = ''
 
@@ -6174,7 +6445,7 @@ router.post('/realizar', ehAdmin, (req, res) => {
                                    } else {
                                         //console.lof('lbaimp=>' + lbaimp)
                                         const realizado = {
-                                             user: _id,
+                                             user: id,
                                              projeto: prj_id,
                                              potencia: projeto.potencia,
                                              foiRealizado: false,
@@ -6408,6 +6679,14 @@ router.post('/realizar', ehAdmin, (req, res) => {
 
 router.post('/filtrar', ehAdmin, (req, res) => {
      const { _id } = req.user
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
      var emaberto = false
      var emexecucao = false
      var parado = false
@@ -6421,7 +6700,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
      //console.log('classificacao=>' + classificacao)
      //console.log('funres=>' + funres)
      if (status == 'Todos' && classificacao == 'Todos' && funres == 'Todos') {
-          Projeto.find({ user: _id }).lean().then((projetos) => {
+          Projeto.find({ user: id }).lean().then((projetos) => {
                Pessoa.find({ funges: 'checked' }).lean().then((responsavel) => {
                     res.render('projeto/findprojetos', { projetos, responsavel, classificacao: 'Todos', filStatus: 'Todos' })
                }).catch((err) => {
@@ -6433,8 +6712,8 @@ router.post('/filtrar', ehAdmin, (req, res) => {
           if (funres == 'Todos') {
                if (status == 'Todos') {
                     //console.log('classificacao=>' + classificacao)
-                    Projeto.find({ classUsina: classificacao, user: _id }).lean().then((projetos) => {
-                         Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {
+                    Projeto.find({ classUsina: classificacao, user: id }).lean().then((projetos) => {
+                         Pessoa.find({ funges: 'checked', user: id }).lean().then((responsavel) => {
                               res.render('projeto/findprojetos', { projetos, classificacao, responsavel, filStatus: status })
                          }).catch((err) => {
                               req.flash('error_msg', 'Nenhum projeto encontrado.')
@@ -6455,8 +6734,8 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                               case 'Realizado': realizado = true
                                    break;
                          }
-                         Projeto.find({ foiRealizado: realizado, orcado: emaberto, executando: emexecucao, parado: parado, user: _id }).lean().then((projetos) => {
-                              Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {
+                         Projeto.find({ foiRealizado: realizado, orcado: emaberto, executando: emexecucao, parado: parado, user: id }).lean().then((projetos) => {
+                              Pessoa.find({ funges: 'checked', user: id }).lean().then((responsavel) => {
                                    res.render('projeto/findprojetos', { projetos, responsavel, classificacao, filStatus: status })
                               }).catch((err) => {
                                    req.flash('error_msg', 'Nenhum projeto encontrado.')
@@ -6476,8 +6755,8 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                               case 'Realizado': realizado = true
                                    break;
                          }
-                         Projeto.find({ classUsina: classificacao, foiRealizado: foirealizado, orcado: emaberto, executando: emexecucao, parado: parado, user: _id }).lean().then((projetos) => {
-                              Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {
+                         Projeto.find({ classUsina: classificacao, foiRealizado: foirealizado, orcado: emaberto, executando: emexecucao, parado: parado, user: id }).lean().then((projetos) => {
+                              Pessoa.find({ funges: 'checked', user: id }).lean().then((responsavel) => {
                                    res.render('projeto/findprojetos', { projetos, responsavel, classificacao, filStatus: status })
                               }).catch((err) => {
                                    req.flash('error_msg', 'Nenhum projeto encontrado.')
@@ -6489,9 +6768,9 @@ router.post('/filtrar', ehAdmin, (req, res) => {
           } else {
                if (funres != 'Todos') {
                     if (realizado == 'Todos' && classificacao == 'Todos') {
-                         Pessoa.findOne({ nome: funres, user: _id }).lean().then((pr) => {
+                         Pessoa.findOne({ nome: funres, user: id }).lean().then((pr) => {
                               Projeto.find({ funres: pr._id }).lean().then((projetos) => {
-                                   Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {
+                                   Pessoa.find({ funges: 'checked', user: id }).lean().then((responsavel) => {
                                         res.render('projeto/findprojetos', { projetos, responsavel, pr, classificacao, filStatus: status })
                                    }).catch((err) => {
                                         req.flash('error_msg', 'Nenhum projeto encontrado.')
@@ -6502,9 +6781,9 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                          })
                     } else {
                          if (realizado == 'Todos') {
-                              Pessoa.findOne({ nome: funres, user: _id }).lean().then((pr) => {
+                              Pessoa.findOne({ nome: funres, user: id }).lean().then((pr) => {
                                    Projeto.find({ funres: pr._id, classUsina: classificacao, }).lean().then((projetos) => {
-                                        Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {
+                                        Pessoa.find({ funges: 'checked', user: id }).lean().then((responsavel) => {
                                              res.render('projeto/findprojetos', { projetos, responsavel, pr, classificacao, filStatus: status })
                                         }).catch((err) => {
                                              req.flash('error_msg', 'Nenhum projeto encontrado.')
@@ -6526,9 +6805,9 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                         case 'Realizado': realizado = true
                                              break;
                                    }
-                                   Pessoa.findOne({ nome: funres, user: _id }).lean().then((pr) => {
+                                   Pessoa.findOne({ nome: funres, user: id }).lean().then((pr) => {
                                         Projeto.find({ funres: pr._id, foiRealizado: foirealizado, orcado: emaberto, executando: emexecucao, parado: parado }).lean().then((projetos) => {
-                                             Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {
+                                             Pessoa.find({ funges: 'checked', user: id }).lean().then((responsavel) => {
                                                   res.render('projeto/findprojetos', { projetos, responsavel, pr, classificacao, filStatus: status })
                                              }).catch((err) => {
                                                   req.flash('error_msg', 'Nenhum projeto encontrado.')
@@ -6549,9 +6828,9 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                         case 'Realizado': realizado = true
                                              break;
                                    }
-                                   Pessoa.findOne({ nome: funres, user: _id }).lean().then((pr) => {
+                                   Pessoa.findOne({ nome: funres, user: id }).lean().then((pr) => {
                                         Projeto.find({ funres: pr._id, classUsina: classificacao, foiRealizado: foirealizado, orcado: emaberto, executando: emexecucao, parado: parado }).lean().then((projetos) => {
-                                             Pessoa.find({ funges: 'checked', user: _id }).lean().then((responsavel) => {
+                                             Pessoa.find({ funges: 'checked', user: id }).lean().then((responsavel) => {
                                                   res.render('projeto/findprojetos', { projetos, responsavel, pr, classificacao, filStatus: status })
                                              }).catch((err) => {
                                                   req.flash('error_msg', 'Nenhum projeto encontrado.')
@@ -6659,6 +6938,14 @@ router.get('/confirmafinalizar/:id', ehAdmin, (req, res) => {
 
 router.get('/finalizar/:id', ehAdmin, (req, res) => {
      const { _id } = req.user
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
      // var sucesso = []
      Realizado.findOne({ _id: req.params.id }).then((foiRealizado) => {
           foiRealizado.foiRealizado = true
@@ -6676,7 +6963,7 @@ router.get('/finalizar/:id', ehAdmin, (req, res) => {
                               var buscarevi = dataBusca(setData(dataHoje(), 30))
                               if (vistoria != null && typeof vistoria != 'undefined' && vistoria != '') {
                                    usina = {
-                                        user: _id,
+                                        user: id,
                                         nome: projeto.nome,
                                         endereco: projeto.endereco,
                                         cliente: projeto.cliente,
@@ -6692,7 +6979,7 @@ router.get('/finalizar/:id', ehAdmin, (req, res) => {
                                    }
                               } else {
                                    usina = {
-                                        user: _id,
+                                        user: id,
                                         nome: projeto.nome,
                                         endereco: projeto.endereco,
                                         cliente: projeto.cliente,
@@ -6711,7 +6998,7 @@ router.get('/finalizar/:id', ehAdmin, (req, res) => {
                               new Usina(usina).save().then(() => {
                                    Usina.find().sort({ field: 'asc', _id: -1 }).then((novausina) => {
                                         var tarefa = {
-                                             user: _id,
+                                             user: id,
                                              usina: novausina._id,
                                              servico: 'Limpeza de Painéis',
                                              dataini: setData(dataHoje(), 182),
@@ -6722,7 +7009,7 @@ router.get('/finalizar/:id', ehAdmin, (req, res) => {
                                              concluido: false
                                         }
                                         new Tarefa(tarefa).save().then(() => {
-                                             req.flash('success_msg', 'Projeto finalizado com sucesso')
+                                             req.flash('success_msg', 'Projeto finalizado com sucesso.')
                                              //console.log('projeto._id=>' + projeto._id)
                                              res.redirect('/projeto/realizar/' + projeto._id)
                                         }).catch((err) => {
@@ -6878,7 +7165,15 @@ router.get('/executar/:id', ehAdmin, (req, res) => {
 
 router.get('/motivoParar/:id', ehAdmin, (req, res) => {
      const { _id } = req.user
-     Projeto.findOne({ _id: req.params.id, user: _id }).lean().then((projeto) => {
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
+     Projeto.findOne({ _id: req.params.id, user: id }).lean().then((projeto) => {
           var currenTime = new Date()
           var hoje = currenTime.toLocaleDateString()
           res.render('projeto/motivoparar', { projeto: projeto, datahoje: hoje })
@@ -6891,6 +7186,14 @@ router.get('/motivoParar/:id', ehAdmin, (req, res) => {
 router.post('/parar', ehAdmin, (req, res) => {
      var aviso
      const { _id } = req.user
+     const { user } = req.user
+     var id
+
+     if (typeof user == 'undefined') {
+          id = _id
+     } else {
+          id = user
+     }
 
      Projeto.findOne({ _id: req.body.id }).then((projeto_para) => {
           projeto_para.executando = false

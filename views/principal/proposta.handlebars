@@ -151,6 +151,11 @@
         <a href='/gerenciamento/proposta/{{proposta._id}}/'
             class='btn btn-sm{{#if proposta.feito}} check-menu {{else}} botao-menu ativo {{/if}}'
             style="border-bottom-left-radius: 30px;"> <i class="bi bi-house"></i> Proposta</a>
+        {{#if proposta._id}} 
+        {{else}}
+        <a href='/projeto/selectProjeto/' class='btn btn-sm botao-menu ativo'
+            style="border-bottom-left-radius: 30px;"> <i class="bi bi-house"></i> Iniciar Projeto</a> 
+        {{/if}}    
         {{#if proposta.ganho}}
         <div class='numero'>2</div>
         <a href="/gerenciamento/visita/{{proposta._id}}"
