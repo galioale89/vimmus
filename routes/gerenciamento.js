@@ -123,6 +123,7 @@ router.get('/consulta', ehAdmin, (req, res) => {
                         var dtcadastro = ''
                         var dtinicio = ''
                         var dtfim = ''
+                        var status = ''
                         Proposta.findOne({ _id: element._id }).then((lista_proposta) => {
                             Cliente.findOne({ _id: element.cliente }).then((lista_cliente) => {
                                 Equipe.findOne({ _id: element.equipe }).then((equipe) => {
@@ -152,17 +153,18 @@ router.get('/consulta', ehAdmin, (req, res) => {
                                                             }
                                                         }
                                                     }
-                                                    console.log('dtcadastro=>' + dtcadastro)
-                                                    console.log('equipe=>' + equipe)
-                                                    console.log('documento=>' + documento)
-                                                    console.log('compra=>' + compra)
-                                                    console.log('lista_proposta=>' + lista_proposta)
-                                                    console.log('equipe.feito=>' + equipe.feito)
-                                                    console.log('documento.protocolado=>' + documento.protocolado)
-                                                    console.log('documento.feitotrt=>' + documento.feitotrt)
-                                                    console.log('compra.feitonota=>' + compra.feitonota)
-                                                    console.log('compra.feitopedido =>' + compra.feitopedido)
-                                                    console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
+                                                    // console.log('dtcadastro=>' + dtcadastro)
+                                                    // console.log('equipe=>' + equipe)
+                                                    // console.log('documento=>' + documento)
+                                                    // console.log('compra=>' + compra)
+                                                    // console.log('lista_proposta=>' + lista_proposta)
+                                                    // console.log('equipe.feito=>' + equipe.feito)
+                                                    // console.log('documento.protocolado=>' + documento.protocolado)
+                                                    // console.log('documento.feitotrt=>' + documento.feitotrt)
+                                                    // console.log('compra.feitonota=>' + compra.feitonota)
+                                                    // console.log('compra.feitopedido =>' + compra.feitopedido)
+                                                    // console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
+                                                    console.log('ganho=>'+lista_proposta.ganho)
 
                                                     if (lista_proposta.ganho == true) {
                                                         if (lista_proposta.encerrado == true) {
@@ -241,7 +243,7 @@ router.get('/consulta', ehAdmin, (req, res) => {
                                                         } else {
                                                             responsavel = ''
                                                         }
-                                                        //console.log('status=>' + status)
+                                                        console.log('status=>' + status)
                                                         lista.push({ s: status, id: lista_proposta._id, cliente: lista_cliente.nome, responsavel, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
                                                         q++
                                                         if (q == proposta.length) {
@@ -503,7 +505,6 @@ router.get('/consulta/:tipo', ehAdmin, (req, res) => {
                     proposta.forEach((element) => {
                         Proposta.findOne({ _id: element._id }).then((lista_proposta) => {
                             Cliente.findOne({ _id: element.cliente }).then((lista_cliente) => {
-
                                 Equipe.findOne({ _id: element.equipe }).then((equipe) => {
                                     Documento.findOne({ proposta: element._id }).then((documento) => {
                                         Compra.findOne({ proposta: element._id }).then((compra) => {
@@ -4623,9 +4624,15 @@ router.get('/entrega/:id', ehAdmin, (req, res) => {
                             concluido: false
                         }
                         new Tarefas(tarefa).save().then(() => {
-                            req.flash('success_msg', 'Projeto finalizado e usina gerada com sucesso.')
-                            //console.log('projeto._id=>' + projeto._id)
-                            res.redirect('/gerenciamento/proposta/' + req.params.id)
+                            proposta.encerrado = true
+                            proposta.save().then(()=>{
+                                req.flash('success_msg', 'Projeto finalizado e usina gerada com sucesso.')
+                                //console.log('projeto._id=>' + projeto._id)
+                                res.redirect('/gerenciamento/proposta/' + req.params.id)                                
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Erro ao salvar a tarefa.')
+                                res.redirect('/gerenciamento/posvenda/' + req.params.id)
+                            })
                         }).catch((err) => {
                             req.flash('error_msg', 'Erro ao salvar a tarefa.')
                             res.redirect('/gerenciamento/posvenda/' + req.params.id)
