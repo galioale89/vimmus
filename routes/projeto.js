@@ -514,19 +514,19 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
      var equipeins = 'Nenhuma pessoa alocada.'
      var equipevis = 'Nenhuma pessoa alocada.'
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
-          console.log('encontrou projeto')
+          //console.log('encontrou projeto')
           Realizado.findOne({ projeto: projeto._id }).lean().then((realizado) => {
-               console.log('encontrou realizado')
+               //console.log('encontrou realizado')
                Pessoa.findOne({ _id: projeto.funres }).lean().then((responsavel) => {
-                    console.log('encontrou pessoa')
+                    //console.log('encontrou pessoa')
                     Cliente.findOne({ _id: projeto.cliente }).lean().then((cliente) => {
-                         console.log('encontrou cliente')
+                         //console.log('encontrou cliente')
                          Empresa.findOne({ _id: projeto.empresa }).lean().then((empresa) => {
-                              console.log('encontrou empresa')
+                              //console.log('encontrou empresa')
                               Cronograma.findOne({ projeto: projeto._id }).lean().then((cronograma) => {
-                                   console.log('encontrou cronograma')
+                                   //console.log('encontrou cronograma')
                                    Equipe.findOne({ projeto: projeto._id }).lean().then((equipe) => {
-                                        console.log('equipe.pla0=>' + equipe.pla0)
+                                        //console.log('equipe.pla0=>' + equipe.pla0)
                                         if (typeof equipe.pla0 != 'undefined') {
                                              equipepla = equipe.pla0 + '|' + equipe.pla1 + '|' + equipe.pla2 + '|' + equipe.pla3 + '|' + equipe.pla4 + '|' + equipe.pla5
                                         }
@@ -1184,7 +1184,7 @@ router.get('/alocacao/:id', ehAdmin, (req, res) => {
                                              }
 
                                              custoIns = parseFloat(custoIns0) + parseFloat(custoIns1) + parseFloat(custoIns2) + parseFloat(custoIns3) + parseFloat(custoIns4) + parseFloat(custoIns5)
-                                             console.log('lista_equipe.custoins=>' + lista_equipe.custoins)
+                                             //console.log('lista_equipe.custoins=>' + lista_equipe.custoins)
                                              if (lista_equipe.custoins != '') {
                                                   custoIns = lista_equipe.custoins
                                              }
@@ -1391,8 +1391,8 @@ router.get('/investimento/:id', ehAdmin, (req, res) => {
      Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
           Cliente.findOne({ _id: projeto.cliente }).lean().then((cliente) => {
                if (projeto.investimento != '' && typeof projeto.investimento != 'undefined') {
-                    // console.log('projeto.dimensionamento=>' + projeto.dimensionamento)
-                    // console.log('projeto.investimento=>' + projeto.investimento)
+                    // //console.log('projeto.dimensionamento=>' + projeto.dimensionamento)
+                    // //console.log('projeto.investimento=>' + projeto.investimento)
                     Investimento.findOne({ _id: projeto.investimento }).lean().then((investimento) => {
                          Investimento.findOne({ _id: projeto.investimento }).then((invest_ano) => {
                               Dimensionamento.findOne({ _id: projeto.dimensionamento }).lean().then((dimensionamento) => {
@@ -1414,7 +1414,7 @@ router.get('/investimento/:id', ehAdmin, (req, res) => {
                                    } else {
                                         ajuste = 1 + (parseFloat(dimensionamento.ajuste) / 100)
                                    }
-                                   // console.log('dimensionamento.totconsumo=>' + dimensionamento.totconsumo)
+                                   // //console.log('dimensionamento.totconsumo=>' + dimensionamento.totconsumo)
                                    medcon = parseFloat(dimensionamento.totconsumo) / 12
 
                                    trbte = (parseFloat(icms) + parseFloat(cofins) + parseFloat(pis)) / 100
@@ -1423,76 +1423,76 @@ router.get('/investimento/:id', ehAdmin, (req, res) => {
                                    trftusd = ((parseFloat(tusd) * ajuste) / (1 - trbtusd))
                                    tarifa = parseFloat(trfte) + parseFloat(trftusd)
 
-                                   // console.log('numpar=>' + numpar)
+                                   // //console.log('numpar=>' + numpar)
                                    for (i = 1; i <= numpar; i++) {
                                         //console.log('sac=>' + sac)
 
                                         if (i > 12 && fez1 == false) {
                                              te = dimensionamento.te * (1 + (ipca / 100))
-                                             // console.log('te1=>' + te)
+                                             // //console.log('te1=>' + te)
                                              tusd = dimensionamento.tusd * (1 + (ipca / 100))
                                              // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                              fez1 = true
                                         } else {
                                              if (i > 24 && fez2 == false) {
                                                   te = te * (1 + (ipca / 100))
-                                                  // console.log('te2=>' + te)
+                                                  // //console.log('te2=>' + te)
                                                   tusd = tusd * (1 + (ipca / 100))
                                                   // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                   fez2 = true
                                              } else {
                                                   if (i > 36 && fez3 == false) {
                                                        te = te * (1 + (ipca / 100))
-                                                       // console.log('te3=>' + te)
+                                                       // //console.log('te3=>' + te)
                                                        tusd = tusd * (1 + (ipca / 100))
                                                        // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                        fez3 = true
                                                   } else {
                                                        if (i > 48 && fez4 == false) {
                                                             te = te * (1 + (ipca / 100))
-                                                            // console.log('te3=>' + te)
+                                                            // //console.log('te3=>' + te)
                                                             tusd = tusd * (1 + (ipca / 100))
                                                             // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                             fez4 = true
                                                        } else {
                                                             if (i > 60 && fez5 == false) {
                                                                  te = te * (1 + (ipca / 100))
-                                                                 // console.log('te3=>' + te)
+                                                                 // //console.log('te3=>' + te)
                                                                  tusd = tusd * (1 + (ipca / 100))
                                                                  // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                  fez5 = true
                                                             } else {
                                                                  if (i > 72 && fez6 == false) {
                                                                       te = te * (1 + (ipca / 100))
-                                                                      // console.log('te3=>' + te)
+                                                                      // //console.log('te3=>' + te)
                                                                       tusd = tusd * (1 + (ipca / 100))
                                                                       // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                       fez6 = true
                                                                  } else {
                                                                       if (i > 84 && fez7 == false) {
                                                                            te = te * (1 + (ipca / 100))
-                                                                           // console.log('te3=>' + te)
+                                                                           // //console.log('te3=>' + te)
                                                                            tusd = tusd * (1 + (ipca / 100))
                                                                            // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                            fez7 = true
                                                                       } else {
                                                                            if (i > 96 && fez8 == false) {
                                                                                 te = te * (1 + (ipca / 100))
-                                                                                // console.log('te3=>' + te)
+                                                                                // //console.log('te3=>' + te)
                                                                                 tusd = tusd * (1 + (ipca / 100))
                                                                                 // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                                 fez8 = true
                                                                            } else {
                                                                                 if (i > 108 && fez9 == false) {
                                                                                      te = te * (1 + (ipca / 100))
-                                                                                     // console.log('te3=>' + te)
+                                                                                     // //console.log('te3=>' + te)
                                                                                      tusd = tusd * (1 + (ipca / 100))
                                                                                      // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                                      fez9 = true
                                                                                 } else {
                                                                                      if (i > 120 && fez10 == false) {
                                                                                           te = te * (1 + (ipca / 100))
-                                                                                          // console.log('te3=>' + te)
+                                                                                          // //console.log('te3=>' + te)
                                                                                           tusd = tusd * (1 + (ipca / 100))
                                                                                           // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                                           fez10 = true
@@ -1508,24 +1508,24 @@ router.get('/investimento/:id', ehAdmin, (req, res) => {
                                         }
 
                                         minimo = (((30 * (parseFloat(te) + parseFloat(tusd))) / (1 - trbte)) + parseFloat(cosip)).toFixed(2)
-                                        // console.log('i=>' + i)
+                                        // //console.log('i=>' + i)
                                         // if (i <= 12) {
                                         //      fatura = ((parseFloat(medcon) * (((parseFloat(te) + parseFloat(tusd)) * ajuste) / (1 - trbte))) + parseFloat(cosip)).toFixed(2)
                                         //      fatura1 = fatura
                                         // }
                                         // if (i > 12 && i <= 24) {
-                                        //      console.log('fatura1=>' + fatura1)
-                                        //      console.log('medcon=>' + medcon)
-                                        //      console.log('te=>' + te)
-                                        //      console.log('tusd=>' + tusd)
-                                        //      console.log('ajuste=>' + ajuste)
-                                        //      console.log('trbte=>' + trbte)
-                                        //      console.log('cosip=>' + cosip)
+                                        //      //console.log('fatura1=>' + fatura1)
+                                        //      //console.log('medcon=>' + medcon)
+                                        //      //console.log('te=>' + te)
+                                        //      //console.log('tusd=>' + tusd)
+                                        //      //console.log('ajuste=>' + ajuste)
+                                        //      //console.log('trbte=>' + trbte)
+                                        //      //console.log('cosip=>' + cosip)
                                         //      fatura = (parseFlaot(fatura1) + (parseFloat(medcon) * (((parseFloat(te) + parseFloat(tusd)) * ajuste) / (1 - trbte))) + parseFloat(cosip)).toFixed(2)
                                         //      fatura2 = fatura
                                         // }
                                         // if (i > 24 && i <= 36) {
-                                        //      console.log('fatura2=>' + fatura2)
+                                        //      //console.log('fatura2=>' + fatura2)
                                         //      fatura = (parseFloat(fatura2) + (parseFloat(medcon) * (((parseFloat(te) + parseFloat(tusd)) * ajuste) / (1 - trbte))) + parseFloat(cosip)).toFixed(2)
                                         // }
 
@@ -1589,173 +1589,173 @@ router.get('/investimento/:id', ehAdmin, (req, res) => {
                                    te = dimensionamento.te
                                    tusd = dimensionamento.tusd
 
-                                   // console.log('ipca=>'+ipca)
+                                   // //console.log('ipca=>'+ipca)
 
                                    for (b = 1; b <= 301; b++) {
                                         if (b > 12 && fez1 == false) {
                                              te = dimensionamento.te * (1 + (ipca / 100))
-                                             //  console.log('te1=>' + te)
+                                             //  //console.log('te1=>' + te)
                                              tusd = dimensionamento.tusd * (1 + (ipca / 100))
                                              //  medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                              fez1 = true
                                         } else {
                                              if (b > 24 && fez2 == false) {
                                                   te = te * (1 + (ipca / 100))
-                                                  // console.log('te2=>' + te)
+                                                  // //console.log('te2=>' + te)
                                                   tusd = tusd * (1 + (ipca / 100))
                                                   // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                   fez2 = true
                                              } else {
                                                   if (b > 36 && fez3 == false) {
                                                        te = te * (1 + (ipca / 100))
-                                                       // console.log('te3=>' + te)
+                                                       // //console.log('te3=>' + te)
                                                        tusd = tusd * (1 + (ipca / 100))
                                                        // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                        fez3 = true
                                                   } else {
                                                        if (b > 48 && fez4 == false) {
                                                             te = te * (1 + (ipca / 100))
-                                                            // console.log('te3=>' + te)
+                                                            // //console.log('te3=>' + te)
                                                             tusd = tusd * (1 + (ipca / 100))
                                                             // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                             fez4 = true
                                                        } else {
                                                             if (b > 60 && fez5 == false) {
                                                                  te = te * (1 + (ipca / 100))
-                                                                 // console.log('te3=>' + te)
+                                                                 // //console.log('te3=>' + te)
                                                                  tusd = tusd * (1 + (ipca / 100))
                                                                  // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                  fez5 = true
                                                             } else {
                                                                  if (b > 72 && fez6 == false) {
                                                                       te = te * (1 + (ipca / 100))
-                                                                      // console.log('te3=>' + te)
+                                                                      // //console.log('te3=>' + te)
                                                                       tusd = tusd * (1 + (ipca / 100))
                                                                       // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                       fez6 = true
                                                                  } else {
                                                                       if (b > 84 && fez7 == false) {
                                                                            te = te * (1 + (ipca / 100))
-                                                                           // console.log('te3=>' + te)
+                                                                           // //console.log('te3=>' + te)
                                                                            tusd = tusd * (1 + (ipca / 100))
                                                                            // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                            fez7 = true
                                                                       } else {
                                                                            if (b > 96 && fez8 == false) {
                                                                                 te = te * (1 + (ipca / 100))
-                                                                                // console.log('te3=>' + te)
+                                                                                // //console.log('te3=>' + te)
                                                                                 tusd = tusd * (1 + (ipca / 100))
                                                                                 // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                                 fez8 = true
                                                                            } else {
                                                                                 if (b > 108 && fez9 == false) {
                                                                                      te = te * (1 + (ipca / 100))
-                                                                                     // console.log('te3=>' + te)
+                                                                                     // //console.log('te3=>' + te)
                                                                                      tusd = tusd * (1 + (ipca / 100))
                                                                                      // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                                      fez9 = true
                                                                                 } else {
                                                                                      if (b > 120 && fez10 == false) {
                                                                                           te = te * (1 + (ipca / 100))
-                                                                                          // console.log('te3=>' + te)
+                                                                                          // //console.log('te3=>' + te)
                                                                                           tusd = tusd * (1 + (ipca / 100))
                                                                                           // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                                           fez10 = true
                                                                                      } else {
                                                                                           if (b > 132 && fez11 == false) {
                                                                                                te = te * (1 + (ipca / 100))
-                                                                                               // console.log('te3=>' + te)
+                                                                                               // //console.log('te3=>' + te)
                                                                                                tusd = tusd * (1 + (ipca / 100))
                                                                                                // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                                                fez11 = true
                                                                                           } else {
                                                                                                if (b > 144 && fez12 == false) {
                                                                                                     te = te * (1 + (ipca / 100))
-                                                                                                    // console.log('te3=>' + te)
+                                                                                                    // //console.log('te3=>' + te)
                                                                                                     tusd = tusd * (1 + (ipca / 100))
                                                                                                     // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                                                     fez12 = true
                                                                                                } else {
                                                                                                     if (b > 156 && fez13 == false) {
                                                                                                          te = te * (1 + (ipca / 100))
-                                                                                                         // console.log('te3=>' + te)
+                                                                                                         // //console.log('te3=>' + te)
                                                                                                          tusd = tusd * (1 + (ipca / 100))
                                                                                                          // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                                                          fez13 = true
                                                                                                     } else {
                                                                                                          if (b > 168 && fez14 == false) {
                                                                                                               te = te * (1 + (ipca / 100))
-                                                                                                              // console.log('te3=>' + te)
+                                                                                                              // //console.log('te3=>' + te)
                                                                                                               tusd = tusd * (1 + (ipca / 100))
                                                                                                               // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                                                               fez14 = true
                                                                                                          } else {
                                                                                                               if (b > 180 && fez15 == false) {
                                                                                                                    te = te * (1 + (ipca / 100))
-                                                                                                                   // console.log('te3=>' + te)
+                                                                                                                   // //console.log('te3=>' + te)
                                                                                                                    tusd = tusd * (1 + (ipca / 100))
                                                                                                                    // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                                                                    fez15 = true
                                                                                                               } else {
                                                                                                                    if (b > 192 && fez16 == false) {
                                                                                                                         te = te * (1 + (ipca / 100))
-                                                                                                                        // console.log('te3=>' + te)
+                                                                                                                        // //console.log('te3=>' + te)
                                                                                                                         tusd = tusd * (1 + (ipca / 100))
                                                                                                                         // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                                                                         fez16 = true
                                                                                                                    } else {
                                                                                                                         if (b > 204 && fez17 == false) {
                                                                                                                              te = te * (1 + (ipca / 100))
-                                                                                                                             // console.log('te3=>' + te)
+                                                                                                                             // //console.log('te3=>' + te)
                                                                                                                              tusd = tusd * (1 + (ipca / 100))
                                                                                                                              // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                                                                              fez17 = true
                                                                                                                         } else {
                                                                                                                              if (b > 216 && fez18 == false) {
                                                                                                                                   te = te * (1 + (ipca / 100))
-                                                                                                                                  // console.log('te3=>' + te)
+                                                                                                                                  // //console.log('te3=>' + te)
                                                                                                                                   tusd = tusd * (1 + (ipca / 100))
                                                                                                                                   // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                                                                                   fez18 = true
                                                                                                                              } else {
                                                                                                                                   if (b > 228 && fez19 == false) {
                                                                                                                                        te = te * (1 + (ipca / 100))
-                                                                                                                                       // console.log('te3=>' + te)
+                                                                                                                                       // //console.log('te3=>' + te)
                                                                                                                                        tusd = tusd * (1 + (ipca / 100))
                                                                                                                                        // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                                                                                        fez19 = true
                                                                                                                                   } else {
                                                                                                                                        if (b > 240 && fez20 == false) {
                                                                                                                                             te = te * (1 + (ipca / 100))
-                                                                                                                                            // console.log('te3=>' + te)
+                                                                                                                                            // //console.log('te3=>' + te)
                                                                                                                                             tusd = tusd * (1 + (ipca / 100))
                                                                                                                                             // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                                                                                             fez20 = true
                                                                                                                                        } else {
                                                                                                                                             if (b > 252 && fez21 == false) {
                                                                                                                                                  te = te * (1 + (ipca / 100))
-                                                                                                                                                 // console.log('te3=>' + te)
+                                                                                                                                                 // //console.log('te3=>' + te)
                                                                                                                                                  tusd = tusd * (1 + (ipca / 100))
                                                                                                                                                  // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                                                                                                  fez21 = true
                                                                                                                                             } else {
                                                                                                                                                  if (b > 264 && fez22 == false) {
                                                                                                                                                       te = te * (1 + (ipca / 100))
-                                                                                                                                                      // console.log('te3=>' + te)
+                                                                                                                                                      // //console.log('te3=>' + te)
                                                                                                                                                       tusd = tusd * (1 + (ipca / 100))
                                                                                                                                                       // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                                                                                                       fez22 = true
                                                                                                                                                  } else {
                                                                                                                                                       if (b > 276 && fez23 == false) {
                                                                                                                                                            te = te * (1 + (ipca / 100))
-                                                                                                                                                           // console.log('te3=>' + te)
+                                                                                                                                                           // //console.log('te3=>' + te)
                                                                                                                                                            tusd = tusd * (1 + (ipca / 100))
                                                                                                                                                            // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                                                                                                            fez23 = true
                                                                                                                                                       } else {
                                                                                                                                                            if (b > 288 && fez24 == false) {
                                                                                                                                                                 te = te * (1 + (ipca / 100))
-                                                                                                                                                                // console.log('te3=>' + te)
+                                                                                                                                                                // //console.log('te3=>' + te)
                                                                                                                                                                 tusd = tusd * (1 + (ipca / 100))
                                                                                                                                                                 // medcon = medcon * (Math.pow((1 - 0.00875), 1))
                                                                                                                                                                 fez24 = true
@@ -1785,16 +1785,16 @@ router.get('/investimento/:id', ehAdmin, (req, res) => {
                                              }
                                         }
 
-                                        // console.log('fluxo25.length=>'+fluxo25.length)
-                                        // console.log('te=>'+te)
-                                        // console.log('tusd=>'+tusd)
-                                        // console.log('trbte=>'+trbte)
-                                        // console.log('cosip=>'+cosip)
+                                        // //console.log('fluxo25.length=>'+fluxo25.length)
+                                        // //console.log('te=>'+te)
+                                        // //console.log('tusd=>'+tusd)
+                                        // //console.log('trbte=>'+trbte)
+                                        // //console.log('cosip=>'+cosip)
                                         minimo = (((30 * (parseFloat(te) + parseFloat(tusd))) / (1 - trbte)) + parseFloat(cosip)).toFixed(2)
                                         if (b <= numpar) {
                                              if (fluxo25 != '' && typeof fluxo25 != 'undefined') {
                                                   var ultimo = fluxo25[fluxo25.length - 1]
-                                                  // console.log('ultimo.saldo=>'+ultimo.saldo)
+                                                  // //console.log('ultimo.saldo=>'+ultimo.saldo)
                                                   juros = (parseFloat((parseFloat(ultimo.saldo) * parseFloat(jurosmes)))).toFixed(2)
                                                   pmt = (parseFloat(amort) + parseFloat(juros)).toFixed(2)
                                                   saldo = (parseFloat(ultimo.saldo) - parseFloat(amort)).toFixed(2)
@@ -1811,9 +1811,9 @@ router.get('/investimento/:id', ehAdmin, (req, res) => {
                                         }
 
                                         fatura = ((parseFloat(medcon) * (((parseFloat(te) + parseFloat(tusd)) * ajuste) / (1 - trbte))) + parseFloat(cosip)).toFixed(2)
-                                        // console.log('fatura=>' + fatura)
+                                        // //console.log('fatura=>' + fatura)
                                         fluxo = (parseFloat(fatura) - parseFloat(pmt) - parseFloat(minimo)).toFixed(2)
-                                        // console.log('fluxo=>' + fluxo)
+                                        // //console.log('fluxo=>' + fluxo)
                                         fluxoacc = (parseFloat(fluxoacc) + parseFloat(fluxo)).toFixed(2)
                                         deste = parseFloat(medcon) * (parseFloat(te) / (1 - parseFloat(trbte)))
                                         destusd = parseFloat(medcon) * (parseFloat(tusd) / (1 - parseFloat(trbtusd)))
@@ -1886,18 +1886,18 @@ router.get('/investimento/:id', ehAdmin, (req, res) => {
                                                   if (fez3 == false) {
                                                        ano4 = ano3
                                                   }
-                                                  console.log(ano4)
-                                                  console.log(ano)
-                                                  console.log(fluxo25[x].fatura)
-                                                  console.log(fluxo25[x].pmt)
-                                                  console.log(fluxo25[x].minimo)
+                                                  //console.log(ano4)
+                                                  //console.log(ano)
+                                                  //console.log(fluxo25[x].fatura)
+                                                  //console.log(fluxo25[x].pmt)
+                                                  //console.log(fluxo25[x].minimo)
                                                   ano4 = (parseFloat(ano4) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
-                                                  console.log(ano4)
+                                                  //console.log(ano4)
                                                   pmt = (parseFloat(pmt) + parseFloat(fluxo25[x].pmt)).toFixed(2)
                                                   fatura = (parseFloat(fatura) + parseFloat(fluxo25[x].fatura)).toFixed(2)
                                                   minimo = (parseFloat(minimo) + parseFloat(fluxo25[x].minimo)).toFixed(2)
                                                   ano = (parseFloat(ano) + parseFloat(fluxo25[x].fatura) - parseFloat(fluxo25[x].pmt) - parseFloat(fluxo25[x].minimo)).toFixed(2)
-                                                  console.log(ano)
+                                                  //console.log(ano)
                                                   fez3 = true
                                              }
                                              if (x > 47 && x <= 59 && y == 5) {
@@ -2193,7 +2193,7 @@ router.get('/investimento/:id', ehAdmin, (req, res) => {
                               } else {
                                    ajuste = 1 + (parseFloat(dimensionamento.ajuste) / 100)
                               }
-                              // console.log('dimensionamento.totconsumo=>' + dimensionamento.totconsumo)
+                              // //console.log('dimensionamento.totconsumo=>' + dimensionamento.totconsumo)
                               medcon = parseFloat(dimensionamento.totconsumo) / 12
                               res.render('projeto/investimento', { projeto, cliente, te, tusd, icms, pis, cofins, cosip, ajuste, medcon })
                          } else {
@@ -2363,13 +2363,13 @@ router.post('/investimento', ehAdmin, (req, res) => {
                     new Dimensionamento(dime).save().then(() => {
                          Investimento.findOne().sort({ field: 'asc', _id: -1 }).then((investimento) => {
                               Dimensionamento.findOne().sort({ field: 'asc', _id: -1 }).then((dimensionamento) => {
-                                   // console.log('dimensionamento._id=>'+dimensionamento._id)
-                                   // console.log('investimento._id=>'+investimento._id)
+                                   // //console.log('dimensionamento._id=>'+dimensionamento._id)
+                                   // //console.log('investimento._id=>'+investimento._id)
                                    projeto.dimensionamento = dimensionamento._id
                                    projeto.investimento = investimento._id
                                    projeto.save().then(() => {
                                         //res.render('projeto/investimento', { sac, txjuros, numpar, valor, totpmt, totamort, totjuros, projeto, parmed, te, tusd, icms, pis, cofins, cosip, ipca, ajuste, medcon, dimensionamento, investimento })
-                                        // console.log('projeto salvo com sucesso.')
+                                        // //console.log('projeto salvo com sucesso.')
                                         res.redirect('/projeto/investimento/' + projeto._id)
                                    })
                               }).catch((err) => {
@@ -2389,7 +2389,7 @@ router.post('/investimento', ehAdmin, (req, res) => {
                     res.redirect('/projeto/investimento/' + projeto._id)
                })
           } else {
-               // console.log('encontrou')
+               // //console.log('encontrou')
                Investimento.findOne({ _id: projeto.investimento }).then((investimento) => {
                     Dimensionamento.findOne({ _id: projeto.dimensionamento }).then((dimensionamento) => {
                          investimento.parcelas = req.body.numpar
@@ -2417,7 +2417,7 @@ router.post('/investimento', ehAdmin, (req, res) => {
                               dimensionamento.consumo12 = req.body.medcon
                               dimensionamento.totconsumo = req.body.medcon * 12
                               dimensionamento.save().then(() => {
-                                   // console.log('salvou')
+                                   // //console.log('salvou')
                                    //res.render('projeto/investimento', { sac, txjuros, numpar, valor, totpmt, totamort, totjuros, projeto, parmed, te, tusd, icms, pis, cofins, cosip, ipca, ajuste, medcon })
                                    res.redirect('/projeto/investimento/' + projeto._id)
                               }).catch((err) => {
@@ -3135,52 +3135,52 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                   //console.log('projeto._id=>' + projeto._id)
                                                   Empresa.findOne({ _id: projeto.empresa }).lean().then((rp) => {
                                                        Pessoa.find({ vendedor: true, user: id }).lean().then((vendedor) => {
-                                                            // console.log('vlrTotal=>' + vlrequ)
-                                                            // console.log('checkUni=>' + checkUni)
-                                                            // console.log('unidadeEqu=>' + unidadeEqu)
-                                                            // console.log('unidadeMod=>' + unidadeMod)
-                                                            // console.log('unidadeInv=>' + unidadeInv)
-                                                            // console.log('unidadeEst=>' + unidadeEst)
-                                                            // console.log('unidadeCab=>' + unidadeCab)
-                                                            // console.log('unidadeDisCA=>' + unidadeDisCA)
-                                                            // console.log('unidadeDisCC=>' + unidadeDisCC)
-                                                            // console.log('unidadeDPSCA=>' + unidadeDPSCA)
-                                                            // console.log('unidadeDPSCC=>' + unidadeDPSCC)
-                                                            // console.log('unidadeSB=>' + unidadeSB)
-                                                            // console.log('unidadeCer=>' + unidadeCer)
-                                                            // console.log('unidadeCen=>' + unidadeCen)
-                                                            // console.log('unidadePos=>' + unidadePos)
-                                                            // console.log('unidadeOcp=>' + unidadeOcp)
-                                                            // console.log('vlrUniEqu=>' + vlrUniEqu)
-                                                            // console.log('vlrUniMod=>' + vlrUniMod)
-                                                            // console.log('vlrUniInv=>' + vlrUniInv)
-                                                            // console.log('vlrUniEst=>' + vlrUniEst)
-                                                            // console.log('vlrUniCab=>' + vlrUniCab)
-                                                            // console.log('vlrUniDisCA=>' + vlrUniDisCA)
-                                                            // console.log('vlrUniDisCC=>' + vlrUniDisCC)
-                                                            // console.log('vlrUniDPSCA=>' + vlrUniDPSCA)
-                                                            // console.log('vlrUniDPSCC=>' + vlrUniDPSCC)
-                                                            // console.log('vlrUniSB=>' + vlrUniSB)
-                                                            // console.log('vlrUniCer=>' + vlrUniCer)
-                                                            // console.log('vlrUniCen=>' + vlrUniCen)
-                                                            // console.log('vlrUniPos=>' + vlrUniPos)
-                                                            // console.log('vlrUniOcp=>' + vlrUniOcp)
-                                                            // console.log('valorEqu=>' + valorEqu)
-                                                            // console.log('valorMod=>' + valorMod)
-                                                            // console.log('valorInv=>' + valorInv)
-                                                            // console.log('valorEst=>' + valorEst)
-                                                            // console.log('valorCim=>' + valorCim)
-                                                            // console.log('valorCab=>' + valorCab)
-                                                            // console.log('valorDisCC=>' + valorDisCC)
-                                                            // console.log('valorDPSCC=>' + valorDPSCC)
-                                                            // console.log('valorDisCA=>' + valorDisCA)
-                                                            // console.log('valorDPSCA=>' + valorDPSCA)                                                       
-                                                            // console.log('valorSB=>' + valorSB)
-                                                            // console.log('valorCCA=>' + valorCCA)
-                                                            // console.log('valorCer=>' + valorCer)
-                                                            // console.log('valorCen=>' + valorCen)
-                                                            // console.log('valorPos=>' + valorPos)
-                                                            // console.log('valorOcp=>' + valorOcp)
+                                                            // //console.log('vlrTotal=>' + vlrequ)
+                                                            // //console.log('checkUni=>' + checkUni)
+                                                            // //console.log('unidadeEqu=>' + unidadeEqu)
+                                                            // //console.log('unidadeMod=>' + unidadeMod)
+                                                            // //console.log('unidadeInv=>' + unidadeInv)
+                                                            // //console.log('unidadeEst=>' + unidadeEst)
+                                                            // //console.log('unidadeCab=>' + unidadeCab)
+                                                            // //console.log('unidadeDisCA=>' + unidadeDisCA)
+                                                            // //console.log('unidadeDisCC=>' + unidadeDisCC)
+                                                            // //console.log('unidadeDPSCA=>' + unidadeDPSCA)
+                                                            // //console.log('unidadeDPSCC=>' + unidadeDPSCC)
+                                                            // //console.log('unidadeSB=>' + unidadeSB)
+                                                            // //console.log('unidadeCer=>' + unidadeCer)
+                                                            // //console.log('unidadeCen=>' + unidadeCen)
+                                                            // //console.log('unidadePos=>' + unidadePos)
+                                                            // //console.log('unidadeOcp=>' + unidadeOcp)
+                                                            // //console.log('vlrUniEqu=>' + vlrUniEqu)
+                                                            // //console.log('vlrUniMod=>' + vlrUniMod)
+                                                            // //console.log('vlrUniInv=>' + vlrUniInv)
+                                                            // //console.log('vlrUniEst=>' + vlrUniEst)
+                                                            // //console.log('vlrUniCab=>' + vlrUniCab)
+                                                            // //console.log('vlrUniDisCA=>' + vlrUniDisCA)
+                                                            // //console.log('vlrUniDisCC=>' + vlrUniDisCC)
+                                                            // //console.log('vlrUniDPSCA=>' + vlrUniDPSCA)
+                                                            // //console.log('vlrUniDPSCC=>' + vlrUniDPSCC)
+                                                            // //console.log('vlrUniSB=>' + vlrUniSB)
+                                                            // //console.log('vlrUniCer=>' + vlrUniCer)
+                                                            // //console.log('vlrUniCen=>' + vlrUniCen)
+                                                            // //console.log('vlrUniPos=>' + vlrUniPos)
+                                                            // //console.log('vlrUniOcp=>' + vlrUniOcp)
+                                                            // //console.log('valorEqu=>' + valorEqu)
+                                                            // //console.log('valorMod=>' + valorMod)
+                                                            // //console.log('valorInv=>' + valorInv)
+                                                            // //console.log('valorEst=>' + valorEst)
+                                                            // //console.log('valorCim=>' + valorCim)
+                                                            // //console.log('valorCab=>' + valorCab)
+                                                            // //console.log('valorDisCC=>' + valorDisCC)
+                                                            // //console.log('valorDPSCC=>' + valorDPSCC)
+                                                            // //console.log('valorDisCA=>' + valorDisCA)
+                                                            // //console.log('valorDPSCA=>' + valorDPSCA)                                                       
+                                                            // //console.log('valorSB=>' + valorSB)
+                                                            // //console.log('valorCCA=>' + valorCCA)
+                                                            // //console.log('valorCer=>' + valorCer)
+                                                            // //console.log('valorCen=>' + valorCen)
+                                                            // //console.log('valorPos=>' + valorPos)
+                                                            // //console.log('valorOcp=>' + valorOcp)
 
                                                             const detalhado = {
                                                                  projeto: projeto._id,
@@ -3239,7 +3239,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                  valorOcp: valorOcp
                                                             }
                                                             new Detalhado(detalhado).save().then(() => {
-                                                                 console.log('salvou detalhado')
+                                                                 //console.log('salvou detalhado')
 
                                                                  var cronograma_novo = {
                                                                       user: id,
@@ -3249,173 +3249,214 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                       dateentrega: req.body.valDataPrev,
                                                                  }
                                                                  new Cronograma(cronograma_novo).save().then(() => {
-                                                                      console.log('salvou cronograma')
+                                                                      //console.log('salvou cronograma')
                                                                       Configuracao.findOne({ _id: req.body.configuracao }).lean().then((configuracao) => {
                                                                            Cliente.findOne({ _id: req.body.cliente }).lean().then((cliente) => {
                                                                                 Pessoa.findOne({ _id: req.body.gestor }).lean().then((gestao) => {
-                                                                                     console.log('salva pessoa')
-                                                                                          sucesso.push({ texto: 'Projeto criado com sucesso.' })
-                                                                                          var fatura
-                                                                                          if (req.body.checkFatura != null) {
-                                                                                               fatura = 'checked'
+                                                                                     //console.log('salva pessoa')
+                                                                                     sucesso.push({ texto: 'Projeto criado com sucesso.' })
+                                                                                     var fatura
+                                                                                     if (req.body.checkFatura != null) {
+                                                                                          fatura = 'checked'
+                                                                                     } else {
+                                                                                          fatura = 'uncheked'
+                                                                                     }
+                                                                                     Detalhado.findOne().sort({ field: 'asc', _id: -1 }).then((detalhe) => {
+                                                                                          var plaQtdMod = 0
+                                                                                          var plaQtdInv = 0
+                                                                                          var plaQtdEst = 0
+                                                                                          if (detalhe.unidademod == '' || typeof detalhe.unidademod == 'undefined') {
+                                                                                               plaQtdMod = 0
                                                                                           } else {
-                                                                                               fatura = 'uncheked'
+                                                                                               plaQtdMod = detalhe.unidademod
                                                                                           }
-                                                                                          Detalhado.findOne().sort({ field: 'asc', _id: -1 }).then((detalhe) => {
-                                                                                               var plaQtdMod = 0
-                                                                                               var plaQtdInv = 0
-                                                                                               var plaQtdEst = 0
-                                                                                               if (detalhe.unidademod == '' || typeof detalhe.unidademod == 'undefined') {
-                                                                                                    plaQtdMod = 0
-                                                                                               } else {
-                                                                                                    plaQtdMod = detalhe.unidademod
-                                                                                               }
-                                                                                               if (detalhe.unidadeinv == '' || typeof detalhe.unidadeinv == 'undefined') {
-                                                                                                    plaQtdInv = 0
-                                                                                               } else {
-                                                                                                    plaQtdInv = detalhe.unidadeinv
-                                                                                               }
-                                                                                               if (detalhe.unidadeest == '' || typeof detalhe.unidadeest == 'undefined') {
-                                                                                                    plaQtdEst = 0
-                                                                                               } else {
-                                                                                                    plaQtdEst = detalhe.unidadeest
-                                                                                               }
-                                                                                               const proposta1 = {
-                                                                                                    user: id,
-                                                                                                    cliente: req.body.cliente,
-                                                                                                    dtcadastro1: String(req.body.valDataIni),
-                                                                                                    dtvalidade1: setData(req.body.valDataIni,14),
-                                                                                                    data: dataBusca(dataHoje()),
-                                                                                                    feito: true,
-                                                                                                    ganho: false,
-                                                                                                    assinado: false,
-                                                                                                    encerrado: false
-                                                                                               }
-                                                                                               new Proposta(proposta1).save().then(() => {
-                                                                                                    Proposta.findOne().sort({ field: 'asc', _id: -1 }).then((nova_proposta) => {
-                                                                                                         Cliente.findOne({ _id: nova_proposta.cliente }).then((cliente) => {
-                                                                                                              new Equipe({
-                                                                                                                   user: id,
-                                                                                                                   projeto: projeto._id,
-                                                                                                                   user: id,                                                                                                                   
-                                                                                                                   nome_projeto: cliente.nome,
-                                                                                                                   dtinicio: '0000-00-00',
-                                                                                                                   dtfim: '0000-00-00',
-                                                                                                                   feito: false
-                                                                                                              }).save().then(() => {
-                                                                                                                   Equipe.findOne().sort({ field: 'asc', _id: -1 }).then((nova_equipe) => {
-                                                                                                                        //console.log('nova_proposta._id=>' + nova_proposta._id)
-                                                                                                                        //console.log('nova_equipe._id=>' + nova_equipe._id)
-                                                                                                                        nova_proposta.equipe = nova_equipe._id
-                                                                                                                        nova_proposta.save().then(() => {
-                                                                                                                             new Vistoria({
-                                                                                                                                  user: id,
-                                                                                                                                  projeto: projeto._id,
-                                                                                                                                  plaQtdMod: plaQtdMod,
-                                                                                                                                  plaQtdInv: plaQtdInv,
-                                                                                                                                  plaQtdEst: plaQtdEst,
-                                                                                                                                  plaWattMod: 0,
-                                                                                                                                  plaKwpInv: 0,
-                                                                                                                                  plaDimArea: 0,
-                                                                                                                                  plaQtdString: 0,
-                                                                                                                                  plaModString: 0,
-                                                                                                                                  plaQtdEst: 0,
-                                                                                                                                  proposta: nova_proposta._id,
-                                                                                                                                  feito: false
-                                                                                                                             }).save().then(() => {
-                                                                                                                                  new Compra({
+                                                                                          if (detalhe.unidadeinv == '' || typeof detalhe.unidadeinv == 'undefined') {
+                                                                                               plaQtdInv = 0
+                                                                                          } else {
+                                                                                               plaQtdInv = detalhe.unidadeinv
+                                                                                          }
+                                                                                          if (detalhe.unidadeest == '' || typeof detalhe.unidadeest == 'undefined') {
+                                                                                               plaQtdEst = 0
+                                                                                          } else {
+                                                                                               plaQtdEst = detalhe.unidadeest
+                                                                                          }
+                                                                                          const proposta1 = {
+                                                                                               user: id,
+                                                                                               cliente: req.body.cliente,
+                                                                                               dtcadastro1: String(req.body.valDataIni),
+                                                                                               dtvalidade1: setData(req.body.valDataIni, 14),
+                                                                                               data: dataBusca(dataHoje()),
+                                                                                               feito: true,
+                                                                                               ganho: false,
+                                                                                               assinado: false,
+                                                                                               encerrado: false
+                                                                                          }
+                                                                                          new Proposta(proposta1).save().then(() => {
+                                                                                               Proposta.findOne().sort({ field: 'asc', _id: -1 }).then((nova_proposta) => {
+                                                                                                    //console.log('projeto._id=>' + projeto._id)
+                                                                                                    Projeto.findOne({ _id: projeto._id }).then((prj_pro) => {
+                                                                                                         //console.log('prj_pro._id=>' + prj_pro._id)
+                                                                                                         //console.log('nova_proposta._id=>' + nova_proposta._id)
+                                                                                                         prj_pro.proposta = nova_proposta._id
+                                                                                                         prj_pro.save().then(() => {
+                                                                                                              //console.log('prj_pro salvo')
+                                                                                                              //console.log('nova_proposta.cliente=>' + nova_proposta.cliente)
+                                                                                                              Cliente.findOne({ _id: nova_proposta.cliente }).then((cliente) => {
+                                                                                                                   new Equipe({
+                                                                                                                        user: id,
+                                                                                                                        projeto: prj_pro._id,
+                                                                                                                        user: id,
+                                                                                                                        nome_projeto: cliente.nome,
+                                                                                                                        dtinicio: '0000-00-00',
+                                                                                                                        dtfim: '0000-00-00',
+                                                                                                                        feito: false
+                                                                                                                   }).save().then(() => {
+                                                                                                                        //console.log('salvar equipe')
+                                                                                                                        Equipe.findOne().sort({ field: 'asc', _id: -1 }).then((nova_equipe) => {
+                                                                                                                             nova_proposta.equipe = nova_equipe._id
+                                                                                                                             nova_proposta.save().then(() => {
+                                                                                                                                  new Vistoria({
                                                                                                                                        user: id,
+                                                                                                                                       projeto: prj_pro._id,
+                                                                                                                                       plaQtdMod: plaQtdMod,
+                                                                                                                                       plaQtdInv: plaQtdInv,
+                                                                                                                                       plaQtdEst: plaQtdEst,
+                                                                                                                                       plaWattMod: 0,
+                                                                                                                                       plaKwpInv: 0,
+                                                                                                                                       plaDimArea: 0,
+                                                                                                                                       plaQtdString: 0,
+                                                                                                                                       plaModString: 0,
+                                                                                                                                       plaQtdEst: 0,
                                                                                                                                        proposta: nova_proposta._id,
-                                                                                                                                       feitopedido: false,
-                                                                                                                                       feitonota: false
+                                                                                                                                       feito: false
                                                                                                                                   }).save().then(() => {
-                                                                                                                                       new Documento({
+                                                                                                                                       //console.log('salvar vistoria')
+                                                                                                                                       new Compra({
                                                                                                                                             user: id,
                                                                                                                                             proposta: nova_proposta._id,
-                                                                                                                                            feitotrt: false,
-                                                                                                                                            feitoprotocolado: false,
-                                                                                                                                            feitoaceite: false,
-                                                                                                                                            feitoalmox: false,
-                                                                                                                                            feitofaturado: false,
-                                                                                                                                            enviaalmox: false
-                                                                                                                                       }).save(() => {
-                                                                                                                                            new Posvenda({
+                                                                                                                                            feitopedido: false,
+                                                                                                                                            feitonota: false
+                                                                                                                                       }).save().then(() => {
+                                                                                                                                            //console.log('salvar compra')
+                                                                                                                                            new Documento({
                                                                                                                                                  user: id,
                                                                                                                                                  proposta: nova_proposta._id,
-                                                                                                                                                 feito: false
+                                                                                                                                                 feitotrt: false,
+                                                                                                                                                 feitoprotocolado: false,
+                                                                                                                                                 feitoaceite: false,
+                                                                                                                                                 feitoalmox: false,
+                                                                                                                                                 feitofaturado: false,
+                                                                                                                                                 enviaalmox: false
                                                                                                                                             }).save(() => {
-                                                                                                                                                 req.flash('success_msg', 'Projeto salvo com sucesso.')
-                                                                                                                                                 res.redirect('/gerenciamento/proposta/' + nova_proposta._id)
+                                                                                                                                                 //console.log('salvar documento')
+                                                                                                                                                 new Posvenda({
+                                                                                                                                                      user: id,
+                                                                                                                                                      proposta: nova_proposta._id,
+                                                                                                                                                      feito: false
+                                                                                                                                                 }).save(() => {
+                                                                                                                                                      //console.log('projeto._id=>' + projeto._id)
+                                                                                                                                                      //console.log('prj_pro._id=>' + prj_pro._id)
+                                                                                                                                                      if (tipoprj == 1) {
+                                                                                                                                                           if (req.body.tipoEntrada == 'Proprio') {
+                                                                                                                                                                res.render("projeto/customdo/gestao", {
+                                                                                                                                                                     projeto, sucesso, configuracao, gestao, cliente, checkHora,
+                                                                                                                                                                     typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
+                                                                                                                                                                     vistoria, alocacao, aquisicao, typeDrg, displayDia, selecionado
+                                                                                                                                                                })
+                                                                                                                                                           } else {
+                                                                                                                                                                res.render('projeto/custosdiretos', {
+                                                                                                                                                                     projeto, sucesso, configuracao, rp, vendedor, cliente, fatura, checkHora,
+                                                                                                                                                                     typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
+                                                                                                                                                                })
+                                                                                                                                                           }
+                                                                                                                                                      } else {
+                                                                                                                                                           // //console.log('projeto.configuracao=>' + projeto.configuracao)
+                                                                                                                                                           // //console.log('projeto.empresa=>' + projeto.empresa)
+                                                                                                                                                           // //console.log('projeto.vendedor=>' + projeto.vendedor)
+                                                                                                                                                           // //console.log('projeto.funres=>' + projeto.funres)
+                                                                                                                                                           Configuracao.findOne({ _id: projeto.configuracao }).lean().then((config) => {
+                                                                                                                                                                Empresa.findOne({ _id: projeto.empresa }).lean().then((rp) => {
+                                                                                                                                                                     Pessoa.findOne({ _id: projeto.vendedor }).lean().then((pv) => {
+                                                                                                                                                                          Pessoa.findOne({ _id: projeto.funres }).lean().then((pr) => {
+                                                                                                                                                                               Cliente.findOne({ _id: projeto.cliente }).lean().then((cli) => {
+                                                                                                                                                                                    //console.log('config=>' + config)
+                                                                                                                                                                                    //console.log('rp=>' + rp)
+                                                                                                                                                                                    //console.log('pv=>' + pv)
+                                                                                                                                                                                    //console.log('pr=>' + pr)
+                                                                                                                                                                                    //console.log('cli=>' + cli)
+                                                                                                                                                                                    res.render('projeto/projetodia', {
+                                                                                                                                                                                         projeto, sucesso, fatura, checkHora, config, rp, pv, pr, cli,
+                                                                                                                                                                                         typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao
+                                                                                                                                                                                    })
+                                                                                                                                                                               }).catch((err) => {
+                                                                                                                                                                                    req.flash('error_msg', 'Houve uma falha ao encontrar o cliente.')
+                                                                                                                                                                                    res.redirect('/pessoa/consulta')
+                                                                                                                                                                               })
+                                                                                                                                                                          }).catch((err) => {
+                                                                                                                                                                               req.flash('error_msg', 'Houve uma falha ao encontrar o responsável.')
+                                                                                                                                                                               res.redirect('/pessoa/consulta')
+                                                                                                                                                                          })
+                                                                                                                                                                     }).catch((err) => {
+                                                                                                                                                                          req.flash('error_msg', 'Houve uma falha ao encontrar o vendedor.')
+                                                                                                                                                                          res.redirect('/pessoa/consulta')
+                                                                                                                                                                     })
+                                                                                                                                                                }).catch((err) => {
+                                                                                                                                                                     req.flash('error_msg', 'Houve uma falha ao encontrar a empresa.')
+                                                                                                                                                                     res.redirect('/configuracao/consulta')
+                                                                                                                                                                })
+                                                                                                                                                           }).catch((err) => {
+                                                                                                                                                                req.flash('error_msg', 'Houve uma falha ao encontrar a configuração.')
+                                                                                                                                                                res.redirect('/configuracao/consulta')
+                                                                                                                                                           })
+                                                                                                                                                      }
+                                                                                                                                                 })
                                                                                                                                             })
+                                                                                                                                       }).catch((err) => {
+                                                                                                                                            req.flash('error_msg', 'Houve um erro ao salvar a compra.')
+                                                                                                                                            res.redirect('/menu')
                                                                                                                                        })
+                                                                                                                                  }).catch((err) => {
+                                                                                                                                       req.flash('error_msg', 'Houve um erro ao salvar a vistoria.')
+                                                                                                                                       res.redirect('/menu')
                                                                                                                                   })
-                                                                                                                             })
 
-                                                                                                                        })
-                                                                                                                   })
-                                                                                                              })
-                                                                                                         })
-                                                                                                    })
-                                                                                               })
-                                                                                               //console.log('salvou equipe')
-                                                                                               if (tipoprj == 1) {
-                                                                                                    if (req.body.tipoEntrada == 'Proprio') {
-                                                                                                         res.render("projeto/customdo/gestao", {
-                                                                                                              projeto, sucesso, configuracao, gestao, cliente, checkHora,
-                                                                                                              typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
-                                                                                                              vistoria, alocacao, aquisicao, typeDrg, displayDia, selecionado
-                                                                                                         })
-                                                                                                    } else {
-                                                                                                         res.render('projeto/custosdiretos', {
-                                                                                                              projeto, sucesso, configuracao, rp, vendedor, cliente, fatura, checkHora,
-                                                                                                              typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
-                                                                                                         })
-                                                                                                    }
-                                                                                               } else {
-                                                                                                    console.log('projeto.configuracao=>' + projeto.configuracao)
-                                                                                                    console.log('projeto.empresa=>' + projeto.empresa)
-                                                                                                    console.log('projeto.vendedor=>' + projeto.vendedor)
-                                                                                                    console.log('projeto.funres=>' + projeto.funres)
-                                                                                                    Configuracao.findOne({ _id: projeto.configuracao }).lean().then((config) => {
-                                                                                                         Empresa.findOne({ _id: projeto.empresa }).lean().then((rp) => {
-                                                                                                              Pessoa.findOne({ _id: projeto.vendedor }).lean().then((pv) => {
-                                                                                                                   Pessoa.findOne({ _id: projeto.funres }).lean().then((pr) => {
-                                                                                                                        Cliente.findOne({ _id: projeto.cliente }).lean().then((cli) => {
-                                                                                                                             //console.log('config=>' + config)
-                                                                                                                             //console.log('rp=>' + rp)
-                                                                                                                             //console.log('pv=>' + pv)
-                                                                                                                             //console.log('pr=>' + pr)
-                                                                                                                             //console.log('cli=>' + cli)
-                                                                                                                             res.render('projeto/projetodia', {
-                                                                                                                                  projeto, sucesso, fatura, checkHora, config, rp, pv, pr, cli,
-                                                                                                                                  typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao
+                                                                                                                             }).catch((err) => {
+                                                                                                                                  req.flash('error_msg', 'Houve um erro ao salvar a proposta.')
+                                                                                                                                  res.redirect('/menu')
                                                                                                                              })
                                                                                                                         }).catch((err) => {
-                                                                                                                             req.flash('error_msg', 'Houve uma falha ao encontrar o cliente.')
-                                                                                                                             res.redirect('/pessoa/consulta')
+                                                                                                                             req.flash('error_msg', 'Houve um erro ao salvar a equipe.')
+                                                                                                                             res.redirect('/menu')
                                                                                                                         })
                                                                                                                    }).catch((err) => {
-                                                                                                                        req.flash('error_msg', 'Houve uma falha ao encontrar o responsável.')
-                                                                                                                        res.redirect('/pessoa/consulta')
+                                                                                                                        req.flash('error_msg', 'Houve um erro ao salvar a equipe.')
+                                                                                                                        res.redirect('/menu')
                                                                                                                    })
                                                                                                               }).catch((err) => {
-                                                                                                                   req.flash('error_msg', 'Houve uma falha ao encontrar o vendedor.')
-                                                                                                                   res.redirect('/pessoa/consulta')
+                                                                                                                   req.flash('error_msg', 'Houve um erro ao encontrar o cliente.')
+                                                                                                                   res.redirect('/menu')
                                                                                                               })
                                                                                                          }).catch((err) => {
-                                                                                                              req.flash('error_msg', 'Houve uma falha ao encontrar a empresa.')
-                                                                                                              res.redirect('/configuracao/consulta')
+                                                                                                              req.flash('error_msg', 'Houve um erro ao salvar o projeto.')
+                                                                                                              res.redirect('/menu')
                                                                                                          })
                                                                                                     }).catch((err) => {
-                                                                                                         req.flash('error_msg', 'Houve uma falha ao encontrar a configuração.')
-                                                                                                         res.redirect('/configuracao/consulta')
+                                                                                                         req.flash('error_msg', 'Houve um erro ao encontrar o projeto.')
+                                                                                                         res.redirect('/menu')
                                                                                                     })
-                                                                                               }
-                                                                                          }).catch(() => {
-                                                                                               req.flash('error_msg', 'Houve um erro ao encontrar os detalhes.')
+                                                                                               }).catch((err) => {
+                                                                                                    req.flash('error_msg', 'Houve um erro ao encontrar a proposta.')
+                                                                                                    res.redirect('/menu')
+                                                                                               })
+                                                                                          }).catch((err) => {
+                                                                                               req.flash('error_msg', 'Houve um erro ao salvar a proposta.')
                                                                                                res.redirect('/menu')
                                                                                           })
-                                                                                          //console.log('fatura=>' + fatura)
+                                                                                     }).catch(() => {
+                                                                                          req.flash('error_msg', 'Houve um erro ao encontrar os detalhes.')
+                                                                                          res.redirect('/menu')
+                                                                                     })
+                                                                                     //console.log('fatura=>' + fatura)
                                                                                 }).catch(() => {
                                                                                      req.flash('error_msg', 'Houve um erro ao encontrar o gestor.')
                                                                                      res.redirect('/menu')
@@ -3578,105 +3619,139 @@ router.post("/novo", ehAdmin, (req, res) => {
                                                                                 Cliente.findOne({ _id: req.body.cliente }).lean().then((cliente) => {
                                                                                      Pessoa.findOne({ _id: req.body.gestor }).lean().then((gestao) => {
                                                                                           //console.log('salva pessoa')
-                                                                                               const proposta1 = {
-                                                                                                    user: id,
-                                                                                                    cliente: req.body.cliente,
-                                                                                                    dtcadastro1: String(req.body.valDataIni),
-                                                                                                    dtvalidade1: setData(req.body.valDataIni,14),
-                                                                                                    data: dataBusca(dataHoje()),
-                                                                                                    feito: true,
-                                                                                                    ganho: false,
-                                                                                                    assinado: false,
-                                                                                                    encerrado: false
-                                                                                               }
-                                                                                               new Proposta(proposta1).save().then(() => {
-                                                                                                    Proposta.findOne().sort({ field: 'asc', _id: -1 }).then((nova_proposta) => {
-                                                                                                         Cliente.findOne({ _id: nova_proposta.cliente }).then((cliente) => {
-                                                                                                              new Equipe({
-                                                                                                                   user: id,
-                                                                                                                   projeto: projeto._id,
-                                                                                                                   user: id,
-                                                                                                                   nome_projeto: cliente.nome,
-                                                                                                                   dtinicio: '0000-00-00',
-                                                                                                                   dtfim: '0000-00-00',
-                                                                                                                   feito: false
-                                                                                                              }).save().then(() => {
-                                                                                                                   Equipe.findOne().sort({ field: 'asc', _id: -1 }).then((nova_equipe) => {
-                                                                                                                        //console.log('nova_proposta._id=>' + nova_proposta._id)
-                                                                                                                        //console.log('nova_equipe._id=>' + nova_equipe._id)
-                                                                                                                        nova_proposta.equipe = nova_equipe._id
-                                                                                                                        nova_proposta.save().then(() => {
-                                                                                                                             new Vistoria({
-                                                                                                                                  user: id,
-                                                                                                                                  projeto: projeto._id,
-                                                                                                                                  plaQtdMod: plaQtdMod,
-                                                                                                                                  plaQtdInv: plaQtdInv,
-                                                                                                                                  plaQtdEst: plaQtdEst,
-                                                                                                                                  plaWattMod: 0,
-                                                                                                                                  plaKwpInv: 0,
-                                                                                                                                  plaDimArea: 0,
-                                                                                                                                  plaQtdString: 0,
-                                                                                                                                  plaModString: 0,
-                                                                                                                                  plaQtdEst: 0,
-                                                                                                                                  proposta: nova_proposta._id,
-                                                                                                                                  feito: false
-                                                                                                                             }).save().then(() => {
-                                                                                                                                  new Compra({
+                                                                                          const proposta1 = {
+                                                                                               user: id,
+                                                                                               cliente: req.body.cliente,
+                                                                                               dtcadastro1: String(req.body.valDataIni),
+                                                                                               dtvalidade1: setData(req.body.valDataIni, 14),
+                                                                                               data: dataBusca(dataHoje()),
+                                                                                               feito: true,
+                                                                                               ganho: false,
+                                                                                               assinado: false,
+                                                                                               encerrado: false
+                                                                                          }
+                                                                                          new Proposta(proposta1).save().then(() => {
+                                                                                               Proposta.findOne().sort({ field: 'asc', _id: -1 }).then((nova_proposta) => {
+                                                                                                    Projeto.findOne({ _id: projeto._id }).then((prj_pro) => {
+                                                                                                         prj_pro.proposta = nova_proposta._id
+                                                                                                         prj_pro.save().then(() => {
+                                                                                                              Cliente.findOne({ _id: nova_proposta.cliente }).then((cliente) => {
+                                                                                                                   new Equipe({
+                                                                                                                        user: id,
+                                                                                                                        projeto: projeto._id,
+                                                                                                                        user: id,
+                                                                                                                        nome_projeto: cliente.nome,
+                                                                                                                        dtinicio: '0000-00-00',
+                                                                                                                        dtfim: '0000-00-00',
+                                                                                                                        feito: false
+                                                                                                                   }).save().then(() => {
+                                                                                                                        Equipe.findOne().sort({ field: 'asc', _id: -1 }).then((nova_equipe) => {
+                                                                                                                             //console.log('nova_proposta._id=>' + nova_proposta._id)
+                                                                                                                             //console.log('nova_equipe._id=>' + nova_equipe._id)
+                                                                                                                             nova_proposta.equipe = nova_equipe._id
+                                                                                                                             nova_proposta.save().then(() => {
+                                                                                                                                  new Vistoria({
                                                                                                                                        user: id,
+                                                                                                                                       projeto: projeto._id,
+                                                                                                                                       plaQtdMod: plaQtdMod,
+                                                                                                                                       plaQtdInv: plaQtdInv,
+                                                                                                                                       plaQtdEst: plaQtdEst,
+                                                                                                                                       plaWattMod: 0,
+                                                                                                                                       plaKwpInv: 0,
+                                                                                                                                       plaDimArea: 0,
+                                                                                                                                       plaQtdString: 0,
+                                                                                                                                       plaModString: 0,
+                                                                                                                                       plaQtdEst: 0,
                                                                                                                                        proposta: nova_proposta._id,
-                                                                                                                                       feitopedido: false,
-                                                                                                                                       feitonota: false
+                                                                                                                                       feito: false
                                                                                                                                   }).save().then(() => {
-                                                                                                                                       new Documento({
+                                                                                                                                       new Compra({
                                                                                                                                             user: id,
                                                                                                                                             proposta: nova_proposta._id,
-                                                                                                                                            feitotrt: false,
-                                                                                                                                            feitoprotocolado: false,
-                                                                                                                                            feitoaceite: false,
-                                                                                                                                            feitoalmox: false,
-                                                                                                                                            feitofaturado: false,
-                                                                                                                                            enviaalmox: false
-                                                                                                                                       }).save(() => {
-                                                                                                                                            new Posvenda({
+                                                                                                                                            feitopedido: false,
+                                                                                                                                            feitonota: false
+                                                                                                                                       }).save().then(() => {
+                                                                                                                                            new Documento({
                                                                                                                                                  user: id,
                                                                                                                                                  proposta: nova_proposta._id,
-                                                                                                                                                 feito: false
+                                                                                                                                                 feitotrt: false,
+                                                                                                                                                 feitoprotocolado: false,
+                                                                                                                                                 feitoaceite: false,
+                                                                                                                                                 feitoalmox: false,
+                                                                                                                                                 feitofaturado: false,
+                                                                                                                                                 enviaalmox: false
                                                                                                                                             }).save(() => {
-                                                                                                                                                 req.flash('success_msg', 'Projeto salvo com sucesso.')
-                                                                                                                                                 res.redirect('/gerenciamento/proposta/' + nova_proposta._id)
+                                                                                                                                                 new Posvenda({
+                                                                                                                                                      user: id,
+                                                                                                                                                      proposta: nova_proposta._id,
+                                                                                                                                                      feito: false
+                                                                                                                                                 }).save(() => {
+                                                                                                                                                      sucesso.push({ texto: 'Projeto criado com sucesso.' })
+                                                                                                                                                      var fatura
+                                                                                                                                                      if (req.body.checkFatura != null) {
+                                                                                                                                                           fatura = 'checked'
+                                                                                                                                                      } else {
+                                                                                                                                                           fatura = 'uncheked'
+                                                                                                                                                      }
+
+                                                                                                                                                      if (req.body.tipoEntrada == 'Proprio') {
+                                                                                                                                                           res.render("projeto/customdo/gestao", {
+                                                                                                                                                                projeto, sucesso, configuracao, gestao, cliente, checkHora,
+                                                                                                                                                                typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
+                                                                                                                                                                vistoria, alocacao, aquisicao, typeDrg, displayDia
+                                                                                                                                                           })
+                                                                                                                                                      } else {
+                                                                                                                                                           res.render('projeto/custosdiretos', {
+                                                                                                                                                                projeto, sucesso, configuracao, rp, vendedor, cliente, fatura, checkHora,
+                                                                                                                                                                typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
+                                                                                                                                                                vistoria, alocacao, aquisicao
+                                                                                                                                                           })
+                                                                                                                                                      }
+                                                                                                                                                      //console.log('fatura=>' + fatura)                                                                                                                                                      
+                                                                                                                                                 })
                                                                                                                                             })
+                                                                                                                                       }).catch((err) => {
+                                                                                                                                            req.flash('error_msg', 'Houve um erro ao salvar a compra.')
+                                                                                                                                            res.redirect('/menu')
                                                                                                                                        })
+                                                                                                                                  }).catch((err) => {
+                                                                                                                                       req.flash('error_msg', 'Houve um erro ao salvar a vistoria.')
+                                                                                                                                       res.redirect('/menu')
                                                                                                                                   })
+
+                                                                                                                             }).catch((err) => {
+                                                                                                                                  req.flash('error_msg', 'Houve um erro ao salvar a proposta.')
+                                                                                                                                  res.redirect('/menu')
                                                                                                                              })
-
+                                                                                                                        }).catch((err) => {
+                                                                                                                             req.flash('error_msg', 'Houve um erro ao encontrar a equipe.')
+                                                                                                                             res.redirect('/menu')
                                                                                                                         })
+                                                                                                                   }).catch((err) => {
+                                                                                                                        req.flash('error_msg', 'Houve um erro ao salvar a equipe.')
+                                                                                                                        res.redirect('/menu')
                                                                                                                    })
+                                                                                                              }).catch((err) => {
+                                                                                                                   req.flash('error_msg', 'Houve um erro ao encontrar o cliente.')
+                                                                                                                   res.redirect('/menu')
                                                                                                               })
+                                                                                                         }).catch((err) => {
+                                                                                                              req.flash('error_msg', 'Houve um erro ao salvar o projeto.')
+                                                                                                              res.redirect('/menu')
                                                                                                          })
+                                                                                                    }).catch((err) => {
+                                                                                                         req.flash('error_msg', 'Houve um erro ao encontrar o projeto.')
+                                                                                                         res.redirect('/menu')
                                                                                                     })
+                                                                                               }).catch((err) => {
+                                                                                                    req.flash('error_msg', 'Houve um erro ao encontrar a proposta.')
+                                                                                                    res.redirect('/menu')
                                                                                                })
-                                                                                               sucesso.push({ texto: 'Projeto criado com sucesso.' })
-                                                                                               var fatura
-                                                                                               if (req.body.checkFatura != null) {
-                                                                                                    fatura = 'checked'
-                                                                                               } else {
-                                                                                                    fatura = 'uncheked'
-                                                                                               }
+                                                                                          }).catch((err) => {
+                                                                                               req.flash('error_msg', 'Houve um erro ao salvar a proposta.')
+                                                                                               res.redirect('/menu')
+                                                                                          })
 
-                                                                                               if (req.body.tipoEntrada == 'Proprio') {
-                                                                                                    res.render("projeto/customdo/gestao", {
-                                                                                                         projeto, sucesso, configuracao, gestao, cliente, checkHora,
-                                                                                                         typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
-                                                                                                         vistoria, alocacao, aquisicao, typeDrg, displayDia
-                                                                                                    })
-                                                                                               } else {
-                                                                                                    res.render('projeto/custosdiretos', {
-                                                                                                         projeto, sucesso, configuracao, rp, vendedor, cliente, fatura, checkHora,
-                                                                                                         typeHrg, displayHrs, mostraHora, typeGes, checkDia, displayTda, escopo, cronograma, comunicacao,
-                                                                                                         vistoria, alocacao, aquisicao
-                                                                                                    })
-                                                                                               }
-                                                                                               //console.log('fatura=>' + fatura)
                                                                                      }).catch(() => {
                                                                                           req.flash('error_msg', 'Houve um erro ao encontrar o gestor.')
                                                                                           res.redirect('/menu')
@@ -3902,7 +3977,7 @@ router.post("/salvarins", ehAdmin, (req, res) => {
                                    }
                                    projeto.qtdins = qtdins
                                    if (equipe.custoele != '' && typeof equipe.custoele != 'undefined') {
-                                        console.log('req.body.custoIns=>' + req.body.custoIns)
+                                        //console.log('req.body.custoIns=>' + req.body.custoIns)
                                         equipe.custoins = req.body.custoIns
                                         dias = (parseFloat(dataBusca(req.body.dateModFim)) - parseFloat(cronograma.agendaAteIni)) + 1
                                         //console.log('dias=>' + dias)
@@ -4505,7 +4580,7 @@ router.post('/edicao', ehAdmin, (req, res) => {
 
                                              //Definie os valores dos detalhes de custo dos equipamentos do projeto
 
-                                             console.log('req.body.unidadeMod=>' + req.body.unidadeMod)
+                                             //console.log('req.body.unidadeMod=>' + req.body.unidadeMod)
 
                                              detalhe.vlrTotal = vlrequ
                                              detalhe.checkUni = checkUni

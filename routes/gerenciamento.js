@@ -164,7 +164,7 @@ router.get('/consulta', ehAdmin, (req, res) => {
                                                     // console.log('compra.feitonota=>' + compra.feitonota)
                                                     // console.log('compra.feitopedido =>' + compra.feitopedido)
                                                     // console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
-                                                    console.log('ganho=>'+lista_proposta.ganho)
+                                                    console.log('ganho=>' + lista_proposta.ganho)
 
                                                     if (lista_proposta.ganho == true) {
                                                         if (lista_proposta.encerrado == true) {
@@ -2465,51 +2465,57 @@ router.get('/proposta/:id', ehAdmin, (req, res) => {
         id = user
     }
     Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
-        Cliente.find({ user: id }).lean().then((todos_clientes) => {
-            Pessoa.find({ user: id, funges: 'checked' }).lean().then((todos_responsaveis) => {
-                Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
-                    Pessoa.findOne({ _id: proposta.responsavel }).lean().then((res_proposta) => {
-                        Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
-                            Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
-                                Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
-                                    Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
-                                        Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
-                                            res.render('principal/proposta', { todos_clientes, cliente_proposta, res_proposta, todos_responsaveis, proposta, vistoria, documento, compra, lista_equipe, posvenda })
+        Projeto.findOne({ proposta: req.params.id }).lean().then((projeto) => {
+            console.log('projeto=>' + projeto)
+            Cliente.find({ user: id }).lean().then((todos_clientes) => {
+                Pessoa.find({ user: id, funges: 'checked' }).lean().then((todos_responsaveis) => {
+                    Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
+                        Pessoa.findOne({ _id: proposta.responsavel }).lean().then((res_proposta) => {
+                            Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
+                                Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
+                                    Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
+                                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                                            Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
+                                                res.render('principal/proposta', { todos_clientes, cliente_proposta, res_proposta, todos_responsaveis, proposta, vistoria, documento, compra, lista_equipe, posvenda, projeto })
+                                            }).catch((err) => {
+                                                req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
+                                                res.redirect('/menu')
+                                            })
                                         }).catch((err) => {
-                                            req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
+                                            req.flash('error_msg', 'Não foi possível encontrar a equipe.')
                                             res.redirect('/menu')
                                         })
                                     }).catch((err) => {
-                                        req.flash('error_msg', 'Não foi possível encontrar a equipe.')
+                                        req.flash('error_msg', 'Não foi possível encontrar a compra.')
                                         res.redirect('/menu')
                                     })
                                 }).catch((err) => {
-                                    req.flash('error_msg', 'Não foi possível encontrar a compra.')
+                                    req.flash('error_msg', 'Não foi possível encontrar o documento.')
                                     res.redirect('/menu')
                                 })
                             }).catch((err) => {
-                                req.flash('error_msg', 'Não foi possível encontrar o documento.')
+                                req.flash('error_msg', 'Não foi possível encontrar a vistoria da proposta.')
                                 res.redirect('/menu')
                             })
+
                         }).catch((err) => {
-                            req.flash('error_msg', 'Não foi possível encontrar a vistoria da proposta.')
+                            req.flash('error_msg', 'Não foi possível encontrar o responsável da proposta.')
                             res.redirect('/menu')
                         })
-
                     }).catch((err) => {
-                        req.flash('error_msg', 'Não foi possível encontrar o responsável da proposta.')
+                        req.flash('error_msg', 'Não foi possível encontrar o cliente da prosposta.')
                         res.redirect('/menu')
                     })
                 }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possível encontrar o cliente da prosposta.')
+                    req.flash('error_msg', 'Não foi possível encontrar o responsável.')
                     res.redirect('/menu')
                 })
             }).catch((err) => {
-                req.flash('error_msg', 'Não foi possível encontrar o responsável.')
+                req.flash('error_msg', 'Não foi possível encontrar clientes cadastrados.')
                 res.redirect('/menu')
             })
         }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível encontrar clientes cadastrados.')
+            req.flash('error_msg', 'Não foi possível encontrar o projeto.')
             res.redirect('/menu')
         })
     }).catch((err) => {
@@ -4625,10 +4631,10 @@ router.get('/entrega/:id', ehAdmin, (req, res) => {
                         }
                         new Tarefas(tarefa).save().then(() => {
                             proposta.encerrado = true
-                            proposta.save().then(()=>{
+                            proposta.save().then(() => {
                                 req.flash('success_msg', 'Projeto finalizado e usina gerada com sucesso.')
                                 //console.log('projeto._id=>' + projeto._id)
-                                res.redirect('/gerenciamento/proposta/' + req.params.id)                                
+                                res.redirect('/gerenciamento/proposta/' + req.params.id)
                             }).catch((err) => {
                                 req.flash('error_msg', 'Erro ao salvar a tarefa.')
                                 res.redirect('/gerenciamento/posvenda/' + req.params.id)

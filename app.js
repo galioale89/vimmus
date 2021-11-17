@@ -110,7 +110,7 @@ app.get('/politica', (req, res) => {
 })
 app.get('/termo', (req, res) => {
   res.render('termo')
-})  
+})
 
 //Direcionando para página principal
 app.get('/menu', ehAdmin, (req, res) => {
@@ -163,6 +163,9 @@ app.get('/menu', ehAdmin, (req, res) => {
   Proposta.find({ user: _id }).sort({ data: 'asc' }).then((todasProposta) => {
     if (todasProposta != '') {
       todasProposta.forEach((element) => {
+        dtcadastro = ''
+        dtvalidade = ''
+        status = ''
         Proposta.findOne({ _id: element._id }).then((proposta) => {
           Cliente.findOne({ _id: element.cliente }).then((cliente) => {
             Documento.findOne({ proposta: element._id }).then((documento) => {
@@ -170,36 +173,38 @@ app.get('/menu', ehAdmin, (req, res) => {
                 Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
                   Equipe.findOne({ _id: element.equipe }).then((equipe) => {
                     Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
-                      //console.log('element._id=>' + element._id)
-                      if (typeof proposta.proposta6 != 'undefined') {
-                        dtcadastro = proposta.dtcadastro6
-                        dtvalidade = proposta.dtvalidade6
-                      } else {
-                        if (typeof proposta.proposta5 != 'undefined') {
-                          dtcadastro = proposta.dtcadastro5
-                          dtvalidade = proposta.dtvalidade5
+                      Pessoa.findOne({ _id: element.responsavel }).then((pessoa) => {
+                        //console.log('element._id=>' + element._id)
+                        if (typeof proposta.proposta6 != 'undefined') {
+                          dtcadastro = proposta.dtcadastro6
+                          dtvalidade = proposta.dtvalidade6
                         } else {
-                          if (typeof proposta.proposta4 != 'undefined') {
-                            dtcadastro = proposta.dtcadastro4
-                            dtvalidade = proposta.dtvalidade4
+                          if (typeof proposta.proposta5 != 'undefined') {
+                            dtcadastro = proposta.dtcadastro5
+                            dtvalidade = proposta.dtvalidade5
                           } else {
-                            if (typeof proposta.proposta3 != 'undefined') {
-                              dtcadastro = proposta.dtcadastro3
-                              dtvalidade = proposta.dtvalidade3
+                            if (typeof proposta.proposta4 != 'undefined') {
+                              dtcadastro = proposta.dtcadastro4
+                              dtvalidade = proposta.dtvalidade4
                             } else {
-                              if (typeof proposta.proposta2 != 'undefined') {
-                                dtcadastro = proposta.dtcadastro2
-                                dtvalidade = proposta.dtvalidade2
+                              if (typeof proposta.proposta3 != 'undefined') {
+                                dtcadastro = proposta.dtcadastro3
+                                dtvalidade = proposta.dtvalidade3
                               } else {
-                                dtcadastro = proposta.dtcadastro1
-                                dtvalidade = proposta.dtvalidade1
+                                if (typeof proposta.proposta2 != 'undefined') {
+                                  dtcadastro = proposta.dtcadastro2
+                                  dtvalidade = proposta.dtvalidade2
+                                } else {
+                                  dtcadastro = proposta.dtcadastro1
+                                  dtvalidade = proposta.dtvalidade1
+                                }
                               }
                             }
                           }
                         }
-                      }
+                        console.log('dtvalidade=>' + dtvalidade)
 
-                      Pessoa.findOne({ _id: element.responsavel }).then((pessoa) => {
+
                         if (pessoa != null) {
                           responsavel = pessoa.nome
                         } else {
@@ -307,11 +312,15 @@ app.get('/menu', ehAdmin, (req, res) => {
                         if (proposta.ganho != true) {
                           var hoje = dataHoje()
                           // var dtnovo = setData(dtcadastro,7)
-                          // console.log(dtvalidade)
+                          console.log(dtvalidade)
                           var dtnovo = dtvalidade
                           var data1 = dataBusca(dtnovo)
                           var data2 = dataBusca(hoje)
+                          console.log('proposta._id=>' + proposta._id)
+                          console.log('data1=>' + data1)
+                          console.log('data2=>' + data2)
                           var compara = parseFloat(data1) - parseFloat(data2)
+                          console.log('compara=>' + compara)
                           if (compara == 1) {
                             notpro.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
                           } else {
@@ -378,42 +387,42 @@ app.get('/menu', ehAdmin, (req, res) => {
                 //console.log(element)
                 Proposta.findOne({ _id: element._id }).then((proposta) => {
                   Cliente.findOne({ _id: element.cliente }).then((cliente) => {
-
                     Documento.findOne({ proposta: element._id }).then((documento) => {
                       Compra.findOne({ proposta: element._id }).then((compra) => {
                         Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
                           Equipe.findOne({ _id: element.equipe }).then((equipe) => {
                             Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
-                              //console.log('element._id=>' + element._id)
-                              if (typeof proposta.proposta6 != 'undefined') {
-                                dtcadastro = proposta.dtcadastro6
-                                dtvalidade = proposta.dtvalidade6
-                              } else {
-                                if (typeof proposta.proposta5 != 'undefined') {
-                                  dtcadastro = proposta.dtcadastro5
-                                  dtvalidade = proposta.dtvalidade5
+                              Pessoa.findOne({ _id: element.responsavel }).then((pessoa) => {
+                                //console.log('element._id=>' + element._id)
+                                if (typeof proposta.proposta6 != 'undefined') {
+                                  dtcadastro = proposta.dtcadastro6
+                                  dtvalidade = proposta.dtvalidade6
                                 } else {
-                                  if (typeof proposta.proposta4 != 'undefined') {
-                                    dtcadastro = proposta.dtcadastro4
-                                    dtvalidade = proposta.dtvalidade4
+                                  if (typeof proposta.proposta5 != 'undefined') {
+                                    dtcadastro = proposta.dtcadastro5
+                                    dtvalidade = proposta.dtvalidade5
                                   } else {
-                                    if (typeof proposta.proposta3 != 'undefined') {
-                                      dtcadastro = proposta.dtcadastro3
-                                      dtvalidade = proposta.dtvalidade3
+                                    if (typeof proposta.proposta4 != 'undefined') {
+                                      dtcadastro = proposta.dtcadastro4
+                                      dtvalidade = proposta.dtvalidade4
                                     } else {
-                                      if (typeof proposta.proposta2 != 'undefined') {
-                                        dtcadastro = proposta.dtcadastro2
-                                        dtvalidade = proposta.dtvalidade2
+                                      if (typeof proposta.proposta3 != 'undefined') {
+                                        dtcadastro = proposta.dtcadastro3
+                                        dtvalidade = proposta.dtvalidade3
                                       } else {
-                                        dtcadastro = proposta.dtcadastro1
-                                        dtvalidade = proposta.dtvalidade1
+                                        if (typeof proposta.proposta2 != 'undefined') {
+                                          dtcadastro = proposta.dtcadastro2
+                                          dtvalidade = proposta.dtvalidade2
+                                        } else {
+                                          dtcadastro = proposta.dtcadastro1
+                                          dtvalidade = proposta.dtvalidade1
+                                        }
                                       }
                                     }
                                   }
                                 }
-                              }
 
-                              Pessoa.findOne({ _id: element.responsavel }).then((pessoa) => {
+
                                 if (pessoa != null) {
                                   responsavel = pessoa.nome
                                 } else {
@@ -610,42 +619,42 @@ app.get('/menu', ehAdmin, (req, res) => {
                       numprj++
                       Proposta.findOne({ _id: element._id }).then((proposta) => {
                         Cliente.findOne({ _id: element.cliente }).then((cliente) => {
-
                           Documento.findOne({ proposta: element._id }).then((documento) => {
                             Compra.findOne({ proposta: element._id }).then((compra) => {
                               Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
                                 Equipe.findOne({ _id: element.equipe }).then((equipe) => {
                                   Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
-                                    //  //console.log('entrou')
-                                    if (typeof proposta.proposta6 != 'undefined') {
-                                      dtcadastro = proposta.dtcadastro6
-                                      dtvalidade = proposta.dtvalidade6
-                                    } else {
-                                      if (typeof proposta.proposta5 != 'undefined') {
-                                        dtcadastro = proposta.dtcadastro5
-                                        dtvalidade = proposta.dtvalidade5
+                                    Pessoa.findOne({ _id: element.responsavel }).then((pessoa) => {
+                                      //  //console.log('entrou')
+                                      if (typeof proposta.proposta6 != 'undefined') {
+                                        dtcadastro = proposta.dtcadastro6
+                                        dtvalidade = proposta.dtvalidade6
                                       } else {
-                                        if (typeof proposta.proposta4 != 'undefined') {
-                                          dtcadastro = proposta.dtcadastro4
-                                          dtvalidade = proposta.dtvalidade4
+                                        if (typeof proposta.proposta5 != 'undefined') {
+                                          dtcadastro = proposta.dtcadastro5
+                                          dtvalidade = proposta.dtvalidade5
                                         } else {
-                                          if (typeof proposta.proposta3 != 'undefined') {
-                                            dtcadastro = proposta.dtcadastro3
-                                            dtvalidade = proposta.dtvalidade3
+                                          if (typeof proposta.proposta4 != 'undefined') {
+                                            dtcadastro = proposta.dtcadastro4
+                                            dtvalidade = proposta.dtvalidade4
                                           } else {
-                                            if (typeof proposta.proposta2 != 'undefined') {
-                                              dtcadastro = proposta.dtcadastro2
-                                              dtvalidade = proposta.dtvalidade2
+                                            if (typeof proposta.proposta3 != 'undefined') {
+                                              dtcadastro = proposta.dtcadastro3
+                                              dtvalidade = proposta.dtvalidade3
                                             } else {
-                                              dtcadastro = proposta.dtcadastro1
-                                              dtvalidade = proposta.dtvalidade1
+                                              if (typeof proposta.proposta2 != 'undefined') {
+                                                dtcadastro = proposta.dtcadastro2
+                                                dtvalidade = proposta.dtvalidade2
+                                              } else {
+                                                dtcadastro = proposta.dtcadastro1
+                                                dtvalidade = proposta.dtvalidade1
+                                              }
                                             }
                                           }
                                         }
                                       }
-                                    }
 
-                                    Pessoa.findOne({ _id: element.responsavel }).then((pessoa) => {
+
                                       if (pessoa != null) {
                                         responsavel = pessoa.nome
                                       } else {
@@ -799,5 +808,5 @@ app.use('/componente/', componente)
 //Acesso ao localhost
 var port = process.env.PORT || 3000;
 app.listen(port, function () {
-    console.log('Umbler listening on port %s', port);
+  console.log('Umbler listening on port %s', port);
 });

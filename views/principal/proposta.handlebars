@@ -10,7 +10,7 @@
         var dtvalida1 = document.getElementById('dtvalidade1')
         novadata = new Date(dtcad1.value)
         date = new Date(dtcad1.value)
-        
+
         novadata.setDate(date.getDate() + 14)
         ano = novadata.getFullYear()
         mes = novadata.getMonth()
@@ -27,13 +27,13 @@
             dia = '0' + dia
         }
         dtvalida1.value = ano + '-' + mes + '-' + dia
-        
+
         var dtcad2 = document.getElementById('dtcadastro2')
         var dtvalida2 = document.getElementById('dtvalidade2')
         novadata = new Date(dtcad2.value)
         date = new Date(dtcad2.value)
 
-        novadata.setDate(date.getDate() + 14)    
+        novadata.setDate(date.getDate() + 14)
         ano = novadata.getFullYear()
         mes = novadata.getMonth()
         dia = novadata.getDate()
@@ -47,10 +47,10 @@
         }
         if (dia < 10) {
             dia = '0' + dia
-        }        
-        dtvalida2.value = ano + '-' + mes + '-' + dia     
+        }
+        dtvalida2.value = ano + '-' + mes + '-' + dia
 
-        
+
         var dtcad3 = document.getElementById('dtcadastro3')
         var dtvalida3 = document.getElementById('dtvalidade3')
         novadata = new Date(dtcad3.value)
@@ -60,7 +60,7 @@
         ano = novadata.getFullYear()
         mes = novadata.getMonth()
         dia = novadata.getDate()
-        
+
         if (dia == 1) {
             mes = mes + 2
         } else {
@@ -71,15 +71,15 @@
         }
         if (dia < 10) {
             dia = '0' + dia
-        }        
-        dtvalida3.value = ano + '-' + mes + '-' + dia     
+        }
+        dtvalida3.value = ano + '-' + mes + '-' + dia
 
         var dtcad4 = document.getElementById('dtcadastro4')
         var dtvalida4 = document.getElementById('dtvalidade4')
         novadata = new Date(dtcad4.value)
         date = new Date(dtcad4.value)
 
-        novadata.setDate(date.getDate() + 14)        
+        novadata.setDate(date.getDate() + 14)
         ano = novadata.getFullYear()
         mes = novadata.getMonth()
         dia = novadata.getDate()
@@ -93,15 +93,15 @@
         }
         if (dia < 10) {
             dia = '0' + dia
-        }        
-        dtvalida4.value = ano + '-' + mes + '-' + dia 
+        }
+        dtvalida4.value = ano + '-' + mes + '-' + dia
 
         var dtcad5 = document.getElementById('dtcadastro5')
         var dtvalida5 = document.getElementById('dtvalidade5')
         novadata = new Date(dtcad5.value)
         date = new Date(dtcad5.value)
 
-        novadata.setDate(date.getDate() + 14)        
+        novadata.setDate(date.getDate() + 14)
         ano = novadata.getFullYear()
         mes = novadata.getMonth()
         dia = novadata.getDate()
@@ -115,14 +115,14 @@
         }
         if (dia < 10) {
             dia = '0' + dia
-        }        
-        dtvalida5.value = ano + '-' + mes + '-' + dia        
+        }
+        dtvalida5.value = ano + '-' + mes + '-' + dia
         var dtcad6 = document.getElementById('dtcadastro6')
         var dtvalida6 = document.getElementById('dtvalidade6')
         novadata = new Date(dtcad6.value)
         date = new Date(dtcad6.value)
 
-        novadata.setDate(date.getDate() + 14)        
+        novadata.setDate(date.getDate() + 14)
         ano = novadata.getFullYear()
         mes = novadata.getMonth()
         dia = novadata.getDate()
@@ -136,8 +136,8 @@
         }
         if (dia < 10) {
             dia = '0' + dia
-        }        
-        dtvalida6.value = ano + '-' + mes + '-' + dia    
+        }
+        dtvalida6.value = ano + '-' + mes + '-' + dia
     }
 </script>
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
@@ -151,11 +151,11 @@
         <a href='/gerenciamento/proposta/{{proposta._id}}/'
             class='btn btn-sm{{#if proposta.feito}} check-menu {{else}} botao-menu ativo {{/if}}'
             style="border-bottom-left-radius: 30px;"> <i class="bi bi-house"></i> Proposta</a>
-        {{#if proposta._id}} 
+        {{#if proposta._id}}
         {{else}}
-        <a href='/projeto/selectProjeto/' class='btn btn-sm botao-menu ativo'
-            style="border-bottom-left-radius: 30px;"> <i class="bi bi-house"></i> Iniciar Projeto</a> 
-        {{/if}}    
+        <a href='/projeto/selectProjeto/' class='btn btn-sm botao-menu ativo' style="border-bottom-left-radius: 30px;">
+            <i class="bi bi-house"></i> Iniciar Projeto</a>
+        {{/if}}
         {{#if proposta.ganho}}
         <div class='numero'>2</div>
         <a href="/gerenciamento/visita/{{proposta._id}}"
@@ -233,7 +233,7 @@
         </div>
         <div class="col-md-10 text-start">
             <form action='/gerenciamento/proposta1' method='post' enctype="multipart/form-data">
-            <input type='hidden' name='id' value='{{proposta._id}}'>
+                <input type='hidden' name='id' value='{{proposta._id}}'>
                 <select class='form-select' name='cliente'>
                     <option class='fw-bold' value='{{cliente.proposta._id}}'>{{cliente_proposta.nome}}</option>
                     {{#each todos_clientes}}
@@ -275,7 +275,8 @@
                     </div>
                     <div class="col-md-3">
                         <label>Data de Validade</label>
-                        <input type='date' class='form-control' name='dtvalidade1' id='dtvalidade1'  value='{{proposta.dtvalidade1}}'>
+                        <input type='date' class='form-control' name='dtvalidade1' id='dtvalidade1'
+                            value='{{proposta.dtvalidade1}}'>
                     </div>
                     <div class="col-md-1 mt-3">
                         <button type='submit' class='btn btn-success'>Salvar</button>
@@ -304,10 +305,11 @@
                     </div>
                     {{/if}}
                     <div class="col-md-3 mt-3">
-                        <input type='date' class='form-control' name='dtcadastro2' id='dtcadastro2' value='{{proposta.dtcadastro2}}' onchange="setValidade()">
+                        <input type='date' class='form-control' name='dtcadastro2' id='dtcadastro2'
+                            value='{{proposta.dtcadastro2}}' onchange="setValidade()">
                     </div>
                     <div class="col-md-3 mt-3">
-                        <input type='date' class='form-control' name='dtvalidade2' id='dtvalidade2' 
+                        <input type='date' class='form-control' name='dtvalidade2' id='dtvalidade2'
                             value='{{proposta.dtvalidade2}}'>
                     </div>
                     <div class="col-md-1 mt-3">
@@ -336,10 +338,11 @@
                     </div>
                     {{/if}}
                     <div class="col-md-3 mt-3">
-                        <input type='date' class='form-control' name='dtcadastro3' id='dtcadastro3' value='{{proposta.dtcadastro3}}' onchange="setValidade()">
+                        <input type='date' class='form-control' name='dtcadastro3' id='dtcadastro3'
+                            value='{{proposta.dtcadastro3}}' onchange="setValidade()">
                     </div>
                     <div class="col-md-3 mt-3">
-                        <input type='date' class='form-control' name='dtvalidade3' id='dtvalidade3' 
+                        <input type='date' class='form-control' name='dtvalidade3' id='dtvalidade3'
                             value='{{proposta.dtvalidade3}}'>
                     </div>
                     <div class="col-md-1 mt-3">
@@ -368,7 +371,8 @@
                     </div>
                     {{/if}}
                     <div class="col-md-3 mt-3">
-                        <input type='date' class='form-control' name='dtcadastro4' id='dtcadastro4' value='{{proposta.dtcadastro4}}' onchange="setValidade()">
+                        <input type='date' class='form-control' name='dtcadastro4' id='dtcadastro4'
+                            value='{{proposta.dtcadastro4}}' onchange="setValidade()">
                     </div>
                     <div class="col-md-3 mt-3">
                         <input type='date' class='form-control' name='dtvalidade4' id='dtvalidade4'
@@ -401,10 +405,12 @@
                     </div>
                     {{/if}}
                     <div class="col-md-3 mt-3">
-                        <input type='date' class='form-control' name='dtcadastro5' id='dtcadastro5' value='{{proposta.dtcadastro5}}' onchange="setValidade()">
+                        <input type='date' class='form-control' name='dtcadastro5' id='dtcadastro5'
+                            value='{{proposta.dtcadastro5}}' onchange="setValidade()">
                     </div>
                     <div class="col-md-3 mt-3">
-                        <input type='date' class='form-control' name='dtvalidade5' id='dtvalidade5' value='{{proposta.dtvalidade5}}'>
+                        <input type='date' class='form-control' name='dtvalidade5' id='dtvalidade5'
+                            value='{{proposta.dtvalidade5}}'>
                     </div>
                     <div class="col-md-1 mt-3">
                         <button type='submit' class='btn btn-success'>Salvar</button>
@@ -436,13 +442,19 @@
                             value='{{proposta.dtcadastro6}}' onchange="setValidade()">
                     </div>
                     <div class="col-md-3 mt-3">
-                        <input type='date' class='form-control' name='dtvalidade6' id='dtvalidade6' value='{{proposta.dtvalidade6}}' >
+                        <input type='date' class='form-control' name='dtvalidade6' id='dtvalidade6'
+                            value='{{proposta.dtvalidade6}}'>
                     </div>
                     <div class="col-md-1 mt-3">
                         <button type='submit' class='btn btn-success'>Salvar</button>
                     </div>
                 </div>
             </form>
+            {{/if}}
+            {{#if projeto._id}}
+            <div style="margin-top: 30px;">
+            <a href='/projeto/edicao/{{projeto._id}}' style="font-size: 20px" class='relatorio titulo-relatorio'>Abrir Projeto</a>
+            </div>
             {{/if}}
         </div>
     </div>
