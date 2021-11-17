@@ -25,14 +25,14 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Proposta a 1 dia de expirar</h5>
+        <h5 class="modal-title">Propostas</h5>
         <button type="button" class="btn btn-sm btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <label class="col-form-label">Propostas a Vencer</label>
+      <div class="modal-body text-center">
+        <label class="col-form-label fw-bold">Propostas a 1(um) dia de Vencer</label>
         <table>
           <tr>
-            <th style="width: 10%;text-align: center">Cliente</th>
+            <th style="width: 20%;text-align: center">Cliente</th>
             <th style="width: 10%;text-align: center">Data Cadastro</th>
             <th style="width: 10%;text-align: center">Data Validade</th>
             <th style="width: 10%;text-align: center"></th>
@@ -50,10 +50,11 @@
           </tr>
           {{/each}}
         </table>
-        <label class="col-form-label">Propostas Vencidas</label>
+         <hr>
+        <label class="col-form-label fw-bold">Propostas Vencidas</label>
         <table>
           <tr>
-            <th style="width: 10%;text-align: center">Cliente</th>
+            <th style="width: 20%;text-align: center">Cliente</th>
             <th style="width: 10%;text-align: center">Data Cadastro</th>
             <th style="width: 10%;text-align: center">Data Validade</th>
             <th style="width: 10%;text-align: center"></th>
@@ -115,12 +116,12 @@
               <a href='/pessoa/consulta' class="botaomenu"><i class='bi bi-search'></i> </a>
             </div>
           </div>
-          {{!-- <div class="row mb-2">
+          <div class="row mb-2">
             <div class="text-start">
               <a href='/componente/novo' class="contorno-menu"><i class='bi bi-file-arrow-up'></i>Componentes</a>
-              <a href='/componente/consulta' class="botaomenu"><i class='bi bi-search'></i> </a>
+              <a href='/componente/consulta' class="botaomenu"><i class='bi bi-search'></i></a>
             </div>
-          </div> --}}
+          </div>
           <div style="margin-bottom: 1%;margin-top: 6%;">
             <a href='/gerenciamento/plano' class="relatorio titulo-relatorio" style="padding-right: 20%;"><i
                 class="bi bi-file-arrow-up"></i> Planos</a>
