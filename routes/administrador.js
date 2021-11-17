@@ -418,7 +418,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                                     res.redirect("/administrador/acesso")
                                                 }
                                                 acesso.senha = hash
-                                                console.log('hash=>' + hash)
+                                                //console.log('hash=>' + hash)
                                                 acesso.save().then(() => {
                                                     req.flash('success_msg', 'Senha alterada com sucesso.')
                                                     res.redirect('/administrador/acesso')
@@ -431,7 +431,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
 
                                     } else {
                                         acesso.save().then(() => {
-                                            console.log('atualizou')
+                                            //console.log('atualizou')
                                             req.flash('success_msg', 'Senha alterada com sucesso.')
                                             res.redirect('/administrador/acesso')
                                         }).catch((err) => {

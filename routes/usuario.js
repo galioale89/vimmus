@@ -104,7 +104,7 @@ router.post('/enviar', (req, res) => {
     var comp = ''
     var erros = []
 
-    console.log('id=>' + req.body.id)
+    //console.log('id=>' + req.body.id)
 
     if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == true) {
         erros.push({ texto: "É necessário cadastrar o nome." })
@@ -137,7 +137,7 @@ router.post('/enviar', (req, res) => {
     } else {
         email_mais = req.body.email + ', solucoes@vimmus.com.br'
 
-        console.log('req.body.id=>'+req.body.id)
+        //console.log('req.body.id=>'+req.body.id)
 
         if (req.body.id != '') {
             Pessoa.findOne({ _id: req.body.id }).then((pessoa) => {
@@ -150,7 +150,7 @@ router.post('/enviar', (req, res) => {
 
                 Acesso.find({ pessoa: req.body.id }).then((user_acesso) => {
 
-                    console.log('user_acesso=>' + user_acesso.length)
+                    //console.log('user_acesso=>' + user_acesso.length)
 
                     if (user_acesso.length == 0) {
 
@@ -196,14 +196,15 @@ router.post('/enviar', (req, res) => {
                         mes = parseFloat(data.getMonth()) + 1
                         dia = data.getDate()
 
-                        console.log('usuario=>' + usuario)
-                        console.log('senha=>' + senha)
+                        //console.log('usuario=>' + usuario)
+                        //console.log('senha=>' + senha)
                         const novoUsuario = new Acesso({
                             user: _id,
                             pessoa: req.body.id,
                             usuario: usuario,
                             senha: senha,
                             funges: funges,
+                            ehAdmin: 1,
                             data: ano + '-' + mes + '-' + dia
                         })
                         bcrypt.genSalt(10, (erro, salt) => {
