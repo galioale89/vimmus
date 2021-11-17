@@ -11,6 +11,7 @@ require('../model/Componente')
 require('../model/Documento')
 require('../model/Compra')
 require('../model/Posvenda')
+require('../model/Fornecedor')
 
 const express = require('express')
 const router = express.Router()
@@ -69,6 +70,7 @@ const Proposta = mongoose.model('proposta')
 const Documento = mongoose.model('documento')
 const Compra = mongoose.model('compra')
 const Posvenda = mongoose.model('posvenda')
+const Fornecedor = mongoose.model('fornecedor')
 
 const comparaDatas = require('../resources/comparaDatas')
 const dataBusca = require('../resources/dataBusca')
@@ -2608,6 +2610,15 @@ router.get('/assinatura/:id', ehAdmin, (req, res) => {
 })
 
 router.get('/compra/:id', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    const { user } = req.user
+    var id
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+
     Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
         Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
             Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
@@ -2615,7 +2626,12 @@ router.get('/compra/:id', ehAdmin, (req, res) => {
                     Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
                         Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
                             Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
-                                res.render('principal/compra', { cliente_proposta, proposta, compra, documento, vistoria, lista_equipe, posvenda })
+                                Fornecedor.find({ user: id }).lean().then((fornecedores) => {
+                                    res.render('principal/compra', { cliente_proposta, proposta, compra, documento, vistoria, lista_equipe, posvenda, fornecedores })
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Não foi possível encontrar fornecedors.')
+                                    res.redirect('/menu')
+                                })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
                                 res.redirect('/menu')

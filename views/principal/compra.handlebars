@@ -64,36 +64,39 @@
     </div>
 
     <div class="row mt-4">
-        <div class="col-md-2 text-end">
-            <label class='col-form-label fw-bold mb-3'>Fornecedor: </label><br>
-            <label class='col-form-label fw-bold mb-3'>Pedido:</label><br>
-            <label class='col-form-label fw-bold mb-3 mt-3'>Nota Fiscal:</label><br>
+        <div class="col-md-2">
+            <label class='col-form-label fw-bold'>Fornecedor: </label>
+            <input type='hidden' name='id' value='{{proposta._id}}'>
+            <select class='form-select' name='fornecedor'>
+                <option class='fw-bold' value='{{for_pro._id}}'>{{for_pro.nome}}</option>
+                {{#each fornecedores}}
+                <option value='{{_id}}'>{{nome}}</option>
+                {{else}}
+                <option>Sem fornecedores cadastrados</option>
+                {{/each}}
+            </select>
         </div>
-        <div class="col-md-10 text-start">
+        <div class="col-md-2 text-end">
+            <label class='col-form-label fw-bold mb-3 mt-3'>Pedido:</label><br>
+            <label class='col-form-label fw-bold mb-3'>Nota Fiscal:</label>
+        </div>
+        <div class="col-md-8 text-start">
             <form action='/gerenciamento/pedido' method='post' enctype="multipart/form-data">
-                <input type='hidden' name='id' value='{{proposta._id}}'>
-                {{!-- <select class='form-select' name='fornecedor'>
-                    <option class='fw-bold'>{{for_proposta.nome}}</option>
-                    {{#each fornrcedor}}
-                    <option value={{_id}}>{{nome}}</option>
-                    {{else}}
-                    <option>Sem fornecedores cadastrados</option>
-                    {{/each}}
-                </select><br> --}}
-                <input type="text" class='form-control' style="width: 90%;" name='fornecedor' value='{{compra.fornecedor}}'>
-                <div class="row mt-1">
+                {{!-- <input type="text" class='form-control' style="width: 90%;" name='fornecedor'
+                    value='{{compra.fornecedor}}'> --}}
+                <div class="row">
                     {{#if compra.pedido}}
                     <div class="col-md-5">
-                        <div class="row mt-2">
+                        <div class="row">
                             <label class='col-form-label'>{{compra.pedido}}</label>
                         </div>
                     </div>
-                    <div class="col-md-2 mt-3">
+                    <div class="col-md-2">
                         <input style="max-width: 150px;" type='file' class='form-control' name='pedido'
                             value='{{compra.pedido}}'>
                     </div>
                     {{else}}
-                    <div class="col-md-7 mt-3">
+                    <div class="col-md-6 mt-3">
                         <input type='file' class='form-control' name='pedido' value='{{compra.pedido}}'>
                     </div>
                     {{/if}}
@@ -101,14 +104,14 @@
                         <a class="btn btn-primary" href='/gerenciamento/mostrarPedido/{{proposta._id}}'
                             target="_blank"><i class='bi bi-eye'></i></a>
                     </div>
-                    <div class="col-md-2">
-                        <label> Data Pedido</label>
+                    <div class="col-md-3">
+                        <label style="font-size: 10px;margin-top: 0px;padding-top: 0px;"> Data Pedido</label>
                         <input type='date' class='form-control' name='dtcadastro' value='{{compra.dtcadastro}}'>
                     </div>
-                    <div class="col-md-1 mt-3">
+                    <div class="col-md-2 mt-3">
                         <button type='submit' class='btn btn-success'>Salvar</button>
                     </div>
-                </div><br>
+                </div>
             </form>
             <form action='/gerenciamento/nota' method='post' enctype="multipart/form-data">
                 <input type="hidden" name='id' value='{{proposta._id}}'>
@@ -124,7 +127,7 @@
                             value='{{compra.nota}}'>
                     </div>
                     {{else}}
-                    <div class="col-md-7 mt-3">
+                    <div class="col-md-6 mt-3">
                         <input type='file' class='form-control' name='nota' value='{{compra.nota}}'>
                     </div>
                     {{/if}}
@@ -132,11 +135,11 @@
                         <a class="btn btn-primary" href='/gerenciamento/mostrarNota/{{proposta._id}}' target="_blank"><i
                                 class='bi bi-eye'></i></a>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <label>Data Recebimento</label>
                         <input type='date' class='form-control' name='dtrecebimento' value='{{compra.dtrecebimento}}'>
                     </div>
-                    <div class="col-md-1 mt-3">
+                    <div class="col-md-2 mt-3">
                         <button type='submit' class='btn btn-success'>Salvar</button>
                     </div>
                 </div>
@@ -145,14 +148,16 @@
     </div>
     <div class="row">
         <div class="col">
-            <object data="/gerenciamento/mostrarPedido/{{proposta._id}}" type="application/pdf" width="100%" height="260px">
+            <object data="/gerenciamento/mostrarPedido/{{proposta._id}}" type="application/pdf" width="100%"
+                height="260px">
                 <p>Seu navegador não tem um plugin pra PDF</p>
             </object>
         </div>
         <div class="col">
-            <object data="/gerenciamento/mostrarNota/{{proposta._id}}" type="application/pdf" width="100%" height="260px">
+            <object data="/gerenciamento/mostrarNota/{{proposta._id}}" type="application/pdf" width="100%"
+                height="260px">
                 <p>Seu navegador não tem um plugin pra PDF</p>
-            </object>            
+            </object>
         </div>
     </div>
 </div>

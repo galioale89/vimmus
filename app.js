@@ -20,6 +20,7 @@ const usuario = require('./routes/usuario')
 const administrador = require('./routes/administrador')
 const relatorios = require('./routes/relatorios')
 const componente = require('./routes/componente')
+const fornecedor = require('./routes/fornecedor')
 
 const validaCampos = require('./resources/validaCampos')
 const dataBusca = require('./resources/dataBusca')
@@ -778,12 +779,12 @@ app.get('/menu', ehAdmin, (req, res) => {
               }
             })
           } else {
-            res.render('menuproposta', { id: _id, owner: owner, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado, block: true })
+            res.render('menuproposta', { id: _id, owner: owner, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado})
           }
         })
       } else {
         //console.log('sem registro')
-        res.render('menuproposta', { id: _id, owner: owner, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado, })
+        res.render('menuproposta', { id: _id, owner: owner, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado})
       }
     }
   }).catch((err) => {
@@ -803,6 +804,7 @@ app.use('/usuario', usuario)
 app.use('/administrador', administrador)
 app.use('/relatorios/', relatorios)
 app.use('/componente/', componente)
+app.use('/fornecedor/', fornecedor)
 
 //Outros
 //Acesso ao localhost

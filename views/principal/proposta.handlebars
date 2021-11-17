@@ -451,11 +451,103 @@
                 </div>
             </form>
             {{/if}}
+        </div>
+        <div class="row mb-1 mt-3">
+            <form action='/gerenciamento/visita/' method="post">
+                <input type='hidden' name='id' value="{{proposta._id}}">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class='row mt-1'>
+                            <div class="col-md-8 text-end">
+                                <label class='col-form-label col-form-label-sm'>Quantidade de Módulos: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type='number' class="form-control form-control-sm" name='plaQtdMod'
+                                    value='{{vistoria.plaQtdMod}}'>
+                            </div>
+                        </div>
+                        <div class='row mt-1'>
+                            <div class="col-md-8 text-end">
+                                <label class='col-form-label col-form-label-sm'>Potência dos Módulos: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type='number' class="form-control form-control-sm" name='plaWattMod'
+                                    value='{{vistoria.plaWattMod}}'>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class='row mt-1'>
+                            <div class="col-md-8 text-end">
+                                <label class='col-form-label col-form-label-sm'>Quantidade de Inversores: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type='number' class="form-control form-control-sm" name='plaQtdInv'
+                                    value='{{vistoria.plaQtdInv}}'>
+                            </div>
+                        </div>
+                        <div class='row mt-1'>
+                            <div class="col-md-8 text-end">
+                                <label class='col-form-label col-form-label-sm'>Potência do Inversor: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type='number' class="form-control form-control-sm" name='plaKwpInv'
+                                    value='{{vistoria.plaKwpInv}}'>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class='row mt-1'>
+                            <div class="col-md-8 text-end">
+                                <label class='col-form-label col-form-label-sm'>Dimensão Área(m2): </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type='number' class="form-control form-control-sm" name='plaDimArea'
+                                    value='{{vistoria.plaDimArea}}'>
+                            </div>
+                            </table>
+                        </div>
+                        <div class='row mt-1'>
+                            <div class="col-md-8 text-end">
+                                <label class='col-form-label col-form-label-sm'>Quantidade de String: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type='number' class="form-control form-control-sm" name='plaQtdString'
+                                    value='{{vistoria.plaQtdString}}'>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class='row mt-1'>
+                            <div class="col-md-8 text-end">
+                                <label class='col-form-label col-form-label-sm'>Módulos por String: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type='number' class="form-control form-control-sm" name='plaModString'
+                                    value='{{vistoria.plaModString}}'>
+                            </div>
+                        </div>
+                        <div class='row mt-1'>
+                            <div class="col-md-8 text-end">
+                                <label class='col-form-label col-form-label-sm'>Quantidade de Estruturas: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type='number' class="form-control form-control-sm" name='plaQtdEst'
+                                    value='{{vistoria.plaQtdEst}}'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="btn-group gap-2 col-12">
+            <button class='btn btn-sm btn-success' type="submit">Aplicar</button>
             {{#if projeto._id}}
-            <div style="margin-top: 30px;">
-            <a href='/projeto/edicao/{{projeto._id}}' style="font-size: 20px" class='relatorio titulo-relatorio'>Abrir Projeto</a>
-            </div>
+                <a href='/projeto/edicao/{{projeto._id}}' style="font-size: 20px"
+                    class='relatorio titulo-relatorio'>Abrir
+                    Projeto</a>
             {{/if}}
         </div>
+
     </div>
 </div>
