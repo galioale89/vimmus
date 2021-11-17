@@ -119,10 +119,14 @@ app.get('/menu', ehAdmin, (req, res) => {
   const { user } = req.user
   const { ehAdmin } = req.user
   const { funges } = req.user
+  const { pessoa } = req.user
   const { owner } = req.user
+
+  //console.log('owner=>'+owner)
 
   var numprj = 0
 
+  //console.log(id)
   var q = 0
   var listaOrcado = []
   var listaAberto = []
@@ -148,6 +152,7 @@ app.get('/menu', ehAdmin, (req, res) => {
   var qtdtrt = 0
   var qtdpcl = 0
   var qtdequ = 0
+  var responsavel
 
   if (ehAdmin == 0) {
     ehMaster = true
@@ -155,126 +160,130 @@ app.get('/menu', ehAdmin, (req, res) => {
     ehMaster = false
   }
 
-  console.log(user)
-
   Proposta.find({ user: _id }).sort({ data: 'asc' }).then((todasProposta) => {
     if (todasProposta != '') {
       todasProposta.forEach((element) => {
         Proposta.findOne({ _id: element._id }).then((proposta) => {
           Cliente.findOne({ _id: element.cliente }).then((cliente) => {
-            Pessoa.findOne({ _id: element.responsavel }).then((pessoa) => {
-              Documento.findOne({ proposta: element._id }).then((documento) => {
-                Compra.findOne({ proposta: element._id }).then((compra) => {
-                  Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
-                    Equipe.findOne({ _id: element.equipe }).then((equipe) => {
-                      Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
-                        //console.log('element._id=>' + element._id)
-                        if (typeof proposta.proposta6 != 'undefined') {
-                          dtcadastro = proposta.dtcadastro6
-                          dtvalidade = proposta.dtvalidade6
+            Documento.findOne({ proposta: element._id }).then((documento) => {
+              Compra.findOne({ proposta: element._id }).then((compra) => {
+                Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
+                  Equipe.findOne({ _id: element.equipe }).then((equipe) => {
+                    Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
+                      //console.log('element._id=>' + element._id)
+                      if (typeof proposta.proposta6 != 'undefined') {
+                        dtcadastro = proposta.dtcadastro6
+                        dtvalidade = proposta.dtvalidade6
+                      } else {
+                        if (typeof proposta.proposta5 != 'undefined') {
+                          dtcadastro = proposta.dtcadastro5
+                          dtvalidade = proposta.dtvalidade5
                         } else {
-                          if (typeof proposta.proposta5 != 'undefined') {
-                            dtcadastro = proposta.dtcadastro5
-                            dtvalidade = proposta.dtvalidade5
+                          if (typeof proposta.proposta4 != 'undefined') {
+                            dtcadastro = proposta.dtcadastro4
+                            dtvalidade = proposta.dtvalidade4
                           } else {
-                            if (typeof proposta.proposta4 != 'undefined') {
-                              dtcadastro = proposta.dtcadastro4
-                              dtvalidade = proposta.dtvalidade4
+                            if (typeof proposta.proposta3 != 'undefined') {
+                              dtcadastro = proposta.dtcadastro3
+                              dtvalidade = proposta.dtvalidade3
                             } else {
-                              if (typeof proposta.proposta3 != 'undefined') {
-                                dtcadastro = proposta.dtcadastro3
-                                dtvalidade = proposta.dtvalidade3
+                              if (typeof proposta.proposta2 != 'undefined') {
+                                dtcadastro = proposta.dtcadastro2
+                                dtvalidade = proposta.dtvalidade2
                               } else {
-                                if (typeof proposta.proposta2 != 'undefined') {
-                                  dtcadastro = proposta.dtcadastro2
-                                  dtvalidade = proposta.dtvalidade2
-                                } else {
-                                  dtcadastro = proposta.dtcadastro1
-                                  dtvalidade = proposta.dtvalidade1
-                                }
+                                dtcadastro = proposta.dtcadastro1
+                                dtvalidade = proposta.dtvalidade1
                               }
                             }
                           }
                         }
+                      }
 
-
+                      Pessoa.findOne({ _id: element.responsavel }).then((pessoa) => {
+                        if (pessoa != null) {
+                          responsavel = pessoa.nome
+                        } else {
+                          responsavel = ''
+                        }
+                        // console.log('responsavel=>'+responsavel)
+                        // console.log('pessoa responsavel=>' + pessoa)
                         if (proposta.ganho == true) {
                           if (proposta.encerrado == true) {
                             status = 'Encerrado'
                             qtdfim++
                             qtdencerrado++
-                            listaEncerrado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                            listaEncerrado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                           } else {
                             if (posvenda.feito == true) {
                               status = 'Pós-Venda'
                               qtdpos++
                               qtdaberto++
-                              listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                              listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                             } else {
                               if (documento.feitofaturado == true) {
                                 status = 'Faturado'
                                 qtdfat++
                                 qtdaberto++
-                                listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                               } else {
                                 if (documento.feitofaturado == true) {
                                   status = 'Almoxarifado Fechado'
                                   qtdalx++
                                   qtdaberto++
-                                  listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                  listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                 } else {
                                   if (documento.feitofaturado == true) {
                                     status = 'Almoxarifado em Aberto'
                                     qtdenv++
                                     qtdaberto++
-                                    listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                    listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                   } else {
                                     if (equipe.feito == true) {
                                       status = 'Execução a Campo'
                                       qtdequ++
                                       qtdaberto++
-                                      listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                      listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                     } else {
                                       if (documento.protocolado == true) {
                                         status = 'Protocolado'
                                         qtdpcl++
                                         qtdaberto++
-                                        listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                        listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                       } else {
                                         if (documento.feitotrt == true) {
                                           status = 'TRT'
                                           qtdtrt++
                                           qtdaberto++
-                                          listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                          listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                         } else {
                                           if (compra.feitonota == true) {
                                             status = 'NF'
                                             qtdnot++
                                             qtdaberto++
-                                            listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                            listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                           } else {
                                             if (compra.feitopedido == true) {
                                               status = 'Pedido'
                                               qtdped++
                                               qtdaberto++
-                                              listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                              listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                             } else {
                                               if (proposta.assinado == true) {
                                                 status = 'Assinado'
                                                 qtdass++
                                                 qtdaberto++
-                                                listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                                listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                               } else {
                                                 if (vistoria.feito == true) {
                                                   status = 'Vistoria'
                                                   qtdvis++
                                                   qtdaberto++
-                                                  listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                                  listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                 } else {
                                                   status = 'Preparado para a Vistoria'
                                                   qtdpro++
                                                   qtdaberto++
-                                                  listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                                  listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                 }
                                               }
                                             }
@@ -291,25 +300,23 @@ app.get('/menu', ehAdmin, (req, res) => {
                           status = 'Proposta Enviada'
                           qtdpro++
                           qtdorcado++
-                          listaOrcado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                          listaOrcado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                         }
 
-                        if (proposta.ganho != true){
-                          var hoje = dataHoje()      
+
+                        if (proposta.ganho != true) {
+                          var hoje = dataHoje()
                           // var dtnovo = setData(dtcadastro,7)
-                          console.log('dtvalidade=>'+dtvalidade)
+                          // console.log(dtvalidade)
                           var dtnovo = dtvalidade
-                          var data1 = dataBusca(dtnovo)           
-                          var data2 = dataBusca(hoje)      
+                          var data1 = dataBusca(dtnovo)
+                          var data2 = dataBusca(hoje)
                           var compara = parseFloat(data1) - parseFloat(data2)
-                          console.log('data1=>'+data1)
-                          console.log('data2=>'+data2)
-                          console.log('compara=>'+compara)
-                          if (compara == 1){
-                            notpro.push({id: proposta ._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo)})
-                          }else{
-                            if (compara < 0){
-                              atrasado.push({id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo)})
+                          if (compara == 1) {
+                            notpro.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
+                          } else {
+                            if (compara < 0) {
+                              atrasado.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
                             }
                           }
                         }
@@ -322,30 +329,30 @@ app.get('/menu', ehAdmin, (req, res) => {
                           //console.log('qtdorcado=>' + qtdorcado)
                           //console.log('qtdaberto=>' + qtdaberto)
                           //console.log('qtdencerrado=>' + qtdencerrado)
-                          res.render('menuproposta', {id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, notpro, atrasado })
+                          res.render('menuproposta', { id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, notpro, atrasado })
                         }
                       }).catch((err) => {
-                        req.flash('error_msg', 'Houve um erro ao encontrar o pós venda.')
+                        req.flash('error_msg', 'Houve um erro ao encontrar as pessoas.')
                         res.redirect('/')
                       })
                     }).catch((err) => {
-                      req.flash('error_msg', 'Houve um erro ao encontrar a equipe.')
+                      req.flash('error_msg', 'Houve um erro ao encontrar o pós venda.')
                       res.redirect('/')
                     })
                   }).catch((err) => {
-                    req.flash('error_msg', 'Houve um erro ao encontrar a vistoria.')
+                    req.flash('error_msg', 'Houve um erro ao encontrar a equipe.')
                     res.redirect('/')
                   })
                 }).catch((err) => {
-                  req.flash('error_msg', 'Houve um erro ao encontrar a compra.')
+                  req.flash('error_msg', 'Houve um erro ao encontrar a vistoria.')
                   res.redirect('/')
                 })
               }).catch((err) => {
-                req.flash('error_msg', 'Houve um erro ao encontrar o documento.')
+                req.flash('error_msg', 'Houve um erro ao encontrar a compra.')
                 res.redirect('/')
               })
             }).catch((err) => {
-              req.flash('error_msg', 'Houve um erro ao encontrar as pessoas.')
+              req.flash('error_msg', 'Houve um erro ao encontrar o documento.')
               res.redirect('/')
             })
           }).catch((err) => {
@@ -358,132 +365,137 @@ app.get('/menu', ehAdmin, (req, res) => {
         })
       })
     } else {
-      if (user != ''&& typeof user !='undefined')  {
+      //console.log('user=>'+user)
+      if (user != '' && typeof user != 'undefined') {
         var instalador = ''
-        
-        console.log('user=>'+user)
-        console.log('funges=>'+funges)
+
+        //console.log('funges=>'+funges)
 
         Proposta.find({ user: user }).sort({ data: 'asc' }).then((todasProposta) => {
           if (todasProposta) {
             todasProposta.forEach((element) => {
               if (funges == true) {
-                console.log(element)
+                //console.log(element)
                 Proposta.findOne({ _id: element._id }).then((proposta) => {
                   Cliente.findOne({ _id: element.cliente }).then((cliente) => {
-                    Pessoa.findOne({ _id: element.responsavel }).then((pessoa) => {
-                      Documento.findOne({ proposta: element._id }).then((documento) => {
-                        Compra.findOne({ proposta: element._id }).then((compra) => {
-                          Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
-                            Equipe.findOne({ _id: element.equipe }).then((equipe) => {
-                              Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
-                                //console.log('element._id=>' + element._id)
-                                if (typeof proposta.proposta6 != 'undefined') {
-                                  dtcadastro = proposta.dtcadastro6
-                                  dtvalidade = proposta.dtvalidade6
+
+                    Documento.findOne({ proposta: element._id }).then((documento) => {
+                      Compra.findOne({ proposta: element._id }).then((compra) => {
+                        Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
+                          Equipe.findOne({ _id: element.equipe }).then((equipe) => {
+                            Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
+                              //console.log('element._id=>' + element._id)
+                              if (typeof proposta.proposta6 != 'undefined') {
+                                dtcadastro = proposta.dtcadastro6
+                                dtvalidade = proposta.dtvalidade6
+                              } else {
+                                if (typeof proposta.proposta5 != 'undefined') {
+                                  dtcadastro = proposta.dtcadastro5
+                                  dtvalidade = proposta.dtvalidade5
                                 } else {
-                                  if (typeof proposta.proposta5 != 'undefined') {
-                                    dtcadastro = proposta.dtcadastro5
-                                    dtvalidade = proposta.dtvalidade5
+                                  if (typeof proposta.proposta4 != 'undefined') {
+                                    dtcadastro = proposta.dtcadastro4
+                                    dtvalidade = proposta.dtvalidade4
                                   } else {
-                                    if (typeof proposta.proposta4 != 'undefined') {
-                                      dtcadastro = proposta.dtcadastro4
-                                      dtvalidade = proposta.dtvalidade4
+                                    if (typeof proposta.proposta3 != 'undefined') {
+                                      dtcadastro = proposta.dtcadastro3
+                                      dtvalidade = proposta.dtvalidade3
                                     } else {
-                                      if (typeof proposta.proposta3 != 'undefined') {
-                                        dtcadastro = proposta.dtcadastro3
-                                        dtvalidade = proposta.dtvalidade3
+                                      if (typeof proposta.proposta2 != 'undefined') {
+                                        dtcadastro = proposta.dtcadastro2
+                                        dtvalidade = proposta.dtvalidade2
                                       } else {
-                                        if (typeof proposta.proposta2 != 'undefined') {
-                                          dtcadastro = proposta.dtcadastro2
-                                          dtvalidade = proposta.dtvalidade2
-                                        } else {
-                                          dtcadastro = proposta.dtcadastro1
-                                          dtvalidade = proposta.dtvalidade1
-                                        }
+                                        dtcadastro = proposta.dtcadastro1
+                                        dtvalidade = proposta.dtvalidade1
                                       }
                                     }
                                   }
                                 }
+                              }
 
-
+                              Pessoa.findOne({ _id: element.responsavel }).then((pessoa) => {
+                                if (pessoa != null) {
+                                  responsavel = pessoa.nome
+                                } else {
+                                  responsavel = ''
+                                }
                                 if (proposta.ganho == true) {
                                   if (proposta.encerrado == true) {
                                     status = 'Encerrado'
                                     qtdfim++
                                     qtdencerrado++
-                                    listaEncerrado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                    listaEncerrado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                   } else {
                                     if (posvenda.feito == true) {
                                       status = 'Pós-Venda'
                                       qtdpos++
                                       qtdaberto++
-                                      listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                      listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                     } else {
                                       if (documento.feitofaturado == true) {
                                         status = 'Faturado'
                                         qtdfat++
                                         qtdaberto++
-                                        listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                        listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                       } else {
                                         if (documento.feitofaturado == true) {
                                           status = 'Almoxarifado Fechado'
                                           qtdalx++
                                           qtdaberto++
-                                          listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                          listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                         } else {
                                           if (documento.feitofaturado == true) {
                                             status = 'Almoxarifado em Aberto'
                                             qtdenv++
                                             qtdaberto++
-                                            listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                            listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                           } else {
                                             if (equipe.feito == true) {
                                               status = 'Execução a Campo'
                                               qtdequ++
                                               qtdaberto++
-                                              listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                              listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                             } else {
                                               if (documento.protocolado == true) {
                                                 status = 'Protocolado'
                                                 qtdpcl++
                                                 qtdaberto++
-                                                listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                                listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                               } else {
                                                 if (documento.feitotrt == true) {
                                                   status = 'TRT'
                                                   qtdtrt++
                                                   qtdaberto++
-                                                  listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                                  listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                 } else {
                                                   if (compra.feitonota == true) {
                                                     status = 'NF'
                                                     qtdnot++
                                                     qtdaberto++
-                                                    listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                                    listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                   } else {
                                                     if (compra.feitopedido == true) {
                                                       status = 'Pedido'
                                                       qtdped++
                                                       qtdaberto++
-                                                      listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                                      listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                     } else {
                                                       if (proposta.assinado == true) {
                                                         status = 'Assinado'
                                                         qtdass++
                                                         qtdaberto++
-                                                        listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                                        listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                       } else {
                                                         if (vistoria.feito == true) {
                                                           status = 'Vistoria'
                                                           qtdvis++
                                                           qtdaberto++
-                                                          listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                                          listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                         } else {
                                                           status = 'Preparado para a Vistoria'
                                                           qtdpro++
                                                           qtdaberto++
-                                                          listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                                          listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                         }
                                                       }
                                                     }
@@ -500,57 +512,57 @@ app.get('/menu', ehAdmin, (req, res) => {
                                   status = 'Proposta Enviada'
                                   qtdpro++
                                   qtdorcado++
-                                  listaOrcado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                  listaOrcado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                 }
-                                if (proposta.ganho != true){
-                                  var hoje = dataHoje()      
+
+                                if (proposta.ganho != true) {
+                                  var hoje = dataHoje()
                                   // var dtnovo = setData(dtcadastro,7)
                                   var dtnovo = dtvalidade
-                                  var data1 = dataBusca(dtnovo)           
-                                  var data2 = dataBusca(hoje)      
+                                  var data1 = dataBusca(dtnovo)
+                                  var data2 = dataBusca(hoje)
                                   var compara = parseFloat(data1) - parseFloat(data2)
-                                  if (compara == 1){
-                                    notpro.push({id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo)})
-                                  }else{
-                                    if (compara < 0){
-                                      atrasado.push({id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo)})
+                                  if (compara == 1) {
+                                    notpro.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
+                                  } else {
+                                    if (compara < 0) {
+                                      atrasado.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
                                     }
                                   }
                                 }
-
-                                console.log('status=>' + status)
+                                //console.log('status=>' + status)
                                 q++
-                                console.log('q=>' + q)
+                                //console.log('q=>' + q)
                                 if (q == todasProposta.length) {
                                   numprj = todasProposta.length
                                   //console.log('numprj=>' + numprj)
                                   //console.log('qtdorcado=>' + qtdorcado)
                                   //console.log('qtdaberto=>' + qtdaberto)
                                   //console.log('qtdencerrado=>' + qtdencerrado)
-                                  res.render('menuproposta', {id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, notpro, atrasado})
+                                  res.render('menuproposta', { id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, notpro, atrasado })
                                 }
                               }).catch((err) => {
-                                req.flash('error_msg', 'Houve um erro ao encontrar o pós venda.')
+                                req.flash('error_msg', 'Houve um erro ao encontrar as pessoas.')
                                 res.redirect('/')
                               })
                             }).catch((err) => {
-                              req.flash('error_msg', 'Houve um erro ao encontrar a equipe.')
+                              req.flash('error_msg', 'Houve um erro ao encontrar o pós venda.')
                               res.redirect('/')
                             })
                           }).catch((err) => {
-                            req.flash('error_msg', 'Houve um erro ao encontrar a vistoria.')
+                            req.flash('error_msg', 'Houve um erro ao encontrar a equipe.')
                             res.redirect('/')
                           })
                         }).catch((err) => {
-                          req.flash('error_msg', 'Houve um erro ao encontrar a compra.')
+                          req.flash('error_msg', 'Houve um erro ao encontrar a vistoria.')
                           res.redirect('/')
                         })
                       }).catch((err) => {
-                        req.flash('error_msg', 'Houve um erro ao encontrar o documento.')
+                        req.flash('error_msg', 'Houve um erro ao encontrar a compra.')
                         res.redirect('/')
                       })
                     }).catch((err) => {
-                      req.flash('error_msg', 'Houve um erro ao encontrar as pessoas.')
+                      req.flash('error_msg', 'Houve um erro ao encontrar o documento.')
                       res.redirect('/')
                     })
                   }).catch((err) => {
@@ -562,18 +574,18 @@ app.get('/menu', ehAdmin, (req, res) => {
                   res.redirect('/')
                 })
               } else {
-                console.log('element.equipe=>'+element.equipe)
-                console.log('pessoa=>'+pessoa)
+                //console.log('element.equipe=>'+element.equipe)
+                //console.log('pessoa=>'+pessoa)
                 Equipe.findOne({ _id: element.equipe }).then((equipe) => {
                   Pessoa.findOne({ _id: pessoa }).then((usuario) => {
-                    // //console.log('pessoa=>' + pessoa)
-                    // //console.log('usuario.nome=>' + usuario.nome)
-                    // //console.log('equipe.ins0=>' + equipe.ins0)
-                    // //console.log('equipe.ins1=>' + equipe.ins1)
-                    // //console.log('equipe.ins2=>' + equipe.ins2)
-                    // //console.log('equipe.ins3=>' + equipe.ins3)
-                    // //console.log('equipe.ins4=>' + equipe.ins4)
-                    // //console.log('equipe.ins5=>' + equipe.ins5)
+                    //  //console.log('pessoa=>' + pessoa)
+                    //  //console.log('usuario.nome=>' + usuario.nome)
+                    //  //console.log('equipe.ins0=>' + equipe.ins0)
+                    //  //console.log('equipe.ins1=>' + equipe.ins1)
+                    //  //console.log('equipe.ins2=>' + equipe.ins2)
+                    //  //console.log('equipe.ins3=>' + equipe.ins3)
+                    //  //console.log('equipe.ins4=>' + equipe.ins4)
+                    //  //console.log('equipe.ins5=>' + equipe.ins5)
                     instalador = ''
                     if (equipe.ins0 == usuario.nome) {
                       instalador = equipe.ins0
@@ -593,123 +605,129 @@ app.get('/menu', ehAdmin, (req, res) => {
                     if (equipe.ins5 == usuario.nome) {
                       instalador = equipe.ins5
                     }
-                    // //console.log('instalador=>' + instalador)
+                    //  //console.log('instalador=>' + instalador)
                     if (instalador != '') {
                       numprj++
                       Proposta.findOne({ _id: element._id }).then((proposta) => {
                         Cliente.findOne({ _id: element.cliente }).then((cliente) => {
-                          Pessoa.findOne({ _id: element.responsavel }).then((pessoa) => {
-                            Documento.findOne({ proposta: element._id }).then((documento) => {
-                              Compra.findOne({ proposta: element._id }).then((compra) => {
-                                Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
-                                  Equipe.findOne({ _id: element.equipe }).then((equipe) => {
-                                    Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
-                                      // //console.log('entrou')
-                                      if (typeof proposta.proposta6 != 'undefined') {
-                                        dtcadastro = proposta.dtcadastro6
-                                        dtvalidade = proposta.dtvalidade6
+
+                          Documento.findOne({ proposta: element._id }).then((documento) => {
+                            Compra.findOne({ proposta: element._id }).then((compra) => {
+                              Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
+                                Equipe.findOne({ _id: element.equipe }).then((equipe) => {
+                                  Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
+                                    //  //console.log('entrou')
+                                    if (typeof proposta.proposta6 != 'undefined') {
+                                      dtcadastro = proposta.dtcadastro6
+                                      dtvalidade = proposta.dtvalidade6
+                                    } else {
+                                      if (typeof proposta.proposta5 != 'undefined') {
+                                        dtcadastro = proposta.dtcadastro5
+                                        dtvalidade = proposta.dtvalidade5
                                       } else {
-                                        if (typeof proposta.proposta5 != 'undefined') {
-                                          dtcadastro = proposta.dtcadastro5
-                                          dtvalidade = proposta.dtvalidade5
+                                        if (typeof proposta.proposta4 != 'undefined') {
+                                          dtcadastro = proposta.dtcadastro4
+                                          dtvalidade = proposta.dtvalidade4
                                         } else {
-                                          if (typeof proposta.proposta4 != 'undefined') {
-                                            dtcadastro = proposta.dtcadastro4
-                                            dtvalidade = proposta.dtvalidade4
+                                          if (typeof proposta.proposta3 != 'undefined') {
+                                            dtcadastro = proposta.dtcadastro3
+                                            dtvalidade = proposta.dtvalidade3
                                           } else {
-                                            if (typeof proposta.proposta3 != 'undefined') {
-                                              dtcadastro = proposta.dtcadastro3
-                                              dtvalidade = proposta.dtvalidade3
+                                            if (typeof proposta.proposta2 != 'undefined') {
+                                              dtcadastro = proposta.dtcadastro2
+                                              dtvalidade = proposta.dtvalidade2
                                             } else {
-                                              if (typeof proposta.proposta2 != 'undefined') {
-                                                dtcadastro = proposta.dtcadastro2
-                                                dtvalidade = proposta.dtvalidade2
-                                              } else {
-                                                dtcadastro = proposta.dtcadastro1
-                                                dtvalidade = proposta.dtvalidade1
-                                              }
+                                              dtcadastro = proposta.dtcadastro1
+                                              dtvalidade = proposta.dtvalidade1
                                             }
                                           }
                                         }
                                       }
+                                    }
 
+                                    Pessoa.findOne({ _id: element.responsavel }).then((pessoa) => {
+                                      if (pessoa != null) {
+                                        responsavel = pessoa.nome
+                                      } else {
+                                        responsavel = ''
+                                      }
                                       if (proposta.ganho == true) {
                                         if (proposta.encerrado == true) {
                                           status = 'Encerrado'
                                           qtdfim++
                                           qtdencerrado++
-                                          listaEncerrado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade),  block: true })
+                                          listaEncerrado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                         } else {
                                           if (posvenda.feito == true) {
                                             status = 'Pós-Venda'
                                             qtdpos++
                                             qtdaberto++
-                                            listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade),  block: true })
+                                            listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                           } else {
                                             if (documento.feitofaturado == true) {
                                               status = 'Faturado'
                                               qtdfat++
                                               qtdaberto++
-                                              listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade),  block: true })
+                                              listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                             } else {
                                               if (documento.feitofaturado == true) {
                                                 status = 'Almoxarifado Fechado'
                                                 qtdalx++
                                                 qtdaberto++
-                                                listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade),  block: true })
+                                                listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                               } else {
                                                 if (documento.feitofaturado == true) {
                                                   status = 'Almoxarifado em Aberto'
                                                   qtdenv++
                                                   qtdaberto++
-                                                  listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade),  block: true })
+                                                  listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                 } else {
                                                   if (equipe.feito == true) {
                                                     status = 'Execução a Campo'
                                                     qtdequ++
                                                     qtdaberto++
-                                                    listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade),  block: true })
+                                                    listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                   } else {
                                                     if (documento.protocolado == true) {
                                                       status = 'Protocolado'
                                                       qtdpcl++
                                                       qtdaberto++
-                                                      listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade),  block: true })
+                                                      listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                     } else {
                                                       if (documento.feitotrt == true) {
                                                         status = 'TRT'
                                                         qtdtrt++
                                                         qtdaberto++
-                                                        listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade),  block: true })
+                                                        listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                       } else {
                                                         if (compra.feitonota == true) {
                                                           status = 'NF'
                                                           qtdnot++
                                                           qtdaberto++
-                                                          listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade),  block: true })
+                                                          listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                         } else {
                                                           if (compra.feitopedido == true) {
                                                             status = 'Pedido'
                                                             qtdped++
                                                             qtdaberto++
-                                                            listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade),  block: true })
+                                                            listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                           } else {
                                                             if (proposta.assinado == true) {
                                                               status = 'Assinado'
                                                               qtdass++
                                                               qtdaberto++
-                                                              listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade),  block: true })
+                                                              listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                             } else {
                                                               if (vistoria.feito == true) {
                                                                 status = 'Vistoria'
                                                                 qtdvis++
                                                                 qtdaberto++
-                                                                listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade),  block: true})
+                                                                listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                               } else {
                                                                 status = 'Preparado para a Vistoria'
                                                                 qtdpro++
                                                                 qtdorcado++
-                                                                listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
+                                                                listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                               }
                                                             }
                                                           }
@@ -726,16 +744,16 @@ app.get('/menu', ehAdmin, (req, res) => {
                                         status = 'Proposta Enviada'
                                         qtdpro++
                                         qtdorcado++
-                                        listaOrcado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel: pessoa.nome, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
+                                        listaOrcado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                       }
 
                                       q++
 
                                       if (q == todasProposta.length) {
 
-                                        console.log(listaAberto)
+                                        //console.log(listaAberto)
                                         numprj = numprj
-                                        res.render('menuproposta', { id: _id, owner: owner, listaOrcado, listaAberto, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdorcado, qtdaberto, qtdencerrado, block: true})
+                                        res.render('menuproposta', { id: _id, owner: owner, listaOrcado, listaAberto, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdorcado, qtdaberto, qtdencerrado, block: true })
                                       }
                                     })
                                   })
@@ -751,12 +769,12 @@ app.get('/menu', ehAdmin, (req, res) => {
               }
             })
           } else {
-            res.render('menuproposta', {id: _id, owner: owner, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado, block: true})
+            res.render('menuproposta', { id: _id, owner: owner, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado, block: true })
           }
         })
       } else {
-        console.log('entrou')
-        res.render('menuproposta', { id: _id, owner: owner, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdaberto, qtdorcado, qtdencerrado})
+        //console.log('sem registro')
+        res.render('menuproposta', { id: _id, owner: owner, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado, })
       }
     }
   }).catch((err) => {
