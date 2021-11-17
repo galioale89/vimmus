@@ -137,6 +137,8 @@ router.post('/enviar', (req, res) => {
     } else {
         email_mais = req.body.email + ', solucoes@vimmus.com.br'
 
+        console.log('req.body.id=>'+req.body.id)
+
         if (req.body.id != '') {
             Pessoa.findOne({ _id: req.body.id }).then((pessoa) => {
 
@@ -164,7 +166,7 @@ router.post('/enviar', (req, res) => {
 
                         comp = Math.floor(Math.random() * (999 - 1)) + 1
                         usuario = usuario + comp
-
+                        senha = Math.floor(Math.random() * (999999 - 111111)) + 111111
 
                         texto = 'Olá ' + req.body.nome + ',' + '\n' + '\n' +
                             'Aqui está seu usuário e senha de acesso ao sistema da VIMMUS.' + '\n' +
@@ -193,7 +195,6 @@ router.post('/enviar', (req, res) => {
                         ano = data.getFullYear()
                         mes = parseFloat(data.getMonth()) + 1
                         dia = data.getDate()
-
 
                         console.log('usuario=>' + usuario)
                         console.log('senha=>' + senha)

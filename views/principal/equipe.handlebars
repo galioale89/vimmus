@@ -1,17 +1,18 @@
 <style>
-    .lists-ins {
+    .lists {
         display: flex;
         flex: 1;
         width: 100%;
     }
 
-    .lists-ins .list-ins {
+    .lists .list {
         display: flex;
         flex-flow: column;
         flex: 1;
+        max-height: 300px;
 
+        width: 100%;
         border-radius: 20px;
-        min-height: 100px;
 
         background-color: #001263e5;
         margin: 0 15px;
@@ -19,7 +20,7 @@
         transition: all 0.2s linear;
     }
 
-    .lists-ins .list-ins .list-item-ins {
+    .lists .list .list-item {
         background-color: #F3F3F3;
         border-radius: 8px;
         text-align: center;
@@ -27,7 +28,7 @@
         cursor: pointer;
     }
 
-    .lists-ins .list-ins .item-instalacao {
+    .lists .list .item-instalacao {
         background-color: #F3F3F3;
         border-radius: 8px;
         text-align: center;
@@ -35,7 +36,7 @@
         cursor: pointer;
     }
 
-    .lists-ins .list-ins .item-ins {
+    .lists .list .item {
         background-color: #F3F3F3;
         border-radius: 8px;
         text-align: center;
@@ -109,21 +110,25 @@
             style="border-bottom-left-radius: 30px;"><i class="bi bi-people"></i>
             Equipes</a>
         <div class='numero'>8</div>
-        <a href="/gerenciamento/aceite/{{proposta._id}}" class="btn btn-sm {{#if documento.feitoaceite}} check-menu {{else}} botao-menu{{/if}}"
+        <a href="/gerenciamento/aceite/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitoaceite}} check-menu {{else}} botao-menu{{/if}}"
             style="border-bottom-left-radius: 30px;"><i class="bi bi-check2-square"></i>
             Aceite Obra</a>
         <div class='numero'>9</div>
-        <a href="/gerenciamento/almoxarifado/{{proposta._id}}" class="btn btn-sm {{#if documento.feitoalmox}} check-menu {{else}} botao-menu{{/if}}"
+        <a href="/gerenciamento/almoxarifado/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitoalmox}} check-menu {{else}} botao-menu{{/if}}"
             style="border-bottom-left-radius: 30px;"><i class="bi bi-layers"></i>
             Almoxarifado</a>
         <div class='numero'>10</div>
-        <a href="/gerenciamento/financeiro/{{proposta._id}}" class="btn btn-sm {{#if documento.feitofaturado}} check-menu {{else}} botao-menu{{/if}}"
+        <a href="/gerenciamento/financeiro/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitofaturado}} check-menu {{else}} botao-menu{{/if}}"
             style="border-bottom-left-radius: 30px;"><i class="bi bi-calculator"></i>
             Financeiro</a>
         <div class='numero'>11</div>
-        <a href="/gerenciamento/posvenda/{{proposta._id}}" class="btn btn-sm {{#if posvenda.feito}} check-menu {{else}} botao-menu{{/if}}"
+        <a href="/gerenciamento/posvenda/{{proposta._id}}"
+            class="btn btn-sm {{#if posvenda.feito}} check-menu {{else}} botao-menu{{/if}}"
             style="border-bottom-left-radius: 30px;"><i class="bi bi-door-open"></i>
-            Pós Venda</a>           
+            Pós Venda</a>
     </div>
 
     <form action='/gerenciamento/salvarpadrao/' method='post'>
@@ -153,18 +158,20 @@
         <div class="row" style="padding-left:10px;padding-right: 10px;width: 100%;">
             <div class="col">
                 <div class="row">
-                    <div class="lists-ins">
-                        <div class="list-ins">
+                    <div class="lists">
+                        <div class="list">
                             <label class="col-form-label col-form-label-sm fw-bold text-center"
                                 style="color: white">Instaladores Disponíveis</label>
-                            {{#each fora_ins}}
-                            <div class="list-item-ins" style='color: black;' draggable="true">{{nome}}<a
-                                    href='/pessoa/vermais/{{id}}' style="padding-left: 5px;"><i
-                                        class='bi bi-eye'></i></a>
+                            <div style="overflow-y: scroll;max-height: 200px;">
+                                {{#each fora_ins}}
+                                <div class="list-item" style='color: black;' draggable="true">{{nome}}<a
+                                        href='/pessoa/vermais/{{id}}' style="padding-left: 5px;"><i
+                                            class='bi bi-eye'></i></a>
+                                </div>
+                                {{/each}}
                             </div>
-                            {{/each}}
                         </div>
-                        <div class="list-ins">
+                        <div class="list">
                             <label class="col-form-label col-form-label-sm fw-bold text-center"
                                 style="color: white">Instaladores Alocados</label>
                             {{#each dentro_ins}}
@@ -207,47 +214,47 @@
 </div>
 <script>
 
-    const list_item_ins = document.querySelectorAll('.list-item-ins');
-    const lists_ins = document.querySelectorAll('.list-ins');
+    const list_item = document.querySelectorAll('.list-item');
+    const lists = document.querySelectorAll('.list');
     const list_instalacao = document.querySelectorAll('.item-instalacao');
 
-    let draggedItemIns = null;
+    let draggedItem = null;
 
-    for (let i = 0; i < list_item_ins.length; i++) {
-        const item_ins = list_item_ins[i];
+    for (let i = 0; i < list_item.length; i++) {
+        const item = list_item[i];
 
-        item_ins.addEventListener('dragstart', function () {
-            draggedItemIns = item_ins;
+        item.addEventListener('dragstart', function () {
+            draggedItem = item;
             setTimeout(function () {
-                item_ins.style.display = 'none';
+                item.style.display = 'none';
             }, 0)
         });
 
-        item_ins.addEventListener('dragend', function () {
+        item.addEventListener('dragend', function () {
             this.className = 'item-instalacao';
             setTimeout(function () {
-                draggedItemIns.style.display = 'block';
-                draggedItemIns = null;
+                draggedItem.style.display = 'block';
+                draggedItem = null;
             }, 0);
         })
 
-        for (let j = 0; j < lists_ins.length; j++) {
-            const list_ins = lists_ins[j];
+        for (let j = 0; j < lists.length; j++) {
+            const list = lists[j];
 
-            list_ins.addEventListener('dragover', function (e) {
+            list.addEventListener('dragover', function (e) {
                 e.preventDefault();
             });
 
-            list_ins.addEventListener('dragenter', function (e) {
+            list.addEventListener('dragenter', function (e) {
                 e.preventDefault();
                 this.style.backgroundColor = 'rgba(40, 55, 89, 1)';
             });
 
-            list_ins.addEventListener('dragleave', function (e) {
+            list.addEventListener('dragleave', function (e) {
                 this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
             });
 
-            list_ins.addEventListener('drop', function (e) {
+            list.addEventListener('drop', function (e) {
                 console.log('drop');
                 this.append(draggedItem);
                 this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
@@ -261,39 +268,39 @@
             const instalacao = list_instalacao[x];
 
             instalacao.addEventListener('dragstart', function () {
-                draggedItemIns = instalacao;
+                draggedItem = instalacao;
                 setTimeout(function () {
-                    item_ins.style.display = 'none';
+                    item.style.display = 'none';
                 }, 0)
             });
 
             instalacao.addEventListener('dragend', function () {
-                this.className = 'item-ins';
+                this.className = 'item';
                 setTimeout(function () {
-                    draggedItemIns.style.display = 'block';
-                    draggedItemIns = null;
+                    draggedItem.style.display = 'block';
+                    draggedItem = null;
                 }, 0);
             })
 
-            for (let y = 0; y < lists_ins.length; y++) {
-                const list_ins = lists_ins[y];
+            for (let y = 0; y < lists.length; y++) {
+                const list = lists[y];
 
-                list_ins.addEventListener('dragover', function (e) {
+                list.addEventListener('dragover', function (e) {
                     e.preventDefault();
                 });
 
-                list_ins.addEventListener('dragenter', function (e) {
+                list.addEventListener('dragenter', function (e) {
                     e.preventDefault();
                     this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
                 });
 
-                list_ins.addEventListener('dragleave', function (e) {
+                list.addEventListener('dragleave', function (e) {
                     this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
                 });
 
-                list_ins.addEventListener('drop', function (e) {
+                list.addEventListener('drop', function (e) {
                     console.log('drop');
-                    this.append(draggedItemIns);
+                    this.append(draggedItem);
                     this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
                 });
             }
@@ -309,9 +316,9 @@
         var ins4 = 0
         var ins5 = 0
 
-        const item_ins = document.querySelectorAll('.item-instalacao');
-        for (i = 0; i < item_ins.length; i++) {
-            const insitem = document.getElementsByClassName(item_ins[i].getAttribute('class'));
+        const item = document.querySelectorAll('.item-instalacao');
+        for (i = 0; i < item.length; i++) {
+            const insitem = document.getElementsByClassName(item[i].getAttribute('class'));
             var element = insitem[i].innerText;
             switch (i) {
                 case 0:
