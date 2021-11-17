@@ -13,8 +13,9 @@ const Compra = new Schema({
         require: false,
     },
     fornecedor: {
-        type: String,
-        require: false
+        type: Schema.Types.ObjectId,
+        ref: 'fornecedor',
+        require: false,
     },      
     pedido: {
         type: String,
