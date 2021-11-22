@@ -20,6 +20,10 @@
   a {
     cursor: pointer;
   }
+
+  .swal-wide{
+    width:850px !important;
+}
 </style>
 <div class="modal fade" id="atrasados" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -50,7 +54,7 @@
           </tr>
           {{/each}}
         </table>
-         <hr>
+        <hr>
         <label class="col-form-label fw-bold">Propostas Vencidas</label>
         <table>
           <tr>
@@ -90,6 +94,13 @@
     </div>
   </div>
   <div class='row mt-1' style="width: 100%;font-size: 12px;">
+    {{#each deadlineIns}}
+    <input type='hidden' name='idins[]' value='{{id}}'>
+    <input type='hidden' name='cliins[]' value='{{cliente}}'>
+    <input type='hidden' name='cadins[]' value='{{cadastro}}'>
+    <input type='hidden' name='dtiass[]' value='{{assinado}}'>
+    <input type='hidden' name='dliins[]' value='{{dliins}}'>
+    {{/each}}
     {{#if block}}
     {{else}}
     <div class='col-md-2'>
@@ -222,6 +233,7 @@
       <div class="row">
         <a class="btn btn-sm btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#atrasados"> Propostas Vencidas e
           a Vencer</a>
+        <a href='/gerenciamento/emandamento' class="btn btn-sm btn-primary mb-1"> Instalações em Andamento</a>          
       </div>
     </div>
     <div class='{{#if block}}col-md-10{{else}}col-md-8{{/if}}'>
@@ -306,20 +318,42 @@
 </div>
 <script>
   var txt = ''
+  var txtins = ''
   var cliav = document.getElementsByName('cliav[]')
   var valav = document.getElementsByName('valav[]')
   var idav = document.getElementsByName('idav[]')
+  var idins = document.getElementsByName('idins[]')
+  var cliins = document.getElementsByName('cliins[]')
+  var cadins = document.getElementsByName('cadins[]')
+  var dtiass = document.getElementsByName('dtiass[]')
+  var dliins = document.getElementsByName('dliins[]')
+
   const wrapperini = document.createElement('div');
-  var htmlini = '<table style="font-size:15px"><tr><th style="width: 10%;text-align:center">Cliente</th><th style="width: 10%;text-align:center">Data Validade</th><th style="width: 10%;text-align:center">Opções</th></tr><tr>'
+  var htmlpro = ''
+  if (cliav.length > 0){
+    htmlpro = '<h5>Propostas a 1 (um) dia de vencer </h5><br><table style="font-size:15px"><tr><th style="width: 10%;text-align:center">Cliente</th><th style="width: 10%;text-align:center">Data Validade</th><th style="width: 10%;text-align:center">Opções</th></tr><tr>'
+  }
   var htmlfim = '</table>'
   for (var i = 0; i < cliav.length; i++) {
-    var txt = txt + '<tr><td>' + cliav[i].value + '</td><td>' + valav[i].value + '</td><td><a href="/gerenciamento/proposta/' + idav[i].value + '"><i style="color: rgb(44,55,89)" class="bi bi-pen icone-tabela"></i></a></td>'
+    txt = txt + '<tr><td>' + cliav[i].value + '</td><td>' + valav[i].value + '</td><td><a href="/gerenciamento/proposta/' + idav[i].value + '"><i style="color: rgb(44,55,89)" class="bi bi-pen icone-tabela"></i></a></td></tr>'
   }
-  wrapperini.innerHTML = htmlini + txt + htmlfim
-  if (cliav.length > 0) {
+  var htmlins = '<h5>Instalação</h5><br><table style="font-size:15px"><tr><th style="width: 20%;text-align:center">Cliente</th><th style="width: 10%;text-align:center">Data Assinatura</th><th style="width: 10%;text-align:center">Deadline</th><th style="width: 10%;text-align:center">Opções</th></tr><tr>'
+  for (var x = 0; x < cliins.length; x++) {
+    txtins = txtins + '<tr><td>' + cliins[i].value + '</td><td>' + dtiass[i].value + '</td><td>' + dliins[i].value + '</td><td><a href="/gerenciamento/proposta/' + idins[i].value + '"><i style="color: rgb(44,55,89)" class="bi bi-pen icone-tabela"></i></a></td></tr>'
+  }
+  if (cliav.length > 0){
+  wrapperini.innerHTML = htmlpro + txt + htmlfim + '<hr>' + htmlins + txtins + htmlfim
+  }else{
+    wrapperini.innerHTML = htmlins + txtins + htmlfim
+  }
+
+  if (cliav.length > 0 || cliins.length > 0) {
     swal({
-      text: 'Propostas com 1 dia para expirar',
-      content: wrapperini
+      text: 'Controle de Projetos e Propostas',
+      content: wrapperini,
+      buttons: {
+        cancel: 'Close'
+      },
     })
   }
 </script>
