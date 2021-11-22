@@ -4096,7 +4096,7 @@ router.post('/vermais/', ehAdmin, (req, res) => {
                     dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
                     dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
                     dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
-                    mestitulo, anotitulo, trintaeum, pessoa
+                    mestitulo, anotitulo: dataHoje().substring(0,4), trintaeum, pessoa
                 })
             }
         }).catch((err) => {
