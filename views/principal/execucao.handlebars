@@ -26,7 +26,7 @@
         <div class='numero '>3</div>
         <a href="/gerenciamento/assinatura/{{proposta._id}}" class="btn btn-sm {{#if proposta.assinado}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i
                 class="bi bi-pencil"></i>
-            Assinatura</a>
+            Contrato</a>
         <div class='numero'>4</div>
         <a href="/gerenciamento/compra/{{proposta._id}}" class="btn btn-sm {{#if compra.feitonota}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-cart-check"></i>
             Compra Sistema</a>
@@ -35,7 +35,7 @@
             TRT</a>
         <div class='numero ativo'>6</div>
         <a href="/gerenciamento/execucao/{{proposta._id}}" class="btn btn-sm {{#if documento.protocolado}} check-menu {{else}} botao-menu ativo{{/if}}"  style="border-bottom-left-radius: 30px;"><i
-                class="bi bi-file-earmark-check"></i>
+                class="bi bi-clock-history"></i>
             Execução</a>
         <div class='numero'>7</div>
         <a href="/gerenciamento/equipe/{{proposta._id}}" class="btn btn-sm {{#if lista_equipe.feito}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-people"></i>
@@ -69,6 +69,9 @@
                         <input class="form-control" type="file" name='memorial'>
                     </td>
                     <td>
+                        <div style="width: 20px;"></div>
+                    </td>
+                    <td>
                         <label class="col-form-label fw-bold">Data</label>
                         <input type="date" class='form-control' name='dtmemorial' value='{{documento.dtmemorial}}'>
                     </td>
@@ -93,6 +96,9 @@
                         <label class='col-form-label'>{{documento.situacao}}</label>
                         <input class="form-control" type="file" name='situacao'>
                     </td>
+                    <td>
+                        <div style="width: 20px;"></div>
+                    </td>                    
                     <td>
                         <label class="col-form-label fw-bold">Data</label>
                         <input type="date" class='form-control' name='dtsituacao' value='{{documento.dtsituacao}}'>
@@ -119,7 +125,10 @@
                         <label class='col-form-label'>{{documento.unifilar}}</label>
                         <input class="form-control" type="file" name='unifilar'>
                     </td>
-                    <td style="width: 29.5%;">
+                    <td>
+                        <div style="width: 20px;"></div>
+                    </td>                    
+                    <td>
                         <label class="col-form-label fw-bold">Data</label>
                         <input type="date" class='form-control' name='dtunifilar' value='{{documento.dtunifilar}}'>
                     </td>
@@ -146,6 +155,9 @@
                         <label class='col-form-label'>{{documento.trifilar}}</label>
                         <input class="form-control" type="file" name='trifilar'>
                     </td>
+                    <td>
+                        <div style="width: 20px;"></div>
+                    </td>                    
                     <td>
                         <label class="col-form-label fw-bold">Data</label>
                         <input type="date" class='form-control' name='dttrifilar' value='{{documento.dttrifilar}}'>

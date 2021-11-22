@@ -88,7 +88,7 @@
         <a href="/gerenciamento/assinatura/{{proposta._id}}"
             class="btn btn-sm {{#if proposta.assinado}} check-menu {{else}} botao-menu {{/if}}"
             style="border-bottom-left-radius: 30px;"><i class="bi bi-pencil"></i>
-            Assinatura</a>
+            Contrato</a>
         <div class='numero'>4</div>
         <a href="/gerenciamento/compra/{{proposta._id}}"
             class="btn btn-sm {{#if compra.feitonota}} check-menu {{else}} botao-menu {{/if}}"
@@ -102,7 +102,7 @@
         <div class='numero'>6</div>
         <a href="/gerenciamento/execucao/{{proposta._id}}"
             class="btn btn-sm {{#if documento.protocolado}} check-menu {{else}} botao-menu {{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-file-earmark-check"></i>
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-clock-history"></i>
             Execução</a>
         <div class='numero ativo'>7</div>
         <a href="/gerenciamento/equipe/{{proposta._id}}"
@@ -165,7 +165,7 @@
                             <div style="overflow-y: scroll;max-height: 200px;">
                                 {{#each fora_ins}}
                                 <div class="list-item" style='color: black;' draggable="true">{{nome}}<a
-                                        href='/pessoa/vermais/{{id}}' style="padding-left: 5px;"><i
+                                        href='/gerenciamento/vermais/{{id}}' style="padding-left: 5px;"><i
                                             class='bi bi-eye'></i></a>
                                 </div>
                                 {{/each}}
@@ -176,7 +176,7 @@
                                 style="color: white">Instaladores Alocados</label>
                             {{#each dentro_ins}}
                             <div class="item-instalacao" style='color: black;' draggable="true">{{nome}}<a
-                                    href='/pessoa/vermais/{{id}}' style="padding-left: 5px;"><i
+                                    href='/gerenciamento/vermais/{{id}}' style="padding-left: 5px;"><i
                                         class='bi bi-eye'></i></a>
                             </div>
                             {{/each}}

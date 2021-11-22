@@ -55,6 +55,7 @@ router.get('/gestao/:id', ehAdmin, (req, res) => {
                          var mostraHora = false
                          var lblDes
                          var selecionado = ''
+                         //console.log('projeto.tipoCustoGes=>'+projeto.tipoCustoGes)
                          if (projeto.tipoCustoGes == 'hora') {
                               checkHora = 'checked'
                               typeHrg = 'text'
@@ -78,7 +79,7 @@ router.get('/gestao/:id', ehAdmin, (req, res) => {
                               lblDes = 'Dias:'
                               selecionado = 'dia'
                          }
-                         console.log('seleiconado=>'+selecionado)
+                         //console.log('selecionado=>'+selecionado)
                          res.render('projeto/customdo/gestao', { projeto, gestor, configuracao, cliente, checkHora, checkDia, typeHrg, typeDrg, typeGes, displayHrs, displayDia, displayTda, escopo, cronograma, vistoria, comunicacao, aquisicao, alocacao, mostraHora, lblDes, selecionado })
                     }).catch((err) => {
                          req.flash('error_msg', 'Nenhum cliente encontrado.')
@@ -669,13 +670,13 @@ router.post('/projetista/', ehAdmin, (req, res) => {
           var toteng = 0
           // var totdes
 
-          console.log('req.body.selecionado=>' + req.body.selecionado)
+          //console.log('req.body.selecionado=>' + req.body.selecionado)
 
           Configuracao.findOne({ _id: projeto.configuracao }).then((configuracao) => {
 
                var conhrs = configuracao.hrstrb
 
-               console.log('req.body.diasPro=>' + req.body.diasPro)
+               //console.log('req.body.diasPro=>' + req.body.diasPro)
 
                if (req.body.diasPro != '' && req.body.diasPro != 0 && req.body.selecionado == 'dia') {
 
@@ -768,7 +769,7 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                     }
 
                } else {
-                    console.log('tipoCustoPro=>'+projeto.tipoCustoPro)
+                    //console.log('tipoCustoPro=>'+projeto.tipoCustoPro)
                     if (projeto.tipoCustoPro == 'hora') {
                          if (!req.body.trbmem || req.body.trbmem == null || typeof req.body.trbmem == undefined) {
                               erros = erros + 'Preencher a unidade de tempo do memorial descritivo.'
@@ -833,14 +834,14 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                          }
                          totpro = (parseFloat(totmem) + parseFloat(totart) + parseFloat(totate) + parseFloat(totdis) + parseFloat(totuni) + parseFloat(totsit) + parseFloat(toteng)).toFixed(2)
                          trbpro = Math.round(parseFloat(req.body.trbmem) + parseFloat(req.body.trbart) + parseFloat(req.body.trbate) + parseFloat(req.body.trbdis) + parseFloat(req.body.trbuni) + parseFloat(req.body.trbsit))
-                         console.log('totpro=>' + totpro)
-                         console.log('trbpro=>' + trbpro)
+                         //console.log('totpro=>' + totpro)
+                         //console.log('trbpro=>' + trbpro)
 
                          tothrs = parseFloat(trbpro)
-                         console.log('tothrs=>' + tothrs)
-                         console.log('projeto.trbges=>' + projeto.trbges)
+                         //console.log('tothrs=>' + tothrs)
+                         //console.log('projeto.trbges=>' + projeto.trbges)
                          
-                         console.log('projeto.trbmod=>' + projeto.trbmod)
+                         //console.log('projeto.trbmod=>' + projeto.trbmod)
 
                          if (projeto.trbmod != null && projeto.trbmod != '' ) {     
                               hrsprj = parseFloat(hrsprj) + parseFloat(projeto.trbmod)
@@ -879,8 +880,8 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                          }
 
                          
-                         console.log('tothrs=>' + tothrs)
-                         console.log('hrsprj=>' + hrsprj)
+                         //console.log('tothrs=>' + tothrs)
+                         //console.log('hrsprj=>' + hrsprj)
 
                          projeto.tothrs = Math.round(tothrs)
                          projeto.hrsprj = Math.round(hrsprj)
@@ -906,8 +907,7 @@ router.post('/projetista/', ehAdmin, (req, res) => {
                          projeto.totsit = totsit
                          projeto.vlrart = req.body.vlrart
                          projeto.totpro_art = parseFloat(totpro) + parseFloat(req.body.vlrart)
-                         projeto.desPro = desPro
-                         projeto.toteng = toteng
+                         // projeto.desPro = desPro
                          // projeto.vlrDpr = totdes
 
                          //console.log('req.body.fileMemo=>' + fileMemo)
@@ -956,12 +956,12 @@ router.post('/gestao/', ehAdmin, (req, res) => {
           Configuracao.findOne({ _id: projeto.configuracao }).then((configuracao) => {
 
                var conhrs = configuracao.hrstrb
-               console.log('req.body.selecionado=>' + req.body.selecionado)
+               //console.log('req.body.selecionado=>' + req.body.selecionado)
                //console.log('req.body.diasGes=>' + req.body.diasGes)
 
                if (req.body.diasGes != '' && req.body.diasGes != 0 && (req.body.selecionado == 'dia')) {
 
-                    //console.log('req.body.vlrdrg=>' + req.body.vlrdrg)
+                    //console.log('é dia')
 
                     if (!req.body.vlrdrg || req.body.vlrdrg == null) {
                          erros = erros + 'Preencher o valor R$/dia da gestão.'
@@ -989,7 +989,8 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                          projeto.totges = (parseFloat(req.body.diasGes) * parseFloat(req.body.vlrdrg)) + parseFloat(totdes)
                          projeto.tothrs = parseFloat(tothrs)
                          //console.log('tothrs=>' + tothrs)
-                         //console.log('req.body.selecionado=>' + req.body.selecionado)
+                         //console.log('req.body.selecionado=>'+req.body.selecionado)
+                         projeto.tipoCustoGes = req.body.selecionado
                          projeto.diasGes = parseFloat(req.body.diasGes)
                          //console.log('req.body.diasGes=>' + req.body.diasGes)
                          projeto.vlrdrg = req.body.vlrdrg
@@ -1021,8 +1022,8 @@ router.post('/gestao/', ehAdmin, (req, res) => {
 
                } else {
 
+                         //console.log('é hora')
                     
-                    if (projeto.tipoCustoGes == 'hora') {
                          if (!req.body.trbvis || req.body.trbvis == null || typeof req.body.trbvis == undefined) {
                               erros = erros + 'Preencher as horas de vistoria.'
                          }
@@ -1041,7 +1042,7 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                          if (!req.body.vlrhrg || req.body.vlrhrg == null) {
                               erros = erros + 'Preencher o valor R$/hora da gestão.'
                          }
-                    }
+                    
 
                     if (erros == '') {
                          //Edição dos Custos de Gestão
@@ -1059,19 +1060,19 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                               totdes = 0
                          }
 
-                         console.log('totvis=>'+totvis)
-                         console.log('totcom=>'+totcom)
-                         console.log('totcro=>'+totcro)
-                         console.log('totaqi=>'+totaqi)
-                         console.log('totrec=>'+totrec)
-                         console.log('totesc=>'+totesc)
-                         console.log('totdes=>'+totdes)
+                         //console.log('totvis=>'+totvis)
+                         //console.log('totcom=>'+totcom)
+                         //console.log('totcro=>'+totcro)
+                         //console.log('totaqi=>'+totaqi)
+                         //console.log('totrec=>'+totrec)
+                         //console.log('totesc=>'+totesc)
+                         //console.log('totdes=>'+totdes)
                          totges = (parseFloat(totvis) + parseFloat(totcom) + parseFloat(totcro) + parseFloat(totaqi) + parseFloat(totrec) + parseFloat(totesc) + parseFloat(totdes)).toFixed(2)
                          trbges = Math.round(parseFloat(req.body.trbvis) + parseFloat(req.body.trbcom) + parseFloat(req.body.trbcro) + parseFloat(req.body.trbaqi) + parseFloat(req.body.trbrec) + parseFloat(req.body.trbesc))
 
                          tothrs = parseFloat(trbges)
 
-                         console.log('tothrs=>'+tothrs)
+                         //console.log('tothrs=>'+tothrs)
 
                          if (projeto.trbmod != null && projeto.trbmod != '' ) {
                               hrsprj = parseFloat(hrsprj) + parseFloat(projeto.trbmod)
@@ -1110,8 +1111,8 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                               tothrs = parseFloat(tothrs) + parseFloat(0)
                          }
 
-                         console.log('tothrs=>'+tothrs)
-                         console.log('hrsprj=>'+hrsprj)
+                         //console.log('tothrs=>'+tothrs)
+                         //console.log('hrsprj=>'+hrsprj)
                          
                          projeto.tothrs = Math.round(tothrs)
                          projeto.hrsprj = Math.round(hrsprj)
@@ -1123,7 +1124,7 @@ router.post('/gestao/', ehAdmin, (req, res) => {
                          projeto.trbaqi = req.body.trbaqi
                          projeto.trbrec = req.body.trbrec
                          projeto.trbesc = req.body.trbesc
-                         console.log('req.body.selecionado=>'+req.body.selecionado)
+                         //console.log('req.body.selecionado=>'+req.body.selecionado)
                          projeto.tipoCustoGes = req.body.selecionado
                          projeto.totesc = totesc
                          projeto.totvis = totvis

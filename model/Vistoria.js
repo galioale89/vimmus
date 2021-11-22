@@ -461,7 +461,23 @@ const Vistoria = new Schema({
     caminhoMod:{
         type: Array,
         require: false,
-    },                      
+    },      
+    caminhoSomb:{
+        type: Array,
+        require: false,
+    },       
+    caminhoArea:{
+        type: Array,
+        require: false,
+    },  
+    caminhoInsi:{
+        type: Array,
+        require: false,
+    },  
+    caminhoInsa:{
+        type: Array,
+        require: false,
+    },                           
     feito: {
         type: Boolean,
         require: false

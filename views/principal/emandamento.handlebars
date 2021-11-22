@@ -1,0 +1,83 @@
+<style>
+    button {
+        line-height: 0px;
+    }
+
+    #header {
+        width: 100%;
+        border-bottom: rgb(40, 55, 86) 0, 1px solid;
+        color: rgb(40, 55, 86);
+    }
+
+    .filtro-selecao {
+        width: fit-content;
+        height: fit-content;
+        background: white;
+        border: solid 1px;
+        border-radius: 10px;
+        margin-left: 5px;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    th {
+        text-align: center;
+    }
+
+    tr {
+        font-size: 12px;
+        border-bottom: rgba(120, 120, 120, 0.4) solid 1px;
+    }
+</style>
+<div class='row' style="width: 100%;padding-left: 2%;">
+    <div id='header'>
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <h5 class="mt-2 titulo-inicio">Lista de Obras em Operação</h5>
+            </div>
+        </div>
+        {{!-- <div class="row mt-4">
+            <div class='filtro-selecao' style="margin-left: 30px;">Classificação: {{classificacao}}</div>
+            <div class='filtro-selecao'>Realizado: {{filStatus}}</div>
+            {{#if pr.nome}}
+            <div class='filtro-selecao'>Responsável: {{pr.nome}}</div>
+            {{else}}
+            <div class='filtro-selecao'>Responsável: Todos</div>
+            {{/if}}
+        </div> --}}
+    </div>
+
+    <div style="margin-bottom: 4%;margin-top: 1%;">
+        <table>
+            <tr>
+                <th style="width: 5%;">Proposta</th>
+                <th style="width: 10%;">Cliente</th>
+                <th style="width: 10%;">Responsável</th>
+                <th style="width: 5%">Data Cadastro</th>
+                <th style="width: 10%">Data Inicio Instalação</th>
+                <th style="width: 6%">Data Fim Instalação</th>
+                <th style="width: 5%;"></th>
+            </tr>
+            {{#each listaAndamento}}
+            <tr style="line-height: 20px;">
+                <td style="text-align: center;">{{id}}</td>
+                <td style="text-align: center;">{{cliente}}</td>
+                <td style="text-align: center;">{{responsavel}}</td>
+                <td style="text-align: center;">{{cadastro}}</td>
+                <td style="text-align: center;">{{inicio}}</td>
+                <td style="text-align: center;">{{deadline}}</td>
+                <td>
+                    <div class='btn-group btn-group-sm col-12 gap-2 mx-auto'>
+                        <a href='/gerenciamento/mostraEquipe/{{id}}' class='botao-tabela ativado-tabela'><i
+                                class="bi bi-people icone"></i></a>
+                    </div>
+                </td>
+            </tr>
+            {{else}}
+            <h6>Nenhum projeto encontrado.</h6>
+            {{/each}}
+        </table>
+    </div>
+</div>

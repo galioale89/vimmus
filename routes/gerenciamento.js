@@ -12,6 +12,9 @@ require('../model/Documento')
 require('../model/Compra')
 require('../model/Posvenda')
 require('../model/Fornecedor')
+require('../model/AtvTelhado')
+require('../model/AtvAterramento')
+require('../model/AtvInversor')
 
 const express = require('express')
 const router = express.Router()
@@ -71,6 +74,9 @@ const Documento = mongoose.model('documento')
 const Compra = mongoose.model('compra')
 const Posvenda = mongoose.model('posvenda')
 const Fornecedor = mongoose.model('fornecedor')
+const AtvTelhado = mongoose.model('atvTelhado')
+const AtvInversor = mongoose.model('atvInversor')
+const AtvAterramento = mongoose.model('atvAterramento')
 
 const comparaDatas = require('../resources/comparaDatas')
 const dataBusca = require('../resources/dataBusca')
@@ -93,6 +99,7 @@ const TextMessageService = require('comtele-sdk').TextMessageService
 const apiKey = "8dbd4fb5-79af-45d6-a0b7-583a3c2c7d30"
 
 router.use(express.static(path.join(__dirname, 'public')))
+
 
 router.get('/selecao', ehAdmin, (req, res) => {
     res.render('principal/selecao')
@@ -155,18 +162,18 @@ router.get('/consulta', ehAdmin, (req, res) => {
                                                             }
                                                         }
                                                     }
-                                                    // console.log('dtcadastro=>' + dtcadastro)
-                                                    // console.log('equipe=>' + equipe)
-                                                    // console.log('documento=>' + documento)
-                                                    // console.log('compra=>' + compra)
-                                                    // console.log('lista_proposta=>' + lista_proposta)
-                                                    // console.log('equipe.feito=>' + equipe.feito)
-                                                    // console.log('documento.protocolado=>' + documento.protocolado)
-                                                    // console.log('documento.feitotrt=>' + documento.feitotrt)
-                                                    // console.log('compra.feitonota=>' + compra.feitonota)
-                                                    // console.log('compra.feitopedido =>' + compra.feitopedido)
-                                                    // console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
-                                                    console.log('ganho=>' + lista_proposta.ganho)
+                                                    //console.log('dtcadastro=>' + dtcadastro)
+                                                    //console.log('equipe=>' + equipe)
+                                                    //console.log('documento=>' + documento)
+                                                    //console.log('compra=>' + compra)
+                                                    //console.log('lista_proposta=>' + lista_proposta)
+                                                    //console.log('equipe.feito=>' + equipe.feito)
+                                                    //console.log('documento.protocolado=>' + documento.protocolado)
+                                                    //console.log('documento.feitotrt=>' + documento.feitotrt)
+                                                    //console.log('compra.feitonota=>' + compra.feitonota)
+                                                    //console.log('compra.feitopedido =>' + compra.feitopedido)
+                                                    //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
+                                                    //console.log('ganho=>' + lista_proposta.ganho)
 
                                                     if (lista_proposta.ganho == true) {
                                                         if (lista_proposta.encerrado == true) {
@@ -212,7 +219,7 @@ router.get('/consulta', ehAdmin, (req, res) => {
                                                                                                 status = 'Pedido'
                                                                                             } else {
                                                                                                 if (lista_proposta.assinado == true) {
-                                                                                                    status = 'Assinado'
+                                                                                                    status = 'Contrato'
                                                                                                 } else {
                                                                                                     if (vistoria.feito == true) {
                                                                                                         status = 'Vistoria'
@@ -245,7 +252,7 @@ router.get('/consulta', ehAdmin, (req, res) => {
                                                         } else {
                                                             responsavel = ''
                                                         }
-                                                        console.log('status=>' + status)
+                                                        //console.log('status=>' + status)
                                                         lista.push({ s: status, id: lista_proposta._id, cliente: lista_cliente.nome, responsavel, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
                                                         q++
                                                         if (q == proposta.length) {
@@ -386,7 +393,7 @@ router.get('/consulta', ehAdmin, (req, res) => {
                                                                                                             status = 'Pedido'
                                                                                                         } else {
                                                                                                             if (lista_proposta.assinado == true) {
-                                                                                                                status = 'Assinado'
+                                                                                                                status = 'Contrato'
                                                                                                             } else {
                                                                                                                 if (vistoria.feito == true) {
                                                                                                                     status = 'Vistoria'
@@ -679,6 +686,8 @@ router.post('/filtrar', ehAdmin, (req, res) => {
     var q = 0
 
     //console.log('req.body.tipo=>' + req.body.tipo)
+    //console.log('req.body.cliente=>'+req.body.cliente)
+    //console.log('req.body.responsavel=>'+req.body.responsavel)    
     Cliente.find({ user: id }).lean().then((todos_clientes) => {
         Pessoa.find({ user: id, funges: 'checked' }).lean().then((todos_responsaveis) => {
             if (req.body.tipo != '') {
@@ -1181,7 +1190,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                         break;
                     case 'Vistoria': vistoria = true; ganho = true; enviado = true
                         break;
-                    case 'Assinado': assinado = true; ganho = true; vistoria = true; enviado = true
+                    case 'Contrato': assinado = true; ganho = true; vistoria = true; enviado = true
                         break;
                     case 'Pedido de Compra': pedido = true; assinado = true; ganho = true; vistoria = true; enviado = true
                         break;
@@ -1210,6 +1219,9 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                     res.redirect('/gerenciamento/consulta')
                 } else {
                     //console.log('parametro alterado')
+                    //console.log('cliente=>'+cliente)
+                    //console.log('responsavel=>'+responsavel)
+                    //console.log('stats=>'+stats)
                     if (cliente != 'Todos' && responsavel != 'Todos' && stats != 'Todos') {
                         //console.log('nt-nt-nt')
                         Proposta.find({ user: id, responsavel: req.body.responsavel, cliente: req.body.cliente, feito: enviado, ganho: ganho, assinado: assinado, encerrado: encerrado }).then((p1) => {
@@ -1292,7 +1304,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                                                 status = 'Pedido'
                                                                                                             } else {
                                                                                                                 if (lista_proposta.assinado == true) {
-                                                                                                                    status = 'Assinado'
+                                                                                                                    status = 'Contrato'
                                                                                                                 } else {
                                                                                                                     if (vistoria.feito == true) {
                                                                                                                         status = 'Vistoria'
@@ -1479,7 +1491,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                                                     status = 'Pedido'
                                                                                                                 } else {
                                                                                                                     if (lista_proposta.assinado == true) {
-                                                                                                                        status = 'Assinado'
+                                                                                                                        status = 'Contrato'
                                                                                                                     } else {
                                                                                                                         if (vistoria.feito == true) {
                                                                                                                             status = 'Vistoria'
@@ -1561,7 +1573,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                             })
                         } else {
                             if (cliente != 'Todos' && responsavel == 'Todos' && stats == 'Todos') {
-                                //console.log('t-nt-t')
+                                //console.log('nt-t-t')
                                 Proposta.find({ user: id, cliente: req.body.cliente }).lean().then((p3) => {
                                     if (p3 != "") {
                                         p3.forEach((e3) => {
@@ -1653,7 +1665,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                                                         status = 'Pedido'
                                                                                                                     } else {
                                                                                                                         if (lista_proposta.assinado == true) {
-                                                                                                                            status = 'Assinado'
+                                                                                                                            status = 'Contrato'
                                                                                                                         } else {
                                                                                                                             if (vistoria.feito == true) {
                                                                                                                                 status = 'Vistoria'
@@ -1825,7 +1837,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                                                             status = 'Pedido'
                                                                                                                         } else {
                                                                                                                             if (lista_proposta.assinado == true) {
-                                                                                                                                status = 'Assinado'
+                                                                                                                                status = 'Contrato'
                                                                                                                             } else {
                                                                                                                                 if (vistoria.feito == true) {
                                                                                                                                     status = 'Vistoria'
@@ -1990,7 +2002,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                                                                 status = 'Pedido'
                                                                                                                             } else {
                                                                                                                                 if (lista_proposta.assinado == true) {
-                                                                                                                                    status = 'Assinado'
+                                                                                                                                    status = 'Contrato'
                                                                                                                                 } else {
                                                                                                                                     if (vistoria.feito == true) {
                                                                                                                                         status = 'Vistoria'
@@ -2162,7 +2174,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                                                                     status = 'Pedido'
                                                                                                                                 } else {
                                                                                                                                     if (lista_proposta.assinado == true) {
-                                                                                                                                        status = 'Assinado'
+                                                                                                                                        status = 'Contrato'
                                                                                                                                     } else {
                                                                                                                                         if (vistoria.feito == true) {
                                                                                                                                             status = 'Vistoria'
@@ -2243,15 +2255,17 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                 res.redirect('/gerenciamento/consulta')
                                             })
                                         } else {
-                                            if (clientes != 'Todos' && responsavel != 'Todos' && stats == 'Todos') {
-                                                //console.log('nt-nt-t')
+                                            if (cliente != 'Todos' && responsavel != 'Todos' && stats == 'Todos') {
+                                                //console.log('nt-nt-t')  
                                                 Proposta.find({ user: id, cliente: req.body.cliente, responsavel: req.body.responsavel }).then((p7) => {
+                                                    //console.log('p7=>'+p7)
                                                     if (p7 != '') {
                                                         p7.forEach((e7) => {
                                                             Proposta.findOne({ _id: e7._id }).then((lista_proposta) => {
                                                                 Cliente.findOne({ _id: e7.cliente }).then((lista_cliente) => {
                                                                     Pessoa.findOne({ _id: e7.responsavel }).then((lista_responsavel) => {
                                                                         Equipe.findOne({ _id: e7.equipe }).then((equipe) => {
+                                                                            //console.log('equipe=>'+equipe)
                                                                             Documento.findOne({ proposta: e7._id }).then((documento) => {
                                                                                 Compra.findOne({ proposta: e7._id }).then((compra) => {
                                                                                     Vistoria.findOne({ proposta: e7._id }).then((vistoria) => {
@@ -2286,14 +2300,20 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                             //console.log('documento=>' + documento)
                                                                                             //console.log('compra=>' + compra)
                                                                                             //console.log('lista_proposta=>' + lista_proposta)
+                                                                                            //console.log('lista_proposta.encerrado=>' + lista_proposta.encerrado)
+                                                                                            //console.log('posvenda.feito=>' + posvenda.feito)
                                                                                             //console.log('equipe.feito=>' + equipe.feito)
+                                                                                            //console.log('documento.feitofaturado=>' + documento.feitofaturado)
                                                                                             //console.log('documento.protocolado=>' + documento.protocolado)
                                                                                             //console.log('documento.feitotrt=>' + documento.feitotrt)
+                                                                                            //console.log('compra.feitopedido=>' + compra.feitopedido)
                                                                                             //console.log('compra.feitonota=>' + compra.feitonota)
-                                                                                            //console.log('compra.feitopedido =>' + compra.feitopedido)
-                                                                                            //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
-                                                                                            if (proposta.ganho == true) {
-                                                                                                if (proposta.encerrado == true) {
+                                                                                            //console.log('lista_proposta.assinado =>' + lista_proposta.assinado)
+                                                                                            //console.log('documento.feitoalmox=>' + documento.feitoalmox)
+                                                                                            //console.log('documento.enviaalmox=>' + documento.enviaalmox)
+                                                                                            //console.log('vistoria.feito=>' + vistoria.feito)
+                                                                                            if (lista_proposta.ganho == true) {
+                                                                                                if (lista_proposta.encerrado == true) {
                                                                                                     status = 'Encerrado'
                                                                                                     dtinicio = equipe.dtinicio
                                                                                                     dtfim = equipe.dtfim
@@ -2335,7 +2355,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                                                                     if (compra.feitopedido == true) {
                                                                                                                                         status = 'Pedido'
                                                                                                                                     } else {
-                                                                                                                                        if (proposta.assinado == true) {
+                                                                                                                                        if (lista_proposta.assinado == true) {
                                                                                                                                             status = 'Assinado'
                                                                                                                                         } else {
                                                                                                                                             if (vistoria.feito == true) {
@@ -2431,6 +2451,127 @@ router.post('/filtrar', ehAdmin, (req, res) => {
     })
 })
 
+router.get('/emandamento', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+
+    var listaAndamento = []
+    var dtcadastro = ''
+    var inicio = ''
+    var responsavel = ''
+    var q = 0
+
+    Proposta.find({ user: id, ganho: true, encerrado: false }).then((lista_proposta) => {
+        if (lista_proposta != '') {
+            lista_proposta.forEach((e) => {
+                q++
+                Proposta.findOne({ _id: e._id }).then((proposta) => {
+                    if (typeof proposta.proposta6 != 'undefined') {
+                        dtcadastro = proposta.dtcadastro6
+                    } else {
+                        if (typeof proposta.proposta5 != 'undefined') {
+                            dtcadastro = proposta.dtcadastro5
+                        } else {
+                            if (typeof proposta.proposta4 != 'undefined') {
+                                dtcadastro = proposta.dtcadastro4
+                            } else {
+                                if (typeof proposta.proposta3 != 'undefined') {
+                                    dtcadastro = proposta.dtcadastro3
+                                } else {
+                                    if (typeof proposta.proposta2 != 'undefined') {
+                                        dtcadastro = proposta.dtcadastro2
+                                    } else {
+                                        dtcadastro = proposta.dtcadastro1
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Cliente.findOne({ _id: e.cliente }).then((cli) => {
+                        Pessoa.findOne({ _id: e.responsavel }).then((pessoa_res) => {
+                            Equipe.findOne({ _id: e.equipe, feito: true }).sort({ dtfimbusca: 'desc' }).then((equipe) => {
+                                if (equipe != null) {
+                                    // console.log('pessoa_res=>' + pessoa_res)
+                                    if (pessoa_res != '' && typeof pessoa_res != 'undefined' && pessoa_res != null) {
+                                        responsavel = pessoa_res.nome
+                                    } else {
+                                        responsavel = ''
+                                    }
+
+                                    if (equipe.dtinicio != '' && typeof equipe.dtinicio != 'undefined') {
+                                        inicio = dataMensagem(equipe.dtinicio)
+                                    } else {
+                                        inicio = '00/00/0000'
+                                    }
+
+                                    listaAndamento.push({ id: proposta._id, cliente: cli.nome, responsavel, cadastro: dataMensagem(dtcadastro), inicio, deadline: dataMensagem(equipe.dtfim) })
+                                }
+
+                                if (q == lista_proposta.length) {
+                                    res.render('principal/emandamento', { listaAndamento })
+                                }
+
+                            }).catch((er) => {
+                                req.flash('error_msg', 'Falha ao encontrar o resposável.')
+                                res.redirect('/menu')
+                            })
+                        }).catch((er) => {
+                            req.flash('error_msg', 'Falha ao encontrar o cliente.')
+                            res.redirect('/menu')
+                        })
+
+
+                    }).catch((er) => {
+                        req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                        res.redirect('/menu')
+                    })
+                }).catch((er) => {
+                    req.flash('error_msg', 'Falha ao encontrar a proposta.')
+                    res.redirect('/menu')
+                })
+            })
+        } else {
+            req.flash('error_msg', 'Não existem projetos com instalação em andamento.')
+            res.redirect('/menu')
+        }
+    }).catch((er) => {
+        req.flash('error_msg', 'Falha ao encontrar a proposta.')
+        res.redirect('/menu')
+    })
+})
+
+router.get('/mostraEquipe/:id', ehAdmin, (req, res) => {
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente) => {
+            Equipe.findOne({ _id: proposta.equipe }).lean().then((equipe) => {
+                Pessoa.findOne({ _id: proposta.responsavel }).lean().then((responsavel) => {
+                    res.render('principal/mostraEquipe', { proposta, equipe, cliente, responsavel })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Falha ao encontrar o responsável.')
+                    res.redirect('/gerenciamento/emandamento')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                res.redirect('/gerenciamento/emandamento')
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha ao encontrar o cliente.')
+            res.redirect('/gerenciamento/emandamento')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Falha ao encontrar a proposta.')
+        res.redirect('/gerenciamento/emandamento')
+    })
+})
+
 router.get('/proposta/', ehAdmin, (req, res) => {
     const { _id } = req.user
     const { user } = req.user
@@ -2468,7 +2609,7 @@ router.get('/proposta/:id', ehAdmin, (req, res) => {
     }
     Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
         Projeto.findOne({ proposta: req.params.id }).lean().then((projeto) => {
-            console.log('projeto=>' + projeto)
+            //console.log('projeto=>' + projeto)
             Cliente.find({ user: id }).lean().then((todos_clientes) => {
                 Pessoa.find({ user: id, funges: 'checked' }).lean().then((todos_responsaveis) => {
                     Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
@@ -3308,6 +3449,649 @@ router.get('/agenda/', ehAdmin, (req, res) => {
     })
 })
 
+router.get('/vermais/:id', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+
+    dia01 = []
+    dia02 = []
+    dia03 = []
+    dia04 = []
+    dia05 = []
+    dia06 = []
+    dia07 = []
+    dia08 = []
+    dia09 = []
+    dia10 = []
+    dia11 = []
+    dia12 = []
+    dia13 = []
+    dia14 = []
+    dia15 = []
+    dia16 = []
+    dia17 = []
+    dia18 = []
+    dia19 = []
+    dia20 = []
+    dia21 = []
+    dia22 = []
+    dia23 = []
+    dia24 = []
+    dia25 = []
+    dia26 = []
+    dia27 = []
+    dia28 = []
+    dia29 = []
+    dia30 = []
+    dia31 = []
+
+    var q = 0
+    var inicio
+    var fim
+    var anoinicio
+    var mesinicio
+    var mesinicio
+    var diainicio
+    var diainicio
+    var con1
+    var con2
+    var dif1
+    var hoje
+    var meshoje
+    var mestitulo
+    var anotitulo
+    var trintaeum = false
+    var dia
+    var mes
+    var dif
+    var compara
+
+    hoje = dataHoje()
+    console.log('hoje=>' + hoje)
+    meshoje = hoje.substring(5, 7)
+    anotitulo = hoje.substring(0, 4)
+
+    // console.log('meshoje=>' + meshoje)
+
+    switch (meshoje) {
+        case '01':
+            mestitulo = 'Janeiro '
+            trintaeum = true
+            break;
+        case '02':
+            mestitulo = 'Fevereiro '
+            break;
+        case '03':
+            mestitulo = 'Março '
+            trintaeum = true
+            break;
+        case '04':
+            mestitulo = 'Abril '
+            break;
+        case '05':
+            mestitulo = 'Maio '
+            trintaeum = true
+            break;
+        case '06':
+            mestitulo = 'Junho '
+            break;
+        case '07':
+            mestitulo = 'Julho '
+            trintaeum = true
+            break;
+        case '08':
+            mestitulo = 'Agosto '
+            trintaeum = true
+            break;
+        case '09':
+            mestitulo = 'Setembro '
+            break;
+        case '10':
+            mestitulo = 'Outubro '
+            trintaeum = true
+            break;
+        case '11':
+            mestitulo = 'Novembro '
+            break;
+        case '12':
+            mestitulo = 'Dezembro '
+            trintaeum = true
+            break;
+    }
+
+    // console.log('mestitulo=>' + mestitulo)
+
+
+    Pessoa.findOne({ user: id, _id: req.params.id }).lean().then((pessoa) => {
+        Equipe.find({ user: id, nome_projeto: { $exists: true }, ins0: { $exists: true }, dtinicio: { $ne: '00/00/0000' }, $or: [{ ins0: pessoa.nome }, { ins1: pessoa.nome }, { ins2: pessoa.nome }, { ins3: pessoa.nome }, { ins4: pessoa.nome }, { ins5: pessoa.nome }] }).then((equipe) => {
+            equipe.forEach((e) => {
+                console.log('e._id=>' + e._id)
+                inicio = e.dtinicio
+                fim = e.dtfim
+                q++
+                Proposta.findOne({ equipe: e._id }).then((proposta) => {
+                    Cliente.findOne({ _id: proposta.cliente }).then((cliente) => {
+                        console.log('cliente.nome=>' + cliente.nome)
+                        // console.log('e=>' + e)
+                        // console.log('inicio=>' + inicio)
+                        anoinicio = inicio.substring(0, 4)
+                        anofim = fim.substring(0, 4)
+                        mesinicio = inicio.substring(5, 7)
+                        mesfim = fim.substring(5, 7)
+                        diainicio = inicio.substring(8, 11)
+                        diafim = fim.substring(8, 11)
+                        con1 = String(mesinicio) + String(diainicio)
+                        con2 = String(mesfim) + String(diafim)
+                        dif1 = parseFloat(con2) - parseFloat(con1) + 1
+                        compara = mesfim - mesinicio
+                        console.log('compara=>' + compara)
+                        if (compara > 0) {
+                            if (meshoje == mesinicio) {
+                                mes = mesinicio
+                                if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
+                                    dif = 31 - parseFloat(diainicio) + 1
+                                } else {
+                                    dif = 30 - parseFloat(diainicio) + 1
+                                }
+                                if (diainicio < 10) {
+                                    dia = '0' + parseFloat(diainicio)
+                                } else {
+                                    dia = parseFloat(diainicio)
+                                }
+                            } else {
+                                mes = mesfim
+                                dif = parseFloat(diafim)
+                                dia = '01'
+                                console.log('dif=>' + dif)
+                            }
+                        } else {
+                            dif = parseFloat(dif1)
+                            if (diainicio < 10) {
+                                dia = '0' + parseFloat(diainicio)
+                            } else {
+                                dia = parseFloat(diainicio)
+                            }
+                            mes = mesinicio
+                        }
+
+                        console.log('dif=>' + dif)
+                        console.log('dia=>' + dia)
+                        console.log('mes=>' + mes)
+
+                        for (i = 0; i < dif; i++) {
+                            console.log('meshoje=>' + meshoje)
+                            console.log('mes=>' + mes)
+                            console.log('dia=>' + dia)
+                            if (meshoje == mes) {
+                                switch (String(dia)) {
+                                    case '01':
+                                        dia01.push({ cliente: cliente.nome })
+                                        break;
+                                    case '02':
+                                        dia02.push({ cliente: cliente.nome })
+                                        break;
+                                    case '03':
+                                        dia03.push({ cliente: cliente.nome })
+                                        break;
+                                    case '04':
+                                        dia04.push({ cliente: cliente.nome })
+                                        break;
+                                    case '05':
+                                        dia05.push({ cliente: cliente.nome })
+                                        break;
+                                    case '06':
+                                        dia06.push({ cliente: cliente.nome })
+                                        break;
+                                    case '07':
+                                        dia07.push({ cliente: cliente.nome })
+                                        break;
+                                    case '08':
+                                        dia08.push({ cliente: cliente.nome })
+                                        break;
+                                    case '09':
+                                        dia09.push({ cliente: cliente.nome })
+                                        break;
+                                    case '10':
+                                        dia10.push({ cliente: cliente.nome })
+                                        break;
+                                    case '11':
+                                        dia11.push({ cliente: cliente.nome })
+                                        break;
+                                    case '12':
+                                        dia12.push({ cliente: cliente.nome })
+                                        break;
+                                    case '13':
+                                        dia13.push({ cliente: cliente.nome })
+                                        break;
+                                    case '14':
+                                        dia14.push({ cliente: cliente.nome })
+                                        break;
+                                    case '15':
+                                        dia15.push({ cliente: cliente.nome })
+                                        break;
+                                    case '16':
+                                        dia16.push({ cliente: cliente.nome })
+                                        break;
+                                    case '17':
+                                        dia17.push({ cliente: cliente.nome })
+                                        break;
+                                    case '18':
+                                        dia18.push({ cliente: cliente.nome })
+                                        break;
+                                    case '19':
+                                        dia19.push({ cliente: cliente.nome })
+                                        break;
+                                    case '20':
+                                        dia20.push({ cliente: cliente.nome })
+                                        break;
+                                    case '21':
+                                        dia21.push({ cliente: cliente.nome })
+                                        break;
+                                    case '22':
+                                        dia22.push({ cliente: cliente.nome })
+                                        break;
+                                    case '23':
+                                        dia23.push({ cliente: cliente.nome })
+                                        break;
+                                    case '24':
+                                        dia24.push({ cliente: cliente.nome })
+                                        break;
+                                    case '25':
+                                        dia25.push({ cliente: cliente.nome })
+                                        break;
+                                    case '26':
+                                        dia26.push({ cliente: cliente.nome })
+                                        break;
+                                    case '27':
+                                        dia27.push({ cliente: cliente.nome })
+                                        break;
+                                    case '28':
+                                        dia28.push({ cliente: cliente.nome })
+                                        break;
+                                    case '29':
+                                        dia29.push({ cliente: cliente.nome })
+                                        break;
+                                    case '30':
+                                        dia30.push({ cliente: cliente.nome })
+                                        break;
+                                    case '31':
+                                        dia31.push({ cliente: cliente.nome })
+                                        break;
+                                }
+                                dia++
+                                if (dia < 10) {
+                                    dia = '0' + dia
+                                }
+                                console.log('diainicio=>' + diainicio)
+                            }
+                        }
+
+                        if (q == equipe.length) {
+                            res.render('principal/vermais', {
+                                dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
+                                dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
+                                dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
+                                mestitulo, anotitulo, trintaeum, pessoa
+                            })
+                        }
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Falha ao encontra o cliente.')
+                        res.redirect('/gerenciamento/emandamento')
+                    })
+
+                }).catch((err) => {
+                    req.flash('error_msg', 'Falha ao encontra a proposta.')
+                    res.redirect('/gerenciamento/emandamento')
+                })
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha ao encontra a equipe.')
+            res.redirect('/gerenciamento/emandamento')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Falha ao encontra a pessoa.')
+        res.redirect('/gerenciamento/emandamento')
+    })
+})
+
+router.post('/vermais/', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+
+    dia01 = []
+    dia02 = []
+    dia03 = []
+    dia04 = []
+    dia05 = []
+    dia06 = []
+    dia07 = []
+    dia08 = []
+    dia09 = []
+    dia10 = []
+    dia11 = []
+    dia12 = []
+    dia13 = []
+    dia14 = []
+    dia15 = []
+    dia16 = []
+    dia17 = []
+    dia18 = []
+    dia19 = []
+    dia20 = []
+    dia21 = []
+    dia22 = []
+    dia23 = []
+    dia24 = []
+    dia25 = []
+    dia26 = []
+    dia27 = []
+    dia28 = []
+    dia29 = []
+    dia30 = []
+    dia31 = []
+
+    var q = 0
+    var inicio
+    var fim
+    var anoinicio
+    var mesinicio
+    var mesinicio
+    var diainicio
+    var diainicio
+    var con1
+    var con2
+    var dif1
+    var hoje
+    var meshoje
+    var mestitulo
+    var anotitulo
+    var trintaeum = false
+    var mes = 0
+    var dif = 0
+    var dia = 0
+    var ano_iniform = 0
+    var ano_fimform = 0
+
+
+    mestitulo = req.body.mes
+    hoje = dataHoje()
+    ano = req.body.ano
+
+    switch (mestitulo) {
+        case 'Janeiro':
+            meshoje = '01'
+            trintaeum = true
+            break;
+        case 'Fevereiro':
+            meshoje = '02'
+            break;
+        case 'Março':
+            meshoje = '03'
+            trintaeum = true
+            break;
+        case 'Abril':
+            meshoje = '04'
+            break;
+        case 'Maio':
+            meshoje = '05'
+            trintaeum = true
+            break;
+        case 'Junho':
+            meshoje = '06'
+            break;
+        case 'Julho':
+            meshoje = '07'
+            trintaeum = true
+            break;
+        case 'Agosto':
+            meshoje = '08'
+            trintaeum = true
+            break;
+        case 'Setembro':
+            meshoje = '09'
+            break;
+        case 'Outubro':
+            meshoje = '10'
+            trintaeum = true
+            break;
+        case 'Novembro':
+            meshoje = '11'
+            break;
+        case 'Dezembro':
+            meshoje = '12'
+            trintaeum = true
+            break;
+    }
+
+    // var datafim = parseFloat('31' + '12' + req.body.anofim)
+    // var dataini = parseFloat('01' + '01' + req.body.anoinicio)
+
+    console.log('req.body.id=>' + req.body.id)
+
+    Pessoa.findOne({ user: id, _id: req.body.id }).lean().then((pessoa) => {
+        Equipe.find({ user: id, nome_projeto: { $exists: true }, ins0: { $exits: true }, dtinicio: { $ne: '00/00/0000' }, ins0: { $exists: true }, $or: [{ ins0: pessoa.nome }, { ins1: pessoa.nome }, { ins2: pessoa.nome }, { ins3: pessoa.nome }, { ins4: pessoa.nome }, { ins5: pessoa.nome }] }).then((equipe) => {
+            console.log(equipe)
+            equipe.forEach((e) => {
+                q++
+                console.log('e.dtinicio=>' + e.dtinicio)
+                console.log('e.dtfim=>' + e.dtfim)
+                inicio = e.dtinicio
+                fim = e.dtfim
+                Proposta.findOne({ equipe: e._id }).then((proposta) => {
+                    Cliente.findOne({ _id: proposta.cliente }).then((cliente) => {
+                        // console.log('cliente.nome=>' + cliente.nome)
+                        anoinicio = inicio.substring(0, 4)
+                        anofim = fim.substring(0, 4)
+                        mesinicio = inicio.substring(5, 7)
+                        mesfim = fim.substring(5, 7)
+                        diainicio = inicio.substring(8, 11)
+                        diafim = fim.substring(8, 11)
+                        con1 = String(mesinicio) + String(diainicio)
+                        con2 = String(mesfim) + String(diafim)
+                        console.log('con1=>' + con1)
+                        console.log('con2=>' + con2)
+                        dif1 = parseFloat(con2) - parseFloat(con1) + 1
+                        console.log('dif1=>' + dif1)
+                        if (mesfim > mesinicio || mesinicio == mesfim) {
+                            compara = mesfim - mesinicio
+                        } else {
+                            compara = mesfim
+                        }
+
+                        console.log('compara')
+                        if (compara > 0) {
+                            if (meshoje == mesinicio) {
+                                mes = mesinicio
+                                if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
+                                    dif = 31 - parseFloat(diainicio) + 1
+                                } else {
+                                    dif = 30 - parseFloat(diainicio) + 1
+                                }
+                                if (parseFloat(diainicio) < 10) {
+                                    dia = '0' + parseFloat(diainicio)
+                                } else {
+                                    dia = parseFloat(diainicio)
+                                }
+                            } else {
+                                mes = mesfim
+                                dif = parseFloat(diafim)
+                                dia = '01'
+                            }
+                        } else {
+                            console.log('entrou')
+                            dif = parseFloat(dif1)
+                            if (parseFloat(diainicio) < 10) {
+                                dia = '0' + parseFloat(diainicio)
+                            } else {
+                                dia = parseFloat(diainicio)
+                            }
+                            mes = mesinicio
+                        }
+
+                        console.log('dif=>' + dif)
+
+                        for (i = 0; i < dif; i++) {
+                            if (meshoje == mes) {
+                                console.log('entrou no laço')
+                                console.log('dia=>' + dia)
+                                switch (String(dia)) {
+                                    case '01':
+                                        dia01.push({ cliente: cliente.nome })
+                                        break;
+                                    case '02':
+                                        dia02.push({ cliente: cliente.nome })
+                                        break;
+                                    case '03':
+                                        dia03.push({ cliente: cliente.nome })
+                                        break;
+                                    case '04':
+                                        dia04.push({ cliente: cliente.nome })
+                                        break;
+                                    case '05':
+                                        dia05.push({ cliente: cliente.nome })
+                                        break;
+                                    case '06':
+                                        dia06.push({ cliente: cliente.nome })
+                                        break;
+                                    case '07':
+                                        dia07.push({ cliente: cliente.nome })
+                                        break;
+                                    case '08':
+                                        dia08.push({ cliente: cliente.nome })
+                                        break;
+                                    case '09':
+                                        dia09.push({ cliente: cliente.nome })
+                                        break;
+                                    case '10':
+                                        dia10.push({ cliente: cliente.nome })
+                                        break;
+                                    case '11':
+                                        dia11.push({ cliente: cliente.nome })
+                                        break;
+                                    case '12':
+                                        dia12.push({ cliente: cliente.nome })
+                                        break;
+                                    case '13':
+                                        dia13.push({ cliente: cliente.nome })
+                                        break;
+                                    case '14':
+                                        dia14.push({ cliente: cliente.nome })
+                                        break;
+                                    case '15':
+                                        dia15.push({ cliente: cliente.nome })
+                                        break;
+                                    case '16':
+                                        dia16.push({ cliente: cliente.nome })
+                                        break;
+                                    case '17':
+                                        dia17.push({ cliente: cliente.nome })
+                                        break;
+                                    case '18':
+                                        dia18.push({ cliente: cliente.nome })
+                                        break;
+                                    case '19':
+                                        dia19.push({ cliente: cliente.nome })
+                                        break;
+                                    case '20':
+                                        dia20.push({ cliente: cliente.nome })
+                                        break;
+                                    case '21':
+                                        dia21.push({ cliente: cliente.nome })
+                                        break;
+                                    case '22':
+                                        dia22.push({ cliente: cliente.nome })
+                                        break;
+                                    case '23':
+                                        dia23.push({ cliente: cliente.nome })
+                                        break;
+                                    case '24':
+                                        dia24.push({ cliente: cliente.nome })
+                                        break;
+                                    case '25':
+                                        dia25.push({ cliente: cliente.nome })
+                                        break;
+                                    case '26':
+                                        dia26.push({ cliente: cliente.nome })
+                                        break;
+                                    case '27':
+                                        dia27.push({ cliente: cliente.nome })
+                                        break;
+                                    case '28':
+                                        dia28.push({ cliente: cliente.nome })
+                                        break;
+                                    case '29':
+                                        dia29.push({ cliente: cliente.nome })
+                                        break;
+                                    case '30':
+                                        dia30.push({ cliente: cliente.nome })
+                                        break;
+                                    case '31':
+                                        dia31.push({ cliente: cliente.nome })
+                                        break;
+                                }
+                                dia++
+                                if (dia < 10) {
+                                    dia = '0' + dia
+                                }
+                                // console.log('diainicio=>' + diainicio)
+                            }
+                        }
+
+                        if (q == equipe.length) {
+                            // console.log('dia10=>' + dia10)
+                            console.log('anofim=>' + anofim)
+                            console.log('anoinicio=>' + anoinicio)
+                            console.log('mes=>' + mes)
+                            console.log('mesfim=>' + mesfim)
+                            if (anofim > anoinicio) {
+                                if (mes > mesfim) {
+                                    anotitulo = anoinicio
+                                } else {
+                                    anotitulo = anofim
+                                }
+                            } else {
+                                anotitulo = anoinicio
+                            }
+                            res.render('principal/vermais', {
+                                dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
+                                dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
+                                dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
+                                mestitulo, anotitulo, pessoa, trintaeum,
+                            })
+                        }
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Falha ao encontra o cliente.')
+                        res.redirect('/gerenciamento/emandamento')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Falha ao encontra a proposta.')
+                    res.redirect('/gerenciamento/emandamento')
+                })
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha ao encontra a equipe.')
+            res.redirect('/gerenciamento/emandamento')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Falha ao encontra a pessoa.')
+        res.redirect('/gerenciamento/emandamento')
+    })
+})
+
 router.get('/tarefas/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
     const { user } = req.user
@@ -3536,7 +4320,7 @@ router.post('/proposta1', ehAdmin, (req, res) => {
                                                     user: id,
                                                     proposta: nova_proposta._id,
                                                     feitotrt: false,
-                                                    feitoprotocolado: false,
+                                                    protocolado: false,
                                                     feitoaceite: false,
                                                     feitoalmox: false,
                                                     feitofaturado: false,
@@ -3766,6 +4550,16 @@ router.get('/mostrarProposta/:id', ehAdmin, (req, res) => {
     })
 })
 
+router.get('/mostrarContrato/:id', ehAdmin, (req, res) => {
+
+    Proposta.findOne({ _id: req.params.id }).then((proposta) => {
+        var doc = proposta.contrato
+        var path = __dirname
+        path = path.replace('routes', '')
+        res.sendFile(path + '/public/arquivos/' + doc)
+    })
+})
+
 router.post('/visita', ehAdmin, (req, res) => {
 
     const { _id } = req.user
@@ -3829,11 +4623,81 @@ router.post('/assinatura', ehAdmin, (req, res) => {
                 propostafile = ''
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-                if (propostafile != '') {
-                    proposta.assinatura = propostafile
+                Equipe.findOne({ _id: proposta.equipe }).then((equipe) => {
+                    if (propostafile != '') {
+                        proposta.assinatura = propostafile
+                    }
+                    proposta.deadline = setData(req.body.dtassinado, 90)
+                    proposta.dtassinatura = String(req.body.dtassinado)
+                    proposta.assinado = true
+                    proposta.save().then(() => {
+                        AtvTelhado.findOne({ proposta: proposta._id }).then((telhado) => {
+                            console.log(telhado)
+                            if (typeof telhado != 'undefined' && telhado != '' && telhado != null) {
+                                equipe.dtfim = setData(req.body.dtassinado, 90)
+                                equipe.dtfimbusca = dataBusca(setData(req.body.dtassinado, 90))
+                                equipe.save().then(() => {
+                                    req.flash('success_msg', 'Documento salvo com sucesso.')
+                                    res.redirect('/gerenciamento/assinatura/' + req.body.id)
+                                })
+                            } else {
+                                new AtvTelhado({
+                                    proposta: proposta._id,
+                                    feito: false
+                                }).save().then(() => {
+                                    new AtvAterramento({
+                                        proposta: proposta._id,
+                                        feito: false
+                                    }).save().then(() => {
+                                        new AtvInversor({
+                                            proposta: proposta._id,
+                                            feito: false
+                                        }).save().then(() => {
+                                            equipe.dtfim = setData(req.body.dtassinado, 90)
+                                            equipe.dtfimbusca = dataBusca(setData(req.body.dtassinado, 90))
+                                            equipe.save().then(() => {
+                                                req.flash('success_msg', 'Documento salvo com sucesso.')
+                                                res.redirect('/gerenciamento/assinatura/' + req.body.id)
+                                            })
+                                        })
+                                    })
+                                })
+                            }
+                        })
+                    }).catch(() => {
+                        req.flash('error_msg', 'Falha ao salvar a equipe.')
+                        res.redirect('/gerenciamento/proposta/' + req.body.id)
+                    })
+                }).catch(() => {
+                    req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                    res.redirect('/gerenciamento/proposta/' + req.body.id)
+                })
+            }).catch(() => {
+                req.flash('error_msg', 'Falha ao encontrar a proposta.')
+                res.redirect('/gerenciamento/proposta/' + req.body.id)
+            })
+        }
+    })
+})
+
+router.post('/contrato', ehAdmin, (req, res) => {
+    var contratofile
+    var upload = multer({ storage }).single('contrato')
+    upload(req, res, function (err) {
+        if (err) {
+            return res.end("Error uploading file.");
+        } else {
+            if (req.file != null) {
+                contratofile = req.file.filename
+            } else {
+                contratofile = ''
+            }
+            Proposta.findOne({ _id: req.body.id }).then((proposta) => {
+                if (contratofile != '') {
+                    proposta.assinatura = contratofile
                 }
-                proposta.dtassinatura = String(req.body.dtassinado)
-                proposta.assinado = true
+                proposta.dtcontrato = String(req.body.dtcontrato)
+                proposta.contrato = true
                 proposta.save().then(() => {
                     req.flash('success_msg', 'Documento salvo com sucesso.')
                     res.redirect('/gerenciamento/assinatura/' + req.body.id)
@@ -4013,11 +4877,12 @@ router.post("/salvarequipe", ehAdmin, (req, res) => {
             equipe.ins5 = req.body.ins5
             equipe.dtinicio = req.body.dtinicio
             equipe.dtfim = req.body.dtfim
+            equipe.dtfimbusca = dataBusca(req.body.dtfim)
+            equipe.dtinibusca = dataBusca(req.body.dtinicio)
             equipe.feito = true
             equipe.save().then(() => {
-
+                req.flash('succes_msg', 'Equipe salva com sucesso.')
                 res.redirect('/gerenciamento/equipe/' + req.body.id)
-
             }).catch((err) => {
                 req.flash('error_msg', 'Houve erro ao salvar a equipe.')
                 res.redirect('/gerenciamento/equipe/' + req.body.id)
@@ -4197,6 +5062,118 @@ router.post('/caminhoMod', ehAdmin, uploadfoto.array('filemod', 10), (req, res) 
         }).catch(() => {
             req.flash('error_msg', 'Falha ao encontrar a vistoria.')
             res.redirect('/gerenciamento/aceite/' + req.body.id)
+        })
+    })
+
+})
+
+router.post('/caminhoSomb', ehAdmin, uploadfoto.array('filesomb', 10), (req, res) => {
+
+    var arquivos = req.files
+    var q = 0
+
+    Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoSomb: 1 } }).then(() => {
+        Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
+            arquivos.forEach((element) => {
+                //console.log(element.filename)
+                vistoria.caminhoSomb[q] = element.filename
+                q++
+            })
+            vistoria.dtPlaSombra = dataHoje()
+            vistoria.save().then(() => {
+                req.flash('success_msg', 'Caminho de imagens de sombreamento e módulos salvo com sucesso.')
+                res.redirect('/gerenciamento/visita/' + req.body.id)
+            }).catch(() => {
+                req.flash('error_msg', 'Falha ao salvar a vistoria.')
+                res.redirect('/gerenciamento/visita/' + req.body.id)
+            })
+        }).catch(() => {
+            req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+            res.redirect('/gerenciamento/visita/' + req.body.id)
+        })
+    })
+
+})
+
+router.post('/caminhoArea', ehAdmin, uploadfoto.array('filearea', 10), (req, res) => {
+
+    var arquivos = req.files
+    var q = 0
+
+    Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoArea: 1 } }).then(() => {
+        Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
+            arquivos.forEach((element) => {
+                //console.log(element.filename)
+                vistoria.caminhoArea[q] = element.filename
+                q++
+            })
+            vistoria.dtPlaArea = dataHoje()
+            vistoria.save().then(() => {
+                req.flash('success_msg', 'Caminho de imagens da área de instaação salvo com sucesso.')
+                res.redirect('/gerenciamento/visita/' + req.body.id)
+            }).catch(() => {
+                req.flash('error_msg', 'Falha ao salvar a vistoria.')
+                res.redirect('/gerenciamento/visita/' + req.body.id)
+            })
+        }).catch(() => {
+            req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+            res.redirect('/gerenciamento/visita/' + req.body.id)
+        })
+    })
+
+})
+
+router.post('/caminhoInsi', ehAdmin, uploadfoto.array('fileinsi', 10), (req, res) => {
+
+    var arquivos = req.files
+    var q = 0
+
+    Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoInsi: 1 } }).then(() => {
+        Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
+            arquivos.forEach((element) => {
+                //console.log(element.filename)
+                vistoria.caminhoInsi[q] = element.filename
+                q++
+            })
+            vistoria.dtPlaInvStb = dataHoje()
+            vistoria.save().then(() => {
+                req.flash('success_msg', 'Caminho de imagens da instalação do inversor e stringbox salvos com sucesso.')
+                res.redirect('/gerenciamento/visita/' + req.body.id)
+            }).catch(() => {
+                req.flash('error_msg', 'Falha ao salvar a vistoria.')
+                res.redirect('/gerenciamento/visita/' + req.body.id)
+            })
+        }).catch(() => {
+            req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+            res.redirect('/gerenciamento/visita/' + req.body.id)
+        })
+    })
+
+})
+
+router.post('/caminhoInsa', ehAdmin, uploadfoto.array('fileinsa', 10), (req, res) => {
+
+    var arquivos = req.files
+    var q = 0
+
+    Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoInsa: 1 } }).then(() => {
+        Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
+            arquivos.forEach((element) => {
+                //console.log(element.filename)
+                vistoria.caminhoInsa[q] = element.filename
+                q++
+            })
+            vistoria.dtPlaAte = dataHoje()
+            vistoria.save().then(() => {
+                req.flash('success_msg', 'Caminho de imagens da instalação do aterramento salvo com sucesso.')
+                res.redirect('/gerenciamento/visita/' + req.body.id)
+            }).catch(() => {
+                req.flash('error_msg', 'Falha ao salvar a vistoria.')
+                res.redirect('/gerenciamento/visita/' + req.body.id)
+            })
+        }).catch(() => {
+            req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+            res.redirect('/gerenciamento/visita/' + req.body.id)
         })
     })
 
@@ -4403,6 +5380,206 @@ router.get('/mostrarMod/:id', ehAdmin, (req, res) => {
 
 })
 
+router.get('/mostrarSomb/:id', ehAdmin, (req, res) => {
+    var lista_imagens = []
+    var img
+    var q = 1
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
+            Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
+                Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
+                    Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
+                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                            Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
+                                img = vistoria.caminhoSomb
+                                img.forEach((e) => {
+                                    //console.log(e)
+                                    lista_imagens.push({ seq: 'Foto' + q, imagem: e })
+                                    q++
+                                })
+
+                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens de Sombreamento' })
+                            }).catch(() => {
+                                req.flash('error_msg', 'Falha ao encontrar o pós venda.')
+                                res.redirect('/gerenciamento/aceite/' + req.body.id)
+                            })
+                        }).catch(() => {
+                            req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                            res.redirect('/gerenciamento/aceite/' + req.body.id)
+                        })
+                    }).catch(() => {
+                        req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+                        res.redirect('/gerenciamento/aceite/' + req.body.id)
+                    })
+                }).catch(() => {
+                    req.flash('error_msg', 'Falha ao encontrar a compra.')
+                    res.redirect('/gerenciamento/aceite/' + req.body.id)
+                })
+            }).catch(() => {
+                req.flash('error_msg', 'Falha ao encontrar o documento.')
+                res.redirect('/gerenciamento/aceite/' + req.body.id)
+            })
+        }).catch(() => {
+            req.flash('error_msg', 'Falha ao encontrar o cliente.')
+            res.redirect('/gerenciamento/aceite/' + req.body.id)
+        })
+    }).catch(() => {
+        req.flash('error_msg', 'Falha ao encontrar a proposta.')
+        res.redirect('/gerenciamento/aceite/' + req.body.id)
+    })
+
+})
+
+router.get('/mostrarArea/:id', ehAdmin, (req, res) => {
+    var lista_imagens = []
+    var img
+    var q = 1
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
+            Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
+                Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
+                    Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
+                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                            Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
+                                img = vistoria.caminhoArea
+                                img.forEach((e) => {
+                                    //console.log(e)
+                                    lista_imagens.push({ seq: 'Foto' + q, imagem: e })
+                                    q++
+                                })
+
+                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens da Área de Instalação' })
+                            }).catch(() => {
+                                req.flash('error_msg', 'Falha ao encontrar o pós venda.')
+                                res.redirect('/gerenciamento/aceite/' + req.body.id)
+                            })
+                        }).catch(() => {
+                            req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                            res.redirect('/gerenciamento/aceite/' + req.body.id)
+                        })
+                    }).catch(() => {
+                        req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+                        res.redirect('/gerenciamento/aceite/' + req.body.id)
+                    })
+                }).catch(() => {
+                    req.flash('error_msg', 'Falha ao encontrar a compra.')
+                    res.redirect('/gerenciamento/aceite/' + req.body.id)
+                })
+            }).catch(() => {
+                req.flash('error_msg', 'Falha ao encontrar o documento.')
+                res.redirect('/gerenciamento/aceite/' + req.body.id)
+            })
+        }).catch(() => {
+            req.flash('error_msg', 'Falha ao encontrar o cliente.')
+            res.redirect('/gerenciamento/aceite/' + req.body.id)
+        })
+    }).catch(() => {
+        req.flash('error_msg', 'Falha ao encontrar a proposta.')
+        res.redirect('/gerenciamento/aceite/' + req.body.id)
+    })
+
+})
+
+router.get('/mostrarInsi/:id', ehAdmin, (req, res) => {
+    var lista_imagens = []
+    var img
+    var q = 1
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
+            Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
+                Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
+                    Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
+                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                            Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
+                                img = vistoria.caminhoInsi
+                                img.forEach((e) => {
+                                    //console.log(e)
+                                    lista_imagens.push({ seq: 'Foto' + q, imagem: e })
+                                    q++
+                                })
+
+                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens do Local de Instalação do Inversor e String Box' })
+                            }).catch(() => {
+                                req.flash('error_msg', 'Falha ao encontrar o pós venda.')
+                                res.redirect('/gerenciamento/aceite/' + req.body.id)
+                            })
+                        }).catch(() => {
+                            req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                            res.redirect('/gerenciamento/aceite/' + req.body.id)
+                        })
+                    }).catch(() => {
+                        req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+                        res.redirect('/gerenciamento/aceite/' + req.body.id)
+                    })
+                }).catch(() => {
+                    req.flash('error_msg', 'Falha ao encontrar a compra.')
+                    res.redirect('/gerenciamento/aceite/' + req.body.id)
+                })
+            }).catch(() => {
+                req.flash('error_msg', 'Falha ao encontrar o documento.')
+                res.redirect('/gerenciamento/aceite/' + req.body.id)
+            })
+        }).catch(() => {
+            req.flash('error_msg', 'Falha ao encontrar o cliente.')
+            res.redirect('/gerenciamento/aceite/' + req.body.id)
+        })
+    }).catch(() => {
+        req.flash('error_msg', 'Falha ao encontrar a proposta.')
+        res.redirect('/gerenciamento/aceite/' + req.body.id)
+    })
+
+})
+
+router.get('/mostrarInsa/:id', ehAdmin, (req, res) => {
+    var lista_imagens = []
+    var img
+    var q = 1
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
+            Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
+                Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
+                    Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
+                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                            Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
+                                img = vistoria.caminhoInsa
+                                img.forEach((e) => {
+                                    //console.log(e)
+                                    lista_imagens.push({ seq: 'Foto' + q, imagem: e })
+                                    q++
+                                })
+
+                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens do Local de Instalação do Aterramento' })
+                            }).catch(() => {
+                                req.flash('error_msg', 'Falha ao encontrar o pós venda.')
+                                res.redirect('/gerenciamento/aceite/' + req.body.id)
+                            })
+                        }).catch(() => {
+                            req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                            res.redirect('/gerenciamento/aceite/' + req.body.id)
+                        })
+                    }).catch(() => {
+                        req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+                        res.redirect('/gerenciamento/aceite/' + req.body.id)
+                    })
+                }).catch(() => {
+                    req.flash('error_msg', 'Falha ao encontrar a compra.')
+                    res.redirect('/gerenciamento/aceite/' + req.body.id)
+                })
+            }).catch(() => {
+                req.flash('error_msg', 'Falha ao encontrar o documento.')
+                res.redirect('/gerenciamento/aceite/' + req.body.id)
+            })
+        }).catch(() => {
+            req.flash('error_msg', 'Falha ao encontrar o cliente.')
+            res.redirect('/gerenciamento/aceite/' + req.body.id)
+        })
+    }).catch(() => {
+        req.flash('error_msg', 'Falha ao encontrar a proposta.')
+        res.redirect('/gerenciamento/aceite/' + req.body.id)
+    })
+
+})
+
 router.get('/mostrarImagens/:foto', ehAdmin, (req, res) => {
     var path = __dirname
     // var doc = vistoria.caminhoAte
@@ -4504,20 +5681,20 @@ router.get('/mostrarAlmoxarifado/:id', ehAdmin, (req, res) => {
 })
 
 router.post('/financeiro', ehAdmin, (req, res) => {
-    var propostafile
-    var upload = multer({ storage }).single('faturado')
+    var financeirofile
+    var upload = multer({ storage }).single('financeiro')
     upload(req, res, function (err) {
         if (err) {
             return res.end("Error uploading file.");
         } else {
             if (req.file != null) {
-                propostafile = req.file.filename
+                financeirofile = req.file.filename
             } else {
-                propostafile = ''
+                financeirofile = ''
             }
             Documento.findOne({ proposta: req.body.id }).then((documento) => {
-                if (propostafile != '') {
-                    documento.faturado = propostafile
+                if (financeirofile != '') {
+                    documento.faturado = financeirofile
                 }
                 documento.dtfaturado = String(req.body.dtfaturado)
                 documento.feitofaturado = true
@@ -4536,9 +5713,55 @@ router.post('/financeiro', ehAdmin, (req, res) => {
     })
 })
 
+router.post('/comprovante', ehAdmin, (req, res) => {
+    var comprovantefile
+    var upload = multer({ storage }).single('comprovante')
+    upload(req, res, function (err) {
+        if (err) {
+            return res.end("Error uploading file.");
+        } else {
+            if (req.file != null) {
+                comprovantefile = req.file.filename
+            } else {
+                comprovantefile = ''
+            }
+            Documento.findOne({ proposta: req.body.id }).then((documento) => {
+                if (comprovantefile != '') {
+                    documento.comprovante = comprovantefile
+                }
+                documento.dtcomprovante = String(req.body.dtcomprovante)
+                documento.feitocomprovante = true
+                documento.save().then(() => {
+                    req.flash('success_msg', 'Documento salvo com sucesso.')
+                    res.redirect('/gerenciamento/financeiro/' + req.body.id)
+                }).catch(() => {
+                    req.flash('error_msg', 'Falha ao salvar o documento.')
+                    res.redirect('/gerenciamento/financeiro/' + req.body.id)
+                })
+            }).catch(() => {
+                req.flash('error_msg', 'Falha ao encontrar o documento.')
+                res.redirect('/gerenciamento/financeiro/' + req.body.id)
+            })
+        }
+    })
+})
+
 router.get('/mostrarFinanceiro/:id', ehAdmin, (req, res) => {
     Documento.findOne({ proposta: req.params.id }).then((documento) => {
         var doc = documento.faturado
+        var path = __dirname
+        //console.log(path)
+        path = path.replace('routes', '')
+        res.sendFile(path + '/public/arquivos/' + doc)
+    }).catch(() => {
+        req.flash('error_msg', 'Falha ao encontrar o documento.')
+        res.redirect('/gerenciamento/financeiro/' + req.body.id)
+    })
+})
+
+router.get('/mostrarFinanceiro/:id', ehAdmin, (req, res) => {
+    Documento.findOne({ proposta: req.params.id }).then((documento) => {
+        var doc = documento.comprovante
         var path = __dirname
         //console.log(path)
         path = path.replace('routes', '')
@@ -4933,7 +6156,7 @@ router.post('/protocolar', ehAdmin, (req, res) => {
         ajustadata.setDate(date.getDate() + 1)
         //console.log('diainicio=>' + ajustadata.getDate())
         //console.log('ajustadata=>' + ajustadata)
-        novadata.setDate(ajustadata.getDate() + 14)
+        novadata.setDate(ajustadata.getDate() + 15)
         var ano = novadata.getFullYear()
         var mes = novadata.getMonth()
         var dia = novadata.getDate()

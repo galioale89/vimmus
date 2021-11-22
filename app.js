@@ -51,7 +51,6 @@ const Posvenda = mongoose.model('posvenda')
 const passport = require("passport")
 require("./config/auth")(passport)
 
-
 //Configuração
 //Sessions
 app.use(session({
@@ -80,6 +79,7 @@ app.use(bodyParser.json())
 //Handlebars
 app.engine('handlebars', handlebars({ defaulLayout: "main" }))
 app.set('view engine', 'handlebars')
+
 
 //Configurando pasta de imagens 
 app.use(express.static('public/'))
@@ -115,7 +115,7 @@ app.get('/termo', (req, res) => {
 
 //Direcionando para página principal
 app.get('/menu', ehAdmin, (req, res) => {
-
+  
   const { _id } = req.user
   const { user } = req.user
   const { ehAdmin } = req.user
@@ -123,6 +123,10 @@ app.get('/menu', ehAdmin, (req, res) => {
   const { pessoa } = req.user
   const { owner } = req.user
 
+  var hoje = dataHoje()
+  var data1 = 0
+  var data2 = 0
+  var compara = 0
   //console.log('owner=>'+owner)
 
   var numprj = 0
@@ -134,25 +138,28 @@ app.get('/menu', ehAdmin, (req, res) => {
   var listaEncerrado = []
   var notpro = []
   var atrasado = []
+  var deadlineIns = []
   var status = ''
   var dtcadastro = ''
   var dtvalidade = ''
   var qtdorcado = 0
   var qtdaberto = 0
   var qtdencerrado = 0
+
   var qtdfim = 0
+  var qtdpos = 0
   var qtdfat = 0
   var qtdalx = 0
-  var qtdenv = 0
-  var qtdpos = 0
-  var qtdpro = 0
-  var qtdvis = 0
   var qtdass = 0
+  var qtdequ = 0
+  var qtdpcl = 0
+  var qtdtrt = 0
   var qtdnot = 0
   var qtdped = 0
-  var qtdtrt = 0
-  var qtdpcl = 0
-  var qtdequ = 0
+  var qtdvis = 0
+  var qtdpro = 0
+  
+
   var responsavel
 
   if (ehAdmin == 0) {
@@ -174,7 +181,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                 Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
                   Equipe.findOne({ _id: element.equipe }).then((equipe) => {
                     Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
-                      Pessoa.findOne({ _id: element.responsavel }).then((pessoa) => {
+                      Pessoa.findOne({ _id: element.responsavel }).then((pesso_res) => {
                         //console.log('element._id=>' + element._id)
                         if (typeof proposta.proposta6 != 'undefined') {
                           dtcadastro = proposta.dtcadastro6
@@ -203,16 +210,28 @@ app.get('/menu', ehAdmin, (req, res) => {
                             }
                           }
                         }
-                        console.log('dtvalidade=>' + dtvalidade)
+
+                        //console.log('documento.protocolado=>' + documento.protocolado)
+                        //console.log('posvenda.feito=>' + posvenda.feito)
+                        //console.log('documento.feitofaturado=>' + documento.feitofaturado)
+                        //console.log('documento.feitoalmox=>' + documento.feitoalmox)
+                        //console.log('documento.enviaalmox=>' + documento.enviaalmox)
+                        //console.log('equipe.feito=>' + equipe.feito)
+                        //console.log('documento.feitotrt=>' + documento.feitotrt)
+                        //console.log('compra.feitonota=>' + compra.feitonota)
+                        //console.log('compra.feitopedido=>' + compra.feitopedido)
+                        //console.log('proposta.assinado=>' + proposta.assinado)
+                        //console.log('vistoria.feito=>' + vistoria.feito)
 
 
-                        if (pessoa != null) {
-                          responsavel = pessoa.nome
+
+                        if (pesso_res != null && typeof pesso_res != 'undefined') {
+                          responsavel = pesso_res.nome
                         } else {
                           responsavel = ''
                         }
-                        // console.log('responsavel=>'+responsavel)
-                        // console.log('pessoa responsavel=>' + pessoa)
+                        //console.log('responsavel=>'+responsavel)
+                        //console.log('pessoa responsavel=>' + pessoa)
                         if (proposta.ganho == true) {
                           if (proposta.encerrado == true) {
                             status = 'Encerrado'
@@ -232,17 +251,17 @@ app.get('/menu', ehAdmin, (req, res) => {
                                 qtdaberto++
                                 listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                               } else {
-                                if (documento.feitofaturado == true) {
+                                if (documento.feitoalmox == true) {
                                   status = 'Almoxarifado Fechado'
                                   qtdalx++
-                                  qtdaberto++
-                                  listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
-                                } else {
-                                  if (documento.feitofaturado == true) {
-                                    status = 'Almoxarifado em Aberto'
-                                    qtdenv++
-                                    qtdaberto++
-                                    listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                  dtinicio = equipe.dtinicio
+                                  dtfim = equipe.dtfim
+                              } else {
+                                  if (documento.enviaalmox == true) {
+                                      status = 'Almoxarifado Em Aberto'
+                                      qtdalx++
+                                      dtinicio = equipe.dtinicio
+                                      dtfim = equipe.dtfim
                                   } else {
                                     if (equipe.feito == true) {
                                       status = 'Execução a Campo'
@@ -310,18 +329,18 @@ app.get('/menu', ehAdmin, (req, res) => {
                         }
 
 
+                        //console.log('proposta.ganho=>'+proposta.ganho)
                         if (proposta.ganho != true) {
-                          var hoje = dataHoje()
-                          // var dtnovo = setData(dtcadastro,7)
-                          console.log(dtvalidade)
+                          var dtnovo = setData(dtcadastro,7)
+                          //console.log(dtvalidade)
                           var dtnovo = dtvalidade
-                          var data1 = dataBusca(dtnovo)
-                          var data2 = dataBusca(hoje)
-                          console.log('proposta._id=>' + proposta._id)
-                          console.log('data1=>' + data1)
-                          console.log('data2=>' + data2)
-                          var compara = parseFloat(data1) - parseFloat(data2)
-                          console.log('compara=>' + compara)
+                          data1 = dataBusca(dtnovo)
+                          data2 = dataBusca(hoje)
+                          //console.log('proposta._id=>' + proposta._id)
+                          //console.log('data1=>' + data1)
+                          //console.log('data2=>' + data2)
+                          compara = parseFloat(data1) - parseFloat(data2)
+                          //console.log('compara=>' + compara)
                           if (compara == 1) {
                             notpro.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
                           } else {
@@ -329,6 +348,20 @@ app.get('/menu', ehAdmin, (req, res) => {
                               atrasado.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
                             }
                           }
+                        }else{
+                          if (proposta.ganho == true && proposta.deadline != '' && typeof proposta.deadline != 'undefined' && proposta.dtassinatura != '' && typeof proposta.deadline != 'undefined' ){
+                            var dtdlassinado = proposta.deadline
+                            //console.log('dtdlassinado=>'+dtdlassinado)
+                            //console.log('hoje=>'+hoje)
+                            data1 = dataBusca(dtdlassinado)
+                            data2 = dataBusca(hoje)
+                            compara = parseFloat(data1) - parseFloat(data2)
+                            //console.log('compara=>'+compara)
+                            if (compara < 30){
+                              deadlineIns.push({id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), assinado: dataMensagem(proposta.dtassinatura), dliins: dataMensagem(dtdlassinado)})
+                            }
+                          }
+                          
                         }
                         //console.log('status=>' + status)
                         q++
@@ -339,7 +372,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                           //console.log('qtdorcado=>' + qtdorcado)
                           //console.log('qtdaberto=>' + qtdaberto)
                           //console.log('qtdencerrado=>' + qtdencerrado)
-                          res.render('menuproposta', { id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, notpro, atrasado })
+                          res.render('menuproposta', { id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, deadlineIns, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdalx, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, notpro, atrasado })
                         }
                       }).catch((err) => {
                         req.flash('error_msg', 'Houve um erro ao encontrar as pessoas.')
@@ -382,7 +415,8 @@ app.get('/menu', ehAdmin, (req, res) => {
         //console.log('funges=>'+funges)
 
         Proposta.find({ user: user }).sort({ data: 'asc' }).then((todasProposta) => {
-          if (todasProposta) {
+          //console.log('todasProposta=>'+todasProposta)
+          if (todasProposta != '') {
             todasProposta.forEach((element) => {
               if (funges == true) {
                 //console.log(element)
@@ -393,7 +427,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                         Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
                           Equipe.findOne({ _id: element.equipe }).then((equipe) => {
                             Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
-                              Pessoa.findOne({ _id: element.responsavel }).then((pessoa) => {
+                              Pessoa.findOne({ _id: element.responsavel }).then((pessoa_res) => {
                                 //console.log('element._id=>' + element._id)
                                 if (typeof proposta.proposta6 != 'undefined') {
                                   dtcadastro = proposta.dtcadastro6
@@ -424,8 +458,8 @@ app.get('/menu', ehAdmin, (req, res) => {
                                 }
 
 
-                                if (pessoa != null) {
-                                  responsavel = pessoa.nome
+                                if (pessoa_res != null) {
+                                  responsavel = pessoa_res.nome
                                 } else {
                                   responsavel = ''
                                 }
@@ -448,18 +482,16 @@ app.get('/menu', ehAdmin, (req, res) => {
                                         qtdaberto++
                                         listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                       } else {
-                                        if (documento.feitofaturado == true) {
+                                        if (documento.feitoalmox == true) {
                                           status = 'Almoxarifado Fechado'
-                                          qtdalx++
-                                          qtdaberto++
-                                          listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
-                                        } else {
-                                          if (documento.feitofaturado == true) {
-                                            status = 'Almoxarifado em Aberto'
-                                            qtdenv++
-                                            qtdaberto++
-                                            listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
-                                          } else {
+                                          dtinicio = equipe.dtinicio
+                                          dtfim = equipe.dtfim
+                                      } else {
+                                          if (documento.enviaalmox == true) {
+                                              status = 'Almoxarifado Em Aberto'
+                                              dtinicio = equipe.dtinicio
+                                              dtfim = equipe.dtfim
+                                          }else {
                                             if (equipe.feito == true) {
                                               status = 'Execução a Campo'
                                               qtdequ++
@@ -527,7 +559,7 @@ app.get('/menu', ehAdmin, (req, res) => {
 
                                 if (proposta.ganho != true) {
                                   var hoje = dataHoje()
-                                  // var dtnovo = setData(dtcadastro,7)
+                                  var dtnovo = setData(dtcadastro,7)
                                   var dtnovo = dtvalidade
                                   var data1 = dataBusca(dtnovo)
                                   var data2 = dataBusca(hoje)
@@ -625,7 +657,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                               Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
                                 Equipe.findOne({ _id: element.equipe }).then((equipe) => {
                                   Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
-                                    Pessoa.findOne({ _id: element.responsavel }).then((pessoa) => {
+                                    Pessoa.findOne({ _id: element.responsavel }).then((pessoa_res) => {
                                       //  //console.log('entrou')
                                       if (typeof proposta.proposta6 != 'undefined') {
                                         dtcadastro = proposta.dtcadastro6
@@ -656,8 +688,8 @@ app.get('/menu', ehAdmin, (req, res) => {
                                       }
 
 
-                                      if (pessoa != null) {
-                                        responsavel = pessoa.nome
+                                      if (pessoa_res != null) {
+                                        responsavel = pessoa_res.nome
                                       } else {
                                         responsavel = ''
                                       }
@@ -779,12 +811,13 @@ app.get('/menu', ehAdmin, (req, res) => {
               }
             })
           } else {
+            //console.log('sem registro')
             res.render('menuproposta', { id: _id, owner: owner, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado})
           }
         })
       } else {
         //console.log('sem registro')
-        res.render('menuproposta', { id: _id, owner: owner, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado})
+        res.render('menuproposta', { id: _id, owner: owner, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado })
       }
     }
   }).catch((err) => {

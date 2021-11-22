@@ -1,0 +1,200 @@
+<style>
+
+    .lists {
+        display: flex;
+        flex: 1;
+        width: 100%;
+    }
+
+    .lists .list {
+        display: flex;
+        flex-flow: column;
+        flex: 1;
+
+        width: 100%;
+        border-radius: 20px;
+        min-height: 300px;
+
+        background-color: #001263e5;
+        margin: 0 15px;
+        padding: 8px;
+        transition: all 0.2s linear;
+    }
+
+    .lists .list .list-item {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+
+    .lists .list .item-inversor {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+
+    .lists .list .item {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+</style>
+<div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
+    {{#if proposta._id}}
+    <div style="width: 100%;">
+        <h5 class="header">{{cliente_proposta.nome}} </h5>
+    </div>
+    {{/if}}
+    <div class="row mt-2" style="padding:20px;width: 100%;">
+        <div class="row">
+            <div class="lists">
+                <div class="list">
+                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">Aguardando
+                        Vistoria</label>
+                    <div class="list-item" style='color: black;' draggable="true"></div>
+                </div>
+                <div class="list">
+                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">Em
+                        Vistoria</label>
+                    <div class="item-inversor" style='color: black;' draggable="true"></div>
+                </div>
+                <div class="list">
+                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">Contrato</label>
+                    <div class="item-inversor" style='color: black;' draggable="true"></div>
+                </div>
+                <div class="list">
+                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">Compra</label>
+                    <div class="item-inversor" style='color: black;' draggable="true"></div>
+                </div>
+                <div class="list">
+                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">TRT</label>
+                    <div class="item-inversor" style='color: black;' draggable="true"></div>
+                </div>
+                <div class="list">
+                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">Protocolado</label>
+                    <div class="item-inversor" style='color: black;' draggable="true"></div>
+                </div>
+                <div class="list">
+                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">Execução a Campo</label>
+                    <div class="item-inversor" style='color: black;' draggable="true"></div>
+                </div>
+                <div class="list">
+                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">Almoxarifado</label>
+                    <div class="item-inversor" style='color: black;' draggable="true"></div>
+                </div>    
+                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">Faturado</label>
+                    <div class="item-inversor" style='color: black;' draggable="true"></div>
+                </div>
+                <div class="list">
+                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">Pós-Venda</label>
+                    <div class="item-inversor" style='color: black;' draggable="true"></div>
+                </div>                
+                <div class="list">
+                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">Encerrado</label>
+                    <div class="item-inversor" style='color: black;' draggable="true"></div>
+                </div>                                                                                      
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const list_items = document.querySelectorAll('.list-item');
+    const lists = document.querySelectorAll('.list');
+    const list_inversor = document.querySelectorAll('.item-inversor');
+
+    let draggedItem = null;
+
+    for (let i = 0; i < list_items.length; i++) {
+        const item = list_items[i];
+
+        item.addEventListener('dragstart', function () {
+            draggedItem = item;
+            setTimeout(function () {
+                item.style.display = 'none';
+            }, 0)
+        });
+
+        item.addEventListener('dragend', function () {
+            this.className = 'item-inversor';
+            setTimeout(function () {
+                draggedItem.style.display = 'block';
+                draggedItem = null;
+            }, 0);
+        })
+
+        for (let j = 0; j < lists.length; j++) {
+            const list = lists[j];
+
+            list.addEventListener('dragover', function (e) {
+                e.preventDefault();
+            });
+
+            list.addEventListener('dragenter', function (e) {
+                e.preventDefault();
+                this.style.backgroundColor = 'rgba(40, 55, 89, 1)';
+            });
+
+            list.addEventListener('dragleave', function (e) {
+                this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+            });
+
+            list.addEventListener('drop', function (e) {
+                console.log('drop');
+                this.append(draggedItem);
+                this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+            });
+        }
+    }
+
+    if (list_inversor.length > 0 || list_inversor.length != '') {
+
+        for (let x = 0; x < list_inversor.length; x++) {
+            const inversor = list_inversor[x];
+
+            inversor.addEventListener('dragstart', function () {
+                draggedItem = inversor;
+                setTimeout(function () {
+                    item.style.display = 'none';
+                }, 0)
+            });
+
+            inversor.addEventListener('dragend', function () {
+                this.className = 'item';
+                setTimeout(function () {
+                    draggedItem.style.display = 'block';
+                    draggedItem = null;
+                }, 0);
+            })
+
+            for (let y = 0; y < lists.length; y++) {
+                const list = lists[y];
+
+                list.addEventListener('dragover', function (e) {
+                    e.preventDefault();
+                });
+
+                list.addEventListener('dragenter', function (e) {
+                    e.preventDefault();
+                    this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+                });
+
+                list.addEventListener('dragleave', function (e) {
+                    this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+                });
+
+                list.addEventListener('drop', function (e) {
+                    console.log('drop');
+                    this.append(draggedItem);
+                    this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+                });
+            }
+        }
+    }
+</script>

@@ -5,112 +5,121 @@
     </div>
     {{/if}}
 
-       <div class='btn-group col-12'>
+    <div class='btn-group col-12'>
         <div class='numero'>1</div>
-        <a href='/gerenciamento/proposta/{{proposta._id}}/' class='btn btn-sm{{#if proposta.feito}} check-menu {{else}} botao-menu {{/if}}' style="border-bottom-left-radius: 30px;"> <i
-                class="bi bi-house"></i> Proposta</a>
+        <a href='/gerenciamento/proposta/{{proposta._id}}/'
+            class='btn btn-sm{{#if proposta.feito}} check-menu {{else}} botao-menu {{/if}}'
+            style="border-bottom-left-radius: 30px;"> <i class="bi bi-house"></i> Proposta</a>
         <div class='numero ativo'>2</div>
-        <a href="/gerenciamento/visita/{{proposta._id}}" class="btn btn-sm {{#if vistoria.feito}} check-menu {{else}} botao-menu ativo{{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-gear"></i>
+        <a href="/gerenciamento/visita/{{proposta._id}}"
+            class="btn btn-sm {{#if vistoria.feito}} check-menu {{else}} botao-menu ativo{{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-gear"></i>
             Visita Técnica</a>
         <div class='numero'>3</div>
-        <a href="/gerenciamento/assinatura/{{proposta._id}}" class="btn btn-sm {{#if proposta.assinado}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i
-                class="bi bi-pencil"></i>
-            Assinatura</a>
+        <a href="/gerenciamento/assinatura/{{proposta._id}}"
+            class="btn btn-sm {{#if proposta.assinado}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-pencil"></i>
+            Contrato</a>
         <div class='numero'>4</div>
-        <a href="/gerenciamento/compra/{{proposta._id}}" class="btn btn-sm {{#if compra.feitonota}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-cart-check"></i>
+        <a href="/gerenciamento/compra/{{proposta._id}}"
+            class="btn btn-sm {{#if compra.feitonota}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-cart-check"></i>
             Compra Sistema</a>
         <div class='numero'>5</div>
-        <a href="/gerenciamento/trt/{{proposta._id}}" class="btn btn-sm {{#if documento.feitotrt}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-tools"></i>
+        <a href="/gerenciamento/trt/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitotrt}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-tools"></i>
             TRT</a>
         <div class='numero'>6</div>
-        <a href="/gerenciamento/execucao/{{proposta._id}}" class="btn btn-sm {{#if documento.protocolado}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i
-                class="bi bi-file-earmark-check"></i>
+        <a href="/gerenciamento/execucao/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.protocolado}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-clock-history"></i>
             Execução</a>
         <div class='numero'>7</div>
-        <a href="/gerenciamento/equipe/{{proposta._id}}" class="btn btn-sm {{#if lista_equipe.feito}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-people"></i>
+        <a href="/gerenciamento/equipe/{{proposta._id}}"
+            class="btn btn-sm {{#if lista_equipe.feito}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-people"></i>
             Equipes</a>
         <div class='numero'>8</div>
-        <a href="/gerenciamento/aceite/{{proposta._id}}" class="btn btn-sm {{#if documento.feitoaceite}} check-menu {{else}} botao-menu{{/if}}"
+        <a href="/gerenciamento/aceite/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitoaceite}} check-menu {{else}} botao-menu{{/if}}"
             style="border-bottom-left-radius: 30px;"><i class="bi bi-check2-square"></i>
             Aceite Obra</a>
         <div class='numero'>9</div>
-        <a href="/gerenciamento/almoxarifado/{{proposta._id}}" class="btn btn-sm {{#if documento.feitoalmox}} check-menu {{else}} botao-menu{{/if}}"
+        <a href="/gerenciamento/almoxarifado/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitoalmox}} check-menu {{else}} botao-menu{{/if}}"
             style="border-bottom-left-radius: 30px;"><i class="bi bi-layers"></i>
             Almoxarifado</a>
         <div class='numero'>10</div>
-        <a href="/gerenciamento/financeiro/{{proposta._id}}" class="btn btn-sm {{#if documento.feitofaturado}} check-menu {{else}} botao-menu{{/if}}"
+        <a href="/gerenciamento/financeiro/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitofaturado}} check-menu {{else}} botao-menu{{/if}}"
             style="border-bottom-left-radius: 30px;"><i class="bi bi-calculator"></i>
             Financeiro</a>
         <div class='numero'>11</div>
-        <a href="/gerenciamento/posvenda/{{proposta._id}}" class="btn btn-sm {{#if posvenda.feito}} check-menu {{else}} botao-menu{{/if}}"
+        <a href="/gerenciamento/posvenda/{{proposta._id}}"
+            class="btn btn-sm {{#if posvenda.feito}} check-menu {{else}} botao-menu{{/if}}"
             style="border-bottom-left-radius: 30px;"><i class="bi bi-door-open"></i>
-            Pós Venda</a>           
+            Pós Venda</a>
     </div>
 
     <div style="padding: 15px;">
         <div class="row">
             <div class="col-md-6">
-                <form action='/gerenciamento/salvarSombra' method="post" enctype="multipart/form-data">
+                <form action='/gerenciamento/caminhoSomb' method="post" enctype="multipart/form-data">
                     <input type='hidden' name='id' value="{{proposta._id}}">
-                    <div class="form-check">
-                        <input class='form-check-input' style="margin-top: 7px;" type="checkbox" name='plaSombra'
-                            {{vistoria.plaSombra}}>
-                        <label class='col-form-label col-form-label-sm form-check-label'>Sombreamento</label>
-                    </div>
+                    <label class='col-form-label fw-bold'>Sombreamento</label><br>
+                    <label class='col-form-label col-form-label-sm'>{{vistoria.caminhoSomb}}</label>
                     <div class="row">
                         <div class="row mt-2" style="width: 100%;">
-                            <img src='/{{vistoria.fotoPlaSombra}}' id='fotoPlaSombra' name='fotoPlaSombra'
-                                style="height: 190px;" />
                         </div>
                     </div>
                     <div class="row">
-                        <div style="max-width: 85px;">
-                            <input type="file" name='fotoPlaSombra' id="fotoPlaSombra"
-                                class='form-control form-control-sm' style="font-size: 12px;"
-                                onchange="preview_fotoPlaSombra ()">
+                        <div class='col'>
+                            <input type="file" multiple name='filesomb' id="filesomb"
+                                class='form-control form-control-sm' style="font-size: 12px;">
                         </div>
-                        <div style="max-width: 60px;">
-                            <input type='hidden' name='carregaFotoSombra' id='carregaFotoSombra'
-                                value='{{vistoria.fotoPlaSombra}}'>
+                        <div class='col-md-1'>
                             <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
                                     class='bi bi-save'></i></button>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <input name='dtPlaSombra' value='{{vistoria.dtPlaSombra}}' type="date"
                                 style='font-size: 12px;' class='form-control form-control-sm'>
+                        </div>
+                        <div class='col-md-1'>
+                            <a href='/gerenciamento/mostrarSomb/{{proposta._id}}' class='btn btn-sm btn-primary'><i
+                                    class='bi bi-eye'></i></a>
                         </div>
                     </div>
                 </form>
             </div>
 
             <div class="col-md-6">
-                <form action='/gerenciamento/salvarArea' method="post" enctype="multipart/form-data">
+                <form action='/gerenciamento/caminhoArea' method="post" enctype="multipart/form-data">
                     <input type='hidden' name='id' value="{{proposta._id}}">
-                    <div class="form-check">
-                        <input class='form-check-input' style="margin-top: 7px;" type="checkbox" name='plaArea'
-                            {{vistoria.plaArea}}>
-                        <label class='col-form-label col-form-label-sm form-check-label'>Area</label>
-                    </div>
+                    <label class='col-form-label fw-bold'>Área</label><br>
+                    <label class='col-form-label col-form-label-sm'>{{vistoria.caminhoArea}}</label>
                     <div class="row">
                         <div class="row mt-2" style="width: 100%;">
-                            <img src='/{{vistoria.fotoPlaArea}}' id='fotoPlaArea' name='fotoPlaArea'
-                                style="height: 190px;" />
+
                         </div>
                     </div>
                     <div class="row">
-                        <div style="max-width: 85px;">
-                            <input type="file" name='fotoPlaArea' id="fotoPlaArea" class='form-control form-control-sm'
-                                style="font-size: 12px;" onchange="preview_fotoPlaArea ()">
+                        <div class='col'>
+                            <input type="file" multiple name='filearea' id="filearea"
+                                class='form-control form-control-sm' style="font-size: 12px;">
                         </div>
-                        <div style="max-width: 60px;">
-                            <input type='hidden' name='carregaFotoArea' id='carregaFotoArea'
-                                value='{{vistoria.fotoPlaArea}}'>
+                        <div class='col-md-1'>
                             <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
                                     class='bi bi-save'></i></button>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <input name='dtPlaArea' value='{{vistoria.dtPlaArea}}' type="date" style='font-size: 12px;'
                                 class='form-control form-control-sm'>
+                        </div>
+                        <div class='col-md-1'>
+                            <a href='/gerenciamento/mostrarArea/{{proposta._id}}' class='btn btn-sm btn-primary'><i
+                                    class='bi bi-eye'></i></a>
                         </div>
                     </div>
                 </form>
@@ -118,69 +127,59 @@
         </div>
         <div class="row mb-4">
             <div class="col-md-6">
-                <form action='/gerenciamento/salvarInvStb' method="post" enctype="multipart/form-data">
+                <form action='/gerenciamento/caminhoInsi' method="post" enctype="multipart/form-data">
                     <input type='hidden' name='id' value="{{proposta._id}}">
-                    <div class="form-check">
-                        <input class='form-check-input' style="margin-top: 7px;" type="checkbox" name='plaSombra'
-                            {{vistoria.plaInvStb}}>
-                        <label class='col-form-label col-form-label-sm form-check-label'>Local Inversor e
-                            StringBox</label>
+                    <label class='col-form-label fw-bold'>Local Inversor e StringBox</label>
+                    <label class='col-form-label col-form-label-sm'>{{vistoria.caminhoInsi}}</label>
+                    <div class="row">
+
                     </div>
                     <div class="row">
-                        <div class="row mt-2" style="width: 100%;">
-                            <img src='/{{vistoria.fotoPlaInvStb}}' id='fotoPlaInvStb' name='fotoPlaInvStb'
-                                style="height: 190px;" />
+                        <div class='col'>
+                            <input type="file" multiple name='fileinsi' id="fileinsi"
+                                class='form-control form-control-sm' style="font-size: 12px;">
                         </div>
-                    </div>
-                    <div class="row">
-                        <div style="max-width: 85px;">
-                            <input type="file" name='fotoPlaInvStb' id="fotoPlaInvStb"
-                                class='form-control form-control-sm' style="font-size: 12px;"
-                                onchange="preview_fotoPlaInvStb ()">
-                        </div>
-                        <div style="max-width: 60px;">
-                            <input type='hidden' name='carregaFotoInvStb' id='carregaFotoInvStb'
-                                value='{{vistoria.fotoPlaInvStb}}'>
+                        <div class='col-md-1'>
                             <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
                                     class='bi bi-save'></i></button>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <input name='dtPlaInvStb' value='{{vistoria.dtPlaInvStb}}' type="date"
                                 style='font-size: 12px;' class='form-control form-control-sm'>
+                        </div>
+                        <div class='col-md-1'>
+                            <a href='/gerenciamento/mostrarInsi/{{proposta._id}}' class='btn btn-sm btn-primary'><i
+                                    class='bi bi-eye'></i></a>
                         </div>
                     </div>
                 </form>
             </div>
 
             <div class="col-md-6">
-                <form action='/gerenciamento/salvarAte' method="post" enctype="multipart/form-data">
+                <form action='/gerenciamento/caminhoInsa' method="post" enctype="multipart/form-data">
                     <input type='hidden' name='id' value="{{proposta._id}}">
-                    <div class="form-check">
-                        <input class='form-check-input' style="margin-top: 7px;" type="checkbox" name='plaSombra'
-                            {{vistoria.plaAte}}>
-                        <label class='col-form-label col-form-label-sm form-check-label'>Local
-                            Aterramento</label>
-                    </div>
+                    <label class='col-form-label fw-bold'>Local Aterramento</label>
+                    <label class='col-form-label col-form-label-sm'>{{vistoria.caminhoInsa}}</label>
                     <div class="row">
                         <div class="row mt-2" style="width: 100%;">
-                            <img src='/{{vistoria.fotoPlaAte}}' id='fotoPlaAte' name='fotoPlaAte'
-                                style="height: 190px;" />
                         </div>
                     </div>
                     <div class="row">
-                        <div style="max-width: 85px;">
-                            <input type="file" name='fotoPlaAte' id="fotoPlaAte" class='form-control form-control-sm'
-                                style="font-size: 12px;" onchange="preview_fotoPlaAte ()">
+                        <div class='col'>
+                            <input type="file" multiple name='fileinsa' id="fileinsa"
+                                class='form-control form-control-sm' style="font-size: 12px;">
                         </div>
-                        <div style="max-width: 60px;">
-                            <input type='hidden' name='carregaFotoAte' id='carregaFotoAte'
-                                value='{{vistoria.fotoPlaAte}}'>
+                        <div class='col-md-1'>
                             <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
                                     class='bi bi-save'></i></button>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <input name='dtPlaAte' value='{{vistoria.dtPlaAte}}' type="date" style='font-size: 12px;'
                                 class='form-control form-control-sm'>
+                        </div>
+                        <div class='col-md-1'>
+                            <a href='/gerenciamento/mostrarInsa/{{proposta._id}}' class='btn btn-sm btn-primary'><i
+                                    class='bi bi-eye'></i></a>
                         </div>
                     </div>
                 </form>

@@ -123,7 +123,19 @@ const Documento = new Schema({
     feitofaturado:{
         type: Boolean,
         require: false
-    },         
+    },  
+    comprovante:{
+        type: String,
+        require: false
+    },
+    dtcomprovante:{
+        type: String,
+        require: false
+    },  
+    feitocomprovante:{
+        type: Boolean,
+        require: false
+    },  
     data:{
         type: String,
         require: false

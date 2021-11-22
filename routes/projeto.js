@@ -3048,6 +3048,7 @@ router.post("/novo", ehAdmin, (req, res) => {
                                    }
 
                                    var markup
+                                   console.log('empresa.markup=>'+empresa.markup)
                                    if (req.body.valor != '') {
                                         markup = 0
                                    } else {

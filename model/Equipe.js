@@ -276,7 +276,15 @@ const Equipe = new Schema({
   dtfim:{
     type: String,
     require: false   
-  }  
+  },
+  dtinibusca:{
+    type: Number,
+    require: false   
+  },  
+  dtfimbusca:{
+    type: Number,
+    require: false   
+  },
 })
 
 mongoose.model('equipe', Equipe)

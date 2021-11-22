@@ -114,6 +114,18 @@ const Proposta = new Schema({
         type: Boolean,
         require:false        
     },
+    contrato:{
+        type: String,
+        require:false  
+    },
+    dtcontrato:{
+        type: String,
+        require: false
+    },    
+    deadline:{
+        type: String,
+        require: false
+    },
     encerrado:{
         type: Boolean,
         require:false        

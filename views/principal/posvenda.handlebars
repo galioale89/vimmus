@@ -36,7 +36,7 @@
         <a href="/gerenciamento/assinatura/{{proposta._id}}"
             class="btn btn-sm {{#if proposta.assinado}} check-menu {{else}} botao-menu {{/if}}"
             style="border-bottom-left-radius: 30px;"><i class="bi bi-pencil"></i>
-            Assinatura</a>
+            Contrato</a>
         <div class='numero'>4</div>
         <a href="/gerenciamento/compra/{{proposta._id}}"
             class="btn btn-sm {{#if compra.feitonota}} check-menu {{else}} botao-menu {{/if}}"
@@ -50,7 +50,7 @@
         <div class='numero'>6</div>
         <a href="/gerenciamento/execucao/{{proposta._id}}"
             class="btn btn-sm {{#if documento.protocolado}} check-menu {{else}} botao-menu {{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-file-earmark-check"></i>
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-clock-history"></i>
             Execução</a>
         <div class='numero'>7</div>
         <a href="/gerenciamento/equipe/{{proposta._id}}"
@@ -111,7 +111,7 @@
                         <input type='date' class='form-control' name='data' value='{{posvenda.data}}'>
                     </div>
                     <div class="col-md-1 mt-3">
-                        <button type='submit' class='btn btn-success'>Salvar</button>
+                        <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
                     </div>
                 </div><br>
             </form>
@@ -174,7 +174,7 @@
                         </div>
                         <div class="col">
                             <div class="row" style="margin-top: 30px;">
-                                <button class='btn btn-success mb-1'>Salvar Chek List</button><br>
+                                <button class='btn btn-success mb-1'><i class='bi bi-save'></i> Chek List</button><br>
                                 {{#if posvenda.feito}}
                                 <a href='/gerenciamento/entrega/{{proposta._id}}' class='btn btn-primary mb-1'>Finalizar</button><br>
                                 {{/if}}
