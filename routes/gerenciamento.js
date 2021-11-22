@@ -3491,6 +3491,9 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
     dia29 = []
     dia30 = []
     dia31 = []
+    todasCores = []
+
+    const cores = ['green', 'blue', 'tomato', 'teal', 'sienna', 'salmon', 'blueviolet', 'slateblue', 'yellowgreen', 'turquoise', 'cadetblue','coral','cornflowerblue', 'crimson','darkblue','darkcyan','orange','hotpink']
 
     var q = 0
     var inicio
@@ -3512,6 +3515,8 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
     var mes
     var dif
     var compara
+    var x = -1
+    var z = -1
 
     hoje = dataHoje()
     console.log('hoje=>' + hoje)
@@ -3573,12 +3578,14 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
             if (equipe != null && equipe != '' && typeof equipe != 'undefined') {
                 equipe.forEach((e) => {
                     console.log('e._id=>' + e._id)
-                    inicio = e.dtinicio
-                    fim = e.dtfim
                     q++
                     Proposta.findOne({ equipe: e._id }).then((proposta) => {
                         Cliente.findOne({ _id: proposta.cliente }).then((cliente) => {
+                            inicio = e.dtinicio
+                            fim = e.dtfim
                             console.log('cliente.nome=>' + cliente.nome)
+                            console.log('inicio=>' + inicio)
+                            console.log('fim=>' + fim)
                             // console.log('e=>' + e)
                             // console.log('inicio=>' + inicio)
                             anoinicio = inicio.substring(0, 4)
@@ -3623,113 +3630,125 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
 
                             console.log('dif=>' + dif)
                             console.log('dia=>' + dia)
-                            console.log('mes=>' + mes)
+                            // console.log('mes=>' + mes)
+
+                            i = Math.floor(Math.random() * 17)
+                            if (i == x) {
+                                i = Math.floor(Math.random() * 17)
+                                if (i == z){
+                                    i = Math.floor(Math.random() * 17)
+                                }
+                            }
+                            color = cores[i]
+                            console.log('color=>'+color)
+                            todasCores.push({ color })
+                            x = i
 
                             for (i = 0; i < dif; i++) {
-                                console.log('meshoje=>' + meshoje)
-                                console.log('mes=>' + mes)
-                                console.log('dia=>' + dia)
+                                // console.log('meshoje=>' + meshoje)
+                                // console.log('mes=>' + mes)
+                                // console.log('dia=>' + dia)
                                 if (meshoje == mes) {
                                     switch (String(dia)) {
                                         case '01':
-                                            dia01.push({ cliente: cliente.nome })
+                                            dia01.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '02':
-                                            dia02.push({ cliente: cliente.nome })
+                                            dia02.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '03':
-                                            dia03.push({ cliente: cliente.nome })
+                                            dia03.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '04':
-                                            dia04.push({ cliente: cliente.nome })
+                                            dia04.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '05':
-                                            dia05.push({ cliente: cliente.nome })
+                                            dia05.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '06':
-                                            dia06.push({ cliente: cliente.nome })
+                                            dia06.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '07':
-                                            dia07.push({ cliente: cliente.nome })
+                                            dia07.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '08':
-                                            dia08.push({ cliente: cliente.nome })
+                                            dia08.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '09':
-                                            dia09.push({ cliente: cliente.nome })
+                                            dia09.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '10':
-                                            dia10.push({ cliente: cliente.nome })
+                                            dia10.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '11':
-                                            dia11.push({ cliente: cliente.nome })
+                                            dia11.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '12':
-                                            dia12.push({ cliente: cliente.nome })
+                                            dia12.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '13':
-                                            dia13.push({ cliente: cliente.nome })
+                                            dia13.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '14':
-                                            dia14.push({ cliente: cliente.nome })
+                                            dia14.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '15':
-                                            dia15.push({ cliente: cliente.nome })
+                                            dia15.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '16':
-                                            dia16.push({ cliente: cliente.nome })
+                                            dia16.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '17':
-                                            dia17.push({ cliente: cliente.nome })
+                                            dia17.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '18':
-                                            dia18.push({ cliente: cliente.nome })
+                                            dia18.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '19':
-                                            dia19.push({ cliente: cliente.nome })
+                                            dia19.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '20':
-                                            dia20.push({ cliente: cliente.nome })
+                                            dia20.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '21':
-                                            dia21.push({ cliente: cliente.nome })
+                                            dia21.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '22':
-                                            dia22.push({ cliente: cliente.nome })
+                                            dia22.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '23':
-                                            dia23.push({ cliente: cliente.nome })
+                                            dia23.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '24':
-                                            dia24.push({ cliente: cliente.nome })
+                                            dia24.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '25':
-                                            dia25.push({ cliente: cliente.nome })
+                                            dia25.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '26':
-                                            dia26.push({ cliente: cliente.nome })
+                                            dia26.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '27':
-                                            dia27.push({ cliente: cliente.nome })
+                                            dia27.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '28':
-                                            dia28.push({ cliente: cliente.nome })
+                                            dia28.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '29':
-                                            dia29.push({ cliente: cliente.nome })
+                                            dia29.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '30':
-                                            dia30.push({ cliente: cliente.nome })
+                                            dia30.push({ cliente: cliente.nome, cor: color })
                                             break;
                                         case '31':
-                                            dia31.push({ cliente: cliente.nome })
+                                            dia31.push({ cliente: cliente.nome, cor: color })
                                             break;
                                     }
                                     dia++
                                     if (dia < 10) {
                                         dia = '0' + dia
                                     }
-                                    console.log('diainicio=>' + diainicio)
+                                    // console.log('diainicio=>' + diainicio)
                                 }
                             }
 
@@ -3738,7 +3757,7 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
                                     dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
                                     dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
                                     dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
-                                    mestitulo, anotitulo, trintaeum, pessoa
+                                    mestitulo, anotitulo, trintaeum, pessoa, todasCores
                                 })
                             }
                         }).catch((err) => {
@@ -3812,6 +3831,8 @@ router.post('/vermais/', ehAdmin, (req, res) => {
     dia30 = []
     dia31 = []
 
+    const cores = req.body.cores
+
     var q = 0
     var inicio
     var fim
@@ -3833,7 +3854,7 @@ router.post('/vermais/', ehAdmin, (req, res) => {
     var dia = 0
     var ano_iniform = 0
     var ano_fimform = 0
-
+    var c = 0
 
     mestitulo = req.body.mes
     hoje = dataHoje()
@@ -3888,21 +3909,17 @@ router.post('/vermais/', ehAdmin, (req, res) => {
     // var datafim = parseFloat('31' + '12' + req.body.anofim)
     // var dataini = parseFloat('01' + '01' + req.body.anoinicio)
 
-    console.log('req.body.id=>' + req.body.id)
-
     Pessoa.findOne({ user: id, _id: req.body.id }).lean().then((pessoa) => {
         Equipe.find({ user: id, nome_projeto: { $exists: true }, ins0: { $exits: true }, dtinicio: { $ne: '00/00/0000' }, ins0: { $exists: true }, $or: [{ ins0: pessoa.nome }, { ins1: pessoa.nome }, { ins2: pessoa.nome }, { ins3: pessoa.nome }, { ins4: pessoa.nome }, { ins5: pessoa.nome }] }).then((equipe) => {
             if (equipe != null && equipe != '' && typeof equipe != 'undefined') {
                 console.log(equipe)
                 equipe.forEach((e) => {
                     q++
-                    console.log('e.dtinicio=>' + e.dtinicio)
-                    console.log('e.dtfim=>' + e.dtfim)
-                    inicio = e.dtinicio
-                    fim = e.dtfim
                     Proposta.findOne({ equipe: e._id }).then((proposta) => {
                         Cliente.findOne({ _id: proposta.cliente }).then((cliente) => {
-                            // console.log('cliente.nome=>' + cliente.nome)
+                            inicio = e.dtinicio
+                            fim = e.dtfim
+                            console.log('cliente.nome=>' + cliente.nome)
                             anoinicio = inicio.substring(0, 4)
                             anofim = fim.substring(0, 4)
                             mesinicio = inicio.substring(5, 7)
@@ -3911,10 +3928,7 @@ router.post('/vermais/', ehAdmin, (req, res) => {
                             diafim = fim.substring(8, 11)
                             con1 = String(mesinicio) + String(diainicio)
                             con2 = String(mesfim) + String(diafim)
-                            console.log('con1=>' + con1)
-                            console.log('con2=>' + con2)
                             dif1 = parseFloat(con2) - parseFloat(con1) + 1
-                            console.log('dif1=>' + dif1)
                             if (mesfim > mesinicio || mesinicio == mesfim) {
                                 compara = mesfim - mesinicio
                             } else {
@@ -3951,105 +3965,106 @@ router.post('/vermais/', ehAdmin, (req, res) => {
                                 mes = mesinicio
                             }
 
-                            console.log('dif=>' + dif)
+                            color = cores[c]
+                            todasCores.push({ color })                          
 
                             for (i = 0; i < dif; i++) {
                                 if (meshoje == mes) {
-                                    console.log('entrou no laço')
-                                    console.log('dia=>' + dia)
+                                    // console.log('entrou no laço')
+                                    // console.log('dia=>' + dia)
                                     switch (String(dia)) {
                                         case '01':
-                                            dia01.push({ cliente: cliente.nome })
+                                            dia01.push({ cliente: cliente.nome, cor: cores[c]})
                                             break;
                                         case '02':
-                                            dia02.push({ cliente: cliente.nome })
+                                            dia02.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '03':
-                                            dia03.push({ cliente: cliente.nome })
+                                            dia03.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '04':
-                                            dia04.push({ cliente: cliente.nome })
+                                            dia04.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '05':
-                                            dia05.push({ cliente: cliente.nome })
+                                            dia05.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '06':
-                                            dia06.push({ cliente: cliente.nome })
+                                            dia06.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '07':
-                                            dia07.push({ cliente: cliente.nome })
+                                            dia07.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '08':
-                                            dia08.push({ cliente: cliente.nome })
+                                            dia08.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '09':
-                                            dia09.push({ cliente: cliente.nome })
+                                            dia09.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '10':
-                                            dia10.push({ cliente: cliente.nome })
+                                            dia10.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '11':
-                                            dia11.push({ cliente: cliente.nome })
+                                            dia11.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '12':
-                                            dia12.push({ cliente: cliente.nome })
+                                            dia12.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '13':
-                                            dia13.push({ cliente: cliente.nome })
+                                            dia13.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '14':
-                                            dia14.push({ cliente: cliente.nome })
+                                            dia14.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '15':
-                                            dia15.push({ cliente: cliente.nome })
+                                            dia15.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '16':
-                                            dia16.push({ cliente: cliente.nome })
+                                            dia16.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '17':
-                                            dia17.push({ cliente: cliente.nome })
+                                            dia17.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '18':
-                                            dia18.push({ cliente: cliente.nome })
+                                            dia18.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '19':
-                                            dia19.push({ cliente: cliente.nome })
+                                            dia19.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '20':
-                                            dia20.push({ cliente: cliente.nome })
+                                            dia20.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '21':
-                                            dia21.push({ cliente: cliente.nome })
+                                            dia21.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '22':
-                                            dia22.push({ cliente: cliente.nome })
+                                            dia22.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '23':
-                                            dia23.push({ cliente: cliente.nome })
+                                            dia23.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '24':
-                                            dia24.push({ cliente: cliente.nome })
+                                            dia24.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '25':
-                                            dia25.push({ cliente: cliente.nome })
+                                            dia25.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '26':
-                                            dia26.push({ cliente: cliente.nome })
+                                            dia26.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '27':
-                                            dia27.push({ cliente: cliente.nome })
+                                            dia27.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '28':
-                                            dia28.push({ cliente: cliente.nome })
+                                            dia28.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '29':
-                                            dia29.push({ cliente: cliente.nome })
+                                            dia29.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '30':
-                                            dia30.push({ cliente: cliente.nome })
+                                            dia30.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                         case '31':
-                                            dia31.push({ cliente: cliente.nome })
+                                            dia31.push({ cliente: cliente.nome, cor: cores[c] })
                                             break;
                                     }
                                     dia++
@@ -4059,13 +4074,14 @@ router.post('/vermais/', ehAdmin, (req, res) => {
                                     // console.log('diainicio=>' + diainicio)
                                 }
                             }
+                            c++
 
                             if (q == equipe.length) {
                                 // console.log('dia10=>' + dia10)
-                                console.log('anofim=>' + anofim)
-                                console.log('anoinicio=>' + anoinicio)
-                                console.log('mes=>' + mes)
-                                console.log('mesfim=>' + mesfim)
+                                // console.log('anofim=>' + anofim)
+                                // console.log('anoinicio=>' + anoinicio)
+                                // console.log('mes=>' + mes)
+                                // console.log('mesfim=>' + mesfim)
                                 if (anofim > anoinicio) {
                                     if (mes > mesfim) {
                                         anotitulo = anoinicio
@@ -4079,7 +4095,7 @@ router.post('/vermais/', ehAdmin, (req, res) => {
                                     dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
                                     dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
                                     dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
-                                    mestitulo, anotitulo, pessoa, trintaeum,
+                                    mestitulo, anotitulo, pessoa, trintaeum, todasCores
                                 })
                             }
                         }).catch((err) => {
@@ -4096,7 +4112,7 @@ router.post('/vermais/', ehAdmin, (req, res) => {
                     dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
                     dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
                     dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
-                    mestitulo, anotitulo: dataHoje().substring(0,4), trintaeum, pessoa
+                    mestitulo, anotitulo: dataHoje().substring(0, 4), trintaeum, pessoa
                 })
             }
         }).catch((err) => {
