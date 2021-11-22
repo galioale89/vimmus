@@ -3566,8 +3566,7 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
             break;
     }
 
-    // console.log('mestitulo=>' + mestitulo)
-
+    console.log('mestitulo=>' + mestitulo)
 
     Pessoa.findOne({ user: id, _id: req.params.id }).lean().then((pessoa) => {
         Equipe.find({ user: id, nome_projeto: { $exists: true }, ins0: { $exists: true }, dtinicio: { $ne: '00/00/0000' }, $or: [{ ins0: pessoa.nome }, { ins1: pessoa.nome }, { ins2: pessoa.nome }, { ins3: pessoa.nome }, { ins4: pessoa.nome }, { ins5: pessoa.nome }] }).then((equipe) => {
