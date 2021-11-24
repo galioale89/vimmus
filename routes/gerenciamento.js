@@ -3800,7 +3800,7 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                     if (validaLivre == 0 && ins_dif == 0 && q == equipe.length) {
                         validaLivre = 1
                         Equipe.findOne({ _id: proposta.equipe }).lean().then((equipeins) => {
-                            Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funins': 'checked' }], user: id }).then((instalacao) => {
+                            Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((instalacao) => {
                                 //console.log('entrou diferença')
                                 //console.log('equipeins.ins0=>' + equipeins.ins0)
                                 if (typeof equipeins.ins0 != 'undefined') {
@@ -6361,7 +6361,7 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                                                                     nome_equipe = req.body.equipe
                                                                                     edit_equipe.save().then(() => {
                                                                                         //console.log('req.body.id=>'+req.body.id)
-                                                                                        Equipe.findOne({ _id: req.body.id }).lean().then((lista_equipe) => {
+                                                                                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
                                                                                             //console.log('lista_equipe.dtinicio')
                                                                                             //console.log('lista_equipe.dtfim')
                                                                                             res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, fora_ins: ins_fora, dentro_ins: ins_dentro, nome_equipe, lista_nomes })
@@ -6426,8 +6426,8 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                     if (validaLivre == 0 && ins_dif == 0 && q == equipe.length) {
                         validaLivre = 1
                         Equipe.findOne({ _id: proposta.equipe }).lean().then((equipeins) => {
-                            Pessoa.find({ funins: 'checked', user: id }).then((instalacao) => {
-                                //console.log('entrou diferença')
+                            Pessoa.find({ $or: [{'funins': 'checked'}, {'funele': 'checked'}], user: id }).then((instalacao) => {
+                                console.log('entrou diferença')
                                 //console.log('equipeins.ins0=>' + equipeins.ins0)
                                 if (typeof equipeins.ins0 != 'undefined') {
                                     ins0 = equipeins.ins0
@@ -6533,10 +6533,12 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                                             //console.log('req.body.equipe=>' + req.body.equipe)
                                                             nome_equipe = req.body.equipe
                                                             edit_equipe.save().then(() => {
-                                                                Equipe.findOne({ _id: req.body.id }).lean().then((lista_equipe) => {
+                                                                console.log('proposta.equipe=>'+proposta.equipe)
+                                                                Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                                                                    console.log('lista_equipe.dtinicio=>'+lista_equipe.dtinicio)
                                                                     res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, fora_ins: ins_fora, dentro_ins: ins_dentro, nome_equipe, lista_nomes })
                                                                 }).catch((err) => {
-                                                                    req.flash('error_msg', 'Falha ao salvar a euipe.')
+                                                                    req.flash('error_msg', 'Falha ao salvar a equipe.')
                                                                     res.redirect('/gerenciamento/equipe/' + req.body.id)
                                                                 })
                                                             }).catch((err) => {
