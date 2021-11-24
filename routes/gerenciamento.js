@@ -3503,9 +3503,6 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
     var ins_dentro = []
     var ins_fora = []
     var instalador_alocado = []
-    var instaladores = []
-    var lista_nomes = []
-    var nome_equipe
     var qe = 0
     var q = 0
     var numprj = 0
@@ -3519,19 +3516,21 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
     var diferenca = 0
     var ins_dif = 0
 
-    //console.log('req.params.id=>' + req.params.id)
+    var dataini
+    var datafim
+    var dtini
 
+    //console.log('req.body.id=>' + req.body.id)
     Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
         Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente) => {
             //console.log('validação dos instaladores.')
             Equipe.find({ 'datainibusca': { $ne: 'null' }, 'nome_projeto': { $exists: true }, $and: [{ 'dtinicio': { $ne: '0000-00-00' } }, { 'dtinicio': { $ne: '' } }] }).then((equipe) => {
-                //console.log('equipe.length=>' + equipe.length)
                 equipe.forEach((e) => {
                     // Proposta.findOne({equipe: e.equipe, encerrado: false})
                     //console.log('e._id=>' + e._id)
+                    dataini = e.tdiniico
                     q++
                     diferenca = e.dtfimbusca - e.dtinibusca
-                    dataini = e.dtinibusca
                     //console.log('diferenca=>' + diferenca)
                     if (isNaN(diferenca) == false) {
                         for (x = 0; x < diferenca + 1; x++) {
@@ -3561,96 +3560,109 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
 
                             //console.log('nova_data=>'+nova_data)
                             //console.log('dtini=>'+dtini)
-                            //  //console.log('dataini=>'+dataini)
-                            //  //console.log('date=>'+date)
+                            //console.log('dataini=>'+dataini)
+                            //console.log('date=>'+date)
 
                             if (nova_data == dtini && dataini >= dtini && parseFloat(date) <= dataini) {
                                 ins_dif = 1
                                 //console.log('entrou')
                                 Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((todos_instaladores) => {
-                                    //console.log('todos_instaladores=>'+todos_instaladores)                                
-                                    // Equipe.findOne({ _id: proposta.equipe }).then((equ) => {
-                                        // if (equ.nome_equipe != null && equ.nome_equipe != '' && typeof equ.nome_equipe != 'undefined') {
-                                        //     //console.log('equ.nome_equipe=>' + equ.nome_equipe)
-                                        //     //console.log('equ.ins0=>' + equ.ins0)
-                                        //     //console.log('equ.ins1=>' + equ.ins1)
-                                        //     //console.log('equ.ins2=>' + equ.ins2)
-                                        //     //console.log('equ.ins3=>' + equ.ins3)
-                                        //     //console.log('equ.ins4=>' + equ.ins4)
-                                        //     //console.log('equ.ins5=>' + equ.ins5)
-                                        //     for (i = 0; i < todos_instaladores.length; i++) {
-                                        //         if (todos_instaladores[i].nome == equ.ins0 || todos_instaladores[i].nome == equ.ins1 || todos_instaladores[i].nome == equ.ins2 || todos_instaladores[i].nome == equ.ins3 || todos_instaladores[i].nome == equ.ins4 || todos_instaladores[i].nome == equ.ins5) {
-                                        //             instaladores.push({ nome: todos_instaladores[i].nome })
-                                        //         }
-                                        //     }
-                                        // } else {
-                                        //     instaladores = todos_instaladores
-                                        // }
-                                        //console.log('todos_instaladores=>' + todos_instaladores)
-                                        todos_instaladores.forEach((ins) => {
-                                            numprj++
-                                            //console.log('Recurso=>' + ins.nome)
-                                            //console.log('proposta.equipe=>' + proposta.equipe)
-                                            Equipe.findOne({ _id: e._id, $or: [{ 'ins0': ins.nome }, { 'ins1': ins.nome }, { 'ins2': ins.nome }, { 'ins3': ins.nome }, { 'ins4': ins.nome }, { 'ins5': ins.nome }] }).then((equipe) => {
-                                                //console.log('equipe=>' + equipe)
-                                                qe++
-                                                if (equipe != null) {
-                                                    if (instalador_alocado.length == 0) {
-                                                        instalador_alocado.push({ nome: ins.nome })
-                                                        //console.log(ins.nome + ' está alocado.')
-                                                    } else {
-                                                        for (i = 0; i < instalador_alocado.length; i++) {
-                                                            if (instalador_alocado[i].nome != ins.nome) {
-                                                                instalador_alocado.push({ nome: ins.nome })
-                                                                //console.log(ins.nome + ' está alocado.')
-                                                            }
+                                    todos_instaladores.forEach((ins) => {
+                                        numprj++
+                                        //console.log('Recurso=>' + ins.nome)
+                                        //console.log('proposta.equipe=>' + proposta.equipe)
+                                        Equipe.findOne({ _id: e._id, $or: [{ 'ins0': ins.nome }, { 'ins1': ins.nome }, { 'ins2': ins.nome }, { 'ins3': ins.nome }, { 'ins4': ins.nome }, { 'ins5': ins.nome }] }).then((equipe) => {
+                                            //console.log('equipe=>' + equipe)
+                                            qe++
+                                            if (equipe != null) {
+                                                if (instalador_alocado.length == 0) {
+                                                    instalador_alocado.push({ nome: ins.nome })
+                                                    //console.log(ins.nome + ' está alocado.')
+                                                } else {
+                                                    for (i = 0; i < instalador_alocado.length; i++) {
+                                                        if (instalador_alocado[i].nome != ins.nome) {
+                                                            instalador_alocado.push({ nome: ins.nome })
+                                                            //console.log(ins.nome + ' está alocado.')
                                                         }
                                                     }
                                                 }
-                                                //console.log('numprj=>' + numprj)
-                                                //console.log('qe=>' + qe)
-                                                if (numprj == qe) {
-                                                    //console.log('É o último!')
-                                                    Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                                            }
+                                            //console.log('numprj=>' + numprj)
+                                            //console.log('qe=>' + qe)
+                                            if (numprj == qe) {
+                                                //console.log('É o último!')
+                                                Equipe.findOne({ _id: proposta.equipe }).then((edit_equipe) => {
 
-                                                        //console.log('equipeins.ins0=>' + equipeins.ins0)
-                                                        //console.log('equipeins.ins1=>' + equipeins.ins1)
-                                                        //console.log('equipeins.ins2=>' + equipeins.ins2)
-                                                        //console.log('equipeins.ins3=>' + equipeins.ins3)
-                                                        //console.log('equipeins.ins4=>' + equipeins.ins4)
-                                                        //console.log('equipeins.ins5=>' + equipeins.ins5)
+                                                    //console.log('equipeins.ins0=>' + equipeins.ins0)
+                                                    //console.log('equipeins.ins1=>' + equipeins.ins1)
+                                                    //console.log('equipeins.ins2=>' + equipeins.ins2)
+                                                    //console.log('equipeins.ins3=>' + equipeins.ins3)
+                                                    //console.log('equipeins.ins4=>' + equipeins.ins4)
+                                                    //console.log('equipeins.ins5=>' + equipeins.ins5)
 
-                                                        if (typeof lista_equipe.ins0 != 'undefined') {
-                                                            ins0 = lista_equipe.ins0
-                                                        }
-                                                        if (typeof lista_equipe.ins1 != 'undefined') {
-                                                            ins1 = lista_equipe.ins1
-                                                        }
-                                                        if (typeof lista_equipe.ins2 != 'undefined') {
-                                                            ins2 = lista_equipe.ins2
-                                                        }
-                                                        if (typeof lista_equipe.ins3 != 'undefined') {
-                                                            ins3 = lista_equipe.ins3
-                                                        }
-                                                        if (typeof lista_equipe.ins4 != 'undefined') {
-                                                            ins4 = lista_equipe.ins4
-                                                        }
-                                                        if (typeof lista_equipe.ins5 != 'undefined') {
-                                                            ins5 = lista_equipe.ins5
-                                                        }
-                                                        Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).sort({ nome: 'asc' }).then((instalacao) => {
-                                                            //console.log('equ=>' + equ)
-                                                            // if (equ == null || equ == '' && typeof equ == 'undefined') {
-                                                            //     instaladores = instalacao
-                                                            // }
-                                                            //console.log('instaladores=>' + instaladores)
-                                                            instalacao.forEach((pesins) => {
-                                                                //console.log('instalador_alocado.length=>' + instalador_alocado.length)
-                                                                //console.log('eleint.nome=>' + eleint.nome)
-                                                                if (instalador_alocado.length == '') {
-                                                                    //console.log('não tem instalador alocado')
+                                                    if (typeof edit_equipe.ins0 != 'undefined') {
+                                                        ins0 = edit_equipe.ins0
+                                                    }
+                                                    if (typeof edit_equipe.ins1 != 'undefined') {
+                                                        ins1 = edit_equipe.ins1
+                                                    }
+                                                    if (typeof edit_equipe.ins2 != 'undefined') {
+                                                        ins2 = edit_equipe.ins2
+                                                    }
+                                                    if (typeof edit_equipe.ins3 != 'undefined') {
+                                                        ins3 = edit_equipe.ins3
+                                                    }
+                                                    if (typeof edit_equipe.ins4 != 'undefined') {
+                                                        ins4 = edit_equipe.ins4
+                                                    }
+                                                    if (typeof edit_equipe.ins5 != 'undefined') {
+                                                        ins5 = edit_equipe.ins5
+                                                    }
+                                                    Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).sort({ nome: 'asc' }).then((instalacao) => {
+                                                        //console.log('equ=>' + equ)
+                                                        // if (equ == null || equ == '' && typeof equ == 'undefined') {
+                                                        //     instaladores = instalacao
+                                                        // }
+                                                        //console.log('instaladores=>' + instaladores)
+                                                        instalacao.forEach((pesins) => {
+                                                            //console.log('instalador_alocado.length=>' + instalador_alocado.length)
+                                                            //console.log('eleint.nome=>' + eleint.nome)
+                                                            if (instalador_alocado.length == '') {
+                                                                //console.log('não tem instalador alocado')
+                                                                var nome = pesins.nome
+                                                                var id = pesins._id
+                                                                if (nome == ins0) {
+                                                                    ins_dentro.push({ id, nome })
+                                                                } else {
+                                                                    if (nome == ins1) {
+                                                                        ins_dentro.push({ id, nome })
+                                                                    } else {
+                                                                        if (nome == ins2) {
+                                                                            ins_dentro.push({ id, nome })
+                                                                        } else {
+                                                                            if (nome == ins3) {
+                                                                                ins_dentro.push({ id, nome })
+                                                                            } else {
+                                                                                if (nome == ins4) {
+                                                                                    ins_dentro.push({ id, nome })
+                                                                                } else {
+                                                                                    if (nome == ins5) {
+                                                                                        ins_dentro.push({ id, nome })
+                                                                                    } else {
+                                                                                        ins_fora.push({ id, nome })
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                const encontrou_ins = instalador_alocado.find((user) => user.nome === pesins.nome)
+                                                                //console.log('encontrou recurso alocado=>' + encontrou_ins)
+                                                                if (typeof encontrou_ins == 'undefined') {
                                                                     var nome = pesins.nome
                                                                     var id = pesins._id
+                                                                    //console.log(nome + ' não está alocado.')
                                                                     if (nome == ins0) {
                                                                         ins_dentro.push({ id, nome })
                                                                     } else {
@@ -3677,59 +3689,26 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                                         }
                                                                     }
                                                                 } else {
-                                                                    const encontrou_ins = instalador_alocado.find((user) => user.nome === pesins.nome)
-                                                                    //console.log('encontrou recurso alocado=>' + encontrou_ins)
-                                                                    if (typeof encontrou_ins == 'undefined') {
-                                                                        var nome = pesins.nome
-                                                                        var id = pesins._id
-                                                                        //console.log(nome + ' não está alocado.')
-                                                                        if (nome == ins0) {
-                                                                            ins_dentro.push({ id, nome })
-                                                                        } else {
-                                                                            if (nome == ins1) {
-                                                                                ins_dentro.push({ id, nome })
-                                                                            } else {
-                                                                                if (nome == ins2) {
-                                                                                    ins_dentro.push({ id, nome })
-                                                                                } else {
-                                                                                    if (nome == ins3) {
-                                                                                        ins_dentro.push({ id, nome })
-                                                                                    } else {
-                                                                                        if (nome == ins4) {
-                                                                                            ins_dentro.push({ id, nome })
-                                                                                        } else {
-                                                                                            if (nome == ins5) {
-                                                                                                ins_dentro.push({ id, nome })
-                                                                                            } else {
-                                                                                                ins_fora.push({ id, nome })
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
+                                                                    var nome = pesins.nome
+                                                                    var id = pesins._id
+                                                                    //console.log(nome + ' está alocado.')
+                                                                    if (nome == ins0) {
+                                                                        ins_dentro.push({ id, nome })
                                                                     } else {
-                                                                        var nome = pesins.nome
-                                                                        var id = pesins._id
-                                                                        //console.log(nome + ' está alocado.')
-                                                                        if (nome == ins0) {
+                                                                        if (nome == ins1) {
                                                                             ins_dentro.push({ id, nome })
                                                                         } else {
-                                                                            if (nome == ins1) {
+                                                                            if (nome == ins2) {
                                                                                 ins_dentro.push({ id, nome })
                                                                             } else {
-                                                                                if (nome == ins2) {
+                                                                                if (nome == ins3) {
                                                                                     ins_dentro.push({ id, nome })
                                                                                 } else {
-                                                                                    if (nome == ins3) {
+                                                                                    if (nome == ins4) {
                                                                                         ins_dentro.push({ id, nome })
                                                                                     } else {
-                                                                                        if (nome == ins4) {
+                                                                                        if (nome == ins5) {
                                                                                             ins_dentro.push({ id, nome })
-                                                                                        } else {
-                                                                                            if (nome == ins5) {
-                                                                                                ins_dentro.push({ id, nome })
-                                                                                            }
                                                                                         }
                                                                                     }
                                                                                 }
@@ -3737,54 +3716,57 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                                         }
                                                                     }
                                                                 }
-                                                            })
+                                                            }
+                                                        })
 
-                                                            //console.log('ins_dentro_ultimo=>' + ins_dentro)
-                                                            //console.log('ins_fora_ultimo=>' + ins_fora)
-                                                            Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
-                                                                Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
-                                                                    Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
-                                                                        Posvenda.findOne({ proposta: req.params.id }).lean().then((posvenda) => {
-                                                                            Equipe.find({ user: id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
+                                                        //console.log('ins_dentro_ultimo=>' + ins_dentro)
+                                                        //console.log('ins_fora_ultimo=>' + ins_fora)
+
+                                                        Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
+                                                            Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
+                                                                Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
+                                                                    Posvenda.findOne({ proposta: req.params.id }).lean().then((posvenda) => {
+                                                                        Equipe.find({ user: id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
+                                                                            Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
                                                                                 res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, fora_ins: ins_fora, dentro_ins: ins_dentro })
                                                                             }).catch((err) => {
-                                                                                req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                                                                                req.flash('error_msg', 'Falha ao encontrar a euipe<lista_equipe>.')
                                                                                 res.redirect('/gerenciamento/equipe/' + req.params.id)
                                                                             })
                                                                         }).catch((err) => {
-                                                                            req.flash('error_msg', 'Falha ao encontrar o pós venda.')
+                                                                            req.flash('error_msg', 'Falha ao encontrar as equipes<equipes>.')
                                                                             res.redirect('/gerenciamento/equipe/' + req.params.id)
                                                                         })
                                                                     }).catch((err) => {
-                                                                        req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+                                                                        req.flash('error_msg', 'Falha ao encontrar o pós venda.')
                                                                         res.redirect('/gerenciamento/equipe/' + req.params.id)
                                                                     })
                                                                 }).catch((err) => {
-                                                                    req.flash('error_msg', 'Falha ao encontrar a compra.')
+                                                                    req.flash('error_msg', 'Falha ao encontrar a vistoria.')
                                                                     res.redirect('/gerenciamento/equipe/' + req.params.id)
                                                                 })
                                                             }).catch((err) => {
-                                                                req.flash('error_msg', 'Falha ao encontrar o documento.')
+                                                                req.flash('error_msg', 'Falha ao encontrar a compra.')
                                                                 res.redirect('/gerenciamento/equipe/' + req.params.id)
                                                             })
                                                         }).catch((err) => {
-                                                            req.flash('error_msg', 'Falha ao encontrar os instaladores.')
+                                                            req.flash('error_msg', 'Falha ao encontrar o documento.')
                                                             res.redirect('/gerenciamento/equipe/' + req.params.id)
                                                         })
                                                     }).catch((err) => {
-                                                        req.flash('error_msg', 'Falha ao encontrar os instaladores na equipe.')
+                                                        req.flash('error_msg', 'Falha ao encontrar os instaladores.')
                                                         res.redirect('/gerenciamento/equipe/' + req.params.id)
                                                     })
-                                                }
-                                            }).catch((err) => {
-                                                req.flash('error_msg', 'Falha ao encontrar as equipes.')
-                                                res.redirect('/gerenciamento/equipe/' + req.params.id)
-                                            })
+                                                }).catch((err) => {
+                                                    req.flash('error_msg', 'Falha ao encontrar os instaladores na equipe<edit_equipe>.')
+                                                    res.redirect('/gerenciamento/equipe/' + req.params.id)
+                                                })
+                                            }
+                                        }).catch((err) => {
+                                            req.flash('error_msg', 'Falha ao encontrar as equipes<2>.')
+                                            res.redirect('/gerenciamento/equipe/' + req.params.id)
                                         })
-                                    // }).catch((err) => {
-                                    //     req.flash('error_msg', 'Falha ao encontrar a equipe padrão.')
-                                    //     res.redirect('/gerenciamento/equipe/' + req.params.id)
-                                    // })
+                                    })
                                 }).catch((err) => {
                                     req.flash('error_msg', 'Falha ao encontrar os instaladores na equipe.')
                                     res.redirect('/gerenciamento/equipe/' + req.params.id)
@@ -3793,15 +3775,11 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                         }
                     }
 
-                    //console.log('validaLivre=>' + validaLivre)
-                    //console.log('ins_dif=>' + ins_dif)
-                    //console.log('equipe.length=>' + equipe.length)
-                    //console.log('q=>' + q)
                     if (validaLivre == 0 && ins_dif == 0 && q == equipe.length) {
                         validaLivre = 1
                         Equipe.findOne({ _id: proposta.equipe }).lean().then((equipeins) => {
                             Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((instalacao) => {
-                                //console.log('entrou diferença')
+                                console.log('entrou diferença')
                                 //console.log('equipeins.ins0=>' + equipeins.ins0)
                                 if (typeof equipeins.ins0 != 'undefined') {
                                     ins0 = equipeins.ins0
@@ -3859,10 +3837,23 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                     Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
                                         Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
                                             Posvenda.findOne({ proposta: req.params.id }).lean().then((posvenda) => {
-                                                Equipe.find({ user: id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
-                                                    res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, fora_ins: ins_fora, dentro_ins: ins_dentro })
+                                                Equipe.findOne({ _id: proposta.equipe }).then((edit_equipe) => {
+                                                    Equipe.find({ user: id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
+                                                        //console.log('req.body.equipe=>'+req.body.equipe)
+                                                        console.log('proposta.equipe=>' + proposta.equipe)
+                                                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                                                            console.log('lista_equipe.dtinicio=>' + lista_equipe.dtinicio)
+                                                            res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, fora_ins: ins_fora, dentro_ins: ins_dentro })
+                                                        }).catch((err) => {
+                                                            req.flash('error_msg', 'Falha ao salvar a equipe.')
+                                                            res.redirect('/gerenciamento/equipe/' + req.params.id)
+                                                        })
+                                                    }).catch((err) => {
+                                                        req.flash('error_msg', 'Falha ao encontrar as equipes<equipe>.')
+                                                        res.redirect('/gerenciamento/equipe/' + req.params.id)
+                                                    })
                                                 }).catch((err) => {
-                                                    req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                                                    req.flash('error_msg', 'Falha ao encontrar a equipe<edit_equipe>.')
                                                     res.redirect('/gerenciamento/equipe/' + req.params.id)
                                                 })
                                             }).catch((err) => {
@@ -5021,7 +5012,7 @@ router.post('/vermais/', ehAdmin, (req, res) => {
 
     const cores = req.body.cores
 
-    console.log('cores=>'+cores)
+    console.log('cores=>' + cores)
 
     var q = 0
     var inicio
@@ -5155,13 +5146,13 @@ router.post('/vermais/', ehAdmin, (req, res) => {
                                 mes = mesinicio
                             }
 
-                            console.log('cores.length=>'+cores.length)
+                            console.log('cores.length=>' + cores.length)
 
                             color = cores[c]
 
-                            console.log('color=>'+color)
+                            console.log('color=>' + color)
                             todasCores.push({ color })
-                            
+
 
                             for (i = 0; i < dif; i++) {
                                 if (meshoje == mes) {
@@ -6132,93 +6123,125 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                 dtini = dataini
                             }
 
-                            //console.log('nova_data=>'+nova_data)
-                            //console.log('dtini=>'+dtini)
-                            //console.log('dataini=>'+dataini)
-                            //console.log('date=>'+date)
+                            // console.log('nova_data=>'+nova_data)
+                            // console.log('dtini=>'+dtini)
+                            // console.log('dataini=>'+dataini)
+                            // console.log('date=>'+date)
 
-                            if (nova_data == dtini && dataini >= dtini && parseFloat(date) < dataini) {
+                            if (nova_data == dtini && dataini >= dtini && parseFloat(date) >= dataini) {
                                 ins_dif = 1
-                                //console.log('entrou')
+                                console.log('entrou')
                                 Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((todos_instaladores) => {
                                     //console.log('todos_instaladores=>'+todos_instaladores)                                
                                     //console.log('req.body.equipe=>' + req.body.equipe)
                                     // Equipe.findOne({ nome: req.body.equipe }).then((equ) => {
-                                        //console.log('equ=>' + equ)
-                                        // if (equ != '' && equ != null && typeof equ != 'undefined') {
-                                        //     for (i = 0; i < todos_instaladores.length; i++) {
-                                        //         if (todos_instaladores[i].nome == equ.ins0 || todos_instaladores[i].nome == equ.ins1 || todos_instaladores[i].nome == equ.ins2 || todos_instaladores[i].nome == equ.ins3 || todos_instaladores[i].nome == equ.ins4 || todos_instaladores[i].nome == equ.ins5) {
-                                        //             instaladores.push({ nome: todos_instaladores[i].nome })
-                                        //         }
-                                        //     }
-                                        // } else {
-                                        //     instaladores = todos_instaladores
-                                        // }
-                                        //console.log('instaladores=>'+instaladores)
-                                        todos_instaladores.forEach((ins) => {
-                                            numprj++
-                                            //console.log('Recurso=>' + ins.nome)
-                                            //console.log('proposta.equipe=>' + proposta.equipe)
-                                            Equipe.findOne({ _id: e._id, $or: [{ 'ins0': ins.nome }, { 'ins1': ins.nome }, { 'ins2': ins.nome }, { 'ins3': ins.nome }, { 'ins4': ins.nome }, { 'ins5': ins.nome }] }).then((equipe) => {
-                                                //console.log('equipe=>' + equipe)
-                                                qe++
-                                                if (equipe != null) {
-                                                    if (instalador_alocado.length == 0) {
-                                                        instalador_alocado.push({ nome: ins.nome })
-                                                        //console.log(ins.nome + ' está alocado.')
-                                                    } else {
-                                                        for (i = 0; i < instalador_alocado.length; i++) {
-                                                            if (instalador_alocado[i].nome != ins.nome) {
-                                                                instalador_alocado.push({ nome: ins.nome })
-                                                                //console.log(ins.nome + ' está alocado.')
-                                                            }
+                                    //console.log('equ=>' + equ)
+                                    // if (equ != '' && equ != null && typeof equ != 'undefined') {
+                                    //     for (i = 0; i < todos_instaladores.length; i++) {
+                                    //         if (todos_instaladores[i].nome == equ.ins0 || todos_instaladores[i].nome == equ.ins1 || todos_instaladores[i].nome == equ.ins2 || todos_instaladores[i].nome == equ.ins3 || todos_instaladores[i].nome == equ.ins4 || todos_instaladores[i].nome == equ.ins5) {
+                                    //             instaladores.push({ nome: todos_instaladores[i].nome })
+                                    //         }
+                                    //     }
+                                    // } else {
+                                    //     instaladores = todos_instaladores
+                                    // }
+                                    //console.log('instaladores=>'+instaladores)
+                                    todos_instaladores.forEach((ins) => {
+                                        numprj++
+                                        //console.log('Recurso=>' + ins.nome)
+                                        //console.log('proposta.equipe=>' + proposta.equipe)
+                                        Equipe.findOne({ _id: e._id, $or: [{ 'ins0': ins.nome }, { 'ins1': ins.nome }, { 'ins2': ins.nome }, { 'ins3': ins.nome }, { 'ins4': ins.nome }, { 'ins5': ins.nome }] }).then((equipe) => {
+                                            //console.log('equipe=>' + equipe)
+                                            qe++
+                                            if (equipe != null) {
+                                                if (instalador_alocado.length == 0) {
+                                                    instalador_alocado.push({ nome: ins.nome })
+                                                    console.log(ins.nome + ' está alocado.')
+                                                } else {
+                                                    for (i = 0; i < instalador_alocado.length; i++) {
+                                                        if (instalador_alocado[i].nome != ins.nome) {
+                                                            instalador_alocado.push({ nome: ins.nome })
+                                                            console.log(ins.nome + ' está alocado.')
                                                         }
                                                     }
                                                 }
-                                                //console.log('numprj=>' + numprj)
-                                                //console.log('qe=>' + qe)
-                                                if (numprj == qe) {
-                                                    //console.log('É o último!')
-                                                    Equipe.findOne({ _id: proposta.equipe }).then((edit_equipe) => {
+                                            }
+                                            //console.log('numprj=>' + numprj)
+                                            //console.log('qe=>' + qe)
+                                            if (numprj == qe) {
+                                                //console.log('É o último!')
+                                                Equipe.findOne({ _id: proposta.equipe }).then((edit_equipe) => {
 
-                                                        //console.log('equipeins.ins0=>' + equipeins.ins0)
-                                                        //console.log('equipeins.ins1=>' + equipeins.ins1)
-                                                        //console.log('equipeins.ins2=>' + equipeins.ins2)
-                                                        //console.log('equipeins.ins3=>' + equipeins.ins3)
-                                                        //console.log('equipeins.ins4=>' + equipeins.ins4)
-                                                        //console.log('equipeins.ins5=>' + equipeins.ins5)
+                                                    //console.log('equipeins.ins0=>' + equipeins.ins0)
+                                                    //console.log('equipeins.ins1=>' + equipeins.ins1)
+                                                    //console.log('equipeins.ins2=>' + equipeins.ins2)
+                                                    //console.log('equipeins.ins3=>' + equipeins.ins3)
+                                                    //console.log('equipeins.ins4=>' + equipeins.ins4)
+                                                    //console.log('equipeins.ins5=>' + equipeins.ins5)
 
-                                                        if (typeof edit_equipe.ins0 != 'undefined') {
-                                                            ins0 = edit_equipe.ins0
-                                                        }
-                                                        if (typeof edit_equipe.ins1 != 'undefined') {
-                                                            ins1 = edit_equipe.ins1
-                                                        }
-                                                        if (typeof edit_equipe.ins2 != 'undefined') {
-                                                            ins2 = edit_equipe.ins2
-                                                        }
-                                                        if (typeof edit_equipe.ins3 != 'undefined') {
-                                                            ins3 = edit_equipe.ins3
-                                                        }
-                                                        if (typeof edit_equipe.ins4 != 'undefined') {
-                                                            ins4 = edit_equipe.ins4
-                                                        }
-                                                        if (typeof edit_equipe.ins5 != 'undefined') {
-                                                            ins5 = edit_equipe.ins5
-                                                        }
-                                                        Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).sort({ nome: 'asc' }).then((instalacao) => {
-                                                            //console.log('equ=>' + equ)
-                                                            // if (equ == null || equ == '' && typeof equ == 'undefined') {
-                                                            //     instaladores = instalacao
-                                                            // }
-                                                            //console.log('instaladores=>' + instaladores)
-                                                            instalacao.forEach((pesins) => {
-                                                                //console.log('instalador_alocado.length=>' + instalador_alocado.length)
-                                                                //console.log('eleint.nome=>' + eleint.nome)
-                                                                if (instalador_alocado.length == '') {
-                                                                    //console.log('não tem instalador alocado')
+                                                    if (typeof edit_equipe.ins0 != 'undefined') {
+                                                        ins0 = edit_equipe.ins0
+                                                    }
+                                                    if (typeof edit_equipe.ins1 != 'undefined') {
+                                                        ins1 = edit_equipe.ins1
+                                                    }
+                                                    if (typeof edit_equipe.ins2 != 'undefined') {
+                                                        ins2 = edit_equipe.ins2
+                                                    }
+                                                    if (typeof edit_equipe.ins3 != 'undefined') {
+                                                        ins3 = edit_equipe.ins3
+                                                    }
+                                                    if (typeof edit_equipe.ins4 != 'undefined') {
+                                                        ins4 = edit_equipe.ins4
+                                                    }
+                                                    if (typeof edit_equipe.ins5 != 'undefined') {
+                                                        ins5 = edit_equipe.ins5
+                                                    }
+                                                    Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).sort({ nome: 'asc' }).then((instalacao) => {
+                                                        //console.log('equ=>' + equ)
+                                                        // if (equ == null || equ == '' && typeof equ == 'undefined') {
+                                                        //     instaladores = instalacao
+                                                        // }
+                                                        //console.log('instaladores=>' + instaladores)
+                                                        instalacao.forEach((pesins) => {
+                                                            //console.log('instalador_alocado.length=>' + instalador_alocado.length)
+                                                            console.log('pesins.nome=>' + pesins.nome)
+                                                            if (instalador_alocado.length == '') {
+                                                                console.log('não tem instalador alocado')
+                                                                var nome = pesins.nome
+                                                                var id = pesins._id
+                                                                if (nome == ins0) {
+                                                                    ins_dentro.push({ id, nome })
+                                                                } else {
+                                                                    if (nome == ins1) {
+                                                                        ins_dentro.push({ id, nome })
+                                                                    } else {
+                                                                        if (nome == ins2) {
+                                                                            ins_dentro.push({ id, nome })
+                                                                        } else {
+                                                                            if (nome == ins3) {
+                                                                                ins_dentro.push({ id, nome })
+                                                                            } else {
+                                                                                if (nome == ins4) {
+                                                                                    ins_dentro.push({ id, nome })
+                                                                                } else {
+                                                                                    if (nome == ins5) {
+                                                                                        ins_dentro.push({ id, nome })
+                                                                                    } else {
+                                                                                        ins_fora.push({ id, nome })
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                const encontrou_ins = instalador_alocado.find((user) => user.nome === pesins.nome)
+                                                                console.log('encontrou recurso alocado=>' + encontrou_ins)
+                                                                if (typeof encontrou_ins == 'undefined') {
                                                                     var nome = pesins.nome
                                                                     var id = pesins._id
+                                                                    console.log(nome + ' não está alocado.')
                                                                     if (nome == ins0) {
                                                                         ins_dentro.push({ id, nome })
                                                                     } else {
@@ -6245,59 +6268,26 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                                                         }
                                                                     }
                                                                 } else {
-                                                                    const encontrou_ins = instalador_alocado.find((user) => user.nome === pesins.nome)
-                                                                    //console.log('encontrou recurso alocado=>' + encontrou_ins)
-                                                                    if (typeof encontrou_ins == 'undefined') {
-                                                                        var nome = pesins.nome
-                                                                        var id = pesins._id
-                                                                        //console.log(nome + ' não está alocado.')
-                                                                        if (nome == ins0) {
-                                                                            ins_dentro.push({ id, nome })
-                                                                        } else {
-                                                                            if (nome == ins1) {
-                                                                                ins_dentro.push({ id, nome })
-                                                                            } else {
-                                                                                if (nome == ins2) {
-                                                                                    ins_dentro.push({ id, nome })
-                                                                                } else {
-                                                                                    if (nome == ins3) {
-                                                                                        ins_dentro.push({ id, nome })
-                                                                                    } else {
-                                                                                        if (nome == ins4) {
-                                                                                            ins_dentro.push({ id, nome })
-                                                                                        } else {
-                                                                                            if (nome == ins5) {
-                                                                                                ins_dentro.push({ id, nome })
-                                                                                            } else {
-                                                                                                ins_fora.push({ id, nome })
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
+                                                                    var nome = pesins.nome
+                                                                    var id = pesins._id
+                                                                    console.log(nome + ' está alocado.')
+                                                                    if (nome == ins0) {
+                                                                        ins_dentro.push({ id, nome })
                                                                     } else {
-                                                                        var nome = pesins.nome
-                                                                        var id = pesins._id
-                                                                        //console.log(nome + ' está alocado.')
-                                                                        if (nome == ins0) {
+                                                                        if (nome == ins1) {
                                                                             ins_dentro.push({ id, nome })
                                                                         } else {
-                                                                            if (nome == ins1) {
+                                                                            if (nome == ins2) {
                                                                                 ins_dentro.push({ id, nome })
                                                                             } else {
-                                                                                if (nome == ins2) {
+                                                                                if (nome == ins3) {
                                                                                     ins_dentro.push({ id, nome })
                                                                                 } else {
-                                                                                    if (nome == ins3) {
+                                                                                    if (nome == ins4) {
                                                                                         ins_dentro.push({ id, nome })
                                                                                     } else {
-                                                                                        if (nome == ins4) {
+                                                                                        if (nome == ins5) {
                                                                                             ins_dentro.push({ id, nome })
-                                                                                        } else {
-                                                                                            if (nome == ins5) {
-                                                                                                ins_dentro.push({ id, nome })
-                                                                                            }
                                                                                         }
                                                                                     }
                                                                                 }
@@ -6305,112 +6295,113 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                                                         }
                                                                     }
                                                                 }
-                                                            })
+                                                            }
+                                                        })
 
-                                                            //console.log('ins_dentro_ultimo=>' + ins_dentro)
-                                                            //console.log('ins_fora_ultimo=>' + ins_fora)
+                                                        //console.log('ins_dentro_ultimo=>' + ins_dentro)
+                                                        //console.log('ins_fora_ultimo=>' + ins_fora)
 
-                                                            Documento.findOne({ proposta: req.body.id }).lean().then((documento) => {
-                                                                Compra.findOne({ proposta: req.body.id }).lean().then((compra) => {
-                                                                    Vistoria.findOne({ proposta: req.body.id }).lean().then((vistoria) => {
-                                                                        Posvenda.findOne({ proposta: req.body.id }).lean().then((posvenda) => {
-                                                                            Equipe.find({ user: id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
-                                                                                Equipe.findOne({ nome: req.body.equipe }).then((nomes) => {
-                                                                                    //console.log('nomes=>' + nomes)
-                                                                                    if (nomes != '' && nomes != null && typeof nomes != 'undefined') {
-                                                                                        for (i = 0; i < 5; i++) {
-                                                                                            if (i == 0) {
-                                                                                                n = nomes.ins0
+                                                        Documento.findOne({ proposta: req.body.id }).lean().then((documento) => {
+                                                            Compra.findOne({ proposta: req.body.id }).lean().then((compra) => {
+                                                                Vistoria.findOne({ proposta: req.body.id }).lean().then((vistoria) => {
+                                                                    Posvenda.findOne({ proposta: req.body.id }).lean().then((posvenda) => {
+                                                                        Equipe.find({ user: id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
+                                                                            Equipe.findOne({ nome: req.body.equipe }).then((nomes) => {
+                                                                                //console.log('nomes=>' + nomes)
+                                                                                if (nomes != '' && nomes != null && typeof nomes != 'undefined') {
+                                                                                    for (i = 0; i < 5; i++) {
+                                                                                        if (i == 0) {
+                                                                                            n = nomes.ins0
+                                                                                        } else {
+                                                                                            if (i == 1) {
+                                                                                                n = nomes.ins1
                                                                                             } else {
-                                                                                                if (i == 1) {
-                                                                                                    n = nomes.ins1
+                                                                                                if (i == 2) {
+                                                                                                    n = nomes.ins2
                                                                                                 } else {
-                                                                                                    if (i == 2) {
-                                                                                                        n = nomes.ins2
+                                                                                                    if (i == 3) {
+                                                                                                        n = nomes.ins3
                                                                                                     } else {
-                                                                                                        if (i == 3) {
-                                                                                                            n = nomes.ins3
+                                                                                                        if (i == 4) {
+                                                                                                            n = nomes.ins4
                                                                                                         } else {
-                                                                                                            if (i == 4) {
-                                                                                                                n = nomes.ins4
-                                                                                                            } else {
-                                                                                                                n = nomes.ins5
-                                                                                                            }
+                                                                                                            n = nomes.ins5
                                                                                                         }
                                                                                                     }
                                                                                                 }
                                                                                             }
-                                                                                            if (n != '') {
-                                                                                                //console.log('n=>' + n)
-                                                                                                Pessoa.findOne({ user: id, nome: n }).then((p) => {
-                                                                                                    //console.log('achou')
-                                                                                                    lista_nomes.push({ id: p._id, nome: p.nome })
-                                                                                                }).catch((err) => {
-                                                                                                    req.flash('error_msg', 'Falha ao encontrar a pessoa.')
-                                                                                                    res.redirect('/gerenciamento/equipe/' + req.body.id)
-                                                                                                })
-                                                                                            }
+                                                                                        }
+                                                                                        if (n != '') {
+                                                                                            //console.log('n=>' + n)
+                                                                                            Pessoa.findOne({ user: id, nome: n }).then((p) => {
+                                                                                                //console.log('achou')
+                                                                                                lista_nomes.push({ id: p._id, nome: p.nome })
+                                                                                            }).catch((err) => {
+                                                                                                req.flash('error_msg', 'Falha ao encontrar a pessoa.')
+                                                                                                res.redirect('/gerenciamento/equipe/' + req.body.id)
+                                                                                            })
                                                                                         }
                                                                                     }
-                                                                                    //console.log('lista_nomes=>' + lista_nomes)
-                                                                                    edit_equipe.dtinicio = req.body.dtinicio
-                                                                                    edit_equipe.dtfim = req.body.dtfim
-                                                                                    edit_equipe.dtinibusca = dataBusca(req.body.dtinicio)
-                                                                                    edit_equipe.dtfimbusca = dataBusca(req.body.dtfim)
-                                                                                    //console.log('req.body.equipe=>' + req.body.equipe)
-                                                                                    nome_equipe = req.body.equipe
-                                                                                    edit_equipe.save().then(() => {
-                                                                                        //console.log('req.body.id=>'+req.body.id)
-                                                                                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
-                                                                                            //console.log('lista_equipe.dtinicio')
-                                                                                            //console.log('lista_equipe.dtfim')
-                                                                                            res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, fora_ins: ins_fora, dentro_ins: ins_dentro, nome_equipe, lista_nomes })
-                                                                                        }).catch((err) => {
-                                                                                            req.flash('error_msg', 'Falha ao encontrar a euipe<lista_equipe>.')
-                                                                                            res.redirect('/gerenciamento/equipe/' + req.body.id)
-                                                                                        })
+                                                                                }
+                                                                                //console.log('lista_nomes=>' + lista_nomes)
+                                                                                edit_equipe.dtinicio = req.body.dtinicio
+                                                                                edit_equipe.dtfim = req.body.dtfim
+                                                                                edit_equipe.dtinibusca = dataBusca(req.body.dtinicio)
+                                                                                edit_equipe.dtfimbusca = dataBusca(req.body.dtfim)
+                                                                                //console.log('req.body.equipe=>' + req.body.equipe)
+                                                                                nome_equipe = req.body.equipe
+                                                                                edit_equipe.save().then(() => {
+                                                                                    //console.log('req.body.id=>'+req.body.id)
+                                                                                    Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                                                                                        //console.log('lista_equipe.dtinicio')
+                                                                                        //console.log('lista_equipe.dtfim')
+                                                                                        res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, fora_ins: ins_fora, dentro_ins: ins_dentro, nome_equipe, lista_nomes })
                                                                                     }).catch((err) => {
-                                                                                        req.flash('error_msg', 'Falha ao salvar a equipe.')
+                                                                                        req.flash('error_msg', 'Falha ao encontrar a euipe<lista_equipe>.')
                                                                                         res.redirect('/gerenciamento/equipe/' + req.body.id)
                                                                                     })
                                                                                 }).catch((err) => {
-                                                                                    req.flash('error_msg', 'Falha ao encontrar a equipe<nomes>.')
+                                                                                    req.flash('error_msg', 'Falha ao salvar a equipe.')
                                                                                     res.redirect('/gerenciamento/equipe/' + req.body.id)
                                                                                 })
                                                                             }).catch((err) => {
-                                                                                req.flash('error_msg', 'Falha ao encontrar as equipes<equipes>.')
+                                                                                req.flash('error_msg', 'Falha ao encontrar a equipe<nomes>.')
                                                                                 res.redirect('/gerenciamento/equipe/' + req.body.id)
                                                                             })
                                                                         }).catch((err) => {
-                                                                            req.flash('error_msg', 'Falha ao encontrar o pós venda.')
+                                                                            req.flash('error_msg', 'Falha ao encontrar as equipes<equipes>.')
                                                                             res.redirect('/gerenciamento/equipe/' + req.body.id)
                                                                         })
                                                                     }).catch((err) => {
-                                                                        req.flash('error_msg', 'Falha ao encontrar a vistoria.')
+                                                                        req.flash('error_msg', 'Falha ao encontrar o pós venda.')
                                                                         res.redirect('/gerenciamento/equipe/' + req.body.id)
                                                                     })
                                                                 }).catch((err) => {
-                                                                    req.flash('error_msg', 'Falha ao encontrar a compra.')
+                                                                    req.flash('error_msg', 'Falha ao encontrar a vistoria.')
                                                                     res.redirect('/gerenciamento/equipe/' + req.body.id)
                                                                 })
                                                             }).catch((err) => {
-                                                                req.flash('error_msg', 'Falha ao encontrar o documento.')
+                                                                req.flash('error_msg', 'Falha ao encontrar a compra.')
                                                                 res.redirect('/gerenciamento/equipe/' + req.body.id)
                                                             })
                                                         }).catch((err) => {
-                                                            req.flash('error_msg', 'Falha ao encontrar os instaladores.')
+                                                            req.flash('error_msg', 'Falha ao encontrar o documento.')
                                                             res.redirect('/gerenciamento/equipe/' + req.body.id)
                                                         })
                                                     }).catch((err) => {
-                                                        req.flash('error_msg', 'Falha ao encontrar os instaladores na equipe<edit_equipe>.')
+                                                        req.flash('error_msg', 'Falha ao encontrar os instaladores.')
                                                         res.redirect('/gerenciamento/equipe/' + req.body.id)
                                                     })
-                                                }
-                                            }).catch((err) => {
-                                                req.flash('error_msg', 'Falha ao encontrar as equipes<2>.')
-                                                res.redirect('/gerenciamento/equipe/' + req.body.id)
-                                            })
+                                                }).catch((err) => {
+                                                    req.flash('error_msg', 'Falha ao encontrar os instaladores na equipe<edit_equipe>.')
+                                                    res.redirect('/gerenciamento/equipe/' + req.body.id)
+                                                })
+                                            }
+                                        }).catch((err) => {
+                                            req.flash('error_msg', 'Falha ao encontrar as equipes<2>.')
+                                            res.redirect('/gerenciamento/equipe/' + req.body.id)
                                         })
+                                    })
                                     // }).catch((err) => {
                                     //     req.flash('error_msg', 'Falha ao encontrar a equipe padrão.')
                                     //     res.redirect('/gerenciamento/equipe/' + req.body.id)
@@ -6426,7 +6417,7 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                     if (validaLivre == 0 && ins_dif == 0 && q == equipe.length) {
                         validaLivre = 1
                         Equipe.findOne({ _id: proposta.equipe }).lean().then((equipeins) => {
-                            Pessoa.find({ $or: [{'funins': 'checked'}, {'funele': 'checked'}], user: id }).then((instalacao) => {
+                            Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((instalacao) => {
                                 console.log('entrou diferença')
                                 //console.log('equipeins.ins0=>' + equipeins.ins0)
                                 if (typeof equipeins.ins0 != 'undefined') {
@@ -6533,9 +6524,9 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                                             //console.log('req.body.equipe=>' + req.body.equipe)
                                                             nome_equipe = req.body.equipe
                                                             edit_equipe.save().then(() => {
-                                                                console.log('proposta.equipe=>'+proposta.equipe)
+                                                                console.log('proposta.equipe=>' + proposta.equipe)
                                                                 Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
-                                                                    console.log('lista_equipe.dtinicio=>'+lista_equipe.dtinicio)
+                                                                    console.log('lista_equipe.dtinicio=>' + lista_equipe.dtinicio)
                                                                     res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, fora_ins: ins_fora, dentro_ins: ins_dentro, nome_equipe, lista_nomes })
                                                                 }).catch((err) => {
                                                                     req.flash('error_msg', 'Falha ao salvar a equipe.')
