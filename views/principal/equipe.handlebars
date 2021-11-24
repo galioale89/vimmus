@@ -133,28 +133,44 @@
 
     <form action='/gerenciamento/salvarpadrao/' method='post'>
         <input type="hidden" name="id" value='{{proposta._id}}'>
-        <div class="row mt-4 mb-4">
-            <div class="col-md-1 text-end">
-                <label for="nome" class=" fw-bold col-form-label col-form-label-sm mt-1"> Equipe:
-                </label>
-            </div>
-            <div class="col">
-                <select class='form-select form-select-sm mb-1 mt-1' name='equipe'>
-                    <option style="font-weight: bold;" value={{lista_equipe._id}}>{{lista_equipe.nome_equipe}}</option>
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <label for="nome" class=" fw-bold col-form-label col-form-label-sm"> Equipe:</label>
+                <select class='form-select mb-1' name='equipe'>
+                    {{#if lista_equipe.nome_equipe}}
+                    <option class='fw-bold' value={{lista_equipe.nome_equipe}}>{{lista_equipe.nome_equipe}}</option>
+                    {{else}}
+                    <option class='fw-bold' value={{nome_equipe}}>{{nome_equipe}}</option>
+                    {{/if}}
+                    <option value='todos'>Todos</option>
                     {{#each equipes}}
-                    <option value="{{_id}}">{{nome}}</option>
+                    <option value="{{nome}}">{{nome}}</option>
                     {{else}}
                     <option value=''>Nenhuma equipe cadastrada.</option>
                     {{/each}}
                 </select>
             </div>
-            <div class="col">
-                <button type="submit" class='btn btn-sm btn-success mt-1'>Próximo>></button>
+            <div class='col'>
+                <label class="col-form-label col-form-label-sm">Previsão Inicio das Obras</label>
+                <input type='date' name='dtinicio' class='form-control' value='{{lista_equipe.dtinicio}}'>
             </div>
+            <div class="col">
+                <label class="col-form-label col-form-label-sm">Previsão Fim das Obras</label>
+                <input type='date' name='dtfim' class='form-control' value='{{lista_equipe.dtfim}}'>
+            </div>
+            <div class="col">
+                <button type="submit" class='btn btn-success' style="margin-top: 10%;">Próximo>></button>
+            </div>
+        </div>
+        <div class='row mb-2'>
+            {{#each lista_nomes}}
+            <div style="width: fit-content"><div class='filtro-selecao' style="line-height: 20px;">{{nome}} <a href='/gerenciamento/vermais/{{id}}'><i class='bi bi-eye'></i></a></div></div>
+            {{/each}}
         </div>
     </form>
     <form method="post" action='/gerenciamento/salvarequipe/'>
         <input type="hidden" name="id" value='{{proposta._id}}'>
+        <input type="hidden" name="nome_equipe" value='{{nome_equipe}}'>
         <div class="row" style="padding-left:10px;padding-right: 10px;width: 100%;">
             <div class="col">
                 <div class="row">
@@ -185,23 +201,12 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-4" style="max-width: 70%;margin-left: 30px;">
+        <div class="row mt-2" style="max-width: 70%;margin-left: 30px;">
             <div class="col">
-                <label class="col-form-label col-form-label-sm">Previsão Inicio das Obras</label>
-                <input type='date' name='dtinicio' class='form-control' value='{{lista_equipe.dtinicio}}'>
-            </div>
-            <div class="col">
-                <label class="col-form-label col-form-label-sm">Previsão Fim das Obras</label>
-                <input type='date' name='dtfim' class='form-control' value='{{lista_equipe.dtfim}}'>
-            </div>
-            <div class="col">
-                <div style="margin-top: 25px;">
                     <button type="submit" class='btn btn-success' onclick="getItemValueIns()">Aplicar</button>
                     <a href='/gerenciamento/enviarequipe/{{proposta._id}}' class="btn btn-primary">{{#if
                         lista_equipe.liberar}}
                         Cancelar{{else}}Envia Equipe{{/if}}</a>
-                </div>
-
             </div>
             <input type='hidden' class='ins0' name='ins0' id='ins0' value=''>
             <input type='hidden' class='ins1' name='ins1' id='ins1' value=''>

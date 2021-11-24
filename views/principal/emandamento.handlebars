@@ -33,10 +33,15 @@
 </style>
 <div class='row' style="width: 100%;padding-left: 2%;">
     <div id='header'>
-        <div class="row mt-4">
-            <div class="col-md-4">
-                <h5 class="mt-2 titulo-inicio">Lista de Obras em Operação</h5>
-            </div>
+        <div class="row mt-2">
+        <ul class="nav nav-tabs mb-2">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" style="color: black" href="/gerenciamento/emandamento/lista"><h5 class="mt-2 titulo-inicio">Lista de Obras em Operação</h5></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" aria-current="page" style="color: black"  href="/gerenciamento/emandamento/agenda"><h5 class="mt-2 titulo-inicio">Agenda</h5></a>
+            </li>        
+        </ul>
         </div>
         {{!-- <div class="row mt-4">
             <div class='filtro-selecao' style="margin-left: 30px;">Classificação: {{classificacao}}</div>
@@ -66,7 +71,7 @@
                 <td style="text-align: center;">{{cliente}}</td>
                 <td style="text-align: center;">{{responsavel}}</td>
                 <td style="text-align: center;">{{cadastro}}</td>
-                <td style="text-align: center;">{{inicio}}</td>
+                <td style="text-align: center;">{{dtinicio}}</td>
                 <td style="text-align: center;">{{deadline}}</td>
                 <td>
                     <div class='btn-group btn-group-sm col-12 gap-2 mx-auto'>

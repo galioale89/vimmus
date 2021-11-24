@@ -92,10 +92,21 @@
 </script>
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
 
-    <div class="row mt-4">
+    <div class="row mt-2">
+        {{#if listaAndamento}}
+        <ul class="nav nav-tabs mb-2">
+            <li class="nav-item">
+                <a class="nav-link" aria-current="page" style="color: black" href="/gerenciamento/emandamento/lista"><h5 class="mt-2 titulo-inicio">Lista de Obras em Operação</h5></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" style="color: black"  href="/gerenciamento/emandamento/agenda"><h5 class="mt-2 titulo-inicio">Agenda</h5></a>
+            </li>        
+        </ul>        
+        {{else}}
         <div class="col-md-4">
             <h5 class="mt-2 titulo-inicio">Agenda {{pessoa.nome}}</h5>
         </div>
+        {{/if}}
     </div>
 
     <div class='row mt-4'>
@@ -103,11 +114,16 @@
             <label style="font-size: 14px;" class='fw-bold mt-1'>{{mestitulo}} de {{anotitulo}}</label>
         </div>
         <div class='col'>
+            {{#if pessoa._id}}
             <form action="/gerenciamento/vermais" method="post">
             <input type='hidden' name='id' value='{{pessoa._id}}'>
+            {{else}}
+            <form action="/gerenciamento/emandamento" method="post">
+            {{/if}}
             {{#each todasCores}}
             <input type='hidden' name='cores' value='{{color}}'>
             {{/each}}
+            <input type='hidden' name='cores' value='black'>
                 <div class='row'>
                     <div class='col-md-8'>
                         <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
