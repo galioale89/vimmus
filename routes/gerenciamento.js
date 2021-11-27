@@ -3507,6 +3507,7 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
     var ins_fora = []
     var instalador_alocado = []
     var lista_res = []
+    var custoins = 0
     var qe = 0
     var q = 0
     var numprj = 0
@@ -3631,30 +3632,36 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                         //console.log('instaladores=>' + instaladores)
                                                         instalacao.forEach((pesins) => {
                                                             //console.log('instalador_alocado.length=>' + instalador_alocado.length)
-                                                            //console.log('eleint.nome=>' + eleint.nome)
+                                                            //console.log('pesins.nome=>' + pesins.nome)
                                                             if (instalador_alocado.length == '') {
                                                                 //console.log('não tem instalador alocado')
                                                                 var nome = pesins.nome
                                                                 var id = pesins._id
+
+                                                                if (pesins.custo == null || pesins.custo == '' || typeof pesins.custo == 'undefined') {
+                                                                    custoins = 0
+                                                                } else {
+                                                                    custoins = pesins.custo
+                                                                }
                                                                 if (nome == ins0) {
-                                                                    ins_dentro.push({ id, nome })
+                                                                    ins_dentro.push({ id, nome, custo: custoins })
                                                                 } else {
                                                                     if (nome == ins1) {
-                                                                        ins_dentro.push({ id, nome })
+                                                                        ins_dentro.push({ id, nome, custo: custoins })
                                                                     } else {
                                                                         if (nome == ins2) {
-                                                                            ins_dentro.push({ id, nome })
+                                                                            ins_dentro.push({ id, nome, custo: custoins })
                                                                         } else {
                                                                             if (nome == ins3) {
-                                                                                ins_dentro.push({ id, nome })
+                                                                                ins_dentro.push({ id, nome, custo: custoins })
                                                                             } else {
                                                                                 if (nome == ins4) {
-                                                                                    ins_dentro.push({ id, nome })
+                                                                                    ins_dentro.push({ id, nome, custo: custoins })
                                                                                 } else {
                                                                                     if (nome == ins5) {
-                                                                                        ins_dentro.push({ id, nome })
+                                                                                        ins_dentro.push({ id, nome, custo: custoins })
                                                                                     } else {
-                                                                                        ins_fora.push({ id, nome })
+                                                                                        ins_fora.push({ id, nome, custo: custoins })
                                                                                     }
                                                                                 }
                                                                             }
@@ -3669,24 +3676,24 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                                     var id = pesins._id
                                                                     //console.log(nome + ' não está alocado.')
                                                                     if (nome == ins0) {
-                                                                        ins_dentro.push({ id, nome })
+                                                                        ins_dentro.push({ id, nome, custo: custoins })
                                                                     } else {
                                                                         if (nome == ins1) {
-                                                                            ins_dentro.push({ id, nome })
+                                                                            ins_dentro.push({ id, nome, custo: custoins })
                                                                         } else {
                                                                             if (nome == ins2) {
-                                                                                ins_dentro.push({ id, nome })
+                                                                                ins_dentro.push({ id, nome, custo: custoins })
                                                                             } else {
                                                                                 if (nome == ins3) {
-                                                                                    ins_dentro.push({ id, nome })
+                                                                                    ins_dentro.push({ id, nome, custo: custoins })
                                                                                 } else {
                                                                                     if (nome == ins4) {
-                                                                                        ins_dentro.push({ id, nome })
+                                                                                        ins_dentro.push({ id, nome, custo: custoins })
                                                                                     } else {
                                                                                         if (nome == ins5) {
-                                                                                            ins_dentro.push({ id, nome })
+                                                                                            ins_dentro.push({ id, nome, custo: custoins })
                                                                                         } else {
-                                                                                            ins_fora.push({ id, nome })
+                                                                                            ins_fora.push({ id, nome, custo: custoins })
                                                                                         }
                                                                                     }
                                                                                 }
@@ -3698,22 +3705,22 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                                     var id = pesins._id
                                                                     //console.log(nome + ' está alocado.')
                                                                     if (nome == ins0) {
-                                                                        ins_dentro.push({ id, nome })
+                                                                        ins_dentro.push({ id, nome, custo: custoins })
                                                                     } else {
                                                                         if (nome == ins1) {
-                                                                            ins_dentro.push({ id, nome })
+                                                                            ins_dentro.push({ id, nome, custo: custoins })
                                                                         } else {
                                                                             if (nome == ins2) {
-                                                                                ins_dentro.push({ id, nome })
+                                                                                ins_dentro.push({ id, nome, custo: custoins })
                                                                             } else {
                                                                                 if (nome == ins3) {
-                                                                                    ins_dentro.push({ id, nome })
+                                                                                    ins_dentro.push({ id, nome, custo: custoins })
                                                                                 } else {
                                                                                     if (nome == ins4) {
-                                                                                        ins_dentro.push({ id, nome })
+                                                                                        ins_dentro.push({ id, nome, custo: custoins })
                                                                                     } else {
                                                                                         if (nome == ins5) {
-                                                                                            ins_dentro.push({ id, nome })
+                                                                                            ins_dentro.push({ id, nome, custo: custoins })
                                                                                         }
                                                                                     }
                                                                                 }
@@ -3778,9 +3785,9 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
 
                                                                                             Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
                                                                                                 nome_equipe = lista_equipe.nome_equipe
-                                                                                                console.log('lista_equipe.insres=>'+lista_equipe.insres)
+                                                                                                console.log('lista_equipe.insres=>' + lista_equipe.insres)
                                                                                                 Pessoa.findOne({ _id: lista_equipe.insres }).lean().then((insres) => {
-                                                                                                    console.log('insres.nome=>'+insres.nome)
+                                                                                                    console.log('insres.nome=>' + insres.nome)
                                                                                                     res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, fora_ins: ins_fora, dentro_ins: ins_dentro, nome_equipe, lista_res, insres })
                                                                                                 }).catch((err) => {
                                                                                                     req.flash('error_msg', 'Falha ao encontrar a pessoa<insres>.')
@@ -3866,29 +3873,36 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                     ins5 = equipeins.ins5
                                 }
 
-                                instalacao.forEach((eleint) => {
+                                instalacao.forEach((pesins) => {
 
-                                    var nome = eleint.nome
-                                    var id = eleint._id
+                                    var nome = pesins.nome
+                                    var id = pesins._id
+                                    console.log('pesins.custo=>' + pesins.custo)
+                                    if (pesins.custo == null || pesins.custo == '' || typeof pesins.custo == 'undefined') {
+                                        custoins = 0
+                                    } else {
+                                        custoins = pesins.custo
+                                    }
+
                                     if (nome == ins0) {
-                                        ins_dentro.push({ id, nome })
+                                        ins_dentro.push({ id, nome, custo: custoins })
                                     } else {
                                         if (nome == ins1) {
-                                            ins_dentro.push({ id, nome })
+                                            ins_dentro.push({ id, nome, custo: custoins })
                                         } else {
                                             if (nome == ins2) {
-                                                ins_dentro.push({ id, nome })
+                                                ins_dentro.push({ id, nome, custo: custoins })
                                             } else {
                                                 if (nome == ins3) {
-                                                    ins_dentro.push({ id, nome })
+                                                    ins_dentro.push({ id, nome, custo: custoins })
                                                 } else {
                                                     if (nome == ins4) {
-                                                        ins_dentro.push({ id, nome })
+                                                        ins_dentro.push({ id, nome, custo: custoins })
                                                     } else {
                                                         if (nome == ins5) {
-                                                            ins_dentro.push({ id, nome })
+                                                            ins_dentro.push({ id, nome, custo: custoins })
                                                         } else {
-                                                            ins_fora.push({ id, nome })
+                                                            ins_fora.push({ id, nome, custo: custoins })
                                                         }
                                                     }
                                                 }
@@ -3952,9 +3966,9 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
 
                                                                     Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
                                                                         nome_equipe = lista_equipe.nome_equipe
-                                                                        console.log('lista_equipe.insres=>'+lista_equipe.insres)
-                                                                        Pessoa.findOne({ _id: lista_equipe.insres}).lean().then((insres) => {
-                                                                            console.log('insres.nome=>'+insres)
+                                                                        console.log('lista_equipe.insres=>' + lista_equipe.insres)
+                                                                        Pessoa.findOne({ _id: lista_equipe.insres }).lean().then((insres) => {
+                                                                            console.log('insres.nome=>' + insres)
                                                                             res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, fora_ins: ins_fora, dentro_ins: ins_dentro, nome_equipe, lista_res, insres })
                                                                         }).catch((err) => {
                                                                             req.flash('error_msg', 'Falha ao encontrar a pessoa<insres>.')
@@ -4931,16 +4945,16 @@ router.get('/vermais/:id/', ehAdmin, (req, res) => {
                             //console.log('dia=>' + dia)
                             //console.log('mes=>' + mes)
                             i = Math.floor(Math.random() * 17)
-                            if (z==i){
+                            if (z == i) {
                                 i = Math.floor(Math.random() * 17)
-                            }else{
-                                if (x==i){
+                            } else {
+                                if (y == i) {
                                     i = Math.floor(Math.random() * 17)
                                 }
                             }
-                            z=i
-                            y=i
-                            
+                            z = i
+                            y = i
+
                             color = cores[i]
                             //console.log('color=>' + color)
                             todasCores.push({ color })
@@ -6201,6 +6215,7 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
     var qe = 0
     var qx = false
     var q = 0
+    var custoins = 0
     var numprj = 0
     var validaLivre = 0
     var ins0 = ''
@@ -6211,7 +6226,7 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
     var ins5 = ''
     var diferenca = 0
     var ins_dif = 0
-    var n
+    var n = ''
 
     var dataini = dataBusca(req.body.dtinicio)
     var datafim = dataBusca(req.body.dtfim)
@@ -6408,27 +6423,32 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                                                                                 //console.log('pesins.nome=>' + pesins.nome)
                                                                                                 if (instalador_alocado.length == '') {
                                                                                                     //console.log('não tem instalador alocado')
+                                                                                                    if (pesins.custo == null || pesins.custo == '' || typeof pesins.custo == 'undefined') {
+                                                                                                        custoins = 0
+                                                                                                    } else {
+                                                                                                        custoins = pesins.custo
+                                                                                                    }
                                                                                                     var nome = pesins.nome
                                                                                                     var id = pesins._id
                                                                                                     if (nome == ins0) {
-                                                                                                        ins_dentro.push({ id, nome })
+                                                                                                        ins_dentro.push({ id, nome, custo: custoins })
                                                                                                     } else {
                                                                                                         if (nome == ins1) {
-                                                                                                            ins_dentro.push({ id, nome })
+                                                                                                            ins_dentro.push({ id, nome, custo: custoins })
                                                                                                         } else {
                                                                                                             if (nome == ins2) {
-                                                                                                                ins_dentro.push({ id, nome })
+                                                                                                                ins_dentro.push({ id, nome, custo: custoins })
                                                                                                             } else {
                                                                                                                 if (nome == ins3) {
-                                                                                                                    ins_dentro.push({ id, nome })
+                                                                                                                    ins_dentro.push({ id, nome, custo: custoins })
                                                                                                                 } else {
                                                                                                                     if (nome == ins4) {
-                                                                                                                        ins_dentro.push({ id, nome })
+                                                                                                                        ins_dentro.push({ id, nome, custo: custoins })
                                                                                                                     } else {
                                                                                                                         if (nome == ins5) {
-                                                                                                                            ins_dentro.push({ id, nome })
+                                                                                                                            ins_dentro.push({ id, nome, custo: custoins })
                                                                                                                         } else {
-                                                                                                                            ins_fora.push({ id, nome })
+                                                                                                                            ins_fora.push({ id, nome, custo: custoins })
                                                                                                                         }
                                                                                                                     }
                                                                                                                 }
@@ -6443,24 +6463,24 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                                                                                         var id = pesins._id
                                                                                                         //console.log(nome + ' não está alocado.')
                                                                                                         if (nome == ins0) {
-                                                                                                            ins_dentro.push({ id, nome })
+                                                                                                            ins_dentro.push({ id, nome, custo: custoins })
                                                                                                         } else {
                                                                                                             if (nome == ins1) {
-                                                                                                                ins_dentro.push({ id, nome })
+                                                                                                                ins_dentro.push({ id, nome, custo: custoins })
                                                                                                             } else {
                                                                                                                 if (nome == ins2) {
-                                                                                                                    ins_dentro.push({ id, nome })
+                                                                                                                    ins_dentro.push({ id, nome, custo: custoins })
                                                                                                                 } else {
                                                                                                                     if (nome == ins3) {
-                                                                                                                        ins_dentro.push({ id, nome })
+                                                                                                                        ins_dentro.push({ id, nome, custo: custoins })
                                                                                                                     } else {
                                                                                                                         if (nome == ins4) {
-                                                                                                                            ins_dentro.push({ id, nome })
+                                                                                                                            ins_dentro.push({ id, nome, custo: custoins })
                                                                                                                         } else {
                                                                                                                             if (nome == ins5) {
-                                                                                                                                ins_dentro.push({ id, nome })
+                                                                                                                                ins_dentro.push({ id, nome, custo: custoins })
                                                                                                                             } else {
-                                                                                                                                ins_fora.push({ id, nome })
+                                                                                                                                ins_fora.push({ id, nome, custo: custoins })
                                                                                                                             }
                                                                                                                         }
                                                                                                                     }
@@ -6472,22 +6492,22 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                                                                                         var id = pesins._id
                                                                                                         console.log(nome + ' está alocado.')
                                                                                                         if (nome == ins0) {
-                                                                                                            ins_dentro.push({ id, nome })
+                                                                                                            ins_dentro.push({ id, nome, custo: custoins })
                                                                                                         } else {
                                                                                                             if (nome == ins1) {
-                                                                                                                ins_dentro.push({ id, nome })
+                                                                                                                ins_dentro.push({ id, nome, custo: custoins })
                                                                                                             } else {
                                                                                                                 if (nome == ins2) {
-                                                                                                                    ins_dentro.push({ id, nome })
+                                                                                                                    ins_dentro.push({ id, nome, custo: custoins })
                                                                                                                 } else {
                                                                                                                     if (nome == ins3) {
-                                                                                                                        ins_dentro.push({ id, nome })
+                                                                                                                        ins_dentro.push({ id, nome, custo: custoins })
                                                                                                                     } else {
                                                                                                                         if (nome == ins4) {
-                                                                                                                            ins_dentro.push({ id, nome })
+                                                                                                                            ins_dentro.push({ id, nome, custo: custoins })
                                                                                                                         } else {
                                                                                                                             if (nome == ins5) {
-                                                                                                                                ins_dentro.push({ id, nome })
+                                                                                                                                ins_dentro.push({ id, nome, custo: custoins })
                                                                                                                             }
                                                                                                                         }
                                                                                                                     }
@@ -6501,12 +6521,12 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                                                                             //console.log('ins_dentro_ultimo=>' + ins_dentro)
                                                                                             //console.log('ins_fora_ultimo=>' + ins_fora)
                                                                                             Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
-                                                                                                Pessoa.findOne({_id: lista_equipe.insres}).lean().then((insres)=>{
-                                                                                                res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, fora_ins: ins_fora, dentro_ins: ins_dentro, nome_equipe, lista_res, insres })
-                                                                                            }).catch((err) => {
-                                                                                                req.flash('error_msg', 'Falha ao encontrar o responsável.')
-                                                                                                res.redirect('/gerenciamento/equipe/' + req.body.id)
-                                                                                            })
+                                                                                                Pessoa.findOne({ _id: lista_equipe.insres }).lean().then((insres) => {
+                                                                                                    res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, fora_ins: ins_fora, dentro_ins: ins_dentro, nome_equipe, lista_res, insres })
+                                                                                                }).catch((err) => {
+                                                                                                    req.flash('error_msg', 'Falha ao encontrar o responsável.')
+                                                                                                    res.redirect('/gerenciamento/equipe/' + req.body.id)
+                                                                                                })
                                                                                             }).catch((err) => {
                                                                                                 req.flash('error_msg', 'Falha ao encontrar a equipe.')
                                                                                                 res.redirect('/gerenciamento/equipe/' + req.body.id)
@@ -6555,29 +6575,33 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                                                             ins5 = equipeins.ins5
                                                                         }
 
-                                                                        instalacao.forEach((eleint) => {
-
-                                                                            var nome = eleint.nome
-                                                                            var id = eleint._id
+                                                                        instalacao.forEach((pesins) => {
+                                                                            if (pesins.custo == null || pesins.custo == '' || typeof pesins.custo == 'undefined') {
+                                                                                custoins = 0
+                                                                            } else {
+                                                                                custoins = pesins.custo
+                                                                            }
+                                                                            var nome = pesins.nome
+                                                                            var id = pesins._id
                                                                             if (nome == ins0) {
-                                                                                ins_dentro.push({ id, nome })
+                                                                                ins_dentro.push({ id, nome, custo: custoins })
                                                                             } else {
                                                                                 if (nome == ins1) {
-                                                                                    ins_dentro.push({ id, nome })
+                                                                                    ins_dentro.push({ id, nome, custo: custoins })
                                                                                 } else {
                                                                                     if (nome == ins2) {
-                                                                                        ins_dentro.push({ id, nome })
+                                                                                        ins_dentro.push({ id, nome, custo: custoins })
                                                                                     } else {
                                                                                         if (nome == ins3) {
-                                                                                            ins_dentro.push({ id, nome })
+                                                                                            ins_dentro.push({ id, nome, custo: custoins })
                                                                                         } else {
                                                                                             if (nome == ins4) {
-                                                                                                ins_dentro.push({ id, nome })
+                                                                                                ins_dentro.push({ id, nome, custo: custoins })
                                                                                             } else {
                                                                                                 if (nome == ins5) {
-                                                                                                    ins_dentro.push({ id, nome })
+                                                                                                    ins_dentro.push({ id, nome, custo: custoins })
                                                                                                 } else {
-                                                                                                    ins_fora.push({ id, nome })
+                                                                                                    ins_fora.push({ id, nome, custo: custoins })
                                                                                                 }
                                                                                             }
                                                                                         }
@@ -6634,7 +6658,7 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                                                                     if (qx == true) {
                                                                                         Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
                                                                                             nome_equipe = lista_equipe.nome_equipe
-                                                                                            Pessoa.findOne({_id: lista_equipe.insres}).lean().then((insres)=>{
+                                                                                            Pessoa.findOne({ _id: lista_equipe.insres }).lean().then((insres) => {
                                                                                                 res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, fora_ins: ins_fora, dentro_ins: ins_dentro, nome_equipe, lista_res, insres })
                                                                                             }).catch((err) => {
                                                                                                 req.flash('error_msg', 'Falha ao encontrar o responsável.')
@@ -6712,8 +6736,26 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
 
 router.post("/salvarequipe", ehAdmin, (req, res) => {
 
+    var custototal = 0
+    var custoins = []
     Proposta.findOne({ _id: req.body.id }).then((proposta) => {
         Equipe.findOne({ _id: proposta.equipe }).then((equipe) => {
+
+            //Adicionar custo por instalador
+            //equipe.custins = custototal
+            // equipe.dtinicio = req.body.dtinicio
+            // equipe.dtfim = req.body.dtfim
+            // equipe.dtfimbusca = dataBusca(req.body.dtfim)
+            // equipe.dtinibusca = dataBusca(req.body.dtinicio)
+
+            custoins = req.body.custo
+            console.log('custoins=>'+custoins)
+            for (i=0;i<custoins.length;i++){
+                console.log('custoins[i]'+custoins[i])
+                custototal = parseFloat(custototal) + parseFloat(custoins[i])
+            }
+
+            console.log('custototal=>' + custototal)
             equipe.ins0 = req.body.ins0
             equipe.ins1 = req.body.ins1
             equipe.ins2 = req.body.ins2
@@ -6721,11 +6763,8 @@ router.post("/salvarequipe", ehAdmin, (req, res) => {
             equipe.ins4 = req.body.ins4
             equipe.ins5 = req.body.ins5
             equipe.insres = req.body.insres
+            equipe.custoins = custototal
             equipe.nome_equipe = req.body.nome_equipe
-            // equipe.dtinicio = req.body.dtinicio
-            // equipe.dtfim = req.body.dtfim
-            // equipe.dtfimbusca = dataBusca(req.body.dtfim)
-            // equipe.dtinibusca = dataBusca(req.body.dtinicio)
             equipe.feito = true
             equipe.save().then(() => {
                 req.flash('succes_msg', 'Equipe salva com sucesso.')
@@ -6734,6 +6773,8 @@ router.post("/salvarequipe", ehAdmin, (req, res) => {
                 req.flash('error_msg', 'Houve erro ao salvar a equipe.')
                 res.redirect('/gerenciamento/equipe/' + req.body.id)
             })
+
+
         }).catch((err) => {
             req.flash('error_msg', 'Houve erro ao encontrar a equipe.')
             res.redirect('/gerenciamento/equipe/' + req.body.id)
@@ -9627,10 +9668,10 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
     Usina.find({ cliente: req.body.cliente }).lean().then((usina) => {
         //console.log(usina)
         Pessoa.find({ funins: 'checked', user: id }).sort({ nome: 'asc' }).then((instalacao) => {
-            instalacao.forEach((eleint) => {
+            instalacao.forEach((pesins) => {
                 q = q + 1
-                var nome = eleint.nome
-                var id = eleint._id
+                var nome = pesins.nome
+                var id = pesins._id
                 ins_fora.push({ id, ins: nome })
                 if (q == instalacao.length) {
                     res.render('projeto/gerenciamento/tarefas', { data, usina, fora: ins_fora, ehSelecao })
