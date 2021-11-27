@@ -137,11 +137,11 @@
             <div class="col-md-4">
                 <label for="nome" class=" fw-bold col-form-label col-form-label-sm"> Equipe:</label>
                 <select class='form-select mb-1' name='equipe'>
-                    {{#if lista_equipe.nome_equipe}}
-                    <option class='fw-bold' value={{lista_equipe.nome_equipe}}>{{lista_equipe.nome_equipe}}</option>
-                    {{else}}
-                    <option class='fw-bold' value={{nome_equipe}}>{{nome_equipe}}</option>
-                    {{/if}}
+                    {{!-- {{#if lista_equipe.nome_equipe}}
+                    <option class='fw-bold' value='{{lista_equipe.nome_equipe}}'>{{lista_equipe.nome_equipe}}</option>
+                    {{else}} --}}
+                    <option class='fw-bold' value='{{nome_equipe}}'>{{nome_equipe}}</option>
+                    {{!-- {{/if}} --}}
                     <option value='todos'>Todos</option>
                     {{#each equipes}}
                     <option value="{{nome}}">{{nome}}</option>
@@ -164,7 +164,10 @@
         </div>
         <div class='row mb-2'>
             {{#each lista_nomes}}
-            <div style="width: fit-content"><div class='filtro-selecao' style="line-height: 20px;">{{nome}} <a href='/gerenciamento/vermais/{{id}}'><i class='bi bi-eye'></i></a></div></div>
+            <div style="width: fit-content">
+                <div class='filtro-selecao' style="line-height: 20px;">{{nome}} <a
+                        href='/gerenciamento/vermais/{{id}}/{{proposta._id}}'><i class='bi bi-eye'></i></a></div>
+            </div>
             {{/each}}
         </div>
     </form>
@@ -201,12 +204,27 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-2" style="max-width: 70%;margin-left: 30px;">
-            <div class="col">
-                    <button type="submit" class='btn btn-success' onclick="getItemValueIns()">Aplicar</button>
-                    <a href='/gerenciamento/enviarequipe/{{proposta._id}}' class="btn btn-primary">{{#if
-                        lista_equipe.liberar}}
-                        Cancelar{{else}}Envia Equipe{{/if}}</a>
+        <div class="row mt-2" style="margin-left: 30px;">
+            <div class='col-md-5 text-end'>
+                <label class='col-form-label'>Instalador Responsável:</label>
+            </div>
+            <div class='col-md-4'>
+                <select class='form-select' name='insres'>
+                    <option value='{{insres._id}}' class='fw-bold'>{{insres.nome}}</option>
+                    {{#each lista_res}}
+                    <option value='{{id}}'>{{nome}}</option>
+                    {{else}}
+                    <option>Nenhum Instalador Responsável cadastrado.</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class='btn btn-success' onclick="getItemValueIns()">Aplicar</button>
+            </div>            
+            <div class='col-md-2'>
+                <a href='/gerenciamento/enviarequipe/{{proposta._id}}' class="btn btn-primary">{{#if
+                    lista_equipe.liberar}}
+                    Cancelar{{else}}Envia Equipe{{/if}}</a>
             </div>
             <input type='hidden' class='ins0' name='ins0' id='ins0' value=''>
             <input type='hidden' class='ins1' name='ins1' id='ins1' value=''>

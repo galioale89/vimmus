@@ -59,10 +59,11 @@
             <tr>
                 <th style="width: 5%;">Proposta</th>
                 <th style="width: 10%;">Cliente</th>
-                <th style="width: 10%;">Responsável</th>
-                <th style="width: 5%">Data Cadastro</th>
-                <th style="width: 10%">Data Inicio Instalação</th>
-                <th style="width: 6%">Data Fim Instalação</th>
+                <th style="width: 10%;">Gestor Responsável</th>
+                <th style="width: 10%;">Técnico Responsável</th>
+                <th style="width: 5%">Cadastro</th>
+                <th style="width: 10%">Inicio Instalação</th>
+                <th style="width: 6%">Fim Instalação</th>
                 <th style="width: 5%;"></th>
             </tr>
             {{#each listaAndamento}}
@@ -70,6 +71,7 @@
                 <td style="text-align: center;">{{id}}</td>
                 <td style="text-align: center;">{{cliente}}</td>
                 <td style="text-align: center;">{{responsavel}}</td>
+                <td style="text-align: center;">{{insres}}</td>
                 <td style="text-align: center;">{{cadastro}}</td>
                 <td style="text-align: center;">{{dtinicio}}</td>
                 <td style="text-align: center;">{{deadline}}</td>

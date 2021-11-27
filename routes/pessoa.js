@@ -4661,6 +4661,11 @@ router.post('/novo', uploadfoto.single('foto'), ehAdmin, (req, res) => {
         } else {
             funins = 'unchecked'
         }
+        if (req.body.insres != null) {
+            insres = 'checked'
+        } else {
+            insres = 'unchecked'
+        }        
         //Validandofunção eletricista
         if (req.body.funele != null) {
             funele = 'checked'
@@ -4718,6 +4723,7 @@ router.post('/novo', uploadfoto.single('foto'), ehAdmin, (req, res) => {
             funeng: funeng,
             funpro: funpro,
             funins: funins,
+            insres: insres,
             funele: funele,
             foto: foto,
             ehVendedor: ehVendedor,
@@ -4759,6 +4765,7 @@ router.post('/editar', uploadfoto.single('foto'), ehAdmin, (req, res) => {
     var funcao = 0
     var erros = []
     var documento
+    var mostraRes = 'none'
 
     if (req.body.cnpj != '') {
         documento = req.body.cnpj
@@ -4870,9 +4877,15 @@ router.post('/editar', uploadfoto.single('foto'), ehAdmin, (req, res) => {
         //Validando função instalador
         if (req.body.funins != null) {
             funins = 'checked'
+            mostraRes = ''
         } else {
             funins = 'unchecked'
         }
+        if (req.body.insres != null) {
+            insres = 'checked'
+        } else {
+            insres = 'unchecked'
+        }        
         //Validando função eletricista
         if (req.body.funele != null) {
             funele = 'checked'
@@ -4925,6 +4938,7 @@ router.post('/editar', uploadfoto.single('foto'), ehAdmin, (req, res) => {
             pessoa.funeng = funeng
             pessoa.funpro = funpro
             pessoa.funins = funins
+            pessoa.insres = insres
             pessoa.funele = funele
             console.log('req.file=>' + req.file)
             if (req.file != null) {
@@ -4939,7 +4953,7 @@ router.post('/editar', uploadfoto.single('foto'), ehAdmin, (req, res) => {
                 Pessoa.findOne({ _id: req.body.id }).lean().then((pessoa) => {
                     var sucesso = []
                     sucesso.push({ texto: 'Alterações salvas com sucesso' })
-                    res.render('mdo/editpessoas', { pessoa: pessoa, sucesso: sucesso })
+                    res.render('mdo/editpessoas', { pessoa, sucesso, mostraRes })
                 }).catch((err) => {
                     req.flash('error_msg', 'Não foi possível encontrar a pessoa')
                     res.redirect('/pessoa/novo')
