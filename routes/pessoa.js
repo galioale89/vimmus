@@ -47,15 +47,31 @@ router.get('/vendedor', ehAdmin, (req, res) => {
 
 router.get('/consultaequipepadrao', ehAdmin, (req, res) => {
     const { _id } = req.user
-    Equipe.find({ user: _id, ativo: true }).lean().then((equipe) => {
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+    Equipe.find({ user: id, ativo: true }).lean().then((equipe) => {
         res.render('mdo/consultaequipepadrao', { equipe: equipe })
     })
 })
 
 router.get('/novaequipepadrao/', ehAdmin, (req, res) => {
     const { _id } = req.user
-    Pessoa.find({ funins: 'checked', user: _id }).lean().then((instaladores) => {
-        res.render('mdo/novaequipepadrao', { instaladores: instaladores })
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+    Pessoa.find({ funins: 'checked', user: id }).lean().then((instaladores) => {
+        res.render('mdo/novaequipepadrao', { instaladores })
     }).catch((err) => {
         req.flash('error_msg', 'Falha ao encontrar o instalador')
         res.redirect('/projeto/consulta')
@@ -64,9 +80,17 @@ router.get('/novaequipepadrao/', ehAdmin, (req, res) => {
 
 router.get('/formaequipe/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
         Equipe.findOne({ projeto: projeto._id }).lean().then((equipe) => {
-            Pessoa.find({ funins: 'checked', user: _id }).lean().then((instaladores) => {
+            Pessoa.find({ funins: 'checked', user: id }).lean().then((instaladores) => {
                 if (equipe != null) {
 
                     var ins_dentro = []
@@ -112,7 +136,7 @@ router.get('/formaequipe/:id', ehAdmin, (req, res) => {
                     res.render('mdo/editformaequipe_first', { projeto: projeto, fora: ins_fora, dentro: ins_dentro })
 
                 } else {
-                    Equipe.find({ user: _id, ativo: true }).lean().then((equipe) => {
+                    Equipe.find({ user: id, ativo: true }).lean().then((equipe) => {
                         res.render('mdo/formaequipe_first', { instaladores: instaladores, projeto: projeto, equipe: equipe })
                     })
                 }
@@ -318,6 +342,14 @@ router.get('/limpaVistoria/:id', ehAdmin, (req, res) => {
 
 router.post('/criarequipe', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
     var sucesso = []
 
     var ins_dentro = []
@@ -338,7 +370,7 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
             //console.log('É manual')
             const equipe = {
                 projeto: req.body.id,
-                user: _id,
+                user: id,
                 nome_projeto: projeto.nome,
                 ins0: req.body.ins0,
                 ins1: req.body.ins1,
@@ -357,7 +389,7 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
                 res.redirect('/projeto/consulta')
             })
 
-            Pessoa.find({ funins: 'checked', user: _id }).lean().then((instaladores) => {
+            Pessoa.find({ funins: 'checked', user: id }).lean().then((instaladores) => {
 
                 const { ins0 } = equipe
                 const { ins1 } = equipe
@@ -435,7 +467,7 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
                 //console.log('equipe padrão')
                 const equipe_nova = {
                     projeto: req.body.id,
-                    user: _id,
+                    user: id,
                     nome_projeto: projeto.nome,
                     ins0: equipe.ins0,
                     ins1: equipe.ins1,
@@ -460,7 +492,7 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
                     req.flash('error_msg', 'Houve uma falha ao salvar a equipe.')
                     res.redirect('/projeto/consulta')
                 })
-                Pessoa.find({ funins: 'checked', user: _id }).lean().then((instaladores) => {
+                Pessoa.find({ funins: 'checked', user: id }).lean().then((instaladores) => {
                     Equipe.findOne({ projeto: req.body.id }).then((equipe) => {
                         const { ins0 } = equipe
                         const { ins1 } = equipe
@@ -554,6 +586,14 @@ router.post('/criarequipe', ehAdmin, (req, res) => {
 
 router.get('/recursosPlanejamento/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
     var ins_dentro = []
     var ins_fora = []
     var gestor_alocado = []
@@ -576,7 +616,7 @@ router.get('/recursosPlanejamento/:id', ehAdmin, (req, res) => {
             var dateplaini = cronograma.agendaPlaIni
             var dateplafim = cronograma.agendaPlaFim
             var plaini
-            Cronograma.find({ user: _id }).then((crono_date) => {
+            Cronograma.find({ user: id }).then((crono_date) => {
                 if (crono_date != '') {
                     crono_date.forEach((elecro) => {
                         Projeto.findOne({ _id: elecro.projeto, orcado: true }).then((orcado) => {
@@ -618,7 +658,7 @@ router.get('/recursosPlanejamento/:id', ehAdmin, (req, res) => {
                                         if (nova_data == plaini && dateplaini >= plaini && date >= dateplaini) {
                                             //console.log('entrou')
                                             ins_dif = 1
-                                            Pessoa.find({ funges: 'checked', user: _id }).then((gestores) => {
+                                            Pessoa.find({ funges: 'checked', user: id }).then((gestores) => {
                                                 gestores.forEach((eleges) => {
                                                     num_prj = num_prj + 1
                                                     //console.log('Recurso=>' + eleges.nome)
@@ -666,7 +706,7 @@ router.get('/recursosPlanejamento/:id', ehAdmin, (req, res) => {
                                                                 if (typeof equipepla.pla5 != 'undefined') {
                                                                     pla5 = equipepla.pla5
                                                                 }
-                                                                Pessoa.find({ funges: 'checked', user: _id }).sort({ nome: 'asc' }).then((planejamento) => {
+                                                                Pessoa.find({ funges: 'checked', user: id }).sort({ nome: 'asc' }).then((planejamento) => {
                                                                     planejamento.forEach((elepla) => {
                                                                         //console.log('elepla.nome=>' + elepla.nome)
                                                                         if (gestor_alocado.length == '') {
@@ -792,7 +832,7 @@ router.get('/recursosPlanejamento/:id', ehAdmin, (req, res) => {
                             if (validaLivre == 0 && ins_dif == 0 && qtd_prj == crono_date.length) {
                                 validaLivre = 1
                                 Equipe.findOne({ projeto: req.params.id }).lean().then((equipepla) => {
-                                    Pessoa.find({ funges: 'checked', user: _id }).then((planejamento) => {
+                                    Pessoa.find({ funges: 'checked', user: id }).then((planejamento) => {
                                         //console.log('equipepla.pla0=>' + equipepla.pla0)
                                         if (typeof equipepla.pla0 != 'undefined') {
                                             pla0 = equipepla.pla0
@@ -882,6 +922,14 @@ router.get('/recursosPlanejamento/:id', ehAdmin, (req, res) => {
 
 router.get('/recursosProjetista/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
     var ins_dentro = []
     var ins_fora = []
     var projetista_alocado = []
@@ -904,7 +952,7 @@ router.get('/recursosProjetista/:id', ehAdmin, (req, res) => {
             var dateprjini = cronograma.agendaPrjIni
             var dateprjfim = cronograma.agendaPrjFim
             var proini
-            Cronograma.find({ user: _id }).then((crono_date) => {
+            Cronograma.find({ user: id }).then((crono_date) => {
                 if (crono_date != '') {
                     crono_date.forEach((elecro) => {
                         Projeto.findOne({ _id: elecro.projeto, orcado: true }).then((orcado) => {
@@ -947,7 +995,7 @@ router.get('/recursosProjetista/:id', ehAdmin, (req, res) => {
                                         if (nova_data == proini && dateprjini >= proini && date > dateprjini) {
                                             //console.log('entrou')
                                             ins_dif = 1
-                                            Pessoa.find({ funpro: 'checked', user: _id }).then((proje) => {
+                                            Pessoa.find({ funpro: 'checked', user: id }).then((proje) => {
                                                 proje.forEach((eleprj) => {
                                                     num_prj = num_prj + 1
                                                     //console.log('Recurso=>' + eleprj.nome)
@@ -992,7 +1040,7 @@ router.get('/recursosProjetista/:id', ehAdmin, (req, res) => {
                                                                 if (typeof equipepro.pro5 != 'undefined') {
                                                                     pro5 = equipepro.pro5
                                                                 }
-                                                                Pessoa.find({ funpro: 'checked', user: _id }).sort({ nome: 'asc' }).then((projetista) => {
+                                                                Pessoa.find({ funpro: 'checked', user: id }).sort({ nome: 'asc' }).then((projetista) => {
                                                                     projetista.forEach((elepro) => {
                                                                         //console.log('elepro.nome=>' + elepro.nome)
                                                                         if (projetista_alocado.length == '') {
@@ -1116,7 +1164,7 @@ router.get('/recursosProjetista/:id', ehAdmin, (req, res) => {
                             if (validaLivre == 0 && ins_dif == 0 && qtd_prj == crono_date.length) {
                                 validaLivre = 1
                                 Equipe.findOne({ projeto: req.params.id }).lean().then((equipepro) => {
-                                    Pessoa.find({ funpro: 'checked', user: _id }).then((projetista) => {
+                                    Pessoa.find({ funpro: 'checked', user: id }).then((projetista) => {
                                         //console.log('equipepro.pro0=>' + equipepro.pro0)
 
                                         if (typeof equipepro.pro0 != 'undefined') {
@@ -1207,6 +1255,14 @@ router.get('/recursosProjetista/:id', ehAdmin, (req, res) => {
 
 router.get('/recursosAterramento/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
     var ins_dentro = []
     var ins_fora = []
     var instalador_alocado = []
@@ -1231,7 +1287,7 @@ router.get('/recursosAterramento/:id', ehAdmin, (req, res) => {
             var estini
             //console.log('cronograma.agendaEstIni=>' + cronograma.agendaEstIni)
             //console.log('cronograma.agendaModFim=>' + cronograma.agendaModFim)
-            Cronograma.find({ user: _id }).then((crono_date) => {
+            Cronograma.find({ user: id }).then((crono_date) => {
                 if (crono_date != '') {
                     crono_date.forEach((elecro) => {
                         Projeto.findOne({ _id: elecro.projeto, orcado: true }).then((orcado) => {
@@ -1274,7 +1330,7 @@ router.get('/recursosAterramento/:id', ehAdmin, (req, res) => {
                                         if (nova_data == estini && dateateini >= estini && date >= dateateini) {
                                             ins_dif = 1
                                             //console.log('entrou')
-                                            Pessoa.find({ funins: 'checked', user: _id }).then((instaladores) => {
+                                            Pessoa.find({ funins: 'checked', user: id }).then((instaladores) => {
                                                 instaladores.forEach((eleins) => {
                                                     num_prj = num_prj + 1
                                                     //console.log('Recurso=>' + eleins.nome)
@@ -1326,7 +1382,7 @@ router.get('/recursosAterramento/:id', ehAdmin, (req, res) => {
                                                                     ate5 = equipeins.ate5
                                                                 }
                                                                 console.log('orcado._id=>' + orcado._id)
-                                                                Pessoa.find({ funins: 'checked', user: _id }).sort({ nome: 'asc' }).then((instalacao) => {
+                                                                Pessoa.find({ funins: 'checked', user: id }).sort({ nome: 'asc' }).then((instalacao) => {
                                                                     instalacao.forEach((eleint) => {
                                                                         //console.log('instalador_alocado.length=>' + instalador_alocado.length)
                                                                         //console.log('eleint.nome=>' + eleint.nome)
@@ -1454,7 +1510,7 @@ router.get('/recursosAterramento/:id', ehAdmin, (req, res) => {
                             if (validaLivre == 0 && ins_dif == 0 && qtd_prj == crono_date.length) {
                                 validaLivre = 1
                                 Equipe.findOne({ projeto: req.params.id }).lean().then((equipeins) => {
-                                    Pessoa.find({ funins: 'checked', user: _id }).then((instalacao) => {
+                                    Pessoa.find({ funins: 'checked', user: id }).then((instalacao) => {
                                         //console.log('entrou diferença')
                                         //console.log('equipeins.ins0=>' + equipeins.ins0)
                                         if (typeof equipeins.ate0 != 'undefined') {
@@ -1544,6 +1600,14 @@ router.get('/recursosAterramento/:id', ehAdmin, (req, res) => {
 
 router.get('/recursosInversores/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
     var ins_dentro = []
     var ins_fora = []
     var instalador_alocado = []
@@ -1568,7 +1632,7 @@ router.get('/recursosInversores/:id', ehAdmin, (req, res) => {
             var estini
             //console.log('cronograma.agendaEstIni=>' + cronograma.agendaEstIni)
             //console.log('cronograma.agendaModFim=>' + cronograma.agendaModFim)
-            Cronograma.find({ user: _id }).then((crono_date) => {
+            Cronograma.find({ user: id }).then((crono_date) => {
                 if (crono_date != '') {
                     crono_date.forEach((elecro) => {
                         Projeto.findOne({ _id: elecro.projeto, orcado: true }).then((orcado) => {
@@ -1611,7 +1675,7 @@ router.get('/recursosInversores/:id', ehAdmin, (req, res) => {
                                         if (nova_data == estini && dateinvini >= estini && date >= dateinvini) {
                                             ins_dif = 1
                                             //console.log('entrou')
-                                            Pessoa.find({ funins: 'checked', user: _id }).then((instaladores) => {
+                                            Pessoa.find({ funins: 'checked', user: id }).then((instaladores) => {
                                                 instaladores.forEach((eleins) => {
                                                     num_prj = num_prj + 1
                                                     //console.log('Recurso=>' + eleins.nome)
@@ -1663,7 +1727,7 @@ router.get('/recursosInversores/:id', ehAdmin, (req, res) => {
                                                                     inv5 = equipeins.inv5
                                                                 }
                                                                 console.log('orcado._id=>' + orcado._id)
-                                                                Pessoa.find({ funins: 'checked', user: _id }).sort({ nome: 'asc' }).then((instalacao) => {
+                                                                Pessoa.find({ funins: 'checked', user: id }).sort({ nome: 'asc' }).then((instalacao) => {
                                                                     instalacao.forEach((eleint) => {
                                                                         //console.log('instalador_alocado.length=>' + instalador_alocado.length)
                                                                         //console.log('eleint.nome=>' + eleint.nome)
@@ -1792,7 +1856,7 @@ router.get('/recursosInversores/:id', ehAdmin, (req, res) => {
                             if (validaLivre == 0 && ins_dif == 0 && qtd_prj == crono_date.length) {
                                 validaLivre = 1
                                 Equipe.findOne({ projeto: req.params.id }).lean().then((equipeins) => {
-                                    Pessoa.find({ funins: 'checked', user: _id }).then((instalacao) => {
+                                    Pessoa.find({ funins: 'checked', user: id }).then((instalacao) => {
                                         //console.log('entrou diferença')
                                         //console.log('equipeins.ins0=>' + equipeins.ins0)
                                         if (typeof equipeins.inv0 != 'undefined') {
@@ -1883,6 +1947,14 @@ router.get('/recursosInversores/:id', ehAdmin, (req, res) => {
 
 router.get('/recursosInstalacao/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
     var ins_dentro = []
     var ins_fora = []
     var instalador_alocado = []
@@ -1908,7 +1980,7 @@ router.get('/recursosInstalacao/:id', ehAdmin, (req, res) => {
             var estini
             //console.log('cronograma.agendaEstIni=>' + cronograma.agendaEstIni)
             //console.log('cronograma.agendaModFim=>' + cronograma.agendaModFim)
-            Cronograma.find({ user: _id }).then((crono_date) => {
+            Cronograma.find({ user: id }).then((crono_date) => {
                 if (crono_date != '') {
                     crono_date.forEach((elecro) => {
                         Projeto.findOne({ _id: elecro.projeto, orcado: true }).then((orcado) => {
@@ -1951,7 +2023,7 @@ router.get('/recursosInstalacao/:id', ehAdmin, (req, res) => {
                                         if (nova_data == estini && dateestini >= estini && date >= dateestini) {
                                             ins_dif = 1
                                             //console.log('entrou')
-                                            Pessoa.find({ funins: 'checked', user: _id }).then((instaladores) => {
+                                            Pessoa.find({ funins: 'checked', user: id }).then((instaladores) => {
                                                 instaladores.forEach((eleins) => {
                                                     num_prj = num_prj + 1
                                                     //console.log('Recurso=>' + eleins.nome)
@@ -2003,7 +2075,7 @@ router.get('/recursosInstalacao/:id', ehAdmin, (req, res) => {
                                                                     ins5 = equipeins.ins5
                                                                 }
                                                                 console.log('orcado._id=>' + orcado._id)
-                                                                Pessoa.find({ funins: 'checked', user: _id }).sort({ nome: 'asc' }).then((instalacao) => {
+                                                                Pessoa.find({ funins: 'checked', user: id }).sort({ nome: 'asc' }).then((instalacao) => {
                                                                     instalacao.forEach((eleint) => {
                                                                         //console.log('instalador_alocado.length=>' + instalador_alocado.length)
                                                                         //console.log('eleint.nome=>' + eleint.nome)
@@ -2131,7 +2203,7 @@ router.get('/recursosInstalacao/:id', ehAdmin, (req, res) => {
                             if (validaLivre == 0 && ins_dif == 0 && qtd_prj == crono_date.length) {
                                 validaLivre = 1
                                 Equipe.findOne({ projeto: req.params.id }).lean().then((equipeins) => {
-                                    Pessoa.find({ funins: 'checked', user: _id }).then((instalacao) => {
+                                    Pessoa.find({ funins: 'checked', user: id }).then((instalacao) => {
                                         //console.log('entrou diferença')
                                         //console.log('equipeins.ins0=>' + equipeins.ins0)
                                         if (typeof equipeins.ins0 != 'undefined') {
@@ -2221,6 +2293,14 @@ router.get('/recursosInstalacao/:id', ehAdmin, (req, res) => {
 
 router.get('/recursosArmazenamento/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
     var ins_dentro = []
     var ins_fora = []
     var instalador_alocado = []
@@ -2245,7 +2325,7 @@ router.get('/recursosArmazenamento/:id', ehAdmin, (req, res) => {
             var estini
             //console.log('cronograma.agendaEstIni=>' + cronograma.agendaEstIni)
             //console.log('cronograma.agendaModFim=>' + cronograma.agendaModFim)
-            Cronograma.find({ user: _id }).then((crono_date) => {
+            Cronograma.find({ user: id }).then((crono_date) => {
                 if (crono_date != '') {
                     crono_date.forEach((elecro) => {
                         Projeto.findOne({ _id: elecro.projeto, orcado: true }).then((orcado) => {
@@ -2288,7 +2368,7 @@ router.get('/recursosArmazenamento/:id', ehAdmin, (req, res) => {
                                         if (nova_data == estini && dateeaeini >= estini && date >= dateeaeini) {
                                             ins_dif = 1
                                             //console.log('entrou')
-                                            Pessoa.find({ funins: 'checked', user: _id }).then((instaladores) => {
+                                            Pessoa.find({ funins: 'checked', user: id }).then((instaladores) => {
                                                 instaladores.forEach((eleins) => {
                                                     num_prj = num_prj + 1
                                                     //console.log('Recurso=>' + eleins.nome)
@@ -2340,7 +2420,7 @@ router.get('/recursosArmazenamento/:id', ehAdmin, (req, res) => {
                                                                     eae5 = equipeins.eae5
                                                                 }
                                                                 console.log('orcado._id=>' + orcado._id)
-                                                                Pessoa.find({ funins: 'checked', user: _id }).sort({ nome: 'asc' }).then((instalacao) => {
+                                                                Pessoa.find({ funins: 'checked', user: id }).sort({ nome: 'asc' }).then((instalacao) => {
                                                                     instalacao.forEach((eleint) => {
                                                                         //console.log('instalador_alocado.length=>' + instalador_alocado.length)
                                                                         //console.log('eleint.nome=>' + eleint.nome)
@@ -2468,7 +2548,7 @@ router.get('/recursosArmazenamento/:id', ehAdmin, (req, res) => {
                             if (validaLivre == 0 && ins_dif == 0 && qtd_prj == crono_date.length) {
                                 validaLivre = 1
                                 Equipe.findOne({ projeto: req.params.id }).lean().then((equipeins) => {
-                                    Pessoa.find({ funins: 'checked', user: _id }).then((instalacao) => {
+                                    Pessoa.find({ funins: 'checked', user: id }).then((instalacao) => {
                                         //console.log('entrou diferença')
                                         //console.log('equipeins.ins0=>' + equipeins.ins0)
                                         if (typeof equipeins.eae0 != 'undefined') {
@@ -2558,6 +2638,14 @@ router.get('/recursosArmazenamento/:id', ehAdmin, (req, res) => {
 
 router.get('/recursosPainel/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
     var ins_dentro = []
     var ins_fora = []
     var instalador_alocado = []
@@ -2582,7 +2670,7 @@ router.get('/recursosPainel/:id', ehAdmin, (req, res) => {
             var estini
             //console.log('cronograma.agendaEstIni=>' + cronograma.agendaEstIni)
             //console.log('cronograma.agendaModFim=>' + cronograma.agendaModFim)
-            Cronograma.find({ user: _id }).then((crono_date) => {
+            Cronograma.find({ user: id }).then((crono_date) => {
                 if (crono_date != '') {
                     crono_date.forEach((elecro) => {
                         Projeto.findOne({ _id: elecro.projeto, orcado: true }).then((orcado) => {
@@ -2625,7 +2713,7 @@ router.get('/recursosPainel/:id', ehAdmin, (req, res) => {
                                         if (nova_data == estini && datepnlini >= estini && date >= datepnlini) {
                                             ins_dif = 1
                                             //console.log('entrou')
-                                            Pessoa.find({ funins: 'checked', user: _id }).then((instaladores) => {
+                                            Pessoa.find({ funins: 'checked', user: id }).then((instaladores) => {
                                                 instaladores.forEach((eleins) => {
                                                     num_prj = num_prj + 1
                                                     //console.log('Recurso=>' + eleins.nome)
@@ -2678,7 +2766,7 @@ router.get('/recursosPainel/:id', ehAdmin, (req, res) => {
                                                                 }
 
                                                                 console.log('orcado._id=>' + orcado._id)
-                                                                Pessoa.find({ funins: 'checked', user: _id }).sort({ nome: 'asc' }).then((instalacao) => {
+                                                                Pessoa.find({ funins: 'checked', user: id }).sort({ nome: 'asc' }).then((instalacao) => {
                                                                     instalacao.forEach((eleint) => {
                                                                         //console.log('instalador_alocado.length=>' + instalador_alocado.length)
                                                                         //console.log('eleint.nome=>' + eleint.nome)
@@ -2806,7 +2894,7 @@ router.get('/recursosPainel/:id', ehAdmin, (req, res) => {
                             if (validaLivre == 0 && ins_dif == 0 && qtd_prj == crono_date.length) {
                                 validaLivre = 1
                                 Equipe.findOne({ projeto: req.params.id }).lean().then((equipeins) => {
-                                    Pessoa.find({ funins: 'checked', user: _id }).then((instalacao) => {
+                                    Pessoa.find({ funins: 'checked', user: id }).then((instalacao) => {
                                         //console.log('entrou diferença')
                                         //console.log('equipeins.ins0=>' + equipeins.ins0)
                                         if (typeof equipeins.pnl0 != 'undefined') {
@@ -2896,6 +2984,14 @@ router.get('/recursosPainel/:id', ehAdmin, (req, res) => {
 
 router.get('/recursosVistoria/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
     var ins_dentro = []
     var ins_fora = []
     var gestor_alocado = []
@@ -2917,7 +3013,7 @@ router.get('/recursosVistoria/:id', ehAdmin, (req, res) => {
         Cronograma.findOne({ projeto: req.params.id }).lean().then((cronograma) => {
             var datevisini = cronograma.agendaVisIni
             var plaini
-            Cronograma.find({ user: _id }).then((crono_date) => {
+            Cronograma.find({ user: id }).then((crono_date) => {
                 if (crono_date != '') {
                     crono_date.forEach((elecro) => {
                         Projeto.findOne({ _id: elecro.projeto, orcado: true }).then((orcado) => {
@@ -2959,7 +3055,7 @@ router.get('/recursosVistoria/:id', ehAdmin, (req, res) => {
                                         if (nova_data == plaini && datevisini >= plaini && date >= datevisini) {
                                             //console.log('entrou')
                                             ins_dif = 1
-                                            Pessoa.find({ funeng: 'checked', user: _id }).then((gestores) => {
+                                            Pessoa.find({ funeng: 'checked', user: id }).then((gestores) => {
                                                 gestores.forEach((eleges) => {
                                                     num_prj = num_prj + 1
                                                     //console.log('Recurso=>' + eleges.nome)
@@ -3004,7 +3100,7 @@ router.get('/recursosVistoria/:id', ehAdmin, (req, res) => {
                                                                 if (typeof equipepla.vis5 != 'undefined') {
                                                                     vis5 = equipepla.vis5
                                                                 }
-                                                                Pessoa.find({ funeng: 'checked', user: _id }).sort({ nome: 'asc' }).then((planejamento) => {
+                                                                Pessoa.find({ funeng: 'checked', user: id }).sort({ nome: 'asc' }).then((planejamento) => {
                                                                     planejamento.forEach((elepla) => {
                                                                         //console.log('elepla.nome=>' + elepla.nome)
                                                                         if (gestor_alocado.length == '') {
@@ -3130,7 +3226,7 @@ router.get('/recursosVistoria/:id', ehAdmin, (req, res) => {
                             if (validaLivre == 0 && ins_dif == 0 && qtd_prj == crono_date.length) {
                                 validaLivre = 1
                                 Equipe.findOne({ projeto: req.params.id }).lean().then((equipepla) => {
-                                    Pessoa.find({ funges: 'checked', user: _id }).then((planejamento) => {
+                                    Pessoa.find({ funges: 'checked', user: id }).then((planejamento) => {
                                         //console.log('equipepla.pla0=>' + equipepla.pla0)
                                         if (typeof equipepla.vis0 != 'undefined') {
                                             vis0 = equipepla.vis0
@@ -3220,6 +3316,14 @@ router.get('/recursosVistoria/:id', ehAdmin, (req, res) => {
 
 router.post('/salvarPlanejamento', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
 
     Projeto.findOne({ _id: req.body.id }).then((projeto) => {
 
@@ -3281,6 +3385,14 @@ router.post('/salvarPlanejamento', ehAdmin, (req, res) => {
 
 router.post('/salvarProjetista', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
 
     Projeto.findOne({ _id: req.body.id }).then((projeto) => {
 
@@ -3342,6 +3454,14 @@ router.post('/salvarProjetista', ehAdmin, (req, res) => {
 
 router.post('/salvarAterramento', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
 
     Equipe.findOne({ projeto: req.body.id }).then((equipe) => {
 
@@ -3367,6 +3487,14 @@ router.post('/salvarAterramento', ehAdmin, (req, res) => {
 
 router.post('/salvarInversores', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
 
     Equipe.findOne({ projeto: req.body.id }).then((equipe) => {
 
@@ -3393,6 +3521,14 @@ router.post('/salvarInversores', ehAdmin, (req, res) => {
 
 router.post('/salvarInstalacao', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
 
     Projeto.findOne({ _id: req.body.id }).then((projeto) => {
 
@@ -3480,6 +3616,14 @@ router.post('/salvarInstalacao', ehAdmin, (req, res) => {
 
 router.post('/salvarArmazenamento', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
 
     Equipe.findOne({ projeto: req.body.id }).then((equipe) => {
 
@@ -3507,6 +3651,14 @@ router.post('/salvarArmazenamento', ehAdmin, (req, res) => {
 
 router.post('/salvarPainel', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
 
     Equipe.findOne({ projeto: req.body.id }).then((equipe) => {
 
@@ -3534,28 +3686,44 @@ router.post('/salvarPainel', ehAdmin, (req, res) => {
 
 router.post('/salvarVistoria', ehAdmin, (req, res) => {
     const { _id } = req.user
-        Equipe.findOne({ projeto: req.body.id }).then((equipe) => {            
-            equipe.vis0 = req.body.vis0
-            equipe.vis1 = req.body.vis1
-            equipe.vis2 = req.body.vis2
-            equipe.vis3 = req.body.vis3
-            equipe.vis4 = req.body.vis4
-            equipe.vis5 = req.body.vis5
-                equipe.save().then(() => {
-                    req.flash('success_msg', 'Vistoriador alocado!')
-                    res.redirect('/pessoa/recursosVistoria/' + req.body.id)
-                }).catch((err) => {
-                    req.flash('error_msg', 'Houve uma falha ao salvar a equipe.')
-                    res.redirect('/pessoa/recursosVistoria/' + req.body.id)
-                })
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+    Equipe.findOne({ projeto: req.body.id }).then((equipe) => {
+        equipe.vis0 = req.body.vis0
+        equipe.vis1 = req.body.vis1
+        equipe.vis2 = req.body.vis2
+        equipe.vis3 = req.body.vis3
+        equipe.vis4 = req.body.vis4
+        equipe.vis5 = req.body.vis5
+        equipe.save().then(() => {
+            req.flash('success_msg', 'Vistoriador alocado!')
+            res.redirect('/pessoa/recursosVistoria/' + req.body.id)
         }).catch((err) => {
-            req.flash('error_msg', 'Houve uma falha ao encontrar a equipe.')
+            req.flash('error_msg', 'Houve uma falha ao salvar a equipe.')
             res.redirect('/pessoa/recursosVistoria/' + req.body.id)
         })
+    }).catch((err) => {
+        req.flash('error_msg', 'Houve uma falha ao encontrar a equipe.')
+        res.redirect('/pessoa/recursosVistoria/' + req.body.id)
+    })
 })
 
 router.post('/salvarequipe/', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
     var sucesso = []
 
     var ins_dentro = []
@@ -3588,7 +3756,7 @@ router.post('/salvarequipe/', ehAdmin, (req, res) => {
             req.flash('error_msg', 'Houve uma falha ao salvar a equipe.')
             res.redirect('/projeto/consulta')
         })
-        Pessoa.find({ funins: 'checked', user: _id }).lean().then((instaladores) => {
+        Pessoa.find({ funins: 'checked', user: id }).lean().then((instaladores) => {
 
             const { ins0 } = equipe_nova
             const { ins1 } = equipe_nova
@@ -3688,11 +3856,19 @@ router.get('/desativarequipe/:id', ehAdmin, (req, res) => {
 
 router.post('/criarequipepadrao', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
 
     var custo = 0
+    var idins = []
 
-
-    Pessoa.find({ user: _id }).then((pessoas) => {
+    Pessoa.find({ user: id }).then((pessoas) => {
         pessoas.forEach((element) => {
             console.log('element.nome=>' + element.nome)
             console.log('req.body.ins0=>' + req.body.ins0)
@@ -3723,8 +3899,27 @@ router.post('/criarequipepadrao', ehAdmin, (req, res) => {
             custo = req.body.custo
         }
 
-        const novaequipe = new Equipe({
-            user: _id,
+        if (req.body.idins0 != ''){
+            idins = {idins0:  req.body.idins0,}
+        }
+        if (req.body.idins1 != ''){
+            idins = idins + {idins1: req.body.idins1,}
+        }
+        if (req.body.idins2 != ''){
+            idins = idins + {idins2: req.body.idins2,}
+        }
+        if (req.body.idins3 != ''){
+            idins = idins + {idins3: req.body.idins3,}
+        }
+        if (req.body.idins4 != ''){
+            idins = idins + {idins4: req.body.idins4,}
+        }
+        if (req.body.idins5 != ''){
+            idins = idins + {idins5: req.body.idins5,}
+        }
+        console.log('idins=>'+idins)
+        const corpo = {
+            user: id,
             ativo: true,
             nome: req.body.nome,
             custoins: custo,
@@ -3733,12 +3928,12 @@ router.post('/criarequipepadrao', ehAdmin, (req, res) => {
             ins2: req.body.ins2,
             ins3: req.body.ins3,
             ins4: req.body.ins4,
-            ins5: req.body.ins5,
-            ehpadrao: true
-        })
-
-        ////console.log(req.body.ins0, req.body.ins1, req.body.ins2)
-        novaequipe.save().then(() => {
+            ins5: req.body.ins5,         
+            ehpadrao: true,
+        }
+        var novaequipe = Object.assign(idins, corpo)
+        console.log('novaequipe=>'+novaequipe)
+        new Equipe(novaequipe).save().then(() => {
             req.flash('success_msg', 'Equipe padrão criada com suecesso.')
             res.redirect('/pessoa/consultaequipepadrao')
         }).catch((err) => {
@@ -3789,6 +3984,14 @@ router.get('/confirmaexclusao/:id', ehAdmin, (req, res) => {
 
 router.get('/remover/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
     var erros = []
     var cont = 0
     var id = req.params.id
@@ -3851,7 +4054,15 @@ router.get('/removerequipe/:id', ehAdmin, (req, res) => {
 
 router.get('/consulta', ehAdmin, (req, res) => {
     const { _id } = req.user
-    Pessoa.find({ user: _id }).lean().then((pessoas) => {
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+    Pessoa.find({ user: id }).lean().then((pessoas) => {
         res.render('mdo/findpessoas', { pessoas: pessoas })
     }).catch((err) => {
         req.flash('error_msg', 'Não foram encontradas pessoas cadastradas')
@@ -3886,9 +4097,17 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
     var aviso = []
 
     const { _id } = req.user
-    Pessoa.find({ user: _id }).lean().then((pessoas) => {
-        Pessoa.findOne({ _id: req.params.id, user: _id }).lean().then((pessoa) => {
-            console.log('pessoa.funins=>'+pessoa.funins)
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+    Pessoa.find({ user: id }).lean().then((pessoas) => {
+        Pessoa.findOne({ _id: req.params.id, user: id }).lean().then((pessoa) => {
+            console.log('pessoa.funins=>' + pessoa.funins)
             if (pessoa.ehVendedor) {
                 //console.log(pessoa.nome)
                 //console.log('user=>' + _id)
@@ -3939,7 +4158,7 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
                 if (pessoa.funges == 'checked') {
                     //BUSCA PLANEJAMENTO
                     Equipe.find({
-                        user: _id, $or: [{ pla0: pessoa.nome }, { pla1: pessoa.nome }, { pla2: pessoa.nome }, { pla3: pessoa.nome }, { pla4: pessoa.nome }, { pla5: pessoa.nome },
+                        user: id, $or: [{ pla0: pessoa.nome }, { pla1: pessoa.nome }, { pla2: pessoa.nome }, { pla3: pessoa.nome }, { pla4: pessoa.nome }, { pla5: pessoa.nome },
                         { vis0: pessoa.nome }, { vis1: pessoa.nome }, { vis2: pessoa.nome }, { vis3: pessoa.nome }, { vis4: pessoa.nome }, { vis5: pessoa.nome }], 'nome': { $exists: false }
                     }).lean().then((equipe) => {
                         if (equipe != '' && typeof equipe != 'undefined') {
@@ -4026,7 +4245,7 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
                 } else {
                     if (pessoa.funpro == 'checked') {
                         //BUSCA PROJETISTA
-                        Equipe.find({ user: _id, $or: [{ pro0: pessoa.nome }, { pro1: pessoa.nome }, { pro2: pessoa.nome }, { pro3: pessoa.nome }, { pro4: pessoa.nome }, { pro5: pessoa.nome }], 'nome': { $exists: false } }).lean().then((equipe_pro) => {
+                        Equipe.find({ user: id, $or: [{ pro0: pessoa.nome }, { pro1: pessoa.nome }, { pro2: pessoa.nome }, { pro3: pessoa.nome }, { pro4: pessoa.nome }, { pro5: pessoa.nome }], 'nome': { $exists: false } }).lean().then((equipe_pro) => {
                             if (equipe_pro != '' && typeof equipe_pro != 'undefined') {
                                 equipe_pro.forEach(element => {
                                     console.log('entrou projetista')
@@ -4085,7 +4304,7 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
                         if (pessoa.funins == 'checked') {
                             //BUSCA INSTALADORES
                             Equipe.find({
-                                user: _id, $or: [{ ate0: pessoa.nome }, { ate1: pessoa.nome }, { ate2: pessoa.nome }, { ate3: pessoa.nome }, { ate4: pessoa.nome }, { ate5: pessoa.nome },
+                                user: id, $or: [{ ate0: pessoa.nome }, { ate1: pessoa.nome }, { ate2: pessoa.nome }, { ate3: pessoa.nome }, { ate4: pessoa.nome }, { ate5: pessoa.nome },
                                 { inv0: pessoa.nome }, { inv1: pessoa.nome }, { inv2: pessoa.nome }, { inv3: pessoa.nome }, { inv4: pessoa.nome }, { inv5: pessoa.nome },
                                 { pnl0: pessoa.nome }, { pnl1: pessoa.nome }, { pnl2: pessoa.nome }, { pnl3: pessoa.nome }, { pnl4: pessoa.nome }, { pnl5: pessoa.nome },
                                 { eae0: pessoa.nome }, { eae1: pessoa.nome }, { eae2: pessoa.nome }, { eae3: pessoa.nome }, { eae4: pessoa.nome }, { eae5: pessoa.nome },
@@ -4269,7 +4488,7 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
     })
     /*
     //BUSCA INVERSOR
-    Equipe.find({ user: _id, $or: [{ inv0: pessoa.nome }, { inv1: pessoa.nome }, { inv2: pessoa.nome }, { inv3: pessoa.nome }, { inv4: pessoa.nome }, { inv5: pessoa.nome }] }).lean().then((equipe) => {
+    Equipe.find({ user: id, $or: [{ inv0: pessoa.nome }, { inv1: pessoa.nome }, { inv2: pessoa.nome }, { inv3: pessoa.nome }, { inv4: pessoa.nome }, { inv5: pessoa.nome }] }).lean().then((equipe) => {
         console.log('entrou inversor')
         console.log('equipe=>' + equipe)
         if (equipe != '' && typeof equipe != 'undefined') {
@@ -4321,7 +4540,7 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
         res.redirect('/pessoa/consulta')
     })
     //BUSCA PAINEL
-    Equipe.find({ user: _id, $or: [{ pnl0: pessoa.nome }, { pnl1: pessoa.nome }, { pnl2: pessoa.nome }, { pnl3: pessoa.nome }, { pnl4: pessoa.nome }, { pnl5: pessoa.nome }] }).lean().then((equipe) => {
+    Equipe.find({ user: id, $or: [{ pnl0: pessoa.nome }, { pnl1: pessoa.nome }, { pnl2: pessoa.nome }, { pnl3: pessoa.nome }, { pnl4: pessoa.nome }, { pnl5: pessoa.nome }] }).lean().then((equipe) => {
         console.log('entrou painel')
         console.log('equipe=>' + equipe)
         if (equipe != '' && typeof equipe != 'undefined') {
@@ -4373,7 +4592,7 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
         res.redirect('/pessoa/consulta')
     })
     //BUSCA ARMAZENAMENTO
-    Equipe.find({ user: _id, $or: [{ eae0: pessoa.nome }, { eae1: pessoa.nome }, { eae2: pessoa.nome }, { eae3: pessoa.nome }, { eae4: pessoa.nome }, { eae5: pessoa.nome }] }).lean().then((equipe) => {
+    Equipe.find({ user: id, $or: [{ eae0: pessoa.nome }, { eae1: pessoa.nome }, { eae2: pessoa.nome }, { eae3: pessoa.nome }, { eae4: pessoa.nome }, { eae5: pessoa.nome }] }).lean().then((equipe) => {
         console.log('entrou armazenagem')
         console.log('equipe=>' + equipe)
         if (equipe != '' && typeof equipe != 'undefined') {
@@ -4425,7 +4644,7 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
         res.redirect('/pessoa/consulta')
     })
     //BUSCA INSTALAÇÃO
-    Equipe.find({ user: _id, $or: [{ ins0: pessoa.nome }, { ins1: pessoa.nome }, { ins2: pessoa.nome }, { ins3: pessoa.nome }, { ins4: pessoa.nome }, { ins5: pessoa.nome }] }).lean().then((equipe) => {
+    Equipe.find({ user: id, $or: [{ ins0: pessoa.nome }, { ins1: pessoa.nome }, { ins2: pessoa.nome }, { ins3: pessoa.nome }, { ins4: pessoa.nome }, { ins5: pessoa.nome }] }).lean().then((equipe) => {
         console.log('entrou instalação')
         console.log('equipe=>' + equipe)
         if (equipe != '' && typeof equipe != 'undefined') {
@@ -4477,7 +4696,7 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
         res.redirect('/pessoa/consulta')
     })
     //BUSCA VISTORIA
-    Equipe.find({ user: _id, $or: [{ vis0: pessoa.nome }, { vis1: pessoa.nome }, { vis2: pessoa.nome }, { vis3: pessoa.nome }, { vis4: pessoa.nome }, { vis5: pessoa.nome }] }).lean().then((equipe) => {
+    Equipe.find({ user: id, $or: [{ vis0: pessoa.nome }, { vis1: pessoa.nome }, { vis2: pessoa.nome }, { vis3: pessoa.nome }, { vis4: pessoa.nome }, { vis5: pessoa.nome }] }).lean().then((equipe) => {
         console.log('entrou vistoria')
         console.log('equipe=>' + equipe)
         if (equipe != '' && typeof equipe != 'undefined') {
@@ -4533,6 +4752,14 @@ router.get('/vermais/:id', ehAdmin, (req, res) => {
 
 router.post('/novo', uploadfoto.single('foto'), ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
     var maninv
     var subcom
     var repequ
@@ -4665,7 +4892,7 @@ router.post('/novo', uploadfoto.single('foto'), ehAdmin, (req, res) => {
             insres = 'checked'
         } else {
             insres = 'unchecked'
-        }        
+        }
         //Validandofunção eletricista
         if (req.body.funele != null) {
             funele = 'checked'
@@ -4702,7 +4929,7 @@ router.post('/novo', uploadfoto.single('foto'), ehAdmin, (req, res) => {
             custo = 0
         }
         const pessoa = {
-            user: _id,
+            user: id,
             nome: req.body.nome,
             custo: custo,
             endereco: req.body.endereco,
@@ -4737,7 +4964,7 @@ router.post('/novo', uploadfoto.single('foto'), ehAdmin, (req, res) => {
             } else {
                 sucesso.push({ texto: 'Pessoa adicionada com sucesso' })
             }
-            Pessoa.findOne({ user: _id }).sort({ field: 'asc', _id: -1 }).lean().then((pessoa) => {
+            Pessoa.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).lean().then((pessoa) => {
                 res.render('mdo/editpessoas', { sucesso, pessoa })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar a pessoa')
@@ -4885,7 +5112,7 @@ router.post('/editar', uploadfoto.single('foto'), ehAdmin, (req, res) => {
             insres = 'checked'
         } else {
             insres = 'unchecked'
-        }        
+        }
         //Validando função eletricista
         if (req.body.funele != null) {
             funele = 'checked'
@@ -4972,6 +5199,14 @@ router.post('/editar', uploadfoto.single('foto'), ehAdmin, (req, res) => {
 
 router.post('/filtrar', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
     var cidade = req.body.cidade
     var uf = req.body.uf
     var nome = req.body.nome
@@ -5008,12 +5243,12 @@ router.post('/filtrar', ehAdmin, (req, res) => {
     console.log('cidade=>' + cidade)
 
     if (nome != '' && uf != '' && cidade != '' && funcao != 'Todos') {
-        Pessoa.find({ nome: new RegExp(nome), uf: new RegExp(uf), cidade: new RegExp(cidade), funins: funins, funges: funges, funeng: funeng, funpro: funpro, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
+        Pessoa.find({ nome: new RegExp(nome), uf: new RegExp(uf), cidade: new RegExp(cidade), funins: funins, funges: funges, funeng: funeng, funpro: funpro, ehVendedor: ehVendedor, user: id }).lean().then((pessoas) => {
             res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
         })
     } else {
         if (nome == '' && cidade == '' && uf == '' && funcao == 'Todos') {
-            Pessoa.find({ user: _id }).lean().then((pessoas) => {
+            Pessoa.find({ user: id }).lean().then((pessoas) => {
                 res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
             })
         } else {
@@ -5021,31 +5256,31 @@ router.post('/filtrar', ehAdmin, (req, res) => {
             if (funcao == 'Todos') {
 
                 if (nome == '' && cidade == '') {
-                    Pessoa.find({ uf: new RegExp(uf), user: _id }).lean().then((pessoas) => {
+                    Pessoa.find({ uf: new RegExp(uf), user: id }).lean().then((pessoas) => {
                         res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
                     })
                 } else {
                     if (nome == '' && uf == '') {
-                        Pessoa.find({ cidade: new RegExp(cidade), user: _id }).lean().then((pessoas) => {
+                        Pessoa.find({ cidade: new RegExp(cidade), user: id }).lean().then((pessoas) => {
                             res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
                         })
                     } else {
                         if (cidade == '' && uf == '') {
-                            Pessoa.find({ nome: new RegExp(nome), user: _id }).lean().then((pessoas) => {
+                            Pessoa.find({ nome: new RegExp(nome), user: id }).lean().then((pessoas) => {
                                 res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
                             })
                         } else {
                             if (cidade == '') {
-                                Pessoa.find({ nome: new RegExp(nome), uf: new RegExp(uf), user: _id }).lean().then((pessoas) => {
+                                Pessoa.find({ nome: new RegExp(nome), uf: new RegExp(uf), user: id }).lean().then((pessoas) => {
                                     res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
                                 })
                             } else {
                                 if (uf == '') {
-                                    Pessoa.find({ nome: new RegExp(nome), cidade: new RegExp(cidade), user: _id }).lean().then((pessoas) => {
+                                    Pessoa.find({ nome: new RegExp(nome), cidade: new RegExp(cidade), user: id }).lean().then((pessoas) => {
                                         res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
                                     })
                                 } else {
-                                    Pessoa.find({ cidade: new RegExp(cidade), uf: new RegExp(uf), user: _id }).lean().then((pessoas) => {
+                                    Pessoa.find({ cidade: new RegExp(cidade), uf: new RegExp(uf), user: id }).lean().then((pessoas) => {
                                         res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
                                     })
                                 }
@@ -5057,36 +5292,36 @@ router.post('/filtrar', ehAdmin, (req, res) => {
             } else {
                 if (nome == '' && cidade == '' && uf == '') {
                     console.log('achou')
-                    Pessoa.find({ funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
+                    Pessoa.find({ funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: id }).lean().then((pessoas) => {
                         res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
                     })
                 } else {
                     if (nome == '' && cidade == '') {
-                        Pessoa.find({ uf: new RegExp(uf), funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
+                        Pessoa.find({ uf: new RegExp(uf), funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: id }).lean().then((pessoas) => {
                             res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
                         })
                     } else {
                         if (nome == '' && uf == '') {
-                            Pessoa.find({ cidade: new RegExp(cidade), funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
+                            Pessoa.find({ cidade: new RegExp(cidade), funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: id }).lean().then((pessoas) => {
                                 res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
                             })
                         } else {
                             if (cidade == '' && uf == '') {
-                                Pessoa.find({ nome: new RegExp(nome), funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
+                                Pessoa.find({ nome: new RegExp(nome), funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: id }).lean().then((pessoas) => {
                                     res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
                                 })
                             } else {
                                 if (cidade == '') {
-                                    Pessoa.find({ nome: new RegExp(nome), uf: new RegExp(uf), funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
+                                    Pessoa.find({ nome: new RegExp(nome), uf: new RegExp(uf), funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: id }).lean().then((pessoas) => {
                                         res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
                                     })
                                 } else {
                                     if (uf == '') {
-                                        Pessoa.find({ nome: new RegExp(nome), cidade: new RegExp(cidade), funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
+                                        Pessoa.find({ nome: new RegExp(nome), cidade: new RegExp(cidade), funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: id }).lean().then((pessoas) => {
                                             res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
                                         })
                                     } else {
-                                        Pessoa.find({ cidade: new RegExp(cidade), uf: new RegExp(uf), funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: _id }).lean().then((pessoas) => {
+                                        Pessoa.find({ cidade: new RegExp(cidade), uf: new RegExp(uf), funins: funins, funges: funges, funeng: funeng, funpro: funpro, funele: funele, ehVendedor: ehVendedor, user: id }).lean().then((pessoas) => {
                                             res.render('mdo/findpessoas', { pessoas: pessoas, cidade: cidade, uf: uf, nome: nome, funcao: funcao })
                                         })
                                     }

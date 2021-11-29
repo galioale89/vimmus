@@ -21,6 +21,11 @@ const Equipe = new Schema({
     ref: 'tarefas',
     require: false
   },
+  insres: {
+    type: Schema.Types.ObjectId,
+    ref: 'pessoa',
+    require: false
+  },
   nome_projeto: {
     type: String,
     require: false
@@ -69,6 +74,36 @@ const Equipe = new Schema({
     type: String,
     require: false
   },
+  idins0: {
+    type: Schema.Types.ObjectId,
+    ref: 'pessoa',
+    require: false
+  },
+  idins1: {
+    type: Schema.Types.ObjectId,
+    ref: 'pessoa',
+    require: false
+  },
+  idins2: {
+    type: Schema.Types.ObjectId,
+    ref: 'pessoa',
+    require: false
+  },
+  idins3: {
+    type: Schema.Types.ObjectId,
+    ref: 'pessoa',
+    require: false
+  },
+  idins4: {
+    type: Schema.Types.ObjectId,
+    ref: 'pessoa',
+    require: false
+  },
+  idins5: {
+    type: Schema.Types.ObjectId,
+    ref: 'pessoa',
+    require: false
+  },  
   ele0: {
     type: String,
     require: false

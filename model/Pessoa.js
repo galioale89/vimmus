@@ -27,6 +27,10 @@ const Pessoa = new Schema({
         type: String,
         require: true
     },    
+    insres: {
+        type: String,
+        require: true
+    },
     crea:{
         type: String,
         require: true

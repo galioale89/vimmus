@@ -47,6 +47,10 @@ const Fornecedor = new Schema({
         type: String,
         require: true,
     },
+    prazo: {
+        type: Number,
+        require: true,
+    },
     data: {
         type: Date,
         default: Date.now()

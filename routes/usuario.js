@@ -47,27 +47,58 @@ router.get('/novousuario/:id', ehAdmin, (req, res) => {
 
 router.get('/editar/:id', ehAdmin, (req, res) => {
     const { ehAdmin } = req.user
+    const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user=='undefined'){
+        id = _id
+    }else{
+        id = user
+    }
+    var mostraDetalhes = false
+    if (ehAdmin == 0) {
+        ehUserMaster = true
+    } else {
+        ehUserMaster = false
+    }
+    if (typeof user != 'undefined'){
+        mostraDetalhes = true
+    }
     Acesso.findOne({ _id: req.params.id }).lean().then((acesso) => {
-        //console.log(acesso)
+        console.log(acesso)
         if (acesso == null) {
-            //console.log('usuario')
-            Usuario.findOne({ _id: req.params.id }).lean().then((usuario) => {
-                if (ehAdmin == 0) {
-                    ehUserMaster = true
-                } else {
-                    ehUserMaster = false
-                }
-                res.render('usuario/editregistro', { usuario, ehUserMaster })
+            
+            Usuario.findOne({ _id: req.params.id }).lean().then((usuario_acesso) => {
+                console.log('usuario_acesso.nome=>'+usuario_acesso.nome)
+                
+                Pessoa.findOne({user: id, nome: usuario_acesso.nome}).lean().then((usuario)=>{
+                    console.log('usuario=>'+usuario)
+                res.render('usuario/editregistro', { usuario_acesso, ehUserMaster, mostraDetalhes, usuario })
+                }).catch((err)=>{
+                    req.flash('error_msg','Não foi possível encontrar a pessoa vinculada ao usuário.')
+                    res.redirect('/administrador/acesso')
+                })
+            }).catch((err)=>{
+                req.flash('error_msg','Não foi possível encontrar o usuário.')
+                res.redirect('/administrador/acesso')
             })
         } else {
-            //console.log('acesso')
-            if (ehAdmin == 0) {
-                ehUserMaster = true
-            } else {
-                ehUserMaster = false
-            }
-            res.render('usuario/editregistro', { usuario: acesso, ehUserMaster })
+            console.log('id=>'+id)
+            console.log('acesso.usuario=>'+acesso.pessoa)
+            Pessoa.findOne({user: id, _id: acesso.pessoa}).lean().then((usuario)=>{
+                console.log('usuario=>'+usuario)
+                console.log('mostraDetalhes=>'+mostraDetalhes)
+                console.log('mostraDetalhes=>'+mostraDetalhes)
+                res.render('usuario/editregistro', { usuario_acesso: acesso, ehUserMaster, mostraDetalhes, usuario })
+                }).catch((err)=>{
+                    req.flash('error_msg','Não foi possível encontrar a pessoa vinculada ao usuário.')
+                    res.redirect('/administrador/acesso')
+                })
         }
+    }).catch((err)=>{
+        req.flash('error_msg','Não foi possível encontrar o usuário de acesso.')
+        res.redirect('/administrador/acesso')
     })
 })
 

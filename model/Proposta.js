@@ -16,12 +16,34 @@ const Proposta = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'pessoa',
         require: false,
-    },    
+    },   
+    resins: {
+        type: Schema.Types.ObjectId,
+        ref: 'pessoa',
+        require: false,
+    },         
     equipe: {
         type: Schema.Types.ObjectId,
         ref: 'equipe',
         require: false,
     },    
+    empresa: {
+        type: Schema.Types.ObjectId,
+        ref: 'empresa',
+        require: false,
+    },
+    endereco:{
+        type: String,
+        require: false
+    },
+    uf:{
+        type: String,
+        require: false
+    },
+    cidade:{
+        type: String,
+        require: false
+    },
     assinatura:{
         type: String,
         require: false

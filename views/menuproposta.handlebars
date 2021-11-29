@@ -21,9 +21,9 @@
     cursor: pointer;
   }
 
-  .swal-wide{
-    width:850px !important;
-}
+  .swal-wide {
+    width: 850px !important;
+  }
 </style>
 <div class="modal fade" id="atrasados" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -101,74 +101,77 @@
     <input type='hidden' name='dtiass[]' value='{{assinado}}'>
     <input type='hidden' name='dliins[]' value='{{dliins}}'>
     {{/each}}
-    {{#if block}}
-    {{else}}
-    <div class='col-md-2'>
-      {{nome}}
-      <div class="menu" style="height:100%">
-        {{!-- <img src='img/logovimmus.png' height="75" width="100" style="padding-left: 10%;" /> --}}
-        <div class="menu-interno">
-          <div class='titulo-inicio text-left'> CADASTROS</div>
-          <div class="row mb-2">
-            <div class="text-start">
-              <a href="/cliente/novo" class="contorno-menu"><i class='bi bi-person-plus'></i> Cliente</a>
-              <a href="/cliente/consulta" class="botaomenu text-start"> <i class='bi bi-search'></i> </a>
+    <div class='btn-group gap-2 col-12' style="margin-left: 10px;">
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+          style='font-size: 10px'>Menu</button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+          {{#if block}}
+          {{else}}
+          <div style='padding-left: 20px;width: 200px;'>
+            <div class='titulo-inicio text-left'> CADASTROS</div>
+            <div class="row mb-2">
+              <div class="text-start">
+                <a href="/cliente/novo" class="contorno-menu"><i class='bi bi-person-plus'></i> Cliente</a>
+                <a href="/cliente/consulta" class="botaomenu text-start"> <i class='bi bi-search'></i> </a>
+              </div>
             </div>
-          </div>
-          <div class="row mb-2">
-            <div class="text-start">
-              <a href="/gerenciamento/proposta" class="contorno-menu"><i class='bi bi-file-arrow-up'></i> Proposta</a>
-              <a href="/gerenciamento/consulta" class="botaomenu"> <i class='bi bi-search'></i> </a>
+            <div class="row mb-2">
+              <div class="text-start">
+                <a href="/gerenciamento/proposta" class="contorno-menu"><i class='bi bi-file-arrow-up'></i>
+                  Proposta</a>
+                <a href="/gerenciamento/consulta" class="botaomenu"> <i class='bi bi-search'></i> </a>
+              </div>
             </div>
-          </div>
-          <div class="row mb-2">
-            <div class="text-start">
-              <a href='/pessoa/novo' class="contorno-menu"><i class='bi bi-person-plus'></i> Pessoas</a>
-              <a href='/pessoa/consulta' class="botaomenu"><i class='bi bi-search'></i> </a>
+            <div class="row mb-2">
+              <div class="text-start">
+                <a href='/pessoa/novo' class="contorno-menu"><i class='bi bi-person-plus'></i> Pessoas</a>
+                <a href='/pessoa/consulta' class="botaomenu"><i class='bi bi-search'></i> </a>
+              </div>
             </div>
-          </div>
-          <div class="row mb-2">
-            <div class="text-start">
-              <a href='/fornecedor/novo' class="contorno-menu"><i class='bi bi-file-arrow-up'></i>Fornecedor</a>
-              <a href='/fornecedor/consulta' class="botaomenu"><i class='bi bi-search'></i></a>
+            <div class="row mb-2">
+              <div class="text-start">
+                <a href='/fornecedor/novo' class="contorno-menu"><i class='bi bi-file-arrow-up'></i>Fornecedor</a>
+                <a href='/fornecedor/consulta' class="botaomenu"><i class='bi bi-search'></i></a>
+              </div>
             </div>
-          </div>
-          <div style="margin-bottom: 1%;margin-top: 6%;">
-            <a href='/gerenciamento/plano' class="relatorio titulo-relatorio" style="padding-right: 20%;"><i
-                class="bi bi-file-arrow-up"></i> Planos</a>
-          </div>
-          <div style="margin-bottom: 1%;margin-top: 6%;">
-            <a href='/pessoa/consultaequipepadrao/' class="relatorio titulo-relatorio" style="padding-right: 20%;"><i
-                class="bi bi-people"></i> Equipe
-              Padrão</a>
-          </div>
-          <div class='titulo-inicio text-left mt-4'>CONFIGURAÇÕES</div>
-          <div class="row mb-2">
-            <div class="text-start">
-              <a href='/configuracao/addempresa' class="contorno-menu"><i class='bi bi-calculator'></i> Empresa </a>
-              <a href='/configuracao/consultaempresa' class="botaomenu"><i class='bi bi-search'></i></a>
+            <div style="margin-bottom: 1%;margin-top: 6%;">
+              <a href='/gerenciamento/plano' class="relatorio titulo-relatorio" style="padding-right: 20%;"><i
+                  class="bi bi-file-arrow-up"></i> Planos</a>
             </div>
-          </div>
-          <div class="row mb-2">
-            <div class="text-start">
-              <a href='/configuracao/novo' class="contorno-menu"><i class='bi bi-clock'></i> Básicas</a>
-              <a href='/configuracao/consulta' class="botaomenu"><i class='bi bi-search'></i> </a>
+            <div style="margin-bottom: 1%;margin-top: 6%;">
+              <a href='/pessoa/consultaequipepadrao/' class="relatorio titulo-relatorio" style="padding-right: 20%;"><i
+                  class="bi bi-people"></i> Equipe
+                Padrão</a>
             </div>
-          </div>
+            <div class='titulo-inicio text-left mt-2'>CONFIGURAÇÕES</div>
+            <div class="row mb-2">
+              <div class="text-start">
+                <a href='/configuracao/addempresa' class="contorno-menu"><i class='bi bi-calculator'></i> Empresa </a>
+                <a href='/configuracao/consultaempresa' class="botaomenu"><i class='bi bi-search'></i></a>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="text-start">
+                <a href='/configuracao/novo' class="contorno-menu"><i class='bi bi-clock'></i> Básicas</a>
+                <a href='/configuracao/consulta' class="botaomenu"><i class='bi bi-search'></i> </a>
+              </div>
+            </div>
 
-          <div class='titulo-inicio mt-3'>FERRAMENTAS</div>
-          <div class="menu-interno" style="padding-right: 5px;">
+            <div class='titulo-inicio mt-2'>FERRAMENTAS</div>
             <div style="margin-top: 6%;margin-bottom: 7%;">
               <a href='/gerenciamento/agenda' class="relatorio titulo-relatorio"><i class='bi bi-columns'></i>
-                Agenda</a><br>
+                Manutenção</a><br>
             </div>
             <div style="margin-top: 6%;margin-bottom: 7%;">
-              <a href='/gerenciamento/cenarios' class="relatorio titulo-relatorio"><i class='bi bi-display'></i> Análise
+              <a href='/gerenciamento/cenarios' class="relatorio titulo-relatorio"><i class='bi bi-display'></i>
+                Análise
                 de
                 Cenários</a>
             </div>
             <div style="margin-bottom: 7%;">
-              <a href='/usuario/editar/{{id}}' class="relatorio titulo-relatorio"><i class="bi bi-house-fill"></i> Minha
+              <a href='/usuario/editar/{{id}}' class="relatorio titulo-relatorio"><i class="bi bi-house-fill"></i>
+                Minha
                 Conta</a>
             </div>
 
@@ -187,15 +190,18 @@
             </div>
             {{/if}}
             {{#if owner}}
-            <div style="margin-bottom: 7%;margin-top: 10%">
+            <div style="margin-bottom: 7%;margin-top: 8%">
               <a href='/administrador' class="relatorio titulo-relatorio"> Novos</a>
             </div>
             {{/if}}
           </div>
-        </div>
+          {{/if}}
+        </ul>
       </div>
+      <a class="btn btn-sm btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#atrasados"> Propostas Vencidas e
+        a Vencer</a>
+      <a href='/gerenciamento/emandamento/lista' class="btn btn-sm btn-primary mb-1"> Instalações em Andamento</a>
     </div>
-    {{/if}}
     <div class='col-md-2 mt-3'>
       <div class="text-center">
         <div class="row">
@@ -229,14 +235,8 @@
           </div>
         </div>
       </div>
-      <br>
-      <div class="row">
-        <a class="btn btn-sm btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#atrasados"> Propostas Vencidas e
-          a Vencer</a>
-        <a href='/gerenciamento/emandamento' class="btn btn-sm btn-primary mb-1"> Instalações em Andamento</a>          
-      </div>
     </div>
-    <div class='{{#if block}}col-md-10{{else}}col-md-8{{/if}}'>
+    <div class='{{#if block}}col-md-10{{else}}col-md-10{{/if}}'>
       <div class='row' style="height: 100%;">
         <div class='quadro-scroll' style="margin-left: 5px;height: 100%;">
           <div class="row">
@@ -248,7 +248,7 @@
                 <tr class='contorno-titulo' style='border-bottom: rgba(40,55,89,0.1) solid 1px;'>
                   <th>Cliente</th>
                   <th>Telefone</th>
-                  <th>E-mail</th>
+                  {{!-- <th>E-mail</th> --}}
                   {{!-- <th>Estágio</th> --}}
                   <th></th>
                 </tr>
@@ -256,7 +256,7 @@
                 <tr>
                   <td>{{cliente}}</td>
                   <td>{{telefone}}</td>
-                  <td>{{email}}</td>
+                  {{!-- <td>{{email}}</td> --}}
                   {{#if block}}
                   {{else}}
                   <td style="padding-top: 3px;">
@@ -284,7 +284,7 @@
                   <th>Status</th>
                   <th>Cliente</th>
                   <th>Telefone</th>
-                  <th>E-mail</th>
+                  {{!-- <th>E-mail</th> --}}
                   {{!-- <th>Estágio</th> --}}
                   {{#if block}}
                   {{else}}
@@ -296,7 +296,7 @@
                   <td>{{status}}</td>
                   <td>{{cliente}}</td>
                   <td>{{telefone}}</td>
-                  <td>{{email}}</td>
+                  {{!-- <td>{{email}}</td> --}}
                   <td style="padding-top: 3px;">
                     <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
                       {{#if block}}
@@ -330,7 +330,7 @@
 
   const wrapperini = document.createElement('div');
   var htmlpro = ''
-  if (cliav.length > 0){
+  if (cliav.length > 0) {
     htmlpro = '<h5>Propostas a 1 (um) dia de vencer </h5><br><table style="font-size:15px"><tr><th style="width: 10%;text-align:center">Cliente</th><th style="width: 10%;text-align:center">Data Validade</th><th style="width: 10%;text-align:center">Opções</th></tr><tr>'
   }
   var htmlfim = '</table>'
@@ -341,9 +341,9 @@
   for (var x = 0; x < cliins.length; x++) {
     txtins = txtins + '<tr><td>' + cliins[i].value + '</td><td>' + dtiass[i].value + '</td><td>' + dliins[i].value + '</td><td><a href="/gerenciamento/proposta/' + idins[i].value + '"><i style="color: rgb(44,55,89)" class="bi bi-pen icone-tabela"></i></a></td></tr>'
   }
-  if (cliav.length > 0){
-  wrapperini.innerHTML = htmlpro + txt + htmlfim + '<hr>' + htmlins + txtins + htmlfim
-  }else{
+  if (cliav.length > 0) {
+    wrapperini.innerHTML = htmlpro + txt + htmlfim + '<hr>' + htmlins + txtins + htmlfim
+  } else {
     wrapperini.innerHTML = htmlins + txtins + htmlfim
   }
 

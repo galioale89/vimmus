@@ -24,7 +24,15 @@ router.get('/addempresa', ehAdmin, (req, res) => {
 
 router.get('/consulta', ehAdmin, (req, res) => {
     const { _id } = req.user
-    Configuracao.find({ user: _id }).sort({ data: 'desc' }).lean().then((configuracoes) => {
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+    Configuracao.find({ user: id }).sort({ data: 'desc' }).lean().then((configuracoes) => {
         res.render('configuracao/findconfiguracao', { configuracoes: configuracoes })
     }).catch((err) => {
         req.flash('error_msg', 'Nenhum projeto encontrado')
@@ -34,7 +42,15 @@ router.get('/consulta', ehAdmin, (req, res) => {
 
 router.get('/consultaempresa', ehAdmin, (req, res) => {
     const { _id } = req.user
-    Empresa.find({ user: _id }).sort({ data: 'desc' }).lean().then((empresa) => {
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+    Empresa.find({ user: id }).sort({ data: 'desc' }).lean().then((empresa) => {
         res.render('configuracao/findempresa', { empresa })
     }).catch((err) => {
         req.flash('error_msg', 'Nenhum empresa encontrado')
@@ -154,7 +170,7 @@ router.get('/editempresa/:id', ehAdmin, (req, res) => {
         //console.log('labelDAS=>' + labelDAS)
         //console.log('labelMEI=>' + labelMEI)
         //console.log(empresa.regime)
-        
+
         res.render('configuracao/empresa', {
             empresa, checkQtd, checkKwp, typeKwp, typeQtd, displayKwp, displayQtd,
             alqIRPJ, alqIRPJAdd, alqPIS, alqCOFINS, alqCSLL, alqDAS, dasMEI,
@@ -188,6 +204,14 @@ router.get('/removeempresa/:id', ehAdmin, (req, res) => {
 
 router.post('/addempresa', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
 
     var erros = []
 
@@ -259,7 +283,7 @@ router.post('/addempresa', ehAdmin, (req, res) => {
             tipodesp = 'potencia'
         }
         const empresa = {
-            user: _id,
+            user: id,
             nome: req.body.nome,
             cnpj: req.body.cnpj,
             endereco: req.body.endereco,
@@ -289,7 +313,7 @@ router.post('/addempresa', ehAdmin, (req, res) => {
         }
 
         new Empresa(empresa).save().then(() => {
-            Empresa.findOne({ user: _id }).sort({ field: 'asc', _id: -1 }).then((empresa) => {
+            Empresa.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((empresa) => {
                 req.flash('success_msg', 'Configurações de tributos salvas com sucesso')
                 res.redirect('/configuracao/editempresa/' + empresa._id)
             }).catch((err) => {
@@ -306,6 +330,14 @@ router.post('/addempresa', ehAdmin, (req, res) => {
 
 router.post('/novo', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
 
     if (req.body.hrstrb == '') {
         erros.push({ texto: 'É necessário preencher as horas trabalhadas dos instaladores.' })
@@ -332,7 +364,7 @@ router.post('/novo', ehAdmin, (req, res) => {
         erros.push({ texto: 'É necessário preencher os minutos para a instalação do painél elétrico.' })
     }
     const configuracao = {
-        user: _id,
+        user: id,
         slug: req.body.slug,
         minatr: req.body.minatr,
         minest: req.body.minest,
@@ -352,7 +384,7 @@ router.post('/novo', ehAdmin, (req, res) => {
     }
 
     new Configuracao(configuracao).save().then(() => {
-        Configuracao.findOne({ user: _id }).sort({ field: 'asc', _id: -1 }).then((config) => {
+        Configuracao.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((config) => {
             req.flash('success_msg', 'Configurações salvas com sucesso')
             res.redirect('/configuracao/editconfiguracao/' + config._id)
         }).catch((err) => {

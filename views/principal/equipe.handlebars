@@ -183,7 +183,7 @@
                                 style="color: white">Instaladores Disponíveis</label>
                             <div style="overflow-y: scroll;max-height: 200px;">
                                 {{#each fora_ins}}
-                                <div class="list-item" style='color: black;' draggable="true">{{nome}}<a
+                                <div class="list-item" style='color: black;' draggable="true"  name='{{id}}'>{{nome}}<a
                                         href='/gerenciamento/vermais/{{id}}' style="padding-left: 5px;"><i
                                             class='bi bi-eye'></i></a>
                                 </div>
@@ -194,10 +194,10 @@
                             <label class="col-form-label col-form-label-sm fw-bold text-center"
                                 style="color: white">Instaladores Alocados</label>
                             {{#each dentro_ins}}
-                            <div class="item-instalacao" style='color: black;' draggable="true">{{nome}}<a
+                            <div class="item-instalacao" style='color: black;' draggable="true"  name='{{id}}'>{{nome}}<a
                                     href='/gerenciamento/vermais/{{id}}' style="padding-left: 5px;"><i
                                         class='bi bi-eye'></i></a>
-                            <input type='hidden' name='custo' value='{{custo}}'>
+                                <input type='hidden' name='custo' value='{{custo}}'>
                             </div>
                             {{/each}}
                         </div>
@@ -220,8 +220,8 @@
                 </select>
             </div>
             <div class="col-md-1">
-                <button type="submit" class='btn btn-success' onclick="getItemValueIns()">Aplicar</button>
-            </div>            
+                <button type="submit" class='btn btn-success' onclick="getItemValue()">Aplicar</button>
+            </div>
             <div class='col-md-2'>
                 <a href='/gerenciamento/enviarequipe/{{proposta._id}}' class="btn btn-primary">{{#if
                     lista_equipe.liberar}}
@@ -232,7 +232,13 @@
             <input type='hidden' class='ins2' name='ins2' id='ins2' value=''>
             <input type='hidden' class='ins3' name='ins3' id='ins3' value=''>
             <input type='hidden' class='ins4' name='ins4' id='ins4' value=''>
-            <input type='hidden' class='ins5' name='ins5' id='ins5' value=''>           
+            <input type='hidden' class='ins5' name='ins5' id='ins5' value=''>
+            <input type='hidden' name='idins0' id='idins0' value=''>
+            <input type='hidden' name='idins1' id='idins1' value=''>
+            <input type='hidden' name='idins2' id='idins2' value=''>
+            <input type='hidden' name='idins3' id='idins3' value=''>
+            <input type='hidden' name='idins4' id='idins4' value=''>
+            <input type='hidden' name='idins5' id='idins5' value=''>
         </div>
     </form>
 </div>
@@ -331,45 +337,51 @@
         }
     }
 
-    function getItemValueIns() {
-
-        var ins0 = 0
-        var ins1 = 0
-        var ins2 = 0
-        var ins3 = 0
-        var ins4 = 0
-        var ins5 = 0
-
-        const item = document.querySelectorAll('.item-instalacao');
-        for (i = 0; i < item.length; i++) {
-            const insitem = document.getElementsByClassName(item[i].getAttribute('class'));
-            var element = insitem[i].innerText;
-            switch (i) {
-                case 0:
-                    insdes = document.getElementById('ins0');
-                    insdes.value = element
-                    break;
-                case 1:
-                    var insdes = document.getElementById('ins1');
-                    insdes.value = element
-                    break;
-                case 2:
-                    var insdes = document.getElementById('ins2');
-                    insdes.value = element
-                    break;
-                case 3:
-                    var insdes = document.getElementById('ins3');
-                    insdes.value = element
-                    break;
-                case 4:
-                    var insdes = document.getElementById('ins4');
-                    insdes.value = element
-                    break;
-                case 5:
-                    var insdes = document.getElementById('ins5');
-                    insdes.value = element
-                    break;
-            }
-        }
+    function getItemValue() {
+    const item = document.querySelectorAll('.item-instalacao');
+    for (i = 0; i < item.length; i++) {
+      const insitem = document.getElementsByClassName(item[i].getAttribute('class'));
+      var element = insitem[i].innerText
+      var ins = insitem[i].getAttribute('name')
+      alert(ins)
+      switch (i) {
+        case 0:
+          var insdes = document.getElementById('ins0')
+          var idins = document.getElementById('idins0')
+          insdes.value = element
+          idins.value = ins
+          break;
+        case 1:
+          var insdes = document.getElementById('ins1')
+          var idins = document.getElementById('idins1')
+          insdes.value = element
+          idins.value = ins
+          break;
+        case 2:
+          var insdes = document.getElementById('ins2')
+          var idins = document.getElementById('idins2')
+          insdes.value = element
+          idins.value = ins
+          break;
+        case 3:
+          var insdes = document.getElementById('ins3')
+          var idins = document.getElementById('idins3')
+          insdes.value = element
+          idins.value = ins
+          break;
+        case 4:
+          var insdes = document.getElementById('ins4')
+          var idins = document.getElementById('idins4')
+          insdes.value = element
+          idins.value = ins
+          break;
+        case 5:
+          var insdes = document.getElementById('ins5')
+          var idins = document.getElementById('idins5')
+          insdes.value = element
+          idins.value = ins
+          break;
+      }
     }
+  }
 </script>

@@ -140,7 +140,7 @@
         dtvalida6.value = ano + '-' + mes + '-' + dia
     }
 
-    function editarLocal(){
+    function editarLocal() {
         var labelCidade = document.getElementById('labelCidade')
         var labelUf = document.getElementById('labelUf')
         var cidade = document.getElementById('cidade')
@@ -148,7 +148,7 @@
         var br0 = document.getElementById('br0')
         var br1 = document.getElementById('br1')
         var checkLocal = document.getElementById('checkLocal')
-        
+
         if (checkLocal.checked) {
             labelCidade.style.display = 'none'
             labelUf.style.display = 'none'
@@ -156,7 +156,7 @@
             br1.style.display = 'none'
             cidade.style.display = 'flex'
             estado.style.display = 'flex'
-        
+
         } else {
             labelCidade.style.display = ''
             labelUf.style.display = ''
@@ -250,14 +250,14 @@
         {{/if}}
     </div>
 
-    <div class="row mt-2">
-        <div class="col-md-2 text-end">
-            <label class='col-form-label fw-bold mb-1'>Cliente: </label><br>
-            <label class='col-form-label fw-bold mt-2 mb-2'>Local: </label><br>
-            <label class='col-form-label fw-bold m-1 mb-3'>Gestor Responsável: </label><br>
-        </div>
-        <div class="col-md-9 text-start">
-            <form action='/gerenciamento/proposta' method='post'>
+    <form action='/gerenciamento/proposta' method='post'>
+        <div class="row mt-2">
+            <div class="col-md-2 text-end">
+                <label class='col-form-label fw-bold mb-1'>Cliente: </label><br>
+                <label class='col-form-label fw-bold mt-2 mb-2'>Local: </label><br>
+            </div>
+            <div class="col-md-9 text-start">
+
                 <input type='hidden' name='id' value='{{proposta._id}}'>
                 <select class='form-select' name='cliente'>
                     <option class='fw-bold' value='{{cliente.proposta._id}}'>{{cliente_proposta.nome}}</option>
@@ -270,7 +270,9 @@
                 <div class='row'>
                     <div class='col-md-4'>
                         <label>Endereço</label>
-                        <input class='form-control' type='text' name='endereco' {{#if proposta.endereco}}value='{{proposta.endereco}}'{{else}}value='{{cliente_proposta.endereco}}'{{/if}}>
+                        <input class='form-control' type='text' name='endereco' {{#if
+                            proposta.endereco}}value='{{proposta.endereco}}'
+                            {{else}}value='{{cliente_proposta.endereco}}' {{/if}}>
                     </div>
                     <div class='col'>
                         <label>Estado</label>
@@ -281,7 +283,7 @@
                             class='form-select mb-1'></select>
                     </div>
                     <div class='col'>
-                        <label>Cidade</label>                      
+                        <label>Cidade</label>
                         <div id='br1' style="display: {{mostraLabel}}"></div>
                         <label style='display: {{mostraLabel}}' id='labelCidade' class='col-form-label mb-1'>{{#if
                             proposta.cidade}}{{proposta.cidade}}{{else}}{{cliente_proposta.cidade}}{{/if}}</label><br>
@@ -295,6 +297,17 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class='col-md-1 mt-2'>
+                <button class='btn btn-success' style='padding-top: 15px;padding-bottom: 15px;; margin-top: 40%;'
+                    type='submit'>Próximo</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class='col-md-2 text-end'>
+                <label class='col-form-label fw-bold m-1 mb-3'>Gestor Responsável: </label><br>
+            </div>
+            <div class='col-md-4'>
                 <select class='form-select mt-1' name='responsavel'>
                     <option class='fw-bold' value='{{res_proposta._id}}'>{{res_proposta.nome}}</option>
                     {{#each todos_responsaveis}}
@@ -303,14 +316,22 @@
                     <option>Sem responsáveis cadastrados</option>
                     {{/each}}
                 </select><br>
-
+            </div>
+            <div class='col-md-1 text-end'>
+                <label class='col-form-label fw-bold m-1 mb-3'>Empresa: </label>
+            </div>
+            <div class='col-md-4'>
+                <select class='form-select mt-1' name='empresa'>
+                    <option class='fw-bold' value='{{emp_proposta._id}}'>{{emp_proposta.nome}}</option>
+                    {{#each todas_empresas}}
+                    <option value='{{_id}}'>{{nome}}</option>
+                    {{else}}
+                    <option>Sem empresas cadastradas</option>
+                    {{/each}}
+                </select><br>
+            </div>
         </div>
-        <div class='col-md-1 mt-2'>
-            <button class='btn btn-success' style='padding-top: 15px;padding-bottom: 15px;; margin-top: 40%;'
-                type='submit'>Próximo</button>
-        </div>
-        </form>
-    </div>
+    </form>
     <div class='row'>
         <div class='col-md-2 text-end'>
             <label class='col-form-label fw-bold mt-3 mb-3'>Proposta 1:</label><br>

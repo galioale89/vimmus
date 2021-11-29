@@ -29,7 +29,16 @@ router.get('/novo/:id', ehAdmin, (req, res) => {
 })
 
 router.get('/consulta/', ehAdmin, (req, res) => {
-    Fornecedor.find().lean().then((fornecedor) => {
+    const { _id } = req.user
+    const {user} = req.user
+    var id
+
+    if(typeof user == 'undefined'){
+        id = _id
+    }else{
+        id = user
+    }
+    Fornecedor.find({user: id}).lean().then((fornecedor) => {
         res.render('fornecedor/consulta', { fornecedor })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar o fornecedor.')
@@ -68,17 +77,21 @@ router.post('/salvar', ehAdmin, (req, res) => {
         // console.log('req.body.id=>'+req.body.id)
         if (req.body.id != '') {
             console.log('entrou')
+            
             Fornecedor.findOne({ _id: req.body.id }).then((fornecedor) => {
                 fornecedor.nome = req.body.nome
                 fornecedor.razao = req.body.razao
                 fornecedor.cnpj = req.body.cnpj
                 fornecedor.endereco = req.body.endereco
+                if (req.body.cidade){
                 fornecedor.cidade = req.body.cidade
                 fornecedor.uf = req.body.uf
+                }
                 fornecedor.cep = req.body.cep
                 fornecedor.contato = req.body.contato
                 fornecedor.telefone = req.body.telefone
                 fornecedor.observacao = req.body.observacao
+                fornecedor.prazo = req.body.prazo
                 fornecedor.save().then(() => {
                     res.redirect('/fornecedor/novo/' + req.body.id )
                 }).catch((err) => {
@@ -102,6 +115,7 @@ router.post('/salvar', ehAdmin, (req, res) => {
                 contato: req.body.contato,
                 telefone: req.body.telefone,
                 observacao: req.body.observacao,
+                fornecedor: req.body.prazo,
                 data: dataHoje()
             }
             new Fornecedor(comp).save().then(() => {
