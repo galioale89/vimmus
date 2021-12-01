@@ -93,6 +93,9 @@
       </div>
     </div>
   </div>
+  <lable class='col-form-label fw-bold' style="line-height: 30px;padding-left: 15px">{{saudacao}}{{nome_lista}}</lable>
+  {{#if block}}
+  {{else}}
   <div class='row mt-1' style="width: 100%;font-size: 12px;">
     {{#each deadlineIns}}
     <input type='hidden' name='idins[]' value='{{id}}'>
@@ -103,11 +106,9 @@
     {{/each}}
     <div class='btn-group gap-2 col-12' style="margin-left: 10px;">
       <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+        <button class="btn btn-secondary dropdown-toggle fw-bold" type="button" data-bs-toggle="dropdown" aria-expanded="false"
           style='font-size: 10px'>Menu</button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-          {{#if block}}
-          {{else}}
           <div style='padding-left: 20px;width: 200px;'>
             <div class='titulo-inicio text-left'> CADASTROS</div>
             <div class="row mb-2">
@@ -195,13 +196,14 @@
             </div>
             {{/if}}
           </div>
-          {{/if}}
         </ul>
       </div>
+
       <a class="btn btn-sm btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#atrasados"> Propostas Vencidas e
         a Vencer</a>
       <a href='/gerenciamento/emandamento/lista' class="btn btn-sm btn-primary mb-1"> Instalações em Andamento</a>
     </div>
+    {{/if}}
     <div class='col-md-2 mt-3'>
       <div class="text-center">
         <div class="row">

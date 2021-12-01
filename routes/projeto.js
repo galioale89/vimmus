@@ -50,7 +50,7 @@ const Compra = mongoose.model('compra')
 const Documento = mongoose.model('documento')
 const Posvenda = mongoose.model('posvenda')
 
-const validaCampos = require('../resources/validaCampos')
+// const validaCampos = require('../resources/validaCampos')
 const dataBusca = require('../resources/dataBusca')
 const comparaDatas = require('../resources/comparaDatas')
 const validaCronograma = require('../resources/validaCronograma')
@@ -2859,7 +2859,8 @@ router.post("/novo", ehAdmin, (req, res) => {
           }
           //console.log('req.body.id_dimensionamento=>' + req.body.id_dime)
           if (!req.body.id_dime) {
-               if ((req.body.potencia_dime == '' && validaCampos(req.body.potencia).length > 0) || validaCampos(req.body.nome).length > 0) {
+               // if ((req.body.potencia_dime == '' && validaCampos(req.body.potencia).length > 0) || validaCampos(req.body.nome).length > 0) {
+                    if (req.body.potencia_dime == ''){
                     erros.push({ texto: 'O preenchimento dos campos de nome e potencia são obrigatórios.' })
                     erros_semdim = erros_semdim + 'O preenchimento dos campos de nome e potencia são obrigatórios.'
                }
