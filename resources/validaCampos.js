@@ -1,13 +1,9 @@
-
-var validaCampos = function(campo){
-     
-    var erros = []
-    
-    if (!campo || typeof campo == undefined || campo == null){
-        erros.push({texto: 'Inválido'})     
+var validaCampos = function (campo) {
+    if (campo != null && campo != '' && typeof campo != 'undefined') {
+        return true
+    } else {
+        return false
     }
-    
-    return erros
 }
 
 module.exports = validaCampos
