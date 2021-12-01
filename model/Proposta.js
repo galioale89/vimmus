@@ -152,8 +152,12 @@ const Proposta = new Schema({
         type: Boolean,
         require:false        
     },    
+    datacad:{
+        type: Number,
+        require:false   
+    },    
     data:{
-        type: String,
+        type: Number,
         require:false   
     }       
 })
