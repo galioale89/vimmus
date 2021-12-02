@@ -83,10 +83,11 @@ const dataBusca = require('../resources/dataBusca')
 const liberaRecursos = require('../resources/liberaRecursos')
 const setData = require('../resources/setData')
 const dataMensagem = require('../resources/dataMensagem')
+const dataMsgNum = require('../resources/dataMsgNum')
 const validaCronograma = require('../resources/validaCronograma')
 const dataHoje = require('../resources/dataHoje')
 const filtrarProposta = require('../resources/filtrar')
-const validaCampos = require('../resources/validaCampos')
+const naoVazio = require('../resources/naoVazio')
 
 
 const { ehAdmin } = require('../helpers/ehAdmin')
@@ -97,6 +98,7 @@ const { ehAdmin } = require('../helpers/ehAdmin')
 // router.use(express.static('public/upload'))
 
 const TextMessageService = require('comtele-sdk').TextMessageService
+const e = require('connect-flash')
 const apiKey = "8dbd4fb5-79af-45d6-a0b7-583a3c2c7d30"
 
 router.use(express.static(path.join(__dirname, 'public')))
@@ -119,10 +121,11 @@ router.get('/consulta', ehAdmin, (req, res) => {
     var status = ''
     var lista = []
     var q = 0
-    var dtcadastro = '0000-00-00'
+    var dtcadastro = '00000000'
     var dtinicio = '0000-00-00'
     var dtfim = '0000-00-00'
     var responsavel
+    var nome_insres
 
     Cliente.find({ user: id }).lean().then((todos_clientes) => {
         Pessoa.find({ user: id, funges: 'checked' }).lean().then((todos_responsaveis) => {
@@ -130,108 +133,73 @@ router.get('/consulta', ehAdmin, (req, res) => {
                 Proposta.find({ user: id }).sort({ datacad: 'asc' }).then((proposta) => {
                     //console.log('proposta._id=>'+proposta._id)
                     if (proposta != '') {
-                        proposta.forEach((element) => {
-                            Proposta.findOne({ _id: element._id }).then((lista_proposta) => {
-                                Cliente.findOne({ _id: element.cliente }).then((lista_cliente) => {
-                                    Equipe.findOne({ _id: element.equipe }).then((equipe) => {
-                                        Pessoa.findOne({ _id: equipe.insres }).lean().then((insres) => {
-                                            Pessoa.findOne({ _id: element.responsavel }).then((lista_responsavel) => {
-                                                Documento.findOne({ proposta: element._id }).then((documento) => {
-                                                    Compra.findOne({ proposta: element._id }).then((compra) => {
-                                                        Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
-                                                            Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
-                                                                q++
-                                                                //console.log('lista_proposta=>' + lista_proposta._id)
-                                                                if (typeof lista_proposta.dtcadastro6 != 'undefined' && lista_proposta.dtcadastro6 != '' && lista_proposta.dtcadastro6 != null) {
-                                                                    dtcadastro = lista_proposta.dtcadastro6
-                                                                } else {
-                                                                    if (typeof lista_proposta.dtcadastro5 != 'undefined' && lista_proposta.dtcadastro5 != '' && lista_proposta.dtcadastro5 != null) {
-                                                                        dtcadastro = lista_proposta.dtcadastro5
-                                                                    } else {
-                                                                        if (typeof lista_proposta.dtcadastro4 != 'undefined' && lista_proposta.dtcadastro4 != '' && lista_proposta.dtcadastro4 != null) {
-                                                                            dtcadastro = lista_proposta.dtcadastro4
-                                                                        } else {
-                                                                            if (typeof lista_proposta.dtcadastro3 != 'undefined' && lista_proposta.dtcadastro3 != '' && lista_proposta.dtcadastro3 != null) {
-                                                                                dtcadastro = lista_proposta.dtcadastro3
-                                                                            } else {
-                                                                                if (typeof lista_proposta.dtcadastro2 != 'undefined' && lista_proposta.dtcadastro2 != '' && lista_proposta.dtcadastro2 != null) {
-                                                                                    dtcadastro = lista_proposta.dtcadastro2
-                                                                                } else {
-                                                                                    //console.log('lista_proposta.dtcadastro1 =>' + lista_proposta.dtcadastro1)
-                                                                                    if (typeof lista_proposta.dtcadastro1 != 'undefined' && lista_proposta.dtcadastro1 != '' && lista_proposta.dtcadastro1 != null) {
-                                                                                        dtcadastro = lista_proposta.dtcadastro1
-                                                                                    } else {
-                                                                                        dtcadastro = '0000-00-00'
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                                //console.log('dtcadastro=>' + dtcadastro)
-                                                                //console.log('equipe=>' + equipe)
-                                                                //console.log('documento=>' + documento)
-                                                                //console.log('compra=>' + compra)
-                                                                //console.log('lista_proposta=>' + lista_proposta)
-                                                                //console.log('equipe.feito=>' + equipe.feito)
-                                                                //console.log('documento.protocolado=>' + documento.protocolado)
-                                                                //console.log('documento.feitotrt=>' + documento.feitotrt)
-                                                                //console.log('compra.feitonota=>' + compra.feitonota)
-                                                                //console.log('compra.feitopedido =>' + compra.feitopedido)
-                                                                //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
-                                                                //console.log('ganho=>' + lista_proposta.ganho)
+                        proposta.forEach((e) => {
+                            Cliente.findOne({ _id: e.cliente }).then((lista_cliente) => {
+                                Equipe.findOne({ _id: e.equipe }).then((equipe) => {
+                                    Pessoa.findOne({ _id: equipe.insres }).then((insres) => {
+                                        Pessoa.findOne({ _id: e.responsavel }).then((lista_responsavel) => {
+                                            Documento.findOne({ proposta: e._id }).then((documento) => {
+                                                Compra.findOne({ proposta: e._id }).then((compra) => {
+                                                    Vistoria.findOne({ proposta: e._id }).then((vistoria) => {
+                                                        Posvenda.findOne({ proposta: e._id }).then((posvenda) => {
+                                                            q++
+                                                            //console.log('e.datacad=>' + e.datacad)
+                                                            if (naoVazio(e.datacad)) {
+                                                                dtcadastro = e.datacad
+                                                            } else {
+                                                                dtcadastro = '00000000'
+                                                            }
 
-                                                                if (lista_proposta.ganho == true) {
-                                                                    if (lista_proposta.encerrado == true) {
-                                                                        status = 'Encerrado'
+                                                            if (e.ganho == true) {
+                                                                if (e.encerrado == true) {
+                                                                    status = 'Encerrado'
+                                                                    dtinicio = equipe.dtinicio
+                                                                    dtfim = equipe.dtfim
+                                                                } else {
+                                                                    if (posvenda.feito == true) {
+                                                                        status = 'Pós-Venda'
                                                                         dtinicio = equipe.dtinicio
                                                                         dtfim = equipe.dtfim
                                                                     } else {
-                                                                        if (posvenda.feito == true) {
-                                                                            status = 'Pós-Venda'
+                                                                        if (documento.feitofaturado == true) {
+                                                                            status = 'Faturado'
                                                                             dtinicio = equipe.dtinicio
                                                                             dtfim = equipe.dtfim
                                                                         } else {
-                                                                            if (documento.feitofaturado == true) {
-                                                                                status = 'Faturado'
+                                                                            if (documento.feitoalmox == true) {
+                                                                                status = 'Almoxarifado Fechado'
                                                                                 dtinicio = equipe.dtinicio
                                                                                 dtfim = equipe.dtfim
                                                                             } else {
-                                                                                if (documento.feitoalmox == true) {
-                                                                                    status = 'Almoxarifado Fechado'
+                                                                                if (documento.enviaalmox == true) {
+                                                                                    status = 'Almoxarifado Em Aberto'
                                                                                     dtinicio = equipe.dtinicio
                                                                                     dtfim = equipe.dtfim
                                                                                 } else {
-                                                                                    if (documento.enviaalmox == true) {
-                                                                                        status = 'Almoxarifado Em Aberto'
+                                                                                    if (equipe.feito == true) {
+                                                                                        status = 'Execução a Campo'
                                                                                         dtinicio = equipe.dtinicio
                                                                                         dtfim = equipe.dtfim
                                                                                     } else {
-                                                                                        if (equipe.feito == true) {
-                                                                                            status = 'Execução a Campo'
-                                                                                            dtinicio = equipe.dtinicio
-                                                                                            dtfim = equipe.dtfim
+                                                                                        if (documento.protocolado == true) {
+                                                                                            status = 'Protocolado'
                                                                                         } else {
-                                                                                            if (documento.protocolado == true) {
-                                                                                                status = 'Protocolado'
+                                                                                            if (documento.feitotrt == true) {
+                                                                                                status = 'TRT'
                                                                                             } else {
-                                                                                                if (documento.feitotrt == true) {
-                                                                                                    status = 'TRT'
+                                                                                                if (compra.feitonota == true) {
+                                                                                                    status = 'NF'
                                                                                                 } else {
-                                                                                                    if (compra.feitonota == true) {
-                                                                                                        status = 'NF'
+                                                                                                    if (compra.feitopedido == true) {
+                                                                                                        status = 'Pedido'
                                                                                                     } else {
-                                                                                                        if (compra.feitopedido == true) {
-                                                                                                            status = 'Pedido'
+                                                                                                        if (e.assinado == true) {
+                                                                                                            status = 'Contrato'
                                                                                                         } else {
-                                                                                                            if (lista_proposta.assinado == true) {
-                                                                                                                status = 'Contrato'
+                                                                                                            if (vistoria.feito == true) {
+                                                                                                                status = 'Vistoria'
                                                                                                             } else {
-                                                                                                                if (vistoria.feito == true) {
-                                                                                                                    status = 'Vistoria'
-                                                                                                                } else {
-                                                                                                                    status = 'Preparado para a Vistoria'
-                                                                                                                }
+                                                                                                                status = 'Preparado para a Vistoria'
                                                                                                             }
                                                                                                         }
                                                                                                     }
@@ -243,257 +211,73 @@ router.get('/consulta', ehAdmin, (req, res) => {
                                                                             }
                                                                         }
                                                                     }
-                                                                } else {
-                                                                    status = 'Proposta Enviada'
                                                                 }
+                                                            } else {
+                                                                status = 'Proposta Enviada'
+                                                            }
 
-                                                                if (typeof dtfim == 'undefined') {
-                                                                    dtfim = '0000-00-00'
-                                                                }
-                                                                if (typeof dtinicio == 'undefined') {
-                                                                    dtinicio = '0000-00-00'
-                                                                }
+                                                            if (typeof dtfim == 'undefined') {
+                                                                dtfim = '0000-00-00'
+                                                            }
+                                                            if (typeof dtinicio == 'undefined') {
+                                                                dtinicio = '0000-00-00'
+                                                            }
 
-                                                                if (lista_responsavel != null) {
-                                                                    responsavel = lista_responsavel.nome
-                                                                } else {
-                                                                    responsavel = ''
-                                                                }
-                                                                //console.log('responsavel=>' + responsavel)
-                                                                //console.log('q=>' + q)
-                                                                //console.log('proposta.length=>' + proposta.length)
+                                                            if (naoVazio(lista_responsavel)) {
+                                                                responsavel = lista_responsavel.nome
+                                                            } else {
+                                                                responsavel = ''
+                                                            }
 
-                                                                lista.push({ s: status, id: lista_proposta._id, cliente: lista_cliente.nome, responsavel, nome_insres: insres.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
-                                                                if (q == proposta.length) {
-                                                                    res.render('principal/consulta', { lista, todos_clientes, todos_responsaveis, todas_empresas })
-                                                                }
-                                                            }).catch((err) => {
-                                                                req.flash('error_msg', 'Nenhum pós venda encontrado.')
-                                                                res.redirect('/gerenciamento/consulta')
-                                                            })
+                                                            if (naoVazio(insres)) {
+                                                                nome_insres = insres.nome
+                                                            } else {
+                                                                nome_insres = ''
+                                                            }
+                                                            //console.log('responsavel=>' + responsavel)
+                                                            //console.log('q=>' + q)
+                                                            //console.log('proposta.length=>' + proposta.length)
+
+                                                            lista.push({ s: status, id: e._id, cliente: lista_cliente.nome, responsavel, nome_insres, cadastro: dataMsgNum(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
+                                                            if (q == proposta.length) {
+                                                                res.render('principal/consulta', { lista, todos_clientes, todos_responsaveis, todas_empresas })
+                                                            }
                                                         }).catch((err) => {
-                                                            req.flash('error_msg', 'Nenhuma vistoria encontrada.')
+                                                            req.flash('error_msg', 'Nenhum pós venda encontrado.')
                                                             res.redirect('/gerenciamento/consulta')
                                                         })
                                                     }).catch((err) => {
-                                                        req.flash('error_msg', 'Nenhuma compra encontrada.')
+                                                        req.flash('error_msg', 'Nenhuma vistoria encontrada.')
                                                         res.redirect('/gerenciamento/consulta')
                                                     })
                                                 }).catch((err) => {
-                                                    req.flash('error_msg', 'Nenhum documento encontrado.')
+                                                    req.flash('error_msg', 'Nenhuma compra encontrada.')
                                                     res.redirect('/gerenciamento/consulta')
                                                 })
                                             }).catch((err) => {
-                                                req.flash('error_msg', 'Nenhuma responsável pela gestão encontrado.')
+                                                req.flash('error_msg', 'Nenhum documento encontrado.')
                                                 res.redirect('/gerenciamento/consulta')
                                             })
                                         }).catch((err) => {
-                                            req.flash('error_msg', 'Nenhum técnico responsável encontrado.')
+                                            req.flash('error_msg', 'Nenhuma responsável pela gestão encontrado.')
                                             res.redirect('/gerenciamento/consulta')
                                         })
                                     }).catch((err) => {
-                                        req.flash('error_msg', 'Nenhuma equipe encontrada.')
+                                        req.flash('error_msg', 'Nenhum técnico responsável encontrado.')
                                         res.redirect('/gerenciamento/consulta')
                                     })
                                 }).catch((err) => {
-                                    req.flash('error_msg', 'Nenhum cliente encontrado.')
+                                    req.flash('error_msg', 'Nenhuma equipe encontrada.')
                                     res.redirect('/gerenciamento/consulta')
                                 })
                             }).catch((err) => {
-                                req.flash('error_msg', 'Nenhuma proposta encontrada.')
+                                req.flash('error_msg', 'Nenhum cliente encontrado.')
                                 res.redirect('/gerenciamento/consulta')
                             })
                         })
                     } else {
                         res.render('principal/consulta', { lista, todos_clientes, todos_responsaveis })
                     }
-                    // } else {
-                    //     //console.log(user)
-                    //     if (user != '') {
-                    //         Proposta.find({ user: user }).sort({ dataord: 'asc' }).then((proposta) => {
-                    //             Cliente.find({ user: user }).lean().then((todos_clientes) => {
-                    //                 Pessoa.find({ user: user, funges: 'checked' }).lean().then((todos_responsaveis) => {
-                    //                     if (proposta != '') {
-                    //                         proposta.forEach((element) => {
-                    //                             Proposta.findOne({ _id: element._id }).then((lista_proposta) => {
-                    //                                 Cliente.findOne({ _id: element.cliente }).then((lista_cliente) => {
-                    //                                     Equipe.findOne({ _id: element.equipe }).then((equipe) => {
-                    //                                         Documento.findOne({ proposta: element._id }).then((documento) => {
-                    //                                             Compra.findOne({ proposta: element._id }).then((compra) => {
-                    //                                                 Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
-                    //                                                     Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
-                    //                                                         //console.log('posvenda=>' + posvenda)
-                    //                                                         if (typeof lista_proposta.dtcadastro6 != 'undefined' && lista_proposta.dtcadastro6 != '' && lista_proposta.dtcadastro6 != null) {
-                    //                                                             dtcadastro = lista_proposta.dtcadastro6
-                    //                                                         } else {
-                    //                                                             if (typeof lista_proposta.dtcadastro5 != 'undefined' && lista_proposta.dtcadastro5 != '' && lista_proposta.dtcadastro5 != null) {
-                    //                                                                 dtcadastro = lista_proposta.dtcadastro5
-                    //                                                             } else {
-                    //                                                                 if (typeof lista_proposta.dtcadastro4 != 'undefined' && lista_proposta.dtcadastro4 != '' && lista_proposta.dtcadastro4 != null) {
-                    //                                                                     dtcadastro = lista_proposta.dtcadastro4
-                    //                                                                 } else {
-                    //                                                                     if (typeof lista_proposta.dtcadastro3 != 'undefined' && lista_proposta.dtcadastro3 != '' && lista_proposta.dtcadastro3 != null) {
-                    //                                                                         dtcadastro = lista_proposta.dtcadastro3
-                    //                                                                     } else {
-                    //                                                                         if (typeof lista_proposta.dtcadastr2 != 'undefined' && lista_proposta.dtcadastr2 != '' && lista_proposta.dtcadastr2 != null) {
-                    //                                                                             dtcadastro = lista_proposta.dtcadastro2
-                    //                                                                         } else {
-                    //                                                                             //console.log('lista_proposta.dtcadastro1 =>' + lista_proposta.dtcadastro1)
-                    //                                                                             if (typeof lista_proposta.dtcadastro1 != 'undefined' && lista_proposta.dtcadastro1 != '' && lista_proposta.dtcadastro1 != null) {
-                    //                                                                                 dtcadastro = lista_proposta.dtcadastro1
-                    //                                                                             } else {
-                    //                                                                                 dtcadastro = '0000-00-00'
-                    //                                                                             }
-                    //                                                                         }
-                    //                                                                     }
-                    //                                                                 }
-                    //                                                             }
-                    //                                                         }
-                    //                                                         //console.log('dtcadastro=>'+dtcadastro)
-                    //                                                         //console.log('equipe=>' + equipe)
-                    //                                                         //console.log('documento=>' + documento)
-                    //                                                         //console.log('compra=>' + compra)
-                    //                                                         //console.log('lista_proposta=>' + lista_proposta)
-                    //                                                         //console.log('equipe.feito=>' + equipe.feito)
-                    //                                                         //console.log('documento.protocolado=>' + documento.protocolado)
-                    //                                                         //console.log('documento.feitotrt=>' + documento.feitotrt)
-                    //                                                         //console.log('compra.feitonota=>' + compra.feitonota)
-                    //                                                         //console.log('compra.feitopedido =>' + compra.feitopedido)
-                    //                                                         //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
-
-                    //                                                         if (lista_proposta.ganho == true) {
-                    //                                                             if (lista_proposta.encerrado == true) {
-                    //                                                                 status = 'Encerrado'
-                    //                                                                 dtinicio = equipe.dtinicio
-                    //                                                                 dtfim = equipe.dtfim
-                    //                                                             } else {
-                    //                                                                 if (posvenda.feito == true) {
-                    //                                                                     status = 'Pós-Venda'
-                    //                                                                     dtinicio = equipe.dtinicio
-                    //                                                                     dtfim = equipe.dtfim
-                    //                                                                 } else {
-                    //                                                                     if (documento.feitofaturado == true) {
-                    //                                                                         status = 'Faturado'
-                    //                                                                         dtinicio = equipe.dtinicio
-                    //                                                                         dtfim = equipe.dtfim
-                    //                                                                     } else {
-                    //                                                                         if (documento.feitoalmox == true) {
-                    //                                                                             status = 'Almoxarifado Fechado'
-                    //                                                                             dtinicio = equipe.dtinicio
-                    //                                                                             dtfim = equipe.dtfim
-                    //                                                                         } else {
-                    //                                                                             if (documento.enviaalmox == true) {
-                    //                                                                                 status = 'Almoxarifado Em Aberto'
-                    //                                                                                 dtinicio = equipe.dtinicio
-                    //                                                                                 dtfim = equipe.dtfim
-                    //                                                                             } else {
-                    //                                                                                 if (equipe.feito == true) {
-                    //                                                                                     status = 'Execução a Campo'
-                    //                                                                                     dtinicio = equipe.dtinicio
-                    //                                                                                     dtfim = equipe.dtfim
-                    //                                                                                 } else {
-                    //                                                                                     if (documento.protocolado == true) {
-                    //                                                                                         status = 'Protocolado'
-                    //                                                                                     } else {
-                    //                                                                                         if (documento.feitotrt == true) {
-                    //                                                                                             status = 'TRT'
-                    //                                                                                         } else {
-                    //                                                                                             if (compra.feitonota == true) {
-                    //                                                                                                 status = 'NF'
-                    //                                                                                             } else {
-                    //                                                                                                 if (compra.feitopedido == true) {
-                    //                                                                                                     status = 'Pedido'
-                    //                                                                                                 } else {
-                    //                                                                                                     if (lista_proposta.assinado == true) {
-                    //                                                                                                         status = 'Contrato'
-                    //                                                                                                     } else {
-                    //                                                                                                         if (vistoria.feito == true) {
-                    //                                                                                                             status = 'Vistoria'
-                    //                                                                                                         } else {
-                    //                                                                                                             status = 'Preparado para a Vistoria'
-                    //                                                                                                         }
-                    //                                                                                                     }
-                    //                                                                                                 }
-                    //                                                                                             }
-                    //                                                                                         }
-                    //                                                                                     }
-                    //                                                                                 }
-                    //                                                                             }
-                    //                                                                         }
-                    //                                                                     }
-                    //                                                                 }
-                    //                                                             }
-                    //                                                         } else {
-                    //                                                             status = 'Proposta Enviada'
-                    //                                                         }
-                    //                                                         if (typeof dtfim == 'undefined') {
-                    //                                                             dtinicio = '0000-00-00'
-                    //                                                             dtfim = '0000-00-00'
-                    //                                                         }
-                    //                                                         Pessoa.findOne({ _id: element.responsavel }).then((lista_responsavel) => {
-                    //                                                             if (lista_responsavel != null) {
-                    //                                                                 responsavel = lista_responsavel.nome
-                    //                                                             } else {
-                    //                                                                 responsavel = ''
-                    //                                                             }
-                    //                                                             //console.log('status=>' + status)
-                    //                                                             lista.push({ s: status, id: lista_proposta._id, cliente: lista_cliente.nome, responsavel, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
-                    //                                                             q++
-                    //                                                             //console.log('q=>' + q)
-                    //                                                             //console.log('proposta.length=>' + proposta.length)
-                    //                                                             if (q == proposta.length) {
-                    //                                                                 res.render('principal/consulta', { lista, todos_clientes, todos_responsaveis })
-                    //                                                             }
-                    //                                                         }).catch((err) => {
-                    //                                                             req.flash('error_msg', 'Nenhum pessoa encontrada.')
-                    //                                                             res.redirect('/gerenciamento/consulta')
-                    //                                                         })
-                    //                                                     }).catch((err) => {
-                    //                                                         req.flash('error_msg', 'Nenhum pós venda encontrado.')
-                    //                                                         res.redirect('/gerenciamento/consulta')
-                    //                                                     })
-                    //                                                 }).catch((err) => {
-                    //                                                     req.flash('error_msg', 'Nenhuma vistoria encontrada.')
-                    //                                                     res.redirect('/gerenciamento/consulta')
-                    //                                                 })
-                    //                                             }).catch((err) => {
-                    //                                                 req.flash('error_msg', 'Nenhuma compra encontrada.')
-                    //                                                 res.redirect('/gerenciamento/consulta')
-                    //                                             })
-                    //                                         }).catch((err) => {
-                    //                                             req.flash('error_msg', 'Nenhum documento encontrado.')
-                    //                                             res.redirect('/gerenciamento/consulta')
-                    //                                         })
-                    //                                     }).catch((err) => {
-                    //                                         req.flash('error_msg', 'Nenhuma equipe encontrada.')
-                    //                                         res.redirect('/gerenciamento/consulta')
-                    //                                     })
-
-                    //                                 }).catch((err) => {
-                    //                                     req.flash('error_msg', 'Nenhuma cliente encontrado.')
-                    //                                     res.redirect('/gerenciamento/consulta')
-                    //                                 })
-                    //                             }).catch((err) => {
-                    //                                 req.flash('error_msg', 'Nenhuma proposta encontrada.')
-                    //                                 res.redirect('/gerenciamento/consulta')
-                    //                             })
-                    //                         })
-                    //                     }
-                    //                 }).catch((err) => {
-                    //                     req.flash('error_msg', 'Nenhuma proposta encontrada.')
-                    //                     res.redirect('/gerenciamento/consulta')
-                    //                 })
-
-                    //             }).catch((err) => {
-                    //                 req.flash('error_msg', 'Nenhum responsável encontrado.')
-                    //                 res.redirect('/gerenciamento/consulta')
-                    //             })
-                    //         }).catch((err) => {
-                    //             req.flash('error_msg', 'Nenhum cliente encontrado.')
-                    //             res.redirect('/gerenciamento/consulta')
-                    //         })
-                    //     }
-                    // }
                 }).catch((err) => {
                     req.flash('error_msg', 'Nenhuma proposta encontrada.')
                     res.redirect('/gerenciamento/consulta')
@@ -535,110 +319,71 @@ router.get('/consulta/:tipo', ehAdmin, (req, res) => {
         Pessoa.find({ user: id, funges: 'checked' }).lean().then((todos_responsaveis) => {
             Empresa.find({ user: id }).lean().then((todas_empresas) => {
                 Proposta.find({ user: id }).sort({ datacad: 'asc' }).then((proposta) => {
-
                     if (proposta != '') {
-                        proposta.forEach((element) => {
-                            Proposta.findOne({ _id: element._id }).then((lista_proposta) => {
-                                Cliente.findOne({ _id: element.cliente }).then((lista_cliente) => {
-                                    Equipe.findOne({ _id: element.equipe }).then((equipe) => {
-                                        Pessoa.findOne({ _id: element.responsavel }).then((lista_responsavel) => {
-                                            Pessoa.findOne({ _id: equipe.insres }).then((insres) => {
-                                                q++
-                                                if (typeof lista_proposta.dtcadastro6 != 'undefined' && lista_proposta.dtcadastro6 != '' && lista_proposta.dtcadastro6 != null) {
-                                                    dtcadastro = lista_proposta.dtcadastro6
+                        proposta.forEach((e) => {
+                            Cliente.findOne({ _id: e.cliente }).then((lista_cliente) => {
+                                Equipe.findOne({ _id: e.equipe }).then((equipe) => {
+                                    Pessoa.findOne({ _id: e.responsavel }).then((lista_responsavel) => {
+                                        Pessoa.findOne({ _id: equipe.insres }).then((insres) => {
+                                            q++
+                                            if (naoVazio(e.datacad)) {
+                                                dtcadastro = e.datacad
+                                            } else {
+                                                dtcadastro = '00000000'
+                                            }
+
+                                            if (naoVazio(lista_responsavel)) {
+                                                responsavel = lista_responsavel.nome
+                                            } else {
+                                                responsavel = ''
+                                            }
+                                            //console.log('resposanvel1=>' + responsavel)
+
+                                            if (naoVazio(insres)) {
+                                                nome_insres = insres.nome
+                                            } else {
+                                                nome_insres = ''
+                                            }
+                                            //console.log('nome_insres=>' + nome_insres)
+                                            //console.log('resposanvel2=>' + responsavel)
+                                            if (e.feito == true && e.ganho == false && e.encerrado == false) {
+                                                listaOrcado.push({ id: e._id, cliente: lista_cliente.nome, responsavel, nome_insres, cadastro: dataMsgNum(dtcadastro), inicio: dataMensagem(equipe.dtinicio), fim: dataMensagem(equipe.dtfim) })
+                                            } else {
+                                                if (e.feito == true && e.ganho == true && e.encerrado == false) {
+                                                    listaAberto.push({ id: e._id, cliente: lista_cliente.nome, responsavel, nome_insres, cadastro: dataMsgNum(dtcadastro), inicio: dataMensagem(equipe.dtinicio), fim: dataMensagem(equipe.dtfim) })
                                                 } else {
-                                                    if (typeof lista_proposta.dtcadastro5 != 'undefined' && lista_proposta.dtcadastro5 != '' && lista_proposta.dtcadastro5 != null) {
-                                                        dtcadastro = lista_proposta.dtcadastro5
+                                                    listaEncerrado.push({ id: e._id, cliente: lista_cliente.nome, responsavel, nome_insres, cadastro: dataMsgNum(dtcadastro), inicio: dataMensagem(equipe.dtinicio), fim: dataMensagem(equipe.dtfim) })
+                                                }
+                                            }
+
+                                            //console.log('q=>' + q)
+                                            //console.log('req.params.tipo=>' + req.params.tipo)
+                                            if (q == proposta.length) {
+                                                if (req.params.tipo == 'orcado') {
+                                                    res.render('principal/consulta', { listaOrcado, todos_clientes, todos_responsaveis, todas_empresas, tipo: 'orcado', titulo: ': Orçamentos Enviados' })
+                                                } else {
+                                                    if (req.params.tipo == 'aberto') {
+                                                        res.render('principal/consulta', { listaAberto, todos_clientes, todos_responsaveis, todas_empresas, tipo: 'aberto', titulo: ': Em Aberto' })
                                                     } else {
-                                                        if (typeof lista_proposta.dtcadastro4 != 'undefined' && lista_proposta.dtcadastro4 != '' && lista_proposta.dtcadastro4 != null) {
-                                                            dtcadastro = lista_proposta.dtcadastro4
-                                                        } else {
-                                                            if (typeof lista_proposta.dtcadastro3 != 'undefined' && lista_proposta.dtcadastro3 != '' && lista_proposta.dtcadastro3 != null) {
-                                                                dtcadastro = lista_proposta.dtcadastro3
-                                                            } else {
-                                                                if (typeof lista_proposta.dtcadastr2 != 'undefined' && lista_proposta.dtcadastr2 != '' && lista_proposta.dtcadastr2 != null) {
-                                                                    dtcadastro = lista_proposta.dtcadastro2
-                                                                } else {
-                                                                    //console.log('lista_proposta.dtcadastro1 =>' + lista_proposta.dtcadastro1)
-                                                                    if (typeof lista_proposta.dtcadastro1 != 'undefined' && lista_proposta.dtcadastro1 != '' && lista_proposta.dtcadastro1 != null) {
-                                                                        dtcadastro = lista_proposta.dtcadastro1
-                                                                    } else {
-                                                                        dtcadastro = '0000-00-00'
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
+                                                        res.render('principal/consulta', { listaEncerrado, todos_clientes, todos_responsaveis, todas_empresas, tipo: 'encerrado', titulo: ': Encerrado' })
                                                     }
                                                 }
+                                            }
 
-                                                //console.log('element._id=>'+element._id)
-                                                //console.log('dtcadastro=>'+dtcadastro)
-                                                //console.log('lista_proposta.assinado=>' + lista_proposta.assinado)
-                                                //console.log('lista_proposta.feito=>' + lista_proposta.feito)
-                                                //console.log('lista_proposta.ganho=>' + lista_proposta.ganho)
-
-                                                //console.log('element.responsavel=>' + element.responsavel)
-                                                //console.log('equipe.dtinicio=>' + equipe.dtinicio)
-                                                //console.log('equipe.dtfim=>' + equipe.dtfim)
-
-                                                //console.log('equipe.insres =>' + equipe.insres )
-
-                                                if (lista_responsavel != null && lista_responsavel != '' && typeof lista_responsavel != 'undefined') {
-                                                    responsavel = lista_responsavel.nome
-                                                } else {
-                                                    responsavel = ''
-                                                }
-                                                //console.log('resposanvel1=>' + responsavel)
-
-                                                if (insres != null && insres != '' && typeof insres != 'undefined') {
-                                                    nome_insres = insres.nome
-                                                } else {
-                                                    nome_insres = ''
-                                                }
-                                                //console.log('nome_insres=>' + nome_insres)
-                                                //console.log('resposanvel2=>' + responsavel)
-                                                if (lista_proposta.feito == true && lista_proposta.ganho == false && lista_proposta.encerrado == false) {
-                                                    listaOrcado.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel, nome_insres, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(equipe.dtinicio), fim: dataMensagem(equipe.dtfim) })
-                                                } else {
-                                                    if (lista_proposta.feito == true && lista_proposta.ganho == true && lista_proposta.encerrado == false) {
-                                                        listaAberto.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel, nome_insres, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(equipe.dtinicio), fim: dataMensagem(equipe.dtfim) })
-                                                    } else {
-                                                        listaEncerrado.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel, nome_insres, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(equipe.dtinicio), fim: dataMensagem(equipe.dtfim) })
-                                                    }
-                                                }
-
-                                                //console.log('q=>' + q)
-                                                //console.log('req.params.tipo=>' + req.params.tipo)
-                                                if (q == proposta.length) {
-                                                    if (req.params.tipo == 'orcado') {
-                                                        res.render('principal/consulta', { listaOrcado, todos_clientes, todos_responsaveis, todas_empresas, tipo: 'orcado', titulo: ': Orçamentos Enviados' })
-                                                    } else {
-                                                        if (req.params.tipo == 'aberto') {
-                                                            res.render('principal/consulta', { listaAberto, todos_clientes, todos_responsaveis, todas_empresas, tipo: 'aberto', titulo: ': Em Aberto' })
-                                                        } else {
-                                                            res.render('principal/consulta', { listaEncerrado, todos_clientes, todos_responsaveis, todas_empresas, tipo: 'encerrado', titulo: ': Encerrado' })
-                                                        }
-                                                    }
-                                                }
-
-                                            }).catch((err) => {
-                                                req.flash('error_msg', 'Nenhum técnico responsável encontrado.')
-                                                res.redirect('/gerenciamento/consulta')
-                                            })
                                         }).catch((err) => {
-                                            req.flash('error_msg', 'Nenhuma gestor responsável encontrado.')
+                                            req.flash('error_msg', 'Nenhum técnico responsável encontrado.')
                                             res.redirect('/gerenciamento/consulta')
                                         })
                                     }).catch((err) => {
-                                        req.flash('error_msg', 'Nenhumaa equipe encontrada.')
+                                        req.flash('error_msg', 'Nenhum gestor responsável encontrado.')
                                         res.redirect('/gerenciamento/consulta')
                                     })
                                 }).catch((err) => {
-                                    req.flash('error_msg', 'Nenhuma cliente encontrado.')
+                                    req.flash('error_msg', 'Nenhumaa equipe encontrada.')
                                     res.redirect('/gerenciamento/consulta')
                                 })
                             }).catch((err) => {
-                                req.flash('error_msg', 'Nenhuma proposta encontrada.')
+                                req.flash('error_msg', 'Nenhuma cliente encontrado.')
                                 res.redirect('/gerenciamento/consulta')
                             })
                         })
@@ -705,6 +450,9 @@ router.post('/filtrar', ehAdmin, (req, res) => {
     var nome_insres = ''
     var responsavel = ''
     var status = ''
+    var idemp
+    var idres
+    var idcli
 
     var dtcadastro = '0000-00-00'
     var dtinicio = '0000-00-00'
@@ -712,9 +460,10 @@ router.post('/filtrar', ehAdmin, (req, res) => {
     var dataini = 0
     var datafim = 0
     var data = []
-    var busca = []
     var sql = []
-
+    var emandamento = []
+    var busca_equipe = []
+    var busca = []
 
     var respons
     var cliente
@@ -723,8 +472,8 @@ router.post('/filtrar', ehAdmin, (req, res) => {
 
     var q = 0
 
-    console.log('req.body.dataini=>' + req.body.dataini)
-    console.log('req.body.datafim=>' + req.body.datafim)
+    //console.log('req.body.dataini=>' + req.body.dataini)
+    //console.log('req.body.datafim=>' + req.body.datafim)
 
     if (req.body.dataini == '' || req.body.datafim == '' || (dataBusca(req.body.dataini) > dataBusca(req.body.datafim))) {
         req.flash('error_msg', 'Verificar as datas de busca escolhidas.')
@@ -749,199 +498,184 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                 dataini = dataBusca(req.body.dataini)
                 datafim = dataBusca(req.body.datafim)
 
-                console.log('dataini=>' + dataini)
-                console.log('datafim=>' + datafim)
-
+                //console.log('dataini=>' + dataini)
+                //console.log('datafim=>' + datafim)
                 data = { 'datacad': { $lte: datafim, $gte: dataini } }
 
-                // console.log('req.body.tipo=>' + req.body.tipo)
+                //console.log('req.body.tipo=>' + req.body.tipo)
                 if (req.body.tipo != '') {
-                    // console.log('req.body.tipo=>' + req.body.tipo)
+                    //console.log('req.body.tipo=>' + req.body.tipo)
 
                     sql = filtrarProposta(2, id, stats, respons, empresa, cliente, enviado, ganho, assinado, encerrado)
-                    busca = Object.assign(sql, data)
-                    // console.log('busca=>' + busca)
 
-                    Proposta.find(sql).sort({ datacad: 'asc' }).then((proposta) => {
-                        if (proposta != '') {
-                            proposta.forEach((element) => {
-                                // console.log('element._id=>' + element._id)
-                                Proposta.findOne({ _id: element._id }).then((lista_proposta) => {
-                                    Cliente.findOne({ _id: element.cliente }).then((lista_cliente) => {
-                                        Equipe.findOne({ _id: element.equipe }).then((equipe) => {
-                                            Pessoa.findOne({ _id: element.responsavel }).then((lista_responsavel) => {
-                                                Pessoa.findOne({ _id: equipe.insres }).then((insres) => {
-                                                    console.log('equipe=>' + equipe)
-                                                    console.log('insres=>' + insres)
-                                                    q++
-                                                    //console.log('lista_proposta=>' + lista_proposta._id)
-                                                    if (typeof lista_proposta.dtcadastro6 != 'undefined' && lista_proposta.dtcadastro6 != '' && lista_proposta.dtcadastro6 != null) {
-                                                        dtcadastro = lista_proposta.dtcadastro6
+                    if (req.body.tipo == 'emandamento') {
+                        emandamento = { ganho: true, encerrado: false }
+                        busca = Object.assign(sql, data, emandamento)
+                    } else {
+                        busca = Object.assign(sql, data)
+                    }
+
+                    //console.log('busca=>' + busca)
+
+                    Proposta.find(busca).sort({ datacad: 'asc' }).then((proposta) => {
+                        proposta.forEach((e) => {
+                            //console.log('e._id=>' + e._id)
+                            Cliente.findOne({ _id: e.cliente }).then((lista_cliente) => {
+                                if (req.body.tipo == 'emandamento') {
+                                    busca_equipe = { _id: e.equipe, feito: true, $and: [{ 'dtinicio': { $ne: '' } }, { 'dtinicio': { $ne: '0000-00-00' } }] }
+                                } else {
+                                    busca_equipe = { _id: e.equipe }
+                                }
+                                Equipe.findOne(busca_equipe).then((equipe) => {
+                                     Pessoa.findOne({ _id: e.responsavel }).then((lista_responsavel) => {
+                                         Pessoa.findOne({ _id: equipe.insres }).then((insres) => {
+                                //             //console.log('equipe=>' + equipe)
+                                //             //console.log('insres=>' + insres)
+                                             q++
+                                             if (naoVazio(e.datacad)) {
+                                                 dtcadastro = e.datacad
+                                             } else {
+                                                 dtcadastro = '00000000'
+                                             }
+
+                                             if (naoVazio(lista_responsavel)) {
+                                                 responsavel = lista_responsavel.nome
+                                             } else {
+                                                 responsavel = ''
+                                             }
+
+                                             if (naoVazio(insres)) {
+                                                 nome_insres = insres.nome
+                                             } else {
+                                                 nome_insres = ''
+                                             }
+
+                                             if (typeof equipe.dtinicio == 'undefined' || equipe.dtinicio == '' || equipe.dtinicio == null) {
+                                                 dtinicio = '0000-00-00'
+                                             } else {
+                                                 dtinicio = equipe.dtinicio
+                                             }
+
+                                            if (typeof equipe.dtfim == 'undefined' || equipe.dtfim == '' || equipe.dtfim == null) {
+                                                dtfim = '0000-00-00'
+                                            } else {
+                                                dtfim = equipe.dtfim
+                                            }
+                                            //console.log('req.body.tipo=>' + req.body.tipo)
+                                            if (req.body.tipo == 'orcado' || req.body.tipo == 'aberto' || req.body.tipo == 'encerrado') {
+                                                if (e.feito == true && e.ganho == false && e.encerrado == false) {
+                                                    listaOrcado.push({ id: e._id, cliente: lista_cliente.nome, responsavel, nome_insres, cadastro: dataMsgNum(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
+                                                } else {
+                                                    if (e.feito == true && e.ganho == true && e.encerrado == false) {
+                                                        listaAberto.push({ id: e._id, cliente: lista_cliente.nome, responsavel, nome_insres, cadastro: dataMsgNum(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
                                                     } else {
-                                                        if (typeof lista_proposta.dtcadastro5 != 'undefined' && lista_proposta.dtcadastro5 != '' && lista_proposta.dtcadastro5 != null) {
-                                                            dtcadastro = lista_proposta.dtcadastro5
-                                                        } else {
-                                                            if (typeof lista_proposta.dtcadastro4 != 'undefined' && lista_proposta.dtcadastro4 != '' && lista_proposta.dtcadastro4 != null) {
-                                                                dtcadastro = lista_proposta.dtcadastro4
+                                                        listaEncerrado.push({ id: e._id, cliente: lista_cliente.nome, responsavel, nome_insres, cadastro: dataMsgNum(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
+                                                    }
+                                                }
+                                            } else {
+                                                //console.log('entrou')
+                                                listaAndamento.push({ id: e._id, cliente: lista_cliente.nome, responsavel, nome_insres, cadastro: dataMsgNum(dtcadastro), dtinicio: dataMensagem(dtinicio), deadline: dataMensagem(dtfim) })
+                                            }
+
+                                //             //console.log('q=>' + q)
+                                //             //console.log('proposta.length=>' + proposta.length)
+                                //             //console.log('nome_insres=>' + nome_insres)
+
+                                             if (q == proposta.length) {
+                                                if (cliente == 'Todos') {
+                                                    cliente = '111111111111111111111111'
+                                                }
+                                                if (respons == 'Todos') {
+                                                    respons = '111111111111111111111111'
+                                                }
+                                                if (empresa == 'Todos') {
+                                                    empresa = '111111111111111111111111'
+                                                }
+                                                Cliente.findOne({ _id: cliente }).then((nome_cli) => {
+                                                    Pessoa.findOne({ _id: respons }).then((nome_res) => {
+                                                        Empresa.findOne({ _id: empresa }).then((nome_emp) => {
+                                                            //console.log('nome_cli=>' + nome_cli)
+                                                            //console.log('nome_res=>' + nome_res)
+                                                            //console.log('nome_emp=>' + nome_emp)
+                                                            if (nome_cli == null) {
+                                                                nomeCliente = 'Todos'
+                                                                idcli = 'Todos'
                                                             } else {
-                                                                if (typeof lista_proposta.dtcadastro3 != 'undefined' && lista_proposta.dtcadastro3 != '' && lista_proposta.dtcadastro3 != null) {
-                                                                    dtcadastro = lista_proposta.dtcadastro3
-                                                                } else {
-                                                                    if (typeof lista_proposta.dtcadastro2 != 'undefined' && lista_proposta.dtcadastro2 != '' && lista_proposta.dtcadastro2 != null) {
-                                                                        dtcadastro = lista_proposta.dtcadastro2
-                                                                    } else {
-                                                                        //console.log('lista_proposta.dtcadastro1 =>' + lista_proposta.dtcadastro1)
-                                                                        if (typeof lista_proposta.dtcadastro1 != 'undefined' && lista_proposta.dtcadastro1 != '' && lista_proposta.dtcadastro1 != null) {
-                                                                            dtcadastro = lista_proposta.dtcadastro1
-                                                                        } else {
-                                                                            dtcadastro = '0000-00-00'
-                                                                        }
-                                                                    }
-                                                                }
+                                                                nomeCliente = nome_cli.nome
+                                                                idcli = nome_cli._id
                                                             }
-                                                        }
-                                                    }
-
-                                                    if (lista_responsavel != null && lista_responsavel != '' && typeof lista_responsavel != 'undefined') {
-                                                        responsavel = lista_responsavel.nome
-                                                    } else {
-                                                        responsavel = ''
-                                                    }
-
-                                                    if (insres != null && insres != '' && typeof insres != 'undefined') {
-                                                        nome_insres = insres.nome
-                                                    } else {
-                                                        nome_insres = ''
-                                                    }
-
-                                                    if (typeof equipe.dtinicio == 'undefined' || equipe.dtinicio == '' || equipe.dtinicio == null) {
-                                                        dtinicio = '0000-00-00'
-                                                    } else {
-                                                        dtinicio = equipe.dtinicio
-                                                    }
-
-                                                    if (typeof equipe.dtfim == 'undefined' || equipe.dtfim == '' || equipe.dtfim == null) {
-                                                        dtfim = '0000-00-00'
-                                                    } else {
-                                                        dtfim = equipe.dtfim
-                                                    }
-                                                    // console.log('req.body.tipo=>' + req.body.tipo)
-                                                    if (req.body.tipo == 'orcado' || req.body.tipo == 'aberto' || req.body.tipo == 'encerrado') {
-                                                        if (lista_proposta.feito == true && lista_proposta.ganho == false && lista_proposta.encerrado == false) {
-                                                            listaOrcado.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel, nome_insres, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
-                                                        } else {
-                                                            if (lista_proposta.feito == true && lista_proposta.ganho == true && lista_proposta.encerrado == false) {
-                                                                listaAberto.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel, nome_insres, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
+                                                            if (nome_res == null) {
+                                                                nomeResponsavel = 'Todos'
+                                                                idres = 'Todos'
                                                             } else {
-                                                                listaEncerrado.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel, nome_insres, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
+                                                                nomeResponsavel = nome_res.nome
+                                                                idres = nome_res._id
                                                             }
-                                                        }
-                                                    } else {
-                                                        console.log('entrou')
-                                                        listaAndamento.push({ id: lista_proposta._id, cliente: lista_cliente.nome, responsavel, nome_insres, cadastro: dataMensagem(dtcadastro), dtinicio: dataMensagem(dtinicio), deadline: dataMensagem(dtfim) })
-                                                    }
+                                                            if (nome_emp == null) {
+                                                                nomeEmpresa = 'Todos'
+                                                                idemp = 'Todos'
+                                                            } else {
+                                                                nomeEmpresa = nome_emp.nome
+                                                                idemp = nome_emp._id
+                                                            }
 
-                                                    //console.log('q=>' + q)
-                                                    //console.log('proposta.length=>' + proposta.length)
-                                                    //console.log('nome_insres=>' + nome_insres)
+                                                            if (req.body.tipo == 'orcado') {
+                                                                res.render('principal/consulta', { listaOrcado, todos_clientes, todos_responsaveis, todas_empresas, tipo: 'orcado', titulo: ': Orçamentos Enviados', nomeCliente, nomeResponsavel, nomeEmpresa, dataini: req.body.dataini, datafim: req.body.datafim })
+                                                            }
+                                                            if (req.body.tipo == 'aberto') {
+                                                                //console.log('entrou')
+                                                                res.render('principal/consulta', { listaAberto, todos_clientes, todos_responsaveis, todas_empresas, tipo: 'aberto', titulo: ': Em Aberto', nomeCliente, nomeResponsavel, nomeEmpresa, dataini: req.body.dataini, datafim: req.body.datafim })
+                                                            }
+                                                            if (req.body.tipo == 'encerrado') {
+                                                                res.render('principal/consulta', { listaEncerrado, todos_clientes, todos_responsaveis, todas_empresas, tipo: 'encerrado', titulo: ': Encerrado', idcli, idres, idemp,  nomeCliente, nomeResponsavel, nomeEmpresa,dataini: req.body.dataini, datafim: req.body.datafim })
+                                                                
+                                                            }
+                                                            if (req.body.tipo == 'emandamento') {
+                                                                //console.log('entrou lista')
+                                                                res.render('principal/emandamento', { listaAndamento, todos_clientes, todos_responsaveis, todas_empresas, dataini: req.body.dataini, datafim: req.body.datafim, nomeCliente, nomeResponsavel, nomeEmpresa }) 
+                                                            }
 
-                                                    if (q == proposta.length) {
-                                                        if (cliente == 'Todos') {
-                                                            cliente = '111111111111111111111111'
-                                                        }
-                                                        if (respons == 'Todos') {
-                                                            respons = '111111111111111111111111'
-                                                        }
-                                                        if (empresa == 'Todos') {
-                                                            empresa = '111111111111111111111111'
-                                                        }
-                                                        Cliente.findOne({ _id: cliente }).then((nome_cli) => {
-                                                            Pessoa.findOne({ _id: respons }).then((nome_res) => {
-                                                                Empresa.findOne({ _id: empresa }).then((nome_emp) => {
-                                                                    // console.log('nome_cli=>' + nome_cli)
-                                                                    // console.log('nome_res=>' + nome_res)
-                                                                    // console.log('nome_emp=>' + nome_emp)
-                                                                    if (nome_cli == null) {
-                                                                        nomeCliente = 'Todos'
-                                                                    } else {
-                                                                        nomeCliente = nome_cli.nome
-                                                                    }
-                                                                    if (nome_res == null) {
-                                                                        nomeResponsavel = 'Todos'
-                                                                    } else {
-                                                                        nomeResponsavel = nome_res.nome
-                                                                    }
-                                                                    if (nome_emp == null) {
-                                                                        nomeEmpresa = 'Todos'
-                                                                    } else {
-                                                                        nomeEmpresa = nome_emp.nome
-                                                                    }
-
-                                                                    if (req.body.tipo == 'orcado') {
-                                                                        res.render('principal/consulta', { listaOrcado, todos_clientes, todos_responsaveis, todas_empresas, tipo: 'orcado', titulo: ': Orçamentos Enviados', nomeCliente, nomeResponsavel, nomeEmpresa, dataini: req.body.dataini, datafim: req.body.datafim })
-                                                                    }
-                                                                    if (req.body.tipo == 'aberto') {
-                                                                        //console.log('entrou')
-                                                                        res.render('principal/consulta', { listaAberto, todos_clientes, todos_responsaveis, todas_empresas, tipo: 'aberto', titulo: ': Em Aberto', nomeCliente, nomeResponsavel, nomeEmpresa, dataini: req.body.dataini, datafim: req.body.datafim })
-                                                                    }
-                                                                    if (req.body.tipo == 'encerrado') {
-                                                                        res.render('principal/consulta', { listaEncerrado, todos_clientes, todos_responsaveis, todas_empresas, tipo: 'encerrado', titulo: ': Encerrado', nomeCliente, nomeResponsavel, nomeEmpresa, dataini: req.body.dataini, datafim: req.body.datafim })
-                                                                    }
-                                                                    if (req.body.tipo = 'emandamento') {
-                                                                        console.log('entrou lista')
-                                                                        res.render('principal/emandamento', { listaAndamento, todos_clientes, todos_responsaveis, todas_empresas, dataini: req.body.dataini, datafim: req.body.datafim })
-                                                                    }
-
-                                                                }).catch((err) => {
-                                                                    req.flash('error_msg', 'Nenhuma empresa encontrada.')
-                                                                    res.redirect('/gerenciamento/consulta/' + req.body.tipo)
-                                                                })
-                                                            }).catch((err) => {
-                                                                req.flash('error_msg', 'Nenhuma pessoa encontrada.')
-                                                                res.redirect('/gerenciamento/consulta/' + req.body.tipo)
-                                                            })
                                                         }).catch((err) => {
-                                                            req.flash('error_msg', 'Nenhum cliente encontrado.')
+                                                            req.flash('error_msg', 'Nenhuma empresa encontrada.')
                                                             res.redirect('/gerenciamento/consulta/' + req.body.tipo)
                                                         })
-                                                    }
+                                                    }).catch((err) => {
+                                                        req.flash('error_msg', 'Nenhuma pessoa encontrada.')
+                                                        res.redirect('/gerenciamento/consulta/' + req.body.tipo)
+                                                    })
                                                 }).catch((err) => {
-                                                    req.flash('error_msg', 'Nenhum técnico responsável encontrado.')
+                                                    req.flash('error_msg', 'Nenhum cliente encontrado.')
                                                     res.redirect('/gerenciamento/consulta/' + req.body.tipo)
                                                 })
-                                            }).catch((err) => {
-                                                req.flash('error_msg', 'Nenhuma gestor responsável encontrado.')
-                                                res.redirect('/gerenciamento/consulta/' + req.body.tipo)
-                                            })
-                                        }).catch((err) => {
-                                            req.flash('error_msg', 'Nenhuma equipe encontrada.')
-                                            res.redirect('/gerenciamento/consulta/' + req.body.tipo)
-                                        })
-
-                                    }).catch((err) => {
-                                        req.flash('error_msg', 'Nenhuma cliente encontrado.')
-                                        res.redirect('/gerenciamento/consulta/' + req.body.tipo)
-                                    })
+                                             }
+                                         }).catch((err) => {
+                                             req.flash('error_msg', 'Nenhum técnico responsável encontrado.')
+                                             res.redirect('/gerenciamento/consulta/' + req.body.tipo)
+                                         })
+                                     }).catch((err) => {
+                                         req.flash('error_msg', 'Nenhum gestor responsável encontrado.')
+                                         res.redirect('/gerenciamento/consulta/' + req.body.tipo)
+                                     })
                                 }).catch((err) => {
-                                    console.log('req.body.tipo=>' + req.body.tipo)
-                                    req.flash('error_msg', 'Nenhuma proposta encontrada.')
+                                    req.flash('error_msg', 'Nenhuma equipe encontrada.')
                                     res.redirect('/gerenciamento/consulta/' + req.body.tipo)
                                 })
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Nenhuma cliente encontrado.')
+                                res.redirect('/gerenciamento/consulta/' + req.body.tipo)
                             })
-                        } else {
-                            req.flash('error_msg', 'Nenhuma proposta encontrada com os filtros para as datas entre ' + dataMensagem(req.body.ini) + ' e ' + dataMensagem(req.body.fim))
-                            res.redirect('/gerenciamento/consulta/' + req.body.tipo)
-                        }
+                        })
                     }).catch((err) => {
-                        console.log('req.body.tipo=>' + req.body.tipo)
+                        //console.log('req.body.tipo=>' + req.body.tipo)
                         req.flash('error_msg', 'Nenhuma proposta encontrada.')
                         if (req.body.tipo == 'emandamento') {
-                            console.log('emandamento')
-                            res.redirect('/gerenciamento/emandamento/lista')
-                        } else {
-                            console.log('outro')
-                            res.redirect('/gerenciamento/consulta/' + req.body.tipo)
+                            caminho = '/gerenciamento/emandamento/lista'
+                        }else{
+                            caminho = '/gerenciamento/consulta/' + req.body.tipo
                         }
+                            //console.log('emandamento')
+                        res.redirect(caminho)
+
                     })
                 } else {
                     //console.log('realizado=>' + realizado)
@@ -984,111 +718,89 @@ router.post('/filtrar', ehAdmin, (req, res) => {
 
                     sql = filtrarProposta(1, id, stats, respons, empresa, cliente, enviado, ganho, assinado, encerrado)
 
-                    // console.log('data=>'+data)   
+                    //console.log('data=>'+data)   
                     busca = Object.assign(sql, data)
 
                     Proposta.find(busca).sort({ datacad: 'asc' }).then((p1) => {
                         //console.log(p1)
-                        if (p1 != '') {
-                            p1.forEach((e1) => {
-                                Proposta.findOne({ _id: e1._id }).then((lista_proposta) => {
-                                    Cliente.findOne({ _id: e1.cliente }).then((lista_cliente) => {
-                                        Pessoa.findOne({ _id: e1.responsavel }).lean().then((lista_responsavel) => {
-                                            Empresa.findOne({ _id: e1.empresa }).then((lista_empresa) => {
-                                                Vistoria.findOne({ proposta: e1._id }).then((visto) => { //feito: vistoria
-                                                    Equipe.findOne({ _id: e1.equipe }).then((equipe) => { //feito: execucao
-                                                        Pessoa.findOne({ _id: equipe.insres }).then((insres) => {
-                                                            Documento.findOne({ proposta: e1._id }).then((documento) => { //, feitotrt: trt, protocolado: protocolo, feitoalmox: almoxarifado, enviaalmox: enviaalmoxarifado, feitofaturado: faturado
-                                                                Compra.findOne({ proposta: e1._id }).then((compra) => { //feitopedido: pedido, feitonota: nota 
-                                                                    Posvenda.findOne({ proposta: e1._id }).then((posvenda) => { //, feito: posvenda
-                                                                        q++
-                                                                        // console.log('visto=>' + visto)
-                                                                        // console.log('equipe=>' + equipe)
-                                                                        // console.log('documento=>' + documento)
-                                                                        // console.log('compra=>' + compra)
-                                                                        // console.log('posvenda=>' + posvenda)
-                                                                        if (visto == null || equipe == null || documento == null || compra == null) {
-                                                                            req.flash('error_msg', 'Não foi possível encontrar projetos com os filtros selecionados.')
-                                                                            res.redirect('/gerenciamento/consulta')
-                                                                        }
-                                                                        if (typeof lista_proposta.dtcadastro6 != 'undefined' && lista_proposta.dtcadastro6 != '' && lista_proposta.dtcadastro6 != null) {
-                                                                            dtcadastro = lista_proposta.dtcadastro6
-                                                                        } else {
-                                                                            if (typeof lista_proposta.dtcadastro5 != 'undefined' && lista_proposta.dtcadastro5 != '' && lista_proposta.dtcadastro5 != null) {
-                                                                                dtcadastro = lista_proposta.dtcadastro5
-                                                                            } else {
-                                                                                if (typeof lista_proposta.dtcadastro4 != 'undefined' && lista_proposta.dtcadastro4 != '' && lista_proposta.dtcadastro4 != null) {
-                                                                                    dtcadastro = lista_proposta.dtcadastro4
-                                                                                } else {
-                                                                                    if (typeof lista_proposta.dtcadastro3 != 'undefined' && lista_proposta.dtcadastro3 != '' && lista_proposta.dtcadastro3 != null) {
-                                                                                        dtcadastro = lista_proposta.dtcadastro3
-                                                                                    } else {
-                                                                                        if (typeof lista_proposta.dtcadastr2 != 'undefined' && lista_proposta.dtcadastr2 != '' && lista_proposta.dtcadastr2 != null) {
-                                                                                            dtcadastro = lista_proposta.dtcadastro2
-                                                                                        } else {
-                                                                                            //console.log('lista_proposta.dtcadastro1 =>' + lista_proposta.dtcadastro1)
-                                                                                            if (typeof lista_proposta.dtcadastro1 != 'undefined' && lista_proposta.dtcadastro1 != '' && lista_proposta.dtcadastro1 != null) {
-                                                                                                dtcadastro = lista_proposta.dtcadastro1
-                                                                                            } else {
-                                                                                                dtcadastro = '0000-00-00'
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
+                        if (p != '') {
+                            p.forEach((e) => {
+                                Cliente.findOne({ _id: e.cliente }).then((lista_cliente) => {
+                                    Pessoa.findOne({ _id: e.responsavel }).lean().then((lista_responsavel) => {
+                                        Empresa.findOne({ _id: e.empresa }).then((lista_empresa) => {
+                                            Vistoria.findOne({ proposta: e._id }).then((visto) => { //feito: vistoria
+                                                Equipe.findOne({ _id: e.equipe }).then((equipe) => { //feito: execucao
+                                                    Pessoa.findOne({ _id: equipe.insres }).then((insres) => {
+                                                        Documento.findOne({ proposta: e._id }).then((documento) => { //, feitotrt: trt, protocolado: protocolo, feitoalmox: almoxarifado, enviaalmox: enviaalmoxarifado, feitofaturado: faturado
+                                                            Compra.findOne({ proposta: e._id }).then((compra) => { //feitopedido: pedido, feitonota: nota 
+                                                                Posvenda.findOne({ proposta: e._id }).then((posvenda) => { //, feito: posvenda
+                                                                    q++
+                                                                    //console.log('visto=>' + visto)
+                                                                    //console.log('equipe=>' + equipe)
+                                                                    //console.log('documento=>' + documento)
+                                                                    //console.log('compra=>' + compra)
+                                                                    //console.log('posvenda=>' + posvenda)
+                                                                    if (visto == null || equipe == null || documento == null || compra == null) {
+                                                                        req.flash('error_msg', 'Não foi possível encontrar projetos com os filtros selecionados.')
+                                                                        res.redirect('/gerenciamento/consulta')
+                                                                    }
 
-                                                                        if (lista_proposta.ganho == true) {
-                                                                            if (lista_proposta.encerrado == true) {
-                                                                                status = 'Encerrado'
+                                                                    if (naoVazio(e.datacad)) {
+                                                                        dtcadastro = e.datacad
+                                                                    } else {
+                                                                        dtcadastro = '00000000'
+                                                                    }
+
+                                                                    if (e.ganho == true) {
+                                                                        if (e.encerrado == true) {
+                                                                            status = 'Encerrado'
+                                                                            dtinicio = equipe.dtinicio
+                                                                            dtfim = equipe.dtfim
+                                                                        } else {
+                                                                            if (posvenda.feito == true) {
+                                                                                status = 'Pós-Venda'
                                                                                 dtinicio = equipe.dtinicio
                                                                                 dtfim = equipe.dtfim
                                                                             } else {
-                                                                                if (posvenda.feito == true) {
-                                                                                    status = 'Pós-Venda'
+                                                                                if (documento.feitofaturado == true) {
+                                                                                    status = 'Faturado'
                                                                                     dtinicio = equipe.dtinicio
                                                                                     dtfim = equipe.dtfim
                                                                                 } else {
-                                                                                    if (documento.feitofaturado == true) {
-                                                                                        status = 'Faturado'
+                                                                                    if (documento.feitoalmox == true) {
+                                                                                        status = 'Almoxarifado Fechado'
                                                                                         dtinicio = equipe.dtinicio
                                                                                         dtfim = equipe.dtfim
                                                                                     } else {
-                                                                                        if (documento.feitoalmox == true) {
-                                                                                            status = 'Almoxarifado Fechado'
+                                                                                        if (documento.enviaalmox == true) {
+                                                                                            status = 'Almoxarifado Em Aberto'
                                                                                             dtinicio = equipe.dtinicio
                                                                                             dtfim = equipe.dtfim
                                                                                         } else {
-                                                                                            if (documento.enviaalmox == true) {
-                                                                                                status = 'Almoxarifado Em Aberto'
+                                                                                            if (equipe.feito == true) {
+                                                                                                status = 'Execução a Campo'
                                                                                                 dtinicio = equipe.dtinicio
                                                                                                 dtfim = equipe.dtfim
                                                                                             } else {
-                                                                                                if (equipe.feito == true) {
-                                                                                                    status = 'Execução a Campo'
-                                                                                                    dtinicio = equipe.dtinicio
-                                                                                                    dtfim = equipe.dtfim
+                                                                                                if (documento.protocolado == true) {
+                                                                                                    status = 'Protocolado'
                                                                                                 } else {
-                                                                                                    if (documento.protocolado == true) {
-                                                                                                        status = 'Protocolado'
+                                                                                                    if (documento.feitotrt == true) {
+                                                                                                        status = 'TRT'
                                                                                                     } else {
-                                                                                                        if (documento.feitotrt == true) {
-                                                                                                            status = 'TRT'
+                                                                                                        if (compra.feitonota == true) {
+                                                                                                            status = 'NF'
                                                                                                         } else {
-                                                                                                            if (compra.feitonota == true) {
-                                                                                                                status = 'NF'
+                                                                                                            if (compra.feitopedido == true) {
+                                                                                                                status = 'Pedido'
                                                                                                             } else {
-                                                                                                                if (compra.feitopedido == true) {
-                                                                                                                    status = 'Pedido'
+                                                                                                                if (e.assinado == true) {
+                                                                                                                    status = 'Contrato'
                                                                                                                 } else {
-                                                                                                                    if (lista_proposta.assinado == true) {
-                                                                                                                        status = 'Contrato'
+                                                                                                                    if (visto.feito == true) {
+                                                                                                                        status = 'Vistoria'
                                                                                                                     } else {
-                                                                                                                        if (visto.feito == true) {
-                                                                                                                            status = 'Vistoria'
-                                                                                                                        } else {
-                                                                                                                            status = 'Preparado para a Vistoria'
-                                                                                                                        }
+                                                                                                                        status = 'Preparado para a Vistoria'
                                                                                                                     }
                                                                                                                 }
                                                                                                             }
@@ -1100,124 +812,121 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                     }
                                                                                 }
                                                                             }
-                                                                        } else {
-                                                                            status = 'Proposta Enviada'
                                                                         }
+                                                                    } else {
+                                                                        status = 'Proposta Enviada'
+                                                                    }
 
-                                                                        // console.log('status=>'+status)
-                                                                        if (lista_responsavel != null && lista_responsavel != '' && typeof lista_responsavel != 'undefined') {
-                                                                            responsavel = lista_responsavel.nome
-                                                                        } else {
-                                                                            responsavel = ''
-                                                                        }
-                                                                        // console.log('responsavel=>'+responsavel)
-                                                                        // //console.log('responsavel=>' + responsavel)
-                                                                        if (insres != null && insres != '' && typeof insres != 'undefined') {
-                                                                            nome_insres = insres.nome
-                                                                        } else {
-                                                                            nome_insres = ''
-                                                                        }
-                                                                        // console.log('nome_insres=>'+nome_insres)
-                                                                        // //console.log('nome_insres=>' + nome_insres)
-                                                                        if (typeof equipe.dtinicio == 'undefined' || equipe.dtinicio == '' || equipe.dtinicio == null) {
-                                                                            dtinicio = '0000-00-00'
-                                                                        } else {
-                                                                            dtinicio = equipe.dtinicio
-                                                                        }
-                                                                        // console.log('dtinicio=>'+dtinicio)
-                                                                        // //console.log('dtinicio=>' + dtinicio)
-                                                                        if (typeof equipe.dtfim == 'undefined' || equipe.dtfim == '' || equipe.dtfim == null) {
-                                                                            dtfim = '0000-00-00'
-                                                                        } else {
-                                                                            dtfim = equipe.dtfim
-                                                                        }
-                                                                        // console.log('dtfim=>'+dtfim)
-                                                                        // //console.log('dtfim=>' + dtfim)
-                                                                        // //console.log('status=>' + status)
+                                                                    //console.log('status=>'+status)
+                                                                    if (naoVazio(lista_responsavel)) {
+                                                                        responsavel = lista_responsavel.nome
+                                                                    } else {
+                                                                        responsavel = ''
+                                                                    }
+                                                                    //console.log('responsavel=>'+responsavel)
+                                                                    //console.log('responsavel=>' + responsavel)
+                                                                    if (naoVazio(insres)) {
+                                                                        nome_insres = insres.nome
+                                                                    } else {
+                                                                        nome_insres = ''
+                                                                    }
+                                                                    //console.log('nome_insres=>'+nome_insres)
+                                                                    //console.log('nome_insres=>' + nome_insres)
+                                                                    if (typeof equipe.dtinicio == 'undefined' || equipe.dtinicio == '' || equipe.dtinicio == null) {
+                                                                        dtinicio = '0000-00-00'
+                                                                    } else {
+                                                                        dtinicio = equipe.dtinicio
+                                                                    }
+                                                                    //console.log('dtinicio=>'+dtinicio)
+                                                                    //console.log('dtinicio=>' + dtinicio)
+                                                                    if (typeof equipe.dtfim == 'undefined' || equipe.dtfim == '' || equipe.dtfim == null) {
+                                                                        dtfim = '0000-00-00'
+                                                                    } else {
+                                                                        dtfim = equipe.dtfim
+                                                                    }
+                                                                    //console.log('dtfim=>'+dtfim)
+                                                                    //console.log('dtfim=>' + dtfim)
+                                                                    //console.log('status=>' + status)
 
-                                                                        lista.push({ s: status, id: lista_proposta._id, cliente: lista_cliente.nome, empresa: lista_empresa.nome, responsavel, nome_insres, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
+                                                                    lista.push({ s: status, id: e._id, cliente: lista_cliente.nome, empresa: lista_empresa.nome, responsavel, nome_insres, cadastro: dataMsgNum(dtcadastro), inicio: dataMensagem(dtinicio), fim: dataMensagem(dtfim) })
 
-                                                                        if (q == p1.length) {
-                                                                            if (cliente == 'Todos') {
-                                                                                cliente = '111111111111111111111111'
-                                                                            }
-                                                                            if (respons == 'Todos') {
-                                                                                respons = '111111111111111111111111'
-                                                                            }
-                                                                            if (empresa == 'Todos') {
-                                                                                empresa = '111111111111111111111111'
-                                                                            }
-                                                                            Cliente.findOne({ _id: cliente }).then((nome_cli) => {
-                                                                                Pessoa.findOne({ _id: respons }).then((nome_res) => {
-                                                                                    Empresa.findOne({ _id: empresa }).then((nome_emp) => {
-                                                                                        console.log('nome_cli=>' + nome_cli)
-                                                                                        if (nome_cli == null) {
-                                                                                            nomeCliente = 'Todos'
-                                                                                        } else {
-                                                                                            nomeCliente = nome_cli.nome
-                                                                                        }
-                                                                                        if (nome_res == null) {
-                                                                                            nomeResponsavel = 'Todos'
-                                                                                        } else {
-                                                                                            nomeResponsavel = nome_res.nome
-                                                                                        }
-                                                                                        if (nome_emp == null) {
-                                                                                            nomeEmpresa = 'Todos'
-                                                                                        } else {
-                                                                                            nomeEmpresa = nome_emp.nome
-                                                                                        }
-                                                                                        res.render('principal/consulta', { lista, todos_clientes, todos_responsaveis, todas_empresas, filtroStatus: stats, nomeCliente, nomeResponsavel, nomeEmpresa, dataini: req.body.dataini, datafim: req.body.datafim })
-                                                                                    }).catch((err) => {
-                                                                                        req.flash('error_msg', 'Nenhuma empresa encontrada.')
-                                                                                        res.redirect('/gerenciamento/consulta')
-                                                                                    })
+                                                                    if (q == p.length) {
+                                                                        if (cliente == 'Todos') {
+                                                                            cliente = '111111111111111111111111'
+                                                                        }
+                                                                        if (respons == 'Todos') {
+                                                                            respons = '111111111111111111111111'
+                                                                        }
+                                                                        if (empresa == 'Todos') {
+                                                                            empresa = '111111111111111111111111'
+                                                                        }
+                                                                        Cliente.findOne({ _id: cliente }).then((nome_cli) => {
+                                                                            Pessoa.findOne({ _id: respons }).then((nome_res) => {
+                                                                                Empresa.findOne({ _id: empresa }).then((nome_emp) => {
+                                                                                    //console.log('nome_cli=>' + nome_cli)
+                                                                                    if (nome_cli == null) {
+                                                                                        nomeCliente = 'Todos'
+                                                                                    } else {
+                                                                                        nomeCliente = nome_cli.nome
+                                                                                    }
+                                                                                    if (nome_res == null) {
+                                                                                        nomeResponsavel = 'Todos'
+                                                                                    } else {
+                                                                                        nomeResponsavel = nome_res.nome
+                                                                                    }
+                                                                                    if (nome_emp == null) {
+                                                                                        nomeEmpresa = 'Todos'
+                                                                                    } else {
+                                                                                        nomeEmpresa = nome_emp.nome
+                                                                                    }
+                                                                                    res.render('principal/consulta', { lista, todos_clientes, todos_responsaveis, todas_empresas, filtroStatus: stats, nomeCliente, nomeResponsavel, nomeEmpresa, dataini: req.body.dataini, datafim: req.body.datafim })
                                                                                 }).catch((err) => {
-                                                                                    req.flash('error_msg', 'Nenhuma pessoa encontrada.')
+                                                                                    req.flash('error_msg', 'Nenhuma empresa encontrada.')
                                                                                     res.redirect('/gerenciamento/consulta')
                                                                                 })
                                                                             }).catch((err) => {
-                                                                                req.flash('error_msg', 'Nenhum cliente encontrado.')
+                                                                                req.flash('error_msg', 'Nenhuma pessoa encontrada.')
                                                                                 res.redirect('/gerenciamento/consulta')
                                                                             })
-                                                                        }
-                                                                    }).catch((err) => {
-                                                                        req.flash('error_msg', 'Nenhum pós venda encontrado.')
-                                                                        res.redirect('/gerenciamento/consulta')
-                                                                    })
+                                                                        }).catch((err) => {
+                                                                            req.flash('error_msg', 'Nenhum cliente encontrado.')
+                                                                            res.redirect('/gerenciamento/consulta')
+                                                                        })
+                                                                    }
                                                                 }).catch((err) => {
-                                                                    req.flash('error_msg', 'Nenhuma compra encontrada.')
+                                                                    req.flash('error_msg', 'Nenhum pós venda encontrado.')
                                                                     res.redirect('/gerenciamento/consulta')
                                                                 })
                                                             }).catch((err) => {
-                                                                req.flash('error_msg', 'Nenhum documento encontrado.')
+                                                                req.flash('error_msg', 'Nenhuma compra encontrada.')
                                                                 res.redirect('/gerenciamento/consulta')
                                                             })
                                                         }).catch((err) => {
-                                                            req.flash('error_msg', 'Nenhum técnico responsável encontrado.')
+                                                            req.flash('error_msg', 'Nenhum documento encontrado.')
                                                             res.redirect('/gerenciamento/consulta')
                                                         })
                                                     }).catch((err) => {
-                                                        req.flash('error_msg', 'Nenhuma equipe encontrada.')
+                                                        req.flash('error_msg', 'Nenhum técnico responsável encontrado.')
                                                         res.redirect('/gerenciamento/consulta')
                                                     })
                                                 }).catch((err) => {
-                                                    req.flash('error_msg', 'Nenhuma vistoria encontrada.')
+                                                    req.flash('error_msg', 'Nenhuma equipe encontrada.')
                                                     res.redirect('/gerenciamento/consulta')
                                                 })
                                             }).catch((err) => {
-                                                req.flash('error_msg', 'Nenhuma empresa encontrada.')
+                                                req.flash('error_msg', 'Nenhuma vistoria encontrada.')
                                                 res.redirect('/gerenciamento/consulta')
                                             })
                                         }).catch((err) => {
-                                            req.flash('error_msg', 'Nenhuma pessoa encontrada.')
+                                            req.flash('error_msg', 'Nenhuma empresa encontrada.')
                                             res.redirect('/gerenciamento/consulta')
                                         })
                                     }).catch((err) => {
-                                        req.flash('error_msg', 'Nenhuma cliente encontrado.')
+                                        req.flash('error_msg', 'Nenhuma pessoa encontrada.')
                                         res.redirect('/gerenciamento/consulta')
                                     })
                                 }).catch((err) => {
-                                    req.flash('error_msg', 'Nenhuma proposta encontrada.')
+                                    req.flash('error_msg', 'Nenhuma cliente encontrado.')
                                     res.redirect('/gerenciamento/consulta')
                                 })
                             })
@@ -1291,9 +1000,10 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
     const cores = ['green', 'blue', 'tomato', 'teal', 'sienna', 'salmon', 'mediumpurple', 'rebeccapurple', 'yellowgreen', 'peru', 'cadetblue', 'coral', 'cornflowerblue', 'crimson', 'darkblue', 'darkcyan', 'orange', 'hotpink']
 
     var listaAndamento = []
-    var dtcadastro = ''
+    var dtcadastro = '00000000'
     var dtinicio = ''
     var responsavel = ''
+    var nome_insres = ''
     var q = 0
     var inicio
     var fim
@@ -1316,12 +1026,13 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
     var compara
     var x = -1
     var z = -1
+    var caminho
 
-    hoje = dataHoje()
-    meshoje = hoje.substring(5, 7)
-    anotitulo = hoje.substring(0, 4)
+    var hoje = dataHoje()
+    var meshoje = hoje.substring(5, 7)
+    var anotitulo = hoje.substring(0, 4)
 
-    console.log('meshoje=>' + meshoje)
+    //console.log('meshoje=>' + meshoje)
 
     switch (meshoje) {
         case '01':
@@ -1369,261 +1080,233 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
             break;
     }
 
-
     Cliente.find({ user: id }).lean().then((todos_clientes) => {
         Pessoa.find({ user: id, funges: 'checked' }).lean().then((todos_responsaveis) => {
             Empresa.find({ user: id }).lean().then((todas_empresas) => {
-                Proposta.find({ user: id, ganho: true, encerrado: false }).then((lista_proposta) => {
-                    if (lista_proposta != '') {
-                        lista_proposta.forEach((e) => {
-                            //console.log('e=>'+e)
-                            q++
-                            Proposta.findOne({ _id: e._id }).then((proposta) => {
-                                if (typeof lista_proposta.dtcadastro6 != 'undefined' && lista_proposta.dtcadastro6 != '' && lista_proposta.dtcadastro6 != null) {
-                                    dtcadastro = lista_proposta.dtcadastro6
-                                } else {
-                                    if (typeof lista_proposta.dtcadastro5 != 'undefined' && lista_proposta.dtcadastro5 != '' && lista_proposta.dtcadastro5 != null) {
-                                        dtcadastro = lista_proposta.dtcadastro5
-                                    } else {
-                                        if (typeof lista_proposta.dtcadastro4 != 'undefined' && lista_proposta.dtcadastro4 != '' && lista_proposta.dtcadastro4 != null) {
-                                            dtcadastro = lista_proposta.dtcadastro4
-                                        } else {
-                                            if (typeof lista_proposta.dtcadastro3 != 'undefined' && lista_proposta.dtcadastro3 != '' && lista_proposta.dtcadastro3 != null) {
-                                                dtcadastro = lista_proposta.dtcadastro3
+                Proposta.find({ user: id, ganho: true, encerrado: false }).then((proposta) => {
+                    if (proposta != '') {
+                        proposta.forEach((e) => {
+                            Cliente.findOne({ _id: e.cliente }).then((cliente) => {
+                                Pessoa.findOne({ _id: e.responsavel }).then((pessoa_res) => {
+                                    Equipe.findOne({ _id: e.equipe, feito: true, $and: [{ 'dtinicio': { $ne: '' } }, { 'dtinicio': { $ne: '0000-00-00' } }] }).sort({ dtfimbusca: 'desc' }).then((equipe) => {
+                                        Pessoa.findOne({ _id: equipe.insres }).then((insres) => {
+                                            q++
+                                            //console.log('e.datacad=>' + e.datacad)
+                                            //console.log('e._id=>' + e._id)
+                                            if (naoVazio(e.datacad)) {
+                                                dtcadastro = e.datacad
                                             } else {
-                                                if (typeof lista_proposta.dtcadastro2 != 'undefined' && lista_proposta.dtcadastro2 != '' && lista_proposta.dtcadastro2 != null) {
-                                                    dtcadastro = lista_proposta.dtcadastro2
-                                                } else {
-                                                    //console.log('lista_proposta.dtcadastro1 =>' + lista_proposta.dtcadastro1)
-                                                    if (typeof lista_proposta.dtcadastro1 != 'undefined' && lista_proposta.dtcadastro1 != '' && lista_proposta.dtcadastro1 != null) {
-                                                        dtcadastro = lista_proposta.dtcadastro1
-                                                    } else {
-                                                        dtcadastro = '0000-00-00'
-                                                    }
-                                                }
+                                                dtcadastro = '00000000'
                                             }
-                                        }
-                                    }
-                                }
 
-                                Cliente.findOne({ _id: e.cliente }).then((cliente) => {
-                                    Pessoa.findOne({ _id: e.responsavel }).then((pessoa_res) => {
-                                        Equipe.findOne({ _id: e.equipe, feito: true, $and: [{ 'dtinicio': { $ne: '' } }, { 'dtinicio': { $ne: '0000-00-00' } }] }).sort({ dtfimbusca: 'desc' }).then((equipe) => {
-                                            Pessoa.findOne({ _id: equipe.insres }).then((insres) => {
-                                                //console.log('pessoa_res=>' + pessoa_res)
-                                                if (pessoa_res != '' && typeof pessoa_res != 'undefined' && pessoa_res != null) {
-                                                    responsavel = pessoa_res.nome
-                                                } else {
-                                                    responsavel = ''
-                                                }
+                                            //console.log('pessoa_res=>' + pessoa_res)
+                                            if (naoVazio(pessoa_res)) {
+                                                responsavel = pessoa_res.nome
+                                            } else {
+                                                responsavel = ''
+                                            }
 
-                                                dtinicio = equipe.dtinicio
-                                                fim = equipe.dtfim
-                                                anoinicio = dtinicio.substring(0, 4)
-                                                anofim = fim.substring(0, 4)
-                                                mesinicio = dtinicio.substring(5, 7)
-                                                mesfim = fim.substring(5, 7)
-                                                diainicio = dtinicio.substring(8, 11)
-                                                diafim = fim.substring(8, 11)
-                                                con1 = String(mesinicio) + String(diainicio)
-                                                con2 = String(mesfim) + String(diafim)
-                                                dif1 = parseFloat(con2) - parseFloat(con1) + 1
-                                                compara = mesfim - mesinicio
-                                                if (compara > 0) {
-                                                    if (meshoje == mesinicio) {
-                                                        mes = mesinicio
-                                                        if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
-                                                            dif = 31 - parseFloat(diainicio) + 1
-                                                        } else {
-                                                            dif = 30 - parseFloat(diainicio) + 1
-                                                        }
-                                                        if (diainicio < 10) {
-                                                            dia = '0' + parseFloat(diainicio)
-                                                        } else {
-                                                            dia = parseFloat(diainicio)
-                                                        }
+                                            if (naoVazio(insres)) {
+                                                nome_insres = insres.nome
+                                            } else {
+                                                nome_insres = ''
+                                            }
+
+                                            dtinicio = equipe.dtinicio
+                                            dtfim = equipe.dtfim
+                                            anoinicio = dtinicio.substring(0, 4)
+                                            anofim = dtfim.substring(0, 4)
+                                            mesinicio = dtinicio.substring(5, 7)
+                                            mesfim = dtfim.substring(5, 7)
+                                            diainicio = dtinicio.substring(8, 11)
+                                            diafim = dtfim.substring(8, 11)
+                                            con1 = String(mesinicio) + String(diainicio)
+                                            con2 = String(mesfim) + String(diafim)
+                                            dif1 = parseFloat(con2) - parseFloat(con1) + 1
+                                            compara = mesfim - mesinicio
+                                            if (compara > 0) {
+                                                if (meshoje == mesinicio) {
+                                                    mes = mesinicio
+                                                    if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
+                                                        dif = 31 - parseFloat(diainicio) + 1
                                                     } else {
-                                                        mes = mesfim
-                                                        dif = parseFloat(diafim)
-                                                        dia = '01'
-                                                        //console.log('dif=>' + dif)
+                                                        dif = 30 - parseFloat(diainicio) + 1
                                                     }
-                                                } else {
-                                                    dif = parseFloat(dif1)
                                                     if (diainicio < 10) {
                                                         dia = '0' + parseFloat(diainicio)
                                                     } else {
                                                         dia = parseFloat(diainicio)
                                                     }
-                                                    mes = mesinicio
+                                                } else {
+                                                    mes = mesfim
+                                                    dif = parseFloat(diafim)
+                                                    dia = '01'
+                                                    //console.log('dif=>' + dif)
                                                 }
+                                            } else {
+                                                dif = parseFloat(dif1)
+                                                if (diainicio < 10) {
+                                                    dia = '0' + parseFloat(diainicio)
+                                                } else {
+                                                    dia = parseFloat(diainicio)
+                                                }
+                                                mes = mesinicio
+                                            }
 
-                                                //console.log('dif=>' + dif)
-                                                //console.log('dia=>' + dia)
-                                                //console.log('mes=>' + mes)
 
+                                            i = Math.floor(Math.random() * 17)
+                                            x = i
+                                            z = i
+                                            if (i == x) {
                                                 i = Math.floor(Math.random() * 17)
-                                                x = i
-                                                z = i
-                                                if (i == x) {
+                                                if (i == z) {
                                                     i = Math.floor(Math.random() * 17)
-                                                    if (i == z) {
-                                                        i = Math.floor(Math.random() * 17)
-                                                    }
                                                 }
-                                                color = cores[i]
-                                                //console.log('color=>' + color)
-                                                todasCores.push({ color })
+                                            }
+                                            color = cores[i]
+                                            //console.log('color=>' + color)
+                                            todasCores.push({ color })
 
-                                                for (i = 0; i < dif; i++) {
-                                                    //console.log('meshoje=>' + meshoje)
-                                                    //console.log('mes=>' + mes)
-                                                    //console.log('dia=>' + dia)
-                                                    //console.log('entrou laço')
-                                                    if (meshoje == mes) {
-                                                        switch (String(dia)) {
-                                                            case '01':
-                                                                dia01.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '02':
-                                                                dia02.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '03':
-                                                                dia03.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '04':
-                                                                dia04.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '05':
-                                                                dia05.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '06':
-                                                                dia06.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '07':
-                                                                dia07.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '08':
-                                                                dia08.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '09':
-                                                                dia09.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '10':
-                                                                dia10.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '11':
-                                                                dia11.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '12':
-                                                                dia12.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '13':
-                                                                dia13.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '14':
-                                                                dia14.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '15':
-                                                                dia15.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '16':
-                                                                dia16.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '17':
-                                                                dia17.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '18':
-                                                                dia18.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '19':
-                                                                dia19.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '20':
-                                                                dia20.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '21':
-                                                                dia21.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '22':
-                                                                dia22.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '23':
-                                                                dia23.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '24':
-                                                                dia24.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '25':
-                                                                dia25.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '26':
-                                                                dia26.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '27':
-                                                                dia27.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '28':
-                                                                dia28.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '29':
-                                                                dia29.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '30':
-                                                                dia30.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                            case '31':
-                                                                dia31.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                                                break;
-                                                        }
-                                                        dia++
-                                                        if (dia < 10) {
-                                                            dia = '0' + dia
-                                                        }
-                                                        //console.log('diainicio=>' + diainicio)
+                                            for (i = 0; i < dif; i++) {
+                                                //console.log('meshoje=>' + meshoje)
+                                                //console.log('mes=>' + mes)
+                                                //console.log('dia=>' + dia)
+                                                //console.log('entrou laço')
+                                                if (meshoje == mes) {
+                                                    switch (String(dia)) {
+                                                        case '01':
+                                                            dia01.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '02':
+                                                            dia02.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '03':
+                                                            dia03.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '04':
+                                                            dia04.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '05':
+                                                            dia05.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '06':
+                                                            dia06.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '07':
+                                                            dia07.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '08':
+                                                            dia08.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '09':
+                                                            dia09.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '10':
+                                                            dia10.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '11':
+                                                            dia11.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '12':
+                                                            dia12.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '13':
+                                                            dia13.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '14':
+                                                            dia14.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '15':
+                                                            dia15.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '16':
+                                                            dia16.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '17':
+                                                            dia17.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '18':
+                                                            dia18.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '19':
+                                                            dia19.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '20':
+                                                            dia20.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '21':
+                                                            dia21.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '22':
+                                                            dia22.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '23':
+                                                            dia23.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '24':
+                                                            dia24.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '25':
+                                                            dia25.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '26':
+                                                            dia26.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '27':
+                                                            dia27.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '28':
+                                                            dia28.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '29':
+                                                            dia29.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '30':
+                                                            dia30.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
+                                                        case '31':
+                                                            dia31.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                                            break;
                                                     }
-                                                }
-
-                                                listaAndamento.push({ id: proposta._id, cliente: cliente.nome, responsavel, nome_insres: insres.nome, cadastro: dataMensagem(dtcadastro), dtinicio: dataMensagem(dtinicio), deadline: dataMensagem(equipe.dtfim) })
-
-                                                //console.log('q=>'+q)
-                                                //console.log('lista_proposta.length=>'+lista_proposta.length)
-                                                if (q == lista_proposta.length) {
-                                                    if (req.params.tipo == 'lista') {
-                                                        res.render('principal/emandamento', {
-                                                            dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
-                                                            dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
-                                                            dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
-                                                            mestitulo, anotitulo, trintaeum, todasCores, listaAndamento,
-                                                            todos_responsaveis, todos_clientes, todas_empresas
-                                                        })
-                                                    } else {
-                                                        res.render('principal/vermais', {
-                                                            dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
-                                                            dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
-                                                            dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
-                                                            mestitulo, anotitulo, trintaeum, todasCores, listaAndamento
-                                                        })
+                                                    dia++
+                                                    if (dia < 10) {
+                                                        dia = '0' + dia
                                                     }
+                                                    //console.log('diainicio=>' + diainicio)
                                                 }
-                                            }).catch((err) => {
-                                                req.flash('error_msg', 'Falha ao encontrar o responsável.')
-                                                res.redirect('/menu')
-                                            })
+                                            }
+
+                                            listaAndamento.push({ id: e._id, cliente: cliente.nome, responsavel, nome_insres, cadastro: dataMsgNum(dtcadastro), dtinicio: dataMensagem(dtinicio), deadline: dataMensagem(dtfim) })
+
+                                            if (q == proposta.length) {
+                                                if (req.params.tipo == 'lista') {
+                                                    caminho = 'principal/emandamento'
+                                                } else {
+                                                    caminho = 'principal/vermais'
+                                                }
+                                                res.render(caminho, {
+                                                    dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
+                                                    dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
+                                                    dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
+                                                    mestitulo, anotitulo, trintaeum, todasCores, listaAndamento,
+                                                    todos_responsaveis, todos_clientes, todas_empresas
+                                                })
+
+                                            }
                                         }).catch((err) => {
-                                            req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                                            req.flash('error_msg', 'Falha ao encontrar o técnico responsável.')
                                             res.redirect('/menu')
                                         })
                                     }).catch((err) => {
-                                        req.flash('error_msg', 'Falha ao encontrar o responsável.')
+                                        req.flash('error_msg', 'Falha ao encontrar a equipe.')
                                         res.redirect('/menu')
                                     })
                                 }).catch((err) => {
-                                    req.flash('error_msg', 'Falha ao encontrar o cliente.')
+                                    req.flash('error_msg', 'Falha ao encontrar o gestor responsável.')
                                     res.redirect('/menu')
                                 })
                             }).catch((err) => {
-                                req.flash('error_msg', 'Falha ao encontrar a proposta.')
+                                req.flash('error_msg', 'Falha ao encontrar o cliente.')
                                 res.redirect('/menu')
                             })
                         })
@@ -1660,37 +1343,37 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
         id = user
     }
 
-    dia01 = []
-    dia02 = []
-    dia03 = []
-    dia04 = []
-    dia05 = []
-    dia06 = []
-    dia07 = []
-    dia08 = []
-    dia09 = []
-    dia10 = []
-    dia11 = []
-    dia12 = []
-    dia13 = []
-    dia14 = []
-    dia15 = []
-    dia16 = []
-    dia17 = []
-    dia18 = []
-    dia19 = []
-    dia20 = []
-    dia21 = []
-    dia22 = []
-    dia23 = []
-    dia24 = []
-    dia25 = []
-    dia26 = []
-    dia27 = []
-    dia28 = []
-    dia29 = []
-    dia30 = []
-    dia31 = []
+    var dia01 = []
+    var dia02 = []
+    var dia03 = []
+    var dia04 = []
+    var dia05 = []
+    var dia06 = []
+    var dia07 = []
+    var dia08 = []
+    var dia09 = []
+    var dia10 = []
+    var dia11 = []
+    var dia12 = []
+    var dia13 = []
+    var dia14 = []
+    var dia15 = []
+    var dia16 = []
+    var dia17 = []
+    var dia18 = []
+    var dia19 = []
+    var dia20 = []
+    var dia21 = []
+    var dia22 = []
+    var dia23 = []
+    var dia24 = []
+    var dia25 = []
+    var dia26 = []
+    var dia27 = []
+    var dia28 = []
+    var dia29 = []
+    var dia30 = []
+    var dia31 = []
 
     todasCores = []
 
@@ -1702,8 +1385,6 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
     var fim
     var anoinicio
     var mesinicio
-    var mesinicio
-    var diainicio
     var diainicio
     var con1
     var con2
@@ -1719,14 +1400,13 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
     var compara
     var color
 
-    hoje = dataHoje()
-    meshoje = hoje.substring(5, 7)
-    anotitulo = hoje.substring(0, 4)
+    var hoje = dataHoje()
+    var meshoje = hoje.substring(5, 7)
+    var anotitulo = hoje.substring(0, 4)
 
     //console.log('meshoje=>' + meshoje)
 
-    mestitulo = req.body.mes
-    hoje = dataHoje()
+    var mestitulo = req.body.mes
 
     switch (mestitulo) {
         case 'Janeiro':
@@ -1774,13 +1454,12 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
             break;
     }
 
-    Proposta.find({ user: id, ganho: true, encerrado: false }).then((lista_proposta) => {
-        if (lista_proposta != '') {
-            lista_proposta.forEach((e) => {
-                q++
+    Proposta.find({ user: id, ganho: true, encerrado: false }).then((proposta) => {
+        if (proposta != '') {
+            proposta.forEach((e) => {
                 Cliente.findOne({ _id: e.cliente }).then((cliente) => {
                     Equipe.findOne({ _id: e.equipe, feito: true }).sort({ dtfimbusca: 'desc' }).then((equipe) => {
-
+                        q++
                         inicio = equipe.dtinicio
                         fim = equipe.dtfim
                         anoinicio = inicio.substring(0, 4)
@@ -1837,97 +1516,97 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
                             if (meshoje == mes) {
                                 switch (String(dia)) {
                                     case '01':
-                                        dia01.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia01.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '02':
-                                        dia02.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia02.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '03':
-                                        dia03.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia03.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '04':
-                                        dia04.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia04.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '05':
-                                        dia05.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia05.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '06':
-                                        dia06.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia06.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '07':
-                                        dia07.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia07.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '08':
-                                        dia08.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia08.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '09':
-                                        dia09.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia09.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '10':
-                                        dia10.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia10.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '11':
-                                        dia11.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia11.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '12':
-                                        dia12.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia12.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '13':
-                                        dia13.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia13.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '14':
-                                        dia14.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia14.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '15':
-                                        dia15.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia15.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '16':
-                                        dia16.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia16.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '17':
-                                        dia17.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia17.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '18':
-                                        dia18.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia18.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '19':
-                                        dia19.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia19.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '20':
-                                        dia20.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia20.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '21':
-                                        dia21.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia21.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '22':
-                                        dia22.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia22.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '23':
-                                        dia23.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia23.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '24':
-                                        dia24.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia24.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '25':
-                                        dia25.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia25.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '26':
-                                        dia26.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia26.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '27':
-                                        dia27.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia27.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '28':
-                                        dia28.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia28.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '29':
-                                        dia29.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia29.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '30':
-                                        dia30.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia30.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '31':
-                                        dia31.push({ cliente: cliente.nome, cor: cores[c] })
+                                        dia31.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                 }
                                 dia++
@@ -2473,10 +2152,10 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                                 var nome = pesins.nome
                                                                 var id = pesins._id
 
-                                                                if (pesins.custo == null || pesins.custo == '' || typeof pesins.custo == 'undefined') {
-                                                                    custoins = 0
-                                                                } else {
+                                                                if (naoVazio(pesins)) {
                                                                     custoins = pesins.custo
+                                                                } else {
+                                                                    custoins = 0
                                                                 }
                                                                 if (nome == ins0) {
                                                                     ins_dentro.push({ id, nome, custo: custoins })
@@ -5722,9 +5401,9 @@ router.post('/caminhoAte', ehAdmin, uploadfoto.array('fileate', 10), (req, res) 
 
     Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoAte: 1 } }).then(() => {
         Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
-            arquivos.forEach((element) => {
-                //console.log(element.filename)
-                vistoria.caminhoAte[q] = element.filename
+            arquivos.forEach((e) => {
+                //console.log(e.filename)
+                vistoria.caminhoAte[q] = e.filename
                 q++
             })
             vistoria.save().then(() => {
@@ -5748,9 +5427,9 @@ router.post('/caminhoInv', ehAdmin, uploadfoto.array('fileinv', 10), (req, res) 
 
     Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoInv: 1 } }).then(() => {
         Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
-            arquivos.forEach((element) => {
-                //console.log(element.filename)
-                vistoria.caminhoInv[q] = element.filename
+            arquivos.forEach((e) => {
+                //console.log(e.filename)
+                vistoria.caminhoInv[q] = e.filename
                 q++
             })
             vistoria.save().then(() => {
@@ -5775,9 +5454,9 @@ router.post('/caminhoStb', ehAdmin, uploadfoto.array('filestb', 10), (req, res) 
 
     Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoStb: 1 } }).then(() => {
         Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
-            arquivos.forEach((element) => {
-                //console.log(element.filename)
-                vistoria.caminhoStb[q] = element.filename
+            arquivos.forEach((e) => {
+                //console.log(e.filename)
+                vistoria.caminhoStb[q] = e.filename
                 q++
             })
             vistoria.save().then(() => {
@@ -5802,9 +5481,9 @@ router.post('/caminhoMod', ehAdmin, uploadfoto.array('filemod', 10), (req, res) 
 
     Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoMod: 1 } }).then(() => {
         Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
-            arquivos.forEach((element) => {
-                //console.log(element.filename)
-                vistoria.caminhoMod[q] = element.filename
+            arquivos.forEach((e) => {
+                //console.log(e.filename)
+                vistoria.caminhoMod[q] = e.filename
                 q++
             })
             vistoria.save().then(() => {
@@ -5829,9 +5508,9 @@ router.post('/caminhoSomb', ehAdmin, uploadfoto.array('filesomb', 10), (req, res
 
     Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoSomb: 1 } }).then(() => {
         Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
-            arquivos.forEach((element) => {
-                //console.log(element.filename)
-                vistoria.caminhoSomb[q] = element.filename
+            arquivos.forEach((e) => {
+                //console.log(e.filename)
+                vistoria.caminhoSomb[q] = e.filename
                 q++
             })
             vistoria.dtPlaSombra = dataHoje()
@@ -5857,9 +5536,9 @@ router.post('/caminhoArea', ehAdmin, uploadfoto.array('filearea', 10), (req, res
 
     Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoArea: 1 } }).then(() => {
         Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
-            arquivos.forEach((element) => {
-                //console.log(element.filename)
-                vistoria.caminhoArea[q] = element.filename
+            arquivos.forEach((e) => {
+                //console.log(e.filename)
+                vistoria.caminhoArea[q] = e.filename
                 q++
             })
             vistoria.dtPlaArea = dataHoje()
@@ -5885,9 +5564,9 @@ router.post('/caminhoInsi', ehAdmin, uploadfoto.array('fileinsi', 10), (req, res
 
     Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoInsi: 1 } }).then(() => {
         Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
-            arquivos.forEach((element) => {
-                //console.log(element.filename)
-                vistoria.caminhoInsi[q] = element.filename
+            arquivos.forEach((e) => {
+                //console.log(e.filename)
+                vistoria.caminhoInsi[q] = e.filename
                 q++
             })
             vistoria.dtPlaInvStb = dataHoje()
@@ -5913,9 +5592,9 @@ router.post('/caminhoInsa', ehAdmin, uploadfoto.array('fileinsa', 10), (req, res
 
     Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $unset: { caminhoInsa: 1 } }).then(() => {
         Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
-            arquivos.forEach((element) => {
-                //console.log(element.filename)
-                vistoria.caminhoInsa[q] = element.filename
+            arquivos.forEach((e) => {
+                //console.log(e.filename)
+                vistoria.caminhoInsa[q] = e.filename
                 q++
             })
             vistoria.dtPlaAte = dataHoje()
@@ -7235,30 +6914,30 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
             user: id
         }).lean().then((cronograma) => {
             //console.log('cronograma.length=>' + cronograma.length)
-            cronograma.forEach(element => {
+            cronograma.forEach(e => {
                 //console.log('entrou')
-                const { dateplaini } = element
-                const { dateprjini } = element
-                const { dateateini } = element
-                const { dateestini } = element
-                const { datemodini } = element
-                const { dateinvini } = element
-                const { dateeaeini } = element
-                const { datepnlini } = element
-                const { datestbini } = element
-                const { datevisini } = element
-                const { datepla } = element
-                const { dateprj } = element
-                const { dateate } = element
-                const { dateest } = element
-                const { datemod } = element
-                const { dateinv } = element
-                const { dateeae } = element
-                const { datestb } = element
-                const { datepnl } = element
-                const { datevis } = element
-                const { nome } = element
-                const { projeto } = element
+                const { dateplaini } = e
+                const { dateprjini } = e
+                const { dateateini } = e
+                const { dateestini } = e
+                const { datemodini } = e
+                const { dateinvini } = e
+                const { dateeaeini } = e
+                const { datepnlini } = e
+                const { datestbini } = e
+                const { datevisini } = e
+                const { datepla } = e
+                const { dateprj } = e
+                const { dateate } = e
+                const { dateest } = e
+                const { datemod } = e
+                const { dateinv } = e
+                const { dateeae } = e
+                const { datestb } = e
+                const { datepnl } = e
+                const { datevis } = e
+                const { nome } = e
+                const { projeto } = e
 
                 //console.log('nome=>' + nome)
 

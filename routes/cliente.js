@@ -12,7 +12,7 @@ const Tarefa = mongoose.model('tarefas')
 const Plano = mongoose.model('plano')
 
 
-const validaCampos = require('../resources/validaCampos')
+const naoVazio = require('../resources/naoVazio')
 const dataBusca = require('../resources/dataBusca')
 const comparaDatas = require('../resources/comparaDatas')
 const validaCronograma = require('../resources/validaCronograma')
@@ -24,7 +24,15 @@ const { ehAdmin } = require('../helpers/ehAdmin')
 
 router.get('/consulta', ehAdmin, (req, res) => {
     const { _id } = req.user
-    Cliente.find({ user: _id }).lean().then((clientes) => {
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+    Cliente.find({ user: id }).lean().then((clientes) => {
         res.render('cliente/findclientes', { clientes: clientes })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar os clientes.')
@@ -38,6 +46,14 @@ router.get('/novo', ehAdmin, (req, res) => {
 
 router.post('/novo', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
     var erros = []
 
     if (req.body.cnpj != '') {
@@ -74,7 +90,7 @@ router.post('/novo', ehAdmin, (req, res) => {
         }
 
         const cliente = {
-            user: _id,
+            user: id,
             nome: req.body.nome,
             endereco: req.body.endereco,
             cidade: req.body.cidade,
@@ -90,7 +106,7 @@ router.post('/novo', ehAdmin, (req, res) => {
         new Cliente(cliente).save().then(() => {
             var sucesso = []
             sucesso.push({ texto: 'Cliente adicionado com sucesso' })
-            Cliente.findOne({ user: _id }).sort({ field: 'asc', _id: -1 }).lean().then((cliente) => {
+            Cliente.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).lean().then((cliente) => {
                 res.render('cliente/cliente', { sucesso, cliente })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar o cliente.')
@@ -105,13 +121,29 @@ router.post('/novo', ehAdmin, (req, res) => {
 
 router.get('/edicao/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
-    Cliente.findOne({ user: _id, _id: req.params.id }).lean().then((cliente) => {
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+    Cliente.findOne({ user: id, _id: req.params.id }).lean().then((cliente) => {
         res.render('cliente/cliente', { cliente })
     })
 })
 
 router.post('/edicao/', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
     var erros = []
     var documento
 
@@ -124,7 +156,7 @@ router.post('/edicao/', ehAdmin, (req, res) => {
     if (req.body.nome == '' || req.body.endereco == '' || documento == '' ||
         req.body.celular == '' || req.body.email == '') {
         erros.push({ texto: 'Todos os campos de descrição são obrigatórios.' })
-        Cliente.findOne({ user: _id, _id: req.body.id }).lean().then((cliente) => {
+        Cliente.findOne({ user: id, _id: req.body.id }).lean().then((cliente) => {
             res.render('cliente/editcliente', { cliente: cliente, erros: erros })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar o cliente.')
@@ -146,7 +178,7 @@ router.post('/edicao/', ehAdmin, (req, res) => {
             posvenda = 'unchecked'
         }
 
-        Cliente.findOne({ user: _id, _id: req.body.id }).then((cliente) => {
+        Cliente.findOne({ user: id, _id: req.body.id }).then((cliente) => {
 
             if (req.body.uf != '' && req.body.uf != cliente.uf) {
                 cliente.uf = req.body.uf
@@ -171,7 +203,7 @@ router.post('/edicao/', ehAdmin, (req, res) => {
                 var sucesso = []
                 sucesso.push({ texto: 'Modificações salvas com sucesso.' })
 
-                Cliente.findOne({ user: _id, _id: req.body.id }).lean().then((cliente) => {
+                Cliente.findOne({ user: id, _id: req.body.id }).lean().then((cliente) => {
                     res.render('cliente/editcliente', { cliente, sucesso })
                 }).catch((err) => {
                     req.flash('error_msg', 'Não foi possível encontrar o cliente.')
@@ -189,11 +221,19 @@ router.post('/edicao/', ehAdmin, (req, res) => {
 
 router.get('/usinas/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
     var lista_usina = []
     var qu = 0
     Cliente.findOne({ _id: req.params.id }).lean().then((cliente) => {
         Usina.find({ cliente: req.params.id }).lean().then((usina) => {
-            Plano.find({ user: _id }).lean().then((lista_plano) => {
+            Plano.find({ user: id }).lean().then((lista_plano) => {
                 if (typeof usina != 'unedined' && usina != '') {
                     usina.forEach((element) => {
                         Plano.findOne({ _id: element.plano }).then((plano) => {
@@ -244,13 +284,21 @@ router.get('/excluirusina/:id', (req, res) => {
 
 router.post('/addusina/', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
     var cadastro = dataHoje()
     var datalimp = dataMensagem(setData(dataHoje(), 182))
     var buscalimp = dataBusca(setData(dataHoje(), 182))
     var datarevi = dataMensagem(setData(dataHoje(), 30))
     var buscarevi = dataBusca(setData(dataHoje(), 30))
     new Usina({
-        user: _id,
+        user: id,
         nome: req.body.nome,
         endereco: req.body.endereco,
         cliente: req.body.id,
@@ -340,7 +388,15 @@ router.get('/historico/:id', (req, res) => {
 
 router.get('/confirmaexclusao/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
-    Cliente.findOne({ user: _id, _id: req.params.id }).lean().then((cliente) => {
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+    Cliente.findOne({ user: id, _id: req.params.id }).lean().then((cliente) => {
         res.render('cliente/confirmaexclusao', { cliente: cliente })
     })
 })
@@ -357,46 +413,54 @@ router.get('/remover/:id', ehAdmin, (req, res) => {
 
 router.post('/filtrar', ehAdmin, (req, res) => {
     const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
     var cidade = req.body.cidade
     var uf = req.body.uf
     var nome = req.body.nome
 
     if (nome != '' && uf != '' && cidade != '') {
-        Cliente.find({ nome: new RegExp(nome), uf: new RegExp(uf), cidade: new RegExp(cidade), user: _id }).lean().then((clientes) => {
+        Cliente.find({ nome: new RegExp(nome), uf: new RegExp(uf), cidade: new RegExp(cidade), user: id }).lean().then((clientes) => {
             res.render('cliente/findclientes', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
         })
     } else {
         if (nome == '' && cidade == '' && uf == '') {
-            Cliente.find({ user: _id }).lean().then((clientes) => {
+            Cliente.find({ user: id }).lean().then((clientes) => {
                 res.render('cliente/findclientes', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
             })
         } else {
             if (nome == '' && cidade == '') {
-                Cliente.find({ uf: new RegExp(uf), user: _id }).lean().then((clientes) => {
+                Cliente.find({ uf: new RegExp(uf), user: id }).lean().then((clientes) => {
                     res.render('cliente/findclientes', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
                 })
             } else {
                 if (nome == '' && uf == '') {
-                    Cliente.find({ cidade: new RegExp(cidade), user: _id }).lean().then((clientes) => {
+                    Cliente.find({ cidade: new RegExp(cidade), user: id }).lean().then((clientes) => {
                         res.render('cliente/findclientes', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
                     })
                 } else {
                     if (cidade == '' && uf == '') {
-                        Cliente.find({ nome: new RegExp(nome), user: _id }).lean().then((clientes) => {
+                        Cliente.find({ nome: new RegExp(nome), user: id }).lean().then((clientes) => {
                             res.render('cliente/findclientes', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
                         })
                     } else {
                         if (cidade == '') {
-                            Cliente.find({ nome: new RegExp(nome), uf: new RegExp(uf), user: _id }).lean().then((clientes) => {
+                            Cliente.find({ nome: new RegExp(nome), uf: new RegExp(uf), user: id }).lean().then((clientes) => {
                                 res.render('cliente/findclientes', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
                             })
                         } else {
                             if (uf == '') {
-                                Cliente.find({ nome: new RegExp(nome), cidade: new RegExp(cidade), user: _id }).lean().then((Clientes) => {
+                                Cliente.find({ nome: new RegExp(nome), cidade: new RegExp(cidade), user: id }).lean().then((Clientes) => {
                                     res.render('cliente/findclientes', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
                                 })
                             } else {
-                                Cliente.find({ cidade: new RegExp(cidade), uf: new RegExp(uf), user: _id }).lean().then((clientes) => {
+                                Cliente.find({ cidade: new RegExp(cidade), uf: new RegExp(uf), user: id }).lean().then((clientes) => {
                                     res.render('cliente/findClientes', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
                                 })
                             }

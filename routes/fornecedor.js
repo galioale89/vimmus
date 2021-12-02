@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 require('../model/Fornecedor')
 const Fornecedor = mongoose.model('fornecedor')
 
-const validaCampos = require('../resources/validaCampos')
+const naoVazio = require('../resources/naoVazio')
 const dataBusca = require('../resources/dataBusca')
 const comparaDatas = require('../resources/comparaDatas')
 const validaCronograma = require('../resources/validaCronograma')

@@ -130,12 +130,21 @@
                                 class='bi bi-search iconefiltrar'></i></button>
                     </div>
                 </div>
+            </form>
+            {{#if listaEncerrado}}
+            <form action='/relatorios/imprimir' method='post'>
+                <input type='hidden' name='dataini' value='{{dataini}}'>
+                <input type='hidden' name='datafim' value='{{datafim}}'>
+                <input type='hidden' name='idres' value='{{idres}}'>
+                <input type='hidden' name='idemp' value='{{idemp}}'>
+                <input type='hidden' name='idcli' value='{{idcli}}'>
+                {{/if}}
                 <div class="row mt-4">
                     {{#if lista}}
                     {{#if filtroStatus}}
-                    <div class='filtro-selecao' style="margin-left: 30px;">Status: {{filtroStatus}}</div>
+                    <div class='filtro-selecao' style="margin-left: 15px;">Status: {{filtroStatus}}</div>
                     {{else}}
-                    <div class='filtro-selecao' style="margin-left: 30px;">Status: Todos</div>
+                    <div class='filtro-selecao' style="margin-left: 15px;">Status: Todos</div>
                     {{/if}}
                     {{/if}}
                     {{#if nomeEmpresa}}
@@ -153,8 +162,17 @@
                     {{else}}
                     <div class='filtro-selecao'>Cliente: Todos</div>
                     {{/if}}
+                    {{#if listaEncerrado}}
+                    <div style="padding-left: 90%;">
+                        <button type='submit' class='no-print'
+                            style="text-decoration: none;color: black;width: 80px;text-align: center;"><i
+                                class="bi bi-printer"></i></button>
+                    </div>
+                    {{/if}}
                 </div>
+                {{#if listaEncerrado}}
             </form>
+            {{/if}}
         </div>
         {{!-- <div class="row mt-4">
             <div class='filtro-selecao' style="margin-left: 30px;">Classificação: {{classificacao}}</div>

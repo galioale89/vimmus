@@ -4,10 +4,117 @@ const router = express.Router()
 const mongoose = require('mongoose')
 require('../model/Realizado')
 require('../model/Projeto')
+require('../model/Proposta')
+require('../model/Pessoa')
+require('../model/Cliente')
+require('../model/Equipe')
 const Projetos = mongoose.model('projeto')
 const Realizado = mongoose.model('realizado')
+const Proposta = mongoose.model('proposta')
+const Pessoa = mongoose.model('pessoa')
+const Cliente = mongoose.model('cliente')
+const Equipe = mongoose.model('equipe')
 
+const comparaDatas = require('../resources/comparaDatas')
+const dataBusca = require('../resources/dataBusca')
+const liberaRecursos = require('../resources/liberaRecursos')
+const setData = require('../resources/setData')
+const dataMensagem = require('../resources/dataMensagem')
+const dataMsgNum = require('../resources/dataMsgNum')
+const validaCronograma = require('../resources/validaCronograma')
+const dataHoje = require('../resources/dataHoje')
+const filtrarProposta = require('../resources/filtrar')
+const naoVazio = require('../resources/naoVazio')
 const { ehAdmin } = require('../helpers/ehAdmin')
+
+
+router.post('/imprimir', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    const { user } = req.user
+    var id
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+
+    var lista = []
+    var busca = []
+    var sql = []
+    var data = []
+    var encerrado = []
+    var q = 0
+
+    var responsavel
+    var nome_insres
+    var dif
+
+    var cliente = req.body.idcli
+    var empresa = req.body.idemp
+    var respons = req.body.idres
+    var dataini = dataBusca(req.body.dataini)
+    var datafim = dataBusca(req.body.datafim)
+    //console.log(cliente)
+    //console.log(empresa)
+    //console.log(respons)
+    //console.log(dataini)
+    //console.log(datafim)
+
+    data = { 'datacad': { $lte: datafim, $gte: dataini } }
+    sql = filtrarProposta(2, id, 'emandamento', respons, empresa, cliente, false, false, false, false)
+    encerrado = { encerrado: true }
+    busca = Object.assign(data, sql, encerrado)
+    Proposta.find(busca).then((proposta) => {
+        proposta.forEach((e) => {
+            //console.log('e=>' + e.id)
+            Cliente.findOne({ _id: e.cliente }).lean().then((lista_cliente) => {
+                Equipe.findOne({ _id: e.equipe, $and: [{ 'custoins': { $ne: 0 } }, { 'custoins': { $ne: null } }] }).then((equipe) => {
+
+                    Pessoa.findOne({ _id: e.responsavel }).then((lista_responsavel) => {
+                        Pessoa.findOne({ _id: equipe.insres }).then((insres) => {
+
+                            q++
+                            if (naoVazio(lista_responsavel)) {
+                                responsavel = lista_responsavel.nome
+                            } else {
+                                responsavel = ''
+                            }
+
+                            if (naoVazio(insres)) {
+                                nome_insres = insres.nome
+                            } else {
+                                nome_insres = ''
+                            }
+                            dif = parseFloat(dataBusca(equipe.dtfim)) - parseFloat(dataBusca(equipe.dtinicio)) + 1
+                            //console.log('dif=>'+dif)
+                            custototal = parseFloat(equipe.custoins) * parseFloat(dif)
+                            lista.push({ id: e._id, cliente: lista_cliente.nome, responsavel, nome_insres, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim), custo: custototal, ins0: equipe.ins0, ins1: equipe.ins1, ins2: equipe.ins2, ins3: equipe.ins3, ins4: equipe.ins4, ins5: equipe.ins5 })
+                            if (q == proposta.length) {
+                                res.render('relatorios/imprimirConsulta', {lista})
+                            }
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Nenhum técnico responsável encontrado.')
+                            res.redirect('/gerenciamento/consulta/encerrado')
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Nenhum gestor responsável encontrado')
+                        res.redirect('/gerenciamento/consulta/encerrado')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Houve uma falha ao encontrar a equipe.')
+                    res.redirect('/gerenciamento/consulta/encerrado')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Houve uma falha ao encontrar o cliente.')
+                res.redirect('/gerenciamento/consulta/encerrado')
+            })
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Houve uma falha ao encontrar a proposta.')
+        res.redirect('/gerenciamento/consulta/encerrado')
+    })
+    // res.render('relatorios/imprimirConsulta', {lista})
+})
 
 router.get('/analisegeral/', ehAdmin, (req, res) => {
     const { _id } = req.user
@@ -22,21 +129,21 @@ router.get('/analisegeral/', ehAdmin, (req, res) => {
             Projetos.findOne({ _id: element.projeto }).then((projeto) => {
 
                 // if (projeto.ehDireto) {
-                    if (projeto.qtdmod > 0) {
-                        qtdmod = qtdmod + projeto.qtdmod
-                    } else {
-                        qtdmod = qtdmod + 0
-                    }
+                if (projeto.qtdmod > 0) {
+                    qtdmod = qtdmod + projeto.qtdmod
+                } else {
+                    qtdmod = qtdmod + 0
+                }
                 // }
                 // } else {
                 //     if (projeto.unimod != '' || typeof projeto.unimod != 'undefined'){
                 //         qtdmod = qtdmod + projeto.unimod
                 //     }
                 // }
-                console.log('realizado._id=>'+element._id)
-                console.log("potencia=>"+element.potencia)
-                console.log("qtdmod=>"+qtdmod)
-                if (element.potencia != '' && typeof element.potencia != 'undefined'){
+                //console.log('realizado._id=>' + element._id)
+                //console.log("potencia=>" + element.potencia)
+                //console.log("qtdmod=>" + qtdmod)
+                if (element.potencia != '' && typeof element.potencia != 'undefined') {
                     potencia = parseFloat(potencia) + parseFloat(element.potencia)
                 }
                 valor = valor + element.valor
@@ -2735,7 +2842,7 @@ router.post('/aplicar', ehAdmin, (req, res) => {
                                                                                 })
                                                                             })
                                                                         })
-                                                                    })                                                                    
+                                                                    })
                                                                 }).catch((err) => {
                                                                     req.flash('error_msg', 'Falha ao encontrar usinas nivel 6.')
                                                                     res.redirect('/relatorios/dashboardbi')

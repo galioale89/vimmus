@@ -1,0 +1,66 @@
+<style>
+    #quadro {
+        background: white;
+        border: rgba(200, 200, 200, 0.8) solid 1px;
+        border-radius: 5px;
+        width: 95%;
+        height: fit-content;
+        padding: 6px;
+        margin-left: 50px;
+        margin-top: 20px;
+        margin-bottom: 40px;
+    }
+
+    table,
+    tr,
+    td {
+        border-collapse: collapse;
+        font-size: 12px;
+        border: rgba(255, 255, 255, 0.8) 1px solid;
+        width: fit-content;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    th {
+        font-weight: 500;
+        background-color: rgb(40, 55, 86);
+        color: white;
+        border: rgba(255, 255, 255, 0.8) 1px solid;
+    }
+</style>
+
+<div id='quadro'>
+    <h5 class="text-center fw-bold mb-2 mt-2">Relatório de Projetos</h5>
+    <table>
+        <tr style="line-height: 20px;text-align: center;">
+            <th >Projeto</th>
+            <th >Cliente</th>
+            <th >Data</th>
+            <th >Gestor Responsável</th>
+            <th >Técnico Responsável</th>
+            <th >Equipe</th>
+            <th >Custo Equipe (R$)</th>
+            <th ></th>
+        </tr>
+        {{#each lista}}
+        <tr style="line-height: 20px;">
+            <td style="text-align: center;">{{id}}</td>
+            <td style="text-align: center;">{{cliente}}</td>
+            <td style="text-align: center;">{{dataini}} a {{datafim}}</td>
+            <td style="text-align: center;">{{responsavel}}</td>
+            <td style="text-align: center;">{{nome_insres}}</td>
+            <td style="text-align: center;">{{ins0}}<br>{{ins1}}<br>{{ins2}}<br>{{ins3}}<br>{{ins4}}<br>{{ins5}}</td>
+            <td style="text-align: center;">{{custo}}</td>
+            <td>
+                <div class='btn-group btn-group-sm col-12 gap-2 mx-auto'>
+                    <a href='/gerenciamento/proposta/{{id}}' class='botao-tabela ativado-tabela'><i
+                            class="bi bi-pen icone"></i></a>
+                </div>
+            </td>
+        </tr>
+        {{/each}}
+    </table>
+</div>
