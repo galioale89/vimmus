@@ -69,10 +69,8 @@ router.post('/imprimir', ehAdmin, (req, res) => {
             //console.log('e=>' + e.id)
             Cliente.findOne({ _id: e.cliente }).lean().then((lista_cliente) => {
                 Equipe.findOne({ _id: e.equipe, $and: [{ 'custoins': { $ne: 0 } }, { 'custoins': { $ne: null } }] }).then((equipe) => {
-
                     Pessoa.findOne({ _id: e.responsavel }).then((lista_responsavel) => {
                         Pessoa.findOne({ _id: equipe.insres }).then((insres) => {
-
                             q++
                             if (naoVazio(lista_responsavel)) {
                                 responsavel = lista_responsavel.nome
@@ -90,7 +88,12 @@ router.post('/imprimir', ehAdmin, (req, res) => {
                             custototal = parseFloat(equipe.custoins) * parseFloat(dif)
                             lista.push({ id: e._id, cliente: lista_cliente.nome, responsavel, nome_insres, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim), custo: custototal, ins0: equipe.ins0, ins1: equipe.ins1, ins2: equipe.ins2, ins3: equipe.ins3, ins4: equipe.ins4, ins5: equipe.ins5 })
                             if (q == proposta.length) {
-                                res.render('relatorios/imprimirConsulta', {lista})
+                                Pessoa.find({ user: id, $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }] }).lean().then((instalador) => {
+                                    res.render('relatorios/imprimirConsulta', { lista, instalador, respons, cliente, empresa, datafim, dataini })
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Falha ao encontrar os instaladores.')
+                                    res.redirect('/gerenciamento/consulta/encerrado')
+                                })
                             }
                         }).catch((err) => {
                             req.flash('error_msg', 'Nenhum técnico responsável encontrado.')
@@ -113,7 +116,103 @@ router.post('/imprimir', ehAdmin, (req, res) => {
         req.flash('error_msg', 'Houve uma falha ao encontrar a proposta.')
         res.redirect('/gerenciamento/consulta/encerrado')
     })
-    // res.render('relatorios/imprimirConsulta', {lista})
+})
+
+router.post('/filtraRelatorio', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    const { user } = req.user
+    var id
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+
+    var lista = []
+    var busca = []
+    var sql = []
+    var data = []
+    var encerrado = []
+    var q = 0
+
+    var responsavel
+    var nome_insres
+    var dif
+
+    var cliente = req.body.cliente
+    var empresa = req.body.empresa
+    var respons = req.body.responsavel
+    var dataini = req.body.dataini
+    var datafim = req.body.datafim
+    console.log(cliente)
+    console.log(empresa)
+    console.log(respons)
+    console.log(dataini)
+    console.log(datafim)
+
+    data = { 'datacad': { $lte: datafim, $gte: dataini } }
+    sql = filtrarProposta(2, id, 'encerrado', respons, empresa, cliente, false, false, false, false)
+    encerrado = {encerrado: true}
+    busca = Object.assign(data, sql, encerrado)
+    console.log("req.body.ins=>"+req.body.ins)
+    Pessoa.findOne({ _id: req.body.ins }).then((ins) => {
+        Proposta.find(busca).then((proposta) => {
+            proposta.forEach((e) => {
+                console.log('e=>' + e.id)
+                Cliente.findOne({ _id: e.cliente }).lean().then((lista_cliente) => {
+                    Equipe.findOne({ _id: e.equipe, $or:[{'idins0': ins},{'idins1': ins},{'idins2': ins},{'idins3': ins},{'idins4': ins},{'idins5': ins}], $and: [{ 'custoins': { $ne: 0 } }, { 'custoins': { $ne: null } }] }).then((equipe) => {
+                        console.log('equipe=>'+equipe)
+                        Pessoa.findOne({ _id: e.responsavel }).then((lista_responsavel) => {
+                            Pessoa.findOne({ _id: equipe.insres }).then((insres) => {
+                                q++
+                                if (naoVazio(lista_responsavel)) {
+                                    responsavel = lista_responsavel.nome
+                                } else {
+                                    responsavel = ''
+                                }
+
+                                if (naoVazio(insres)) {
+                                    nome_insres = insres.nome
+                                } else {
+                                    nome_insres = ''
+                                }
+                                dif = parseFloat(dataBusca(equipe.dtfim)) - parseFloat(dataBusca(equipe.dtinicio)) + 1
+                                //console.log('dif=>'+dif)
+                                custototal = parseFloat(ins.custo) * parseFloat(dif)
+                                lista.push({ id: e._id, cliente: lista_cliente.nome, responsavel, nome_insres, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim), custo: custototal, ins0: ins.nome})
+                                if (q == proposta.length) {
+                                    Pessoa.find({ user: id, $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }] }).lean().then((instalador) => {
+                                        res.render('relatorios/imprimirConsulta', { lista, instalador, respons, cliente, empresa, datafim, dataini })
+                                    }).catch((err) => {
+                                        req.flash('error_msg', 'Falha ao encontrar os instaladores.')
+                                        res.redirect('/gerenciamento/consulta/encerrado')
+                                    })
+                                }
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Nenhum técnico responsável encontrado.')
+                                res.redirect('/gerenciamento/consulta/encerrado')
+                            })
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Nenhum gestor responsável encontrado')
+                            res.redirect('/gerenciamento/consulta/encerrado')
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Houve uma falha ao encontrar a equipe.')
+                        res.redirect('/gerenciamento/consulta/encerrado')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Houve uma falha ao encontrar o cliente.')
+                    res.redirect('/gerenciamento/consulta/encerrado')
+                })
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Houve uma falha ao encontrar a proposta.')
+            res.redirect('/gerenciamento/consulta/encerrado')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Houve uma falha ao encontrar o instalador.')
+        res.redirect('/gerenciamento/consulta/encerrado')
+    })
 })
 
 router.get('/analisegeral/', ehAdmin, (req, res) => {

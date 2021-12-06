@@ -1,3 +1,19 @@
+<style>
+    .disabledbutton {
+        pointer-events: none;
+        opacity: 0.4;
+    }
+</style>
+<script>
+    window.onload = function () {
+        var bloquear = document.getElementById('bloquear')
+
+        if (bloquear.className == 'true') {
+            bloquear.className = 'disabledbutton'
+        }
+
+    }
+</script>
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
     {{#if proposta._id}}
     <div style="width: 100%;">
@@ -61,113 +77,115 @@
             style="border-bottom-left-radius: 30px;"><i class="bi bi-door-open"></i>
             Pós Venda</a>
     </div>
-
-    <div class="row mt-2">
-        <div class="col-md-2 text-end">
-            <label class='col-form-label fw-bold mt-3'>Documento: </label><br>
-        </div>
-        <div class="col-md-10 text-start">
-            <form action='/gerenciamento/aceite' method='post' enctype="multipart/form-data">
-                <input type='hidden' name='id' value='{{proposta._id}}'>
-                <div class="row">
-                    {{#if documento.aceite}}
-                    <div class="col-md-5">
-                        <div class="row mt-3">
-                            <label class='col-form-label'>{{documento.aceite}}</label>
-                        </div>
-                    </div>
-                    <div class="col-md-2 mt-3">
-                        <input style="max-width: 150px;" type='file' class='form-control' name='aceite'
-                            value='{{documento.aceite}}'>
-                    </div>
-                    {{else}}
-                    <div class="col-md-7 mt-3">
-                        <input type='file' class='form-control' name='aceite' value='{{documento.aceite}}'>
-                    </div>
-                    {{/if}}
-                    <div class="col-md-1 mt-3">
-                        <a class="btn btn-primary" href='/gerenciamento/mostrarAceite/{{proposta._id}}'
-                            target="_blank"><i class='bi bi-eye'></i></a>
-                    </div>
-                    <div class="col-md-2">
-                        <label> Data</label>
-                        <input type='date' class='form-control' name='dtaceite' value='{{documento.dtaceite}}'>
-                    </div>
-                    <div class="col-md-1 mt-3">
-                        <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
-                    </div>
-                </div><br>
-            </form>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="row" style="height: 380px;">
-                    <object data="/gerenciamento/mostrarAceite/{{proposta._id}}" type="application/pdf">
-                        <p>Seu navegador não tem um plugin pra PDF</p>
-                    </object>
-                </div>
+    <div id='bloquear' class='{{proposta.encerrado}}'>
+        <div class="row mt-2">
+            <div class="col-md-2 text-end">
+                <label class='col-form-label fw-bold mt-3'>Documento: </label><br>
             </div>
-            <div class="col">
-                <form action="/gerenciamento/caminhoAte" method="post" enctype="multipart/form-data">
+            <div class="col-md-10 text-start">
+                <form action='/gerenciamento/aceite' method='post' enctype="multipart/form-data">
                     <input type='hidden' name='id' value='{{proposta._id}}'>
-                    <label class='col-form-label col-form-label-sm'>Aterramento: {{vistoria.caminhoAte}}</label>
                     <div class="row">
-                        <div class="col">
-                            <input type='file' multiple name='fileate' class='form-control form-control-sm'>
+                        {{#if documento.aceite}}
+                        <div class="col-md-5">
+                            <div class="row mt-3">
+                                <label class='col-form-label'>{{documento.aceite}}</label>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mt-3">
+                            <input style="max-width: 150px;" type='file' class='form-control' name='aceite'
+                                value='{{documento.aceite}}'>
+                        </div>
+                        {{else}}
+                        <div class="col-md-7 mt-3">
+                            <input type='file' class='form-control' name='aceite' value='{{documento.aceite}}'>
+                        </div>
+                        {{/if}}
+                        <div class="col-md-1 mt-3">
+                            <a class="btn btn-primary" href='/gerenciamento/mostrarAceite/{{proposta._id}}'
+                                target="_blank"><i class='bi bi-eye'></i></a>
                         </div>
                         <div class="col-md-2">
-                            <button type='submit' class='btn btn-sm btn-success'><i class='bi bi-save'></i></button>
-                            <a href='/gerenciamento/mostrarAte/{{proposta._id}}' class='btn btn-sm btn-primary'><i
-                                    class='bi bi-eye'></i></a>
+                            <label> Data</label>
+                            <input type='date' class='form-control' name='dtaceite' value='{{documento.dtaceite}}'>
                         </div>
-                    </div>
+                        <div class="col-md-1 mt-3">
+                            <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
+                        </div>
+                    </div><br>
                 </form>
-                <hr>
-                <form action="/gerenciamento/caminhoInv" method="post" enctype="multipart/form-data">
-                    <input type='hidden' name='id' value='{{proposta._id}}'>    
-                    <label class='col-form-label col-form-label-sm'>Inversor: {{vistoria.caminhoInv}}</label>
-                    <div class="row">
-                        <div class="col">
-                            <input type='file' multiple name='fileinv' class='form-control form-control-sm'>
-                        </div>
-                        <div class="col-md-2">
-                            <button type='submit' class='btn btn-sm btn-success'><i class='bi bi-save'></i></button>
-                            <a href='/gerenciamento/mostrarInv/{{proposta._id}}' class='btn btn-sm btn-primary'><i
-                                    class='bi bi-eye'></i></a>
-                        </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="row" style="height: 380px;">
+                        <object data="/gerenciamento/mostrarAceite/{{proposta._id}}" type="application/pdf">
+                            <p>Seu navegador não tem um plugin pra PDF</p>
+                        </object>
                     </div>
-                </form>
-                <hr>
-                <form action="/gerenciamento/caminhoStb" method="post" enctype="multipart/form-data">
-                    <input type='hidden' name='id' value='{{proposta._id}}'>    
-                    <label class='col-form-label col-form-label-sm'>String Box: {{vistoria.caminhoStb}}</label>
-                    <div class="row">
-                        <div class="col">
-                            <input type='file' multiple name='filestb' class='form-control form-control-sm'>
+                </div>
+                <div class="col">
+                    <form action="/gerenciamento/caminhoAte" method="post" enctype="multipart/form-data">
+                        <input type='hidden' name='id' value='{{proposta._id}}'>
+                        <label class='col-form-label col-form-label-sm'>Aterramento: {{vistoria.caminhoAte}}</label>
+                        <div class="row">
+                            <div class="col">
+                                <input type='file' multiple name='fileate' class='form-control form-control-sm'>
+                            </div>
+                            <div class="col-md-2">
+                                <button type='submit' class='btn btn-sm btn-success'><i class='bi bi-save'></i></button>
+                                <a href='/gerenciamento/mostrarAte/{{proposta._id}}' class='btn btn-sm btn-primary'><i
+                                        class='bi bi-eye'></i></a>
+                            </div>
                         </div>
-                        <div class="col-md-2">
-                            <button type='submit' class='btn btn-sm btn-success'><i class='bi bi-save'></i></button>
-                            <a href='/gerenciamento/mostrarStb/{{proposta._id}}' class='btn btn-sm btn-primary'><i
-                                    class='bi bi-eye'></i></a>
+                    </form>
+                    <hr>
+                    <form action="/gerenciamento/caminhoInv" method="post" enctype="multipart/form-data">
+                        <input type='hidden' name='id' value='{{proposta._id}}'>
+                        <label class='col-form-label col-form-label-sm'>Inversor: {{vistoria.caminhoInv}}</label>
+                        <div class="row">
+                            <div class="col">
+                                <input type='file' multiple name='fileinv' class='form-control form-control-sm'>
+                            </div>
+                            <div class="col-md-2">
+                                <button type='submit' class='btn btn-sm btn-success'><i class='bi bi-save'></i></button>
+                                <a href='/gerenciamento/mostrarInv/{{proposta._id}}' class='btn btn-sm btn-primary'><i
+                                        class='bi bi-eye'></i></a>
+                            </div>
                         </div>
-                    </div>
-                </form>
-                <hr>
-                <form action="/gerenciamento/caminhoMod" method="post" enctype="multipart/form-data">
-                    <input type='hidden' name='id' value='{{proposta._id}}'>    
-                    <label class='col-form-label col-form-label-sm'>Estruturas e Módulos: {{vistoria.caminhoMod}}</label>
-                    <div class="row">
-                        <div class="col">
-                            <input type='file' multiple name='filemod' class='form-control form-control-sm'>
+                    </form>
+                    <hr>
+                    <form action="/gerenciamento/caminhoStb" method="post" enctype="multipart/form-data">
+                        <input type='hidden' name='id' value='{{proposta._id}}'>
+                        <label class='col-form-label col-form-label-sm'>String Box: {{vistoria.caminhoStb}}</label>
+                        <div class="row">
+                            <div class="col">
+                                <input type='file' multiple name='filestb' class='form-control form-control-sm'>
+                            </div>
+                            <div class="col-md-2">
+                                <button type='submit' class='btn btn-sm btn-success'><i class='bi bi-save'></i></button>
+                                <a href='/gerenciamento/mostrarStb/{{proposta._id}}' class='btn btn-sm btn-primary'><i
+                                        class='bi bi-eye'></i></a>
+                            </div>
                         </div>
-                        <div class="col-md-2">
-                            <button type='submit' class='btn btn-sm btn-success'><i class='bi bi-save'></i></button>
-                            <a href='/gerenciamento/mostrarMod/{{proposta._id}}' class='btn btn-sm btn-primary'><i
-                                    class='bi bi-eye'></i></a>
+                    </form>
+                    <hr>
+                    <form action="/gerenciamento/caminhoMod" method="post" enctype="multipart/form-data">
+                        <input type='hidden' name='id' value='{{proposta._id}}'>
+                        <label class='col-form-label col-form-label-sm'>Estruturas e Módulos:
+                            {{vistoria.caminhoMod}}</label>
+                        <div class="row">
+                            <div class="col">
+                                <input type='file' multiple name='filemod' class='form-control form-control-sm'>
+                            </div>
+                            <div class="col-md-2">
+                                <button type='submit' class='btn btn-sm btn-success'><i class='bi bi-save'></i></button>
+                                <a href='/gerenciamento/mostrarMod/{{proposta._id}}' class='btn btn-sm btn-primary'><i
+                                        class='bi bi-eye'></i></a>
+                            </div>
                         </div>
-                    </div>
-                </form>
-                <br>
+                    </form>
+                    <br>
+                </div>
             </div>
         </div>
     </div>

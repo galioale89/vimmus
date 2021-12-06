@@ -52,6 +52,11 @@
     td {
         border: 5px solid transparent;
     }
+
+    .disabledbutton {
+        pointer-events: none;
+        opacity: 0.4;
+    }
 </style>
 <script>
     function proximo() {
@@ -65,6 +70,14 @@
             prx1.style.display = 'flex'
             prx2.style.display = 'none'
         }
+    }
+    window.onload = function () {
+        var bloquear = document.getElementById('bloquear')
+
+        if (bloquear.className == 'true') {
+            bloquear.className = 'disabledbutton'
+        }
+
     }
 </script>
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
@@ -131,116 +144,120 @@
             Pós Venda</a>
     </div>
 
-    <form action='/gerenciamento/salvarpadrao/' method='post'>
-        <input type="hidden" name="id" value='{{proposta._id}}'>
-        <div class="row mt-4">
-            <div class="col-md-4">
-                <label for="nome" class=" fw-bold col-form-label col-form-label-sm"> Equipe:</label>
-                <select class='form-select mb-1' name='equipe'>
-                    {{!-- {{#if lista_equipe.nome_equipe}}
-                    <option class='fw-bold' value='{{lista_equipe.nome_equipe}}'>{{lista_equipe.nome_equipe}}</option>
-                    {{else}} --}}
-                    <option class='fw-bold' value='{{nome_equipe}}'>{{nome_equipe}}</option>
-                    {{!-- {{/if}} --}}
-                    <option value='todos'>Todos</option>
-                    {{#each equipes}}
-                    <option value="{{nome}}">{{nome}}</option>
-                    {{else}}
-                    <option value=''>Nenhuma equipe cadastrada.</option>
-                    {{/each}}
-                </select>
+    <div id='bloquear' class='{{proposta.encerrado}}'>
+        <form action='/gerenciamento/salvarpadrao/' method='post'>
+            <input type="hidden" name="id" value='{{proposta._id}}'>
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <label for="nome" class=" fw-bold col-form-label col-form-label-sm"> Equipe:</label>
+                    <select class='form-select mb-1' name='equipe'>
+                        {{!-- {{#if lista_equipe.nome_equipe}}
+                        <option class='fw-bold' value='{{lista_equipe.nome_equipe}}'>{{lista_equipe.nome_equipe}}
+                        </option>
+                        {{else}} --}}
+                        <option class='fw-bold' value='{{nome_equipe}}'>{{nome_equipe}}</option>
+                        {{!-- {{/if}} --}}
+                        <option value='todos'>Todos</option>
+                        {{#each equipes}}
+                        <option value="{{nome}}">{{nome}}</option>
+                        {{else}}
+                        <option value=''>Nenhuma equipe cadastrada.</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class='col'>
+                    <label class="col-form-label col-form-label-sm">Previsão Inicio das Obras</label>
+                    <input type='date' name='dtinicio' class='form-control' value='{{lista_equipe.dtinicio}}'>
+                </div>
+                <div class="col">
+                    <label class="col-form-label col-form-label-sm">Previsão Fim das Obras</label>
+                    <input type='date' name='dtfim' class='form-control' value='{{lista_equipe.dtfim}}'>
+                </div>
+                <div class="col">
+                    <button type="submit" class='btn btn-success' style="margin-top: 10%;">Próximo>></button>
+                </div>
             </div>
-            <div class='col'>
-                <label class="col-form-label col-form-label-sm">Previsão Inicio das Obras</label>
-                <input type='date' name='dtinicio' class='form-control' value='{{lista_equipe.dtinicio}}'>
+            <div class='row mb-2'>
+                {{#each lista_nomes}}
+                <div style="width: fit-content">
+                    <div class='filtro-selecao' style="line-height: 20px;">{{nome}} <a
+                            href='/gerenciamento/vermais/{{id}}/{{proposta._id}}'><i class='bi bi-eye'></i></a></div>
+                </div>
+                {{/each}}
             </div>
-            <div class="col">
-                <label class="col-form-label col-form-label-sm">Previsão Fim das Obras</label>
-                <input type='date' name='dtfim' class='form-control' value='{{lista_equipe.dtfim}}'>
-            </div>
-            <div class="col">
-                <button type="submit" class='btn btn-success' style="margin-top: 10%;">Próximo>></button>
-            </div>
-        </div>
-        <div class='row mb-2'>
-            {{#each lista_nomes}}
-            <div style="width: fit-content">
-                <div class='filtro-selecao' style="line-height: 20px;">{{nome}} <a
-                        href='/gerenciamento/vermais/{{id}}/{{proposta._id}}'><i class='bi bi-eye'></i></a></div>
-            </div>
-            {{/each}}
-        </div>
-    </form>
-    <form method="post" action='/gerenciamento/salvarequipe/'>
-        <input type="hidden" name="id" value='{{proposta._id}}'>
-        <input type="hidden" name="nome_equipe" value='{{nome_equipe}}'>
-        <div class="row" style="padding-left:10px;padding-right: 10px;width: 100%;">
-            <div class="col">
-                <div class="row">
-                    <div class="lists">
-                        <div class="list">
-                            <label class="col-form-label col-form-label-sm fw-bold text-center"
-                                style="color: white">Instaladores Disponíveis</label>
-                            <div style="overflow-y: scroll;max-height: 200px;">
-                                {{#each fora_ins}}
-                                <div class="list-item" style='color: black;' draggable="true"  name='{{id}}'>{{nome}}<a
-                                        href='/gerenciamento/vermais/{{id}}' style="padding-left: 5px;"><i
+        </form>
+
+        <form method="post" action='/gerenciamento/salvarequipe/'>
+            <input type="hidden" name="id" value='{{proposta._id}}'>
+            <input type="hidden" name="nome_equipe" value='{{nome_equipe}}'>
+            <div class="row" style="padding-left:10px;padding-right: 10px;width: 100%;">
+                <div class="col">
+                    <div class="row">
+                        <div class="lists">
+                            <div class="list">
+                                <label class="col-form-label col-form-label-sm fw-bold text-center"
+                                    style="color: white">Instaladores Disponíveis</label>
+                                <div style="overflow-y: scroll;max-height: 200px;">
+                                    {{#each fora_ins}}
+                                    <div class="list-item" style='color: black;' draggable="true" name='{{id}}'>
+                                        {{nome}}<a href='/gerenciamento/vermais/{{id}}' style="padding-left: 5px;"><i
+                                                class='bi bi-eye'></i></a>
+                                    </div>
+                                    {{/each}}
+                                </div>
+                            </div>
+                            <div class="list">
+                                <label class="col-form-label col-form-label-sm fw-bold text-center"
+                                    style="color: white">Instaladores Alocados</label>
+                                {{#each dentro_ins}}
+                                <div class="item-instalacao" style='color: black;' draggable="true" name='{{id}}'>
+                                    {{nome}}<a href='/gerenciamento/vermais/{{id}}' style="padding-left: 5px;"><i
                                             class='bi bi-eye'></i></a>
+                                    <input type='hidden' name='custo' value='{{custo}}'>
                                 </div>
                                 {{/each}}
                             </div>
                         </div>
-                        <div class="list">
-                            <label class="col-form-label col-form-label-sm fw-bold text-center"
-                                style="color: white">Instaladores Alocados</label>
-                            {{#each dentro_ins}}
-                            <div class="item-instalacao" style='color: black;' draggable="true"  name='{{id}}'>{{nome}}<a
-                                    href='/gerenciamento/vermais/{{id}}' style="padding-left: 5px;"><i
-                                        class='bi bi-eye'></i></a>
-                                <input type='hidden' name='custo' value='{{custo}}'>
-                            </div>
-                            {{/each}}
-                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row mt-2" style="margin-left: 30px;">
-            <div class='col-md-5 text-end'>
-                <label class='col-form-label'>Instalador Responsável:</label>
+            <div class="row mt-2" style="margin-left: 30px;">
+                <div class='col-md-5 text-end'>
+                    <label class='col-form-label'>Instalador Responsável:</label>
+                </div>
+                <div class='col-md-4'>
+                    <select class='form-select' name='insres'>
+                        <option value='{{insres._id}}' class='fw-bold'>{{insres.nome}}</option>
+                        {{#each lista_res}}
+                        <option value='{{id}}'>{{nome}}</option>
+                        {{else}}
+                        <option>Nenhum Instalador Responsável cadastrado.</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" class='btn btn-success' onclick="getItemValue()">Aplicar</button>
+                </div>
+                <div class='col-md-2'>
+                    <a href='/gerenciamento/enviarequipe/{{proposta._id}}' class="btn btn-primary">{{#if
+                        lista_equipe.liberar}}
+                        Cancelar{{else}}Envia Equipe{{/if}}</a>
+                </div>
+                <input type='hidden' class='ins0' name='ins0' id='ins0' value=''>
+                <input type='hidden' class='ins1' name='ins1' id='ins1' value=''>
+                <input type='hidden' class='ins2' name='ins2' id='ins2' value=''>
+                <input type='hidden' class='ins3' name='ins3' id='ins3' value=''>
+                <input type='hidden' class='ins4' name='ins4' id='ins4' value=''>
+                <input type='hidden' class='ins5' name='ins5' id='ins5' value=''>
+                <input type='hidden' name='idins0' id='idins0' value=''>
+                <input type='hidden' name='idins1' id='idins1' value=''>
+                <input type='hidden' name='idins2' id='idins2' value=''>
+                <input type='hidden' name='idins3' id='idins3' value=''>
+                <input type='hidden' name='idins4' id='idins4' value=''>
+                <input type='hidden' name='idins5' id='idins5' value=''>
             </div>
-            <div class='col-md-4'>
-                <select class='form-select' name='insres'>
-                    <option value='{{insres._id}}' class='fw-bold'>{{insres.nome}}</option>
-                    {{#each lista_res}}
-                    <option value='{{id}}'>{{nome}}</option>
-                    {{else}}
-                    <option>Nenhum Instalador Responsável cadastrado.</option>
-                    {{/each}}
-                </select>
-            </div>
-            <div class="col-md-1">
-                <button type="submit" class='btn btn-success' onclick="getItemValue()">Aplicar</button>
-            </div>
-            <div class='col-md-2'>
-                <a href='/gerenciamento/enviarequipe/{{proposta._id}}' class="btn btn-primary">{{#if
-                    lista_equipe.liberar}}
-                    Cancelar{{else}}Envia Equipe{{/if}}</a>
-            </div>
-            <input type='hidden' class='ins0' name='ins0' id='ins0' value=''>
-            <input type='hidden' class='ins1' name='ins1' id='ins1' value=''>
-            <input type='hidden' class='ins2' name='ins2' id='ins2' value=''>
-            <input type='hidden' class='ins3' name='ins3' id='ins3' value=''>
-            <input type='hidden' class='ins4' name='ins4' id='ins4' value=''>
-            <input type='hidden' class='ins5' name='ins5' id='ins5' value=''>
-            <input type='hidden' name='idins0' id='idins0' value=''>
-            <input type='hidden' name='idins1' id='idins1' value=''>
-            <input type='hidden' name='idins2' id='idins2' value=''>
-            <input type='hidden' name='idins3' id='idins3' value=''>
-            <input type='hidden' name='idins4' id='idins4' value=''>
-            <input type='hidden' name='idins5' id='idins5' value=''>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 <script>
 
@@ -338,49 +355,49 @@
     }
 
     function getItemValue() {
-    const item = document.querySelectorAll('.item-instalacao');
-    for (i = 0; i < item.length; i++) {
-      const insitem = document.getElementsByClassName(item[i].getAttribute('class'));
-      var element = insitem[i].innerText
-      var ins = insitem[i].getAttribute('name')
-      switch (i) {
-        case 0:
-          var insdes = document.getElementById('ins0')
-          var idins = document.getElementById('idins0')
-          insdes.value = element
-          idins.value = ins
-          break;
-        case 1:
-          var insdes = document.getElementById('ins1')
-          var idins = document.getElementById('idins1')
-          insdes.value = element
-          idins.value = ins
-          break;
-        case 2:
-          var insdes = document.getElementById('ins2')
-          var idins = document.getElementById('idins2')
-          insdes.value = element
-          idins.value = ins
-          break;
-        case 3:
-          var insdes = document.getElementById('ins3')
-          var idins = document.getElementById('idins3')
-          insdes.value = element
-          idins.value = ins
-          break;
-        case 4:
-          var insdes = document.getElementById('ins4')
-          var idins = document.getElementById('idins4')
-          insdes.value = element
-          idins.value = ins
-          break;
-        case 5:
-          var insdes = document.getElementById('ins5')
-          var idins = document.getElementById('idins5')
-          insdes.value = element
-          idins.value = ins
-          break;
-      }
+        const item = document.querySelectorAll('.item-instalacao');
+        for (i = 0; i < item.length; i++) {
+            const insitem = document.getElementsByClassName(item[i].getAttribute('class'));
+            var element = insitem[i].innerText
+            var ins = insitem[i].getAttribute('name')
+            switch (i) {
+                case 0:
+                    var insdes = document.getElementById('ins0')
+                    var idins = document.getElementById('idins0')
+                    insdes.value = element
+                    idins.value = ins
+                    break;
+                case 1:
+                    var insdes = document.getElementById('ins1')
+                    var idins = document.getElementById('idins1')
+                    insdes.value = element
+                    idins.value = ins
+                    break;
+                case 2:
+                    var insdes = document.getElementById('ins2')
+                    var idins = document.getElementById('idins2')
+                    insdes.value = element
+                    idins.value = ins
+                    break;
+                case 3:
+                    var insdes = document.getElementById('ins3')
+                    var idins = document.getElementById('idins3')
+                    insdes.value = element
+                    idins.value = ins
+                    break;
+                case 4:
+                    var insdes = document.getElementById('ins4')
+                    var idins = document.getElementById('idins4')
+                    insdes.value = element
+                    idins.value = ins
+                    break;
+                case 5:
+                    var insdes = document.getElementById('ins5')
+                    var idins = document.getElementById('idins5')
+                    insdes.value = element
+                    idins.value = ins
+                    break;
+            }
+        }
     }
-  }
 </script>

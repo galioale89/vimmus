@@ -1,3 +1,9 @@
+<style>
+    .disabledbutton {
+        pointer-events: none;
+        opacity: 0.4;
+    }
+</style>
 <script>
     function setValidade() {
         var ano
@@ -169,6 +175,13 @@
 
     window.onload = function () {
 
+        var bloquear = document.getElementById('bloquear')
+
+        if (bloquear.className == 'true'){
+            bloquear.className = 'disabledbutton'
+        }
+        
+
         var estados = document.getElementById('estado');
         var cidades = document.getElementById('cidade');
 
@@ -250,403 +263,409 @@
         {{/if}}
     </div>
 
-    <form action='/gerenciamento/proposta' method='post'>
-        <div class="row mt-2">
-            <div class="col-md-2 text-end">
-                <label class='col-form-label fw-bold mb-1'>Cliente: </label><br>
-                <label class='col-form-label fw-bold mt-2 mb-2'>Local: </label><br>
-            </div>
-            <div class="col-md-9 text-start">
+    <div id='bloquear' class='{{proposta.encerrado}}'>
+        <form action='/gerenciamento/proposta' method='post'>
+            <div class="row mt-2">
+                <div class="col-md-2 text-end">
+                    <label class='col-form-label fw-bold mb-1'>Cliente: </label><br>
+                    <label class='col-form-label fw-bold mt-2 mb-2'>Local: </label><br>
+                </div>
+                <div class="col-md-9 text-start">
 
-                <input type='hidden' name='id' value='{{proposta._id}}'>
-                <select class='form-select' name='cliente'>
-                    <option class='fw-bold' value='{{cliente.proposta._id}}'>{{cliente_proposta.nome}}</option>
-                    {{#each todos_clientes}}
-                    <option value='{{_id}}'>{{nome}}</option>
-                    {{else}}
-                    <option>Sem clientes cadastrados</option>
-                    {{/each}}
-                </select>
-                <div class='row'>
-                    <div class='col-md-4'>
-                        <label>Endereço</label>
-                        <input class='form-control' type='text' name='endereco' {{#if
-                            proposta.endereco}}value='{{proposta.endereco}}'
-                            {{else}}value='{{cliente_proposta.endereco}}' {{/if}}>
-                    </div>
-                    <div class='col'>
-                        <label>Estado</label>
-                        <div id='br0' style="display: {{mostraLabel}}"></div>
-                        <label style='display: {{mostraLabel}}' id='labelUf' class='col-form-label mb-1'>{{#if
-                            proposta.uf}}{{proposta.uf}}{{else}}{{cliente_proposta.uf}}{{/if}}</label><br>
-                        <select style='display: {{mostraSelect}}' id="estado" name='uf'
-                            class='form-select mb-1'></select>
-                    </div>
-                    <div class='col'>
-                        <label>Cidade</label>
-                        <div id='br1' style="display: {{mostraLabel}}"></div>
-                        <label style='display: {{mostraLabel}}' id='labelCidade' class='col-form-label mb-1'>{{#if
-                            proposta.cidade}}{{proposta.cidade}}{{else}}{{cliente_proposta.cidade}}{{/if}}</label><br>
-                        <select style='display: {{mostraSelect}}' id="cidade" name='cidade'
-                            class='form-select mb-1'></select>
-                    </div>
-                    <div class='col-md-1 mt-1'>
-                        <div class="form-check form-switch mt-3" onchange="editarLocal()">
-                            <input class="form-check-input" type="checkbox" id='checkLocal'>
-                            <label class="form-check-label" style="padding-top: 6px;">Editar</label>
+                    <input type='hidden' name='id' value='{{proposta._id}}'>
+                    <select class='form-select' name='cliente'>
+                        <option class='fw-bold' value='{{cliente.proposta._id}}'>{{cliente_proposta.nome}}</option>
+                        {{#each todos_clientes}}
+                        <option value='{{_id}}'>{{nome}}</option>
+                        {{else}}
+                        <option>Sem clientes cadastrados</option>
+                        {{/each}}
+                    </select>
+                    <div class='row'>
+                        <div class='col-md-4'>
+                            <label>Endereço</label>
+                            <input class='form-control' type='text' name='endereco' {{#if
+                                proposta.endereco}}value='{{proposta.endereco}}'
+                                {{else}}value='{{cliente_proposta.endereco}}' {{/if}}>
+                        </div>
+                        <div class='col'>
+                            <label>Estado</label>
+                            <div id='br0' style="display: {{mostraLabel}}"></div>
+                            <label style='display: {{mostraLabel}}' id='labelUf' class='col-form-label mb-1'>{{#if
+                                proposta.uf}}{{proposta.uf}}{{else}}{{cliente_proposta.uf}}{{/if}}</label><br>
+                            <select style='display: {{mostraSelect}}' id="estado" name='uf'
+                                class='form-select mb-1'></select>
+                        </div>
+                        <div class='col'>
+                            <label>Cidade</label>
+                            <div id='br1' style="display: {{mostraLabel}}"></div>
+                            <label style='display: {{mostraLabel}}' id='labelCidade' class='col-form-label mb-1'>{{#if
+                                proposta.cidade}}{{proposta.cidade}}{{else}}{{cliente_proposta.cidade}}{{/if}}</label><br>
+                            <select style='display: {{mostraSelect}}' id="cidade" name='cidade'
+                                class='form-select mb-1'></select>
+                        </div>
+                        <div class='col-md-1 mt-1'>
+                            <div class="form-check form-switch mt-3" onchange="editarLocal()">
+                                <input class="form-check-input" type="checkbox" id='checkLocal'>
+                                <label class="form-check-label" style="padding-top: 6px;">Editar</label>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div class='col-md-1 mt-2'>
+                    <button class='btn btn-success' style='padding-top: 15px;padding-bottom: 15px;; margin-top: 40%;'
+                        type='submit'>Próximo</button>
+                </div>
             </div>
-            <div class='col-md-1 mt-2'>
-                <button class='btn btn-success' style='padding-top: 15px;padding-bottom: 15px;; margin-top: 40%;'
-                    type='submit'>Próximo</button>
+            <div class="row">
+                <div class='col-md-2 text-end'>
+                    <label class='col-form-label fw-bold m-1 mb-3'>Gestor Responsável: </label><br>
+                </div>
+                <div class='col-md-4'>
+                    <select class='form-select mt-1' name='responsavel'>
+                        <option class='fw-bold' value='{{res_proposta._id}}'>{{res_proposta.nome}}</option>
+                        {{#each todos_responsaveis}}
+                        <option value='{{_id}}'>{{nome}}</option>
+                        {{else}}
+                        <option>Sem responsáveis cadastrados</option>
+                        {{/each}}
+                    </select><br>
+                </div>
+                <div class='col-md-1 text-end'>
+                    <label class='col-form-label fw-bold m-1 mb-3'>Empresa: </label>
+                </div>
+                <div class='col-md-4'>
+                    <select class='form-select mt-1' name='empresa'>
+                        <option class='fw-bold' value='{{emp_proposta._id}}'>{{emp_proposta.nome}}</option>
+                        {{#each todas_empresas}}
+                        <option value='{{_id}}'>{{nome}}</option>
+                        {{else}}
+                        <option>Sem empresas cadastradas</option>
+                        {{/each}}
+                    </select><br>
+                </div>
             </div>
-        </div>
-        <div class="row">
+        </form>
+        <div class='row'>
             <div class='col-md-2 text-end'>
-                <label class='col-form-label fw-bold m-1 mb-3'>Gestor Responsável: </label><br>
+                <label class='col-form-label fw-bold mt-3 mb-3'>Proposta 1:</label><br>
+                {{#if proposta.proposta1}}
+                <label class='col-form-label fw-bold mb-3'>Proposta 2:</label><br>
+                {{/if}}
+                {{#if proposta.proposta2}}
+                <label class='col-form-label fw-bold mb-3'>Proposta 3:</label><br>
+                {{/if}}
+                {{#if proposta.proposta3}}
+                <label class='col-form-label fw-bold mb-3'>Proposta 4:</label><br>
+                {{/if}}
+                {{#if proposta.proposta4}}
+                <label class='col-form-label fw-bold mb-3'>Proposta 5:</label><br>
+                {{/if}}
+                {{#if proposta.proposta5}}
+                <label class='col-form-label fw-bold mb-3'>Proposta 6:</label><br>
+                {{/if}}
             </div>
-            <div class='col-md-4'>
-                <select class='form-select mt-1' name='responsavel'>
-                    <option class='fw-bold' value='{{res_proposta._id}}'>{{res_proposta.nome}}</option>
-                    {{#each todos_responsaveis}}
-                    <option value='{{_id}}'>{{nome}}</option>
-                    {{else}}
-                    <option>Sem responsáveis cadastrados</option>
-                    {{/each}}
-                </select><br>
-            </div>
-            <div class='col-md-1 text-end'>
-                <label class='col-form-label fw-bold m-1 mb-3'>Empresa: </label>
-            </div>
-            <div class='col-md-4'>
-                <select class='form-select mt-1' name='empresa'>
-                    <option class='fw-bold' value='{{emp_proposta._id}}'>{{emp_proposta.nome}}</option>
-                    {{#each todas_empresas}}
-                    <option value='{{_id}}'>{{nome}}</option>
-                    {{else}}
-                    <option>Sem empresas cadastradas</option>
-                    {{/each}}
-                </select><br>
-            </div>
-        </div>
-    </form>
-    <div class='row'>
-        <div class='col-md-2 text-end'>
-            <label class='col-form-label fw-bold mt-3 mb-3'>Proposta 1:</label><br>
-            {{#if proposta.proposta1}}
-            <label class='col-form-label fw-bold mb-3'>Proposta 2:</label><br>
-            {{/if}}
-            {{#if proposta.proposta2}}
-            <label class='col-form-label fw-bold mb-3'>Proposta 3:</label><br>
-            {{/if}}
-            {{#if proposta.proposta3}}
-            <label class='col-form-label fw-bold mb-3'>Proposta 4:</label><br>
-            {{/if}}
-            {{#if proposta.proposta4}}
-            <label class='col-form-label fw-bold mb-3'>Proposta 5:</label><br>
-            {{/if}}
-            {{#if proposta.proposta5}}
-            <label class='col-form-label fw-bold mb-3'>Proposta 6:</label><br>
-            {{/if}}
-        </div>
-        <div class='col-md-10'>
-            <form action='/gerenciamento/proposta1' method='post' enctype="multipart/form-data">
-                <input type="hidden" name='id' value='{{proposta._id}}'>
-                <div class="row">
-                    <div class="col">
-                        {{#if proposta.proposta1}}
-                        <div class="mt-2">
-                            <label class='col-form-label col-form-label-sm'>{{proposta.proposta1}}</label>
-                            <a href='/gerenciamento/mostrarProposta1/{{proposta._id}}' target="_blank"><i
-                                    class='bi bi-eye'></i></a>
+            <div class='col-md-10'>
+                <form action='/gerenciamento/proposta1' method='post' enctype="multipart/form-data">
+                    <input type="hidden" name='id' value='{{proposta._id}}'>
+                    <div class="row">
+                        <div class="col">
+                            {{#if proposta.proposta1}}
+                            <div class="mt-2">
+                                <label class='col-form-label col-form-label-sm'>{{proposta.proposta1}}</label>
+                                <a href='/gerenciamento/mostrarProposta1/{{proposta._id}}' target="_blank"><i
+                                        class='bi bi-eye'></i></a>
+                            </div>
+                            {{else}}
+                            <div class="mt-3">
+                                <input type='file' class='form-control' name='proposta1' value='{{proposta.proposta1}}'>
+                            </div>
+                            {{/if}}
                         </div>
-                        {{else}}
-                        <div class="mt-3">
-                            <input type='file' class='form-control' name='proposta1' value='{{proposta.proposta1}}'>
+                        <div class="col-md-3">
+                            <label> Data de Cadastro</label>
+                            <input type='date' class='form-control' name='dtcadastro1' id='dtcadastro1'
+                                onchange="setValidade()" value='{{proposta.dtcadastro1}}'>
                         </div>
-                        {{/if}}
+                        <div class="col-md-3">
+                            <label>Data de Validade</label>
+                            <input type='date' class='form-control' name='dtvalidade1' id='dtvalidade1'
+                                value='{{proposta.dtvalidade1}}'>
+                        </div>
+                        <div class="col-md-1 mt-3">
+                            <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
+                        </div>
                     </div>
-                    <div class="col-md-3">
-                        <label> Data de Cadastro</label>
-                        <input type='date' class='form-control' name='dtcadastro1' id='dtcadastro1'
-                            onchange="setValidade()" value='{{proposta.dtcadastro1}}'>
-                    </div>
-                    <div class="col-md-3">
-                        <label>Data de Validade</label>
-                        <input type='date' class='form-control' name='dtvalidade1' id='dtvalidade1'
-                            value='{{proposta.dtvalidade1}}'>
-                    </div>
-                    <div class="col-md-1 mt-3">
-                        <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
-                    </div>
-                </div>
-            </form>
+                </form>
 
-            {{#if proposta.proposta1}}
-            <form action='/gerenciamento/proposta2' method='post' enctype="multipart/form-data">
-                <input type="hidden" name='id' value='{{proposta._id}}'>
-                <div class="row">
-                    <div class="col md-4">
+                {{#if proposta.proposta1}}
+                <form action='/gerenciamento/proposta2' method='post' enctype="multipart/form-data">
+                    <input type="hidden" name='id' value='{{proposta._id}}'>
+                    <div class="row">
+                        <div class="col md-4">
+                            {{#if proposta.proposta2}}
+                            <div class="mt-1">
+                                <label class='col-form-label col-form-label-sm'>{{proposta.proposta2}}</label>
+                            </div>
+                            {{else}}
+                            <div class="mt-1">
+                                <input type='file' class='form-control' name='proposta2' value='{{proposta.proposta2}}'>
+                            </div>
+                            {{/if}}
+                        </div>
                         {{#if proposta.proposta2}}
-                        <div class="mt-1">
-                            <label class='col-form-label col-form-label-sm'>{{proposta.proposta2}}</label>
-                        </div>
-                        {{else}}
-                        <div class="mt-1">
-                            <input type='file' class='form-control' name='proposta2' value='{{proposta.proposta2}}'>
+                        <div class="col-md-1 mt-1">
+                            <a class="btn btn-primary" href='/gerenciamento/mostrarProposta2/{{proposta._id}}'
+                                target="_blank"><i class='bi bi-eye'></i></a>
                         </div>
                         {{/if}}
+                        <div class="col-md-3 mt-1">
+                            <input type='date' class='form-control' name='dtcadastro2' id='dtcadastro2'
+                                value='{{proposta.dtcadastro2}}' onchange="setValidade()">
+                        </div>
+                        <div class="col-md-3 mt-1">
+                            <input type='date' class='form-control' name='dtvalidade2' id='dtvalidade2'
+                                value='{{proposta.dtvalidade2}}'>
+                        </div>
+                        <div class="col-md-1 mt-1">
+                            <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
+                        </div>
                     </div>
-                    {{#if proposta.proposta2}}
-                    <div class="col-md-1 mt-1">
-                        <a class="btn btn-primary" href='/gerenciamento/mostrarProposta2/{{proposta._id}}'
-                            target="_blank"><i class='bi bi-eye'></i></a>
-                    </div>
-                    {{/if}}
-                    <div class="col-md-3 mt-1">
-                        <input type='date' class='form-control' name='dtcadastro2' id='dtcadastro2'
-                            value='{{proposta.dtcadastro2}}' onchange="setValidade()">
-                    </div>
-                    <div class="col-md-3 mt-1">
-                        <input type='date' class='form-control' name='dtvalidade2' id='dtvalidade2'
-                            value='{{proposta.dtvalidade2}}'>
-                    </div>
-                    <div class="col-md-1 mt-1">
-                        <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
-                    </div>
-                </div>
-            </form>
-            {{/if}}
-            {{#if proposta.proposta2}}
-            <form action='/gerenciamento/proposta3' method='post' enctype="multipart/form-data">
-                <input type="hidden" name='id' value='{{proposta._id}}'>
-                <div class="row">
-                    <div class="col">
+                </form>
+                {{/if}}
+                {{#if proposta.proposta2}}
+                <form action='/gerenciamento/proposta3' method='post' enctype="multipart/form-data">
+                    <input type="hidden" name='id' value='{{proposta._id}}'>
+                    <div class="row">
+                        <div class="col">
+                            {{#if proposta.proposta3}}
+                            <div class="mt-1">
+                                <label class='col-form-label col-form-label-sm'>{{proposta.proposta3}}</label>
+                            </div>
+                            {{else}}
+                            <input type='file' class='form-control mt-1' name='proposta3'
+                                value='{{proposta.proposta3}}'>
+                            {{/if}}
+                        </div>
                         {{#if proposta.proposta3}}
-                        <div class="mt-1">
-                            <label class='col-form-label col-form-label-sm'>{{proposta.proposta3}}</label>
+                        <div class="col-md-1 mt-1">
+                            <a class="btn btn-primary" href='/gerenciamento/mostrarProposta3/{{proposta._id}}'
+                                target="_blank"><i class='bi bi-eye'></i></a>
                         </div>
-                        {{else}}
-                        <input type='file' class='form-control mt-1' name='proposta3' value='{{proposta.proposta3}}'>
                         {{/if}}
+                        <div class="col-md-3 mt-1">
+                            <input type='date' class='form-control' name='dtcadastro3' id='dtcadastro3'
+                                value='{{proposta.dtcadastro3}}' onchange="setValidade()">
+                        </div>
+                        <div class="col-md-3 mt-1">
+                            <input type='date' class='form-control' name='dtvalidade3' id='dtvalidade3'
+                                value='{{proposta.dtvalidade3}}'>
+                        </div>
+                        <div class="col-md-1 mt-1">
+                            <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
+                        </div>
                     </div>
-                    {{#if proposta.proposta3}}
-                    <div class="col-md-1 mt-1">
-                        <a class="btn btn-primary" href='/gerenciamento/mostrarProposta3/{{proposta._id}}'
-                            target="_blank"><i class='bi bi-eye'></i></a>
-                    </div>
-                    {{/if}}
-                    <div class="col-md-3 mt-1">
-                        <input type='date' class='form-control' name='dtcadastro3' id='dtcadastro3'
-                            value='{{proposta.dtcadastro3}}' onchange="setValidade()">
-                    </div>
-                    <div class="col-md-3 mt-1">
-                        <input type='date' class='form-control' name='dtvalidade3' id='dtvalidade3'
-                            value='{{proposta.dtvalidade3}}'>
-                    </div>
-                    <div class="col-md-1 mt-1">
-                        <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
-                    </div>
-                </div>
-            </form>
-            {{/if}}
-            {{#if proposta.proposta3}}
-            <form action='/gerenciamento/proposta4' method='post' enctype="multipart/form-data">
-                <input type="hidden" name='id' value='{{proposta._id}}'>
-                <div class="row">
-                    <div class="col">
+                </form>
+                {{/if}}
+                {{#if proposta.proposta3}}
+                <form action='/gerenciamento/proposta4' method='post' enctype="multipart/form-data">
+                    <input type="hidden" name='id' value='{{proposta._id}}'>
+                    <div class="row">
+                        <div class="col">
+                            {{#if proposta.proposta4}}
+                            <div class="mt-1">
+                                <label class='col-form-label col-form-label-sm'>{{proposta.proposta4}}</label>
+                            </div>
+                            {{else}}
+                            <input type='file' class='form-control mt-1' name='proposta4'
+                                value='{{proposta.proposta4}}'>
+                            {{/if}}
+                        </div>
                         {{#if proposta.proposta4}}
-                        <div class="mt-1">
-                            <label class='col-form-label col-form-label-sm'>{{proposta.proposta4}}</label>
+                        <div class="col-md-1 mt-1">
+                            <a class="btn btn-primary" href='/gerenciamento/mostrarProposta4/{{proposta._id}}'
+                                target="_blank"><i class='bi bi-eye'></i></a>
                         </div>
-                        {{else}}
-                        <input type='file' class='form-control mt-1' name='proposta4' value='{{proposta.proposta4}}'>
                         {{/if}}
+                        <div class="col-md-3 mt-1">
+                            <input type='date' class='form-control' name='dtcadastro4' id='dtcadastro4'
+                                value='{{proposta.dtcadastro4}}' onchange="setValidade()">
+                        </div>
+                        <div class="col-md-3 mt-1">
+                            <input type='date' class='form-control' name='dtvalidade4' id='dtvalidade4'
+                                value='{{proposta.dtvalidade4}}'>
+                        </div>
+                        <div class="col-md-1 mt-1">
+                            <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
+                        </div>
                     </div>
-                    {{#if proposta.proposta4}}
-                    <div class="col-md-1 mt-1">
-                        <a class="btn btn-primary" href='/gerenciamento/mostrarProposta4/{{proposta._id}}'
-                            target="_blank"><i class='bi bi-eye'></i></a>
-                    </div>
-                    {{/if}}
-                    <div class="col-md-3 mt-1">
-                        <input type='date' class='form-control' name='dtcadastro4' id='dtcadastro4'
-                            value='{{proposta.dtcadastro4}}' onchange="setValidade()">
-                    </div>
-                    <div class="col-md-3 mt-1">
-                        <input type='date' class='form-control' name='dtvalidade4' id='dtvalidade4'
-                            value='{{proposta.dtvalidade4}}'>
-                    </div>
-                    <div class="col-md-1 mt-1">
-                        <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
-                    </div>
-                </div>
-            </form>
-            {{/if}}
-            {{#if proposta.proposta4}}
-            <form action='/gerenciamento/proposta5' method='post' enctype="multipart/form-data">
-                <input type="hidden" name='id' value='{{proposta._id}}'>
-                <div class="row">
-                    <div class="col">
+                </form>
+                {{/if}}
+                {{#if proposta.proposta4}}
+                <form action='/gerenciamento/proposta5' method='post' enctype="multipart/form-data">
+                    <input type="hidden" name='id' value='{{proposta._id}}'>
+                    <div class="row">
+                        <div class="col">
+                            {{#if proposta.proposta5}}
+                            <div class="mt-1">
+                                <label class='col-form-label col-form-label-sm'>{{proposta.proposta5}}</label>
+                            </div>
+                            {{else}}
+                            <input type='file' class='form-control mt-1' name='proposta5' id='dtcadastro5'
+                                value='{{proposta.proposta5}}'>
+                            {{/if}}
+                        </div>
                         {{#if proposta.proposta5}}
-                        <div class="mt-1">
-                            <label class='col-form-label col-form-label-sm'>{{proposta.proposta5}}</label>
+                        <div class="col-md-1 mt-1">
+                            <a class="btn btn-primary" href='/gerenciamento/mostrarProposta5/{{proposta._id}}'
+                                target="_blank"><i class='bi bi-eye'></i></a>
                         </div>
-                        {{else}}
-                        <input type='file' class='form-control mt-1' name='proposta5' id='dtcadastro5'
-                            value='{{proposta.proposta5}}'>
                         {{/if}}
+                        <div class="col-md-3 mt-1">
+                            <input type='date' class='form-control' name='dtcadastro5' id='dtcadastro5'
+                                value='{{proposta.dtcadastro5}}' onchange="setValidade()">
+                        </div>
+                        <div class="col-md-3 mt-1">
+                            <input type='date' class='form-control' name='dtvalidade5' id='dtvalidade5'
+                                value='{{proposta.dtvalidade5}}'>
+                        </div>
+                        <div class="col-md-1 mt-1">
+                            <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
+                        </div>
                     </div>
-                    {{#if proposta.proposta5}}
-                    <div class="col-md-1 mt-1">
-                        <a class="btn btn-primary" href='/gerenciamento/mostrarProposta5/{{proposta._id}}'
-                            target="_blank"><i class='bi bi-eye'></i></a>
-                    </div>
-                    {{/if}}
-                    <div class="col-md-3 mt-1">
-                        <input type='date' class='form-control' name='dtcadastro5' id='dtcadastro5'
-                            value='{{proposta.dtcadastro5}}' onchange="setValidade()">
-                    </div>
-                    <div class="col-md-3 mt-1">
-                        <input type='date' class='form-control' name='dtvalidade5' id='dtvalidade5'
-                            value='{{proposta.dtvalidade5}}'>
-                    </div>
-                    <div class="col-md-1 mt-1">
-                        <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
-                    </div>
-                </div>
-            </form>
-            {{/if}}
-            {{#if proposta.proposta5}}
-            <form action='/gerenciamento/proposta6' method='post' enctype="multipart/form-data">
-                <input type="hidden" name='id' value='{{proposta._id}}'>
-                <div class="row">
-                    <div class="col">
+                </form>
+                {{/if}}
+                {{#if proposta.proposta5}}
+                <form action='/gerenciamento/proposta6' method='post' enctype="multipart/form-data">
+                    <input type="hidden" name='id' value='{{proposta._id}}'>
+                    <div class="row">
+                        <div class="col">
+                            {{#if proposta.proposta6}}
+                            <div class="mt-1">
+                                <label class='col-form-label col-form-label-sm'>{{proposta.proposta6}}</label>
+                            </div>
+                            {{else}}
+                            <input type='file' class='form-control mt-1' name='proposta6'
+                                value='{{proposta.proposta6}}'>
+                            {{/if}}
+                        </div>
                         {{#if proposta.proposta6}}
-                        <div class="mt-1">
-                            <label class='col-form-label col-form-label-sm'>{{proposta.proposta6}}</label>
+                        <div class="col-md-1 mt-1">
+                            <a class="btn btn-primary" href='/gerenciamento/mostrarProposta6/{{proposta._id}}'
+                                target="_blank"><i class='bi bi-eye'></i></a>
                         </div>
-                        {{else}}
-                        <input type='file' class='form-control mt-1' name='proposta6' value='{{proposta.proposta6}}'>
                         {{/if}}
-                    </div>
-                    {{#if proposta.proposta6}}
-                    <div class="col-md-1 mt-1">
-                        <a class="btn btn-primary" href='/gerenciamento/mostrarProposta6/{{proposta._id}}'
-                            target="_blank"><i class='bi bi-eye'></i></a>
-                    </div>
-                    {{/if}}
-                    <div class="col-md-3 mt-1">
-                        <input type='date' class='form-control' name='dtcadastro6' id='dtcadastro6'
-                            value='{{proposta.dtcadastro6}}' onchange="setValidade()">
-                    </div>
-                    <div class="col-md-3 mt-1">
-                        <input type='date' class='form-control' name='dtvalidade6' id='dtvalidade6'
-                            value='{{proposta.dtvalidade6}}'>
-                    </div>
-                    <div class="col-md-1 mt-1">
-                        <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
-                    </div>
-                </div>
-            </form>
-            {{/if}}
-        </div>
-        <div class="row mb-1 mt-1">
-            <form action='/gerenciamento/visita/' method="post">
-                <input type='hidden' name='id' value="{{proposta._id}}">
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class='row mt-1'>
-                            <div class="col-md-8 text-end">
-                                <label class='col-form-label col-form-label-sm'>Quantidade de Módulos: </label>
-                            </div>
-                            <div class="col-md-4">
-                                <input type='number' class="form-control form-control-sm" name='plaQtdMod'
-                                    value='{{vistoria.plaQtdMod}}'>
-                            </div>
+                        <div class="col-md-3 mt-1">
+                            <input type='date' class='form-control' name='dtcadastro6' id='dtcadastro6'
+                                value='{{proposta.dtcadastro6}}' onchange="setValidade()">
                         </div>
-                        <div class='row mt-1'>
-                            <div class="col-md-8 text-end">
-                                <label class='col-form-label col-form-label-sm'>Potência dos Módulos: </label>
-                            </div>
-                            <div class="col-md-4">
-                                <input type='number' class="form-control form-control-sm" name='plaWattMod'
-                                    value='{{vistoria.plaWattMod}}'>
-                            </div>
+                        <div class="col-md-3 mt-1">
+                            <input type='date' class='form-control' name='dtvalidade6' id='dtvalidade6'
+                                value='{{proposta.dtvalidade6}}'>
+                        </div>
+                        <div class="col-md-1 mt-1">
+                            <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class='row mt-1'>
-                            <div class="col-md-8 text-end">
-                                <label class='col-form-label col-form-label-sm'>Quantidade de Inversores: </label>
+                </form>
+                {{/if}}
+            </div>
+            <div class="row mb-1 mt-1">
+                <form action='/gerenciamento/visita/' method="post">
+                    <input type='hidden' name='id' value="{{proposta._id}}">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class='row mt-1'>
+                                <div class="col-md-8 text-end">
+                                    <label class='col-form-label col-form-label-sm'>Quantidade de Módulos: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type='number' class="form-control form-control-sm" name='plaQtdMod'
+                                        value='{{vistoria.plaQtdMod}}'>
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <input type='number' class="form-control form-control-sm" name='plaQtdInv'
-                                    value='{{vistoria.plaQtdInv}}'>
-                            </div>
-                        </div>
-                        <div class='row mt-1'>
-                            <div class="col-md-8 text-end">
-                                <label class='col-form-label col-form-label-sm'>Potência do Inversor: </label>
-                            </div>
-                            <div class="col-md-4">
-                                <input type='number' class="form-control form-control-sm" name='plaKwpInv'
-                                    value='{{vistoria.plaKwpInv}}'>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class='row mt-1'>
-                            <div class="col-md-8 text-end">
-                                <label class='col-form-label col-form-label-sm'>Dimensão Área(m2): </label>
-                            </div>
-                            <div class="col-md-4">
-                                <input type='number' class="form-control form-control-sm" name='plaDimArea'
-                                    value='{{vistoria.plaDimArea}}'>
-                            </div>
-                            </table>
-                        </div>
-                        <div class='row mt-1'>
-                            <div class="col-md-8 text-end">
-                                <label class='col-form-label col-form-label-sm'>Quantidade de String: </label>
-                            </div>
-                            <div class="col-md-4">
-                                <input type='number' class="form-control form-control-sm" name='plaQtdString'
-                                    value='{{vistoria.plaQtdString}}'>
+                            <div class='row mt-1'>
+                                <div class="col-md-8 text-end">
+                                    <label class='col-form-label col-form-label-sm'>Potência dos Módulos: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type='number' class="form-control form-control-sm" name='plaWattMod'
+                                        value='{{vistoria.plaWattMod}}'>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class='row mt-1'>
-                            <div class="col-md-8 text-end">
-                                <label class='col-form-label col-form-label-sm'>Módulos por String: </label>
+                        <div class="col-md-3">
+                            <div class='row mt-1'>
+                                <div class="col-md-8 text-end">
+                                    <label class='col-form-label col-form-label-sm'>Quantidade de Inversores: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type='number' class="form-control form-control-sm" name='plaQtdInv'
+                                        value='{{vistoria.plaQtdInv}}'>
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <input type='number' class="form-control form-control-sm" name='plaModString'
-                                    value='{{vistoria.plaModString}}'>
+                            <div class='row mt-1'>
+                                <div class="col-md-8 text-end">
+                                    <label class='col-form-label col-form-label-sm'>Potência do Inversor: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type='number' class="form-control form-control-sm" name='plaKwpInv'
+                                        value='{{vistoria.plaKwpInv}}'>
+                                </div>
                             </div>
                         </div>
-                        <div class='row mt-1'>
-                            <div class="col-md-8 text-end">
-                                <label class='col-form-label col-form-label-sm'>Quantidade de Estruturas: </label>
+                        <div class="col-md-3">
+                            <div class='row mt-1'>
+                                <div class="col-md-8 text-end">
+                                    <label class='col-form-label col-form-label-sm'>Dimensão Área(m2): </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type='number' class="form-control form-control-sm" name='plaDimArea'
+                                        value='{{vistoria.plaDimArea}}'>
+                                </div>
+                                </table>
                             </div>
-                            <div class="col-md-4">
-                                <input type='number' class="form-control form-control-sm" name='plaQtdEst'
-                                    value='{{vistoria.plaQtdEst}}'>
+                            <div class='row mt-1'>
+                                <div class="col-md-8 text-end">
+                                    <label class='col-form-label col-form-label-sm'>Quantidade de String: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type='number' class="form-control form-control-sm" name='plaQtdString'
+                                        value='{{vistoria.plaQtdString}}'>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class='row mt-1'>
+                                <div class="col-md-8 text-end">
+                                    <label class='col-form-label col-form-label-sm'>Módulos por String: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type='number' class="form-control form-control-sm" name='plaModString'
+                                        value='{{vistoria.plaModString}}'>
+                                </div>
+                            </div>
+                            <div class='row mt-1'>
+                                <div class="col-md-8 text-end">
+                                    <label class='col-form-label col-form-label-sm'>Quantidade de Estruturas: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type='number' class="form-control form-control-sm" name='plaQtdEst'
+                                        value='{{vistoria.plaQtdEst}}'>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </form>
-        </div>
-        <div class="btn-group gap-2 col-12">
-            <button class='btn btn-sm btn-success' type="submit">Aplicar</button>
-            {{#if projeto._id}}
-            <a href='/projeto/edicao/{{projeto._id}}' style="font-size: 20px" class='relatorio titulo-relatorio'>Abrir
-                Projeto</a>
-            {{/if}}
+                </form>
+            </div>
+            <div class="btn-group gap-2 col-12">
+                <button class='btn btn-sm btn-success' type="submit">Aplicar</button>
+                {{#if projeto._id}}
+                <a href='/projeto/edicao/{{projeto._id}}' style="font-size: 20px"
+                    class='relatorio titulo-relatorio'>Abrir
+                    Projeto</a>
+                {{/if}}
+            </div>
         </div>
     </div>
 </div>

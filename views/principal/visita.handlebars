@@ -1,3 +1,19 @@
+<style>
+    .disabledbutton {
+        pointer-events: none;
+        opacity: 0.4;
+    }
+</style>
+<script>
+    window.onload = function () {
+        var bloquear = document.getElementById('bloquear')
+
+        if (bloquear.className == 'true') {
+            bloquear.className = 'disabledbutton'
+        }
+
+    }
+</script>
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
     {{#if proposta._id}}
     <div style="width: 100%;">
@@ -62,7 +78,7 @@
             Pós Venda</a>
     </div>
 
-    <div style="padding: 15px;">
+    <div style="padding: 15px;" id='bloquear' class='{{proposta.encerrado}}'>
         <div class="row">
             <div class="col-md-6">
                 <form action='/gerenciamento/caminhoSomb' method="post" enctype="multipart/form-data">

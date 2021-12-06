@@ -1,3 +1,19 @@
+<style>
+    .disabledbutton {
+        pointer-events: none;
+        opacity: 0.4;
+    }
+</style>
+<script>
+    window.onload = function () {
+        var bloquear = document.getElementById('bloquear')
+
+        if (bloquear.className == 'true') {
+            bloquear.className = 'disabledbutton'
+        }
+
+    }
+</script>
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
     {{#if proposta._id}}
     <div style="width: 100%;">
@@ -7,86 +23,103 @@
 
     <div class='btn-group col-12'>
         <div class='numero'>1</div>
-        <a href='/gerenciamento/proposta/{{proposta._id}}/' class='btn btn-sm{{#if proposta.feito}} check-menu {{else}} botao-menu {{/if}}' style="border-bottom-left-radius: 30px;"> <i
-                class="bi bi-house"></i> Proposta</a>
+        <a href='/gerenciamento/proposta/{{proposta._id}}/'
+            class='btn btn-sm{{#if proposta.feito}} check-menu {{else}} botao-menu {{/if}}'
+            style="border-bottom-left-radius: 30px;"> <i class="bi bi-house"></i> Proposta</a>
         <div class='numero'>2</div>
-        <a href="/gerenciamento/visita/{{proposta._id}}" class="btn btn-sm {{#if vistoria.feito}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-gear"></i>
+        <a href="/gerenciamento/visita/{{proposta._id}}"
+            class="btn btn-sm {{#if vistoria.feito}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-gear"></i>
             Visita Técnica</a>
         <div class='numero '>3</div>
-        <a href="/gerenciamento/assinatura/{{proposta._id}}" class="btn btn-sm {{#if proposta.assinado}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i
-                class="bi bi-pencil"></i>
+        <a href="/gerenciamento/assinatura/{{proposta._id}}"
+            class="btn btn-sm {{#if proposta.assinado}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-pencil"></i>
             Contrato</a>
         <div class='numero'>4</div>
-        <a href="/gerenciamento/compra/{{proposta._id}}" class="btn btn-sm {{#if compra.feitonota}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-cart-check"></i>
+        <a href="/gerenciamento/compra/{{proposta._id}}"
+            class="btn btn-sm {{#if compra.feitonota}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-cart-check"></i>
             Compra Sistema</a>
         <div class='numero ativo'>5</div>
-        <a href="/gerenciamento/trt/{{proposta._id}}" class="btn btn-sm {{#if documento.feitotrt}} check-menu {{else}} botao-menu ativo{{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-tools"></i>
+        <a href="/gerenciamento/trt/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitotrt}} check-menu {{else}} botao-menu ativo{{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-tools"></i>
             TRT</a>
         <div class='numero'>6</div>
-        <a href="/gerenciamento/execucao/{{proposta._id}}" class="btn btn-sm {{#if documento.protocolado}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i
-                class="bi bi-clock-history"></i>
+        <a href="/gerenciamento/execucao/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.protocolado}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-clock-history"></i>
             Execução</a>
         <div class='numero'>7</div>
-        <a href="/gerenciamento/equipe/{{proposta._id}}" class="btn btn-sm {{#if lista_equipe.feito}} check-menu {{else}} botao-menu {{/if}}" style="border-bottom-left-radius: 30px;"><i class="bi bi-people"></i>
+        <a href="/gerenciamento/equipe/{{proposta._id}}"
+            class="btn btn-sm {{#if lista_equipe.feito}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-people"></i>
             Equipes</a>
         <div class='numero'>8</div>
-        <a href="/gerenciamento/aceite/{{proposta._id}}" class="btn btn-sm {{#if documento.feitoaceite}} check-menu {{else}} botao-menu{{/if}}"
+        <a href="/gerenciamento/aceite/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitoaceite}} check-menu {{else}} botao-menu{{/if}}"
             style="border-bottom-left-radius: 30px;"><i class="bi bi-check2-square"></i>
             Aceite Obra</a>
         <div class='numero'>9</div>
-        <a href="/gerenciamento/almoxarifado/{{proposta._id}}" class="btn btn-sm {{#if documento.feitoalmox}} check-menu {{else}} botao-menu{{/if}}"
+        <a href="/gerenciamento/almoxarifado/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitoalmox}} check-menu {{else}} botao-menu{{/if}}"
             style="border-bottom-left-radius: 30px;"><i class="bi bi-layers"></i>
             Almoxarifado</a>
         <div class='numero'>10</div>
-        <a href="/gerenciamento/financeiro/{{proposta._id}}" class="btn btn-sm {{#if documento.feitofaturado}} check-menu {{else}} botao-menu{{/if}}"
+        <a href="/gerenciamento/financeiro/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitofaturado}} check-menu {{else}} botao-menu{{/if}}"
             style="border-bottom-left-radius: 30px;"><i class="bi bi-calculator"></i>
             Financeiro</a>
         <div class='numero'>11</div>
-        <a href="/gerenciamento/posvenda/{{proposta._id}}" class="btn btn-sm {{#if posvenda.feito}} check-menu {{else}} botao-menu{{/if}}"
+        <a href="/gerenciamento/posvenda/{{proposta._id}}"
+            class="btn btn-sm {{#if posvenda.feito}} check-menu {{else}} botao-menu{{/if}}"
             style="border-bottom-left-radius: 30px;"><i class="bi bi-door-open"></i>
-            Pós Venda</a>           
+            Pós Venda</a>
     </div>
 
-    <div class="row mt-2">
-        <div class="col-md-2 text-end">
-            <label class='col-form-label fw-bold mt-3'>TRT: </label><br>
-        </div>
-        <div class="col-md-10 text-start">
-            <form action='/gerenciamento/trt' method='post' enctype="multipart/form-data">
-                <input type='hidden' name='id' value={{proposta._id}}>
-                <div class="row">
-                    {{#if documento.trt}}
-                    <div class="col-md-5">
-                        <div class="row mt-3">
-                            <label class='col-form-label'>{{documento.trt}}</label>
+    <div id='bloquear' class='{{proposta.encerrado}}'>
+        <div class="row mt-2">
+            <div class="col-md-2 text-end">
+                <label class='col-form-label fw-bold mt-3'>TRT: </label><br>
+            </div>
+            <div class="col-md-10 text-start">
+                <form action='/gerenciamento/trt' method='post' enctype="multipart/form-data">
+                    <input type='hidden' name='id' value={{proposta._id}}>
+                    <div class="row">
+                        {{#if documento.trt}}
+                        <div class="col-md-5">
+                            <div class="row mt-3">
+                                <label class='col-form-label'>{{documento.trt}}</label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-2 mt-3">
-                        <input style="max-width: 150px;" type='file' class='form-control' name='trt'
-                            value='{{documento.trt}}'>
-                    </div>
-                    {{else}}
-                    <div class="col-md-7 mt-3">
-                        <input type='file' class='form-control' name='trt' value='{{documento.trt}}'>
-                    </div>
-                    {{/if}}                    <div class="col-md-1 mt-3">
-                        <a class="btn btn-primary" href='/gerenciamento/mostrarTrt/{{proposta._id}}' target="_blank"><i
-                                class='bi bi-eye'></i></a>
-                    </div>
-                    <div class="col-md-2">
-                        <label> Data Registro</label>
-                        <input type='date' class='form-control' name='dttrt' value='{{documento.dttrt}}'>
-                    </div>
-                    <div class="col-md-1 mt-3">
-                        <button type='submit' class='btn btn-success'>Salvar</button>
-                    </div>
-                </div><br>
-            </form>
-        </div>
-        <div class="row" style="height: 380px;">
-            <object data="/gerenciamento/mostrarTrt/{{proposta._id}}" type="application/pdf">
-                <p>Seu navegador não tem um plugin pra PDF</p>
-            </object>
+                        <div class="col-md-2 mt-3">
+                            <input style="max-width: 150px;" type='file' class='form-control' name='trt'
+                                value='{{documento.trt}}'>
+                        </div>
+                        {{else}}
+                        <div class="col-md-7 mt-3">
+                            <input type='file' class='form-control' name='trt' value='{{documento.trt}}'>
+                        </div>
+                        {{/if}} <div class="col-md-1 mt-3">
+                            <a class="btn btn-primary" href='/gerenciamento/mostrarTrt/{{proposta._id}}'
+                                target="_blank"><i class='bi bi-eye'></i></a>
+                        </div>
+                        <div class="col-md-2">
+                            <label> Data Registro</label>
+                            <input type='date' class='form-control' name='dttrt' value='{{documento.dttrt}}'>
+                        </div>
+                        <div class="col-md-1 mt-3">
+                            <button type='submit' class='btn btn-success'>Salvar</button>
+                        </div>
+                    </div><br>
+                </form>
+            </div>
+            <div class="row" style="height: 380px;">
+                <object data="/gerenciamento/mostrarTrt/{{proposta._id}}" type="application/pdf">
+                    <p>Seu navegador não tem um plugin pra PDF</p>
+                </object>
+            </div>
         </div>
     </div>
 </div>

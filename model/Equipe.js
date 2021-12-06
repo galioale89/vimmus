@@ -304,6 +304,10 @@ const Equipe = new Schema({
     type: Boolean,
     require: false    
   },
+  prjfeito: {
+    type: Boolean,
+    require: false    
+  },
   dtinicio:{
     type: String,
     require: false   

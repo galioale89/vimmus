@@ -1,3 +1,19 @@
+<style>
+    .disabledbutton {
+        pointer-events: none;
+        opacity: 0.4;
+    }
+</style>
+<script>
+    window.onload = function () {
+        var bloquear = document.getElementById('bloquear')
+
+        if (bloquear.className == 'true') {
+            bloquear.className = 'disabledbutton'
+        }
+
+    }
+</script>
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
     {{#if proposta._id}}
     <div style="width: 100%;">
@@ -62,87 +78,90 @@
             Pós Venda</a>
     </div>
 
-    <div class="row mt-2">
-        <div class="col-md-6">
-            <form action='/gerenciamento/comprovante' method='post' enctype="multipart/form-data">
-                <input type='hidden' name='id' value={{proposta._id}}>
-                <div class="row">
-                    <div class="col-md-3">
-                        <label class='col-form-label fw-bold'>Comprovante: </label>
+    <div id='bloquear' class='{{proposta.encerrado}}'>
+        <div class="row mt-2">
+            <div class="col-md-6">
+                <form action='/gerenciamento/comprovante' method='post' enctype="multipart/form-data">
+                    <input type='hidden' name='id' value={{proposta._id}}>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class='col-form-label fw-bold'>Comprovante: </label>
+                        </div>
+                        <div class="col-md-7">
+                            <label class='col-form-label'>{{documento.comprovante}}</label>
+                        </div>
+                        <div class="col-md-1">
+                            <a class="btn btn-primary" href='/gerenciamento/mostrarComprovante/{{proposta._id}}'
+                                target="_blank"><i class='bi bi-eye'></i></a>
+                        </div>
                     </div>
-                    <div class="col-md-7">
-                        <label class='col-form-label'>{{documento.comprovante}}</label>
+                    <div class="row">
+                        <div class="col-md-3 text-start">
+                            <input type='file' class='form-control' name='comprovante'
+                                style='max-width: 152px;font-size: 15px;' value='{{documento.comprovante}}'>
+                        </div>
+                        <div class="col-md-3 text-end">
+                            <label class='col-form-label'>Data Emissão:</label>
+                        </div>
+                        <div class="col-md-4 text-start">
+                            <input type='date' class='form-control' name='dtcomprovante'
+                                value='{{documento.dtcomprovante}}'>
+                        </div>
+                        <div class="col-md-2">
+                            <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
+                        </div>
                     </div>
-                    <div class="col-md-1">
-                        <a class="btn btn-primary" href='/gerenciamento/mostrarComprovante/{{proposta._id}}'
-                            target="_blank"><i class='bi bi-eye'></i></a>
+                    <br>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <form action='/gerenciamento/financeiro' method='post' enctype="multipart/form-data">
+                    <input type='hidden' name='id' value={{proposta._id}}>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class='col-form-label fw-bold'>Nota Fiscal: </label>
+                        </div>
+                        <div class="col-md-7">
+                            <label class='col-form-label'>{{documento.faturado}}</label>
+                        </div>
+                        <div class="col-md-1">
+                            <a class="btn btn-primary" href='/gerenciamento/mostrarFinanceiro/{{proposta._id}}'
+                                target="_blank"><i class='bi bi-eye'></i></a>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 text-start">
-                        <input type='file' class='form-control' name='comprovante'
-                            style='max-width: 152px;font-size: 15px;' value='{{documento.comprovante}}'>
+                    <div class="row">
+                        <div class="col-md-3 text-start">
+                            <input type='file' class='form-control' name='financeiro'
+                                style='max-width: 152px;font-size: 15px;' value='{{documento.financeiro}}'>
+                        </div>
+                        <div class="col-md-3 text-end">
+                            <label class='col-form-label'>Data Emissão:</label>
+                        </div>
+                        <div class="col-md-4 text-start">
+                            <input type='date' class='form-control' name='dtfinanceiro'
+                                value='{{documento.dtfinanceiro}}'>
+                        </div>
+                        <div class="col-md-2">
+                            <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
+                        </div>
                     </div>
-                    <div class="col-md-3 text-end">
-                        <label class='col-form-label'>Data Emissão:</label>
-                    </div>
-                    <div class="col-md-4 text-start">
-                        <input type='date' class='form-control' name='dtcomprovante'
-                            value='{{documento.dtcomprovante}}'>
-                    </div>
-                    <div class="col-md-2">
-                        <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
-                    </div>
-                </div>
-                <br>
-            </form>
+                    <br>
+                </form>
+            </div>
         </div>
-        <div class="col-md-6">
-            <form action='/gerenciamento/financeiro' method='post' enctype="multipart/form-data">
-                <input type='hidden' name='id' value={{proposta._id}}>
-                <div class="row">
-                    <div class="col-md-3">
-                        <label class='col-form-label fw-bold'>Nota Fiscal: </label>
-                    </div>
-                    <div class="col-md-7">
-                        <label class='col-form-label'>{{documento.faturado}}</label>
-                    </div>
-                    <div class="col-md-1">
-                        <a class="btn btn-primary" href='/gerenciamento/mostrarFinanceiro/{{proposta._id}}'
-                            target="_blank"><i class='bi bi-eye'></i></a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 text-start">
-                        <input type='file' class='form-control' name='financeiro'
-                            style='max-width: 152px;font-size: 15px;' value='{{documento.financeiro}}'>
-                    </div>
-                    <div class="col-md-3 text-end">
-                        <label class='col-form-label'>Data Emissão:</label>
-                    </div>
-                    <div class="col-md-4 text-start">
-                        <input type='date' class='form-control' name='dtfinanceiro' value='{{documento.dtfinanceiro}}'>
-                    </div>
-                    <div class="col-md-2">
-                        <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
-                    </div>
-                </div>
-                <br>
-            </form>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <object data="/gerenciamento/mostrarComprovante/{{proposta._id}}" type="application/pdf" width="100%"
-                height="370px">
-                <p>Seu navegador não tem um plugin pra PDF</p>
-            </object>
-        </div>
-        <div class="col">
-            <object data="/gerenciamento/mostraFinanceiro/{{proposta._id}}" type="application/pdf" width="100%"
-                height="370px">
-                <p>Seu navegador não tem um plugin pra PDF</p>
-            </object>
+        <div class="row">
+            <div class="col">
+                <object data="/gerenciamento/mostrarComprovante/{{proposta._id}}" type="application/pdf" width="100%"
+                    height="370px">
+                    <p>Seu navegador não tem um plugin pra PDF</p>
+                </object>
+            </div>
+            <div class="col">
+                <object data="/gerenciamento/mostraFinanceiro/{{proposta._id}}" type="application/pdf" width="100%"
+                    height="370px">
+                    <p>Seu navegador não tem um plugin pra PDF</p>
+                </object>
+            </div>
         </div>
     </div>
 </div>

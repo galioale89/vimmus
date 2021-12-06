@@ -1,9 +1,74 @@
+<script>
+  window.onload = function(){
+    var saudacao = document.getElementById('saudacao')
+    
+    var data = new Date()
+    var semana = data.getDay()
+    if (semana == 1) {
+      semana = 'Segunda-feira'
+    }
+    if (semana == 2) {
+      semana = 'Terça-feira'
+    }
+    if (semana == 3) {
+      semana = 'Quarta-feira'
+    }
+    if (semana == 4) {
+      semana = 'Quinta-feira'
+    }
+    if (semana == 5) {
+      semana = 'Sexta-feira'
+    }
+    if (semana == 6) {
+      semana = 'Sábado'
+    }
+    if (semana == 7) {
+      semana = 'Domingo'
+    }
+    
+    
+    var dia = data.getDate()
+    var mes = data.getMonth()
+    
+    switch(mes+1) {
+      case 1: mes = 'Janeiro'
+      break;
+      case 2: mes = 'Fevereiro'
+      break;
+      case 3: mes = 'Março'
+      break;
+      case 4: mes = 'Abril'
+      break;
+      case 5: mes = 'Maio'
+      break;
+      case 6: mes = 'Junho'
+      break;
+      case 7: mes = 'Julho'
+      break;
+      case 8: mes = 'Agosto'
+      break;
+      case 9: mes = 'Setembro'
+      break;
+      case 10: mes = 'Outubro'
+      break;
+      case 11: mes = 'Novembro'
+      break;
+      case 12: mes = 'Dezembro'
+      break;
+    }
+
+    var ano = data.getFullYear()
+
+    saudacao.innerHTML = 'Hoje é '+semana+', dia ' + dia + ' de ' + mes + ' de ' + ano
+    
+  }
+</script>
 <!-- Default dropstart button -->
 {{#if user}}
 <nav id='menu-fixo-user' class='navbar navbar-expand-lg'
   style="position: relative;z-index: 999;text-decoration: none;width: 100%;">
   <div class="justify-content-start">
-    <label class='col-form-label col-form-label-sm'>Olá {{#each user}}{{nome}}{{/each}}</label>
+    <label class='col-form-label col-form-label-sm' id='saudacao'></label>
   </div>
   <div class="collapse navbar-collapse d-flex justify-content-end">
     <div class="dropstart">
