@@ -62,13 +62,13 @@ router.get('/editar/:id', ehAdmin, (req, res) => {
     } else {
         ehUserMaster = false
     }
+    console.log('user=>'+user)
     if (typeof user != 'undefined'){
         mostraDetalhes = true
     }
     Acesso.findOne({ _id: req.params.id }).lean().then((acesso) => {
-        console.log(acesso)
+        console.log('acesso=>'+acesso)
         if (acesso == null) {
-            
             Usuario.findOne({ _id: req.params.id }).lean().then((usuario_acesso) => {
                 console.log('usuario_acesso.nome=>'+usuario_acesso.nome)
                 
@@ -88,7 +88,6 @@ router.get('/editar/:id', ehAdmin, (req, res) => {
             console.log('acesso.usuario=>'+acesso.pessoa)
             Pessoa.findOne({user: id, _id: acesso.pessoa}).lean().then((usuario)=>{
                 console.log('usuario=>'+usuario)
-                console.log('mostraDetalhes=>'+mostraDetalhes)
                 console.log('mostraDetalhes=>'+mostraDetalhes)
                 res.render('usuario/editregistro', { usuario_acesso: acesso, ehUserMaster, mostraDetalhes, usuario })
                 }).catch((err)=>{

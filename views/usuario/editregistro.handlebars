@@ -144,24 +144,6 @@
                                         ao menos 6 dígitos.</label>
                                 </div>
                             </div>
-                            <div class='row'>
-                                {{#if ehUserMaster}}
-                                <div class="col-md-3">
-                                    <label class="col-form-label col-form-label-sm">Tipo de Usuário</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <select name='tipo' class="form-select form-select-sm">
-                                        <option style="font-weight: 800;">{{usuario.ehAdmin}}</option>
-                                        <option>0</option>
-                                        <option>1</option>
-                                        <option>3</option>
-                                    </select>
-                                </div>
-
-                                <label class="col-form-label col-form-label-sm">0 - Master | 1 - Admin | 3 -
-                                    Solictação</label>
-                                {{/if}}
-                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ok</button>
@@ -174,20 +156,18 @@
             <div class="row mb-2">
                 <div class="col-md-4 text-end">
                     <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Nome de Usuário: </label><br>
-
                 </div>
                 <div class="col-md-7">
-
                     <input name="usuario" id="usuario" class="form-control form-control-sm mt-1"
                         value='{{usuario_acesso.usuario}}'>
                     <label for="email" class="col-form-label col-form-label-sm">{{usuario_acesso.email}}</label>
                 </div>
-                <div class="btn-group btn-group-sm mx-auto gap-2 col-6">
-                    <a class="mt-2 btn btn-sm btn-primary" data-bs-toggle='modal' data-bs-target='#senha'>Alterar
-                        Senha</a>
-                    <button type="submit" class="btn btn-sm btn-success mt-2">Registrar</button>
-                    <a href='/menu' class="btn btn-sm btn-primary mt-2">Voltar</a>
-                </div>
+            </div>
+            <div class="btn-group btn-group-sm mx-auto gap-2 col-6">
+                <a class="mt-2 btn btn-sm btn-primary" data-bs-toggle='modal' data-bs-target='#senha'>Alterar
+                    Senha</a>
+                <button type="submit" class="btn btn-sm btn-success mt-2">Registrar</button>
+                <a href='/menu' class="btn btn-sm btn-primary mt-2">Voltar</a>
             </div>
             {{else}}
             <div class="row mb-2">
@@ -214,7 +194,6 @@
 
                 </div>
                 <div class="col-md-7">
-
                     <input name="nome" id="nome" class="form-control form-control-sm mb-1" value='{{usuario.nome}}'>
                     {{#if usuario_acesso.razao}}
                     <input name="razao" id="razao" class="form-control form-control-sm" value='{{usuario.razao}}'>
@@ -240,7 +219,6 @@
                     <!--
                     <input name="uf" id="uf" class="form-control form-control-sm mt-1" value='{{usuario.uf}}'>
                     -->
-
                     {{else}}
                     <select id='estado' name='uf' class='form-select form-select-sm mt-1'></select>
                     {{/if}}
@@ -266,22 +244,23 @@
                         value='{{usuario_acesso.usuario}}'>
                     <label for="email" class="col-form-label col-form-label-sm">{{usuario.email}}</label>
                 </div>
+
+                {{#if ehUserMaster}}
                 <div class="row" style="width:600px;margin-left: 150px;">
-                    {{#if ehUserMaster}}
                     <div class="col-md-3">
                         <label class="col-form-label col-form-label-sm">Tipo de Usuário</label>
                     </div>
                     <div class="col-md-6">
                         <select name='tipo' class="form-select form-select-sm">
-                            <option style="font-weight: 800;">{{usuario.ehAdmin}}</option>
+                            <option style="font-weight: 800;">{{usuario_acesso.ehAdmin}}</option>
                             <option>0</option>
                             <option>1</option>
                             <option>3</option>
                         </select>
                     </div>
                     <label class="col-form-label col-form-label-sm">0 - Master | 1 - Admin | 3 - Solictação</label>
-                    {{/if}}
                 </div>
+                {{/if}}
                 <div class="btn-group btn-group-sm mx-auto gap-2 col-6">
                     <a class="mt-2 btn btn-sm btn-primary" data-bs-toggle='modal' data-bs-target='#senha'>Alterar
                         Senha</a>
