@@ -182,29 +182,35 @@ app.get('/menu', ehAdmin, (req, res) => {
                   Equipe.findOne({ _id: element.equipe }).then((equipe) => {
                     Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
                       Pessoa.findOne({ _id: element.responsavel }).then((pesso_res) => {
-                        //console.log('element._id=>' + element._id)
-                        if (typeof proposta.proposta6 != 'undefined') {
+                        q++
+                        console.log('element._id=>' + element._id)
+                        if (naoVazio(proposta.proposta6)) {
                           dtcadastro = proposta.dtcadastro6
                           dtvalidade = proposta.dtvalidade6
                         } else {
-                          if (typeof proposta.proposta5 != 'undefined') {
+                          if (naoVazio(proposta.proposta5)) {
                             dtcadastro = proposta.dtcadastro5
                             dtvalidade = proposta.dtvalidade5
                           } else {
-                            if (typeof proposta.proposta4 != 'undefined') {
+                            if (naoVazio(proposta.proposta4)) {
                               dtcadastro = proposta.dtcadastro4
                               dtvalidade = proposta.dtvalidade4
                             } else {
-                              if (typeof proposta.proposta3 != 'undefined') {
+                              if (naoVazio(proposta.proposta3)){
                                 dtcadastro = proposta.dtcadastro3
                                 dtvalidade = proposta.dtvalidade3
                               } else {
-                                if (typeof proposta.proposta2 != 'undefined') {
+                                if (naoVazio(proposta.proposta2)) {
                                   dtcadastro = proposta.dtcadastro2
                                   dtvalidade = proposta.dtvalidade2
                                 } else {
-                                  dtcadastro = proposta.dtcadastro1
-                                  dtvalidade = proposta.dtvalidade1
+                                  if (naoVazio(proposta.proposta1)) {
+                                    dtcadastro = proposta.dtcadastro1
+                                    dtvalidade = proposta.dtvalidade1
+                                  } else {
+                                    dtcadastro = '0000-00-00'
+                                    dtvalidade = '0000-00-00'
+                                  }
                                 }
                               }
                             }
@@ -256,12 +262,12 @@ app.get('/menu', ehAdmin, (req, res) => {
                                   qtdalx++
                                   dtinicio = equipe.dtinicio
                                   dtfim = equipe.dtfim
-                              } else {
+                                } else {
                                   if (documento.enviaalmox == true) {
-                                      status = 'Almoxarifado Em Aberto'
-                                      qtdalx++
-                                      dtinicio = equipe.dtinicio
-                                      dtfim = equipe.dtfim
+                                    status = 'Almoxarifado Em Aberto'
+                                    qtdalx++
+                                    dtinicio = equipe.dtinicio
+                                    dtfim = equipe.dtfim
                                   } else {
                                     if (equipe.feito == true) {
                                       status = 'Execução a Campo'
@@ -331,14 +337,14 @@ app.get('/menu', ehAdmin, (req, res) => {
 
                         //console.log('proposta.ganho=>'+proposta.ganho)
                         if (proposta.ganho != true) {
-                          var dtnovo = setData(dtcadastro,7)
+                          // var dtnovo = setData(dtcadastro, 7)
                           //console.log(dtvalidade)
                           var dtnovo = dtvalidade
                           data1 = dataBusca(dtnovo)
                           data2 = dataBusca(hoje)
                           //console.log('proposta._id=>' + proposta._id)
-                          //console.log('data1=>' + data1)
-                          //console.log('data2=>' + data2)
+                          console.log('validade=>' + data1)
+                          console.log('hoje=>' + data2)
                           compara = parseFloat(data1) - parseFloat(data2)
                           //console.log('compara=>' + compara)
                           if (compara == 1) {
@@ -348,8 +354,8 @@ app.get('/menu', ehAdmin, (req, res) => {
                               atrasado.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
                             }
                           }
-                        }else{
-                          if (proposta.ganho == true && proposta.deadline != '' && typeof proposta.deadline != 'undefined' && proposta.dtassinatura != '' && typeof proposta.deadline != 'undefined' ){
+                        } else {
+                          if (proposta.ganho == true && proposta.deadline != '' && typeof proposta.deadline != 'undefined' && proposta.dtassinatura != '' && typeof proposta.deadline != 'undefined') {
                             var dtdlassinado = proposta.deadline
                             //console.log('dtdlassinado=>'+dtdlassinado)
                             //console.log('hoje=>'+hoje)
@@ -357,14 +363,13 @@ app.get('/menu', ehAdmin, (req, res) => {
                             data2 = dataBusca(hoje)
                             compara = parseFloat(data1) - parseFloat(data2)
                             //console.log('compara=>'+compara)
-                            if (compara < 30){
-                              deadlineIns.push({id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), assinado: dataMensagem(proposta.dtassinatura), dliins: dataMensagem(dtdlassinado)})
+                            if (compara < 30) {
+                              deadlineIns.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), assinado: dataMensagem(proposta.dtassinatura), dliins: dataMensagem(dtdlassinado) })
                             }
                           }
-                          
+
                         }
                         //console.log('status=>' + status)
-                        q++
                         //console.log('q=>' + q)
                         if (q == todasProposta.length) {
                           numprj = todasProposta.length
@@ -372,7 +377,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                           //console.log('qtdorcado=>' + qtdorcado)
                           //console.log('qtdaberto=>' + qtdaberto)
                           //console.log('qtdencerrado=>' + qtdencerrado)
-                          res.render('menuproposta', { id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, deadlineIns, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdalx, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, notpro, atrasado })
+                          res.render('menuproposta', { id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, saudacao, nome_lista: nome, deadlineIns, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdalx, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, notpro, atrasado })
                         }
                       }).catch((err) => {
                         req.flash('error_msg', 'Houve um erro ao encontrar as pessoas.')
@@ -411,9 +416,7 @@ app.get('/menu', ehAdmin, (req, res) => {
       //console.log('user=>'+user)
       if (user != '' && typeof user != 'undefined') {
         var instalador = ''
-
         //console.log('funges=>'+funges)
-
         Proposta.find({ user: user }).sort({ data: 'asc' }).then((todasProposta) => {
           //console.log('todasProposta=>'+todasProposta)
           if (todasProposta != '') {
@@ -429,28 +432,33 @@ app.get('/menu', ehAdmin, (req, res) => {
                             Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
                               Pessoa.findOne({ _id: element.responsavel }).then((pessoa_res) => {
                                 //console.log('element._id=>' + element._id)
-                                if (typeof proposta.proposta6 != 'undefined') {
+                                if (naoVazio(proposta.proposta6)) {
                                   dtcadastro = proposta.dtcadastro6
                                   dtvalidade = proposta.dtvalidade6
                                 } else {
-                                  if (typeof proposta.proposta5 != 'undefined') {
+                                  if (naoVazio(proposta.proposta5)) {
                                     dtcadastro = proposta.dtcadastro5
                                     dtvalidade = proposta.dtvalidade5
                                   } else {
-                                    if (typeof proposta.proposta4 != 'undefined') {
+                                    if (naoVazio(proposta.proposta4)) {
                                       dtcadastro = proposta.dtcadastro4
                                       dtvalidade = proposta.dtvalidade4
                                     } else {
-                                      if (typeof proposta.proposta3 != 'undefined') {
+                                      if (naoVazio(proposta.proposta3)){
                                         dtcadastro = proposta.dtcadastro3
                                         dtvalidade = proposta.dtvalidade3
                                       } else {
-                                        if (typeof proposta.proposta2 != 'undefined') {
+                                        if (naoVazio(proposta.proposta2)) {
                                           dtcadastro = proposta.dtcadastro2
                                           dtvalidade = proposta.dtvalidade2
                                         } else {
-                                          dtcadastro = proposta.dtcadastro1
-                                          dtvalidade = proposta.dtvalidade1
+                                          if (naoVazio(proposta.proposta1)) {
+                                            dtcadastro = proposta.dtcadastro1
+                                            dtvalidade = proposta.dtvalidade1
+                                          } else {
+                                            dtcadastro = '0000-00-00'
+                                            dtvalidade = '0000-00-00'
+                                          }
                                         }
                                       }
                                     }
@@ -486,12 +494,12 @@ app.get('/menu', ehAdmin, (req, res) => {
                                           status = 'Almoxarifado Fechado'
                                           dtinicio = equipe.dtinicio
                                           dtfim = equipe.dtfim
-                                      } else {
+                                        } else {
                                           if (documento.enviaalmox == true) {
-                                              status = 'Almoxarifado Em Aberto'
-                                              dtinicio = equipe.dtinicio
-                                              dtfim = equipe.dtfim
-                                          }else {
+                                            status = 'Almoxarifado Em Aberto'
+                                            dtinicio = equipe.dtinicio
+                                            dtfim = equipe.dtfim
+                                          } else {
                                             if (equipe.feito == true) {
                                               status = 'Execução a Campo'
                                               qtdequ++
@@ -559,7 +567,7 @@ app.get('/menu', ehAdmin, (req, res) => {
 
                                 if (proposta.ganho != true) {
                                   var hoje = dataHoje()
-                                  var dtnovo = setData(dtcadastro,7)
+                                  var dtnovo = setData(dtcadastro, 7)
                                   var dtnovo = dtvalidade
                                   var data1 = dataBusca(dtnovo)
                                   var data2 = dataBusca(hoje)
@@ -581,7 +589,12 @@ app.get('/menu', ehAdmin, (req, res) => {
                                   //console.log('qtdorcado=>' + qtdorcado)
                                   //console.log('qtdaberto=>' + qtdaberto)
                                   //console.log('qtdencerrado=>' + qtdencerrado)
-                                  res.render('menuproposta', { id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, notpro, atrasado })
+                                  Pessoa.findOne({ _id: pessoa }).lean().then((nome_pessoa) => {
+                                    res.render('menuproposta', { id: _id, owner: owner, saudacao, nome_lista: nome_pessoa.nome, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, notpro, atrasado })
+                                  }).catch((err) => {
+                                    req.flash('error_msg', 'Houve um erro ao encontrar o nome do usuário.')
+                                    res.redirect('/')
+                                  })
                                 }
                               }).catch((err) => {
                                 req.flash('error_msg', 'Houve um erro ao encontrar as pessoas.')
@@ -659,28 +672,33 @@ app.get('/menu', ehAdmin, (req, res) => {
                                   Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
                                     Pessoa.findOne({ _id: element.responsavel }).then((pessoa_res) => {
                                       //  //console.log('entrou')
-                                      if (typeof proposta.proposta6 != 'undefined') {
+                                      if (naoVazio(proposta.proposta6)) {
                                         dtcadastro = proposta.dtcadastro6
                                         dtvalidade = proposta.dtvalidade6
                                       } else {
-                                        if (typeof proposta.proposta5 != 'undefined') {
+                                        if (naoVazio(proposta.proposta5)) {
                                           dtcadastro = proposta.dtcadastro5
                                           dtvalidade = proposta.dtvalidade5
                                         } else {
-                                          if (typeof proposta.proposta4 != 'undefined') {
+                                          if (naoVazio(proposta.proposta4)) {
                                             dtcadastro = proposta.dtcadastro4
                                             dtvalidade = proposta.dtvalidade4
                                           } else {
-                                            if (typeof proposta.proposta3 != 'undefined') {
+                                            if (naoVazio(proposta.proposta3)){
                                               dtcadastro = proposta.dtcadastro3
                                               dtvalidade = proposta.dtvalidade3
                                             } else {
-                                              if (typeof proposta.proposta2 != 'undefined') {
+                                              if (naoVazio(proposta.proposta2)) {
                                                 dtcadastro = proposta.dtcadastro2
                                                 dtvalidade = proposta.dtvalidade2
                                               } else {
-                                                dtcadastro = proposta.dtcadastro1
-                                                dtvalidade = proposta.dtvalidade1
+                                                if (naoVazio(proposta.proposta1)) {
+                                                  dtcadastro = proposta.dtcadastro1
+                                                  dtvalidade = proposta.dtvalidade1
+                                                } else {
+                                                  dtcadastro = '0000-00-00'
+                                                  dtvalidade = '0000-00-00'
+                                                }
                                               }
                                             }
                                           }
@@ -812,7 +830,7 @@ app.get('/menu', ehAdmin, (req, res) => {
             })
           } else {
             //console.log('sem registro')
-            res.render('menuproposta', { id: _id, owner: owner, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado})
+            res.render('menuproposta', { id: _id, owner: owner, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado })
           }
         })
       } else {
