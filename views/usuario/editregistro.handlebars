@@ -139,10 +139,28 @@
                                     <input name="senha" type="password" class="form-control form-control-sm mt-1">
                                     <input name="senharep" type="password" class="form-control form-control-sm mt-1">
                                 </div>
+                                <div style="text-align: center;color:chocolate">
+                                    <label class="fw-bold col-form-label col-form-label-sm mt-2">A senha deve conter
+                                        ao menos 6 dígitos.</label>
+                                </div>
                             </div>
-                            <div style="text-align: center;color:chocolate">
-                                <label class="fw-bold col-form-label col-form-label-sm mt-2">A senha deve conter
-                                    ao menos 6 dígitos.</label>
+                            <div class='row'>
+                                {{#if ehUserMaster}}
+                                <div class="col-md-3">
+                                    <label class="col-form-label col-form-label-sm">Tipo de Usuário</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <select name='tipo' class="form-select form-select-sm">
+                                        <option style="font-weight: 800;">{{usuario.ehAdmin}}</option>
+                                        <option>0</option>
+                                        <option>1</option>
+                                        <option>3</option>
+                                    </select>
+                                </div>
+
+                                <label class="col-form-label col-form-label-sm">0 - Master | 1 - Admin | 3 -
+                                    Solictação</label>
+                                {{/if}}
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -152,7 +170,7 @@
                 </div>
             </div>
             <!-- -->
-            {{#if usuario.user}}
+            {{#if mostraDetalhes}}
             <div class="row mb-2">
                 <div class="col-md-4 text-end">
                     <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Nome de Usuário: </label><br>
@@ -161,8 +179,8 @@
                 <div class="col-md-7">
 
                     <input name="usuario" id="usuario" class="form-control form-control-sm mt-1"
-                        value='{{usuario.usuario}}'>
-                    <label for="email" class="col-form-label col-form-label-sm">{{usuario.email}}</label>
+                        value='{{usuario_acesso.usuario}}'>
+                    <label for="email" class="col-form-label col-form-label-sm">{{usuario_acesso.email}}</label>
                 </div>
                 <div class="btn-group btn-group-sm mx-auto gap-2 col-6">
                     <a class="mt-2 btn btn-sm btn-primary" data-bs-toggle='modal' data-bs-target='#senha'>Alterar
@@ -175,9 +193,17 @@
             <div class="row mb-2">
                 <div class="col-md-4 text-end">
                     <label class='col-form-label col-form-label-sm' for="razao">Nome: </label><br>
+                    {{#if usuario_acesso.razao}}
                     <label class='col-form-label col-form-label-sm' for="razao">Razão Social: </label><br>
+                    {{/if}}
+                    {{#if usuario_acesso.nome}}
                     <label class='col-form-label col-form-label-sm mt-1' for="fantasia">Nome Fantasia: </label><br>
+                    {{/if}}
+                    {{#if usuario.cnpj}}
                     <label class='col-form-label col-form-label-sm mt-1' for="cnpj">CNPJ: </label><br>
+                    {{else}}
+                    <label class='col-form-label col-form-label-sm mt-1' for="cnpj">CPF: </label><br>
+                    {{/if}}
                     <label class='col-form-label col-form-label-sm mt-1' for="endereco">Endereço Empresa:
                     </label><br>
                     <label class='col-form-label col-form-label-sm mt-1' for="cidade">Estado: </label><br>
@@ -188,12 +214,18 @@
 
                 </div>
                 <div class="col-md-7">
+
                     <input name="nome" id="nome" class="form-control form-control-sm mb-1" value='{{usuario.nome}}'>
+                    {{#if usuario_acesso.razao}}
                     <input name="razao" id="razao" class="form-control form-control-sm" value='{{usuario.razao}}'>
+                    {{/if}}
+                    {{#if usuario_acesso.nome}}
                     <input name="fantasia" id="fantasia" class="form-control form-control-sm mt-1"
                         value='{{usuario.fantasia}}'>
+                    {{/if}}
                     <input type='text' class='form-control form-control-sm mt-1' maxlength="18" autocomplete="off"
-                        id='cnpj' name='cnpj' onkeyup="valida_cnpj()" value='{{usuario.cnpj}}'>
+                        id='cnpj' name='cnpj' onkeyup="valida_cnpj()" {{#if usuario.cnpj}}value='{{usuario.cnpj}}'
+                        {{else}}value='{{usuario.cpf}}' {{/if}}>
                     <input name="endereco" id="endereco" class="form-control form-control-sm mt-1"
                         value='{{usuario.endereco}}'>
                     {{#if usuario.uf}}
@@ -229,9 +261,9 @@
                     <select id='cidade' name='cidade' class='form-select form-select-sm mt-1'></select>
                     {{/if}}
                     <input name="telefone" id="celular" class="form-control form-control-sm mt-1"
-                        value='{{usuario.telefone}}' maxlength="16" autocomplete="off">
+                        value='{{usuario.celular}}' maxlength="16" autocomplete="off">
                     <input name="usuario" id="usuario" class="form-control form-control-sm mt-1"
-                        value='{{usuario.usuario}}'>
+                        value='{{usuario_acesso.usuario}}'>
                     <label for="email" class="col-form-label col-form-label-sm">{{usuario.email}}</label>
                 </div>
                 <div class="row" style="width:600px;margin-left: 150px;">
