@@ -91,9 +91,9 @@ mongoose.connect('mongodb://alegaliotto:3rdn4x3L4@mongo_vimmus:27017/vimmus', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => {
-  console.log("Sucesso ao se conectar no Mongo")
+  //console.log("Sucesso ao se conectar no Mongo")
 }).catch((errr) => {
-  console.log("Falha ao se conectar no Mongo")
+  //console.log("Falha ao se conectar no Mongo")
 })
 
 //Public para CSS do bootstrap
@@ -199,7 +199,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                     Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
                       Pessoa.findOne({ _id: element.responsavel }).then((pessoa_res) => {
                         q++
-                        console.log('element._id=>' + element._id)
+                        //console.log('element._id=>' + element._id)
                         if (naoVazio(proposta.dtcadastro6)) {
                           dtcadastro = proposta.dtcadastro6
                           dtvalidade = proposta.dtvalidade6
@@ -250,10 +250,10 @@ app.get('/menu', ehAdmin, (req, res) => {
                         } else {
                           responsavel = ''
                         }
-                        console.log('responsavel=>' + responsavel)
-                        console.log('pessoa responsavel=>' + pessoa_res)
-                        console.log('dtcadastro=>' + dtcadastro)
-                        console.log('dtvalidade=>' + dtvalidade)
+                        //console.log('responsavel=>' + responsavel)
+                        //console.log('pessoa responsavel=>' + pessoa_res)
+                        //console.log('dtcadastro=>' + dtcadastro)
+                        //console.log('dtvalidade=>' + dtvalidade)
                         if (proposta.ganho == true) {
                           if (proposta.encerrado == true) {
                             status = 'Encerrado'
@@ -351,8 +351,8 @@ app.get('/menu', ehAdmin, (req, res) => {
                         }
 
 
-                        console.log('status=>' + status)
-                        console.log('proposta.ganho=>' + proposta.ganho)
+                        //console.log('status=>' + status)
+                        //console.log('proposta.ganho=>' + proposta.ganho)
                         if (proposta.ganho != true) {
                           // var dtnovo = setData(dtcadastro, 7)
                           //console.log(dtvalidade)
@@ -361,10 +361,10 @@ app.get('/menu', ehAdmin, (req, res) => {
                           data2 = dataBusca(hoje)
                           //console.log('proposta._id=>' + proposta._id)
 
-                          console.log('validade=>' + data1)
-                          console.log('hoje=>' + data2)
+                          //console.log('validade=>' + data1)
+                          //console.log('hoje=>' + data2)
                           compara = parseFloat(data1) - parseFloat(data2)
-                          console.log('compara=>' + compara)
+                          //console.log('compara=>' + compara)
                           if (data1 > 0) {
                             if (compara == 1) {
                               notpro.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
@@ -388,37 +388,37 @@ app.get('/menu', ehAdmin, (req, res) => {
                             }
                           }
                         }
-                        console.log('todasProposta=>' + todasProposta)
-                        console.log('q=>' + q)
+                        //console.log('todasProposta=>' + todasProposta)
+                        //console.log('q=>' + q)
                         if (q == todasProposta.length) {
                           numprj = todasProposta.length
-                          console.log('numprj=>' + numprj)
-                          console.log('qtdorcado=>' + qtdorcado)
-                          console.log('qtdaberto=>' + qtdaberto)
-                          console.log('listaAberto=>' + listaAberto)
-                          console.log('listaOrcado=>' + listaOrcado)
-                          console.log('listaEncerrado=>' + listaEncerrado)
-                          console.log('nome=>' + nome)
-                          console.log('deadlineIns=>' + deadlineIns)
-                          console.log('qtdaberto=>' + qtdaberto)
-                          console.log('ehMaster=>' + ehMaster)
-                          console.log('numprj=>' + numprj)
-                          console.log('qtdpro=>' + qtdpro)
-                          console.log('qtdvis=>' + qtdvis)
-                          console.log('qtdass=>' + qtdass)
-                          console.log('qtdped=>' + qtdped)
-                          console.log('qtdnot=>' + qtdnot)
-                          console.log('qtdalx=>' + qtdalx)
-                          console.log('qtdtrt=>' + qtdtrt)
-                          console.log('qtdpcl=>' + qtdpcl)
-                          console.log('qtdequ=>' + qtdequ)
-                          console.log('qtdfim=>' + qtdfim)
-                          console.log('qtdpos=>' + qtdpos)
-                          console.log('qtdaberto=>' + qtdaberto)
-                          console.log('qtdencerrado=>' + qtdencerrado)
-                          console.log('qtdorcado=>' + qtdorcado)
-                          console.log('notpro=>' + notpro)
-                          console.log('atrasado=>' + atrasado)
+                          //console.log('numprj=>' + numprj)
+                          //console.log('qtdorcado=>' + qtdorcado)
+                          //console.log('qtdaberto=>' + qtdaberto)
+                          //console.log('listaAberto=>' + listaAberto)
+                          //console.log('listaOrcado=>' + listaOrcado)
+                          //console.log('listaEncerrado=>' + listaEncerrado)
+                          //console.log('nome=>' + nome)
+                          //console.log('deadlineIns=>' + deadlineIns)
+                          //console.log('qtdaberto=>' + qtdaberto)
+                          //console.log('ehMaster=>' + ehMaster)
+                          //console.log('numprj=>' + numprj)
+                          //console.log('qtdpro=>' + qtdpro)
+                          //console.log('qtdvis=>' + qtdvis)
+                          //console.log('qtdass=>' + qtdass)
+                          //console.log('qtdped=>' + qtdped)
+                          //console.log('qtdnot=>' + qtdnot)
+                          //console.log('qtdalx=>' + qtdalx)
+                          //console.log('qtdtrt=>' + qtdtrt)
+                          //console.log('qtdpcl=>' + qtdpcl)
+                          //console.log('qtdequ=>' + qtdequ)
+                          //console.log('qtdfim=>' + qtdfim)
+                          //console.log('qtdpos=>' + qtdpos)
+                          //console.log('qtdaberto=>' + qtdaberto)
+                          //console.log('qtdencerrado=>' + qtdencerrado)
+                          //console.log('qtdorcado=>' + qtdorcado)
+                          //console.log('notpro=>' + notpro)
+                          //console.log('atrasado=>' + atrasado)
                           res.render('menuproposta', { id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, 
                             saudacao, nome_lista: nome, deadlineIns, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, 
                             qtdnot, qtdalx, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, 
@@ -906,5 +906,5 @@ app.use('/fornecedor/', fornecedor)
 //Acesso ao localhost
 var port = process.env.PORT || 3000;
 app.listen(port, function () {
-  console.log('Umbler listening on port %s', port);
+  //console.log('Umbler listening on port %s', port);
 });
