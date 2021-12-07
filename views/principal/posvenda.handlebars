@@ -1,3 +1,19 @@
+<style>
+    .disabledbutton {
+        pointer-events: none;
+        opacity: 0.4;
+    }
+</style>
+<script>
+    window.onload = function () {
+        var bloquear = document.getElementById('bloquear')
+
+        if (bloquear.className == 'true') {
+            bloquear.className = 'disabledbutton'
+        }
+
+    }
+</script>
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
     <div class="modal fade" id="laudoModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -79,111 +95,118 @@
             Pós Venda</a>
     </div>
 
-    <div class="row mt-2">
-        <div class="col-md-2 text-end">
-            <label class='col-form-label fw-bold mt-3'>Documento: </label><br>
-        </div>
-        <div class="col-md-10 text-start">
-            <form action='/gerenciamento/posvenda' method='post' enctype="multipart/form-data">
-                <input type='hidden' name='id' value={{proposta._id}}>
-                <div class="row">
-                    {{#if posvenda.feito}}
-                    <div class="col-md-5">
-                        <div class="row mt-3">
-                            <label class='col-form-label'>{{posvenda.laudo}}</label>
-                        </div>
-                    </div>
-                    <div class="col-md-2 mt-3">
-                        <input style="max-width: 150px;" type='file' class='form-control' name='posvenda'
-                            value='{{posvenda.feito}}'>
-                    </div>
-                    {{else}}
-                    <div class="col-md-7 mt-3">
-                        <input type='file' class='form-control' name='posvenda' value='{{posvenda.laudo}}'>
-                    </div>
-                    {{/if}}
-                    <div class="col-md-1 mt-3">
-                        <a class="btn btn-primary" href='/gerenciamento/mostrarPosvenda/{{proposta._id}}'
-                            target="_blank"><i class='bi bi-eye'></i></a>
-                    </div>
-                    <div class="col-md-2">
-                        <label> Data</label>
-                        <input type='date' class='form-control' name='data' value='{{posvenda.data}}'>
-                    </div>
-                    <div class="col-md-1 mt-3">
-                        <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
-                    </div>
-                </div><br>
-            </form>
-        </div>
-        <form action="/gerenciamento/checkposvenda" method='post'>
-            <input type='hidden' name='idpos' value='{{posvenda._id}}'>
-            <input type='hidden' name='id' value='{{proposta._id}}'>
-            <div class="row">
-                <h5 class="fw-bold">Check List</h5><br><br>
-                <div class="row">
-                    <div class="col">
-                        <div class="form-check">
-                            <input class='form-check-input' style="margin-top: 10px;" type="checkbox" name='checkalerta'
-                                {{posvenda.alerta}}>
-                            <label class='col-form-label form-check-label'>Alertas do Sistema</label>
-                        </div>
-                        <div class="form-check">
-                            <input class='form-check-input' style="margin-top: 10px;" type="checkbox"
-                                name='checkenergia' {{posvenda.energia}}>
-                            <label class='col-form-label form-check-label'>Falta de Energia</label>
-                        </div>
-                        <div class="form-check">
-                            <input class='form-check-input' style="margin-top: 10px;" type="checkbox" name='checkmanut'
-                                {{posvenda.manut}}>
-                            <label class='col-form-label form-check-label'>Manutenção</label>
-                        </div>
-                        <div class="form-check">
-                            <input class='form-check-input' style="margin-top: 10px;" type="checkbox" name='checksombra'
-                                {{posvenda.sombra}}>
-                            <label class='col-form-label form-check-label'>Sombreamento</label>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="form-check">
-                            <input class='form-check-input' style="margin-top: 10px;" type="checkbox"
-                                name='checkmonitora' {{posvenda.monitora}}>
-                            <label class='col-form-label form-check-label'>Aplicativo de Monitoramento</label>
-                        </div>
-                        <div class="form-check">
-                            <input class='form-check-input' style="margin-top: 10px;" type="checkbox"
-                                name='checkconexao' {{posvenda.conexao}}>
-                            <label class='col-form-label form-check-label'>Conexão</label>
-                        </div>
-                        <div class="form-check">
-                            <input class='form-check-input' style="margin-top: 10px;" type="checkbox"
-                                name='checkgerador' {{posvenda.gerador}}>
-                            <label class='col-form-label form-check-label'>Outros Geradores</label>
-                        </div>
-                        <div class="form-check">
-                            <input class='form-check-input' style="margin-top: 10px;" type="checkbox"
-                                name='checkanalise' {{posvenda.analise}}>
-                            <label class='col-form-label form-check-label'>Análise de Geração</label>
-                        </div>
-                    </div>
+    <div id='bloquear' class='{{proposta.encerrado}}'>
+        <div class="row mt-2">
+            <div class="col-md-2 text-end">
+                <label class='col-form-label fw-bold mt-3'>Documento: </label><br>
+            </div>
+            <div class="col-md-10 text-start">
+                <form action='/gerenciamento/posvenda' method='post' enctype="multipart/form-data">
+                    <input type='hidden' name='id' value={{proposta._id}}>
                     <div class="row">
-                        <div class="col">
-                            <label class="col-form-label fw-bold">Dúvidas do Cliente:</label>
-                            <textarea name="duvidas" class="form-control" cols="10"
-                                rows="4">{{posvenda.duvidas}}</textarea>
-                        </div>
-                        <div class="col">
-                            <div class="row" style="margin-top: 30px;">
-                                <button class='btn btn-success mb-1'><i class='bi bi-save'></i> Chek List</button><br>
-                                {{#if posvenda.feito}}
-                                <a href='/gerenciamento/entrega/{{proposta._id}}' class='btn btn-primary mb-1'>Finalizar</button><br>
-                                {{/if}}
-                                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#laudoModal"> Mostrar Laudo</a>
+                        {{#if posvenda.feito}}
+                        <div class="col-md-5">
+                            <div class="row mt-3">
+                                <label class='col-form-label'>{{posvenda.laudo}}</label>
                             </div>
+                        </div>
+                        <div class="col-md-2 mt-3">
+                            <input style="max-width: 150px;" type='file' class='form-control' name='posvenda'
+                                value='{{posvenda.feito}}'>
+                        </div>
+                        {{else}}
+                        <div class="col-md-7 mt-3">
+                            <input type='file' class='form-control' name='posvenda' value='{{posvenda.laudo}}'>
+                        </div>
+                        {{/if}}
+                        <div class="col-md-1 mt-3">
+                            <a class="btn btn-primary" href='/gerenciamento/mostrarPosvenda/{{proposta._id}}'
+                                target="_blank"><i class='bi bi-eye'></i></a>
+                        </div>
+                        <div class="col-md-2">
+                            <label> Data</label>
+                            <input type='date' class='form-control' name='data' value='{{posvenda.data}}'>
+                        </div>
+                        <div class="col-md-1 mt-3">
+                            <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
+                        </div>
+                    </div><br>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <form action="/gerenciamento/checkposvenda" method='post'>
+        <input type='hidden' name='idpos' value='{{posvenda._id}}'>
+        <input type='hidden' name='id' value='{{proposta._id}}'>
+        <div class="row">
+            <h5 class="fw-bold">Check List</h5><br><br>
+            <div class="row">
+                <div class="col">
+                    <div class="form-check">
+                        <input class='form-check-input' style="margin-top: 10px;" type="checkbox" name='checkalerta'
+                            {{posvenda.alerta}}>
+                        <label class='col-form-label form-check-label'>Alertas do Sistema</label>
+                    </div>
+                    <div class="form-check">
+                        <input class='form-check-input' style="margin-top: 10px;" type="checkbox" name='checkenergia'
+                            {{posvenda.energia}}>
+                        <label class='col-form-label form-check-label'>Falta de Energia</label>
+                    </div>
+                    <div class="form-check">
+                        <input class='form-check-input' style="margin-top: 10px;" type="checkbox" name='checkmanut'
+                            {{posvenda.manut}}>
+                        <label class='col-form-label form-check-label'>Manutenção</label>
+                    </div>
+                    <div class="form-check">
+                        <input class='form-check-input' style="margin-top: 10px;" type="checkbox" name='checksombra'
+                            {{posvenda.sombra}}>
+                        <label class='col-form-label form-check-label'>Sombreamento</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-check">
+                        <input class='form-check-input' style="margin-top: 10px;" type="checkbox" name='checkmonitora'
+                            {{posvenda.monitora}}>
+                        <label class='col-form-label form-check-label'>Aplicativo de Monitoramento</label>
+                    </div>
+                    <div class="form-check">
+                        <input class='form-check-input' style="margin-top: 10px;" type="checkbox" name='checkconexao'
+                            {{posvenda.conexao}}>
+                        <label class='col-form-label form-check-label'>Conexão</label>
+                    </div>
+                    <div class="form-check">
+                        <input class='form-check-input' style="margin-top: 10px;" type="checkbox" name='checkgerador'
+                            {{posvenda.gerador}}>
+                        <label class='col-form-label form-check-label'>Outros Geradores</label>
+                    </div>
+                    <div class="form-check">
+                        <input class='form-check-input' style="margin-top: 10px;" type="checkbox" name='checkanalise'
+                            {{posvenda.analise}}>
+                        <label class='col-form-label form-check-label'>Análise de Geração</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class="col-form-label fw-bold">Dúvidas do Cliente:</label>
+                        <textarea name="duvidas" class="form-control" cols="10" rows="4">{{posvenda.duvidas}}</textarea>
+                    </div>
+                    <div class="col">
+                        <div class="row" style="margin-top: 20px;">
+                            <button class='btn btn-sm btn-success mb-1'><i class='bi bi-save'></i> Chek List</button><br>
+                            {{#if posvenda.feito}}
+                            <a href='/gerenciamento/entrega/{{proposta._id}}'
+                                class='btn btn-sm btn-primary mb-1'>Finalizar</a><br>
+                             <a href='/gerenciamento/livro/{{proposta._id}}' class='btn btn-sm btn-primary mb-1'>Livro da
+                                Obra</a><br>
+                            {{/if}}
+                            <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#laudoModal"> Mostrar
+                                Laudo</a><br>
+                           
                         </div>
                     </div>
                 </div>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>

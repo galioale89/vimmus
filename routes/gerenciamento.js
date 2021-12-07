@@ -416,6 +416,56 @@ router.get('/consulta/:tipo', ehAdmin, (req, res) => {
     })
 })
 
+router.get('/livro/:id', ehAdmin, (req, res) => {
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        //console.log('projeto=>' + projeto)
+        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
+            Empresa.findOne({ _id: proposta.empresa }).lean().then((emp_proposta) => {
+                Pessoa.findOne({ _id: proposta.responsavel }).lean().then((res_proposta) => {
+                    Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
+                        Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
+                            Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
+                                Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                                    Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
+                                        res.render('principal/livro', { proposta, cliente_proposta, emp_proposta, res_proposta, vistoria, documento, compra, lista_equipe, posvenda })
+                                    }).catch((err) => {
+                                        req.flash('error_msg', 'Nenhum pós venda encontrado.')
+                                        res.redirect('/gerenciamento/consulta')
+                                    })
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Nenhuma equipe encontrada.')
+                                    res.redirect('/gerenciamento/consulta')
+                                })
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Nenhuma compra encontrada.')
+                                res.redirect('/gerenciamento/consulta')
+                            })
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Nenhum documento encontrado.')
+                            res.redirect('/gerenciamento/consulta')
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Nenhuma vistoria encontrada.')
+                        res.redirect('/gerenciamento/consulta')
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Nenhum técnico responsável encontrado.')
+                    res.redirect('/gerenciamento/consulta')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Nenhuma equipe encontrada.')
+                res.redirect('/gerenciamento/consulta')
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Nenhuma vistoria encontrada.')
+            res.redirect('/gerenciamento/consulta')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Nenhuma proposta encontrada.')
+        res.redirect('/gerenciamento/consulta')
+    })
+})
+
 router.post('/filtrar', ehAdmin, (req, res) => {
     const { _id } = req.user
     const { user } = req.user
@@ -3652,206 +3702,206 @@ router.post('/vermais/', ehAdmin, (req, res) => {
 
     Pessoa.findOne({ _id: req.body.id }).lean().then((pessoa) => {
         Equipe.find({ user: id, prjfeito: false, nome_projeto: { $exists: true }, ins0: { $exits: true }, dtinicio: { $ne: '00/00/0000' }, ins0: { $exists: true }, $or: [{ ins0: pessoa.nome }, { ins1: pessoa.nome }, { ins2: pessoa.nome }, { ins3: pessoa.nome }, { ins4: pessoa.nome }, { ins5: pessoa.nome }] }).then((equipe) => {
-                //console.log(equipe)
-                equipe.forEach((e) => {
-                    Proposta.findOne({ equipe: e._id, ganho: true, encerrado: false }).then((proposta) => {
-                        Cliente.findOne({ _id: proposta.cliente }).then((cliente) => {
-                            q++
-                            inicio = e.dtinicio
-                            fim = e.dtfim
-                            //console.log('cliente.nome=>' + cliente.nome)
-                            anoinicio = inicio.substring(0, 4)
-                            anofim = fim.substring(0, 4)
-                            mesinicio = inicio.substring(5, 7)
-                            mesfim = fim.substring(5, 7)
-                            diainicio = inicio.substring(8, 11)
-                            diafim = fim.substring(8, 11)
-                            con1 = String(mesinicio) + String(diainicio)
-                            con2 = String(mesfim) + String(diafim)
-                            dif1 = parseFloat(con2) - parseFloat(con1) + 1
-                            if (mesfim > mesinicio || mesinicio == mesfim) {
-                                compara = mesfim - mesinicio
-                            } else {
-                                compara = mesfim
-                            }
+            //console.log(equipe)
+            equipe.forEach((e) => {
+                Proposta.findOne({ equipe: e._id, ganho: true, encerrado: false }).then((proposta) => {
+                    Cliente.findOne({ _id: proposta.cliente }).then((cliente) => {
+                        q++
+                        inicio = e.dtinicio
+                        fim = e.dtfim
+                        //console.log('cliente.nome=>' + cliente.nome)
+                        anoinicio = inicio.substring(0, 4)
+                        anofim = fim.substring(0, 4)
+                        mesinicio = inicio.substring(5, 7)
+                        mesfim = fim.substring(5, 7)
+                        diainicio = inicio.substring(8, 11)
+                        diafim = fim.substring(8, 11)
+                        con1 = String(mesinicio) + String(diainicio)
+                        con2 = String(mesfim) + String(diafim)
+                        dif1 = parseFloat(con2) - parseFloat(con1) + 1
+                        if (mesfim > mesinicio || mesinicio == mesfim) {
+                            compara = mesfim - mesinicio
+                        } else {
+                            compara = mesfim
+                        }
 
-                            //console.log('compara')
-                            if (compara > 0) {
-                                if (meshoje == mesinicio) {
-                                    mes = mesinicio
-                                    if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
-                                        dif = 31 - parseFloat(diainicio) + 1
-                                    } else {
-                                        dif = 30 - parseFloat(diainicio) + 1
-                                    }
-                                    if (parseFloat(diainicio) < 10) {
-                                        dia = '0' + parseFloat(diainicio)
-                                    } else {
-                                        dia = parseFloat(diainicio)
-                                    }
+                        //console.log('compara')
+                        if (compara > 0) {
+                            if (meshoje == mesinicio) {
+                                mes = mesinicio
+                                if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
+                                    dif = 31 - parseFloat(diainicio) + 1
                                 } else {
-                                    mes = mesfim
-                                    dif = parseFloat(diafim)
-                                    dia = '01'
+                                    dif = 30 - parseFloat(diainicio) + 1
                                 }
-                            } else {
-                                //console.log('entrou')
-                                dif = parseFloat(dif1)
                                 if (parseFloat(diainicio) < 10) {
                                     dia = '0' + parseFloat(diainicio)
                                 } else {
                                     dia = parseFloat(diainicio)
                                 }
-                                mes = mesinicio
+                            } else {
+                                mes = mesfim
+                                dif = parseFloat(diafim)
+                                dia = '01'
                             }
+                        } else {
+                            //console.log('entrou')
+                            dif = parseFloat(dif1)
+                            if (parseFloat(diainicio) < 10) {
+                                dia = '0' + parseFloat(diainicio)
+                            } else {
+                                dia = parseFloat(diainicio)
+                            }
+                            mes = mesinicio
+                        }
 
-                            //console.log('cores.length=>' + cores.length)
+                        //console.log('cores.length=>' + cores.length)
 
-                            color = cores[c]
+                        color = cores[c]
 
-                            //console.log('color=>' + color)
-                            todasCores.push({ color })
+                        //console.log('color=>' + color)
+                        todasCores.push({ color })
 
-                            //console.log("meshoje=>" + meshoje)
-                            for (i = 0; i < dif; i++) {
-                                if (meshoje == mes) {
-                                    //console.log('entrou no laço')
-                                    //console.log('dia=>' + dia)
-                                    switch (String(dia)) {
-                                        case '01':
-                                            dia01.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '02':
-                                            dia02.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '03':
-                                            dia03.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '04':
-                                            dia04.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '05':
-                                            dia05.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '06':
-                                            dia06.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '07':
-                                            dia07.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '08':
-                                            dia08.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '09':
-                                            dia09.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '10':
-                                            dia10.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '11':
-                                            dia11.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '12':
-                                            dia12.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '13':
-                                            dia13.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '14':
-                                            dia14.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '15':
-                                            dia15.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '16':
-                                            dia16.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '17':
-                                            dia17.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '18':
-                                            dia18.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '19':
-                                            dia19.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '20':
-                                            dia20.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '21':
-                                            dia21.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '22':
-                                            dia22.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '23':
-                                            dia23.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '24':
-                                            dia24.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '25':
-                                            dia25.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '26':
-                                            dia26.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '27':
-                                            dia27.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '28':
-                                            dia28.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '29':
-                                            dia29.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '30':
-                                            dia30.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                        case '31':
-                                            dia31.push({ id: e._id, cliente: cliente.nome, cor: color })
-                                            break;
-                                    }
-                                    dia++
-                                    if (dia < 10) {
-                                        dia = '0' + dia
-                                    }
-                                    //console.log('diainicio=>' + diainicio)
+                        //console.log("meshoje=>" + meshoje)
+                        for (i = 0; i < dif; i++) {
+                            if (meshoje == mes) {
+                                //console.log('entrou no laço')
+                                //console.log('dia=>' + dia)
+                                switch (String(dia)) {
+                                    case '01':
+                                        dia01.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '02':
+                                        dia02.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '03':
+                                        dia03.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '04':
+                                        dia04.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '05':
+                                        dia05.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '06':
+                                        dia06.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '07':
+                                        dia07.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '08':
+                                        dia08.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '09':
+                                        dia09.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '10':
+                                        dia10.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '11':
+                                        dia11.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '12':
+                                        dia12.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '13':
+                                        dia13.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '14':
+                                        dia14.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '15':
+                                        dia15.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '16':
+                                        dia16.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '17':
+                                        dia17.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '18':
+                                        dia18.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '19':
+                                        dia19.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '20':
+                                        dia20.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '21':
+                                        dia21.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '22':
+                                        dia22.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '23':
+                                        dia23.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '24':
+                                        dia24.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '25':
+                                        dia25.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '26':
+                                        dia26.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '27':
+                                        dia27.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '28':
+                                        dia28.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '29':
+                                        dia29.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '30':
+                                        dia30.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
+                                    case '31':
+                                        dia31.push({ id: e._id, cliente: cliente.nome, cor: color })
+                                        break;
                                 }
+                                dia++
+                                if (dia < 10) {
+                                    dia = '0' + dia
+                                }
+                                //console.log('diainicio=>' + diainicio)
                             }
-                            c++
+                        }
+                        c++
 
-                            if (q == equipe.length) {
-                                //console.log('dia10=>' + dia10)
-                                //console.log('anofim=>' + anofim)
-                                //console.log('anoinicio=>' + anoinicio)
-                                //console.log('mes=>' + mes)
-                                //console.log('mesfim=>' + mesfim)
-                                if (anofim > anoinicio) {
-                                    if (mes > mesfim) {
-                                        anotitulo = anoinicio
-                                    } else {
-                                        anotitulo = anofim
-                                    }
-                                } else {
+                        if (q == equipe.length) {
+                            //console.log('dia10=>' + dia10)
+                            //console.log('anofim=>' + anofim)
+                            //console.log('anoinicio=>' + anoinicio)
+                            //console.log('mes=>' + mes)
+                            //console.log('mesfim=>' + mesfim)
+                            if (anofim > anoinicio) {
+                                if (mes > mesfim) {
                                     anotitulo = anoinicio
+                                } else {
+                                    anotitulo = anofim
                                 }
-                                res.render('principal/vermais', {
-                                    dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
-                                    dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
-                                    dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
-                                    mestitulo, anotitulo, pessoa, trintaeum, todasCores
-                                })
+                            } else {
+                                anotitulo = anoinicio
                             }
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Falha ao encontra o cliente.')
-                            res.redirect('/gerenciamento/vermais/' + req.body.id)
-                        })
+                            res.render('principal/vermais', {
+                                dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
+                                dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
+                                dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
+                                mestitulo, anotitulo, pessoa, trintaeum, todasCores
+                            })
+                        }
                     }).catch((err) => {
-                        req.flash('error_msg', 'Falha ao encontra a proposta.')
+                        req.flash('error_msg', 'Falha ao encontra o cliente.')
                         res.redirect('/gerenciamento/vermais/' + req.body.id)
                     })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Falha ao encontra a proposta.')
+                    res.redirect('/gerenciamento/vermais/' + req.body.id)
                 })
+            })
         }).catch((err) => {
             req.flash('error_msg', 'Falha ao encontra a equipe.')
             res.redirect('/gerenciamento/vermais/' + req.body.id)
@@ -4028,7 +4078,31 @@ router.post('/proposta', ehAdmin, (req, res) => {
             proposta.data = dataBusca(dataHoje())
             proposta.datacad = dataBusca(dataHoje())
             proposta.save().then(() => {
-                res.redirect('/gerenciamento/proposta/' + req.body.id)
+                Proposta.findOne({ user: id }).sort({ _id: -1, field: 'asc' }).then((p) => {
+                    Empresa.findOne({ _id: p.empresa }).then((e) => {
+                        p.seq = e.seq + 1
+                        e.seq = e.seq + 1
+                        empresa.save().then(() => {
+                            proposta.save().then(() => {
+                                req.flash('success_msg', 'Proposta salva com sucesso.')
+                                res.redirect('/gerenciamento/proposta/' + req.body.id)
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Falha ao salvar a proposta.')
+                                res.redirect('/gerenciamento/proposta/' + req.body.id)
+                            })
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Falha ao salvar a empresa.')
+                            res.redirect('/gerenciamento/proposta/' + req.body.id)
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Falha ao encontrar a empresa.')
+                        res.redirect('/gerenciamento/proposta/' + req.body.id)
+                    })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Falha ao encontrar a proposta.')
+                    res.redirect('/gerenciamento/proposta/' + req.body.id)
+                })
+
             }).catch((err) => {
                 req.flash('error_msg', 'Falha ao salvar a proposta.')
                 res.redirect('/gerenciamento/proposta/' + req.body.id)
@@ -4050,7 +4124,7 @@ router.post('/proposta', ehAdmin, (req, res) => {
             encerrado: false
         }
         new Proposta(proposta).save().then(() => {
-            Proposta.findOne().sort({ field: 'asc', _id: -1 }).then((nova_proposta) => {
+            Proposta.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((nova_proposta) => {
                 Cliente.findOne({ _id: nova_proposta.cliente }).then((cliente) => {
                     new Equipe({
                         user: id,
@@ -4060,7 +4134,7 @@ router.post('/proposta', ehAdmin, (req, res) => {
                         feito: false,
                         prjfeito: false
                     }).save().then(() => {
-                        Equipe.findOne().sort({ field: 'asc', _id: -1 }).then((nova_equipe) => {
+                        Equipe.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((nova_equipe) => {
                             //console.log('nova_proposta._id=>' + nova_proposta._id)
                             //console.log('nova_equipe._id=>' + nova_equipe._id)
                             nova_proposta.equipe = nova_equipe._id
@@ -4097,7 +4171,6 @@ router.post('/proposta', ehAdmin, (req, res) => {
                                         })
                                     })
                                 })
-
                             })
                         })
                     })
@@ -6277,7 +6350,7 @@ router.get('/entrega/:id', ehAdmin, (req, res) => {
                     }
                     new Usina(usina).save().then(() => {
                         //console.log('salvou usina')
-                        Usina.find().sort({ field: 'asc', _id: -1 }).then((novausina) => {
+                        Usina.find({ user: id }).sort({ field: 'asc', _id: -1 }).then((novausina) => {
                             var tarefa = {
                                 user: id,
                                 usina: novausina._id,
@@ -6670,7 +6743,7 @@ router.post('/plano', ehAdmin, (req, res) => {
             mensalidade: req.body.mensalidade,
             fidelidade: fidelidade,
         }).save().then(() => {
-            Plano.findOne().sort({ field: 'asc', _id: -1 }).lean().then((novoplano) => {
+            Plano.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).lean().then((novoplano) => {
                 req.flash('success_msg', 'Plano salvo com sucesso.')
                 res.redirect('/gerenciamento/plano/' + novoplano._id)
             }).catch((err) => {
