@@ -4433,7 +4433,7 @@ router.post('/visita', ehAdmin, (req, res) => {
             vistoria.feito = true
             vistoria.save().then(() => {
                 req.flash('success_msg', 'Vistoria salva com sucesso.')
-                res.redirect('/gerenciamento/visita/' + req.body.id)
+                res.redirect('/gerenciamento/proposta/' + req.body.id)
             })
         } else {
             const vistoria = {
@@ -4452,16 +4452,16 @@ router.post('/visita', ehAdmin, (req, res) => {
             new Vistoria(vistoria).save().then(() => {
 
                 req.flash('success_msg', 'Vistoria salva com sucesso.')
-                res.redirect('/gerenciamento/visita/' + req.body.id)
+                res.redirect('/gerenciamento/proposta/' + req.body.id)
 
             }).catch(() => {
                 req.flash('error_msg', 'Falha ao salvar a vistoria.')
-                res.redirect('/gerenciamento/visita/' + req.body.id)
+                res.redirect('/gerenciamento/proposta/' + req.body.id)
             })
         }
     }).catch(() => {
         req.flash('error_msg', 'Falha ao encontrar a vistoria.')
-        res.redirect('/gerenciamento/visita/' + req.body.id)
+        res.redirect('/gerenciamento/proposta/' + req.body.id)
     })
 })
 
