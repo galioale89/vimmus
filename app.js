@@ -122,7 +122,10 @@ app.get('/menu', ehAdmin, (req, res) => {
   const { ehAdmin } = req.user
   const { funges } = req.user
   const { pessoa } = req.user
+  const { nome } = req.user
   const { owner } = req.user
+
+  var saudacao
 
   var hoje = dataHoje()
   var data1 = 0
@@ -159,7 +162,7 @@ app.get('/menu', ehAdmin, (req, res) => {
   var qtdped = 0
   var qtdvis = 0
   var qtdpro = 0
-
+  var saudacao
   var responsavel
 
   if (ehAdmin == 0) {
@@ -167,6 +170,19 @@ app.get('/menu', ehAdmin, (req, res) => {
   } else {
     ehMaster = false
   }
+
+  var data = new Date()
+  var hora = data.getHours()
+  if (hora > 0 && hora < 12) {
+    saudacao = 'Bom dia '
+  }
+  if (hora > 12 && hora < 118) {
+    saudacao = 'Boa tarde '
+  }
+  if (hora > 18 && hora < 24) {
+    saudacao = 'Boa noite '
+  }
+
 
   Proposta.find({ user: _id }).sort({ data: 'asc' }).then((todasProposta) => {
     if (todasProposta != '') {
@@ -371,17 +387,42 @@ app.get('/menu', ehAdmin, (req, res) => {
                               deadlineIns.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), assinado: dataMensagem(proposta.dtassinatura), dliins: dataMensagem(dtdlassinado) })
                             }
                           }
-
                         }
-                        //console.log('status=>' + status)
+                        console.log('todasProposta=>' + todasProposta)
                         console.log('q=>' + q)
                         if (q == todasProposta.length) {
                           numprj = todasProposta.length
-                          //console.log('numprj=>' + numprj)
-                          //console.log('qtdorcado=>' + qtdorcado)
-                          //console.log('qtdaberto=>' + qtdaberto)
-                          //console.log('qtdencerrado=>' + qtdencerrado)
-                          res.render('menuproposta', { id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, saudacao, nome_lista: nome, deadlineIns, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdalx, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, notpro, atrasado })
+                          console.log('numprj=>' + numprj)
+                          console.log('qtdorcado=>' + qtdorcado)
+                          console.log('qtdaberto=>' + qtdaberto)
+                          console.log('listaAberto=>' + listaAberto)
+                          console.log('listaOrcado=>' + listaOrcado)
+                          console.log('listaEncerrado=>' + listaEncerrado)
+                          console.log('nome=>' + nome)
+                          console.log('deadlineIns=>' + deadlineIns)
+                          console.log('qtdaberto=>' + qtdaberto)
+                          console.log('ehMaster=>' + ehMaster)
+                          console.log('numprj=>' + numprj)
+                          console.log('qtdpro=>' + qtdpro)
+                          console.log('qtdvis=>' + qtdvis)
+                          console.log('qtdass=>' + qtdass)
+                          console.log('qtdped=>' + qtdped)
+                          console.log('qtdnot=>' + qtdnot)
+                          console.log('qtdalx=>' + qtdalx)
+                          console.log('qtdtrt=>' + qtdtrt)
+                          console.log('qtdpcl=>' + qtdpcl)
+                          console.log('qtdequ=>' + qtdequ)
+                          console.log('qtdfim=>' + qtdfim)
+                          console.log('qtdpos=>' + qtdpos)
+                          console.log('qtdaberto=>' + qtdaberto)
+                          console.log('qtdencerrado=>' + qtdencerrado)
+                          console.log('qtdorcado=>' + qtdorcado)
+                          console.log('notpro=>' + notpro)
+                          console.log('atrasado=>' + atrasado)
+                          res.render('menuproposta', { id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, 
+                            saudacao, nome_lista: nome, deadlineIns, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, 
+                            qtdnot, qtdalx, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, 
+                            qtdorcado, notpro, atrasado })
                         }
                       }).catch((err) => {
                         req.flash('error_msg', 'Houve um erro ao encontrar as pessoas.')
