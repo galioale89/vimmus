@@ -4078,31 +4078,30 @@ router.post('/proposta', ehAdmin, (req, res) => {
             proposta.data = dataBusca(dataHoje())
             proposta.datacad = dataBusca(dataHoje())
             proposta.save().then(() => {
-                Proposta.findOne({ user: id }).sort({ _id: -1, field: 'asc' }).then((p) => {
-                    Empresa.findOne({ _id: p.empresa }).then((e) => {
-                        p.seq = e.seq + 1
-                        e.seq = e.seq + 1
-                        empresa.save().then(() => {
-                            proposta.save().then(() => {
+                // Proposta.findOne({ user: id }).sort({ _id: -1, field: 'asc' }).then((p) => {
+                //     Empresa.findOne({ _id: p.empresa }).then((e) => {
+                //         // p.seq = e.seq + 1
+                //         // e.seq = e.seq + 1
+                //         empresa.save().then(() => {
+                //             proposta.save().then(() => {
                                 req.flash('success_msg', 'Proposta salva com sucesso.')
                                 res.redirect('/gerenciamento/proposta/' + req.body.id)
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Falha ao salvar a proposta.')
-                                res.redirect('/gerenciamento/proposta/' + req.body.id)
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Falha ao salvar a empresa.')
-                            res.redirect('/gerenciamento/proposta/' + req.body.id)
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Falha ao encontrar a empresa.')
-                        res.redirect('/gerenciamento/proposta/' + req.body.id)
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Falha ao encontrar a proposta.')
-                    res.redirect('/gerenciamento/proposta/' + req.body.id)
-                })
-
+                //             }).catch((err) => {
+                //                 req.flash('error_msg', 'Falha ao salvar a proposta.')
+                //                 res.redirect('/gerenciamento/proposta/' + req.body.id)
+                //             })
+                //         }).catch((err) => {
+                //             req.flash('error_msg', 'Falha ao salvar a empresa.')
+                //             res.redirect('/gerenciamento/proposta/' + req.body.id)
+                //         })
+                //     }).catch((err) => {
+                //         req.flash('error_msg', 'Falha ao encontrar a empresa.')
+                //         res.redirect('/gerenciamento/proposta/' + req.body.id)
+                //     })
+                // }).catch((err) => {
+                //     req.flash('error_msg', 'Falha ao encontrar a proposta.')
+                //     res.redirect('/gerenciamento/proposta/' + req.body.id)
+                // })
             }).catch((err) => {
                 req.flash('error_msg', 'Falha ao salvar a proposta.')
                 res.redirect('/gerenciamento/proposta/' + req.body.id)
