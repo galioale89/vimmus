@@ -116,7 +116,7 @@ app.get('/termo', (req, res) => {
 
 //Direcionando para página principal
 app.get('/menu', ehAdmin, (req, res) => {
-  
+
   const { _id } = req.user
   const { user } = req.user
   const { ehAdmin } = req.user
@@ -159,7 +159,7 @@ app.get('/menu', ehAdmin, (req, res) => {
   var qtdped = 0
   var qtdvis = 0
   var qtdpro = 0
-  
+
   var responsavel
 
   if (ehAdmin == 0) {
@@ -196,7 +196,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                               dtcadastro = proposta.dtcadastro4
                               dtvalidade = proposta.dtvalidade4
                             } else {
-                              if (naoVazio(proposta.dtcadastro3)){
+                              if (naoVazio(proposta.dtcadastro3)) {
                                 dtcadastro = proposta.dtcadastro3
                                 dtvalidade = proposta.dtvalidade3
                               } else {
@@ -234,8 +234,10 @@ app.get('/menu', ehAdmin, (req, res) => {
                         } else {
                           responsavel = ''
                         }
-                        console.log('responsavel=>'+responsavel)
+                        console.log('responsavel=>' + responsavel)
                         console.log('pessoa responsavel=>' + pessoa_res)
+                        console.log('dtcadastro=>' + dtcadastro)
+                        console.log('dtvalidade=>' + dtvalidade)
                         if (proposta.ganho == true) {
                           if (proposta.encerrado == true) {
                             status = 'Encerrado'
@@ -333,10 +335,8 @@ app.get('/menu', ehAdmin, (req, res) => {
                         }
 
 
-                        console.log('status=>'+status)
-                        console.log('proposta.ganho=>'+proposta.ganho)
-                        console.log('dtcadastro=>' + dtcadastro)
-                        console.log('dtvalidade=>' + dtvalidade)
+                        console.log('status=>' + status)
+                        console.log('proposta.ganho=>' + proposta.ganho)
                         if (proposta.ganho != true) {
                           // var dtnovo = setData(dtcadastro, 7)
                           //console.log(dtvalidade)
@@ -344,16 +344,18 @@ app.get('/menu', ehAdmin, (req, res) => {
                           data1 = dataBusca(dtnovo)
                           data2 = dataBusca(hoje)
                           //console.log('proposta._id=>' + proposta._id)
-                          
+
                           console.log('validade=>' + data1)
                           console.log('hoje=>' + data2)
                           compara = parseFloat(data1) - parseFloat(data2)
                           console.log('compara=>' + compara)
-                          if (compara == 1) {
-                            notpro.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
-                          } else {
-                            if (compara < 0) {
-                              atrasado.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
+                          if (data1 > 0) {
+                            if (compara == 1) {
+                              notpro.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
+                            } else {
+                              if (compara < 0) {
+                                atrasado.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
+                              }
                             }
                           }
                         } else {
@@ -372,7 +374,7 @@ app.get('/menu', ehAdmin, (req, res) => {
 
                         }
                         //console.log('status=>' + status)
-                        //console.log('q=>' + q)
+                        console.log('q=>' + q)
                         if (q == todasProposta.length) {
                           numprj = todasProposta.length
                           //console.log('numprj=>' + numprj)
@@ -446,7 +448,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                       dtcadastro = proposta.dtcadastro4
                                       dtvalidade = proposta.dtvalidade4
                                     } else {
-                                      if (naoVazio(proposta.dtcadastro3)){
+                                      if (naoVazio(proposta.dtcadastro3)) {
                                         dtcadastro = proposta.dtcadastro3
                                         dtvalidade = proposta.dtvalidade3
                                       } else {
@@ -686,7 +688,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                             dtcadastro = proposta.dtcadastro4
                                             dtvalidade = proposta.dtvalidade4
                                           } else {
-                                            if (naoVazio(proposta.dtcadastro3)){
+                                            if (naoVazio(proposta.dtcadastro3)) {
                                               dtcadastro = proposta.dtcadastro3
                                               dtvalidade = proposta.dtvalidade3
                                             } else {
