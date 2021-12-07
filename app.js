@@ -184,27 +184,27 @@ app.get('/menu', ehAdmin, (req, res) => {
                       Pessoa.findOne({ _id: element.responsavel }).then((pesso_res) => {
                         q++
                         console.log('element._id=>' + element._id)
-                        if (naoVazio(proposta.proposta6)) {
+                        if (naoVazio(proposta.dtcadastro6)) {
                           dtcadastro = proposta.dtcadastro6
                           dtvalidade = proposta.dtvalidade6
                         } else {
-                          if (naoVazio(proposta.proposta5)) {
+                          if (naoVazio(proposta.dtcadastro5)) {
                             dtcadastro = proposta.dtcadastro5
                             dtvalidade = proposta.dtvalidade5
                           } else {
-                            if (naoVazio(proposta.proposta4)) {
+                            if (naoVazio(proposta.dtcadastro4)) {
                               dtcadastro = proposta.dtcadastro4
                               dtvalidade = proposta.dtvalidade4
                             } else {
-                              if (naoVazio(proposta.proposta3)){
+                              if (naoVazio(proposta.dtcadastro3)){
                                 dtcadastro = proposta.dtcadastro3
                                 dtvalidade = proposta.dtvalidade3
                               } else {
-                                if (naoVazio(proposta.proposta2)) {
+                                if (naoVazio(proposta.dtcadastro2)) {
                                   dtcadastro = proposta.dtcadastro2
                                   dtvalidade = proposta.dtvalidade2
                                 } else {
-                                  if (naoVazio(proposta.proposta1)) {
+                                  if (naoVazio(proposta.dtcadastro1)) {
                                     dtcadastro = proposta.dtcadastro1
                                     dtvalidade = proposta.dtvalidade1
                                   } else {
@@ -432,27 +432,27 @@ app.get('/menu', ehAdmin, (req, res) => {
                             Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
                               Pessoa.findOne({ _id: element.responsavel }).then((pessoa_res) => {
                                 //console.log('element._id=>' + element._id)
-                                if (naoVazio(proposta.proposta6)) {
+                                if (naoVazio(proposta.dtcadastro6)) {
                                   dtcadastro = proposta.dtcadastro6
                                   dtvalidade = proposta.dtvalidade6
                                 } else {
-                                  if (naoVazio(proposta.proposta5)) {
+                                  if (naoVazio(proposta.dtcadastro5)) {
                                     dtcadastro = proposta.dtcadastro5
                                     dtvalidade = proposta.dtvalidade5
                                   } else {
-                                    if (naoVazio(proposta.proposta4)) {
+                                    if (naoVazio(proposta.dtcadastro4)) {
                                       dtcadastro = proposta.dtcadastro4
                                       dtvalidade = proposta.dtvalidade4
                                     } else {
-                                      if (naoVazio(proposta.proposta3)){
+                                      if (naoVazio(proposta.dtcadastro3)){
                                         dtcadastro = proposta.dtcadastro3
                                         dtvalidade = proposta.dtvalidade3
                                       } else {
-                                        if (naoVazio(proposta.proposta2)) {
+                                        if (naoVazio(proposta.dtcadastro2)) {
                                           dtcadastro = proposta.dtcadastro2
                                           dtvalidade = proposta.dtvalidade2
                                         } else {
-                                          if (naoVazio(proposta.proposta1)) {
+                                          if (naoVazio(proposta.dtcadastro1)) {
                                             dtcadastro = proposta.dtcadastro1
                                             dtvalidade = proposta.dtvalidade1
                                           } else {
@@ -672,27 +672,27 @@ app.get('/menu', ehAdmin, (req, res) => {
                                   Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
                                     Pessoa.findOne({ _id: element.responsavel }).then((pessoa_res) => {
                                       //  //console.log('entrou')
-                                      if (naoVazio(proposta.proposta6)) {
+                                      if (naoVazio(proposta.dtcadastro6)) {
                                         dtcadastro = proposta.dtcadastro6
                                         dtvalidade = proposta.dtvalidade6
                                       } else {
-                                        if (naoVazio(proposta.proposta5)) {
+                                        if (naoVazio(proposta.dtcadastro5)) {
                                           dtcadastro = proposta.dtcadastro5
                                           dtvalidade = proposta.dtvalidade5
                                         } else {
-                                          if (naoVazio(proposta.proposta4)) {
+                                          if (naoVazio(proposta.dtcadastro4)) {
                                             dtcadastro = proposta.dtcadastro4
                                             dtvalidade = proposta.dtvalidade4
                                           } else {
-                                            if (naoVazio(proposta.proposta3)){
+                                            if (naoVazio(proposta.dtcadastro3)){
                                               dtcadastro = proposta.dtcadastro3
                                               dtvalidade = proposta.dtvalidade3
                                             } else {
-                                              if (naoVazio(proposta.proposta2)) {
+                                              if (naoVazio(proposta.dtcadastro2)) {
                                                 dtcadastro = proposta.dtcadastro2
                                                 dtvalidade = proposta.dtvalidade2
                                               } else {
-                                                if (naoVazio(proposta.proposta1)) {
+                                                if (naoVazio(proposta.dtcadastro1)) {
                                                   dtcadastro = proposta.dtcadastro1
                                                   dtvalidade = proposta.dtvalidade1
                                                 } else {
