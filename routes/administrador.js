@@ -175,9 +175,14 @@ router.post("/editregistro", ehAdmin, (req, res) => {
 
     const { owner } = req.user
 
+    console.log('req.body.usuario=>' + req.body.usuario)
+    console.log('req.body.id=>' + req.body.id)
+
     Usuarios.findOne({ usuario: req.body.usuario }).then((usuario_existe) => {
+        console.log('usuario_existe=>' + usuario_existe)
         if (usuario_existe == null) {
             Acesso.findOne({ usuario: req.body.usuario }).then((acesso_existe) => {
+                console.log('acesso_existe=>' + acesso_existe)
                 if (acesso_existe == null) {
                     if ((req.body.senha != '' && req.body.senharep == '') || (req.body.senha == '' && req.body.senharep != '')) {
                         if (!req.body.senha || typeof req.body.senha == undefined || req.body.senha == true) {
@@ -344,10 +349,10 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                         })
                     }
                 } else {
-                    Acesso.findOne({ _id: req.body.id }).lean().then((acesso_atual) => {
-                        //console.log('Acesso existe.')
-                        //console.log('atual: acesso_existe=>' + acesso_existe.usuario)
-                        //console.log('acesso_atual=>' + acesso_atual.usuario)
+                    Acesso.findOne({ usuario: acesso_existe.usuario }).lean().then((acesso_atual) => {
+                        console.log('Acesso existe.')
+                        console.log('atual: acesso_existe=>' + acesso_existe.usuario)
+                        console.log('acesso_atual=>' + acesso_atual.usuario)
                         if (acesso_existe.usuario != acesso_atual.usuario) {
                             erros.push({ texto: 'Me desculpe, este nome de usuario já existe. Por favor tente outro.' })
                             const { ehAdmin } = req.user
@@ -386,31 +391,32 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                 })
 
                             } else {
-                                //console.log('atualizou')
-                                Acesso.findOne({ _id: req.body.id }).then((acesso) => {
-
+                                console.log('atualizou')
+                                Acesso.findOne({ usuario: acesso_existe.usuario }).then((acesso) => {
+                                    console.log('req.body.usuario=>'+req.body.usuario)
+                                    tipo = req.body.tipo
+                                    console.log('req.body.tipo=>'+tipo)
                                     acesso.usuario = req.body.usuario
-                                    acesso.ehAdmin = req.body.tipo
+                                    acesso.ehAdmin = tipo
 
-                                    if (acesso.datalib == '' || acesso.datalib == null) {
-                                        var data = new Date()
-                                        var ano = data.getFullYear()
-                                        var mes = parseFloat(data.getMonth()) + 1
-                                        var dia = data.getDate()
-                                        acesso.datalib = ano + '' + mes + '' + dia
+                                    // if (acesso.datalib == '' || acesso.datalib == null) {
+                                    //     var data = new Date()
+                                    //     var ano = data.getFullYear()
+                                    //     var mes = parseFloat(data.getMonth()) + 1
+                                    //     var dia = data.getDate()
+                                    //     acesso.datalib = ano + '' + mes + '' + dia
 
-                                        var dataexp = new Date()
-                                        dataexp.setDate(data.getDate() + 30)
-                                        var anoexp = dataexp.getFullYear()
-                                        var mesexp = parseFloat(dataexp.getMonth()) + 1
-                                        var diaexp = dataexp.getDate()
-                                        acesso.dataexp = anoexp + '' + mesexp + '' + diaexp
-                                    }
+                                    //     var dataexp = new Date()
+                                    //     dataexp.setDate(data.getDate() + 30)
+                                    //     var anoexp = dataexp.getFullYear()
+                                    //     var mesexp = parseFloat(dataexp.getMonth()) + 1
+                                    //     var diaexp = dataexp.getDate()
+                                    //     acesso.dataexp = anoexp + '' + mesexp + '' + diaexp
+                                    // }
 
-                                    //console.log('senha=>' + req.body.senha)
+                                    console.log('senha=>' + req.body.senha)
                                     if (req.body.senha != '') {
                                         acesso.senha = req.body.senha
-
                                         bcrypt.genSalt(10, (erro, salt) => {
                                             bcrypt.hash(acesso.senha, salt, (erro, hash) => {
                                                 if (erro) {
@@ -419,26 +425,19 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                                 }
                                                 acesso.senha = hash
                                                 //console.log('hash=>' + hash)
-                                                acesso.save().then(() => {
-                                                    req.flash('success_msg', 'Senha alterada com sucesso.')
-                                                    res.redirect('/administrador/acesso')
-                                                }).catch((err) => {
-                                                    req.flash("error_msg", "Não foi possível salvar o registro.")
-                                                    res.redirect("/administrador/acesso")
-                                                })
+
                                             })
                                         })
-
-                                    } else {
-                                        acesso.save().then(() => {
-                                            //console.log('atualizou')
-                                            req.flash('success_msg', 'Senha alterada com sucesso.')
-                                            res.redirect('/administrador/acesso')
-                                        }).catch((err) => {
-                                            req.flash("error_msg", "Não foi possível salvar o registro.")
-                                            res.redirect("/administrador/acesso")
-                                        })
                                     }
+                                    acesso.save().then(() => {
+                                        console.log('atualizou')
+                                        req.flash('success_msg', 'Senha alterada com sucesso.')
+                                        res.redirect('/administrador/acesso')
+                                    }).catch((err) => {
+                                        req.flash("error_msg", "Não foi possível salvar o registro.")
+                                        res.redirect("/administrador/acesso")
+                                    })
+
                                 }).catch((err) => {
                                     req.flash("error_msg", "Houve uma falha ao encontrar o usuário.")
                                     res.redirect("/administrador/acesso")
@@ -456,9 +455,9 @@ router.post("/editregistro", ehAdmin, (req, res) => {
             //console.log('existe: usuario_existe=>'+usuario_existe)
         } else {
             Usuarios.findOne({ _id: req.body.id }).lean().then((usuario_atual) => {
-                //console.log('Usuário existe.')
-                //console.log('atual: usuario_existe=>'+usuario_existe.usuario)
-                //console.log('usuario_atual=>'+usuario_atual.usuario)
+                console.log('Usuário existe.')
+                console.log('atual: usuario_existe=>' + usuario_existe.usuario)
+                console.log('usuario_atual=>' + usuario_atual.usuario)
                 if (usuario_existe.usuario != usuario_atual.usuario) {
                     erros.push({ texto: 'Me desculpe, este nome de usuario já existe. Por favor tente outro.' })
                     const { ehAdmin } = req.user
@@ -561,16 +560,16 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                             usuario.usuario = req.body.usuario
                             usuario.ehAdmin = req.body.tipo
 
-                            //console.log('req.body.nome=>'+req.body.nome)
-                            //console.log('razao=>'+razao)
-                            //console.log('fantasia=>'+fantasia)
-                            //console.log('cnpj=>'+cnpj)
-                            //console.log('endereco=>'+endereco)
-                            //console.log('cidade=>'+cidade)
-                            //console.log('uf=>'+uf)
-                            //console.log('telefone=>'+telefone)
-                            //console.log('req.body.usuario=>'+req.body.usuario)
-                            //console.log('req.body.tipo=>'+req.body.tipo)
+                            console.log('req.body.nome=>' + req.body.nome)
+                            console.log('razao=>' + razao)
+                            console.log('fantasia=>' + fantasia)
+                            console.log('cnpj=>' + cnpj)
+                            console.log('endereco=>' + endereco)
+                            console.log('cidade=>' + cidade)
+                            console.log('uf=>' + uf)
+                            console.log('telefone=>' + telefone)
+                            console.log('req.body.usuario=>' + req.body.usuario)
+                            console.log('req.body.tipo=>' + req.body.tipo)
 
 
                             if (usuario.datalib == '' || usuario.datalib == null) {
@@ -588,7 +587,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                 usuario.dataexp = anoexp + '' + mesexp + '' + diaexp
                             }
 
-                            //console.log('senha=>' + req.body.senha)
+                            console.log('senha=>' + req.body.senha)
                             if (req.body.senha != '') {
                                 usuario.senha = req.body.senha
 
@@ -618,6 +617,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                 })
 
                             } else {
+                                console.log('sem senha')
                                 usuario.save().then(() => {
                                     Usuarios.find().sort({ data: 'desc' }).lean().then((usuarios) => {
                                         sucesso.push({ texto: "Alterações do usuário realizadas com sucesso!" })

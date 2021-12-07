@@ -6478,12 +6478,12 @@ router.get('/mostrarPosvenda/:id', ehAdmin, (req, res) => {
     Posvenda.findOne({ _id: req.params.id }).then((posvenda) => {
         var doc = posvenda.laudo
         var path = __dirname
-        //console.log(path)
+        console.log(path)
         path = path.replace('routes', '')
         res.sendFile(path + '/public/arquivos/' + doc)
     }).catch(() => {
         req.flash('error_msg', 'Falha ao encontrar o pós venda.')
-        res.redirect('/gerenciamento/posvenda/' + req.body.id)
+        res.redirect('/gerenciamento/posvenda/' + req.params.id)
     })
 })
 

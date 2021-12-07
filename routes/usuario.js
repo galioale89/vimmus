@@ -62,18 +62,18 @@ router.get('/editar/:id', ehAdmin, (req, res) => {
     } else {
         ehUserMaster = false
     }
-    console.log('user=>'+user)
+    //console.log('user=>'+user)
     if (typeof user != 'undefined'){
         mostraDetalhes = true
     }
     Acesso.findOne({ _id: req.params.id }).lean().then((acesso) => {
-        console.log('acesso=>'+acesso)
+        //console.log('acesso=>'+acesso)
         if (acesso == null) {
             Usuario.findOne({ _id: req.params.id }).lean().then((usuario_acesso) => {
-                console.log('usuario_acesso.nome=>'+usuario_acesso.nome)
+                //console.log('usuario_acesso.nome=>'+usuario_acesso.nome)
                 
                 Pessoa.findOne({user: id, nome: usuario_acesso.nome}).lean().then((usuario)=>{
-                    console.log('usuario=>'+usuario)
+                    //console.log('usuario=>'+usuario)
                 res.render('usuario/editregistro', { usuario_acesso, ehUserMaster, mostraDetalhes, usuario })
                 }).catch((err)=>{
                     req.flash('error_msg','Não foi possível encontrar a pessoa vinculada ao usuário.')
@@ -84,11 +84,11 @@ router.get('/editar/:id', ehAdmin, (req, res) => {
                 res.redirect('/administrador/acesso')
             })
         } else {
-            console.log('id=>'+id)
-            console.log('acesso.usuario=>'+acesso.pessoa)
+            //console.log('id=>'+id)
+            //console.log('acesso.usuario=>'+acesso.pessoa)
             Pessoa.findOne({user: id, _id: acesso.pessoa}).lean().then((usuario)=>{
-                console.log('usuario=>'+usuario)
-                console.log('mostraDetalhes=>'+mostraDetalhes)
+                //console.log('usuario=>'+usuario)
+                //console.log('mostraDetalhes=>'+mostraDetalhes)
                 res.render('usuario/editregistro', { usuario_acesso: acesso, ehUserMaster, mostraDetalhes, usuario })
                 }).catch((err)=>{
                     req.flash('error_msg','Não foi possível encontrar a pessoa vinculada ao usuário.')

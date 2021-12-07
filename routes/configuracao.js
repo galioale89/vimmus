@@ -95,12 +95,12 @@ router.get('/editempresa/:id', ehAdmin, (req, res) => {
         if (empresa.tipodesp == 'potencia') {
             checkKwp = 'checked'
             typeKwp = 'text'
-            displayKwp = 'inline'
+            displayKwp = ''
 
         } else {
             checkQtd = 'checked'
             typeQtd = 'text'
-            displayQtd = 'inline'
+            displayQtd = ''
         }
 
         if (empresa.regime == 'Simples') {
@@ -116,20 +116,20 @@ router.get('/editempresa/:id', ehAdmin, (req, res) => {
             labelCSLL = 'none'
             dasMEI = 'none'
             labelMEI = 'none'
-            alqDAS = 'inline'
-            labelDAS = 'inline'
+            alqDAS = ''
+            labelDAS = ''
         } else {
             if (empresa.regime == 'Lucro Real' || empresa.regime == 'Lucro Presumido') {
                 alqIRPJ = 'text'
-                labelIRPJ = 'inline'
+                labelIRPJ = ''
                 alqIRPJAdd = 'text'
-                labelIRPJAdd = 'inline'
+                labelIRPJAdd = ''
                 alqPIS = 'text'
-                labelPIS = 'inline'
+                labelPIS = ''
                 alqCOFINS = 'text'
-                labelCOFINS = 'inline'
+                labelCOFINS = ''
                 alqCSLL = 'text'
-                labelCSLL = 'inline'
+                labelCSLL = ''
                 dasMEI = 'none'
                 labelMEI = 'none'
                 alqDAS = 'none'
@@ -145,8 +145,8 @@ router.get('/editempresa/:id', ehAdmin, (req, res) => {
                 labelCOFINS = 'none'
                 alqCSLL = 'hidden'
                 labelCSLL = 'none'
-                dasMEI = 'inline'
-                labelMEI = 'inline'
+                dasMEI = ''
+                labelMEI = ''
                 alqDAS = 'none'
                 labelDAS = 'none'
             }
@@ -215,59 +215,59 @@ router.post('/addempresa', ehAdmin, (req, res) => {
 
     var erros = []
 
-    if (req.body.alqNFS == '') {
-        erros.push({ texto: 'É necessário preencher a aliquota do ISS.' })
-    }
+    // if (req.body.alqNFS == '') {
+    //     erros.push({ texto: 'É necessário preencher a aliquota do ISS.' })
+    // }
     if (req.body.nome == '') {
         erros.push({ texto: 'É necessário preencher o nome.' })
     }
     if (req.body.cnpj == '') {
         erros.push({ texto: 'É necessário preencher o CNPJ.' })
     }
-    if (req.body.empresa == 'MEI') {
-        if (req.body.vlrDAS == '') {
-            erros.push({ texto: 'É necessário preencher o valor do DAS.' })
-        }
-    }
-    if (req.body.empresa == 'Simples') {
-        if (req.body.alqDAS == '') {
-            erros.push({ texto: 'É necessário preencher a aliquota do DAS.' })
-        }
-        if (req.body.vlrred == '') {
-            erros.push({ texto: 'É necessário preencher o valor de redução do calulo do Simples.' })
-        }
-    }
+    // if (req.body.empresa == 'MEI') {
+    //     if (req.body.vlrDAS == '') {
+    //         erros.push({ texto: 'É necessário preencher o valor do DAS.' })
+    //     }
+    // }
+    // if (req.body.empresa == 'Simples') {
+    //     if (req.body.alqDAS == '') {
+    //         erros.push({ texto: 'É necessário preencher a aliquota do DAS.' })
+    //     }
+    //     if (req.body.vlrred == '') {
+    //         erros.push({ texto: 'É necessário preencher o valor de redução do calulo do Simples.' })
+    //     }
+    // }
 
-    if (req.body.empresa == 'Lucro Real' || req.body.empresa == 'Lucro Presumido') {
+    // if (req.body.empresa == 'Lucro Real' || req.body.empresa == 'Lucro Presumido') {
 
-        if (req.body.alqPIS == '') {
-            erros.push({ texto: 'É necessário preencher a aliquota do PIS.' })
-        }
-        if (req.body.alqCOFINS == '') {
-            erros.push({ texto: 'É necessário preencher a aliquota do COFINS.' })
-        }
-        if (req.body.alqIRPJAdd == '') {
-            erros.push({ texto: 'É necessário preencher a aliquota do IRPJ Adicional.' })
-        }
-        if (req.body.alqIRPJ == '') {
-            erros.push({ texto: 'É necessário preencher a aliquota do IRPJ.' })
-        }
-        if (req.body.alqCSLL == '') {
-            erros.push({ texto: 'É necessário preencher a aliquota do CSLL.' })
-        }
-    }
+    //     if (req.body.alqPIS == '') {
+    //         erros.push({ texto: 'É necessário preencher a aliquota do PIS.' })
+    //     }
+    //     if (req.body.alqCOFINS == '') {
+    //         erros.push({ texto: 'É necessário preencher a aliquota do COFINS.' })
+    //     }
+    //     if (req.body.alqIRPJAdd == '') {
+    //         erros.push({ texto: 'É necessário preencher a aliquota do IRPJ Adicional.' })
+    //     }
+    //     if (req.body.alqIRPJ == '') {
+    //         erros.push({ texto: 'É necessário preencher a aliquota do IRPJ.' })
+    //     }
+    //     if (req.body.alqCSLL == '') {
+    //         erros.push({ texto: 'É necessário preencher a aliquota do CSLL.' })
+    //     }
+    // }
 
     // if (req.body.empresa == 'Simples' && req.body.prjFat == '') {
     //     erros.push({ texto: 'É necessário preencher o valor de projeção de faturamento.' })
     // }
 
-    if (req.body.empresa == 'Lucro Real' && req.body.prjLR == '') {
-        erros.push({ texto: 'É necessário preencher o valor de projeção do Lucro Real.' })
-    }
+    // if (req.body.empresa == 'Lucro Real' && req.body.prjLR == '') {
+    //     erros.push({ texto: 'É necessário preencher o valor de projeção do Lucro Real.' })
+    // }
 
-    if (req.body.empresa == 'Lucro Presumido' && req.body.prjLP == '') {
-        erros.push({ texto: 'É necessário preencher o valor de projeção de faturamento.' })
-    }
+    // if (req.body.empresa == 'Lucro Presumido' && req.body.prjLP == '') {
+    //     erros.push({ texto: 'É necessário preencher o valor de projeção de faturamento.' })
+    // }
 
     if (erros.length > 0) {
 
@@ -309,7 +309,8 @@ router.post('/addempresa', ehAdmin, (req, res) => {
             desadm: req.body.desadm,
             perdes: req.body.perdes,
             estkwp: req.body.estkwp,
-            markup: req.body.markup
+            markup: req.body.markup,
+            seq: req.body.seq
         }
 
         new Empresa(empresa).save().then(() => {
@@ -529,6 +530,7 @@ router.post('/editempresa/', ehAdmin, (req, res) => {
             empresa.regime = req.body.regime
             empresa.tipo = req.body.tipo
             empresa.markup = req.body.markup
+            empresa.seq = req.body.seq
 
             //console.log('req.body.alqDAS=>'+req.body.alqDAS)
 

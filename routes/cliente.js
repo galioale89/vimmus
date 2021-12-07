@@ -63,8 +63,8 @@ router.post('/novo', ehAdmin, (req, res) => {
     }
     if (req.body.nome == '' || req.body.endereco == '' || req.body.cidade == '' ||
         req.body.uf == '' || documento == '' ||
-        req.body.celular == '' || req.body.email == '') {
-        erros.push({ texto: 'Todos os campos de descrição são obrigatórios.' })
+        req.body.celular == '') {
+        erros.push({ texto: 'Os campos de: nome, endereço, cidade, estado e um telefone são obrigatórios.' })
         res.render('cliente/cliente', { erros: erros })
     } else {
         var cnpj
