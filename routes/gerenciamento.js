@@ -4430,7 +4430,6 @@ router.post('/visita', ehAdmin, (req, res) => {
             vistoria.plaQtdString = req.body.plaQtdString
             vistoria.plaModString = req.body.plaModString
             vistoria.plaQtdEst = req.body.plaQtdEst
-            vistoria.feito = true
             vistoria.save().then(() => {
                 req.flash('success_msg', 'Vistoria salva com sucesso.')
                 res.redirect('/gerenciamento/proposta/' + req.body.id)
@@ -4447,7 +4446,6 @@ router.post('/visita', ehAdmin, (req, res) => {
                 plaQtdString: req.body.plaQtdString,
                 plaModString: req.body.plaModString,
                 plaQtdEst: req.body.plaQtdEst,
-                feito: true
             }
             new Vistoria(vistoria).save().then(() => {
 
@@ -5653,6 +5651,7 @@ router.post('/caminhoInsa', ehAdmin, uploadfoto.array('fileinsa', 10), (req, res
             arquivos.forEach((e) => {
                 //console.log(e.filename)
                 vistoria.caminhoInsa[q] = e.filename
+                vistoria.feito = true
                 q++
             })
             vistoria.dtPlaAte = dataHoje()
