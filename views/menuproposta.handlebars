@@ -76,19 +76,6 @@
           </tr>
           {{/each}}
         </table>
-
-        {{!-- <div class="toast-container">
-          {{#each notpro}}
-          <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-              <strong class="me-auto">Propostas a Vencer </strong>
-              <small class="text-muted">Prazo: {{data}}</small>
-              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body">
-              <label>Proposta do {{cliente}} vence amanhã!</label>
-            </div>
-          </div> --}}
         </div>
       </div>
     </div>
@@ -152,12 +139,12 @@
                 <a href='/configuracao/consultaempresa' class="botaomenu"><i class='bi bi-search'></i></a>
               </div>
             </div>
-            <div class="row mb-2">
+            {{!-- <div class="row mb-2">
               <div class="text-start">
                 <a href='/configuracao/novo' class="contorno-menu"><i class='bi bi-clock'></i> Básicas</a>
                 <a href='/configuracao/consulta' class="botaomenu"><i class='bi bi-search'></i> </a>
               </div>
-            </div>
+            </div> --}}
 
             <div class='titulo-inicio mt-2'>FERRAMENTAS</div>
             <div style="margin-top: 6%;margin-bottom: 7%;">
@@ -176,19 +163,10 @@
                 Conta</a>
             </div>
 
-            {{#if ehMaster}}
-            <div class="row">
-              <div class="dropend">
-                <a class="relatorio titulo-relatorio" data-bs-toggle="dropdown" aria-expanded="false">Admin <i
-                    class="bi bi-caret-right"></i></i>
-                </a>
-                <ul class="dropdown-menu">
-                  <a href='/administrador/acesso' class='botao-filter'><i class='bi bi-people-fill'></i> Controle
-                    Usuários
-                  </a>
-                </ul>
-              </div>
-            </div>
+            {{#if ehMaster}}            
+            <div style="margin-bottom: 7%;margin-top: 8%">
+              <a href='/administrador/acesso' class="relatorio titulo-relatorio"><i class='bi bi-people'></i> Usuários</a>
+            </div>            
             {{/if}}
             {{#if owner}}
             <div style="margin-bottom: 7%;margin-top: 8%">
