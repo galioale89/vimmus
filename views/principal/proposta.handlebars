@@ -668,15 +668,17 @@
                             </div>
                         </div>
                     </div>
+                    <div class='row'>
+                        <div class="btn-group gap-2 col-12">
+                            <button class='btn btn-sm btn-success' type="submit">Aplicar</button>
+                            {{#if projeto._id}}
+                            <a href='/projeto/edicao/{{projeto._id}}' style="font-size: 20px"
+                                class='relatorio titulo-relatorio'>Abrir
+                                Projeto</a>
+                            {{/if}}
+                        </div>
+                    </div>
                 </form>
-            </div>
-            <div class="btn-group gap-2 col-12">
-                <button class='btn btn-sm btn-success' type="submit">Aplicar</button>
-                {{#if projeto._id}}
-                <a href='/projeto/edicao/{{projeto._id}}' style="font-size: 20px"
-                    class='relatorio titulo-relatorio'>Abrir
-                    Projeto</a>
-                {{/if}}
             </div>
         </div>
     </div>
