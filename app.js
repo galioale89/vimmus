@@ -49,6 +49,7 @@ const Posvenda = mongoose.model('posvenda')
 
 //Chamando função de validação de autenticação do usuário pela função passport
 const passport = require("passport")
+const naoVazio = require('./resources/naoVazio')
 require("./config/auth")(passport)
 
 //Configuração
@@ -159,7 +160,6 @@ app.get('/menu', ehAdmin, (req, res) => {
   var qtdvis = 0
   var qtdpro = 0
   
-
   var responsavel
 
   if (ehAdmin == 0) {
@@ -181,7 +181,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                 Vistoria.findOne({ proposta: element._id }).then((vistoria) => {
                   Equipe.findOne({ _id: element.equipe }).then((equipe) => {
                     Posvenda.findOne({ proposta: element._id }).then((posvenda) => {
-                      Pessoa.findOne({ _id: element.responsavel }).then((pesso_res) => {
+                      Pessoa.findOne({ _id: element.responsavel }).then((pessoa_res) => {
                         q++
                         console.log('element._id=>' + element._id)
                         if (naoVazio(proposta.dtcadastro6)) {
@@ -229,15 +229,13 @@ app.get('/menu', ehAdmin, (req, res) => {
                         //console.log('proposta.assinado=>' + proposta.assinado)
                         //console.log('vistoria.feito=>' + vistoria.feito)
 
-
-
-                        if (pesso_res != null && typeof pesso_res != 'undefined') {
-                          responsavel = pesso_res.nome
+                        if (naoVazio(pessoa_res)) {
+                          responsavel = pessoa_res.nome
                         } else {
                           responsavel = ''
                         }
-                        //console.log('responsavel=>'+responsavel)
-                        //console.log('pessoa responsavel=>' + pessoa)
+                        console.log('responsavel=>'+responsavel)
+                        console.log('pessoa responsavel=>' + pessoa_res)
                         if (proposta.ganho == true) {
                           if (proposta.encerrado == true) {
                             status = 'Encerrado'
@@ -335,7 +333,10 @@ app.get('/menu', ehAdmin, (req, res) => {
                         }
 
 
-                        //console.log('proposta.ganho=>'+proposta.ganho)
+                        console.log('status=>'+status)
+                        console.log('proposta.ganho=>'+proposta.ganho)
+                        console.log('dtcadastro=>' + dtcadastro)
+                        console.log('dtvalidade=>' + dtvalidade)
                         if (proposta.ganho != true) {
                           // var dtnovo = setData(dtcadastro, 7)
                           //console.log(dtvalidade)
@@ -343,10 +344,11 @@ app.get('/menu', ehAdmin, (req, res) => {
                           data1 = dataBusca(dtnovo)
                           data2 = dataBusca(hoje)
                           //console.log('proposta._id=>' + proposta._id)
+                          
                           console.log('validade=>' + data1)
                           console.log('hoje=>' + data2)
                           compara = parseFloat(data1) - parseFloat(data2)
-                          //console.log('compara=>' + compara)
+                          console.log('compara=>' + compara)
                           if (compara == 1) {
                             notpro.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
                           } else {
