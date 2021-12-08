@@ -3915,11 +3915,11 @@ router.get('/tarefas/:id', ehAdmin, (req, res) => {
         Usina.findOne({ _id: tarefa.usina }).lean().then((usina) => {
             //console.log('usina.cliente=>' + usina.cliente)
             Cliente.findOne({ _id: usina.cliente }).lean().then((cliente) => {
-                //console.log('encontrou cliente')
+                console.log('encontrou cliente')
                 var dataini = dataMensagem(tarefa.dataini)
                 var datafim = dataMensagem(tarefa.datafim)
-                Equipe.findOne({ tarefa: tarefa._id }).then((equipe) => {
-                    equipe = equipe.ins0 + '|' + equipe.ins1 + '|' + equipe.ins2 + '|' + equipe.ins3 + '|' + equipe.ins4 + '|' + equipe.ins5
+                Equipe.findOne({ tarefa: tarefa._id }).lean().then((equipe) => {
+                    // equipe = equipe.ins0 + '|' + equipe.ins1 + '|' + equipe.ins2 + '|' + equipe.ins3 + '|' + equipe.ins4 + '|' + equipe.ins5
                     Tarefas.find({ user: id, concluido: false }).lean().then((todasTarefas) => {
                         res.render('projeto/gerenciamento/vertarefas', { usina, tarefa, cliente, dataini, datafim, equipe, todasTarefas })
                     }).catch((err) => {
@@ -8304,18 +8304,23 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
     //console.log('req.body.cliente=>' + req.body.cliente)
     Usina.find({ cliente: req.body.cliente }).lean().then((usina) => {
         //console.log(usina)
-        Pessoa.find({ funins: 'checked', user: id }).sort({ nome: 'asc' }).then((instalacao) => {
-            instalacao.forEach((pesins) => {
-                q = q + 1
-                var nome = pesins.nome
-                var id = pesins._id
-                ins_fora.push({ id, ins: nome })
-                if (q == instalacao.length) {
-                    res.render('projeto/gerenciamento/tarefas', { data, usina, fora: ins_fora, ehSelecao })
-                }
-            })
+        Pessoa.find({ user: id, $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }] }).sort({ nome: 'asc' }).then((instalacao) => {
+            if (naoVazio(instalacao)) {
+                instalacao.forEach((pesins) => {
+                    q = q + 1
+                    var nome = pesins.nome
+                    var id = pesins._id
+                    ins_fora.push({ id, ins: nome })
+                    if (q == instalacao.length) {
+                        res.render('projeto/gerenciamento/tarefas', { data, usina, fora: ins_fora, ehSelecao })
+                    }
+                })
+            } else {
+                req.flash('error_msg', 'Não existem técnicos cadastrados.')
+                res.redirect('/gerenciamento/agenda')
+            }
         }).catch((err) => {
-            req.flash('error_msg', 'Falha ao encontrar o cronograma.')
+            req.flash('error_msg', 'Falha ao encontrar os técnicos.')
             res.redirect('/gerenciamento/agenda')
         })
     }).catch((err) => {

@@ -110,8 +110,8 @@
     <form action="/gerenciamento/aplicaAgenda/" method="post">
         <input type='hidden' name='selecionado' id='selecionado' value='tarefa'>
         <div class='row mb-2'>
-            <div class="col mt-1">
-                <label style="font-size: 16px;font-weight: bold;"> Agenda: {{#if mes}}{{mestitulo}} de {{ano}}{{/if}}</label>
+            <div class="col-md-4 mt-1">
+                <label style="font-size: 16px;font-weight: bold;"> Agenda Manutenções de {{#if mes}}{{mestitulo}} de {{ano}}{{/if}}</label>
             </div>
             {{!-- <div class="col-md-1">
                 <div class="form-check" onchange="selecionar()">
@@ -134,6 +134,7 @@
             </div>
             <div class="col">
                 <select class='form-select form-select-sm' name='messel'>
+                    <option class='fw-bold'>{{mestitulo}}</option>
                     <option {{janeiro}}>Janeiro</option>
                     <option {{fevereiro}}>Fevereiro</option>
                     <option {{marco}}>Março</option>

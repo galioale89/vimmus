@@ -112,18 +112,22 @@
                     <div class="list">
                         <label class="col-form-label col-form-label-md fw-bold text-center"
                             style="color: white">Profissionais Disponíveis</label>
-                        {{#each fora}}
-                        <div class="list-item" style='color: black;' draggable="true">{{ins}}<a
-                                href='/pessoa/vermais/{{id}}' style="padding-left: 5px;"><i class='bi bi-eye'></i></a>
+                        <div style="overflow-y: scroll;max-height: 200px;">
+                            {{#each fora}}
+                            <div class="list-item" style='color: black;' draggable="true">{{ins}}<a
+                                    href='/gerenciamento/vermais/{{id}}' style="padding-left: 5px;"><i
+                                        class='bi bi-eye'></i></a>
+                            </div>
+                            {{/each}}
                         </div>
-                        {{/each}}
                     </div>
                     <div class="list">
                         <label class="col-form-label col-form-label-md fw-bold text-center"
                             style="color: white">Profissionais Alocados</label>
                         {{#each dentro}}
                         <div class="item-instalacao" style='color: black;' draggable="true">{{ins}}<a
-                                href='/pessoa/vermais/{{id}}' style="padding-left: 5px;"><i class='bi bi-eye'></i></a>
+                                href='/gerenciamento/vermais/{{id}}' style="padding-left: 5px;"><i
+                                    class='bi bi-eye'></i></a>
                         </div>
                         {{/each}}
                     </div>

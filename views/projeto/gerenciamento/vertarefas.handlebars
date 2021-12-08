@@ -2,27 +2,28 @@
     table {
         text-align: center;
         font-size: 14px;
+        width: 100%;
     }
 </style>
-<div class="container" style='margin-top: 30px;'>
+<div style="padding: 20px" style='margin-top: 30px;'>
     {{!-- <form method="post" action='/gerenciamento/addtarefa' style="text-align: center;"> --}}
         <label style="font-size: 18px;font-weight: 600;">Lista de Atividades de Manutenção</label><br><br>
-        <div style="background-color: #847AF4;padding: 50px;">
+        <div style="border: #847AF4 4px solid;border-radius: 20px;padding: 10px;">
             <table>
                 <tr>
-                    <th style="width: 20%;">Cliente</th>
-                    <th style="width: 15%;">Manutenção</th>
-                    <th style="width: 15%;">Preço</th>
-                    <th style="width: 15%;">Data de Início</th>
-                    <th style="width: 15%;">Data Final</th>
-                    <th style="width: 40%;">Equipe</th>
+                    <th style="width: 30%;">Cliente</th>
+                    <th>Manutenção</th>
+                    <th style="width: 10%;">Preço</th>
+                    <th>Data de Início</th>
+                    <th>Data Final</th>
+                    <th style="width: 30%;">Equipe</th>
                 </tr>
                 <tr>
                     <td>
                         <label class="col-form-label col-form-label-sm">{{cliente.nome}}</label>
                     </td>
                     <td>
-                        <label class="col-form-label col-form-label-sm">{{tarefa.servico}}</label>
+                         <a href='/gerenciamento/tarefas/{{tarefa._id}}'><label class="col-form-label col-form-label-sm">{{tarefa.servico}}</label></a>
                     </td>
                     <td>
                         <label class="col-form-label col-form-label-sm">R$ {{tarefa.preco}}</label>
@@ -34,7 +35,12 @@
                         <label class="col-form-label col-form-label-sm">{{datafim}}</label>
                     </td>
                     <td>
-                        <label class="col-form-label col-form-label-sm">{{equipe}}</label>
+                        <label class="col-form-label col-form-label-sm">{{equipe.ins0}}</label><br>
+                        <label class="col-form-label col-form-label-sm">{{equipe.ins1}}</label><br>
+                        <label class="col-form-label col-form-label-sm">{{equipe.ins2}}</label><br>
+                        <label class="col-form-label col-form-label-sm">{{equipe.ins3}}</label><br>
+                        <label class="col-form-label col-form-label-sm">{{equipe.ins4}}</label><br>
+                        <label class="col-form-label col-form-label-sm">{{equipe.ins5}}</label><br>
                     </td>
                 </tr>
             </table>
@@ -42,7 +48,6 @@
         <div class="text-center">
             <table style="margin-top: 20px;">
                 <tr>
-                    <th style="color: white;width: 15%;">.</th>
                     <th style="width: 20%;">Manutenção</th>
                     <th style="width: 20%;">Data Inicial</th>
                     <th style="width: 20%;">Data Final</th>
@@ -50,18 +55,17 @@
                 </tr>
                 {{#each todasTarefas}}
                 <tr>
-                    <td><a href='/gerenciamento/tarefas/{{_id}}' <i class='bi bi-eye'></i></a></td>
                     <td>
-                        <label class="col-form-label col-form-label-sm">{{servico}}</label>
+                       <a href='/gerenciamento/tarefas/{{_id}}'><label class="col-form-label col-form-label-sm">{{servico}}</label></a>
                     </td>
                     <td>
-                        <label class="col-form-label col-form-label-sm">{{dataini}}</label>
+                        <a href='/gerenciamento/tarefas/{{_id}}'><label class="col-form-label col-form-label-sm">{{dataini}}</label></a>
                     </td>
                     <td>
-                        <label class="col-form-label col-form-label-sm">{{datafim}}</label>
+                        <a href='/gerenciamento/tarefas/{{_id}}'><label class="col-form-label col-form-label-sm">{{datafim}}</label></a>
                     </td>      
                     <td>
-                        <label class="col-form-label col-form-label-sm">R$ {{preco}}</label>
+                        <a href='/gerenciamento/tarefas/{{_id}}'><label class="col-form-label col-form-label-sm">R$ {{preco}}</label></a>
                     </td>                                                      
                 </tr>
                 {{/each}}
