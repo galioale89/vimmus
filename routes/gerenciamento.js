@@ -4093,6 +4093,7 @@ router.post('/proposta', ehAdmin, (req, res) => {
                 cliente: req.body.cliente,
                 responsavel: req.body.responsavel,
                 endereco: req.body.endereco,
+                empresa: req.body.empresa,
                 cidade: req.body.cidade,
                 uf: req.body.uf,
                 data: dataBusca(dataHoje()),
