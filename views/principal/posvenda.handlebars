@@ -123,7 +123,7 @@
                             <a class="btn btn-primary" href='/gerenciamento/mostrarPosvenda/{{proposta._id}}'
                                 target="_blank"><i class='bi bi-eye'></i></a>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label> Data</label>
                             <input type='date' class='form-control' name='data' value='{{posvenda.data}}'>
                         </div>
@@ -197,6 +197,8 @@
                             {{#if posvenda.feito}}
                             <a href='/gerenciamento/entrega/{{proposta._id}}'
                                 class='btn btn-sm btn-primary mb-1'>Finalizar</a><br>
+                            {{/if}}                                
+                            {{#if proposta.encerrado}}
                              <a href='/gerenciamento/livro/{{proposta._id}}' class='btn btn-sm btn-primary mb-1'>Livro da
                                 Obra</a><br>
                             {{/if}}

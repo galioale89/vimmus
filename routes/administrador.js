@@ -399,20 +399,20 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                     acesso.usuario = req.body.usuario
                                     acesso.ehAdmin = tipo
 
-                                    // if (acesso.datalib == '' || acesso.datalib == null) {
-                                    //     var data = new Date()
-                                    //     var ano = data.getFullYear()
-                                    //     var mes = parseFloat(data.getMonth()) + 1
-                                    //     var dia = data.getDate()
-                                    //     acesso.datalib = ano + '' + mes + '' + dia
+                                    if (acesso.datalib == '' || acesso.datalib == null) {
+                                        var data = new Date()
+                                        var ano = data.getFullYear()
+                                        var mes = parseFloat(data.getMonth()) + 1
+                                        var dia = data.getDate()
+                                        acesso.datalib = ano + '' + mes + '' + dia
 
-                                    //     var dataexp = new Date()
-                                    //     dataexp.setDate(data.getDate() + 30)
-                                    //     var anoexp = dataexp.getFullYear()
-                                    //     var mesexp = parseFloat(dataexp.getMonth()) + 1
-                                    //     var diaexp = dataexp.getDate()
-                                    //     acesso.dataexp = anoexp + '' + mesexp + '' + diaexp
-                                    // }
+                                        var dataexp = new Date()
+                                        dataexp.setDate(data.getDate() + 30)
+                                        var anoexp = dataexp.getFullYear()
+                                        var mesexp = parseFloat(dataexp.getMonth()) + 1
+                                        var diaexp = dataexp.getDate()
+                                        acesso.dataexp = anoexp + '' + mesexp + '' + diaexp
+                                    }
 
                                     console.log('senha=>' + req.body.senha)
                                     if (req.body.senha != '') {
@@ -431,7 +431,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                     }
                                     acesso.save().then(() => {
                                         console.log('atualizou')
-                                        req.flash('success_msg', 'Senha alterada com sucesso.')
+                                        req.flash('success_msg', 'Alteração(ões) realizadas com sucesso.')
                                         res.redirect('/administrador/acesso')
                                     }).catch((err) => {
                                         req.flash("error_msg", "Não foi possível salvar o registro.")

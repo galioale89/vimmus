@@ -5,6 +5,8 @@
         <h5 class="header">{{cliente_proposta.nome}} </h5>
     </div>
     {{/if}}
+    {{#if esconde}}
+    {{else}}
     <div class='btn-group col-12'>
         <div class='numero'>1</div>
         <a href='/gerenciamento/proposta/{{proposta._id}}/'
@@ -61,6 +63,7 @@
             style="border-bottom-left-radius: 30px;"><i class="bi bi-door-open"></i>
             Pós Venda</a>
     </div>
+    {{/if}}
 
     <div class="row text-center" style="margin-top: 20px;">
         <label style="font-size: 35px;font-weight: 700;margin-bottom: 10px;">{{titulo}}</label>

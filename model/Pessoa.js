@@ -15,6 +15,10 @@ const Pessoa = new Schema({
         type: Number,
         require: true
     },
+    seq: {
+        type: Number,
+        require: true
+    },
     funges: {
         type: String,
         require: true

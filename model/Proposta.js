@@ -7,6 +7,10 @@ const Proposta = new Schema({
         ref: 'usuario',
         require: false,
     },
+    seq: {
+        type: String,
+        require: false
+    },
     cliente: {
         type: Schema.Types.ObjectId,
         ref: 'cliente',

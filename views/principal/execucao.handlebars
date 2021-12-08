@@ -3,6 +3,19 @@
         pointer-events: none;
         opacity: 0.4;
     }
+
+    .labelp {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        word-wrap: hyphenate;
+        max-width: 300px;
+        display: block;
+    }
+
+    .labelp>span {
+        overflow: hidden;
+    }
 </style>
 <script>
     function mostraSalvar() {
@@ -88,150 +101,153 @@
     </div>
 
     <div id='bloquear' class='{{proposta.encerrado}}'>
-        <div class="row mt-4">
+        <div class="row mt-4" style="padding-left: 10%;">
+            <div class='row fw-bold'>
+                <div style="width: 51%;">
+                    <label class='col-form-label'>Documento</label>
+                </div>
+                <div style="width: 17%;">
+                    <label class='col-form-label'>Data</label>
+                </div>
+                <div style="width: 6%;">
+                    <label class='col-form-label'>Salvar</label>
+                </div>
+                <div style="width: 4%;">
+                    <label class='col-form-label'>Ver</label>
+                </div>
+            </div>
             <form action='/gerenciamento/salvarMemorial' enctype="multipart/form-data" method="post">
                 <input type='hidden' name='id' value='{{proposta._id}}'>
-                <table>
-                    <tr>
-                        <td>
-                            <label class="col-form-label fw-bold">Memorial Descritivo:</label>
-                            <label class='col-form-label'>{{documento.memorial}}</label>
-                            <input class="form-control" type="file" name='memorial'>
-                        </td>
-                        <td>
-                            <div style="width: 20px;"></div>
-                        </td>
-                        <td>
-                            <label class="col-form-label fw-bold">Data</label>
-                            <input type="date" class='form-control' name='dtmemorial' value='{{documento.dtmemorial}}'>
-                        </td>
-                        <td style="width: 5%;text-align: center;">
-                            <label class="col-form-label fw-bold">Salva</label>
-                            <button type='submit' class="btn btn-success" name='aplicar'><i
-                                    class='bi bi-save'></i></button>
-                        </td>
-                        <td style="width: 5%;text-align: center;">
-                            <label class="col-form-label fw-bold">Ver</label>
-                            <a class="btn btn-primary" href='/gerenciamento/mostrarMemorial/{{proposta._id}}'
-                                target="_blank"><i class='bi bi-eye'></i></a>
-                        </td>
-                    </tr>
-                </table>
+                <div class="row">
+                    <div class="row">
+                        <div class='col-md-2'>
+                            <label class="col-form-label">Memorial Descritivo:</label>
+                        </div>
+                        <div class='col'>
+                            <label class='col-form-label labelp'>{{documento.memorial}}</label>
+                        </div>
+                    </div>
+                    <div class='col-md-6'>
+                        <input class="form-control" type="file" name='memorial'>
+                    </div>
+                    <div class='col-md-2'>
+                        <input type="date" class='form-control' name='dtmemorial' value='{{documento.dtmemorial}}'>
+                    </div>
+                    <div style="width: 70px;">
+                        <button type='submit' class="btn btn-success" name='aplicar'><i class='bi bi-save'></i></button>
+                    </div>
+                    <div style="width: 70px;">
+                        <a class="btn btn-primary" href='/gerenciamento/mostrarMemorial/{{proposta._id}}'
+                            target="_blank"><i class='bi bi-eye'></i></a>
+                    </div>
+                </div>
             </form>
+
             <form action='/gerenciamento/salvarSituacao' enctype="multipart/form-data" method="post">
                 <input type='hidden' name='id' value='{{proposta._id}}'>
-                <table>
-                    <tr>
-                        <td>
-                            <label class="col-form-label fw-bold">Planta de Situação:</label>
-                            <label class='col-form-label'>{{documento.situacao}}</label>
-                            <input class="form-control" type="file" name='situacao'>
-                        </td>
-                        <td>
-                            <div style="width: 20px;"></div>
-                        </td>
-                        <td>
-                            <label class="col-form-label fw-bold">Data</label>
-                            <input type="date" class='form-control' name='dtsituacao' value='{{documento.dtsituacao}}'>
-                        </td>
-                        <td style="width: 5%;text-align: center;">
-                            <label class="col-form-label fw-bold">Salva</label>
-                            <button type='submit' class="btn btn-success" name='aplicar'><i
-                                    class='bi bi-save'></i></button>
-                        </td>
-                        <td style="width: 5%;text-align: center;">
-                            <label class="col-form-label fw-bold">Ver</label>
-                            <a class="btn btn-primary" href='/gerenciamento/mostrarSituacao/{{proposta._id}}'
-                                target="_blank"><i class='bi bi-eye'></i></a>
-                        </td>
-                    </tr>
-                </table>
+                <div class="row">
+                    <div class="row">
+                        <div class='col-md-2'>
+                            <label class="col-form-label">Planta de Situação:</label>
+                        </div>
+                        <div class='col'>
+                            <label class='col-form-label labelp'>{{documento.situacao}}</label>
+                        </div>
+                    </div>
+                    <div class='col-md-6'>
+                        <input class="form-control" type="file" name='situacao'>
+                    </div>
+                    <div class='col-md-2'>
+                        <input type="date" class='form-control' name='dtsituacao' value='{{documento.dtsituacao}}'>
+                    </div>
+                    <div style="width: 70px;">
+                        <button type='submit' class="btn btn-success" name='aplicar'><i class='bi bi-save'></i></button>
+                    </div>
+                    <div style="width: 70px;">
+                        <a class="btn btn-primary" href='/gerenciamento/mostrarSituacao/{{proposta._id}}'
+                            target="_blank"><i class='bi bi-eye'></i></a>
+                    </div>
+                </div>
             </form>
 
             <form action='/gerenciamento/salvarUnifilar' enctype="multipart/form-data" method="post">
                 <input type='hidden' name='id' value='{{proposta._id}}'>
-                <table>
-                    <tr>
-                        <td>
-                            <label class="col-form-label fw-bold">Diagrama Unifilar:</label>
-                            <label class='col-form-label'>{{documento.unifilar}}</label>
-                            <input class="form-control" type="file" name='unifilar'>
-                        </td>
-                        <td>
-                            <div style="width: 20px;"></div>
-                        </td>
-                        <td>
-                            <label class="col-form-label fw-bold">Data</label>
-                            <input type="date" class='form-control' name='dtunifilar' value='{{documento.dtunifilar}}'>
-                        </td>
-                        <td style="width: 5%;text-align: center;">
-                            <label class="col-form-label fw-bold">Salva</label>
-                            <button type='submit' class="btn btn-success" name='aplicar'><i
-                                    class='bi bi-save'></i></button>
-                        </td>
-                        <td style="width: 5%;text-align: center;">
-                            <label class="col-form-label fw-bold">Ver</label>
-                            <a class="btn btn-primary" href='/gerenciamento/mostrarUnifilar/{{proposta._id}}'
-                                target="_blank"><i class='bi bi-eye'></i></a>
-                        </td>
-                    </tr>
-                </table>
+                <div class="row">
+                    <div class="row">
+                        <div class='col-md-2'>
+                            <label class="col-form-label">Diagrama Unifilar:</label>
+                        </div>
+                        <div class='col'>
+                            <label class='col-form-label labelp'>{{documento.unifilar}}</label>
+                        </div>
+                    </div>
+                    <div class='col-md-6'>
+                        <input class="form-control" type="file" name='unifilar'>
+                    </div>
+                    <div class='col-md-2'>
+                        <input type="date" class='form-control' name='dtunifilar' value='{{documento.dtunifilar}}'>
+                    </div>
+                    <div style="width: 70px;">
+                        <button type='submit' class="btn btn-success" name='aplicar'><i class='bi bi-save'></i></button>
+                    </div>
+                    <div style="width: 70px;">
+                        <a class="btn btn-primary" href='/gerenciamento/mostrarUnifilar/{{proposta._id}}'
+                            target="_blank"><i class='bi bi-eye'></i></a>
+                    </div>
+                </div>
             </form>
-
 
             <form action='/gerenciamento/salvarTrifilar' enctype="multipart/form-data" method="post">
                 <input type='hidden' name='id' value='{{proposta._id}}'>
-                <table>
-                    <tr>
-                        <td>
-                            <label class="col-form-label fw-bold">Diagrama Trifilar:</label>
-                            <label class='col-form-label'>{{documento.trifilar}}</label>
-                            <input class="form-control" type="file" name='trifilar'>
-                        </td>
-                        <td>
-                            <div style="width: 20px;"></div>
-                        </td>
-                        <td>
-                            <label class="col-form-label fw-bold">Data</label>
-                            <input type="date" class='form-control' name='dttrifilar' value='{{documento.dttrifilar}}'>
-                        </td>
-                        <td style="width: 5%;text-align: center;">
-                            <label class="col-form-label fw-bold">Salva</label>
-                            <button type='submit' class="btn btn-success" name='aplicar'><i
-                                    class='bi bi-save'></i></button>
-                        </td>
-                        <td style="width: 5%;text-align: center;">
-                            <label class="col-form-label fw-bold">Ver</label>
-                            <a class="btn btn-primary" href='/gerenciamento/mostrarTrifilar/{{proposta._id}}'
-                                target="_blank"><i class='bi bi-eye'></i></a>
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </div>
-        <form action='/gerenciamento/protocolar' method="post">
-            <input type='hidden' name='id' value='{{proposta._id}}'>
-            <div class="row mt-4">
-                <div class="col-md-4 mt-4">
-                    <div class="form-check" style="font-size: 20px;" id='checkProto' onchange="mostraSalvar()">
-                        <input class="form-check-input" type="checkbox" {{check}} id="checkProtocolo">
-                        <label class="form-check-label mt-1" style="font-size: 20px;">
-                            Projeto protocolado na concessionária
-                        </label>
+                <div class="row">
+                    <div class="row">
+                        <div class='col-md-2'>
+                            <label class="col-form-label">Diagrama Trifilar:</label>
+                        </div>
+                        <div class='col'>
+                            <label class='col-form-label labelp'>{{documento.trifilar}}</label>
+                        </div>
+                    </div>
+                    <div class='col-md-6'>
+                        <input class="form-control" type="file" name='trifilar'>
+                    </div>
+                    <div class='col-md-2'>
+                        <input type="date" class='form-control' name='dttrifilar' value='{{documento.dttrifilar}}'>
+                    </div>
+                    <div style="width: 70px;">
+                        <button type='submit' class="btn btn-success" name='aplicar'><i class='bi bi-save'></i></button>
+                    </div>
+                    <div style="width: 70px;">
+                        <a class="btn btn-primary" href='/gerenciamento/mostrarTrifilar/{{proposta._id}}'
+                            target="_blank"><i class='bi bi-eye'></i></a>
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <label>Data Envio</label>
-                    <input type="date" class='form-control' name='dtprotocolo' value='{{documento.dtprotocolo}}'>
+            </form>
+
+            <form action='/gerenciamento/protocolar' method="post">
+                <input type='hidden' name='id' value='{{proposta._id}}'>
+                <div class="row mt-4">
+                    <div class="col-md-5 mt-4">
+                        <div class="form-check" style="font-size: 20px;" id='checkProto' onchange="mostraSalvar()">
+                            <input class="form-check-input" type="checkbox" {{check}} id="checkProtocolo">
+                            <label class="form-check-label mt-1" style="font-size: 20px;">
+                                Projeto protocolado na concessionária
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label>Data Envio</label>
+                        <input type="date" class='form-control' name='dtprotocolo' value='{{documento.dtprotocolo}}'>
+                    </div>
+                    <div class="col-md-1">
+                        <label>Deadline</label><br>
+                        <label class='col-form-label'>{{documento.dtdeadline}}</label>
+                    </div>
+                    <div class="col-md-1 mt-3" id='salvar' style="display: {{salva}}">
+                        <button type="submit" class='btn btn-success'>Salvar</button>
+                    </div>
                 </div>
-                <div class="col-md-1">
-                    <label>Deadline</label><br>
-                    <label class='col-form-label'>{{documento.dtdeadline}}</label>
-                </div>
-                <div class="col-md-1 mt-3" id='salvar' style="display: {{salva}}">
-                    <button type="submit" class='btn btn-success'>Salvar</button>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>

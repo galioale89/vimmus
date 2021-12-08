@@ -1,0 +1,477 @@
+<div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
+
+    <div class="row text-center" style="margin-top: 20px;">
+        <h3 class='fw-bold'>Livro da Obra</h3>
+        <h3 class='fw-bold'>Proposta {{proposta.seq}}</h3>
+        <div class="row mt-2">
+            <div class="col-md-2 text-end">
+                <label class='col-form-label col-form-label-sm fw-bold'>Empresa: </label><br>
+                <label class='col-form-label col-form-label-sm fw-bold'>Cliente: </label><br>
+                <label class='col-form-label col-form-label-sm fw-bold'>Endereço: </label><br>
+                <label class='col-form-label col-form-label-sm fw-bold'>Estado: </label><br>
+                <label class='col-form-label col-form-label-sm fw-bold'>Cidade: </label><br>
+                <label class='col-form-label col-form-label-sm fw-bold'>Gestor Responsável: </label><br>
+                <label class='col-form-label col-form-label-sm fw-bold'>Técnico Responsável: </label><br>
+            </div>
+            <div class="col-md-4 text-start">
+                <label class='col-form-label col-form-label-sm'>{{emp_proposta.nome}}</label><br>
+                <label class='col-form-label col-form-label-sm'>{{cliente_proposta.nome}}</label><br>
+                <label class='col-form-label col-form-label-sm'>{{proposta.endereco}}</label><br>
+                <label class='col-form-label col-form-label-sm'>{{proposta.uf}}</label><br>
+                <label class='col-form-label col-form-label-sm'>{{proposta.cidade}}</label><br>
+                <label class='col-form-label col-form-label-sm'>{{res_proposta.nome}}</label><br>
+                <label class='col-form-label col-form-label-sm'>{{tec_proposta.nome}}</label><br>
+            </div>
+            <div class='col-md-6'>
+                <div class='row'>
+                    <div class='col-md-2 text-end'>
+                        <label class='col-form-label col-form-label-sm fw-bold mt-3 mb-3'>Proposta 1:</label><br>
+                        {{#if proposta.proposta2}}
+                        <label class='col-form-label col-form-label-sm fw-bold mb-3'>Proposta 2:</label><br>
+                        {{/if}}
+                        {{#if proposta.proposta3}}
+                        <label class='col-form-label col-form-label-sm fw-bold mb-3'>Proposta 3:</label><br>
+                        {{/if}}
+                        {{#if proposta.proposta4}}
+                        <label class='col-form-label col-form-label-sm fw-bold mb-3'>Proposta 4:</label><br>
+                        {{/if}}
+                        {{#if proposta.proposta5}}
+                        <label class='col-form-label col-form-label-sm fw-bold mb-3'>Proposta 5:</label><br>
+                        {{/if}}
+                        {{#if proposta.proposta6}}
+                        <label class='col-form-label col-form-label-sm fw-bold mb-3'>Proposta 6:</label><br>
+                        {{/if}}
+                    </div>
+                    <div class='col-md-10'>
+                        <div class="row">
+                            <div class="col">
+                                <label class='col-form-label col-form-label-sm'> Data de Cadastro</label>
+                                <label class='col-form-label col-form-label-sm'>{{proposta.dtcadastro1}}</label>
+                            </div>
+                            <div class="col">
+                                <label class='col-form-label col-form-label-sm'>Data de Validade</label>
+                                <label class='col-form-label col-form-label-sm'>{{proposta.dtvalidade1}}</label>
+                            </div>
+                            <div class="col mt-3">
+                                <a class="btn btn-primary" href='/gerenciamento/mostrarProposta1/{{proposta._id}}'
+                                    target="_blank"><i class='bi bi-eye'></i></a>
+                            </div>
+                        </div>
+
+                        {{#if proposta.proposta2}}
+                        <div class="row">
+                            <div class="col md-4">
+                                <div class="mt-1">
+                                    <label class='col-form-label col-form-label-sm'>{{proposta.proposta2}}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-1 mt-1">
+                                <a class="btn btn-primary" href='/gerenciamento/mostrarProposta2/{{proposta._id}}'
+                                    target="_blank"><i class='bi bi-eye'></i></a>
+                            </div>
+                            <div class="col-md-3 mt-1">
+                                <input type='date' class='form-control' name='dtcadastro2' id='dtcadastro2'
+                                    value='{{proposta.dtcadastro2}}' onchange="setValidade()">
+                            </div>
+                            <div class="col-md-3 mt-1">
+                                <input type='date' class='form-control' name='dtvalidade2' id='dtvalidade2'
+                                    value='{{proposta.dtvalidade2}}'>
+                            </div>
+                        </div>
+                        {{/if}}
+
+                        {{#if proposta.proposta3}}
+                        <div class="row">
+                            <div class="col">
+                                <div class="mt-1">
+                                    <label class='col-form-label col-form-label-sm'>{{proposta.proposta3}}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-1 mt-1">
+                                <a class="btn btn-primary" href='/gerenciamento/mostrarProposta3/{{proposta._id}}'
+                                    target="_blank"><i class='bi bi-eye'></i></a>
+                            </div>
+                            <div class="col-md-3 mt-1">
+                                <input type='date' class='form-control' name='dtcadastro3' id='dtcadastro3'
+                                    value='{{proposta.dtcadastro3}}' onchange="setValidade()">
+                            </div>
+                            <div class="col-md-3 mt-1">
+                                <input type='date' class='form-control' name='dtvalidade3' id='dtvalidade3'
+                                    value='{{proposta.dtvalidade3}}'>
+                            </div>
+                        </div>
+                        {{/if}}
+
+                        {{#if proposta.proposta4}}
+                        <div class="row">
+                            <div class="col">
+                                <div class="mt-1">
+                                    <label class='col-form-label col-form-label-sm'>{{proposta.proposta4}}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-1 mt-1">
+                                <a class="btn btn-primary" href='/gerenciamento/mostrarProposta4/{{proposta._id}}'
+                                    target="_blank"><i class='bi bi-eye'></i></a>
+                            </div>
+                            <div class="col-md-3 mt-1">
+                                <input type='date' class='form-control' name='dtcadastro4' id='dtcadastro4'
+                                    value='{{proposta.dtcadastro4}}' onchange="setValidade()">
+                            </div>
+                            <div class="col-md-3 mt-1">
+                                <input type='date' class='form-control' name='dtvalidade4' id='dtvalidade4'
+                                    value='{{proposta.dtvalidade4}}'>
+                            </div>
+                        </div>
+                        {{/if}}
+
+                        {{#if proposta.proposta5}}
+                        <div class="row">
+                            <div class="col">
+                                <div class="mt-1">
+                                    <label class='col-form-label col-form-label-sm'>{{proposta.proposta5}}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-1 mt-1">
+                                <a class="btn btn-primary" href='/gerenciamento/mostrarProposta5/{{proposta._id}}'
+                                    target="_blank"><i class='bi bi-eye'></i></a>
+                            </div>
+                            <div class="col-md-3 mt-1">
+                                <input type='date' class='form-control' name='dtcadastro5' id='dtcadastro5'
+                                    value='{{proposta.dtcadastro5}}' onchange="setValidade()">
+                            </div>
+                            <div class="col-md-3 mt-1">
+                                <input type='date' class='form-control' name='dtvalidade5' id='dtvalidade5'
+                                    value='{{proposta.dtvalidade5}}'>
+                            </div>
+                        </div>
+                        {{/if}}
+
+                        {{#if proposta.proposta6}}
+                        <div class="row">
+                            <div class="col">
+                                <div class="mt-1">
+                                    <label class='col-form-label col-form-label-sm'>{{proposta.proposta6}}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-1 mt-1">
+                                <a class="btn btn-primary" href='/gerenciamento/mostrarProposta6/{{proposta._id}}'
+                                    target="_blank"><i class='bi bi-eye'></i></a>
+                            </div>
+                            <div class="col-md-3 mt-1">
+                                <input type='date' class='form-control' name='dtcadastro6' id='dtcadastro6'
+                                    value='{{proposta.dtcadastro6}}' onchange="setValidade()">
+                            </div>
+                            <div class="col-md-3 mt-1">
+                                <input type='date' class='form-control' name='dtvalidade6' id='dtvalidade6'
+                                    value='{{proposta.dtvalidade6}}'>
+                            </div>
+                        </div>
+                        {{/if}}
+                    </div>
+                    <div class='row'>
+                        <label class='col-form-label fw-bold'>Equipe</label>
+                        <label class='col-form-label col-form-label-sm'>{{lista_equipe.ins0}}</label>
+                        <label class='col-form-label col-form-label-sm'>{{lista_equipe.ins1}}</label>
+                        <label class='col-form-label col-form-label-sm'>{{lista_equipe.ins2}}</label>
+                        <label class='col-form-label col-form-label-sm'>{{lista_equipe.ins3}}</label>
+                        <label class='col-form-label col-form-label-sm'>{{lista_equipe.ins4}}</label>
+                        <label class='col-form-label col-form-label-sm'>{{lista_equipe.ins5}}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='row mt-2 mb-2'>
+            <h2 class='fw-bold mb-2'>Visita</h2>
+            <div class='col-md-3 card'>
+                <div class="row">
+                    <div class="col">
+                        <label class='col-form-label fw-bold'>Sombreamento</label><br>
+                    </div>
+                    <div style="width: 60px;">
+                        <a href='/gerenciamento/mostrarSomb/{{proposta._id}}' class='btn btn-sm btn-primary'><i
+                                class='bi bi-eye'></i></a>
+                    </div>
+                </div>
+                <label class='col-form-label col-form-label-sm'>Data Envio:{{vistoria.dtPlaSombra}}</label>
+            </div>
+            <div class="col-md-3 card">
+                <div class="row">
+                    <div class="col">
+                        <label class='col-form-label fw-bold'>Área</label><br>
+                    </div>
+                    <div style="width: 60px;">
+                        <a href='/gerenciamento/mostrarArea/{{proposta._id}}' class='btn btn-sm btn-primary'><i
+                                class='bi bi-eye'></i></a>
+                    </div>
+                </div>
+                <label class='col-form-label col-form-label-sm'>Data Envio:
+                    {{vistoria.dtPlaArea}}</label>
+            </div>
+            <div class="col-md-3 card">
+                <div class="row">
+                    <div class='col'>
+                        <label class='col-form-label fw-bold'>Local Inversor e StringBox</label>
+                    </div>
+                    <div style="width: 60px;">
+                        <a href='/gerenciamento/mostrarInsi/{{proposta._id}}' class='btn btn-sm btn-primary'><i
+                                class='bi bi-eye'></i></a>
+                    </div>
+                </div>
+                <label class='col-form-label col-form-label-sm'>Data Envio:
+                    {{vistoria.dtPlaInvStb}}</label>
+            </div>
+            <div class="col-md-3 card">
+                <div class="row">
+                    <div class='col'>
+                        <label class='col-form-label fw-bold'>Local Aterramento</label>
+                    </div>
+                    <div style="width: 60px;">
+                        <a href='/gerenciamento/mostrarInsa/{{proposta._id}}' class='btn btn-sm btn-primary'><i
+                                class='bi bi-eye'></i></a>
+                    </div>
+                </div>
+                <label class='col-form-label col-form-label-sm'>Data Envio:
+                    {{vistoria.dtPlaAte}}</label>
+            </div>
+        </div>
+        <hr>
+        <div class="row mb-2">
+            <div class="col-md-6 card">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class='col-form-label fw-bold'>Proposta Assinada</label>
+                    </div>
+                    <div style="width: 60px;" class='mt-1'>
+                        <a class="btn btn-sm btn-primary" href='/gerenciamento/mostrarProposta/{{proposta._id}}'
+                            target="_blank"><i class='bi bi-eye'></i></a>
+                    </div>
+                    <div class='col mt-1'>
+                        <label class='col-form-label col-form-label-sm'>Data Assinatura:
+                            {{proposta.dtassinatura}}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 card">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class='col-form-label fw-bold'>Contrato</label>
+                    </div>
+                    <div style="width: 60px;" class='mt-1'>
+                        <a class="btn btn-sm btn-primary" href='/gerenciamento/mostrarContrato/{{proposta._id}}'
+                            target="_blank"><i class='bi bi-eye'></i></a>
+                    </div>
+                    <div class="col mt-1">
+                        <label class='col-form-label col-form-label-sm'>Data Assinatura:
+                            {{proposta.dtcontrato}}</label>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class='row mb-2'>
+            <div class="col card">
+                <div class='row'>
+                    <div class='col-md-4'>
+                        <label class='col-form-label fw-bold'>Pedido</label>
+                    </div>
+                    <div style="width: 60px;" class='mt-1'>
+                        <a class="btn btn-sm btn-primary" href='/gerenciamento/mostrarPedido/{{proposta._id}}'
+                            target="_blank"><i class='bi bi-eye'></i></a>
+                    </div>
+                    <div class='col mt-1'>
+                        <label class='col-form-label col-form-label-sm'>Data Emissão: {{compra.dtcadastro}} </label>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col card">
+                <div class='row'>
+                    <div class='col-md-4'>
+                        <label class='col-form-label fw-bold'>Nota Fiscal</label>
+                    </div>
+                    <div style="width: 60px;" class='mt-1'>
+                        <a class="btn btn-sm btn-primary" href='/gerenciamento/mostrarNota/{{proposta._id}}'
+                            target="_blank"><i class='bi bi-eye'></i></a>
+                    </div>
+                    <div class='col mt-1'>
+                        <label class='col-form-label col-form-label-sm'>Data Emissão: {{compra.dtrecebimento}}'</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row mb-2">
+            <div class="col-md-5">
+                <div class="row ">
+                    <label class='col-form-label fw-bold'>TRT</label>
+                </div>
+            </div>
+            <div style="width: 60px;" class="mt-1">
+                <a class="btn btn-sm btn-primary" href='/gerenciamento/mostrarTrt/{{proposta._id}}' target="_blank"><i
+                        class='bi bi-eye'></i></a>
+            </div>
+            <div class="col mt-1">
+                <label class='col-form-label col-form-label-sm'> Data Registro: {{documento.dttrt}}</label>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col card">
+                <div class="row">
+                    <div class='col-md-4'>
+                        <label class="col-form-label fw-bold">Memorial Descritivo</label>
+                    </div>
+                    <div style='width: 60px;' class='mt-3'>
+                        <a class="btn btn-sm btn-primary" href='/gerenciamento/mostrarMemorial/{{proposta._id}}'
+                            target="_blank"><i class='bi bi-eye'></i></a>
+                    </div>
+                    <div class='col mt-3'>
+                        <label class='col-form-label col-form-label-sm'>Data: {{documento.dtmemorial}}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col card">
+                <div class="row">
+                    <div class='col-md-4'>
+                        <label class="col-form-label fw-bold">Planta de Situação</label>
+                    </div>
+                    <div style='width: 60px;' class='mt-3'>
+                        <a class="btn btn-sm btn-primary" href='/gerenciamento/mostrarSituacao/{{proposta._id}}'
+                            target="_blank"><i class='bi bi-eye'></i></a>
+                    </div>
+                    <div class='col mt-3'>
+                        <label class='col-form-label col-form-label-sm'>Data: {{documento.dtsituacao}}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col card">
+                <div class="row">
+                    <div class='col-md-4'>
+                        <label class="col-form-label fw-bold">Diagrama Unifilar</label>
+                    </div>
+                    <div style="width: 60px;" class="mt-3">
+                        <a class="btn btn-sm btn-primary" href='/gerenciamento/mostrarUnifilar/{{proposta._id}}'
+                            target="_blank"><i class='bi bi-eye'></i></a>
+                    </div>
+                    <div class='col mt-3'>
+                        <label class='col-form-label col-form-label-sm'>Data: {{documento.dtunifilar}}</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col card">
+                <div class="row">
+                    <div class='col-md-4'>
+                        <label class="col-form-label fw-bold">Diagrama Trifilar</label>
+                    </div>
+                    <div style="width: 60px;" class='mt-3'>
+                        <a class="btn btn-sm btn-primary" href='/gerenciamento/mostrarTrifilar/{{proposta._id}}'
+                            target="_blank"><i class='bi bi-eye'></i></a>
+                    </div>
+                    <div class='col mt-3'>
+                        <label class='col-form-label col-form-label-sm'>Data: {{documento.dttrifilar}}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2 mb-2">
+            <div class="col-md-5">
+                <label class="col-form-label col-form-label-sm mt-1">
+                    Projeto protocolado na concessionária
+                </label>
+            </div>
+            <div class="col-md-2">
+                <label class='col-form-label col-form-label-sm'>Data Envio: {{documento.dtprotocolo}}</label>
+            </div>
+            <div class="col-md-1">
+                <label class='col-form-label col-form-label-sm'>Deadline: {{documento.dtdeadline}}</label><br>
+            </div>
+        </div>
+        <hr>
+        <div class='row mb-2'>
+            <div class='col card'>
+                <div class='row'>
+                    <div class='col-md-8'>
+                        <label class='col-form-label fw-bold'>Aterramento</label>
+                    </div>
+                    <div class="col-md-1 mt-1">
+                        <a href='/gerenciamento/mostrarAte/{{proposta._id}}' class='btn btn-sm btn-primary'><i
+                                class='bi bi-eye'></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class='col card'>
+                <div class='row'>
+                    <div class='col-md-8'>
+                        <label class='col-form-label fw-bold'>Inversor e String Box</label>
+                    </div>
+                    <div class="col-md-1 mt-1">
+                        <a href='/gerenciamento/mostrarInv/{{proposta._id}}' class='btn btn-sm btn-primary'><i
+                                class='bi bi-eye'></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class='col card'>
+                <div class='row'>
+                    <div class='col-md-8'>
+                        <label class='col-form-label fw-bold'>Estruturas e Módulos</label>
+                    </div>
+                    <div class="col-md-1 mt-1">
+                        <a href='/gerenciamento/mostrarMod/{{proposta._id}}' class='btn btn-sm btn-primary'><i
+                                class='bi bi-eye'></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row mb-2" style="margin-bottom: 50px;">
+            <div class='col card'>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class='col-form-label fw-bold'>Comprovante</label>
+                    </div>
+                    <div style="width: 60px;" class='mt-1'>
+                        <a class="btn btn-sm btn-primary" href='/gerenciamento/mostrarComprovante/{{proposta._id}}'
+                            target="_blank"><i class='bi bi-eye'></i></a>
+                    </div>
+                    <div class='col mt-1'>
+                        <label class='col-form-label col-form-label-sm'>Data Emissão:
+                            {{documento.dtcomprovante}}</label>
+                    </div>
+                </div>
+            </div>
+            <div class='col card'>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class='col-form-label fw-bold'>Nota Fiscal </label>
+                    </div>
+                    <div style="width: 60px;" class='mt-1'>
+                        <a class="btn btn-sm btn-primary" href='/gerenciamento/mostrarFinanceiro/{{proposta._id}}'
+                            target="_blank"><i class='bi bi-eye'></i></a>
+                    </div>
+                    <div class="col mt-1">
+                        <label class='col-form-label col-form-label-sm'>Data Emissão: {{documento.dtfinanceiro}}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row mb-2">
+            <div class="col-md-5">
+                <div class="row ">
+                    <label class='col-form-label fw-bold'>Ordem de Serviço</label>
+                </div>
+            </div>
+            <div style="width: 60px;" class="mt-1">
+                <a class="btn btn-sm btn-primary" href='/gerenciamento/mostrarAlmoxarifado/{{proposta._id}}' target="_blank"><i
+                        class='bi bi-eye'></i></a>
+            </div>
+            <div class="col mt-1">
+                <label class='col-form-label col-form-label-sm'> Data: {{documento.dtalmoxarifado}}</label>
+            </div>
+        </div>   
+        <hr>     
+        <div style="margin-bottom: 20px;"></div>
+    </div>
+</div>

@@ -163,10 +163,8 @@
                     <div class='filtro-selecao'>Cliente: Todos</div>
                     {{/if}}
                     {{#if listaEncerrado}}
-                    <div style="padding-left: 90%;">
-                        <button type='submit' class='no-print'
-                            style="text-decoration: none;color: black;width: 80px;text-align: center;"><i
-                                class="bi bi-printer"></i></button>
+                    <div style="padding-left: 96%;">
+                        <button type='submit' class='btn btn-primary text-end' style="text-decoration: rgb(44,55,89);"><i class="bi bi-printer"></i></button>
                     </div>
                     {{/if}}
                 </div>
@@ -203,7 +201,7 @@
             {{#each lista}}
             <tr style="line-height: 20px;">
                 <td style="text-align: center;">{{s}}</td>
-                <td style="text-align: center;">{{id}}</td>
+                <td style="text-align: center;">{{seq}}</td>
                 <td style="text-align: center;">{{cliente}}</td>
                 <td style="text-align: center;">{{responsavel}}</td>
                 <td style="text-align: center;">{{nome_insres}}</td>
@@ -220,7 +218,7 @@
             {{else}}
             {{#each listaOrcado}}
             <tr style="line-height: 20px;">
-                <td style="text-align: center;">{{id}}</td>
+                <td style="text-align: center;">{{seq}}</td>
                 <td style="text-align: center;">{{cliente}}</td>
                 <td style="text-align: center;">{{responsavel}}</td>
                 <td style="text-align: center;">{{nome_insres}}</td>
@@ -237,7 +235,7 @@
             {{else}}
             {{#each listaAberto}}
             <tr style="line-height: 20px;">
-                <td style="text-align: center;">{{id}}</td>
+                <td style="text-align: center;">{{seq}}</td>
                 <td style="text-align: center;">{{cliente}}</td>
                 <td style="text-align: center;">{{responsavel}}</td>
                 <td style="text-align: center;">{{nome_insres}}</td>
@@ -254,7 +252,7 @@
             {{else}}
             {{#each listaEncerrado}}
             <tr style="line-height: 20px;">
-                <td style="text-align: center;">{{id}}</td>
+                <td style="text-align: center;">{{seq}}</td>
                 <td style="text-align: center;">{{cliente}}</td>
                 <td style="text-align: center;">{{responsavel}}</td>
                 <td style="text-align: center;">{{nome_insres}}</td>

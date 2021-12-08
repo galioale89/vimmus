@@ -32,6 +32,10 @@ const Empresa = new Schema({
         type: String,
         require: false
     },
+    seq:{
+        type: Number,
+        require: false
+    },
     vlrred: {
         type: String,
         require: false

@@ -88,7 +88,7 @@
             {{/if}}
             {{#if documento.enviaalmox}}
             <div class="col-md-2 text-end">
-                <label class='col-form-label fw-bold mt-3'>Documento: </label><br>
+                <label class='col-form-label fw-bold mt-3'>Ordem de Serviçp: </label><br>
             </div>
             <div class="col-md-10 text-start">
                 <form action='/gerenciamento/almoxarifado' method='post' enctype="multipart/form-data">
@@ -112,11 +112,11 @@
                         </div>
                         {{/if}}
                         <div class="col-md-1 mt-3">
-                            <a class="btn btn-primary" href='/gerenciamento/mostrarProposta/{{proposta._id}}'
+                            <a class="btn btn-primary" href='/gerenciamento/mostrarAlmoxarifado/{{proposta._id}}'
                                 target="_blank"><i class='bi bi-eye'></i></a>
                         </div>
                         <div class="col-md-2">
-                            <label> Data</label>
+                            <label>Data:</label>
                             <input type='date' class='form-control' name='dtalmoxarifado'
                                 value='{{documento.dtalmoxarifado}}'>
                         </div>

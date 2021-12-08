@@ -71,7 +71,6 @@ router.get('/editar/:id', ehAdmin, (req, res) => {
         if (acesso == null) {
             Usuario.findOne({ _id: req.params.id }).lean().then((usuario_acesso) => {
                 //console.log('usuario_acesso.nome=>'+usuario_acesso.nome)
-                
                 Pessoa.findOne({user: id, nome: usuario_acesso.nome}).lean().then((usuario)=>{
                     //console.log('usuario=>'+usuario)
                 res.render('usuario/editregistro', { usuario_acesso, ehUserMaster, mostraDetalhes, usuario })
