@@ -237,7 +237,7 @@ router.get('/usinas/:id', ehAdmin, (req, res) => {
     Cliente.findOne({ user: id, _id: req.params.id }).lean().then((cliente) => {
         Usina.find({ user: id, cliente: req.params.id }).then((usina) => {
             console.log('usina=>' + usina)
-            // if (typeof usina != 'unedined' && usina != '') {
+            if (typeof usina != 'unedined' && usina != '') {
             usina.forEach((element) => {
                 console.log('element.plano=>'+element.plano)
                 if (naoVazio(element.plano)) {
@@ -258,9 +258,9 @@ router.get('/usinas/:id', ehAdmin, (req, res) => {
                 }
 
             })
-            // } else {
-            //     res.render('cliente/usina', { cliente, lista_plano })
-            // }
+            } else {
+                 res.render('cliente/usina', { cliente, lista_plano })
+            }
 
         }).catch((err) => {
             req.flash('error_msg', 'Houve uma falha ao encontrar a usina.')
