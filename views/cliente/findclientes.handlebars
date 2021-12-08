@@ -2,6 +2,7 @@
     button {
         line-height: 0px;
     }
+
     #header {
         width: 100%;
         border-bottom: rgb(40, 55, 86) 0, 1px solid;
@@ -16,8 +17,18 @@
         border-radius: 10px;
         margin-left: 5px;
     }
+
     table {
-        font-size: 13px;
+        width: 100%;
+    }
+
+    th {
+        text-align: center;
+    }
+
+    tr {
+        font-size: 12px;
+        border-bottom: rgba(120, 120, 120, 0.4) solid 1px;
     }
 </style>
 <script>
@@ -62,7 +73,8 @@
                         </div>
                     </div>
                     <div class="col-md-1 text-end mt-4">
-                        <button style="margin-top: 0px;" type='submit' class='botaofiltrar'><i class='bi bi-search iconefiltrar'></i></button>
+                        <button style="margin-top: 0px;" type='submit' class='botaofiltrar'><i
+                                class='bi bi-search iconefiltrar'></i></button>
                     </div>
                 </div>
             </form>
@@ -74,27 +86,27 @@
         </div>
     </div>
 
-    <div style="margin-bottom: 30px; width: 100%;margin-top: 1%;padding-left: 4%;">
-        <div class="card" style="width: 90%;padding: 10px;">
+    <div style="margin-bottom: 4%;margin-top: 1%;">
         <table>
-            <tr>
+            <tr style="line-height: 20px;">
                 <th>Nome</th>
                 <th>Cidade</th>
                 <th>Estado</th>
                 <th>E-mail</th>
                 <th>Celular</th>
+                <th style="width: 2%;"></th>
             </tr>
             {{#each clientes}}
             <tr>
-                <td>{{nome}}</td>
-                <td>{{cidade}}</td>
-                <td>{{uf}}</td>
-                <td>{{email}}</td>
-                <td>{{celular}}</td>
+                <td style="text-align: center;"><a href='/cliente/edicao/{{_id}}'>{{nome}}</a></td>
+                <td style="text-align: center;"><a href='/cliente/edicao/{{_id}}'>{{cidade}}</a></td>
+                <td style="text-align: center;"><a href='/cliente/edicao/{{_id}}'>{{uf}}</a></td>
+                <td style="text-align: center;"><a href='/cliente/edicao/{{_id}}'>{{email}}</a></td>
+                <td style="text-align: center;"><a href='/cliente/edicao/{{_id}}'>{{celular}}</a></td>
                 <td>
                     <div class='btn-group col-12 gap-2' role='group'>
-                        <a href='/cliente/edicao/{{_id}}' class='botao-tabela ativado'><i class="bi bi-pen icone"></i></a>
-                        <a href='/cliente/confirmaexclusao/{{_id}}' class='botao-tabela ativado'> <i class='bi bi-trash icone'></i> </a>
+                        <a href='/cliente/confirmaexclusao/{{_id}}' class='botao-tabela ativado'> <i
+                                class='bi bi-trash icone'></i> </a>
                         </a>
                     </div>
                 </td>
@@ -103,6 +115,5 @@
             <h6>Nenhuma pessoa cadastrada</h6>
             {{/each}}
         </table>
-        </div>
     </div>
 </div>

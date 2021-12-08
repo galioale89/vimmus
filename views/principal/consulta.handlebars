@@ -164,7 +164,8 @@
                     {{/if}}
                     {{#if listaEncerrado}}
                     <div style="padding-left: 96%;">
-                        <button type='submit' class='btn btn-primary text-end' style="text-decoration: rgb(44,55,89);"><i class="bi bi-printer"></i></button>
+                        <button type='submit' class='btn btn-primary text-end'
+                            style="text-decoration: rgb(44,55,89);"><i class="bi bi-printer"></i></button>
                     </div>
                     {{/if}}
                 </div>
@@ -196,75 +197,51 @@
                 <th style="width: 5%">Cadastro</th>
                 <th style="width: 10%">Inicio Instalação</th>
                 <th style="width: 6%">Fim Instalação</th>
-                <th style="width: 5%;"></th>
+                {{!-- <th style="width: 5%;"></th> --}}
             </tr>
             {{#each lista}}
             <tr style="line-height: 20px;">
-                <td style="text-align: center;">{{s}}</td>
-                <td style="text-align: center;">{{seq}}</td>
-                <td style="text-align: center;">{{cliente}}</td>
-                <td style="text-align: center;">{{responsavel}}</td>
-                <td style="text-align: center;">{{nome_insres}}</td>
-                <td style="text-align: center;">{{cadastro}}</td>
-                <td style="text-align: center;">{{inicio}}</td>
-                <td style="text-align: center;">{{fim}}</td>
-                <td>
-                    <div class='btn-group btn-group-sm col-12 gap-2 mx-auto'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='botao-tabela ativado-tabela'><i
-                                class="bi bi-pen icone"></i></a>
-                    </div>
-                </td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{s}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{seq}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{cliente}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{responsavel}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{nome_insres}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{cadastro}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{inicio}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{fim}}</a></td>
             </tr>
             {{else}}
             {{#each listaOrcado}}
             <tr style="line-height: 20px;">
-                <td style="text-align: center;">{{seq}}</td>
-                <td style="text-align: center;">{{cliente}}</td>
-                <td style="text-align: center;">{{responsavel}}</td>
-                <td style="text-align: center;">{{nome_insres}}</td>
-                <td style="text-align: center;">{{cadastro}}</td>
-                <td style="text-align: center;">{{inicio}}</td>
-                <td style="text-align: center;">{{fim}}</td>
-                <td>
-                    <div class='btn-group btn-group-sm col-12 gap-2 mx-auto'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='botao-tabela ativado-tabela'><i
-                                class="bi bi-pen icone"></i></a>
-                    </div>
-                </td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{seq}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{cliente}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{responsavel}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{nome_insres}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{cadastro}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{inicio}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{fim}}</a></td>
             </tr>
             {{else}}
             {{#each listaAberto}}
             <tr style="line-height: 20px;">
-                <td style="text-align: center;">{{seq}}</td>
-                <td style="text-align: center;">{{cliente}}</td>
-                <td style="text-align: center;">{{responsavel}}</td>
-                <td style="text-align: center;">{{nome_insres}}</td>
-                <td style="text-align: center;">{{cadastro}}</td>
-                <td style="text-align: center;">{{inicio}}</td>
-                <td style="text-align: center;">{{fim}}</td>
-                <td>
-                    <div class='btn-group btn-group-sm col-12 gap-2 mx-auto'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='botao-tabela ativado-tabela'><i
-                                class="bi bi-pen icone"></i></a>
-                    </div>
-                </td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{seq}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{cliente}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{responsavel}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{nome_insres}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{cadastro}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{inicio}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{fim}}</a></td>
             </tr>
             {{else}}
             {{#each listaEncerrado}}
             <tr style="line-height: 20px;">
-                <td style="text-align: center;">{{seq}}</td>
-                <td style="text-align: center;">{{cliente}}</td>
-                <td style="text-align: center;">{{responsavel}}</td>
-                <td style="text-align: center;">{{nome_insres}}</td>
-                <td style="text-align: center;">{{cadastro}}</td>
-                <td style="text-align: center;">{{inicio}}</td>
-                <td style="text-align: center;">{{fim}}</td>
-                <td>
-                    <div class='btn-group btn-group-sm col-12 gap-2 mx-auto'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='botao-tabela ativado-tabela'><i
-                                class="bi bi-pen icone"></i></a>
-                    </div>
-                </td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{seq}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{cliente}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{responsavel}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{nome_insres}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{cadastro}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{inicio}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{fim}}</a></td>
             </tr>
             {{else}}
             <h6>Nenhum projeto encontrado.</h6>

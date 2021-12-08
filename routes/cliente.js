@@ -231,36 +231,48 @@ router.get('/usinas/:id', ehAdmin, (req, res) => {
     }
     var lista_usina = []
     var qu = 0
-    Cliente.findOne({ _id: req.params.id }).lean().then((cliente) => {
-        Usina.find({ cliente: req.params.id }).lean().then((usina) => {
-            Plano.find({ user: id }).lean().then((lista_plano) => {
-                if (typeof usina != 'unedined' && usina != '') {
-                    usina.forEach((element) => {
-                        Plano.findOne({ _id: element.plano }).then((plano) => {
-                            lista_usina.push({ _id: element._id, cliente: element.cliente, datalimp: element.datalimp, datarevi: element.datarevi, cadastro: element.cadastro, classificacao: element.classificacao, tipo: element.tipo, nome_plano: plano.nome, mensalidade: plano.mensalidade, nome: element.nome, endereco: element.endereco, area: element.area, qtdmod: element.qtdmod })
-                            qu++
-                            if (usina.length = qu) {
-                                res.render('cliente/usina', { cliente, lista_usina, lista_plano })
-                            }
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Houve uma falha ao encontrar o plano.')
-                            res.redirect('/cliente/usina/' + req.params.id)
-                        })
+    var nome_plano
+    var mensalidade
+    Plano.find({ user: id }).lean().then((lista_plano) => {
+    Cliente.findOne({ user: id, _id: req.params.id }).lean().then((cliente) => {
+        Usina.find({ user: id, cliente: req.params.id }).then((usina) => {
+            console.log('usina=>' + usina)
+            // if (typeof usina != 'unedined' && usina != '') {
+            usina.forEach((element) => {
+                console.log('element.plano=>'+element.plano)
+                if (naoVazio(element.plano)) {
+                    Plano.findOne({ _id: element.plano }).then((plano) => {
+                        nome_plano = plano.nome
+                        mensalidade = plano.mensalidade
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Houve uma falha ao encontrar o plano.')
+                        res.redirect('/cliente/usinas/' + req.params.id)
                     })
-                } else {
-                    res.render('cliente/usina', { cliente, lista_plano })
                 }
-            }).catch((err) => {
-                req.flash('error_msg', 'Houve uma falha ao encontrar o cliente.')
-                res.redirect('/cliente/usina/' + req.params.id)
+                qu++
+                lista_usina.push({ _id: element._id, cliente: element.cliente, datalimp: element.datalimp, datarevi: element.datarevi, cadastro: element.cadastro, classificacao: element.classificacao, tipo: element.tipo, nome_plano, mensalidade, nome: element.nome, endereco: element.endereco, area: element.area, qtdmod: element.qtdmod })
+                console.log('qu=>' + qu)
+                console.log('usina.length=>' + usina.length)
+                if (usina.length == qu) {
+                    res.render('cliente/usina', { cliente, lista_usina, lista_plano })
+                }
+
             })
+            // } else {
+            //     res.render('cliente/usina', { cliente, lista_plano })
+            // }
+
         }).catch((err) => {
             req.flash('error_msg', 'Houve uma falha ao encontrar a usina.')
-            res.redirect('/cliente/usina/' + req.params.id)
+            res.redirect('/cliente/usinas/' + req.params.id)
         })
     }).catch((err) => {
+        req.flash('error_msg', 'Houve uma falha ao encontrar o cliente.')
+        res.redirect('/cliente/usinas/' + req.params.id)
+    })
+    }).catch((err) => {
         req.flash('error_msg', 'Houve uma falha ao encontrar o plano.')
-        res.redirect('/cliente/usina/' + req.params.id)
+        res.redirect('/cliente/usinas/' + req.params.id)
     })
 })
 
@@ -292,12 +304,17 @@ router.post('/addusina/', ehAdmin, (req, res) => {
     } else {
         id = user
     }
+    var plano = {}
+    var usina = {}
     var cadastro = dataHoje()
     var datalimp = dataMensagem(setData(dataHoje(), 182))
     var buscalimp = dataBusca(setData(dataHoje(), 182))
     var datarevi = dataMensagem(setData(dataHoje(), 30))
     var buscarevi = dataBusca(setData(dataHoje(), 30))
-    new Usina({
+
+    console.log('req.body.plano=>' + req.body.plano)
+
+    const corpo = {
         user: id,
         nome: req.body.nome,
         endereco: req.body.endereco,
@@ -310,9 +327,17 @@ router.post('/addusina/', ehAdmin, (req, res) => {
         datalimp: datalimp,
         buscalimp: buscalimp,
         datarevi: datarevi,
-        buscarevi: buscarevi,
-        plano: req.body.plano
-    }).save().then(() => {
+        buscarevi: buscarevi
+    }
+
+    if (req.body.plano != '' && req.body.plano != 'Serviço Único') {
+        plano = { plano: req.body.plano }
+        usina = Object.assign(plano, corpo)
+    } else {
+        usina = corpo
+    }
+
+    new Usina(usina).save().then(() => {
         req.flash('success_msg', 'Usina adcionada com sucesso.')
         res.redirect('/cliente/usinas/' + req.body.id)
     })

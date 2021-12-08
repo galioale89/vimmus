@@ -32,6 +32,7 @@ const Vistoria = mongoose.model('vistoria')
 
 const { ehAdmin } = require('../helpers/ehAdmin')
 const dataMensagem = require('../resources/dataMensagem')
+const naoVazio = require('../resources/naoVazio')
 
 router.use(express.static('public/'))
 router.use(express.static('public/upload'))
@@ -3956,8 +3957,12 @@ router.get('/novo', ehAdmin, (req, res) => {
 })
 
 router.get('/edicao/:id', ehAdmin, (req, res) => {
+    var mostraRes = 'none'
     Pessoa.findOne({ _id: req.params.id }).lean().then((pessoa) => {
-        res.render('mdo/editpessoas', { pessoa: pessoa })
+        if (pessoa.funins == 'checked'){
+            mostraRes = ''
+        }
+        res.render('mdo/editpessoas', { pessoa, mostraRes })
     }).catch((err) => {
         req.flash('error_msg', 'Houve um erro ao encontrar a pessoa.')
         res.redirect('/consulta')
@@ -4954,7 +4959,8 @@ router.post('/novo', uploadfoto.single('foto'), ehAdmin, (req, res) => {
             funele: funele,
             foto: foto,
             ehVendedor: ehVendedor,
-            percom: percom
+            percom: percom,
+            seq: req.body.seq
             //certificado: req.file.filename
         }
         new Pessoa(pessoa).save().then(() => {
@@ -5167,7 +5173,7 @@ router.post('/editar', uploadfoto.single('foto'), ehAdmin, (req, res) => {
             pessoa.funins = funins
             pessoa.insres = insres
             pessoa.funele = funele
-            console.log('req.file=>' + req.file)
+            // console.log('req.file=>' + req.file)
             if (req.file != null) {
                 pessoa.foto = req.file.filename
             } else {
@@ -5175,6 +5181,7 @@ router.post('/editar', uploadfoto.single('foto'), ehAdmin, (req, res) => {
             }
             pessoa.percom = req.body.percom
             pessoa.ehVendedor = ehVendedor
+            pessoa.seq = req.body.seq
 
             Pessoa(pessoa).save().then(() => {
                 Pessoa.findOne({ _id: req.body.id }).lean().then((pessoa) => {

@@ -120,7 +120,8 @@
                 </div>
                 <div class="col-md-2">
                     <select class='form-select form-select-sm' name='plano'>
-                        <option class="fw-bold">{{nome_plano}}</option>
+                        <option>Serviço Único</option>
+                        <option>{{nome_plano}}</option>
                         {{#each ../lista_plano}}
                         <option value='{{this._id}}'>{{this.nome}}</option>
                         {{/each}}
@@ -215,8 +216,9 @@
                 </div>
                 <div class="col-md-3">
                     <select class='form-select form-select-sm' name='plano'>
+                        <option>Serviço Único</option>
                         {{#each lista_plano}}
-                        <option class="fw-bold" value='{{_id}}'>{{nome}}</option>
+                        <option value='{{_id}}'>{{nome}}</option>
                         {{else}}
                         <option>Não existem planos cadastrados.</option>
                         {{/each}}
