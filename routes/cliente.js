@@ -38,7 +38,7 @@ router.get('/consulta', ehAdmin, (req, res) => {
         res.render('cliente/findclientes', { clientes: clientes })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar os clientes.')
-        res.redirect('/Cliente/novo')
+        res.redirect('/cliente/novo')
     })
 })
 
@@ -356,7 +356,9 @@ router.post('/editusina', (req, res) => {
         usina.qtdmod = req.body.qtdmod
         usina.classificacao = req.body.classUsina
         usina.tipo = req.body.tipoUsina
-        usina.plano = req.body.plano
+        if (naoVazio(req.body.plano) && req.body.plano != 'Serviço Único'){
+            usina.plano = req.body.plano
+        }
         usina.save().then(() => {
             req.flash('succes_msg', 'Usina salva com sucesso.')
             res.redirect('/cliente/usinas/' + req.body.idcliente)
