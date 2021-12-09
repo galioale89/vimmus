@@ -96,12 +96,17 @@
         {{#if listaAndamento}}
         <ul class="nav nav-tabs mb-2">
             <li class="nav-item">
-                <a class="nav-link" aria-current="page" style="color: black" href="/gerenciamento/emandamento/lista"><h5 class="mt-2 titulo-inicio">Lista de Obras em Operação</h5></a>
+                <a class="nav-link" aria-current="page" style="color: black" href="/gerenciamento/emandamento/lista">
+                    <h5 class="mt-2 titulo-inicio">Lista de Obras em Operação</h5>
+                </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" aria-current="page" style="color: black"  href="/gerenciamento/emandamento/agenda"><h5 class="mt-2 titulo-inicio">Agenda</h5></a>
-            </li>        
-        </ul>        
+                <a class="nav-link active" aria-current="page" style="color: black"
+                    href="/gerenciamento/emandamento/agenda">
+                    <h5 class="mt-2 titulo-inicio">Agenda</h5>
+                </a>
+            </li>
+        </ul>
         {{else}}
         <div class="col-md-4">
             <h5 class="mt-2 titulo-inicio">Agenda {{pessoa.nome}}</h5>
@@ -116,66 +121,66 @@
         <div class='col'>
             {{#if pessoa._id}}
             <form action="/gerenciamento/vermais" method="post">
-            <input type='hidden' name='id' value='{{pessoa._id}}'>
-            {{else}}
-            <form action="/gerenciamento/emandamento" method="post">
-            {{/if}}
-            {{#each todasCores}}
-            <input type='hidden' name='cores' value='{{color}}'>
-            {{/each}}
-            <input type='hidden' name='cores' value='black'>
-                <div class='row'>
-                    <div class='col-md-8'>
-                        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                            <div class="btn-group" role="group" aria-label="First group">
-                                <input type='hidden' name='mes' id='mes' value=''>
-                                <button type="submit" id='selectjan' onclick="selectJan()"
-                                    class="btn btn-sm btn-primary">Janeiro</button>
-                                <button type="submit" id='selectfev' onclick="selectFev()"
-                                    class="btn btn-sm btn-primary">Fevereiro</button>
-                                <button type="submit" id='selectmar' onclick="selectMar()"
-                                    class="btn btn-sm btn-primary">Março</button>
-                                <button type="submit" id='selectabr' onclick="selectAbr()"
-                                    class="btn btn-sm btn-primary">Abril</button>
-                                <button type="submit" id='selectmai' onclick="selectMai()"
-                                    class="btn btn-sm btn-primary">Maio</button>
-                                <button type="submit" id='selectjun' onclick="selectJun()"
-                                    class="btn btn-sm btn-primary">Junho</button>
-                                <button type="submit" id='selectjul' onclick="selectJul()"
-                                    class="btn btn-sm btn-primary">Julho</button>
-                                <button type="submit" id='selectago' onclick="selectAgo()"
-                                    class="btn btn-sm btn-primary">Agosto</button>
-                                <button type="submit" id='selectset' onclick="selectSet()"
-                                    class="btn btn-sm btn-primary">Setembro</button>
-                                <button type="submit" id='selectout' onclick="selectOut()"
-                                    class="btn btn-sm btn-primary">Outubro</button>
-                                <button type="submit" id='selectnov' onclick="selectNov()"
-                                    class="btn btn-sm btn-primary">Novembro</button>
-                                <button type="submit" id='selectdez' onclick="selectDez()"
-                                    class="btn btn-sm btn-primary">Dezembro</button>
+                <input type='hidden' name='id' value='{{pessoa._id}}'>
+                {{else}}
+                <form action="/gerenciamento/emandamento" method="post">
+                    {{/if}}
+                    {{#each todasCores}}
+                    <input type='hidden' name='cores' value='{{color}}'>
+                    {{/each}}
+                    <input type='hidden' name='cores' value='black'>
+                    <div class='row'>
+                        <div class='col-md-8'>
+                            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                                <div class="btn-group" role="group" aria-label="First group">
+                                    <input type='hidden' name='mes' id='mes' value=''>
+                                    <button type="submit" id='selectjan' onclick="selectJan()"
+                                        class="btn btn-sm btn-primary">Janeiro</button>
+                                    <button type="submit" id='selectfev' onclick="selectFev()"
+                                        class="btn btn-sm btn-primary">Fevereiro</button>
+                                    <button type="submit" id='selectmar' onclick="selectMar()"
+                                        class="btn btn-sm btn-primary">Março</button>
+                                    <button type="submit" id='selectabr' onclick="selectAbr()"
+                                        class="btn btn-sm btn-primary">Abril</button>
+                                    <button type="submit" id='selectmai' onclick="selectMai()"
+                                        class="btn btn-sm btn-primary">Maio</button>
+                                    <button type="submit" id='selectjun' onclick="selectJun()"
+                                        class="btn btn-sm btn-primary">Junho</button>
+                                    <button type="submit" id='selectjul' onclick="selectJul()"
+                                        class="btn btn-sm btn-primary">Julho</button>
+                                    <button type="submit" id='selectago' onclick="selectAgo()"
+                                        class="btn btn-sm btn-primary">Agosto</button>
+                                    <button type="submit" id='selectset' onclick="selectSet()"
+                                        class="btn btn-sm btn-primary">Setembro</button>
+                                    <button type="submit" id='selectout' onclick="selectOut()"
+                                        class="btn btn-sm btn-primary">Outubro</button>
+                                    <button type="submit" id='selectnov' onclick="selectNov()"
+                                        class="btn btn-sm btn-primary">Novembro</button>
+                                    <button type="submit" id='selectdez' onclick="selectDez()"
+                                        class="btn btn-sm btn-primary">Dezembro</button>
+                                </div>
                             </div>
                         </div>
+                        {{!-- <div style="width: 10px;text-align: left;font-size: 14px;" class="mt-2">Ano:</div>
+                        <div class='col-md-1'>
+                            <select class='form-select form-select-sm' style="margin-left: 20px;" name='anoinicio'>
+                                <option>{{ano_iniform}}</option>
+                                <option>2021</option>
+                                <option>2022</option>
+                                <option>2023</option>
+                            </select>
+                        </div>
+                        <div style="width: 5px;font-size: 14px;" class="mt-2">a</div>
+                        <div class='col-md-1'>
+                            <select class='form-select form-select-sm' name='anofim'>
+                                <option>{{ano_fimform}}</option>
+                                <option>2021</option>
+                                <option>2022</option>
+                                <option>2023</option>
+                            </select>
+                        </div> --}}
                     </div>
-                    {{!-- <div style="width: 10px;text-align: left;font-size: 14px;" class="mt-2">Ano:</div>
-                    <div class='col-md-1'>
-                        <select class='form-select form-select-sm' style="margin-left: 20px;" name='anoinicio'>
-                            <option>{{ano_iniform}}</option>
-                            <option>2021</option>
-                            <option>2022</option>
-                            <option>2023</option>
-                        </select>
-                    </div>
-                    <div style="width: 5px;font-size: 14px;" class="mt-2">a</div>
-                    <div class='col-md-1'>
-                        <select class='form-select form-select-sm' name='anofim'>
-                            <option>{{ano_fimform}}</option>
-                            <option>2021</option>
-                            <option>2022</option>
-                            <option>2023</option>
-                        </select>
-                    </div>                     --}}
-                </div>
-            </form>
+                </form>
         </div>
     </div>
     <br>
@@ -212,42 +217,48 @@
                 <td style="font-size: 10px;">1<br>
                     {{#each dia01}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">2<br>
                     {{#each dia02}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">3<br>
                     {{#each dia03}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">4<br>
                     {{#each dia04}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">5<br>
                     {{#each dia05}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">6<br>
                     {{#each dia06}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
 
                     {{/each}}
@@ -255,7 +266,8 @@
                 <td style="font-size: 10px;">7<br>
                     {{#each dia07}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
@@ -265,49 +277,56 @@
                 <td style="font-size: 10px;">8<br>
                     {{#each dia08}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">9<br>
                     {{#each dia09}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">10<br>
                     {{#each dia10}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">11<br>
                     {{#each dia11}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">12<br>
                     {{#each dia12}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">13<br>
                     {{#each dia13}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">14<br>
                     {{#each dia14}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
@@ -317,49 +336,56 @@
                 <td style="font-size: 10px;">15<br>
                     {{#each dia15}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">16<br>
                     {{#each dia16}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">17<br>
                     {{#each dia17}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">18<br>
                     {{#each dia18}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">19<br>
                     {{#each dia19}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">20<br>
                     {{#each dia20}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">21<br>
                     {{#each dia21}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
@@ -369,66 +395,77 @@
                 <td style="font-size: 10px;">22<br>
                     {{#each dia22}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">23<br>
                     {{#each dia23}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">24<br>
                     {{#each dia24}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">25<br>
                     {{#each dia25}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">26<br>
                     {{#each dia26}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">27<br>
                     {{#each dia27}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">28<br>
                     {{#each dia28}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
             </tr>
+            {{#if fevereiro}}
+            {{else}}
             <tr>
                 <td>5</td>
                 <td style="font-size: 10px;">29<br>
                     {{#each dia29}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
                 <td style="font-size: 10px;">30<br>
                     {{#each dia30}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
@@ -436,10 +473,12 @@
                 <td style="font-size: 10px;">31<br>
                     {{#each dia31}}
                     <div style='color: white;line-height: 15px;'>
-                        <a href='/gerenciamento/proposta/{{id}}' class='vermais' style='background-color: {{cor}}'>{{cliente}}</a>
+                        <a href='/gerenciamento/proposta/{{id}}' class='vermais'
+                            style='background-color: {{cor}}'>{{cliente}}</a>
                     </div>
                     {{/each}}
                 </td>
+                {{/if}}
                 {{/if}}
             </tr>
         </table>

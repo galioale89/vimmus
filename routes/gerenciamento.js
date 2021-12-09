@@ -1075,6 +1075,7 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
     var mestitulo
     var anotitulo
     var trintaeum = false
+    var fevereiro = false
     var dia
     var mes
     var dif
@@ -1096,6 +1097,7 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
             break;
         case '02':
             mestitulo = 'Fevereiro '
+            fevereiro = true
             break;
         case '03':
             mestitulo = 'Março '
@@ -1343,7 +1345,7 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
                                                     dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
                                                     dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
                                                     dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
-                                                    mestitulo, anotitulo, trintaeum, todasCores, listaAndamento,
+                                                    mestitulo, anotitulo, trintaeum, fevereiro, todasCores, listaAndamento,
                                                     todos_responsaveis, todos_clientes, todas_empresas
                                                 })
 
@@ -1449,6 +1451,7 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
     var mestitulo
     var anotitulo
     var trintaeum = false
+    var fevereiro = false
     var dia
     var mes
     var dif
@@ -1470,6 +1473,7 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
             break;
         case 'Fevereiro':
             meshoje = '02'
+            fevereiro = true
             break;
         case 'Março':
             meshoje = '03'
@@ -1672,12 +1676,12 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
                             }
                         }
                         c++
-
+                        console.log('fevereiro=>'+fevereiro)
                         res.render('principal/vermais', {
                             dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
                             dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
                             dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
-                            mestitulo, anotitulo, trintaeum, todasCores, listaAndamento: true
+                            mestitulo, anotitulo, trintaeum, fevereiro, todasCores, listaAndamento: true
                         })
 
                     }).catch((err) => {
@@ -2984,6 +2988,8 @@ router.get('/agenda/', ehAdmin, (req, res) => {
         id = user
     }
 
+    var trintaeum = false
+    var fevereiro = false
     var dia
     var mes_busca
     var hoje = dataHoje()
@@ -2992,6 +2998,7 @@ router.get('/agenda/', ehAdmin, (req, res) => {
     if (mes < 10) {
         mes = '0' + mes
     }
+
     var dataini = ano + mes + '01'
     var datafim = ano + mes + '31'
 
@@ -3050,39 +3057,47 @@ router.get('/agenda/', ehAdmin, (req, res) => {
     switch (String(mes)) {
         case '01': janeiro = 'selected';
             mestitulo = 'Janeiro'
+            trintaeum = true
             break;
         case '02': fevereiro = 'selected';
             mestitulo = 'Fevereiro'
+            fevereiro = true
             break;
         case '03': marco = 'selected';
             mestitulo = 'Março'
+            trintaeum = true
             break;
         case '04': abril = 'selected';
             mestitulo = 'Abril'
             break;
         case '05': maio = 'selected';
             mestitulo = 'Maio'
+            trintaeum = true
             break;
         case '06': junho = 'selected';
             mestitulo = 'Junho'
             break;
         case '07': julho = 'selected';
             mestitulo = 'Julho'
+            trintaeum = true
             break;
         case '08': agosto = 'selected';
             mestitulo = 'Agosto'
+            trintaeum = true
             break;
         case '09': setembro = 'selected';
             mestitulo = 'Setembro'
             break;
         case '10': outubro = 'selected';
             mestitulo = 'Outubro'
+            trintaeum = true
             break;
         case '11': novembro = 'selected';
             mestitulo = 'Novembro'
             break;
         case '12': dezembro = 'selected';
             mestitulo = 'Dezembro'
+            trintaeum = true
             break;
     }
 
@@ -3210,7 +3225,8 @@ router.get('/agenda/', ehAdmin, (req, res) => {
                                 tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
                                 tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
                                 tarefas29, tarefas30, tarefas31, checkTesk: 'checked', checkInst: 'unchecked',
-                                mes, ano, cliente, mestitulo, janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro, ehManutencao: true
+                                mes, ano, cliente, mestitulo, janeiro, fevereiro, marco, abril, maio, junho, 
+                                julho, agosto, setembro, outubro, novembro, dezembro, ehManutencao: true, trintaeum, fevereiro
                             })
                         }
                     })
@@ -3222,7 +3238,8 @@ router.get('/agenda/', ehAdmin, (req, res) => {
                     tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
                     tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
                     tarefas29, tarefas30, tarefas31, checkTesk: 'checked', checkInst: 'unchecked',
-                    mes, ano, cliente, mestitulo, janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro, ehManutencao: true
+                    mes, ano, cliente, mestitulo, janeiro, fevereiro, marco, abril, maio, junho, 
+                    julho, agosto, setembro, outubro, novembro, dezembro, ehManutencao: true, trintaeum, fevereiro
                 })
             }
 
@@ -3630,6 +3647,7 @@ router.post('/vermais/', ehAdmin, (req, res) => {
     var dif1
     var meshoje
     var trintaeum = false
+    var fevereiro = false
     var mes = 0
     var dif = 0
     var dia = 0
@@ -3647,6 +3665,7 @@ router.post('/vermais/', ehAdmin, (req, res) => {
             break;
         case 'Fevereiro':
             meshoje = '02'
+            fevereiro = true
             break;
         case 'Março':
             meshoje = '03'
@@ -3879,7 +3898,7 @@ router.post('/vermais/', ehAdmin, (req, res) => {
                                 dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
                                 dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
                                 dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
-                                mestitulo, anotitulo, pessoa, trintaeum, todasCores
+                                mestitulo, anotitulo, pessoa, trintaeum, fevereiro, todasCores
                             })
                         }
                     }).catch((err) => {
@@ -6871,22 +6890,28 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
     }
     var ano = req.body.mesano
     var mestitulo = ''
+    var trintaeum = false
+    var fevereiro = false
 
     switch (String(req.body.messel)) {
         case 'Janeiro':
             dataini = ano + '01' + '01'
             datafim = ano + '01' + '31'
             mestitulo = 'Janeiro '
+            trintaeum = true
+            trintaeum = true
             break;
         case 'Fevereiro':
             dataini = ano + '02' + '01'
             datafim = ano + '02' + '28'
             mestitulo = 'Fevereiro '
+            fevereiro = true
             break;
         case 'Março':
             dataini = ano + '03' + '01'
             datafim = ano + '03' + '31'
             mestitulo = 'Março /'
+            trintaeum = true
             break;
         case 'Abril':
             dataini = ano + '04' + '01'
@@ -6897,6 +6922,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
             dataini = ano + '05' + '01'
             datafim = ano + '05' + '31'
             mestitulo = 'Maio '
+            trintaeum = true
             break;
         case 'Junho':
             dataini = ano + '06' + '01'
@@ -6907,11 +6933,13 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
             dataini = ano + '07' + '01'
             datafim = ano + '07' + '31'
             mestitulo = 'Julho '
+            trintaeum = true
             break;
         case 'Agosto':
             dataini = ano + '08' + '01'
             datafim = ano + '08' + '30'
             mestitulo = 'Agosto '
+            trintaeum = true
             break;
         case 'Setembro':
             dataini = ano + '09' + '01'
@@ -6922,6 +6950,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
             dataini = ano + '10' + '01'
             datafim = ano + '10' + '31'
             mestitulo = 'Outubro '
+            trintaeum = true
             break;
         case 'Novembro':
             dataini = ano + '11' + '01'
@@ -6932,6 +6961,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
             dataini = ano + '12' + '01'
             datafim = ano + '12' + '31'
             mestitulo = 'Dezembro '
+            trintaeum = true
             break;
         default:
             dataini = ano + '01' + '01'
@@ -8095,7 +8125,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                     tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
                     tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
                     tarefas29, tarefas30, tarefas31, checkTesk: 'unchecked', checkInst: 'checked',
-                    mes: req.body.messel, ano, cliente, mestitulo
+                    mes: req.body.messel, ano, cliente, mestitulo, trintaeum, fevereiro
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar o cliente.')
@@ -8233,7 +8263,8 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                                     tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
                                     tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
                                     tarefas29, tarefas30, tarefas31, checkTesk: 'checked', checkInst: 'unchecked',
-                                    mes, ano: req.body.mesano, cliente, mestitulo, janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro, ehManutencao: true
+                                    mes, ano: req.body.mesano, cliente, mestitulo, janeiro, fevereiro, marco, abril, 
+                                    maio, junho, julho, agosto, setembro, outubro, novembro, dezembro, ehManutencao: true, trintaeum, fevereiro
                                 })
                             }
                         })
@@ -8245,7 +8276,8 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                         tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
                         tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
                         tarefas29, tarefas30, tarefas31, checkTesk: 'checked', checkInst: 'unchecked',
-                        mes, ano: req.body.mesano, cliente, mestitulo, janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro, ehManutencao: true
+                        mes, ano: req.body.mesano, cliente, mestitulo, janeiro, fevereiro, marco, abril, 
+                        maio, junho, julho, agosto, setembro, outubro, novembro, dezembro, ehManutencao: true, trintaeum, fevereiro
                     })
                 }
 
