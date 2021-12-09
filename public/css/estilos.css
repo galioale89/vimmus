@@ -196,8 +196,8 @@ border: white 1px solid;
 .caixa-confirma {
 margin-left: 300px;
 margin-top: 40px;
-width: 700px; 
-height: 470px; 
+width: fit-content; 
+height: fit-content; 
 border: solid 1px; 
 border-color: rgb(201, 193, 193); 
 border-radius: 5px;

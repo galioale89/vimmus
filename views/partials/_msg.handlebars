@@ -12,6 +12,13 @@
 </div>
 {{/if}}
 
+{{#if aviso_msg}}
+<div class='alert alert-warning alert-dismissible fade show' role='alert' style="width: 100%;">
+  <strong>{{aviso_msg}}</strong>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/if}}
+
 {{#each erros}}
 <div class='alert alert-danger alert-dismissible fade show' role='alert'>
   <strong>{{texto}}</strong>

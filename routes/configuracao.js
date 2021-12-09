@@ -5,9 +5,11 @@ const mongoose = require('mongoose')
 
 require('../model/Configuracao')
 require('../model/Empresa')
+require('../model/Proposta')
 
 const Configuracao = mongoose.model('configuracao')
 const Empresa = mongoose.model('empresa')
+const Proposta = mongoose.model('proposta')
 
 //Configurando pasta de imagens 
 router.use(express.static('imagens'))
@@ -189,6 +191,34 @@ router.get('/removeconfiguracao/:id', ehAdmin, (req, res) => {
     }).catch(() => {
         req.flash('error_msg', 'Não foi possível remover a configuração.')
         res.redirect('/configurcao/consultaempresa')
+    })
+})
+
+router.get('/confirmaexclusao/:id', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+    Proposta.find({ user: id, empresa: req.params.id }).then((proposta) => {
+        if (naoVazio(proposta)) {
+            req.flash('aviso_msg', 'Empresa vinculada a proposta(s). Impossível excluir.')
+            res.redirect('/configuracao/consultaempresa')
+        } else {
+            Empresa.findOne({ user: id, _id: req.params.id }).lean().then((empresa) => {
+                res.render('configuracao/confirmaexclusao', { empresa })
+            }).catch((err) => {
+                req.flash('error_msg', 'Houve um erro ao encontrar a Empresa.')
+                res.redirect('/configuracao/consultaempresa')
+            })
+        }
+    }).catch((err) => {
+        req.flash('error_msg', 'Houve um erro ao encontrar a Proposta.')
+        res.redirect('/menu')
     })
 })
 

@@ -6,10 +6,12 @@ require('../model/Cliente')
 require('../model/Projeto')
 require('../model/Tarefas')
 require('../model/Plano')
+require('../model/Proposta')
 const Cliente = mongoose.model('cliente')
 const Usina = mongoose.model('usina')
 const Tarefa = mongoose.model('tarefas')
 const Plano = mongoose.model('plano')
+const Proposta = mongoose.model('proposta')
 
 
 const naoVazio = require('../resources/naoVazio')
@@ -234,42 +236,42 @@ router.get('/usinas/:id', ehAdmin, (req, res) => {
     var nome_plano
     var mensalidade
     Plano.find({ user: id }).lean().then((lista_plano) => {
-    Cliente.findOne({ user: id, _id: req.params.id }).lean().then((cliente) => {
-        Usina.find({ user: id, cliente: req.params.id }).then((usina) => {
-            console.log('usina=>' + usina)
-            if (typeof usina != 'unedined' && usina != '') {
-            usina.forEach((element) => {
-                console.log('element.plano=>'+element.plano)
-                if (naoVazio(element.plano)) {
-                    Plano.findOne({ _id: element.plano }).then((plano) => {
-                        nome_plano = plano.nome
-                        mensalidade = plano.mensalidade
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Houve uma falha ao encontrar o plano.')
-                        res.redirect('/cliente/usinas/' + req.params.id)
+        Cliente.findOne({ user: id, _id: req.params.id }).lean().then((cliente) => {
+            Usina.find({ user: id, cliente: req.params.id }).then((usina) => {
+                console.log('usina=>' + usina)
+                if (typeof usina != 'unedined' && usina != '') {
+                    usina.forEach((element) => {
+                        console.log('element.plano=>' + element.plano)
+                        if (naoVazio(element.plano)) {
+                            Plano.findOne({ _id: element.plano }).then((plano) => {
+                                nome_plano = plano.nome
+                                mensalidade = plano.mensalidade
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Houve uma falha ao encontrar o plano.')
+                                res.redirect('/cliente/usinas/' + req.params.id)
+                            })
+                        }
+                        qu++
+                        lista_usina.push({ _id: element._id, cliente: element.cliente, datalimp: element.datalimp, datarevi: element.datarevi, cadastro: element.cadastro, classificacao: element.classificacao, tipo: element.tipo, nome_plano, mensalidade, nome: element.nome, endereco: element.endereco, area: element.area, qtdmod: element.qtdmod })
+                        console.log('qu=>' + qu)
+                        console.log('usina.length=>' + usina.length)
+                        if (usina.length == qu) {
+                            res.render('cliente/usina', { cliente, lista_usina, lista_plano })
+                        }
+
                     })
-                }
-                qu++
-                lista_usina.push({ _id: element._id, cliente: element.cliente, datalimp: element.datalimp, datarevi: element.datarevi, cadastro: element.cadastro, classificacao: element.classificacao, tipo: element.tipo, nome_plano, mensalidade, nome: element.nome, endereco: element.endereco, area: element.area, qtdmod: element.qtdmod })
-                console.log('qu=>' + qu)
-                console.log('usina.length=>' + usina.length)
-                if (usina.length == qu) {
-                    res.render('cliente/usina', { cliente, lista_usina, lista_plano })
+                } else {
+                    res.render('cliente/usina', { cliente, lista_plano })
                 }
 
+            }).catch((err) => {
+                req.flash('error_msg', 'Houve uma falha ao encontrar a usina.')
+                res.redirect('/cliente/usinas/' + req.params.id)
             })
-            } else {
-                 res.render('cliente/usina', { cliente, lista_plano })
-            }
-
         }).catch((err) => {
-            req.flash('error_msg', 'Houve uma falha ao encontrar a usina.')
+            req.flash('error_msg', 'Houve uma falha ao encontrar o cliente.')
             res.redirect('/cliente/usinas/' + req.params.id)
         })
-    }).catch((err) => {
-        req.flash('error_msg', 'Houve uma falha ao encontrar o cliente.')
-        res.redirect('/cliente/usinas/' + req.params.id)
-    })
     }).catch((err) => {
         req.flash('error_msg', 'Houve uma falha ao encontrar o plano.')
         res.redirect('/cliente/usinas/' + req.params.id)
@@ -421,12 +423,34 @@ router.get('/confirmaexclusao/:id', ehAdmin, (req, res) => {
     } else {
         id = user
     }
-    Cliente.findOne({ user: id, _id: req.params.id }).lean().then((cliente) => {
-        res.render('cliente/confirmaexclusao', { cliente: cliente })
+    Proposta.find({ user: id, cliente: req.params.id }).then((proposta) => {
+        if (naoVazio(proposta)) {
+            req.flash('aviso_msg', 'Cliente vinculado a proposta(s). Impossível excluir.')
+            res.redirect('/cliente/consulta')
+        } else {
+            Cliente.findOne({ user: id, _id: req.params.id }).lean().then((cliente) => {
+                res.render('cliente/confirmaexclusao', { cliente: cliente })
+            }).catch((err) => {
+                req.flash('error_msg', 'Houve um erro ao encontrar o Cliente.')
+                res.redirect('/cliente/consulta')
+            })
+        }
+    }).catch((err) => {
+        req.flash('error_msg', 'Houve um erro ao encontrar a Proposta.')
+        res.redirect('/menu')
     })
 })
 
 router.get('/remover/:id', ehAdmin, (req, res) => {
+    const { user } = req.user
+    const { _id } = req.user
+    var id
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+
     Cliente.findOneAndDelete({ _id: req.params.id }).then(() => {
         req.flash('success_msg', 'Cliente excluido com sucesso')
         res.redirect('/cliente/consulta')
@@ -434,6 +458,7 @@ router.get('/remover/:id', ehAdmin, (req, res) => {
         req.flash('error_msg', 'Houve um erro ao excluir a Cliente.')
         res.redirect('/consulta')
     })
+
 })
 
 router.post('/filtrar', ehAdmin, (req, res) => {

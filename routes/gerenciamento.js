@@ -1676,7 +1676,7 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
                             }
                         }
                         c++
-                        console.log('fevereiro=>'+fevereiro)
+                        console.log('fevereiro=>' + fevereiro)
                         res.render('principal/vermais', {
                             dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
                             dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
@@ -1943,12 +1943,17 @@ router.get('/compra/:id', ehAdmin, (req, res) => {
                     Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
                         Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
                             Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
+                                    Fornecedor.findOne({ _id: compra.fornecedor }).lean().then((for_pro) => {
                                 Fornecedor.find({ user: id }).lean().then((fornecedores) => {
-                                    res.render('principal/compra', { cliente_proposta, proposta, compra, documento, vistoria, lista_equipe, posvenda, fornecedores })
+                                    res.render('principal/compra', { cliente_proposta, proposta, for_pro, compra, documento, vistoria, lista_equipe, posvenda, fornecedores })
                                 }).catch((err) => {
-                                    req.flash('error_msg', 'Não foi possível encontrar fornecedors.')
+                                    req.flash('error_msg', 'Não foi possível encontrar o fornecedor.')
                                     res.redirect('/menu')
                                 })
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Não foi possível encontrar o fornecedor.')
+                                res.redirect('/menu')
+                            })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
                                 res.redirect('/menu')
@@ -3225,7 +3230,7 @@ router.get('/agenda/', ehAdmin, (req, res) => {
                                 tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
                                 tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
                                 tarefas29, tarefas30, tarefas31, checkTesk: 'checked', checkInst: 'unchecked',
-                                mes, ano, cliente, mestitulo, janeiro, fevereiro, marco, abril, maio, junho, 
+                                mes, ano, cliente, mestitulo, janeiro, fevereiro, marco, abril, maio, junho,
                                 julho, agosto, setembro, outubro, novembro, dezembro, ehManutencao: true, trintaeum, fevereiro
                             })
                         }
@@ -3238,7 +3243,7 @@ router.get('/agenda/', ehAdmin, (req, res) => {
                     tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
                     tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
                     tarefas29, tarefas30, tarefas31, checkTesk: 'checked', checkInst: 'unchecked',
-                    mes, ano, cliente, mestitulo, janeiro, fevereiro, marco, abril, maio, junho, 
+                    mes, ano, cliente, mestitulo, janeiro, fevereiro, marco, abril, maio, junho,
                     julho, agosto, setembro, outubro, novembro, dezembro, ehManutencao: true, trintaeum, fevereiro
                 })
             }
@@ -4643,13 +4648,13 @@ router.post('/pedido', ehAdmin, (req, res) => {
                         res.redirect('/gerenciamento/compra/' + req.body.id)
                     })
                 } else {
-                    compra.fornecedor = req.body.fornecedor,
-                        compra.feitopedido = true,
-                        compra.data = dataBusca(dataHoje())
                     if (propostafile != '') {
                         compra.pedido = propostafile
                     }
-                    compra.dtcadastro = String(req.body.dtcadastro)
+                    compra.fornecedor = req.body.fornecedor
+                    compra.feitopedido = true
+                    compra.data = dataBusca(dataHoje())
+                    compra.dtcadastro= String(req.body.dtcadastro)
                     compra.feitopedido = true,
                         compra.save().then(() => {
                             req.flash('success_msg', 'Documento salvo com sucesso.')
@@ -6379,6 +6384,7 @@ router.get('/entrega/:id', ehAdmin, (req, res) => {
                             user: id,
                             nome: cliente.nome,
                             cliente: proposta.cliente,
+                            endereco: proposta.endereco,
                             area: 0,
                             qtdmod: 0,
                             cadastro: cadastro,
@@ -8263,7 +8269,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                                     tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
                                     tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
                                     tarefas29, tarefas30, tarefas31, checkTesk: 'checked', checkInst: 'unchecked',
-                                    mes, ano: req.body.mesano, cliente, mestitulo, janeiro, fevereiro, marco, abril, 
+                                    mes, ano: req.body.mesano, cliente, mestitulo, janeiro, fevereiro, marco, abril,
                                     maio, junho, julho, agosto, setembro, outubro, novembro, dezembro, ehManutencao: true, trintaeum, fevereiro
                                 })
                             }
@@ -8276,7 +8282,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                         tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
                         tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
                         tarefas29, tarefas30, tarefas31, checkTesk: 'checked', checkInst: 'unchecked',
-                        mes, ano: req.body.mesano, cliente, mestitulo, janeiro, fevereiro, marco, abril, 
+                        mes, ano: req.body.mesano, cliente, mestitulo, janeiro, fevereiro, marco, abril,
                         maio, junho, julho, agosto, setembro, outubro, novembro, dezembro, ehManutencao: true, trintaeum, fevereiro
                     })
                 }
