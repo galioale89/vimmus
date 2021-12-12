@@ -15,6 +15,8 @@ require('../model/Fornecedor')
 require('../model/AtvTelhado')
 require('../model/AtvAterramento')
 require('../model/AtvInversor')
+require('../model/Atividade')
+require('../model/Tarefas')
 
 const express = require('express')
 const router = express.Router()
@@ -77,6 +79,8 @@ const Fornecedor = mongoose.model('fornecedor')
 const AtvTelhado = mongoose.model('atvTelhado')
 const AtvInversor = mongoose.model('atvInversor')
 const AtvAterramento = mongoose.model('atvAterramento')
+const Atividade = mongoose.model('atividade')
+const Tarefa = mongoose.model('tarefas')
 
 const comparaDatas = require('../resources/comparaDatas')
 const dataBusca = require('../resources/dataBusca')
@@ -1676,7 +1680,7 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
                             }
                         }
                         c++
-                        console.log('fevereiro=>' + fevereiro)
+                        //console.log('fevereiro=>' + fevereiro)
                         res.render('principal/vermais', {
                             dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
                             dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
@@ -1943,17 +1947,17 @@ router.get('/compra/:id', ehAdmin, (req, res) => {
                     Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
                         Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
                             Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
-                                    Fornecedor.findOne({ _id: compra.fornecedor }).lean().then((for_pro) => {
-                                Fornecedor.find({ user: id }).lean().then((fornecedores) => {
-                                    res.render('principal/compra', { cliente_proposta, proposta, for_pro, compra, documento, vistoria, lista_equipe, posvenda, fornecedores })
+                                Fornecedor.findOne({ _id: compra.fornecedor }).lean().then((for_pro) => {
+                                    Fornecedor.find({ user: id }).lean().then((fornecedores) => {
+                                        res.render('principal/compra', { cliente_proposta, proposta, for_pro, compra, documento, vistoria, lista_equipe, posvenda, fornecedores })
+                                    }).catch((err) => {
+                                        req.flash('error_msg', 'Não foi possível encontrar o fornecedor.')
+                                        res.redirect('/menu')
+                                    })
                                 }).catch((err) => {
                                     req.flash('error_msg', 'Não foi possível encontrar o fornecedor.')
                                     res.redirect('/menu')
                                 })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi possível encontrar o fornecedor.')
-                                res.redirect('/menu')
-                            })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
                                 res.redirect('/menu')
@@ -2367,7 +2371,7 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                                                                 //console.log('lista_equipe.insres=>' + lista_equipe.insres)
                                                                                                 Pessoa.findOne({ _id: lista_equipe.insres }).lean().then((insres) => {
                                                                                                     //console.log('insres.nome=>' + insres.nome)
-                                                                                                    console.log('encontrou ')
+                                                                                                    //console.log('encontrou ')
                                                                                                     res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, fora_ins: ins_fora, dentro_ins: ins_dentro, nome_equipe, lista_res, insres })
                                                                                                 }).catch((err) => {
                                                                                                     req.flash('error_msg', 'Falha ao encontrar a pessoa<insres>.')
@@ -2484,7 +2488,7 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                     //console.log('qi=>' + qi)
                                                     Equipe.findOne({ _id: proposta.equipe }).then((nomes) => {
                                                         //console.log('nomes=>' + nomes)
-                                                        if (nomes != '' && nomes != null && typeof nomes != 'undefined') {
+                                                        if (naoVazio(nomes)) {
                                                             for (var x = 0; x < 6; x++) {
                                                                 if (x == 0) {
                                                                     n = nomes.ins0
@@ -2529,7 +2533,6 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                                         //console.log('lista_equipe.insres=>' + lista_equipe.insres)
                                                                         Pessoa.findOne({ _id: lista_equipe.insres }).lean().then((insres) => {
                                                                             //console.log('insres.nome=>' + insres)
-                                                                            console.log('posvenda. 2')
                                                                             res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, fora_ins: ins_fora, dentro_ins: ins_dentro, nome_equipe, lista_res, insres })
                                                                         }).catch((err) => {
                                                                             req.flash('error_msg', 'Falha ao encontrar a pessoa<insres>.')
@@ -3115,125 +3118,128 @@ router.get('/agenda/', ehAdmin, (req, res) => {
             if (lista_tarefas != '') {
                 lista_tarefas.forEach(e => {
                     Usina.findOne({ _id: e.usina }).then((usina) => {
-                        q++
-                        const { dataini } = e
-                        //console.log('dataini=>' + dataini)
-                        mes_busca = nova_dataini.substring(4, 6)
-                        //console.log('mes_busca=>' + mes_busca)
-                        mes = dataini.substring(5, 7)
-                        //console.log('mes=>' + mes)
-                        if (String(mes_busca) == String(mes)) {
-                            dia = dataini.substring(8, 11)
-                            //console.log('dia=>' + dia)
-                            if (dia == '01') {
-                                tarefas01.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
+                        Atividade.findOne({ _id: e.servico }).then((atv) => {
+                            q++
+                            const { dataini } = e
+                            //console.log('dataini=>' + dataini)
+                            mes_busca = nova_dataini.substring(4, 6)
+                            //console.log('mes_busca=>' + mes_busca)
+                            mes = dataini.substring(5, 7)
+                            //console.log('mes=>' + mes)
+                            tarefa = atv.descricao
+                            if (String(mes_busca) == String(mes)) {
+                                dia = dataini.substring(8, 11)
+                                //console.log('dia=>' + dia)
+                                if (dia == '01') {
+                                    tarefas01.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '02') {
+                                    tarefas02.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '03') {
+                                    tarefas03.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '04') {
+                                    tarefas04.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '05') {
+                                    tarefas05.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '06') {
+                                    tarefas06.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '07') {
+                                    tarefas07.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '08') {
+                                    tarefas08.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '09') {
+                                    tarefas09.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '10') {
+                                    tarefas10.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '11') {
+                                    tarefas11.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '12') {
+                                    tarefas12.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '13') {
+                                    tarefas13.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '14') {
+                                    tarefas14.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '15') {
+                                    tarefas15.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '16') {
+                                    tarefas16.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '17') {
+                                    tarefas17.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '18') {
+                                    tarefas18.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '19') {
+                                    tarefas19.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '20') {
+                                    tarefas20.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '21') {
+                                    tarefas21.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '22') {
+                                    tarefas22.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '23') {
+                                    tarefas23.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '24') {
+                                    tarefas24.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '25') {
+                                    tarefas25.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '26') {
+                                    tarefas26.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '27') {
+                                    tarefas27.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '28') {
+                                    tarefas28.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '29') {
+                                    tarefas29.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '30') {
+                                    tarefas30.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
+                                if (dia == '31') {
+                                    tarefas31.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa })
+                                }
                             }
-                            if (dia == '02') {
-                                tarefas02.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '03') {
-                                tarefas03.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '04') {
-                                tarefas04.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '05') {
-                                tarefas05.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '06') {
-                                tarefas06.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '07') {
-                                tarefas07.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '08') {
-                                tarefas08.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '09') {
-                                tarefas09.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '10') {
-                                tarefas10.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '11') {
-                                tarefas11.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '12') {
-                                tarefas12.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '13') {
-                                tarefas13.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '14') {
-                                tarefas14.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '15') {
-                                tarefas15.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '16') {
-                                tarefas16.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '17') {
-                                tarefas17.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '18') {
-                                tarefas18.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '19') {
-                                tarefas19.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '20') {
-                                tarefas20.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '21') {
-                                tarefas21.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '22') {
-                                tarefas22.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '23') {
-                                tarefas23.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '24') {
-                                tarefas24.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '25') {
-                                tarefas25.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '26') {
-                                tarefas26.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '27') {
-                                tarefas27.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '28') {
-                                tarefas28.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '29') {
-                                tarefas29.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '30') {
-                                tarefas30.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                            if (dia == '31') {
-                                tarefas31.push({ projeto: usina.nome, ehManutencao: true, id: e._id, tarefa: e.servico })
-                            }
-                        }
 
-                        //console.log('q=>' + q)
-                        //console.log('lista_tarefas.length=>' + lista_tarefas.length)
-                        if (q == lista_tarefas.length) {
+                            //console.log('q=>' + q)
+                            //console.log('lista_tarefas.length=>' + lista_tarefas.length)
+                            if (q == lista_tarefas.length) {
 
-                            res.render('projeto/gerenciamento/agenda', {
-                                tarefas01, tarefas02, tarefas03, tarefas04, tarefas05, tarefas06, tarefas07,
-                                tarefas08, tarefas09, tarefas10, tarefas11, tarefas12, tarefas13, tarefas14,
-                                tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
-                                tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
-                                tarefas29, tarefas30, tarefas31, checkTesk: 'checked', checkInst: 'unchecked',
-                                mes, ano, cliente, mestitulo, janeiro, fevereiro, marco, abril, maio, junho,
-                                julho, agosto, setembro, outubro, novembro, dezembro, ehManutencao: true, trintaeum, fevereiro
-                            })
-                        }
+                                res.render('projeto/gerenciamento/agenda', {
+                                    tarefas01, tarefas02, tarefas03, tarefas04, tarefas05, tarefas06, tarefas07,
+                                    tarefas08, tarefas09, tarefas10, tarefas11, tarefas12, tarefas13, tarefas14,
+                                    tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
+                                    tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
+                                    tarefas29, tarefas30, tarefas31, checkTesk: 'checked', checkInst: 'unchecked',
+                                    mes, ano, cliente, mestitulo, janeiro, fevereiro, marco, abril, maio, junho,
+                                    julho, agosto, setembro, outubro, novembro, dezembro, ehManutencao: true, trintaeum, fevereiro
+                                })
+                            }
+                        })
                     })
                 })
             } else {
@@ -3252,6 +3258,24 @@ router.get('/agenda/', ehAdmin, (req, res) => {
             req.flash('error_msg', 'Não foi possível encontrar o cliente.')
             res.redirect('/gerenciamento/agenda/')
         })
+    })
+})
+
+router.get('/atividades/', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+    Atividade.find({ user: id }).lean().then((atividades) => {
+        res.render('projeto/gerenciamento/atividades', { atividades })
+    }).catch((err) => {
+        req.flash('error_msg', 'Falha ao encontrar as atividades.')
+        res.redirect('/menu')
     })
 })
 
@@ -3935,23 +3959,54 @@ router.get('/tarefas/:id', ehAdmin, (req, res) => {
     } else {
         id = user
     }
+
+    var lista_tarefa = []
+    var todas_tarefas = []
+    var q = 0
+
     Tarefas.findOne({ _id: req.params.id }).lean().then((tarefa) => {
         Usina.findOne({ _id: tarefa.usina }).lean().then((usina) => {
-            //console.log('usina.cliente=>' + usina.cliente)
             Cliente.findOne({ _id: usina.cliente }).lean().then((cliente) => {
-                console.log('encontrou cliente')
-                var dataini = dataMensagem(tarefa.dataini)
-                var datafim = dataMensagem(tarefa.datafim)
-                Equipe.findOne({ tarefa: tarefa._id }).lean().then((equipe) => {
-                    // equipe = equipe.ins0 + '|' + equipe.ins1 + '|' + equipe.ins2 + '|' + equipe.ins3 + '|' + equipe.ins4 + '|' + equipe.ins5
-                    Tarefas.find({ user: id, concluido: false }).lean().then((todasTarefas) => {
-                        res.render('projeto/gerenciamento/vertarefas', { usina, tarefa, cliente, dataini, datafim, equipe, todasTarefas })
+                Atividade.findOne({ _id: tarefa.servico }).lean().then((atv) => {
+                    Equipe.findOne({ _id: tarefa.equipe }).lean().then((equipe) => {
+                        var dataini = dataMensagem(tarefa.dataini)
+                        var datafim = dataMensagem(tarefa.datafim)
+                        lista_tarefa = { id: tarefa._id, nome: cliente.nome, servico: atv.descricao, dataini, datafim, ins0: equipe.ins0, ins1: equipe.ins1, ins2: equipe.ins2, ins3: equipe.ins3, ins4: equipe.ins4, ins5: equipe.ins5 }
+                        Tarefas.find({ user: id, concluido: false }).lean().then((tarefas) => {
+                            tarefas.forEach((e) => {
+                                Usina.findOne({ _id: e.usina }).then((usina) => {
+                                    //console.log('usina.cliente=>'+usina.cliente)
+                                    Cliente.findOne({ _id: usina.cliente}).then((cliente) => {
+                                        Atividade.findOne({ _id: e.servico}).then((atv) => {
+                                            q++
+                                            todas_tarefas.push({ id: e._id, nome: cliente.nome, servico: atv.descricao, dataini: dataMensagem(e.dataini), datafim: dataMensagem(e.datafim) })
+                                            if (q == tarefas.length) {
+                                                //console.log('lista_tarefa=>'+lista_tarefa)
+                                                res.render('projeto/gerenciamento/vertarefas', { lista_tarefa, todas_tarefas })
+                                            }
+                                        }).catch((err) => {
+                                            req.flash('error_msg', 'Falha ao encontrar a atividade.')
+                                            res.redirect('/gerenciamento/agenda')
+                                        })
+                                    }).catch((err) => {
+                                        req.flash('error_msg', 'Falha ao encontrar o cliente.')
+                                        res.redirect('/gerenciamento/agenda')
+                                    })
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Falha ao encontrar a usina.')
+                                    res.redirect('/gerenciamento/agenda')
+                                })
+                            })
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Falha ao encontrar a todas tarefas.')
+                            res.redirect('/gerenciamento/agenda')
+                        })
                     }).catch((err) => {
-                        req.flash('error_msg', 'Falha ao encontrar as tarefas.')
+                        req.flash('error_msg', 'Falha ao encontrar as equipe.')
                         res.redirect('/gerenciamento/agenda')
                     })
                 }).catch((err) => {
-                    req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                    req.flash('error_msg', 'Falha ao encontrar a atividade.')
                     res.redirect('/gerenciamento/agenda')
                 })
             }).catch((err) => {
@@ -4106,7 +4161,7 @@ router.post('/proposta', ehAdmin, (req, res) => {
             if (naoVazio(p.seq)) {
                 seq = parseFloat(p.seq) + 1
                 numpro = 'OF' + (parseFloat(p.seq) + 1)
-                console.log('numpro=>' + numpro)
+                //console.log('numpro=>' + numpro)
                 p.seq = seq
             } else {
                 numpro = 'OF' + 1
@@ -4654,7 +4709,7 @@ router.post('/pedido', ehAdmin, (req, res) => {
                     compra.fornecedor = req.body.fornecedor
                     compra.feitopedido = true
                     compra.data = dataBusca(dataHoje())
-                    compra.dtcadastro= String(req.body.dtcadastro)
+                    compra.dtcadastro = String(req.body.dtcadastro)
                     compra.feitopedido = true,
                         compra.save().then(() => {
                             req.flash('success_msg', 'Documento salvo com sucesso.')
@@ -6526,7 +6581,7 @@ router.get('/mostrarPosvenda/:id', ehAdmin, (req, res) => {
     Posvenda.findOne({ proposta: req.params.id }).then((posvenda) => {
         var doc = posvenda.laudo
         var path = __dirname
-        console.log(path)
+        //console.log(path)
         path = path.replace('routes', '')
         res.sendFile(path + '/public/arquivos/' + doc)
     }).catch(() => {
@@ -8295,6 +8350,175 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
     }
 })
 
+router.post('/salvarAtividade', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+    if (req.body.id == '') {
+        new Atividade({
+            user: id,
+            descricao: req.body.descricao,
+            classe: req.body.classe,
+            data: dataHoje()
+        }).save().then(() => {
+            req.flash('success_msg', 'Atividade criada com sucesso.')
+            res.redirect('/gerenciamento/atividades')
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha ao salvar a atividade.')
+        })
+    } else {
+        Atividade.findOne({ _id: req.body.id }).then((atividade) => {
+            atividade.descricao = req.body.descricao
+            atividade.classe = req.body.classe
+            atividade.save().then(() => {
+                req.flash('success_msg', 'Atividade salva com sucesso.')
+                res.redirect('/gerenciamento/atividades')
+            }).catch((err) => {
+                req.flash('error_msg', 'Falha ao salvar a atividade.')
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha ao encontrar a atividade.')
+        })
+
+    }
+})
+
+router.get('/editarAtividade/:id', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+    Atividade.find({ user: id }).lean().then((atividades) => {
+        Atividade.findOne({ user: id, _id: req.params.id }).lean().then((atividade) => {
+            res.render('projeto/gerenciamento/atividades', { atividade, atividades })
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha ao encontrar a atividade.')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Falha ao encontrar todas atividades.')
+    })
+})
+
+router.get('/equipetarefa/:id', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    const { user } = req.user
+    var id
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+
+    var ins_fora = []
+    var ins_dentro = []
+    var ins0
+    var ins1
+    var ins2
+    var ins3
+    var ins4
+    var ins5
+
+    var custoins
+    var q = 0
+
+    //console.log('req.params.id=>' + req.params.id)
+    Tarefa.findOne({ _id: req.params.id }).lean().then((tarefa) => {
+        //console.log(usina)
+        Equipe.findOne({ _id: tarefa.equipe }).then((equipeins) => {
+            //console.log('equipeins=>' + equipeins)
+            if (naoVazio(equipeins)) {
+                Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((instalacao) => {
+                    //console.log('entrou')
+                    if (typeof equipeins.ins0 != 'undefined') {
+                        ins0 = equipeins.ins0
+                    }
+                    if (typeof equipeins.ins1 != 'undefined') {
+                        ins1 = equipeins.ins1
+                    }
+                    if (typeof equipeins.ins2 != 'undefined') {
+                        ins2 = equipeins.ins2
+                    }
+                    if (typeof equipeins.ins3 != 'undefined') {
+                        ins3 = equipeins.ins3
+                    }
+                    if (typeof equipeins.ins4 != 'undefined') {
+                        ins4 = equipeins.ins4
+                    }
+                    if (typeof equipeins.ins5 != 'undefined') {
+                        ins5 = equipeins.ins5
+                    }
+
+                    instalacao.forEach((pesins) => {
+                        q++
+                        var nome = pesins.nome
+                        var id = pesins._id
+                        //console.log('pesins.custo=>' + pesins.custo)
+                        // if (pesins.custo == null || pesins.custo == '' || typeof pesins.custo == 'undefined') {
+                        //     custoins = 0
+                        // } else {
+                        //     custoins = pesins.custo
+                        // }
+
+                        if (nome == ins0) {
+                            ins_dentro.push({ id, nome, custo: custoins })
+                        } else {
+                            if (nome == ins1) {
+                                ins_dentro.push({ id, nome, custo: custoins })
+                            } else {
+                                if (nome == ins2) {
+                                    ins_dentro.push({ id, nome, custo: custoins })
+                                } else {
+                                    if (nome == ins3) {
+                                        ins_dentro.push({ id, nome, custo: custoins })
+                                    } else {
+                                        if (nome == ins4) {
+                                            ins_dentro.push({ id, nome, custo: custoins })
+                                        } else {
+                                            if (nome == ins5) {
+                                                ins_dentro.push({ id, nome, custo: custoins })
+                                            } else {
+                                                ins_fora.push({ id, nome, custo: custoins })
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    })
+                    //console.log('q=>' + q)
+                    if (q == instalacao.length) {
+                        res.render('projeto/gerenciamento/tarefas', { tarefa, fora_ins: ins_fora, dentro_ins: ins_dentro, equipe: true })
+                    }
+                }).catch((err) => {
+                    req.flash('error_msg', 'Falha ao encontrar os instaladores.')
+                    res.redirect('/gerenciamento/equipe/' + req.params.id)
+                })
+            } else {
+                Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).lean().then((instalacao) => {
+                    res.render('projeto/gerenciamento/tarefas', { tarefa, fora_ins: instalacao, equipe: true })
+                })
+            }
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha ao encontrar o equipe.')
+            res.redirect('/gerenciamento/equipe/' + req.params.id)
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Nehuma tarefa encontrada.')
+        res.redirect('/cliente/consulta')
+    })
+})
+
 router.post('/selecionacliente', ehAdmin, (req, res) => {
     const { _id } = req.user
     Cliente.find({ user: id }).lean().then((cliente) => {
@@ -8340,29 +8564,39 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
     //console.log('data=>' + data)
 
     //console.log('req.body.cliente=>' + req.body.cliente)
-    Usina.find({ cliente: req.body.cliente }).lean().then((usina) => {
-        //console.log(usina)
-        Pessoa.find({ user: id, $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }] }).sort({ nome: 'asc' }).then((instalacao) => {
-            if (naoVazio(instalacao)) {
-                instalacao.forEach((pesins) => {
-                    q = q + 1
-                    var nome = pesins.nome
-                    var id = pesins._id
-                    ins_fora.push({ id, ins: nome })
-                    if (q == instalacao.length) {
-                        res.render('projeto/gerenciamento/tarefas', { data, usina, fora: ins_fora, ehSelecao })
+    Atividade.find({ user: id }).lean().then((atividades) => {
+        if (naoVazio(atividades)) {
+            Usina.find({ cliente: req.body.cliente }).lean().then((usina) => {
+                //console.log(usina)
+                Pessoa.find({ user: id, $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }] }).sort({ nome: 'asc' }).then((instalacao) => {
+                    if (naoVazio(instalacao)) {
+                        instalacao.forEach((pesins) => {
+                            q = q + 1
+                            var nome = pesins.nome
+                            var id = pesins._id
+                            ins_fora.push({ id, ins: nome })
+                            if (q == instalacao.length) {
+                                res.render('projeto/gerenciamento/tarefas', { data, usina, fora: ins_fora, ehSelecao, atividades })
+                            }
+                        })
+                    } else {
+                        req.flash('error_msg', 'Não existem técnicos cadastrados.')
+                        res.redirect('/gerenciamento/agenda')
                     }
+                }).catch((err) => {
+                    req.flash('error_msg', 'Falha ao encontrar os técnicos.')
+                    res.redirect('/gerenciamento/agenda')
                 })
-            } else {
-                req.flash('error_msg', 'Não existem técnicos cadastrados.')
+            }).catch((err) => {
+                req.flash('error_msg', 'Nehuma usina cadastrada.')
                 res.redirect('/gerenciamento/agenda')
-            }
-        }).catch((err) => {
-            req.flash('error_msg', 'Falha ao encontrar os técnicos.')
+            })
+        } else {
+            req.flash('error_msg', 'Não existem atividades cadastradas.')
             res.redirect('/gerenciamento/agenda')
-        })
+        }
     }).catch((err) => {
-        req.flash('error_msg', 'Nehuma usina cadastrada.')
+        req.flash('error_msg', 'Nehuma atividade cadastrada.')
         res.redirect('/gerenciamento/agenda')
     })
 })
@@ -8376,61 +8610,209 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
     } else {
         id = user
     }
-
-    var dataini = req.body.dataini
-    var datafim = req.body.datafim
+    var dataini
+    var datafim
     var cadastro = dataHoje()
-    const equipe = {
-        user: id,
-        ins0: req.body.ins0,
-        ins1: req.body.ins1,
-        ins2: req.body.ins2,
-        ins3: req.body.ins3,
-        ins4: req.body.ins4,
-        ins5: req.body.ins5,
-    }
-    new Equipe(equipe).save().then(() => {
-        Equipe.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((novaequipe) => {
-            const tarefa = {
-                user: id,
-                equipe: novaequipe._id,
-                usina: req.body.usina,
-                servico: req.body.manutencao,
-                dataini: dataini,
-                buscadataini: dataBusca(dataini),
-                datafim: datafim,
-                buscacdatafim: dataBusca(datafim),
-                cadastro: cadastro,
-                preco: req.body.preco,
-                concluido: false
-            }
-            //console.log('tarefa=>'+tarefa)
-            new Tarefas(tarefa).save().then(() => {
-                Tarefas.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((tarefa) => {
-                    novaequipe.tarefa = tarefa._id
-                    novaequipe.save().then(() => {
-                        req.flash('success_msg', 'Manutenção gerada com sucesso.')
-                        res.redirect('/gerenciamento/agenda')
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Falha ao salvar a equipe.')
-                        res.redirect('/gerenciamento/agenda')
-                    })
+
+    if (naoVazio(req.body.idequipe)) {
+        //console.log('equipe não vazio')
+        Tarefa.findOne({ _id: req.body.id }).then((tarefa) => {
+            Equipe.findOne({ _id: tarefa.equipe }).then((equipe) => {
+
+                // custoins = req.body.custo
+                // //console.log('custoins=>' + custoins)
+                // for (i = 0; i < custoins.length; i++) {
+                //     //console.log('custoins[i]' + custoins[i])
+                //     custototal = parseFloat(custototal) + parseFloat(custoins[i])
+                // }
+
+                //console.log('req.body.idins0=>' + req.body.idins0)
+
+                if (naoVazio(req.body.idins0)) {
+                    equipe.idins0 = req.body.idins0
+                    equipe.insres = req.body.insres
+                    equipe.nome_equipe = req.body.nome_equipe
+                } else {
+                    equipe.idins0 = null
+                    equipe.insres = null
+                    equipe.nome_equipe = ''
+                }
+                if (naoVazio(req.body.idins1)) {
+                    equipe.idins1 = req.body.idins1
+                } else {
+                    equipe.idins1 = null
+                }
+                if (naoVazio(req.body.idins2)) {
+                    equipe.idins2 = req.body.idins2
+                } else {
+                    equipe.idins2 = null
+                }
+                if (naoVazio(req.body.idins3)) {
+                    equipe.idins3 = req.body.idins3
+                } else {
+                    equipe.idins3 = null
+                }
+                if (naoVazio(req.body.idins4)) {
+                    equipe.idins4 = req.body.idins4
+                } else {
+                    equipe.idins4 = null
+                }
+                if (naoVazio(req.body.idins5)) {
+                    equipe.idins5 = req.body.idins5
+                } else {
+                    equipe.idins5 = null
+                }
+                //console.log('custototal=>' + custototal)
+
+                equipe.ins0 = req.body.ins0
+                equipe.ins1 = req.body.ins1
+                equipe.ins2 = req.body.ins2
+                equipe.ins3 = req.body.ins3
+                equipe.ins4 = req.body.ins4
+                equipe.ins5 = req.body.ins5
+                // equipe.custoins = custototal
+                // equipe.feito = true
+                equipe.save().then(() => {
+                    req.flash('success_msg', 'Equipe salva com sucesso.')
+                    res.redirect('/cliente/programacao/' + req.body.usina)
                 }).catch((err) => {
-                    req.flash('error_msg', 'Falha ao encontrar a tarefa.')
-                    res.redirect('/gerenciamento/agenda')
+                    req.flash('error_msg', 'Houve erro ao salvar a equipe.')
+                    res.redirect('/cliente/programacao/' + req.body.usina)
                 })
+
+
             }).catch((err) => {
-                req.flash('error_msg', 'Falha ao salvar a manutenção.')
-                res.redirect('/gerenciamento/agenda')
+                req.flash('error_msg', 'Houve erro ao encontrar a equipe.')
+                res.redirect('/cliente/programacao/' + req.body.usina)
             })
         }).catch((err) => {
-            req.flash('error_msg', 'Falha ao encontrar a equipe.')
-            res.redirect('/gerenciamento/agenda')
+            req.flash('error_msg', 'Houve erro ao encontrar a proposta.')
+            res.redirect('/cliente/programacao/' + req.body.usina)
         })
-    }).catch((err) => {
-        req.flash('error_msg', 'Falha ao salvar a equipe.')
-        res.redirect('/gerenciamento/agenda')
-    })
+
+    } else {
+        //console.log('equipe true')
+        if (req.body.equipe == 'true') {
+            dataini = req.body.tarefadtini
+            datafim = req.body.tarefadtfim
+        } else {
+            dataini = req.body.dataini
+            datafim = req.body.datafim
+        }
+
+        //console.log('req.body.idns0')
+
+        const corpo = {
+            user: id,
+            ins0: req.body.ins0,
+            ins1: req.body.ins1,
+            ins2: req.body.ins2,
+            ins3: req.body.ins3,
+            ins4: req.body.ins4,
+            ins5: req.body.ins5,
+            dtinicio: dataini,
+            dtfim: datafim,
+            dtinibusca: dataBusca(dataini),
+            dtfimbusca: dataBusca(datafim)
+        }
+        var idins = []
+        var equipe = []
+        if (naoVazio(req.body.idins0)) {
+            idins = { idins0: req.body.idins0 }
+            // equipe.insres = req.body.insres
+        } else {
+            idins = { idins0: null }
+            // equipe.insres: null
+        }
+        if (naoVazio(req.body.idins1)) {
+            idins = idins + { idins1: req.body.idins1 }
+        } else {
+            idins = idins + { idins1: null }
+        }
+        if (naoVazio(req.body.idins2)) {
+            idins = idins + { idins2: req.body.idins2 }
+        } else {
+            idins = idins + { idins2: null }
+        }
+        if (naoVazio(req.body.idins3)) {
+            idins = idins + { idins3: req.body.idins3 }
+        } else {
+            idins = idins + { idins3: null }
+        }
+        if (naoVazio(req.body.idins4)) {
+            idins = idins + { idins4: req.body.idins4 }
+        } else {
+            idins = idins + { idins4: null }
+        }
+        if (naoVazio(req.body.idins5)) {
+            idins = idins + { idins5: req.body.idins5 }
+        } else {
+            idins = idins + { idins5: null }
+        }
+        if (naoVazio(idins)) {
+            equipe = Object.assign(idins, corpo)
+        } else {
+            equipe = corpo
+        }
+        new Equipe(equipe).save().then(() => {
+            Equipe.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((novaequipe) => {
+                //console.log('req.body.equipe=>' + req.body.equipe)
+                if (req.body.equipe == 'true') {
+                    //console.log('req.body.id=>' + req.body.id)
+                    Tarefas.findOne({ _id: req.body.id }).then((tarefa) => {
+                        tarefa.equipe = novaequipe._id
+                        tarefa.save().then(() => {
+                            req.flash('success_msg', 'Equipe alocada com sucesso.')
+                            res.redirect('/cliente/programacao/' + req.body.usina)
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Falha ao salvar a tarefa.')
+                            res.redirect('/cliente/programacao/' + req.body.usina)
+                        })
+                    })
+                } else {
+                    const tarefa = {
+                        user: id,
+                        equipe: novaequipe._id,
+                        responsavel: _id,
+                        usina: req.body.usina,
+                        servico: req.body.manutencao,
+                        dataini: dataini,
+                        buscadataini: dataBusca(dataini),
+                        datafim: datafim,
+                        buscacdatafim: dataBusca(datafim),
+                        cadastro: cadastro,
+                        preco: req.body.preco,
+                        concluido: false
+                    }
+                    //console.log('tarefa=>'+tarefa)
+                    new Tarefas(tarefa).save().then(() => {
+                        Tarefas.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((tarefa) => {
+                            novaequipe.tarefa = tarefa._id
+                            novaequipe.save().then(() => {
+                                req.flash('success_msg', 'Manutenção gerada com sucesso.')
+                                res.redirect('/cliente/programacao/' + req.body.usina)
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Falha ao salvar a equipe.')
+                                res.redirect('/cliente/programacao/' + req.body.usina)
+                            })
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Falha ao encontrar a tarefa.')
+                            res.redirect('/cliente/programacao/' + req.body.usina)
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Falha ao salvar a manutenção.')
+                        res.redirect('/cliente/programacao/' + req.body.usina)
+                    })
+                }
+            }).catch((err) => {
+                req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                res.redirect('/cliente/programacao/' + req.body.usina)
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha ao salvar a equipe.')
+            res.redirect('/cliente/programacao/' + req.body.usina)
+        })
+    }
 })
 
 router.post('/aplicarcenario/', ehAdmin, (req, res) => {

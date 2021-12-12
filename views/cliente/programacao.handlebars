@@ -1,0 +1,136 @@
+<style>
+    th {
+        font-weight: 400;
+        font-size: 14px;
+        width: 15%;
+        font-weight: 600;
+
+    }
+
+    td {
+        font-weight: 400;
+        font-size: 15px;
+    }
+</style>
+<script>
+    function select() {
+        var auto = document.getElementById('auto')
+        var tipo = document.getElementById('tipo')
+        var manual = document.getElementById('manual')
+        var mostraAuto = document.getElementById('mostraAuto')
+        if (auto.checked) {
+            mostraAuto.style.display = ''
+            tipo.value = 'auto'
+        } else {
+            mostraAuto.style.display = 'none'
+            tipo.value = 'manual'
+        }
+    }
+</script>
+<div class='row' style="padding: 30px;width: 100%;">
+    <div class='mb-2' style="padding-left: 98%; width: 20px;">
+    <a href='/cliente/usinas/{{cliente._id}}' class='btn btn-sm btn-primary'><i class='bi bi-arrow-left'></i></a>
+    </div>
+    <div style="border: #847AF4 4px solid;border-radius: 20px;padding: 10px;">
+        <label class='col-form-label fw-bold'>Lista das Atividades Programadas</label>
+        <table>
+            <tr>
+                <th>Sequência</th>
+                <th>Atividade</th>
+                <th>Data da Manutenção</th>
+                <th>Concluído</th>
+                <th>Cadastrado Por</th>
+                <th></th>
+            </tr>
+            {{#each tarefas}}
+            <tr style="line-height: 30px;">
+                <form action='/cliente/salvartarefa/' method="post">
+                    <input type='hidden' name='id' value='{{id}}'>
+                    <input type='hidden' name='usina' value="{{usina}}">
+                    <td>{{seq}}</td>
+                    <td>
+                        <select name='atividade' style='width: 250px;' class='form-select form-select-sm'>
+                            <option value='{{idser}}'>{{servico}}</option>
+                            {{#each atividades}}
+                            <option value='{{_id}}'>{{descricao}}</option>
+                            {{/each}}
+                        </select>
+                    </td>
+                    <td><input type='date' class='form-control form-control-sm' style="width: 160px;" name='dataini'
+                            value='{{dataini}}'></td>
+                    <td><select name='concluido' style='width: 80px;' class='form-select form-select-sm'>
+                            <option>Não</option>
+                            <option>Sim</option>
+                        </select></td>
+                    <td>{{responsavel}}</td>
+                    <td>
+                        <div class='btn-group col-12 gap-2'>
+                            <a href='/gerenciamento/equipetarefa/{{id}}' class='btn btn-sm btn-primary'>Definir Equipe</a>
+                            <button type='submit' class='btn btn-sm btn-success'>Salvar</button>
+                        </div>
+                    </td>
+                </form>
+            </tr>
+            {{/each}}
+        </table>
+    </div>
+    <br>
+    <div class='row'>
+        <form action="/cliente/geraprograma/" method="post">
+            <input type='hidden' name='usina' value="{{usina._id}}">
+            <input type='hidden' id='tipo' name='tipo' value="{{tipo}}">
+            <div class='row mb-2'>
+                <div class='col' style="padding-left: 510px;">
+                    <div class="form-check" onclick="select()">
+                        <input type="radio" name="checktipo" id="auto" checked>
+                        <label class='col-form-label' class="form-check-label">
+                            Automático
+                        </label>
+                    </div>
+                </div>
+                <div class='col' style="padding-right: 450px;">
+                    <div class="form-check" onclick="select()">
+                        <input type="radio" name="checktipo" id="manual">
+                        <label class='col-form-label' class="form-check-label">
+                            Manual
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class='row' id='mostraAuto' style="display: '';">
+                <div class='col-md-5 text-end'>
+                    <label class='col-form-label mb-2'>Atividade: </label><br>
+                    <label class='col-form-label mb-2'>Tempo: </label><br>
+                    <label class='col-form-label mb-2'>Intervalo: </label><br>
+                    <label class='col-form-label mb-2 mt-4'>Período: </label><br>
+                </div>
+                <div class='col-md-3'>
+                    <select class='form-select mb-2' name='atividade'>
+                        {{#each atividades}}
+                        <option value='{{_id}}'>{{descricao}}</option>
+                        {{/each}}
+                    </select>
+                    <select class='form-select mb-2' name='tempo'>
+                        <option>horas</option>
+                        <option>dias</option>
+                        <option>meses</option>
+                    </select>
+                    <input type='number' class='form-control' name='intervalo'>
+                    <div class='row'>
+                        <div class='col'>
+                            <label>Início</label>
+                            <input type='date' class='form-control mb-2' name='periodoini'>
+                        </div>
+                        <div class='col'>
+                            <label>Fim</label>
+                            <input type='date' class='form-control mb-2' name='periodofim'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class='row justify-content-center mb-4' style="padding-left: 110px;">
+                <button type='submit' class='btn btn-sm btn-success' style="max-width: 300px;">Gerar</button>
+            </div>
+        </form>
+    </div>
+</div>
