@@ -17,9 +17,20 @@ const Tarefas = new Schema({
         ref: 'equipe',
         require: false,
     },    
+    responsavel: {
+        type: Schema.Types.ObjectId,
+        ref: 'pessoa',
+        require: false,
+    },
+    programacao: {
+        type: Schema.Types.ObjectId,
+        ref: 'programacao',
+        require: false,
+    },
     servico:{
-        type: String,
-        require:false
+        type: Schema.Types.ObjectId,
+        ref: 'atividade',
+        require: false,
     },
     concluido: {
         type: Boolean,
@@ -49,6 +60,10 @@ const Tarefas = new Schema({
         type: Number,
         require:false        
     },    
+    caminhofotos:{
+        type: String,
+        require:false  
+    },
 })
 
 mongoose.model('tarefas', Tarefas)
