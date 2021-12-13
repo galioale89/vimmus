@@ -52,6 +52,14 @@
 {{else}} --}}
 <div class="container d-flex justify-content-center" style='padding: 10px;margin-top: 2px;'>
     <form method="post" action='/gerenciamento/addtarefa' style="text-align: center;">
+        <input type='hidden' name='equipe' value='{{equipe}}'>
+        <input type='hidden' name='tarefadtini' value='{{tarefa.dataini}}'>
+        <input type='hidden' name='tarefadtfim' value='{{tarefa.datafim}}'>
+        <input type='hidden' name='id' value='{{tarefa._id}}'>
+        <input type='hidden' name='usina' value='{{tarefa.usina}}'>
+        <input type='hidden' name='idequipe' value='{{tarefa.equipe}}'>
+        {{#if equipe}}
+        {{else}}
         <label style="font-size: 15px;font-weight: 600;">Adicionar Manutenção</label><br><br>
         <div class="row">
             <div class="col-md-4 text-end">
@@ -62,7 +70,7 @@
                     {{#each usina}}
                     <option value="{{_id}}">{{nome}}</option>
                     {{else}}
-                    <option value="">Não existem usinas cadastradas</option>
+                    <option>Não existem usinas cadastradas</option>
                     {{/each}}
                 </select>
             </div>
@@ -73,11 +81,9 @@
             </div>
             <div class="col-md-4">
                 <select class='form-select form-select-sm' name='manutencao'>
-                    <option>Limpeza de Painéis</option><br>
-                    <option>Substituição de Inversor</option>
-                    <option>Substituição de Módulos</option>
-                    <option>Correção de Conexões</option>
-                    <option>Sinistro</option>
+                    {{#each atividades}}
+                    <option value='{{_id}}'>{{descricao}}</option>
+                    {{/each}}
                 </select>
             </div>
             <div class="col-md-1 text-end">
@@ -103,6 +109,7 @@
             </div>
         </div><br>
         <hr>
+        {{/if}}
 
         <label class='col-form-label col-form-label-sm'>Lembre-se de verificar a disponibilidade da pessoa para realizar
             a manutenção!</label>
@@ -113,9 +120,9 @@
                         <label class="col-form-label col-form-label-md fw-bold text-center"
                             style="color: white">Profissionais Disponíveis</label>
                         <div style="overflow-y: scroll;max-height: 200px;">
-                            {{#each fora}}
-                            <div class="list-item" style='color: black;' draggable="true">{{ins}}<a
-                                    href='/gerenciamento/vermais/{{id}}' style="padding-left: 5px;"><i
+                            {{#each fora_ins}}
+                            <div class="list-item" style='color: black;' draggable="true" name='{{_id}}'>
+                                {{nome}}<a href='/gerenciamento/vermais/{{_id}}' style="padding-left: 5px;"><i
                                         class='bi bi-eye'></i></a>
                             </div>
                             {{/each}}
@@ -124,9 +131,9 @@
                     <div class="list">
                         <label class="col-form-label col-form-label-md fw-bold text-center"
                             style="color: white">Profissionais Alocados</label>
-                        {{#each dentro}}
-                        <div class="item-instalacao" style='color: black;' draggable="true">{{ins}}<a
-                                href='/gerenciamento/vermais/{{id}}' style="padding-left: 5px;"><i
+                        {{#each dentro_ins}}
+                        <div class="item-instalacao" style='color: black;' draggable="true" name='{{id}}'>
+                            {{nome}}<a href='/gerenciamento/vermais/{{_id}}' style="padding-left: 5px;"><i
                                     class='bi bi-eye'></i></a>
                         </div>
                         {{/each}}
@@ -141,8 +148,20 @@
         <input type='hidden' class='ins3' name='ins3' id='ins3' value=''>
         <input type='hidden' class='ins4' name='ins4' id='ins4' value=''>
         <input type='hidden' class='ins5' name='ins5' id='ins5' value=''>
-        <button type="submit" style="width: 200px;margin-top: 4px;" class="btn btn-sm btn-primary"
-            onclick="getItemValue()">Inserir</button>
+        <input type='hidden' name='idins0' id='idins0' value=''>
+        <input type='hidden' name='idins1' id='idins1' value=''>
+        <input type='hidden' name='idins2' id='idins2' value=''>
+        <input type='hidden' name='idins3' id='idins3' value=''>
+        <input type='hidden' name='idins4' id='idins4' value=''>
+        <input type='hidden' name='idins5' id='idins5' value=''>
+        <div class='btn-group gap-2 col-6 mt-2'>
+        <button type="submit" style="width: 30px;" class="btn btn-sm btn-success"
+            onclick="getItemValue()">Salva</button>
+        {{#if tarefa.programacao}}
+        <a href='/cliente/programacao/{{tarefa.usina}}' class='btn btn-sm btn-primary'><i class='bi bi-arrow-left'>Voltar Programação</i></a> 
+        {{/if}}
+        <a href='/gerenciamento/tarefas/{{tarefa._id}}' class='btn btn-sm btn-primary'><i class='bi bi-arrow-left'>Voltar Tarefas</i></a> 
+</div>            
     </form>
 </div>
 {{!-- {{/if}} --}}
@@ -244,31 +263,44 @@
         const item = document.querySelectorAll('.item-instalacao');
         for (i = 0; i < item.length; i++) {
             const insitem = document.getElementsByClassName(item[i].getAttribute('class'));
-            var element = insitem[i].innerText;
+            var element = insitem[i].innerText
+            var ins = insitem[i].getAttribute('name')
             switch (i) {
                 case 0:
-                    var insdes = document.getElementById('ins0');
+                    var insdes = document.getElementById('ins0')
+                    var idins = document.getElementById('idins0')
                     insdes.value = element
+                    idins.value = ins
                     break;
                 case 1:
-                    var insdes = document.getElementById('ins1');
+                    var insdes = document.getElementById('ins1')
+                    var idins = document.getElementById('idins1')
                     insdes.value = element
+                    idins.value = ins
                     break;
                 case 2:
-                    var insdes = document.getElementById('ins2');
+                    var insdes = document.getElementById('ins2')
+                    var idins = document.getElementById('idins2')
                     insdes.value = element
+                    idins.value = ins
                     break;
                 case 3:
-                    var insdes = document.getElementById('ins3');
+                    var insdes = document.getElementById('ins3')
+                    var idins = document.getElementById('idins3')
                     insdes.value = element
+                    idins.value = ins
                     break;
                 case 4:
-                    var insdes = document.getElementById('ins4');
+                    var insdes = document.getElementById('ins4')
+                    var idins = document.getElementById('idins4')
                     insdes.value = element
+                    idins.value = ins
                     break;
                 case 5:
-                    var insdes = document.getElementById('ins5');
+                    var insdes = document.getElementById('ins5')
+                    var idins = document.getElementById('idins5')
                     insdes.value = element
+                    idins.value = ins
                     break;
             }
         }

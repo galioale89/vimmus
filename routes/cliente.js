@@ -567,6 +567,7 @@ router.post('/geraprograma/', ehAdmin, (req, res) => {
                     concluido: false,
                     dataini: novadataini,
                     datafim: novadatafim,
+                    buscadatafim: dataBusca(novadataini),
                     buscadatafim: dataBusca(novadatafim),
                     cadastro: dataHoje()
                 }).save().then(() => {

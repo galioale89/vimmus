@@ -13,34 +13,36 @@
                 <tr>
                     <th style="width: 30%;">Cliente</th>
                     <th>Manutenção</th>
-                    <th style="width: 10%;">Preço</th>
                     <th>Data de Início</th>
                     <th>Data Final</th>
                     <th style="width: 30%;">Equipe</th>
+                    <th style="width: 10%;"></th>
                 </tr>
                 <tr>
                     <td>
-                        <label class="col-form-label col-form-label-sm">{{cliente.nome}}</label>
+                        <label class="col-form-label col-form-label-sm">{{lista_tarefa.nome}}</label>
                     </td>
                     <td>
-                         <a href='/gerenciamento/tarefas/{{tarefa._id}}'><label class="col-form-label col-form-label-sm">{{tarefa.servico}}</label></a>
+                        <a href='/gerenciamento/tarefas/{{lista_tarefa.id}}'><label
+                                class="col-form-label col-form-label-sm">{{lista_tarefa.servico}}</label></a>
                     </td>
                     <td>
-                        <label class="col-form-label col-form-label-sm">R$ {{tarefa.preco}}</label>
+                        <label class="col-form-label col-form-label-sm">{{lista_tarefa.dataini}}</label>
                     </td>
                     <td>
-                        <label class="col-form-label col-form-label-sm">{{dataini}}</label>
+                        <label class="col-form-label col-form-label-sm">{{lista_tarefa.datafim}}</label>
                     </td>
                     <td>
-                        <label class="col-form-label col-form-label-sm">{{datafim}}</label>
+                        <label class="col-form-label col-form-label-sm">{{lista_tarefa.ins0}}</label><br>
+                        <label class="col-form-label col-form-label-sm">{{lista_tarefa.ins1}}</label><br>
+                        <label class="col-form-label col-form-label-sm">{{lista_tarefa.ins2}}</label><br>
+                        <label class="col-form-label col-form-label-sm">{{lista_tarefa.ins3}}</label><br>
+                        <label class="col-form-label col-form-label-sm">{{lista_tarefa.ins4}}</label><br>
+                        <label class="col-form-label col-form-label-sm">{{lista_tarefa.ins5}}</label><br>
                     </td>
                     <td>
-                        <label class="col-form-label col-form-label-sm">{{equipe.ins0}}</label><br>
-                        <label class="col-form-label col-form-label-sm">{{equipe.ins1}}</label><br>
-                        <label class="col-form-label col-form-label-sm">{{equipe.ins2}}</label><br>
-                        <label class="col-form-label col-form-label-sm">{{equipe.ins3}}</label><br>
-                        <label class="col-form-label col-form-label-sm">{{equipe.ins4}}</label><br>
-                        <label class="col-form-label col-form-label-sm">{{equipe.ins5}}</label><br>
+                        <a href='/gerenciamento/equipetarefa/{{lista_tarefa.id}}' class='btn btn-sm btn-primary'>Definir
+                            Equipe</a>
                     </td>
                 </tr>
             </table>
@@ -48,25 +50,29 @@
         <div class="text-center">
             <table style="margin-top: 20px;">
                 <tr>
+                    <th style="width: 20%;">Cliente</th>
                     <th style="width: 20%;">Manutenção</th>
                     <th style="width: 20%;">Data Inicial</th>
                     <th style="width: 20%;">Data Final</th>
-                    <th style="width: 20%;">Preço</th>
                 </tr>
-                {{#each todasTarefas}}
+                {{#each todas_tarefas}}
                 <tr>
                     <td>
-                       <a href='/gerenciamento/tarefas/{{_id}}'><label class="col-form-label col-form-label-sm">{{servico}}</label></a>
+                        <a href='/gerenciamento/tarefas/{{id}}' style="cursor: pointer;"><label
+                                class="col-form-label col-form-label-sm">{{nome}}</label></a>
                     </td>
                     <td>
-                        <a href='/gerenciamento/tarefas/{{_id}}'><label class="col-form-label col-form-label-sm">{{dataini}}</label></a>
+                        <a href='/gerenciamento/tarefas/{{id}}' style="cursor: pointer;"><label
+                                class="col-form-label col-form-label-sm">{{servico}}</label></a>
                     </td>
                     <td>
-                        <a href='/gerenciamento/tarefas/{{_id}}'><label class="col-form-label col-form-label-sm">{{datafim}}</label></a>
-                    </td>      
+                        <a href='/gerenciamento/tarefas/{{id}}' style="cursor: pointer;"><label
+                                class="col-form-label col-form-label-sm">{{dataini}}</label></a>
+                    </td>
                     <td>
-                        <a href='/gerenciamento/tarefas/{{_id}}'><label class="col-form-label col-form-label-sm">R$ {{preco}}</label></a>
-                    </td>                                                      
+                        <a href='/gerenciamento/tarefas/{{id}}' style="cursor: pointer;"><label
+                                class="col-form-label col-form-label-sm">{{datafim}}</label></a>
+                    </td>
                 </tr>
                 {{/each}}
             </table>
