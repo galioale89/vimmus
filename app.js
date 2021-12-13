@@ -174,16 +174,18 @@ app.get('/menu', ehAdmin, (req, res) => {
     ehMaster = false
   }
 
+  
   var data = new Date()
   var hora = data.getHours()
-  if (hora > 0 && hora < 12) {
-    saudacao = 'Bom dia '
+
+  if (hora >= 18 && hora <=24) {
+    saudacao = 'Boa Noite '
   }
-  if (hora > 12 && hora < 118) {
+  if (hora >= 12 && hora < 18) {
     saudacao = 'Boa tarde '
   }
-  if (hora > 18 && hora < 24) {
-    saudacao = 'Boa noite '
+  if (hora >= 0  && hora < 12) {
+    saudacao = 'Bom dia '
   }
 
   Proposta.find({ user: _id }).sort({ data: 'asc' }).then((todasProposta) => {
