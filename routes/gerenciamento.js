@@ -4165,11 +4165,11 @@ router.post('/proposta', ehAdmin, (req, res) => {
         Pessoa.findOne({ _id: req.body.responsavel }).then((p) => {
             if (naoVazio(p.seq)) {
                 seq = parseFloat(p.seq) + 1
-                numpro = 'OF' + (parseFloat(p.seq) + 1)
+                numpro = p.const + (parseFloat(p.seq) + 1)
                 //console.log('numpro=>' + numpro)
                 p.seq = seq
             } else {
-                numpro = 'OF' + 1
+                numpro = p.const + 1
                 p.seq = 1
             }
             const proposta = {

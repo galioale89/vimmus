@@ -30,23 +30,23 @@
             preview.src = ''
         }
     };
-/*
-    function preview_fotocert() {
-        var imagem = document.querySelector('input[name=fotocert]').files[0]
-        var preview = document.querySelector('img[name=fotocert]')
-
-        var reader = new FileReader()
-        reader.onloadend = function () {
-            preview.src = reader.result
-        }
-
-        if (imagem) {
-            reader.readAsDataURL(imagem)
-        } else {
-            preview.src = ''
-        }
-    };
-*/
+    /*
+        function preview_fotocert() {
+            var imagem = document.querySelector('input[name=fotocert]').files[0]
+            var preview = document.querySelector('img[name=fotocert]')
+    
+            var reader = new FileReader()
+            reader.onloadend = function () {
+                preview.src = reader.result
+            }
+    
+            if (imagem) {
+                reader.readAsDataURL(imagem)
+            } else {
+                preview.src = ''
+            }
+        };
+    */
     function mascara_data() {
         var data = document.getElementById('data')
         var currenTime = new Date()
@@ -100,7 +100,7 @@
                 numdoc == "99999999999999") {
                 cnpj.value = ''
             }
-            
+
             // Valida DVs
             var tamanho = numdoc.length - 2
             var numeros = numdoc.substring(0, tamanho)
@@ -187,6 +187,17 @@
 
         }
     };
+
+    function responsavel() {
+        var res = document.getElementById('responsavel')
+        var funins = document.getElementById('funins')
+        if (funins.checked) {
+            res.style.display = ''
+        } else {
+            res.style.display = 'none'
+        }
+    }
+
     window.onload = function () {
 
         var estados = document.getElementById('estado');
@@ -213,7 +224,6 @@
                 <label style='font-weight: bold;font-size:20px'> Edição de Pessoas</label>
             </div>
             <div class="col-md-4 mt-4 text-end">
-                <a href='/usuario/novousuario' class='btn btn-sm btn-primary'>Novo</a>
                 <a href='/pessoa/consulta' class='btn btn-sm btn-primary'>Buscar</a>
                 <a href='/usuario/novousuario/{{pessoa._id}}' class='btn btn-sm btn-primary'>Criar Usuário</a>
                 <button type='submit' class='btn btn-sm btn-success'>Salvar</button>
@@ -277,8 +287,8 @@
                             id='cnpj' name='cnpj' onkeyup="valida_cnpj()" value='{{pessoa.cnpj}}'>
                         {{/if}}
                         {{#if pessoa.cpf}}
-                        <input type='text' class='form-control form-control-sm mb-1 mt-1' maxlength="14" autocomplete="off"
-                            id='cpf' name='cpf' onkeyup="valida_cpf()" value='{{pessoa.cpf}}'>
+                        <input type='text' class='form-control form-control-sm mb-1 mt-1' maxlength="14"
+                            autocomplete="off" id='cpf' name='cpf' onkeyup="valida_cpf()" value='{{pessoa.cpf}}'>
                         {{/if}}
                         <input type='text' class='form-control form-control-sm mb-1' autocomplete="off" maxlength="7"
                             placeholder='__/____' id='data' name='iniati' maxlength="8" onkeyup="mascara_data()"
@@ -287,6 +297,52 @@
                             maxlength="16" autocomplete="off" placeholder="DDD + Número" value='{{pessoa.celular}}'>
                         <input type='text' name='email' class='form-control form-control-sm mb-1'
                             value='{{pessoa.email}}'>
+                    </div>
+                </div>
+                <div class='row' style="padding-left: 10%;">
+                    <div class='col-md-2 text-end'>
+                        <label class='col-form-label col-form-label-sm fw-bold'>Função:</label>
+                    </div>
+                    <div class='col'>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-check form-switch">
+                                    <input name='funges' class="form-check-input" type="checkbox" {{pessoa.funges}}>
+                                    <label class="form-check-label mt-1" style="font-size: 14px;">Gestor</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-check form-switch">
+                                    <input name='funpro' class="form-check-input" type="checkbox" {{pessoa.funpro}}>
+                                    <label class="form-check-label mt-1" style="font-size: 14px;">Projetista</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-check form-switch">
+                                    <input name='funeng' class="form-check-input" type="checkbox" {{pessoa.funeng}}>
+                                    <label class="form-check-label mt-1" style="font-size: 14px;">Engenheiro</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-check form-switch" onchange="responsavel()">
+                                    <input name='funins' id='funins' class="form-check-input" type="checkbox"
+                                        {{pessoa.funins}}>
+                                    <label class="form-check-label mt-1" style="font-size: 14px;">Instalador</label>
+                                </div>
+                            </div>
+                            <div class="col" id='responsavel' style="display: {{mostraRes}};">
+                                <div class="form-check form-switch">
+                                    <input name='insres' class="form-check-input" type="checkbox" {{pessoa.insres}}>
+                                    <label class="form-check-label mt-1" style="font-size: 14px;">Responsável</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-check form-switch">
+                                    <input name='funele' class="form-check-input" type="checkbox" {{pessoa.funele}}>
+                                    <label class="form-check-label mt-1" style="font-size: 14px;">Eletricista</label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -318,47 +374,27 @@
             </div>
             {{else}}
             <div class="col-md-5">
-                <div>
-                    <label class='col-form-label col-form-label-sm fw-bold'>Função:</label>
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-check form-switch">
-                                <input name='funges' class="form-check-input" type="checkbox" {{pessoa.funges}}>
-                                <label class="form-check-label mt-1" style="font-size: 14px;">Gestor</label>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-check form-switch">
-                                <input name='funpro' class="form-check-input" type="checkbox" {{pessoa.funpro}}>
-                                <label class="form-check-label mt-1" style="font-size: 14px;">Projetista</label>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-check form-switch">
-                                <input name='funeng' class="form-check-input" type="checkbox" {{pessoa.funeng}}>
-                                <label class="form-check-label mt-1" style="font-size: 14px;">Engenheiro</label>
-                            </div>
-                        </div>                        
-                        <div class="col">
-                            <div class="form-check form-switch">
-                                <input name='funins' class="form-check-input" type="checkbox" {{pessoa.funins}}>
-                                <label class="form-check-label mt-1" style="font-size: 14px;">Instalador</label>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-check form-switch">
-                                <input name='funele' class="form-check-input" type="checkbox" {{pessoa.funele}}>
-                                <label class="form-check-label mt-1" style="font-size: 14px;">Eletricista</label>
-                            </div>
-                        </div>                        
+                <div class="row mb-1">
+                    <div class="col-md-3">
+                        <label class="col-form-label col-form-label-sm">R$ Custo Dia:</label>
                     </div>
-                    <div class="row mb-1">
-                        <div class="col-md-3">
-                            <label class="col-form-label col-form-label-sm">R$ Custo Dia:</label>
-                        </div>
-                        <div class="col">
-                            <input type='number' name='custo' step='0.010' class="form-control form-control-sm" value='{{pessoa.custo}}'>
-                        </div>                        
+                    <div class="col">
+                        <input type='number' name='custo' step='0.010' class="form-control form-control-sm"
+                            value='{{pessoa.custo}}'>
+                    </div>
+                </div>
+                <div class="row mb-1">
+                    <div class="col-md-3 text-end">
+                        <label class="col-form-label col-form-label-sm">Constante de Proposta:</label>
+                    </div>
+                    <div class="col mt-2 text-start">
+                        <input type='text' name='const'class="form-control form-control-sm" value="{{pessoa.const}}">
+                    </div>                    
+                    <div class="col-md-3 text-end">
+                        <label class="col-form-label col-form-label-sm">Sequência de Proposta:</label>
+                    </div>
+                    <div class="col mt-2 text-start">
+                        <input type='number' name='seq' step='0.010' class="form-control form-control-sm" value="{{pessoa.seq}}">
                     </div>
                 </div>
                 <div class="row mt-4">

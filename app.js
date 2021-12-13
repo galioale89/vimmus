@@ -398,9 +398,9 @@ app.get('/menu', ehAdmin, (req, res) => {
                         if (q == todasProposta.length) {
                           numprj = todasProposta.length
                           //console.log('numprj=>' + numprj)
-                          console.log('qtdorcado=>' + qtdorcado)
-                          console.log('qtdaberto=>' + qtdaberto)
-                          console.log('qtdencerrado=>' + qtdencerrado)
+                          // console.log('qtdorcado=>' + qtdorcado)
+                          // console.log('qtdaberto=>' + qtdaberto)
+                          // console.log('qtdencerrado=>' + qtdencerrado)
                           res.render('menuproposta', { id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, saudacao, nome_lista: nome, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdalx, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado })// deadlineIns, notpro, atrasado
                         }
                       }).catch((err) => {

@@ -5182,6 +5182,7 @@ router.post('/editar', uploadfoto.single('foto'), ehAdmin, (req, res) => {
             pessoa.percom = req.body.percom
             pessoa.ehVendedor = ehVendedor
             pessoa.seq = req.body.seq
+            pessoa.const = req.body.const
 
             Pessoa(pessoa).save().then(() => {
                 Pessoa.findOne({ _id: req.body.id }).lean().then((pessoa) => {
