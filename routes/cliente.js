@@ -199,6 +199,9 @@ router.get('/edicao/:id', ehAdmin, (req, res) => {
     }
     Cliente.findOne({ user: id, _id: req.params.id }).lean().then((cliente) => {
         res.render('cliente/cliente', { cliente })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível cadastrar o cliente.')
+        res.redirect('/cliente/novo')
     })
 })
 
@@ -391,9 +394,9 @@ router.post('/edicao/', ehAdmin, (req, res) => {
 
     if (req.body.nome == '' || req.body.endereco == '' || documento == '' ||
         req.body.celular == '' || req.body.email == '') {
-        erros.push({ texto: 'Todos os campos de descrição são obrigatórios.' })
         Cliente.findOne({ user: id, _id: req.body.id }).lean().then((cliente) => {
-            res.render('cliente/editcliente', { cliente: cliente, erros: erros })
+            req.flash('error_msg','Os campos de nome, endereço, documento, celular e e-mail são obrigatórios.')
+            res.redirect('/cliente/edicao/'+req.body.id)
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar o cliente.')
             res.redirect('/Cliente/novo')
@@ -436,21 +439,17 @@ router.post('/edicao/', ehAdmin, (req, res) => {
             }
 
             cliente.save().then(() => {
-                var sucesso = []
-                sucesso.push({ texto: 'Modificações salvas com sucesso.' })
-
                 Cliente.findOne({ user: id, _id: req.body.id }).lean().then((cliente) => {
-                    res.render('cliente/editcliente', { cliente, sucesso })
+                    req.flash('success_msg','Alterações realizadas com sucesso.')
+                    res.redirect('/cliente/edicao/'+req.body.id)
                 }).catch((err) => {
                     req.flash('error_msg', 'Não foi possível encontrar o cliente.')
                     res.redirect('/Cliente/novo')
                 })
-
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível salvar as modificações.')
                 res.redirect('/Cliente/novo')
             })
-
         })
     }
 })
