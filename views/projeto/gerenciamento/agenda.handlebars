@@ -108,10 +108,20 @@
 </script>
 <div class='row' style="padding: 10px;width: 100%;">
     <form action="/gerenciamento/aplicaAgenda/" method="post">
+        <ul class="nav nav-tabs mb-2">
+            <li class="nav-item">
+                <a class="nav-link titulo-inicio active" aria-current="page" style="color: black;"
+                    href='/gerenciamento/agenda'><label class="col-form-label titulo-inicio">Agenda</label></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link titulo-inicio" aria-current="page" style="color: black;"
+                    href="/gerenciamento/atividades/"><label class="col-form-label titulo-inicio">Atividades</label></a>
+            </li>
+        </ul>  
         <input type='hidden' name='selecionado' id='selecionado' value='tarefa'>
         <div class='row mb-2'>
             <div class="col-md-4 mt-1">
-                <label style="font-size: 16px;font-weight: bold;"> Agenda Manutenções de {{#if mes}}{{mestitulo}} de
+                <label class='col-form-label col-form-label-sm'> Manutenções de {{#if mes}}{{mestitulo}} de
                     {{ano}}{{/if}}</label>
             </div>
             {{!-- <div class="col-md-1">
@@ -165,7 +175,9 @@
             <div class="row mb-2 text-center"
                 style="width: 100%; padding-left: 100px;padding-right: 100px;padding-top: 20px;">
                 <div class="col-md-5 mt-1 text-end">
-                    <h2 style="font-weight: 600;margin-bottom: 20px;">Selecione o cliente para gerar a manutenção:</h2>
+                    <label class='col-form-label col-form-label-sm'
+                        style="font-weight: 600;margin-bottom: 20px;">Selecione o cliente para gerar a
+                        manutenção:</label>
                 </div>
                 <div class="col-md-5">
                     <select class='form-select form-select-sm' name="cliente" id="cliente">
