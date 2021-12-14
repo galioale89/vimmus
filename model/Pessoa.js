@@ -19,6 +19,10 @@ const Pessoa = new Schema({
         type: Number,
         require: true
     },
+    const: {
+        type: String,
+        require: true
+    },    
     funges: {
         type: String,
         require: true
