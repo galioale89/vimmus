@@ -4651,10 +4651,9 @@ router.post('/contrato', ehAdmin, (req, res) => {
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
                 if (contratofile != '') {
-                    proposta.assinatura = contratofile
+                    proposta.contrato = contratofile
                 }
                 proposta.dtcontrato = String(req.body.dtcontrato)
-                proposta.contrato = true
                 proposta.save().then(() => {
                     req.flash('success_msg', 'Documento salvo com sucesso.')
                     res.redirect('/gerenciamento/assinatura/' + req.body.id)
@@ -8556,7 +8555,7 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
 
     var data = ''
     var dia = ''
-    var ins_fora = []
+    var fora_ins = []
     var q = 0
     var ehSelecao = false
     var mes = ''
@@ -8588,9 +8587,9 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
                             q = q + 1
                             var nome = pesins.nome
                             var id = pesins._id
-                            ins_fora.push({ id, ins: nome })
+                            fora_ins.push({ id, nome })
                             if (q == instalacao.length) {
-                                res.render('projeto/gerenciamento/tarefas', { data, usina, fora: ins_fora, ehSelecao, atividades })
+                                res.render('projeto/gerenciamento/tarefas', { data, usina, fora_ins, ehSelecao, atividades })
                             }
                         })
                     } else {
