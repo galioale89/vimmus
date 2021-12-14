@@ -201,9 +201,9 @@ router.get('/consulta', ehAdmin, (req, res) => {
                                                                                                             status = 'Contrato'
                                                                                                         } else {
                                                                                                             if (vistoria.feito == true) {
-                                                                                                                status = 'Vistoria'
+                                                                                                                status = 'Visita'
                                                                                                             } else {
-                                                                                                                status = 'Preparado para a Vistoria'
+                                                                                                                status = 'Preparado para a Visita'
                                                                                                             }
                                                                                                         }
                                                                                                     }
@@ -747,9 +747,9 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                     switch (stats) {
                         case 'Proposta Enviada': enviado = true
                             break;
-                        case 'Preparando para a Vistoria': ganho = true; enviado = true
+                        case 'Preparando para a Visita': ganho = true; enviado = true
                             break;
-                        case 'Vistoria': vistoria = true; ganho = true; enviado = true
+                        case 'Visita': vistoria = true; ganho = true; enviado = true
                             break;
                         case 'Contrato': assinado = true; ganho = true; vistoria = true; enviado = true
                             break;
@@ -857,9 +857,9 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                                                                     status = 'Contrato'
                                                                                                                 } else {
                                                                                                                     if (visto.feito == true) {
-                                                                                                                        status = 'Vistoria'
+                                                                                                                        status = 'Visita'
                                                                                                                     } else {
-                                                                                                                        status = 'Preparado para a Vistoria'
+                                                                                                                        status = 'Preparado para a Visita'
                                                                                                                     }
                                                                                                                 }
                                                                                                             }
@@ -2117,150 +2117,119 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                         Posvenda.findOne({ proposta: req.params.id }).lean().then((posvenda) => {
                             //console.log('validação dos instaladores.')
                             Equipe.find({ 'datainibusca': { $ne: 'null' }, 'nome_projeto': { $exists: true }, $and: [{ 'dtinicio': { $ne: '0000-00-00' } }, { 'dtinicio': { $ne: '' } }] }).then((equipe) => {
-                                equipe.forEach((e) => {
-                                    // Proposta.findOne({equipe: e.equipe, encerrado: false})
-                                    //console.log('e._id=>' + e._id)
-                                    dataini = e.tdiniico
-                                    q++
-                                    diferenca = e.dtfimbusca - e.dtinibusca
-                                    //console.log('diferenca=>' + diferenca)
-                                    if (isNaN(diferenca) == false) {
-                                        for (x = 0; x < diferenca + 1; x++) {
-                                            var date = String(e.dtinibusca)
-                                            var ano = date.substring(0, 4)
-                                            var mes = date.substring(4, 6) - parseFloat(1)
-                                            var dia = date.substring(6, 10)
-                                            var data = new Date(ano, mes, dia)
-                                            var nova_data = new Date()
-                                            nova_data.setDate(data.getDate() + parseFloat(x))
-                                            ano = nova_data.getFullYear()
-                                            mes = (nova_data.getMonth() + parseFloat(1))
-                                            if (mes < 10) {
-                                                mes = '0' + mes
-                                            }
-                                            dia = nova_data.getDate()
-                                            if (dia < 10) {
-                                                dia = '0' + dia
-                                            }
-                                            nova_data = ano + '' + mes + '' + dia
+                                if (naoVazio(equipe)) {
+                                    equipe.forEach((e) => {
+                                        // Proposta.findOne({equipe: e.equipe, encerrado: false})
+                                        //console.log('e._id=>' + e._id)
+                                        dataini = e.tdiniico
+                                        q++
+                                        diferenca = e.dtfimbusca - e.dtinibusca
+                                        //console.log('diferenca=>' + diferenca)
+                                        if (isNaN(diferenca) == false) {
+                                            for (x = 0; x < diferenca + 1; x++) {
+                                                var date = String(e.dtinibusca)
+                                                var ano = date.substring(0, 4)
+                                                var mes = date.substring(4, 6) - parseFloat(1)
+                                                var dia = date.substring(6, 10)
+                                                var data = new Date(ano, mes, dia)
+                                                var nova_data = new Date()
+                                                nova_data.setDate(data.getDate() + parseFloat(x))
+                                                ano = nova_data.getFullYear()
+                                                mes = (nova_data.getMonth() + parseFloat(1))
+                                                if (mes < 10) {
+                                                    mes = '0' + mes
+                                                }
+                                                dia = nova_data.getDate()
+                                                if (dia < 10) {
+                                                    dia = '0' + dia
+                                                }
+                                                nova_data = ano + '' + mes + '' + dia
 
-                                            if (dataini < nova_data) {
-                                                dtini = nova_data
-                                            } else {
-                                                dtini = dataini
-                                            }
+                                                if (dataini < nova_data) {
+                                                    dtini = nova_data
+                                                } else {
+                                                    dtini = dataini
+                                                }
 
-                                            //console.log('nova_data=>'+nova_data)
-                                            //console.log('dtini=>'+dtini)
-                                            //console.log('dataini=>'+dataini)
-                                            //console.log('date=>'+date)
+                                                //console.log('nova_data=>'+nova_data)
+                                                //console.log('dtini=>'+dtini)
+                                                //console.log('dataini=>'+dataini)
+                                                //console.log('date=>'+date)
 
-                                            if (nova_data == dtini && dataini >= dtini && parseFloat(date) <= dataini) {
-                                                ins_dif = 1
-                                                //console.log('entrou')
-                                                Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((todos_instaladores) => {
-                                                    todos_instaladores.forEach((ins) => {
-                                                        numprj++
-                                                        //console.log('Recurso=>' + ins.nome)
-                                                        //console.log('proposta.equipe=>' + proposta.equipe)
-                                                        Equipe.findOne({ _id: e._id, $or: [{ 'ins0': ins.nome }, { 'ins1': ins.nome }, { 'ins2': ins.nome }, { 'ins3': ins.nome }, { 'ins4': ins.nome }, { 'ins5': ins.nome }] }).then((equipe) => {
-                                                            //console.log('equipe=>' + equipe)
-                                                            qe++
-                                                            if (equipe != null) {
-                                                                if (instalador_alocado.length == 0) {
-                                                                    instalador_alocado.push({ nome: ins.nome })
-                                                                    //console.log(ins.nome + ' está alocado.')
-                                                                } else {
-                                                                    for (i = 0; i < instalador_alocado.length; i++) {
-                                                                        if (instalador_alocado[i].nome != ins.nome) {
-                                                                            instalador_alocado.push({ nome: ins.nome })
-                                                                            //console.log(ins.nome + ' está alocado.')
+                                                if (nova_data == dtini && dataini >= dtini && parseFloat(date) <= dataini) {
+                                                    ins_dif = 1
+                                                    //console.log('entrou')
+                                                    Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((todos_instaladores) => {
+                                                        todos_instaladores.forEach((ins) => {
+                                                            numprj++
+                                                            //console.log('Recurso=>' + ins.nome)
+                                                            //console.log('proposta.equipe=>' + proposta.equipe)
+                                                            Equipe.findOne({ _id: e._id, $or: [{ 'ins0': ins.nome }, { 'ins1': ins.nome }, { 'ins2': ins.nome }, { 'ins3': ins.nome }, { 'ins4': ins.nome }, { 'ins5': ins.nome }] }).then((equipe) => {
+                                                                //console.log('equipe=>' + equipe)
+                                                                qe++
+                                                                if (equipe != null) {
+                                                                    if (instalador_alocado.length == 0) {
+                                                                        instalador_alocado.push({ nome: ins.nome })
+                                                                        //console.log(ins.nome + ' está alocado.')
+                                                                    } else {
+                                                                        for (i = 0; i < instalador_alocado.length; i++) {
+                                                                            if (instalador_alocado[i].nome != ins.nome) {
+                                                                                instalador_alocado.push({ nome: ins.nome })
+                                                                                //console.log(ins.nome + ' está alocado.')
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
-                                                            }
-                                                            //console.log('numprj=>' + numprj)
-                                                            //console.log('qe=>' + qe)
-                                                            if (numprj == qe) {
-                                                                //console.log('É o último!')
-                                                                Equipe.findOne({ _id: proposta.equipe }).then((edit_equipe) => {
+                                                                //console.log('numprj=>' + numprj)
+                                                                //console.log('qe=>' + qe)
+                                                                if (numprj == qe) {
+                                                                    //console.log('É o último!')
+                                                                    Equipe.findOne({ _id: proposta.equipe }).then((edit_equipe) => {
 
-                                                                    //console.log('equipeins.ins0=>' + equipeins.ins0)
-                                                                    //console.log('equipeins.ins1=>' + equipeins.ins1)
-                                                                    //console.log('equipeins.ins2=>' + equipeins.ins2)
-                                                                    //console.log('equipeins.ins3=>' + equipeins.ins3)
-                                                                    //console.log('equipeins.ins4=>' + equipeins.ins4)
-                                                                    //console.log('equipeins.ins5=>' + equipeins.ins5)
+                                                                        //console.log('equipeins.ins0=>' + equipeins.ins0)
+                                                                        //console.log('equipeins.ins1=>' + equipeins.ins1)
+                                                                        //console.log('equipeins.ins2=>' + equipeins.ins2)
+                                                                        //console.log('equipeins.ins3=>' + equipeins.ins3)
+                                                                        //console.log('equipeins.ins4=>' + equipeins.ins4)
+                                                                        //console.log('equipeins.ins5=>' + equipeins.ins5)
 
-                                                                    if (typeof edit_equipe.ins0 != 'undefined') {
-                                                                        ins0 = edit_equipe.ins0
-                                                                    }
-                                                                    if (typeof edit_equipe.ins1 != 'undefined') {
-                                                                        ins1 = edit_equipe.ins1
-                                                                    }
-                                                                    if (typeof edit_equipe.ins2 != 'undefined') {
-                                                                        ins2 = edit_equipe.ins2
-                                                                    }
-                                                                    if (typeof edit_equipe.ins3 != 'undefined') {
-                                                                        ins3 = edit_equipe.ins3
-                                                                    }
-                                                                    if (typeof edit_equipe.ins4 != 'undefined') {
-                                                                        ins4 = edit_equipe.ins4
-                                                                    }
-                                                                    if (typeof edit_equipe.ins5 != 'undefined') {
-                                                                        ins5 = edit_equipe.ins5
-                                                                    }
-                                                                    Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).sort({ nome: 'asc' }).then((instalacao) => {
-                                                                        //console.log('equ=>' + equ)
-                                                                        // if (equ == null || equ == '' && typeof equ == 'undefined') {
-                                                                        //     instaladores = instalacao
-                                                                        // }
-                                                                        //console.log('instaladores=>' + instaladores)
-                                                                        instalacao.forEach((pesins) => {
-                                                                            //console.log('instalador_alocado.length=>' + instalador_alocado.length)
-                                                                            //console.log('pesins.nome=>' + pesins.nome)
-                                                                            if (instalador_alocado.length == '') {
-                                                                                //console.log('não tem instalador alocado')
-                                                                                var nome = pesins.nome
-                                                                                var id = pesins._id
-
-                                                                                if (naoVazio(pesins)) {
-                                                                                    custoins = pesins.custo
-                                                                                } else {
-                                                                                    custoins = 0
-                                                                                }
-                                                                                if (nome == ins0) {
-                                                                                    ins_dentro.push({ id, nome, custo: custoins })
-                                                                                } else {
-                                                                                    if (nome == ins1) {
-                                                                                        ins_dentro.push({ id, nome, custo: custoins })
-                                                                                    } else {
-                                                                                        if (nome == ins2) {
-                                                                                            ins_dentro.push({ id, nome, custo: custoins })
-                                                                                        } else {
-                                                                                            if (nome == ins3) {
-                                                                                                ins_dentro.push({ id, nome, custo: custoins })
-                                                                                            } else {
-                                                                                                if (nome == ins4) {
-                                                                                                    ins_dentro.push({ id, nome, custo: custoins })
-                                                                                                } else {
-                                                                                                    if (nome == ins5) {
-                                                                                                        ins_dentro.push({ id, nome, custo: custoins })
-                                                                                                    } else {
-                                                                                                        ins_fora.push({ id, nome, custo: custoins })
-                                                                                                    }
-                                                                                                }
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            } else {
-                                                                                const encontrou_ins = instalador_alocado.find((user) => user.nome === pesins.nome)
-                                                                                //console.log('encontrou recurso alocado=>' + encontrou_ins)
-                                                                                if (typeof encontrou_ins == 'undefined') {
+                                                                        if (typeof edit_equipe.ins0 != 'undefined') {
+                                                                            ins0 = edit_equipe.ins0
+                                                                        }
+                                                                        if (typeof edit_equipe.ins1 != 'undefined') {
+                                                                            ins1 = edit_equipe.ins1
+                                                                        }
+                                                                        if (typeof edit_equipe.ins2 != 'undefined') {
+                                                                            ins2 = edit_equipe.ins2
+                                                                        }
+                                                                        if (typeof edit_equipe.ins3 != 'undefined') {
+                                                                            ins3 = edit_equipe.ins3
+                                                                        }
+                                                                        if (typeof edit_equipe.ins4 != 'undefined') {
+                                                                            ins4 = edit_equipe.ins4
+                                                                        }
+                                                                        if (typeof edit_equipe.ins5 != 'undefined') {
+                                                                            ins5 = edit_equipe.ins5
+                                                                        }
+                                                                        Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).sort({ nome: 'asc' }).then((instalacao) => {
+                                                                            //console.log('equ=>' + equ)
+                                                                            // if (equ == null || equ == '' && typeof equ == 'undefined') {
+                                                                            //     instaladores = instalacao
+                                                                            // }
+                                                                            //console.log('instaladores=>' + instaladores)
+                                                                            instalacao.forEach((pesins) => {
+                                                                                //console.log('instalador_alocado.length=>' + instalador_alocado.length)
+                                                                                //console.log('pesins.nome=>' + pesins.nome)
+                                                                                if (instalador_alocado.length == '') {
+                                                                                    //console.log('não tem instalador alocado')
                                                                                     var nome = pesins.nome
                                                                                     var id = pesins._id
-                                                                                    //console.log(nome + ' não está alocado.')
+
+                                                                                    if (naoVazio(pesins)) {
+                                                                                        custoins = pesins.custo
+                                                                                    } else {
+                                                                                        custoins = 0
+                                                                                    }
                                                                                     if (nome == ins0) {
                                                                                         ins_dentro.push({ id, nome, custo: custoins })
                                                                                     } else {
@@ -2287,26 +2256,59 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                                                         }
                                                                                     }
                                                                                 } else {
-                                                                                    var nome = pesins.nome
-                                                                                    var id = pesins._id
-                                                                                    //console.log(nome + ' está alocado.')
-                                                                                    if (nome == ins0) {
-                                                                                        ins_dentro.push({ id, nome, custo: custoins })
-                                                                                    } else {
-                                                                                        if (nome == ins1) {
+                                                                                    const encontrou_ins = instalador_alocado.find((user) => user.nome === pesins.nome)
+                                                                                    //console.log('encontrou recurso alocado=>' + encontrou_ins)
+                                                                                    if (typeof encontrou_ins == 'undefined') {
+                                                                                        var nome = pesins.nome
+                                                                                        var id = pesins._id
+                                                                                        //console.log(nome + ' não está alocado.')
+                                                                                        if (nome == ins0) {
                                                                                             ins_dentro.push({ id, nome, custo: custoins })
                                                                                         } else {
-                                                                                            if (nome == ins2) {
+                                                                                            if (nome == ins1) {
                                                                                                 ins_dentro.push({ id, nome, custo: custoins })
                                                                                             } else {
-                                                                                                if (nome == ins3) {
+                                                                                                if (nome == ins2) {
                                                                                                     ins_dentro.push({ id, nome, custo: custoins })
                                                                                                 } else {
-                                                                                                    if (nome == ins4) {
+                                                                                                    if (nome == ins3) {
                                                                                                         ins_dentro.push({ id, nome, custo: custoins })
                                                                                                     } else {
-                                                                                                        if (nome == ins5) {
+                                                                                                        if (nome == ins4) {
                                                                                                             ins_dentro.push({ id, nome, custo: custoins })
+                                                                                                        } else {
+                                                                                                            if (nome == ins5) {
+                                                                                                                ins_dentro.push({ id, nome, custo: custoins })
+                                                                                                            } else {
+                                                                                                                ins_fora.push({ id, nome, custo: custoins })
+                                                                                                            }
+                                                                                                        }
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    } else {
+                                                                                        var nome = pesins.nome
+                                                                                        var id = pesins._id
+                                                                                        //console.log(nome + ' está alocado.')
+                                                                                        if (nome == ins0) {
+                                                                                            ins_dentro.push({ id, nome, custo: custoins })
+                                                                                        } else {
+                                                                                            if (nome == ins1) {
+                                                                                                ins_dentro.push({ id, nome, custo: custoins })
+                                                                                            } else {
+                                                                                                if (nome == ins2) {
+                                                                                                    ins_dentro.push({ id, nome, custo: custoins })
+                                                                                                } else {
+                                                                                                    if (nome == ins3) {
+                                                                                                        ins_dentro.push({ id, nome, custo: custoins })
+                                                                                                    } else {
+                                                                                                        if (nome == ins4) {
+                                                                                                            ins_dentro.push({ id, nome, custo: custoins })
+                                                                                                        } else {
+                                                                                                            if (nome == ins5) {
+                                                                                                                ins_dentro.push({ id, nome, custo: custoins })
+                                                                                                            }
                                                                                                         }
                                                                                                     }
                                                                                                 }
@@ -2314,258 +2316,281 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                                                         }
                                                                                     }
                                                                                 }
-                                                                            }
-                                                                        })
+                                                                            })
 
-                                                                        //console.log('ins_dentro_ultimo=>' + ins_dentro)
-                                                                        //console.log('ins_fora_ultimo=>' + ins_fora)
+                                                                            //console.log('ins_dentro_ultimo=>' + ins_dentro)
+                                                                            //console.log('ins_fora_ultimo=>' + ins_fora)
 
 
-                                                                        Equipe.find({ user: id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
-                                                                            //Verificando os responsáveis alocados na equipe
-                                                                            //Verificando as pessoas em cada equipe
-                                                                            //console.log('qi=>' + qi)
-                                                                            Equipe.findOne({ _id: proposta.equipe }).then((nomes) => {
-                                                                                //console.log('nomes=>' + nomes)
-                                                                                if (nomes != '' && nomes != null && typeof nomes != 'undefined') {
-                                                                                    for (var x = 0; x < 6; x++) {
-                                                                                        if (x == 0) {
-                                                                                            n = nomes.ins0
-                                                                                        } else {
-                                                                                            if (x == 1) {
-                                                                                                n = nomes.ins1
+                                                                            Equipe.find({ user: id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
+                                                                                //Verificando os responsáveis alocados na equipe
+                                                                                //Verificando as pessoas em cada equipe
+                                                                                //console.log('qi=>' + qi)
+                                                                                Equipe.findOne({ _id: proposta.equipe }).then((nomes) => {
+                                                                                    //console.log('nomes=>' + nomes)
+                                                                                    if (nomes != '' && nomes != null && typeof nomes != 'undefined') {
+                                                                                        for (var x = 0; x < 6; x++) {
+                                                                                            if (x == 0) {
+                                                                                                n = nomes.ins0
                                                                                             } else {
-                                                                                                if (x == 2) {
-                                                                                                    n = nomes.ins2
+                                                                                                if (x == 1) {
+                                                                                                    n = nomes.ins1
                                                                                                 } else {
-                                                                                                    if (x == 3) {
-                                                                                                        n = nomes.ins3
+                                                                                                    if (x == 2) {
+                                                                                                        n = nomes.ins2
                                                                                                     } else {
-                                                                                                        if (x == 4) {
-                                                                                                            n = nomes.ins4
+                                                                                                        if (x == 3) {
+                                                                                                            n = nomes.ins3
                                                                                                         } else {
-                                                                                                            qx = true
-                                                                                                            n = nomes.ins5
+                                                                                                            if (x == 4) {
+                                                                                                                n = nomes.ins4
+                                                                                                            } else {
+                                                                                                                qx = true
+                                                                                                                n = nomes.ins5
+                                                                                                            }
                                                                                                         }
                                                                                                     }
                                                                                                 }
                                                                                             }
-                                                                                        }
 
-                                                                                        //console.log('qx=>' + qx)
-                                                                                        //console.log('id=>' + id)
-                                                                                        Pessoa.findOne({ user: id, nome: n, insres: 'checked' }).then((p) => {
-                                                                                            //console.log('p=>' + p)
-                                                                                            if (naoVazio(p)) {
-                                                                                                lista_res.push({ id: p._id, nome: p.nome })
-                                                                                            }
-                                                                                        }).catch((err) => {
-                                                                                            req.flash('error_msg', 'Falha ao encontrar a pessoa.')
-                                                                                            res.redirect('/gerenciamento/equipe/' + req.params.id)
-                                                                                        })
-
-                                                                                        if (qx == true) {
-
-                                                                                            Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
-                                                                                                nome_equipe = lista_equipe.nome_equipe
-                                                                                                //console.log('lista_equipe.insres=>' + lista_equipe.insres)
-                                                                                                Pessoa.findOne({ _id: lista_equipe.insres }).lean().then((insres) => {
-                                                                                                    //console.log('insres.nome=>' + insres.nome)
-                                                                                                    //console.log('encontrou ')
-                                                                                                    res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, fora_ins: ins_fora, dentro_ins: ins_dentro, nome_equipe, lista_res, insres })
-                                                                                                }).catch((err) => {
-                                                                                                    req.flash('error_msg', 'Falha ao encontrar a pessoa<insres>.')
-                                                                                                    res.redirect('/gerenciamento/equipe/' + req.params.id)
-                                                                                                })
+                                                                                            //console.log('qx=>' + qx)
+                                                                                            //console.log('id=>' + id)
+                                                                                            Pessoa.findOne({ user: id, nome: n, insres: 'checked' }).then((p) => {
+                                                                                                //console.log('p=>' + p)
+                                                                                                if (naoVazio(p)) {
+                                                                                                    lista_res.push({ id: p._id, nome: p.nome })
+                                                                                                }
                                                                                             }).catch((err) => {
-                                                                                                req.flash('error_msg', 'Falha ao encontrar a equipe<lista_equipe>.')
+                                                                                                req.flash('error_msg', 'Falha ao encontrar a pessoa.')
                                                                                                 res.redirect('/gerenciamento/equipe/' + req.params.id)
                                                                                             })
 
+                                                                                            if (qx == true) {
+
+                                                                                                Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                                                                                                    nome_equipe = lista_equipe.nome_equipe
+                                                                                                    //console.log('lista_equipe.insres=>' + lista_equipe.insres)
+                                                                                                    Pessoa.findOne({ _id: lista_equipe.insres }).lean().then((insres) => {
+                                                                                                        //console.log('insres.nome=>' + insres.nome)
+                                                                                                        //console.log('encontrou ')
+                                                                                                        res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, ins_fora, ins_dentro, nome_equipe, lista_res, insres })
+                                                                                                    }).catch((err) => {
+                                                                                                        req.flash('error_msg', 'Falha ao encontrar a pessoa<insres>.')
+                                                                                                        res.redirect('/gerenciamento/equipe/' + req.params.id)
+                                                                                                    })
+                                                                                                }).catch((err) => {
+                                                                                                    req.flash('error_msg', 'Falha ao encontrar a equipe<lista_equipe>.')
+                                                                                                    res.redirect('/gerenciamento/equipe/' + req.params.id)
+                                                                                                })
+
+                                                                                            }
                                                                                         }
                                                                                     }
-                                                                                }
+                                                                                }).catch((err) => {
+                                                                                    req.flash('error_msg', 'Falha ao encontrar a euipe<nomes>.')
+                                                                                    res.redirect('/gerenciamento/equipe/' + req.params.id)
+                                                                                })
+
                                                                             }).catch((err) => {
-                                                                                req.flash('error_msg', 'Falha ao encontrar a euipe<nomes>.')
+                                                                                req.flash('error_msg', 'Falha ao encontrar as equipes<equipes>.')
                                                                                 res.redirect('/gerenciamento/equipe/' + req.params.id)
                                                                             })
 
                                                                         }).catch((err) => {
-                                                                            req.flash('error_msg', 'Falha ao encontrar as equipes<equipes>.')
+                                                                            req.flash('error_msg', 'Falha ao encontrar os instaladores.')
                                                                             res.redirect('/gerenciamento/equipe/' + req.params.id)
                                                                         })
-
                                                                     }).catch((err) => {
-                                                                        req.flash('error_msg', 'Falha ao encontrar os instaladores.')
+                                                                        req.flash('error_msg', 'Falha ao encontrar os instaladores na equipe<edit_equipe>.')
                                                                         res.redirect('/gerenciamento/equipe/' + req.params.id)
                                                                     })
-                                                                }).catch((err) => {
-                                                                    req.flash('error_msg', 'Falha ao encontrar os instaladores na equipe<edit_equipe>.')
-                                                                    res.redirect('/gerenciamento/equipe/' + req.params.id)
-                                                                })
-                                                            }
-                                                        }).catch((err) => {
-                                                            req.flash('error_msg', 'Falha ao encontrar as equipes<2>.')
-                                                            res.redirect('/gerenciamento/equipe/' + req.params.id)
+                                                                }
+                                                            }).catch((err) => {
+                                                                req.flash('error_msg', 'Falha ao encontrar as equipes<2>.')
+                                                                res.redirect('/gerenciamento/equipe/' + req.params.id)
+                                                            })
                                                         })
+                                                    }).catch((err) => {
+                                                        req.flash('error_msg', 'Falha ao encontrar os instaladores na equipe.')
+                                                        res.redirect('/gerenciamento/equipe/' + req.params.id)
                                                     })
-                                                }).catch((err) => {
-                                                    req.flash('error_msg', 'Falha ao encontrar os instaladores na equipe.')
-                                                    res.redirect('/gerenciamento/equipe/' + req.params.id)
-                                                })
+                                                }
                                             }
                                         }
-                                    }
 
-                                    if (validaLivre == 0 && ins_dif == 0 && q == equipe.length) {
-                                        validaLivre = 1
-                                        Equipe.findOne({ _id: proposta.equipe }).lean().then((equipeins) => {
-                                            Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((instalacao) => {
-                                                //console.log('entrou diferença')
-                                                //console.log('equipeins.ins0=>' + equipeins.ins0)
-                                                if (typeof equipeins.ins0 != 'undefined') {
-                                                    ins0 = equipeins.ins0
-                                                }
-                                                if (typeof equipeins.ins1 != 'undefined') {
-                                                    ins1 = equipeins.ins1
-                                                }
-                                                if (typeof equipeins.ins2 != 'undefined') {
-                                                    ins2 = equipeins.ins2
-                                                }
-                                                if (typeof equipeins.ins3 != 'undefined') {
-                                                    ins3 = equipeins.ins3
-                                                }
-                                                if (typeof equipeins.ins4 != 'undefined') {
-                                                    ins4 = equipeins.ins4
-                                                }
-                                                if (typeof equipeins.ins5 != 'undefined') {
-                                                    ins5 = equipeins.ins5
-                                                }
-
-                                                instalacao.forEach((pesins) => {
-
-                                                    var nome = pesins.nome
-                                                    var id = pesins._id
-                                                    //console.log('pesins.custo=>' + pesins.custo)
-                                                    if (pesins.custo == null || pesins.custo == '' || typeof pesins.custo == 'undefined') {
-                                                        custoins = 0
-                                                    } else {
-                                                        custoins = pesins.custo
+                                        if (validaLivre == 0 && ins_dif == 0 && q == equipe.length) {
+                                            validaLivre = 1
+                                            Equipe.findOne({ _id: proposta.equipe }).lean().then((equipeins) => {
+                                                console.log('entrou')
+                                                Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((instalacao) => {
+                                                    console.log('entrou diferença')
+                                                    //console.log('equipeins.ins0=>' + equipeins.ins0)
+                                                    if (typeof equipeins.ins0 != 'undefined') {
+                                                        ins0 = equipeins.ins0
+                                                    }
+                                                    if (typeof equipeins.ins1 != 'undefined') {
+                                                        ins1 = equipeins.ins1
+                                                    }
+                                                    if (typeof equipeins.ins2 != 'undefined') {
+                                                        ins2 = equipeins.ins2
+                                                    }
+                                                    if (typeof equipeins.ins3 != 'undefined') {
+                                                        ins3 = equipeins.ins3
+                                                    }
+                                                    if (typeof equipeins.ins4 != 'undefined') {
+                                                        ins4 = equipeins.ins4
+                                                    }
+                                                    if (typeof equipeins.ins5 != 'undefined') {
+                                                        ins5 = equipeins.ins5
                                                     }
 
-                                                    if (nome == ins0) {
-                                                        ins_dentro.push({ id, nome, custo: custoins })
-                                                    } else {
-                                                        if (nome == ins1) {
+                                                    instalacao.forEach((pesins) => {
+
+                                                        var nome = pesins.nome
+                                                        var id = pesins._id
+                                                        //console.log('pesins.custo=>' + pesins.custo)
+                                                        if (pesins.custo == null || pesins.custo == '' || typeof pesins.custo == 'undefined') {
+                                                            custoins = 0
+                                                        } else {
+                                                            custoins = pesins.custo
+                                                        }
+
+                                                        if (nome == ins0) {
                                                             ins_dentro.push({ id, nome, custo: custoins })
                                                         } else {
-                                                            if (nome == ins2) {
+                                                            if (nome == ins1) {
                                                                 ins_dentro.push({ id, nome, custo: custoins })
                                                             } else {
-                                                                if (nome == ins3) {
+                                                                if (nome == ins2) {
                                                                     ins_dentro.push({ id, nome, custo: custoins })
                                                                 } else {
-                                                                    if (nome == ins4) {
+                                                                    if (nome == ins3) {
                                                                         ins_dentro.push({ id, nome, custo: custoins })
                                                                     } else {
-                                                                        if (nome == ins5) {
+                                                                        if (nome == ins4) {
                                                                             ins_dentro.push({ id, nome, custo: custoins })
                                                                         } else {
-                                                                            ins_fora.push({ id, nome, custo: custoins })
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                })
-                                                //console.log('ins_dentro_dif=>' + ins_dentro)
-                                                //console.log('ins_fora_dif=>' + ins_fora)
-
-                                                Equipe.find({ user: id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
-                                                    //Verificando os responsáveis alocados na equipe
-                                                    //Verificando as pessoas em cada equipe
-                                                    //console.log('qi=>' + qi)
-                                                    Equipe.findOne({ _id: proposta.equipe }).then((nomes) => {
-                                                        //console.log('nomes=>' + nomes)
-                                                        if (naoVazio(nomes)) {
-                                                            for (var x = 0; x < 6; x++) {
-                                                                if (x == 0) {
-                                                                    n = nomes.ins0
-                                                                } else {
-                                                                    if (x == 1) {
-                                                                        n = nomes.ins1
-                                                                    } else {
-                                                                        if (x == 2) {
-                                                                            n = nomes.ins2
-                                                                        } else {
-                                                                            if (x == 3) {
-                                                                                n = nomes.ins3
+                                                                            if (nome == ins5) {
+                                                                                ins_dentro.push({ id, nome, custo: custoins })
                                                                             } else {
-                                                                                if (x == 4) {
-                                                                                    n = nomes.ins4
-                                                                                } else {
-                                                                                    qx = true
-                                                                                    n = nomes.ins5
-                                                                                }
+                                                                                ins_fora.push({ id, nome, custo: custoins })
                                                                             }
                                                                         }
                                                                     }
                                                                 }
+                                                            }
+                                                        }
+                                                    })
+                                                    //console.log('ins_dentro_dif=>' + ins_dentro)
+                                                    //console.log('ins_fora_dif=>' + ins_fora)
 
-                                                                //console.log('qx=>' + qx)
-                                                                //console.log('id=>' + id)
-                                                                Pessoa.findOne({ user: id, nome: n, insres: 'checked' }).then((p) => {
-                                                                    //console.log('p=>' + p)
-                                                                    if (naoVazio(p)) {
-                                                                        lista_res.push({ id: p._id, nome: p.nome })
+                                                    Equipe.find({ user: id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
+                                                        //Verificando os responsáveis alocados na equipe
+                                                        //Verificando as pessoas em cada equipe
+                                                        //console.log('qi=>' + qi)
+                                                        Equipe.findOne({ _id: proposta.equipe }).then((nomes) => {
+                                                            //console.log('nomes=>' + nomes)
+                                                            if (naoVazio(nomes)) {
+                                                                for (var x = 0; x < 6; x++) {
+                                                                    if (x == 0) {
+                                                                        n = nomes.ins0
+                                                                    } else {
+                                                                        if (x == 1) {
+                                                                            n = nomes.ins1
+                                                                        } else {
+                                                                            if (x == 2) {
+                                                                                n = nomes.ins2
+                                                                            } else {
+                                                                                if (x == 3) {
+                                                                                    n = nomes.ins3
+                                                                                } else {
+                                                                                    if (x == 4) {
+                                                                                        n = nomes.ins4
+                                                                                    } else {
+                                                                                        qx = true
+                                                                                        n = nomes.ins5
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
                                                                     }
-                                                                }).catch((err) => {
-                                                                    req.flash('error_msg', 'Falha ao encontrar a pessoa.')
-                                                                    res.redirect('/gerenciamento/equipe/' + req.params.id)
-                                                                })
 
-                                                                //console.log('qx=>' + qx)
-                                                                if (qx == true) {
-
-                                                                    Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
-                                                                        nome_equipe = lista_equipe.nome_equipe
-                                                                        //console.log('lista_equipe.insres=>' + lista_equipe.insres)
-                                                                        Pessoa.findOne({ _id: lista_equipe.insres }).lean().then((insres) => {
-                                                                            //console.log('insres.nome=>' + insres)
-                                                                            res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, fora_ins: ins_fora, dentro_ins: ins_dentro, nome_equipe, lista_res, insres })
-                                                                        }).catch((err) => {
-                                                                            req.flash('error_msg', 'Falha ao encontrar a pessoa<insres>.')
-                                                                            res.redirect('/gerenciamento/equipe/' + req.params.id)
-                                                                        })
+                                                                    //console.log('qx=>' + qx)
+                                                                    //console.log('id=>' + id)
+                                                                    Pessoa.findOne({ user: id, nome: n, insres: 'checked' }).then((p) => {
+                                                                        //console.log('p=>' + p)
+                                                                        if (naoVazio(p)) {
+                                                                            lista_res.push({ id: p._id, nome: p.nome })
+                                                                        }
                                                                     }).catch((err) => {
-                                                                        req.flash('error_msg', 'Falha ao encontrar a equipe<lista_equipe>.')
+                                                                        req.flash('error_msg', 'Falha ao encontrar a pessoa.')
                                                                         res.redirect('/gerenciamento/equipe/' + req.params.id)
                                                                     })
 
+                                                                    //console.log('qx=>' + qx)
+                                                                    if (qx == true) {
+
+                                                                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
+                                                                            nome_equipe = lista_equipe.nome_equipe
+                                                                            //console.log('lista_equipe.insres=>' + lista_equipe.insres)
+                                                                            Pessoa.findOne({ _id: lista_equipe.insres }).lean().then((insres) => {
+                                                                                //console.log('insres.nome=>' + insres)
+                                                                                res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, ins_fora, ins_dentro, nome_equipe, lista_res, insres })
+                                                                            }).catch((err) => {
+                                                                                req.flash('error_msg', 'Falha ao encontrar a pessoa<insres>.')
+                                                                                res.redirect('/gerenciamento/equipe/' + req.params.id)
+                                                                            })
+                                                                        }).catch((err) => {
+                                                                            req.flash('error_msg', 'Falha ao encontrar a equipe<lista_equipe>.')
+                                                                            res.redirect('/gerenciamento/equipe/' + req.params.id)
+                                                                        })
+
+                                                                    }
                                                                 }
                                                             }
-                                                        }
+                                                        }).catch((err) => {
+                                                            req.flash('error_msg', 'Falha ao encontrar a euipe<nomes>.')
+                                                            res.redirect('/gerenciamento/equipe/' + req.params.id)
+                                                        })
+
                                                     }).catch((err) => {
-                                                        req.flash('error_msg', 'Falha ao encontrar a euipe<nomes>.')
+                                                        req.flash('error_msg', 'Falha ao encontrar as equipes<equipes>.')
                                                         res.redirect('/gerenciamento/equipe/' + req.params.id)
                                                     })
 
                                                 }).catch((err) => {
-                                                    req.flash('error_msg', 'Falha ao encontrar as equipes<equipes>.')
+                                                    req.flash('error_msg', 'Falha ao encontrar os instaladores.')
                                                     res.redirect('/gerenciamento/equipe/' + req.params.id)
                                                 })
-
                                             }).catch((err) => {
-                                                req.flash('error_msg', 'Falha ao encontrar os instaladores.')
+                                                req.flash('error_msg', 'Falha ao encontrar os instaladores na equipe.')
                                                 res.redirect('/gerenciamento/equipe/' + req.params.id)
                                             })
+                                        }
+                                    })
+                                } else {
+                                    Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((instalacao) => {
+                                        ins_fora = instalacao
+                                        Equipe.find({ user: id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
+                                            Pessoa.findOne({ user: id, nome: n, insres: 'checked' }).then((p) => {
+                                                //console.log('p=>' + p)
+                                                if (naoVazio(p)) {
+                                                    lista_res.push({ id: p._id, nome: p.nome })
+                                                }
+                                            }).catch((err) => {
+                                                req.flash('error_msg', 'Falha ao encontrar a pessoa.')
+                                                res.redirect('/gerenciamento/equipe/' + req.params.id)
+                                            })
+                                            res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, ins_fora, ins_dentro, lista_res })
                                         }).catch((err) => {
-                                            req.flash('error_msg', 'Falha ao encontrar os instaladores na equipe.')
+                                            req.flash('error_msg', 'Falha ao encontrar as pessoas.')
                                             res.redirect('/gerenciamento/equipe/' + req.params.id)
                                         })
-                                    }
-                                })
+                                    }).catch((err) => {
+                                        req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                                        res.redirect('/gerenciamento/equipe/' + req.params.id)
+                                    })
+                                }
                             }).catch((err) => {
                                 req.flash('error_msg', 'Falha ao encontrar a equipe.')
                                 res.redirect('/gerenciamento/equipe/' + req.params.id)
@@ -3983,7 +4008,7 @@ router.get('/tarefas/:id', ehAdmin, (req, res) => {
                                                 if (naoVazio(equipe)) {
                                                     lista_tarefa = { id: tarefa._id, nome: cliente.nome, servico: atv.descricao, dataini, datafim, ins0: equipe.ins0, ins1: equipe.ins1, ins2: equipe.ins2, ins3: equipe.ins3, ins4: equipe.ins4, ins5: equipe.ins5 }
                                                 } else {
-                                                    lista_tarefa = { id: tarefa._id, nome: cliente.nome, servico: atv.descricao, dataini, datafim}
+                                                    lista_tarefa = { id: tarefa._id, nome: cliente.nome, servico: atv.descricao, dataini, datafim }
                                                 }
                                                 //console.log('lista_tarefa=>'+lista_tarefa)                                                
                                                 res.render('projeto/gerenciamento/vertarefas', { lista_tarefa, todas_tarefas })
@@ -5112,7 +5137,7 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                                                                             Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
                                                                                                 Pessoa.findOne({ _id: lista_equipe.insres }).lean().then((insres) => {
                                                                                                     //console.log('nome_equipe=>' + nome_equipe)
-                                                                                                    res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, fora_ins: ins_fora, dentro_ins: ins_dentro, nome_equipe, lista_res, insres })
+                                                                                                    res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, ins_fora, ins_dentro, nome_equipe, lista_res, insres })
                                                                                                 }).catch((err) => {
                                                                                                     req.flash('error_msg', 'Falha ao encontrar o responsável.')
                                                                                                     res.redirect('/gerenciamento/equipe/' + req.body.id)
@@ -5251,7 +5276,7 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                                                                                 } else {
                                                                                                     nome_equipe = req.body.equipe
                                                                                                 }
-                                                                                                res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, fora_ins: ins_fora, dentro_ins: ins_dentro, nome_equipe, lista_res, insres })
+                                                                                                res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, ins_fora, ins_dentro, nome_equipe, lista_res, insres })
                                                                                             }).catch((err) => {
                                                                                                 req.flash('error_msg', 'Falha ao encontrar o instalador responsável.')
                                                                                                 res.redirect('/gerenciamento/equipe/' + req.body.id)
@@ -8511,7 +8536,7 @@ router.get('/equipetarefa/:id', ehAdmin, (req, res) => {
                     })
                     //console.log('q=>' + q)
                     if (q == instalacao.length) {
-                        res.render('projeto/gerenciamento/tarefas', { tarefa, fora_ins: ins_fora, dentro_ins: ins_dentro, equipe: true })
+                        res.render('projeto/gerenciamento/tarefas', { tarefa, ins_fora, ins_dentro, equipe: true })
                     }
                 }).catch((err) => {
                     req.flash('error_msg', 'Falha ao encontrar os instaladores.')
@@ -8519,7 +8544,7 @@ router.get('/equipetarefa/:id', ehAdmin, (req, res) => {
                 })
             } else {
                 Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).lean().then((instalacao) => {
-                    res.render('projeto/gerenciamento/tarefas', { tarefa, fora_ins: instalacao, equipe: true })
+                    res.render('projeto/gerenciamento/tarefas', { tarefa, ins_fora: instalacao, equipe: true })
                 })
             }
         }).catch((err) => {
@@ -8555,7 +8580,7 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
 
     var data = ''
     var dia = ''
-    var fora_ins = []
+    var ins_fora = []
     var q = 0
     var ehSelecao = false
     var mes = ''
@@ -8587,9 +8612,9 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
                             q = q + 1
                             var nome = pesins.nome
                             var id = pesins._id
-                            fora_ins.push({ id, nome })
+                            ins_fora.push({ id, nome })
                             if (q == instalacao.length) {
-                                res.render('projeto/gerenciamento/tarefas', { data, usina, fora_ins, ehSelecao, atividades })
+                                res.render('projeto/gerenciamento/tarefas', { data, usina, ins_fora, ehSelecao, atividades })
                             }
                         })
                     } else {
@@ -8687,9 +8712,9 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                 // equipe.feito = true
                 equipe.save().then(() => {
                     req.flash('success_msg', 'Equipe salva com sucesso.')
-                    if (naoVazio(tarefa.programacao)){
+                    if (naoVazio(tarefa.programacao)) {
                         res.redirect('/cliente/programacao/' + req.body.usina)
-                    }else{
+                    } else {
                         res.redirect('/gerenciamento/tarefas/' + tarefa._id)
                     }
                 }).catch((err) => {

@@ -326,12 +326,12 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                 listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                               } else {
                                                 if (vistoria.feito == true) {
-                                                  status = 'Vistoria'
+                                                  status = 'Visita'
                                                   qtdvis++
                                                   qtdaberto++
                                                   listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                 } else {
-                                                  status = 'Preparado para a Vistoria'
+                                                  status = 'Preparado para a Visita'
                                                   qtdpro++
                                                   qtdaberto++
                                                   listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
@@ -563,12 +563,12 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                         listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                       } else {
                                                         if (vistoria.feito == true) {
-                                                          status = 'Vistoria'
+                                                          status = 'Visita'
                                                           qtdvis++
                                                           qtdaberto++
                                                           listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                         } else {
-                                                          status = 'Preparado para a Vistoria'
+                                                          status = 'Preparado para a Visita'
                                                           qtdpro++
                                                           qtdaberto++
                                                           listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
@@ -809,12 +809,12 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                               listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                             } else {
                                                               if (vistoria.feito == true) {
-                                                                status = 'Vistoria'
+                                                                status = 'Visita'
                                                                 qtdvis++
                                                                 qtdaberto++
                                                                 listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                               } else {
-                                                                status = 'Preparado para a Vistoria'
+                                                                status = 'Preparado para a Visita'
                                                                 qtdpro++
                                                                 qtdorcado++
                                                                 listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.telefone, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
