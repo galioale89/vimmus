@@ -8,32 +8,40 @@
         window.location.href = '/usuario/registrar/todos'
     }
     function changeBenefit(num) {
+        /*
         var ben1 = document.getElementById('benefit-1')
         var descben1 = document.getElementById('desc-benefit-1')
         var ben2 = document.getElementById('benefit-2')
         var descben2 = document.getElementById('desc-benefit-2')
+        */
         var ben3 = document.getElementById('benefit-3')
         var descben3 = document.getElementById('desc-benefit-3')
         var ben4 = document.getElementById('benefit-4')
         var descben4 = document.getElementById('desc-benefit-4')
+        /*
         var ben5 = document.getElementById('benefit-5')
         var descben5 = document.getElementById('desc-benefit-5')
+        */
         var ben6 = document.getElementById('benefit-6')
         var descben6 = document.getElementById('desc-benefit-6')
 
+        /*
         ben1.className = 'topic'
         descben1.style.display = 'none'
         ben2.className = 'topic'
         descben2.style.display = 'none'
+        */
         ben3.className = 'topic'
         descben3.style.display = 'none'
         ben4.className = 'topic'
         descben4.style.display = 'none'
+        /*
         ben5.className = 'topic'
         descben5.style.display = 'none'
+        */
         ben6.className = 'topic'
         descben6.style.display = 'none'
-
+        /*
         if (num == 1) {
             ben1.className = 'topic active'
             descben1.style.display = ''
@@ -42,6 +50,7 @@
             ben2.className = 'topic active'
             descben2.style.display = ''
         }
+        */
         if (num == 3) {
             ben3.className = 'topic active'
             descben3.style.display = ''
@@ -50,10 +59,12 @@
             ben4.className = 'topic active'
             descben4.style.display = ''
         }
+        /*
         if (num == 5) {
             ben5.className = 'topic active'
             descben5.style.display = ''
         }
+        */
         if (num == 6) {
             ben6.className = 'topic active'
             descben6.style.display = ''
@@ -143,14 +154,13 @@
             <div class="row">
                 <div class="col-lg-6">
                     <h2 class="title-banner stripe-animation">
-                        Controle as atividades <br>
-                        dos instaladores nas <br>
-                        obras de usinas <br> 
-                        fotovoltaicas <br> 
+                        Melhore a comunicação <br>
+                        entre a equipe de campo e o <br> 
+                        escritório <br> 
                         <span class="stripe"></span>
                     </h2>
 
-                    <p class="text">Gestão efetiva de processos<br>para a energia solar</p>
+                    <p class="text">Gestão efetiva de processos<br>para empresas de energias renováveis</p>
                     <a href='#step-by-step'>
                         <button class="arrow btn-primary">
                             <svg xmlns="http://www.w3.org/2000/svg" width="13.896" height="24.304"
@@ -709,16 +719,16 @@
                 <div class="col-lg-6">
                     <div class="topics">
                         <ol>
-                            <li class="topic active" style="cursor: pointer;" id="benefit-1"
+                            {{!-- <li class="topic active" style="cursor: pointer;" id="benefit-1"
                                 onmousedown="changeBenefit(1)">Rentabilidade do projeto</li>
                             <li class="topic" style="cursor: pointer;" id="benefit-2" onmousedown="changeBenefit(2)">
-                                Sustentabilidade financeira para o negócio</li>
-                            <li class="topic" style="cursor: pointer;" id="benefit-3" onmousedown="changeBenefit(3)">
-                                Controle de entrega por projeto</li>
+                                Sustentabilidade financeira para o negócio</li> --}}
+                            <li class="topic active" style="cursor: pointer;" id="benefit-3" onmousedown="changeBenefit(3)">
+                                Controle as demandas de cada projeto</li>
                             <li class="topic" style="cursor: pointer;" id="benefit-4" onmousedown="changeBenefit(4)">
                                 Auxílio na tomada de decisões</li>
-                            <li class="topic" style="cursor: pointer;" id="benefit-5" onmousedown="changeBenefit(5)">
-                                Auxílio na prestação de contas</li>
+                            {{!-- <li class="topic" style="cursor: pointer;" id="benefit-5" onmousedown="changeBenefit(5)">
+                                Auxílio na prestação de contas</li> --}}
                             <li class="topic" style="cursor: pointer;" id="benefit-6" onmousedown="changeBenefit(6)">
                                 Gestão de equipes</li>
                         </ol>
@@ -726,7 +736,7 @@
                 </div>
 
                 <div class="col-lg-6">
-                    <div class="descriptions" id="desc-benefit-1">
+                    {{!-- <div class="descriptions" id="desc-benefit-1">
                         <p class="text">A partir do lançamento e do cálculo dos custos, levando em consideração as
                             atividades de cada recurso (gestor, instalador, eletricistas e projetistas) do projeto e também considerando as estimativas dos tributos a
                             serem recolhidos, é possível calcular o lucro líquido de cada projeto, obtendo o resultado
@@ -738,27 +748,33 @@
                             capacidade de observar os custos por recurso. Deste modo conhecendo os custos de cada
                             projeto será possível observar as variações por tamanho de projeto e assim ter uma média de
                             custos para identificar melhores oportunidades de negócio.</p>
-                    </div>
+                    </div> --}}
 
-                    <div class="descriptions" id="desc-benefit-3" style="display: none;">
-                        <p class="text">Com o sistema é possível gerenciar as datas de início e previsão de entrega dos
-                            projetos, organizando o acompanhamento e controlando o fluxo dos processos através da priorização de
-                            entregas.</p>
+                    <div class="descriptions" id="desc-benefit-3">
+                        <p class="text">Tenha um repositório de todos os documento do projeto por status, acompanhe prazos, verifique deadlines, datas de cadastros
+                            de pedidos, notas fiscais, documentos técnicos, projetos executivos e formulários e check list de pós-venda, organizando o fluxo dos processos.</p>
                     </div>
 
                     <div class="descriptions" id="desc-benefit-4" style="display: none;">
+                        <p class="text">Acompanhe os indicadores de conversão de propostas e os relatórios de propostas vencidas 
+                            para tomar decisões mais assertivas sobre as possibilidades de negócio com potenciais clientes.
+                        </p>
+                    </div>                    
+
+                    {{!-- <div class="descriptions" id="desc-benefit-4" style="display: none;">
                         <p class="text">Conhecendo os indicadores de custos e rentabilidade de cada projeto,
                             será possível identificar oportunidades de melhorias, e assim tomar decisões mais eficazes
                             em relação a efetividade dos processos e o tempo de execução de cada atividade.</p>
-                    </div>
+                    </div> --}}
 
-                    <div class="descriptions" id="desc-benefit-5" style="display: none;">
+                    {{!-- <div class="descriptions" id="desc-benefit-5" style="display: none;">
                         <p class="text">Através dos relatórios será possível obter as informações do total dos custos
                             operacionais, das atividades realizadas por cada pessoa, bem como dos tributos estimados de todos os projetos, e assim monitorar a sustentabilidade do negócio.</p>
-                    </div>
+                    </div> --}}
 
                     <div class="descriptions" id="desc-benefit-6" style="display: none;">
-                        <p class="text">A ferramenta facilita a gestão dos projetistas, instaladores e eletricistas a partir de checklist das atividades de cada pessoa no projeto, facilitando ainda o acompanhamento das obras e as responsabilidades de cada pessoa.</p>
+                        <p class="text">Mantenha seu gestores informados sobre o andamento das obras em tempo real a partir de fotos tiradas pelos técnicos instaladores, 
+                            assinaturas de formulários de aceite da instalação e check list de treinamento dos clientes.</p>
                     </div>
                 </div>
             </div>

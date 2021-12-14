@@ -79,16 +79,12 @@
     </div>
 
     <div style="padding: 15px;" id='bloquear' class='{{proposta.encerrado}}'>
-        <div class="row">
+        <div class="row mb-4 mt-4">
             <div class="col-md-6">
                 <form action='/gerenciamento/caminhoSomb' method="post" enctype="multipart/form-data">
                     <input type='hidden' name='id' value="{{proposta._id}}">
                     <label class='col-form-label fw-bold'>Sombreamento</label><br>
                     <label class='col-form-label col-form-label-sm'>{{vistoria.caminhoSomb}}</label>
-                    <div class="row">
-                        <div class="row mt-2" style="width: 100%;">
-                        </div>
-                    </div>
                     <div class="row">
                         <div class='col'>
                             <input type="file" multiple name='filesomb' id="filesomb"
@@ -116,11 +112,6 @@
                     <label class='col-form-label fw-bold'>Área</label><br>
                     <label class='col-form-label col-form-label-sm'>{{vistoria.caminhoArea}}</label>
                     <div class="row">
-                        <div class="row mt-2" style="width: 100%;">
-
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class='col'>
                             <input type="file" multiple name='filearea' id="filearea"
                                 class='form-control form-control-sm' style="font-size: 12px;">
@@ -141,15 +132,12 @@
                 </form>
             </div>
         </div>
-        <div class="row mb-4">
-            <div class="col-md-6">
+        <div class="row mt-4">
+            <div class="col-md-6 mt-4">
                 <form action='/gerenciamento/caminhoInsi' method="post" enctype="multipart/form-data">
                     <input type='hidden' name='id' value="{{proposta._id}}">
-                    <label class='col-form-label fw-bold'>Local Inversor e StringBox</label>
+                    <label class='col-form-label fw-bold'>Local Inversor e StringBox</label><br>
                     <label class='col-form-label col-form-label-sm'>{{vistoria.caminhoInsi}}</label>
-                    <div class="row">
-
-                    </div>
                     <div class="row">
                         <div class='col'>
                             <input type="file" multiple name='fileinsi' id="fileinsi"
@@ -171,15 +159,11 @@
                 </form>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 mt-4">
                 <form action='/gerenciamento/caminhoInsa' method="post" enctype="multipart/form-data">
                     <input type='hidden' name='id' value="{{proposta._id}}">
-                    <label class='col-form-label fw-bold'>Local Aterramento</label>
+                    <label class='col-form-label fw-bold'>Local Aterramento</label><br>
                     <label class='col-form-label col-form-label-sm'>{{vistoria.caminhoInsa}}</label>
-                    <div class="row">
-                        <div class="row mt-2" style="width: 100%;">
-                        </div>
-                    </div>
                     <div class="row">
                         <div class='col'>
                             <input type="file" multiple name='fileinsa' id="fileinsa"
