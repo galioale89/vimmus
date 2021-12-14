@@ -160,7 +160,9 @@
         {{#if tarefa.programacao}}
         <a href='/cliente/programacao/{{tarefa.usina}}' class='btn btn-sm btn-primary'><i class='bi bi-arrow-left'>Voltar Programação</i></a> 
         {{/if}}
+        {{#if tarefa._id}}
         <a href='/gerenciamento/tarefas/{{tarefa._id}}' class='btn btn-sm btn-primary'><i class='bi bi-arrow-left'>Voltar Tarefas</i></a> 
+        {{/if}}
 </div>            
     </form>
 </div>
