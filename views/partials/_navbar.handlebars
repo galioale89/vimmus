@@ -72,16 +72,18 @@
     <label class='col-form-label col-form-label-sm' id='saudacao'></label>
   </div>
   <div class="collapse navbar-collapse d-flex justify-content-end">
-    <div class="dropstart">
+    {{!-- <div class="dropstart">
       <a class="filter" data-bs-toggle="dropdown" aria-expanded="false"><i class='bi bi-filter'></i></a>
-      <ul class="dropdown-menu">
+      <ul class="dropdown-menu"> --}}
         {{!-- <a href='/projeto/selectprojeto' class="botao-filter"><i class="bi bi-file-arrow-up"></i> Novo Projeto</a><br> --}}
+        <div class='btn-group col-12 gap-2 justify-content-end'>
+        <a href='/menu' class="botao-filter"><i class='bi bi-menu-button-wide'></i> Dashboard</a><br>          
         <a href='/gerenciamento/consulta' class="botao-filter"><i class="bi bi-search"></i> Busca Propostas</a><br>
-        <a href='/menu' class="botao-filter"><i class='bi bi-menu-button-wide'></i> Menu</a><br>
-        <a href='/logout' class="botao-filter">Sair</a>
+        <a href='/logout' class="botao-filter"><i class='bi bi-door-open'></i></a>
+        </div> 
       </ul>
-    </div>
-  </div>
+    {{!-- </div>
+  </div> --}}
 </nav>
 {{/if}}
 

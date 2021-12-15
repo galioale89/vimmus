@@ -450,10 +450,18 @@ const Vistoria = new Schema({
         type: Array,
         require: false,
     },
-    caminhoInv:{
+    aprovaAte:{
+        type: Boolean,
+        require: false
+    },
+    caminhoInv: {
         type: Array,
         require: false,
     },
+    aprovaInv:{
+        type: Boolean,
+        require: false
+    },    
     caminhoStb:{
         type: Array,
         require: false,
@@ -461,7 +469,11 @@ const Vistoria = new Schema({
     caminhoMod:{
         type: Array,
         require: false,
-    },      
+    },     
+    aprovaMod:{
+        type: Boolean,
+        require: false
+    },     
     caminhoSomb:{
         type: Array,
         require: false,
@@ -477,7 +489,7 @@ const Vistoria = new Schema({
     caminhoInsa:{
         type: Array,
         require: false,
-    },                           
+    },                                     
     feito: {
         type: Boolean,
         require: false

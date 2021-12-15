@@ -280,14 +280,14 @@ app.get('/menu', ehAdmin, (req, res) => {
                                 if (documento.feitoalmox == true) {
                                   status = 'Almoxarifado Fechado'
                                   qtdalx++
-                                  dtinicio = equipe.dtinicio
-                                  dtfim = equipe.dtfim
+                                  qtdaberto++
+                                  listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                 } else {
                                   if (documento.enviaalmox == true) {
                                     status = 'Almoxarifado Em Aberto'
                                     qtdalx++
-                                    dtinicio = equipe.dtinicio
-                                    dtfim = equipe.dtfim
+                                    qtdaberto++
+                                    listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                   } else {
                                     if (equipe.feito == true) {
                                       status = 'Execução a Campo'
@@ -518,13 +518,13 @@ app.get('/menu', ehAdmin, (req, res) => {
                                       } else {
                                         if (documento.feitoalmox == true) {
                                           status = 'Almoxarifado Fechado'
-                                          dtinicio = equipe.dtinicio
-                                          dtfim = equipe.dtfim
+                                          qtdaberto++
+                                          listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                         } else {
                                           if (documento.enviaalmox == true) {
                                             status = 'Almoxarifado Em Aberto'
-                                            dtinicio = equipe.dtinicio
-                                            dtfim = equipe.dtfim
+                                            qtdaberto++
+                                            listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                           } else {
                                             if (equipe.feito == true) {
                                               status = 'Execução a Campo'

@@ -1083,6 +1083,7 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
     var dia
     var mes
     var dif
+    var difmes
     var compara
     var x = -1
     var z = -1
@@ -1145,7 +1146,7 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
         Pessoa.find({ user: id, funges: 'checked' }).lean().then((todos_responsaveis) => {
             Empresa.find({ user: id }).lean().then((todas_empresas) => {
                 Proposta.find({ user: id, ganho: true, encerrado: false }).then((proposta) => {
-                    if (proposta != '') {
+                    if (naoVazio(proposta)) {
                         proposta.forEach((e) => {
                             Cliente.findOne({ _id: e.cliente }).then((cliente) => {
                                 Pessoa.findOne({ _id: e.responsavel }).then((pessoa_res) => {
@@ -1183,36 +1184,71 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
                                             diafim = dtfim.substring(8, 11)
                                             con1 = String(mesinicio) + String(diainicio)
                                             con2 = String(mesfim) + String(diafim)
+                                            //console.log('con1=>' + con1)
+                                            //console.log('con2=>' + con2)
                                             dif1 = parseFloat(con2) - parseFloat(con1) + 1
-                                            compara = mesfim - mesinicio
-                                            if (compara > 0) {
-                                                if (meshoje == mesinicio) {
-                                                    mes = mesinicio
-                                                    if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
-                                                        dif = 31 - parseFloat(diainicio) + 1
-                                                    } else {
-                                                        dif = 30 - parseFloat(diainicio) + 1
-                                                    }
-                                                    if (diainicio < 10) {
-                                                        dia = '0' + parseFloat(diainicio)
-                                                    } else {
-                                                        dia = parseFloat(diainicio)
-                                                    }
+                                            //console.log('dif1=>' + dif1)
+                                            // compara = mesfim - mesinicio
+                                            //console.log('meshoje=>' + meshoje)
+                                            //console.log('mesinicio=>' + mesinicio)
+                                            // //console.log('compara')                                          
+                                            // if (compara > 0) {
+                                            if (meshoje == mesinicio) {
+                                                mes = mesinicio
+                                                if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
+                                                    dif = 31 - parseFloat(diainicio) + 1
                                                 } else {
-                                                    mes = mesfim
-                                                    dif = parseFloat(diafim)
-                                                    dia = '01'
-                                                    //console.log('dif=>' + dif)
+                                                    dif = 30 - parseFloat(diainicio) + 1
                                                 }
-                                            } else {
-                                                dif = parseFloat(dif1)
                                                 if (diainicio < 10) {
                                                     dia = '0' + parseFloat(diainicio)
                                                 } else {
                                                     dia = parseFloat(diainicio)
                                                 }
-                                                mes = mesinicio
+                                            } else {
+                                                //console.log('diferente')
+                                                difmes = parseFloat(mesfim) - parseFloat(mesinicio)
+                                                if (difmes != 0) {
+                                                    //console.log('difmes=>' + difmes)
+                                                    if (difmes < 0) {
+                                                        difmes = difmes + 12
+                                                    }
+                                                    //console.log('mesinicio=>' + mesinicio)
+                                                    for (i = 0; i < difmes; i++) {
+                                                        mes = parseFloat(mesinicio) + i
+                                                        if (mes > 12) {
+                                                            mes = mes - 12
+                                                        }
+                                                        //console.log('mes=>' + mes)
+                                                        //console.log('meshoje=>' + meshoje)
+                                                        if (mes == meshoje) {
+                                                            break;
+                                                        }
+                                                    }
+
+                                                    if (parseFloat(anofim) > parseFloat(anoinicio)) {
+                                                        dia = '01'
+                                                        if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
+                                                            dif = 31
+                                                        } else {
+                                                            dif = 30
+                                                        }
+                                                    } else {
+                                                        dia = diainicio
+                                                        dif = parseFloat(diafim) - parseFloat(diainicio) + 1
+                                                    }
+                                                }
                                             }
+                                            // } else {
+                                            //     //console.log('menor que zero')
+                                            //     dif = parseFloat(dif1)
+                                            //     if (diainicio < 10) {
+                                            //         dia = '0' + parseFloat(diainicio)
+                                            //     } else {
+                                            //         dia = parseFloat(diainicio)
+                                            //     }
+                                            //     mes = mesinicio
+                                            // }
 
 
                                             i = Math.floor(Math.random() * 17)
@@ -1229,8 +1265,6 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
                                             todasCores.push({ color })
 
                                             for (i = 0; i < dif; i++) {
-                                                //console.log('meshoje=>' + meshoje)
-                                                //console.log('mes=>' + mes)
                                                 //console.log('dia=>' + dia)
                                                 //console.log('entrou laço')
                                                 if (meshoje == mes) {
@@ -1350,7 +1384,7 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
                                                     dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
                                                     dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
                                                     mestitulo, anotitulo, trintaeum, fevereiro, todasCores, listaAndamento,
-                                                    todos_responsaveis, todos_clientes, todas_empresas
+                                                    todos_responsaveis, todos_clientes, todas_empresas, anotitulo
                                                 })
 
                                             }
@@ -1459,12 +1493,11 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
     var dia
     var mes
     var dif
-    var compara
     var color
 
     var hoje = dataHoje()
     var meshoje = hoje.substring(5, 7)
-    var anotitulo = hoje.substring(0, 4)
+    var anotitulo = req.body.ano
 
     //console.log('meshoje=>' + meshoje)
 
@@ -1516,12 +1549,13 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
             trintaeum = true
             break;
     }
-
+    var dataini = req.body.ano + '01' + '01'
+    var datafim = req.body.ano + '12' + '31'
     Proposta.find({ user: id, ganho: true, encerrado: false }).then((proposta) => {
         if (proposta != '') {
             proposta.forEach((e) => {
                 Cliente.findOne({ _id: e.cliente }).then((cliente) => {
-                    Equipe.findOne({ _id: e.equipe, feito: true }).sort({ dtfimbusca: 'desc' }).then((equipe) => {
+                    Equipe.findOne({ _id: e.equipe, feito: true, 'dtinibusca': { $lte: datafim, $gte: dataini }, 'dtfimbusca': { $lte: datafim, $gte: dataini } }).sort({ dtfimbusca: 'desc' }).then((equipe) => {
                         q++
                         inicio = equipe.dtinicio
                         fim = equipe.dtfim
@@ -1534,10 +1568,13 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
                         con1 = String(mesinicio) + String(diainicio)
                         con2 = String(mesfim) + String(diafim)
                         dif1 = parseFloat(con2) - parseFloat(con1) + 1
-                        compara = mesfim - mesinicio
-                        if (compara > 0) {
-                            if (meshoje == mesinicio) {
-                                mes = mesinicio
+                        // compara = mesfim - mesinicio]
+                        if (meshoje == mesinicio) {
+                            mes = mesinicio
+                            if (anofim == anoinicio) {
+                                dia = diainicio
+                                dif = parseFloat(diafim) - parseFloat(diainicio) + 1
+                            } else {
                                 if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
                                     dif = 31 - parseFloat(diainicio) + 1
                                 } else {
@@ -1548,20 +1585,40 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
                                 } else {
                                     dia = parseFloat(diainicio)
                                 }
-                            } else {
-                                mes = mesfim
-                                dif = parseFloat(diafim)
-                                dia = '01'
-                                //console.log('dif=>' + dif)
                             }
                         } else {
-                            dif = parseFloat(dif1)
-                            if (diainicio < 10) {
-                                dia = '0' + parseFloat(diainicio)
-                            } else {
-                                dia = parseFloat(diainicio)
+                            //console.log('diferente')
+                            difmes = parseFloat(mesfim) - parseFloat(mesinicio)
+                            if (difmes != 0) {
+                                //console.log('difmes=>' + difmes)
+                                if (difmes < 0) {
+                                    difmes = difmes + 12
+                                }
+                                //console.log('mesinicio=>' + mesinicio)
+                                for (i = 0; i < difmes; i++) {
+                                    mes = parseFloat(mesinicio) + i
+                                    if (mes > 12) {
+                                        mes = mes - 12
+                                    }
+                                    //console.log('mes=>' + mes)
+                                    //console.log('meshoje=>' + meshoje)
+                                    if (mes == meshoje) {
+                                        break;
+                                    }
+                                }
+
+                                if (parseFloat(anofim) > parseFloat(anoinicio)) {
+                                    dia = '01'
+                                    if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
+                                        dif = 31
+                                    } else {
+                                        dif = 30
+                                    }
+                                } else {
+                                    dia = diainicio
+                                    dif = parseFloat(diafim) - parseFloat(diainicio) + 1
+                                }
                             }
-                            mes = mesinicio
                         }
 
                         //console.log('dif=>' + dif)
@@ -1579,97 +1636,97 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
                             if (meshoje == mes) {
                                 switch (String(dia)) {
                                     case '01':
-                                        dia01.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia01.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '02':
-                                        dia02.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia02.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '03':
-                                        dia03.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia03.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '04':
-                                        dia04.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia04.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '05':
-                                        dia05.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia05.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '06':
-                                        dia06.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia06.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '07':
-                                        dia07.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia07.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '08':
-                                        dia08.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia08.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '09':
-                                        dia09.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia09.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '10':
-                                        dia10.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia10.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '11':
-                                        dia11.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia11.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '12':
-                                        dia12.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia12.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '13':
-                                        dia13.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia13.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '14':
-                                        dia14.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia14.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '15':
-                                        dia15.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia15.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '16':
-                                        dia16.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia16.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '17':
-                                        dia17.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia17.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '18':
-                                        dia18.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia18.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '19':
-                                        dia19.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia19.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '20':
-                                        dia20.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia20.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '21':
-                                        dia21.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia21.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '22':
-                                        dia22.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia22.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '23':
-                                        dia23.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia23.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '24':
-                                        dia24.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia24.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '25':
-                                        dia25.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia25.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '26':
-                                        dia26.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia26.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '27':
-                                        dia27.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia27.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '28':
-                                        dia28.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia28.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '29':
-                                        dia29.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia29.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '30':
-                                        dia30.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia30.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                     case '31':
-                                        dia31.push({ id: cliente._id, cliente: cliente.nome, cor: cores[c] })
+                                        dia31.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
                                         break;
                                 }
                                 dia++
@@ -1685,7 +1742,7 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
                             dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
                             dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
                             dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
-                            mestitulo, anotitulo, trintaeum, fevereiro, todasCores, listaAndamento: true
+                            mestitulo, anotitulo, trintaeum, fevereiro, todasCores, listaAndamento: true, anotitulo
                         })
 
                     }).catch((err) => {
@@ -2116,7 +2173,8 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                     Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
                         Posvenda.findOne({ proposta: req.params.id }).lean().then((posvenda) => {
                             //console.log('validação dos instaladores.')
-                            Equipe.find({ 'datainibusca': { $ne: 'null' }, 'nome_projeto': { $exists: true }, $and: [{ 'dtinicio': { $ne: '0000-00-00' } }, { 'dtinicio': { $ne: '' } }] }).then((equipe) => {
+                            Equipe.find({ 'nome_projeto': { $exists: true }, $and: [{ 'dtinicio': { $ne: '0000-00-00' } }, { 'dtinicio': { $ne: '' } }] }).then((equipe) => {
+                                //console.log('equipe=>'+equipe)
                                 if (naoVazio(equipe)) {
                                     equipe.forEach((e) => {
                                         // Proposta.findOne({equipe: e.equipe, encerrado: false})
@@ -2421,9 +2479,9 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                         if (validaLivre == 0 && ins_dif == 0 && q == equipe.length) {
                                             validaLivre = 1
                                             Equipe.findOne({ _id: proposta.equipe }).lean().then((equipeins) => {
-                                                console.log('entrou')
+                                                //console.log('entrou')
                                                 Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((instalacao) => {
-                                                    console.log('entrou diferença')
+                                                    //console.log('entrou diferença')
                                                     //console.log('equipeins.ins0=>' + equipeins.ins0)
                                                     if (typeof equipeins.ins0 != 'undefined') {
                                                         ins0 = equipeins.ins0
@@ -2570,7 +2628,6 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                     })
                                 } else {
                                     Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((instalacao) => {
-                                        ins_fora = instalacao
                                         Equipe.find({ user: id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
                                             Pessoa.findOne({ user: id, nome: n, insres: 'checked' }).then((p) => {
                                                 //console.log('p=>' + p)
@@ -2581,7 +2638,14 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                 req.flash('error_msg', 'Falha ao encontrar a pessoa.')
                                                 res.redirect('/gerenciamento/equipe/' + req.params.id)
                                             })
-                                            res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, ins_fora, ins_dentro, lista_res })
+                                            instalacao.forEach((e) => {
+                                                q++
+                                                ins_fora.push({ id: e._id, nome: e.nome })
+                                                if (q == instalacao.length) {
+                                                    res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, ins_fora, ins_dentro, lista_res })
+                                                }
+                                            })
+
                                         }).catch((err) => {
                                             req.flash('error_msg', 'Falha ao encontrar as pessoas.')
                                             res.redirect('/gerenciamento/equipe/' + req.params.id)
@@ -2622,7 +2686,9 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
 })
 
 router.get('/aceite/:id', ehAdmin, (req, res) => {
-    const { _id } = req.user
+    var checkAte = 'false'
+    var checkInv = 'false'
+    var checkMod = 'false'
     Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
         Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
             Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
@@ -2631,7 +2697,16 @@ router.get('/aceite/:id', ehAdmin, (req, res) => {
                         Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
                             Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
                                 //console.log('documento.protocolado=>' + documento.protocolado)
-                                res.render('principal/aceite', { cliente_proposta, documento, proposta, compra, vistoria, lista_equipe, posvenda })
+                                if (vistoria.aprovaAte == true) {
+                                    checkAte = 'checked'
+                                }
+                                if (vistoria.aprovaInv == true) {
+                                    checkInv = 'checked'
+                                }
+                                if (vistoria.aprovaMod == true) {
+                                    checkMod = 'checked'
+                                }
+                                res.render('principal/aceite', { cliente_proposta, documento, proposta, compra, vistoria, lista_equipe, posvenda, checkAte, checkInv, checkMod })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
                                 res.redirect('/menu')
@@ -4170,9 +4245,19 @@ router.post('/proposta', ehAdmin, (req, res) => {
             if (req.body.empresa != '') {
                 proposta.empresa = req.body.empresa
             }
+
             proposta.endereco = req.body.endereco
-            proposta.cidade = req.body.cidade
-            proposta.uf = req.body.uf
+
+            if (req.body.cidade == '') {
+                proposta.cidade = req.body.cidade
+            } else {
+                proposta.cidade = req.body.cidadeh
+            }
+            if (req.body.uf == '') {
+                proposta.cidade = req.body.uf
+            } else {
+                proposta.uf = req.body.ufh
+            }
             proposta.data = dataBusca(dataHoje())
             proposta.datacad = dataBusca(dataHoje())
             proposta.save().then(() => {
@@ -4309,19 +4394,19 @@ router.post('/proposta', ehAdmin, (req, res) => {
 })
 
 router.post('/proposta1', ehAdmin, (req, res) => {
-    var propostafile
+    var file
     var upload = multer({ storage }).single('proposta1')
     upload(req, res, function (err) {
         if (err) {
             return res.end("Error uploading file.");
         } else {
             if (req.file != null) {
-                propostafile = req.file.filename
+                file = req.file.filename
             } else {
-                propostafile = ''
+                file = ''
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-                proposta.proposta1 = propostafile
+                proposta.proposta1 = file
                 proposta.dtcadastro1 = String(req.body.dtcadastro1)
                 proposta.dtvalidade1 = String(req.body.dtvalidade1)
                 proposta.datacad = dataBusca(dataHoje())
@@ -4345,19 +4430,19 @@ router.get('/mostrarProposta1/:id', ehAdmin, (req, res) => {
 })
 
 router.post('/proposta2', ehAdmin, (req, res) => {
-    var propostafile
+    var file
     var upload = multer({ storage }).single('proposta2')
     upload(req, res, function (err) {
         if (err) {
             return res.end("Error uploading file.");
         } else {
             if (req.file != null) {
-                propostafile = req.file.filename
+                file = req.file.filename
             } else {
-                propostafile = ''
+                file = ''
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-                proposta.proposta2 = propostafile
+                proposta.proposta2 = file
                 proposta.dtcadastro2 = String(req.body.dtcadastro2)
                 proposta.dtvalidade2 = String(req.body.dtvalidade2)
                 proposta.datacad = dataBusca(dataHoje())
@@ -4381,19 +4466,19 @@ router.get('/mostrarProposta2/:id', ehAdmin, (req, res) => {
 })
 
 router.post('/proposta3', ehAdmin, (req, res) => {
-    var propostafile
+    var file
     var upload = multer({ storage }).single('proposta3')
     upload(req, res, function (err) {
         if (err) {
             return res.end("Error uploading file.");
         } else {
             if (req.file != null) {
-                propostafile = req.file.filename
+                file = req.file.filename
             } else {
-                propostafile = ''
+                file = ''
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-                proposta.proposta3 = propostafile
+                proposta.proposta3 = file
                 proposta.dtcadastro3 = String(req.body.dtcadastro3)
                 proposta.dtvalidade3 = String(req.body.dtvalidade3)
                 proposta.datacad = dataBusca(dataHoje())
@@ -4417,19 +4502,19 @@ router.get('/mostrarProposta3/:id', ehAdmin, (req, res) => {
 })
 
 router.post('/proposta4', ehAdmin, (req, res) => {
-    var propostafile
+    var file
     var upload = multer({ storage }).single('proposta4')
     upload(req, res, function (err) {
         if (err) {
             return res.end("Error uploading file.");
         } else {
             if (req.file != null) {
-                propostafile = req.file.filename
+                file = req.file.filename
             } else {
-                propostafile = ''
+                file = ''
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-                proposta.proposta4 = propostafile
+                proposta.proposta4 = file
                 proposta.dtcadastro4 = String(req.body.dtcadastro4)
                 proposta.dtvalidade4 = String(req.body.dtvalidade4)
                 proposta.datacad = dataBusca(dataHoje())
@@ -4453,19 +4538,19 @@ router.get('/mostrarProposta4/:id', ehAdmin, (req, res) => {
 })
 
 router.post('/proposta5', ehAdmin, (req, res) => {
-    var propostafile
+    var file
     var upload = multer({ storage }).single('proposta5')
     upload(req, res, function (err) {
         if (err) {
             return res.end("Error uploading file.");
         } else {
             if (req.file != null) {
-                propostafile = req.file.filename
+                file = req.file.filename
             } else {
-                propostafile = ''
+                file = ''
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-                proposta.proposta5 = propostafile
+                proposta.proposta5 = file
                 proposta.dtcadastro5 = String(req.body.dtcadastro5)
                 proposta.dtvalidade5 = String(req.body.dtvalidade5)
                 proposta.datacad = dataBusca(dataHoje())
@@ -4489,19 +4574,19 @@ router.get('/mostrarProposta5/:id', ehAdmin, (req, res) => {
 })
 
 router.post('/proposta6', ehAdmin, (req, res) => {
-    var propostafile
+    var file
     var upload = multer({ storage }).single('proposta6')
     upload(req, res, function (err) {
         if (err) {
             return res.end("Error uploading file.");
         } else {
             if (req.file != null) {
-                propostafile = req.file.filename
+                file = req.file.filename
             } else {
-                propostafile = ''
+                file = ''
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-                proposta.proposta6 = propostafile
+                proposta.proposta6 = file
                 proposta.dtcadastro6 = String(req.body.dtcadastro6)
                 proposta.dtvalidade6 = String(req.body.dtvalidade6)
                 proposta.datacad = dataBusca(dataHoje())
@@ -4593,21 +4678,21 @@ router.post('/visita', ehAdmin, (req, res) => {
 })
 
 router.post('/assinatura', ehAdmin, (req, res) => {
-    var propostafile
+    var file
     var upload = multer({ storage }).single('assinado')
     upload(req, res, function (err) {
         if (err) {
             return res.end("Error uploading file.");
         } else {
             if (req.file != null) {
-                propostafile = req.file.filename
+                file = req.file.filename
             } else {
-                propostafile = ''
+                file = ''
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
                 Equipe.findOne({ _id: proposta.equipe }).then((equipe) => {
-                    if (propostafile != '') {
-                        proposta.assinatura = propostafile
+                    if (file != '') {
+                        proposta.assinatura = file
                     }
                     proposta.deadline = setData(req.body.dtassinado, 90)
                     proposta.dtassinatura = String(req.body.dtassinado)
@@ -4701,16 +4786,16 @@ router.post('/pedido', ehAdmin, (req, res) => {
     } else {
         id = user
     }
-    var propostafile
+    var file
     var upload = multer({ storage }).single('pedido')
     upload(req, res, function (err) {
         if (err) {
             return res.end("Error uploading file.");
         } else {
             if (req.file != null) {
-                propostafile = req.file.filename
+                file = req.file.filename
             } else {
-                propostafile = ''
+                file = ''
             }
             Compra.findOne({ proposta: req.body.id }).then((compra) => {
                 //console.log('compra=>' + compra)
@@ -4719,7 +4804,7 @@ router.post('/pedido', ehAdmin, (req, res) => {
                         user: id,
                         fornecedor: req.body.fornecedor,
                         proposta: req.body.id,
-                        pedido: propostafile,
+                        pedido: file,
                         dtcadastro: String(req.body.dtcadastro),
                         feitopedido: true,
                         data: dataBusca(dataHoje())
@@ -4732,8 +4817,8 @@ router.post('/pedido', ehAdmin, (req, res) => {
                         res.redirect('/gerenciamento/compra/' + req.body.id)
                     })
                 } else {
-                    if (propostafile != '') {
-                        compra.pedido = propostafile
+                    if (file != '') {
+                        compra.pedido = file
                     }
                     compra.fornecedor = req.body.fornecedor
                     compra.feitopedido = true
@@ -4770,20 +4855,20 @@ router.get('/mostrarPedido/:id', ehAdmin, (req, res) => {
 })
 
 router.post('/nota', ehAdmin, (req, res) => {
-    var propostafile
+    var file
     var upload = multer({ storage }).single('nota')
     upload(req, res, function (err) {
         if (err) {
             return res.end("Error uploading file.");
         } else {
             if (req.file != null) {
-                propostafile = req.file.filename
+                file = req.file.filename
             } else {
-                propostafile = ''
+                file = ''
             }
             Compra.findOne({ proposta: req.body.id }).then((compra) => {
-                if (propostafile != '') {
-                    compra.nota = propostafile
+                if (file != '') {
+                    compra.nota = file
                 }
                 compra.dtrecebimento = String(req.body.dtrecebimento)
                 compra.feitonota = true
@@ -4884,6 +4969,13 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                         //console.log('lista_res=>' + lista_res)
                                         //console.log('req.body.equipe=>' + req.body.equipe)
 
+                                        //console.log('padrao.ins0=>'+padrao.ins0)
+                                        //console.log('padrao.ins1=>'+padrao.ins1)
+                                        //console.log('padrao.ins2=>'+padrao.ins2)
+                                        //console.log('padrao.ins3=>'+padrao.ins3)
+                                        //console.log('padrao.ins4=>'+padrao.ins4)
+                                        //console.log('padrao.ins5=>'+padrao.ins5)
+
                                         nomes.dtinicio = req.body.dtinicio
                                         nomes.dtfim = req.body.dtfim
                                         nomes.dtinibusca = dataBusca(req.body.dtinicio)
@@ -4894,7 +4986,7 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                         nomes.ins3 = padrao.ins3
                                         nomes.ins4 = padrao.ins4
                                         nomes.ins5 = padrao.ins5
-                                        nome_equipe = req.body.equipe
+                                        nomes.nome_equipe = req.body.equipe
                                         //console.log('nome_equipe=>' + nome_equipe)
                                         nomes.save().then(() => {
                                             for (var x = 0; x < 6; x++) {
@@ -4933,7 +5025,7 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                                     res.redirect('/gerenciamento/equipe/' + req.body.id)
                                                 })
                                                 if (qx == true) {
-                                                    Equipe.find({ 'datainibusca': { $ne: 'null' }, 'nome_projeto': { $exists: true }, $and: [{ 'dtinicio': { $ne: '0000-00-00' } }, { 'dtinicio': { $ne: '' } }] }).then((equipe) => {
+                                                    Equipe.find({ 'nome_projeto': { $exists: true }, $and: [{ 'dtinicio': { $ne: '0000-00-00' } }, { 'dtinicio': { $ne: '' } }] }).then((equipe) => {
                                                         equipe.forEach((e) => {
                                                             // Proposta.findOne({equipe: e.equipe, encerrado: false})
                                                             //console.log('e._id=>' + e._id)
@@ -5137,13 +5229,15 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                                                                             Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
                                                                                                 Pessoa.findOne({ _id: lista_equipe.insres }).lean().then((insres) => {
                                                                                                     //console.log('nome_equipe=>' + nome_equipe)
-                                                                                                    res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, ins_fora, ins_dentro, nome_equipe, lista_res, insres })
+                                                                                                    //res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, ins_fora, ins_dentro, nome_equipe, lista_res, insres })]
+                                                                                                    req.flash('success_msg', 'Equipe salva com sucesso.')
+                                                                                                    res.redirect('/gerenciamento/equipe/' + req.body.id)
                                                                                                 }).catch((err) => {
                                                                                                     req.flash('error_msg', 'Falha ao encontrar o responsável.')
                                                                                                     res.redirect('/gerenciamento/equipe/' + req.body.id)
                                                                                                 })
                                                                                             }).catch((err) => {
-                                                                                                req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                                                                                                req.flash('error_msg', 'Falha ao encontrar a equipe<achou>.')
                                                                                                 res.redirect('/gerenciamento/equipe/' + req.body.id)
                                                                                             })
                                                                                         }).catch((err) => {
@@ -5271,12 +5365,14 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                                                                         Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
                                                                                             Pessoa.findOne({ _id: lista_equipe.insres }).lean().then((insres) => {
                                                                                                 //console.log('lista_equipe.nome_equipe=>' + lista_equipe.nome_equipe)
-                                                                                                if (naoVazio(lista_equipe.nome_equipe)) {
-                                                                                                    nome_equipe = lista_equipe.nome_equipe
-                                                                                                } else {
-                                                                                                    nome_equipe = req.body.equipe
-                                                                                                }
-                                                                                                res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, ins_fora, ins_dentro, nome_equipe, lista_res, insres })
+                                                                                                // if (naoVazio(lista_equipe.nome_equipe)) {
+                                                                                                //     nome_equipe = lista_equipe.nome_equipe
+                                                                                                // } else {
+                                                                                                //     nome_equipe = req.body.equipe
+                                                                                                // }
+                                                                                                // res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, ins_fora, ins_dentro, nome_equipe, lista_res, insres })
+                                                                                                req.flash('success_msg', 'Equipe salva com sucesso.')
+                                                                                                res.redirect('/gerenciamento/equipe/' + req.body.id)
                                                                                             }).catch((err) => {
                                                                                                 req.flash('error_msg', 'Falha ao encontrar o instalador responsável.')
                                                                                                 res.redirect('/gerenciamento/equipe/' + req.body.id)
@@ -5303,7 +5399,7 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                                             }
                                                         })
                                                     }).catch((err) => {
-                                                        req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                                                        req.flash('error_msg', 'Falha ao encontrar a equipe<geral>.')
                                                         res.redirect('/gerenciamento/equipe/' + req.body.id)
                                                     })
                                                 }
@@ -5546,23 +5642,55 @@ router.get('/enviarequipe/:id', ehAdmin, (req, res) => {
 })
 
 router.post('/aceite', ehAdmin, (req, res) => {
-    var propostafile
+    var file
     var upload = multer({ storage }).single('aceite')
     upload(req, res, function (err) {
         if (err) {
             return res.end("Error uploading file.");
         } else {
             if (req.file != null) {
-                propostafile = req.file.filename
+                file = req.file.filename
             } else {
-                propostafile = ''
+                file = ''
             }
             Documento.findOne({ proposta: req.body.id }).then((documento) => {
-                if (propostafile != '') {
-                    documento.aceite = propostafile
+                if (file != '') {
+                    documento.aceite = file
                 }
                 documento.dtaceite = String(req.body.dtaceite)
                 documento.feitoaceite = true
+                documento.save().then(() => {
+                    req.flash('success_msg', 'Documento salvo com sucesso.')
+                    res.redirect('/gerenciamento/aceite/' + req.body.id)
+                }).catch(() => {
+                    req.flash('error_msg', 'Falha ao encontrar o documento.')
+                    res.redirect('/gerenciamento/aceite/' + req.body.id)
+                })
+            }).catch(() => {
+                req.flash('error_msg', 'Falha ao encontrar o documento.')
+                res.redirect('/gerenciamento/aceite/' + req.body.id)
+            })
+        }
+    })
+})
+
+router.post('/checklist', ehAdmin, (req, res) => {
+    var file
+    var upload = multer({ storage }).single('clins')
+    upload(req, res, function (err) {
+        if (err) {
+            return res.end("Error uploading file.");
+        } else {
+            if (req.file != null) {
+                file = req.file.filename
+            } else {
+                file = ''
+            }
+            Documento.findOne({ proposta: req.body.id }).then((documento) => {
+                if (file != '') {
+                    documento.clins = file
+                }
+                documento.dtclins = String(req.body.dtclins)
                 documento.save().then(() => {
                     req.flash('success_msg', 'Documento salvo com sucesso.')
                     res.redirect('/gerenciamento/aceite/' + req.body.id)
@@ -5590,6 +5718,14 @@ router.post('/caminhoAte', ehAdmin, uploadfoto.array('fileate', 10), (req, res) 
                 vistoria.caminhoAte[q] = e.filename
                 q++
             })
+
+            if (req.body.checkAte == 'on') {
+                vistoria.aprovaAte = true
+            } else {
+                vistoria.aprovaAte = false
+            }
+
+            vistoria.aprovaAte
             vistoria.save().then(() => {
                 req.flash('success_msg', 'Caminho do aterramento salvo com sucesso.')
                 res.redirect('/gerenciamento/aceite/' + req.body.id)
@@ -5616,6 +5752,13 @@ router.post('/caminhoInv', ehAdmin, uploadfoto.array('fileinv', 10), (req, res) 
                 vistoria.caminhoInv[q] = e.filename
                 q++
             })
+
+            if (req.body.checkInv == 'on') {
+                vistoria.aprovaInv = true
+            } else {
+                vistoria.aprovaInv = false
+            }
+
             vistoria.save().then(() => {
                 req.flash('success_msg', 'Caminho do aterramento salvo com sucesso.')
                 res.redirect('/gerenciamento/aceite/' + req.body.id)
@@ -5670,6 +5813,13 @@ router.post('/caminhoMod', ehAdmin, uploadfoto.array('filemod', 10), (req, res) 
                 vistoria.caminhoMod[q] = e.filename
                 q++
             })
+
+            if (req.body.checkMod == 'on') {
+                vistoria.aprovaMod = true
+            } else {
+                vistoria.aprovaMod = false
+            }
+
             vistoria.save().then(() => {
                 req.flash('success_msg', 'Caminho da estrutura e módulos salvo com sucesso.')
                 res.redirect('/gerenciamento/aceite/' + req.body.id)
@@ -6227,21 +6377,34 @@ router.get('/mostrarAceite/:id', ehAdmin, (req, res) => {
     })
 })
 
+router.get('/mostrarClins/:id', ehAdmin, (req, res) => {
+    Documento.findOne({ proposta: req.params.id }).then((documento) => {
+        var doc = documento.clins
+        var path = __dirname
+        //console.log(path)
+        path = path.replace('routes', '')
+        res.sendFile(path + '/public/arquivos/' + doc)
+    }).catch(() => {
+        req.flash('error_msg', 'Falha ao encontrar o documento.')
+        res.redirect('/gerenciamento/aceite/' + req.body.id)
+    })
+})
+
 router.post('/almoxarifado', ehAdmin, (req, res) => {
-    var propostafile
+    var file
     var upload = multer({ storage }).single('almoxarifado')
     upload(req, res, function (err) {
         if (err) {
             return res.end("Error uploading file.");
         } else {
             if (req.file != null) {
-                propostafile = req.file.filename
+                file = req.file.filename
             } else {
-                propostafile = ''
+                file = ''
             }
             Documento.findOne({ proposta: req.body.id }).then((documento) => {
-                if (propostafile != '') {
-                    documento.almoxarifado = propostafile
+                if (file != '') {
+                    documento.almoxarifado = file
                 }
                 documento.dtalmoxarifado = String(req.body.dtalmoxarifado)
                 documento.feitoalmox = true
@@ -6381,34 +6544,21 @@ router.get('/mostrarFinanceiro/:id', ehAdmin, (req, res) => {
     })
 })
 
-router.get('/mostrarFinanceiro/:id', ehAdmin, (req, res) => {
-    Documento.findOne({ proposta: req.params.id }).then((documento) => {
-        var doc = documento.comprovante
-        var path = __dirname
-        //console.log(path)
-        path = path.replace('routes', '')
-        res.sendFile(path + '/public/arquivos/' + doc)
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao encontrar o documento.')
-        res.redirect('/gerenciamento/financeiro/' + req.body.id)
-    })
-})
-
 router.post('/posvenda', ehAdmin, (req, res) => {
-    var propostafile
+    var file
     var upload = multer({ storage }).single('posvenda')
     upload(req, res, function (err) {
         if (err) {
             return res.end("Error uploading file.");
         } else {
             if (req.file != null) {
-                propostafile = req.file.filename
+                file = req.file.filename
             } else {
-                propostafile = ''
+                file = ''
             }
             Posvenda.findOne({ proposta: req.body.id }).then((posvenda) => {
-                if (propostafile != '') {
-                    posvenda.laudo = propostafile
+                if (file != '') {
+                    posvenda.laudo = file
                 }
                 posvenda.data = String(req.body.data)
                 posvenda.feito = true
@@ -6450,7 +6600,7 @@ router.get('/entrega/:id', ehAdmin, (req, res) => {
                     var datarevi = dataMensagem(setData(dataHoje(), 30))
                     var buscarevi = dataBusca(setData(dataHoje(), 30))
                     //console.log(vistoria)
-                    if (vistoria != null && typeof vistoria != 'undefined' && vistoria != '') {
+                    if (naoVazio(vistoria)) {
                         usina = {
                             user: id,
                             nome: cliente.nome,
@@ -6484,7 +6634,6 @@ router.get('/entrega/:id', ehAdmin, (req, res) => {
                             var tarefa = {
                                 user: id,
                                 usina: novausina._id,
-                                servico: 'Limpeza de Painéis',
                                 dataini: setData(dataHoje(), 182),
                                 buscadataini: dataBusca(setData(dataHoje(), 182)),
                                 datafim: setData(dataHoje(), 182),
@@ -8658,7 +8807,7 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
             Equipe.findOne({ _id: tarefa.equipe }).then((equipe) => {
 
                 // custoins = req.body.custo
-                // //console.log('custoins=>' + custoins)
+                //console.log('custoins=>' + custoins)
                 // for (i = 0; i < custoins.length; i++) {
                 //     //console.log('custoins[i]' + custoins[i])
                 //     custototal = parseFloat(custototal) + parseFloat(custoins[i])

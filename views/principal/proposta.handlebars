@@ -3,19 +3,6 @@
         pointer-events: none;
         opacity: 0.4;
     }
-
-    .labelp {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        word-wrap: hyphenate;
-        max-width: 300px;
-        display: block;
-    }
-
-    .labelp>span {
-        overflow: hidden;
-    }
 </style>
 <script>
     function setValidade() {
@@ -273,7 +260,8 @@
     {{else}}
     {{#if proposta._id}}
     <div style='text-align: center'>
-        <label class='col-form-label fw-bold' style="font-size: 20px;color: tomato;">Proposta {{proposta.seq}} em Aberto</label>
+        <label class='col-form-label fw-bold' style="font-size: 20px;color: tomato;">Proposta {{proposta.seq}} em
+            Aberto</label>
     </div>
     {{else}}
     <div style='text-align: center'>
@@ -354,6 +342,7 @@
                                             proposta.uf}}{{proposta.uf}}{{else}}{{cliente_proposta.uf}}{{/if}}</label><br>
                                         <select style='display: {{mostraSelect}}' id="estado" name='uf'
                                             class='form-select mb-1'></select>
+                                        <input type='hidden' name='ufh' value='{{cliente_proposta.uf}}'>
                                     </div>
                                     <div class='col'>
                                         <label>Cidade</label>
@@ -363,6 +352,7 @@
                                             proposta.cidade}}{{proposta.cidade}}{{else}}{{cliente_proposta.cidade}}{{/if}}</label><br>
                                         <select style='display: {{mostraSelect}}' id="cidade" name='cidade'
                                             class='form-select mb-1'></select>
+                                        <input type='hidden' name='cidadeh' value='{{cliente_proposta.cidade}}'>
                                     </div>
                                     <div class='col-md-1 mt-1'>
                                         <div class="form-check form-switch mt-3" onchange="editarLocal()">
@@ -376,7 +366,8 @@
                         {{/if}}
                     </div>
                     <div class='col-md-1'>
-                        <button type='submit' class="setaproximo"><i style="font-size: 38px" class='bi bi-arrow-right-circle'></i></button>
+                        <button type='submit' class="setaproximo"><i style="font-size: 38px"
+                                class='bi bi-arrow-right-circle'></i></button>
                     </div>
                 </div>
             </form>
@@ -444,19 +435,23 @@
                     <form action='/gerenciamento/proposta2' method='post' enctype="multipart/form-data">
                         <input type="hidden" name='id' value='{{proposta._id}}'>
                         <div class="row">
+
+                            {{#if proposta.proposta2}}
                             <div class="col-md-4">
-                                {{#if proposta.proposta2}}
                                 <div style="margin-top: 10px;margin-bottom: 15px;">
                                     <label
                                         class='col-form-label col-form-label-sm labelp'>{{proposta.proposta2}}</label>
                                 </div>
-                                {{else}}
+                            </div>
+                            {{else}}
+                            <div class="col-md-5">
                                 <div class="mt-1">
                                     <input type='file' class='form-control' name='proposta2'
                                         value='{{proposta.proposta2}}'>
                                 </div>
-                                {{/if}}
                             </div>
+                            {{/if}}
+
                             {{#if proposta.proposta2}}
                             <div class="col-md-1" style="margin-top: 5px">
                                 <a class="btn btn-primary" href='/gerenciamento/mostrarProposta2/{{proposta._id}}'
@@ -481,17 +476,20 @@
                     <form action='/gerenciamento/proposta3' method='post' enctype="multipart/form-data">
                         <input type="hidden" name='id' value='{{proposta._id}}'>
                         <div class="row">
-                            <div class="col">
-                                {{#if proposta.proposta3}}
+
+                            {{#if proposta.proposta3}}
+                            <div class="col-md-4">
                                 <div style="margin-top: 10px;margin-bottom: 15px;">
                                     <label
                                         class='col-form-label col-form-label-sm labelp'>{{proposta.proposta3}}</label>
                                 </div>
-                                {{else}}
+                            </div>
+                            {{else}}
+                            <div class="col-md-5">
                                 <input type='file' class='form-control mt-1' name='proposta3'
                                     value='{{proposta.proposta3}}'>
-                                {{/if}}
                             </div>
+                            {{/if}}
                             {{#if proposta.proposta3}}
                             <div class="col-md-1" style="margin-top: 5px">
                                 <a class="btn btn-primary" href='/gerenciamento/mostrarProposta3/{{proposta._id}}'
@@ -516,13 +514,16 @@
                     <form action='/gerenciamento/proposta4' method='post' enctype="multipart/form-data">
                         <input type="hidden" name='id' value='{{proposta._id}}'>
                         <div class="row">
-                            <div class="col">
-                                {{#if proposta.proposta4}}
+
+                            {{#if proposta.proposta4}}
+                            <div class="col-md-4">
                                 <div style="margin-top: 10px;margin-bottom: 15px;">
                                     <label
                                         class='col-form-label col-form-label-sm labelp'>{{proposta.proposta4}}</label>
                                 </div>
-                                {{else}}
+                            </div>
+                            {{else}}
+                            <div class="col-md-5">
                                 <input type='file' class='form-control mt-1' name='proposta4'
                                     value='{{proposta.proposta4}}'>
                                 {{/if}}
@@ -551,17 +552,19 @@
                     <form action='/gerenciamento/proposta5' method='post' enctype="multipart/form-data">
                         <input type="hidden" name='id' value='{{proposta._id}}'>
                         <div class="row">
-                            <div class="col">
-                                {{#if proposta.proposta5}}
+                            {{#if proposta.proposta5}}
+                            <div class="col-md-4">
                                 <div style="margin-top: 10px;margin-bottom: 15px;">
                                     <label
                                         class='col-form-label col-form-label-sm labelp'>{{proposta.proposta5}}</label>
                                 </div>
-                                {{else}}
+                            </div>
+                            {{else}}
+                            <div class="col-md-5">
                                 <input type='file' class='form-control mt-1' name='proposta5' id='dtcadastro5'
                                     value='{{proposta.proposta5}}'>
-                                {{/if}}
                             </div>
+                            {{/if}}
                             {{#if proposta.proposta5}}
                             <div class="col-md-1" style="margin-top: 5px">
                                 <a class="btn btn-primary" href='/gerenciamento/mostrarProposta5/{{proposta._id}}'
@@ -586,17 +589,20 @@
                     <form action='/gerenciamento/proposta6' method='post' enctype="multipart/form-data">
                         <input type="hidden" name='id' value='{{proposta._id}}'>
                         <div class="row">
-                            <div class="col">
-                                {{#if proposta.proposta6}}
+
+                            {{#if proposta.proposta6}}
+                            <div class="col-md-4">
                                 <div style="margin-top: 10px;margin-bottom: 15px;">
                                     <label
                                         class='col-form-label col-form-label-sm labelp'>{{proposta.proposta6}}</label>
                                 </div>
-                                {{else}}
+                            </div>
+                            {{else}}
+                            <div class="col-md-5">
                                 <input type='file' class='form-control mt-1' name='proposta6'
                                     value='{{proposta.proposta6}}'>
-                                {{/if}}
                             </div>
+                            {{/if}}
                             {{#if proposta.proposta6}}
                             <div class="col-md-1" style="margin-top: 5px">
                                 <a class="btn btn-primary" href='/gerenciamento/mostrarProposta6/{{proposta._id}}'

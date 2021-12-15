@@ -41,7 +41,11 @@ const Equipe = new Schema({
   nome_equipe: {
     type: String,
     require: false
-  },  
+  }, 
+  placa: {
+    type: String,
+    require: false
+  },
   custoins: {
     type: Number,
     require: false

@@ -93,6 +93,10 @@
                                 <label class='col-form-label'>{{documento.trt}}</label>
                             </div>
                         </div>
+                        <div class="col-md-1 mt-3">
+                            <a class="btn btn-primary" href='/gerenciamento/mostrarTrt/{{proposta._id}}'
+                                target="_blank"><i class='bi bi-eye'></i></a>
+                        </div>                        
                         <div class="col-md-2 mt-3">
                             <input style="max-width: 150px;" type='file' class='form-control' name='trt'
                                 value='{{documento.trt}}'>
@@ -101,10 +105,7 @@
                         <div class="col-md-7 mt-3">
                             <input type='file' class='form-control' name='trt' value='{{documento.trt}}'>
                         </div>
-                        {{/if}} <div class="col-md-1 mt-3">
-                            <a class="btn btn-primary" href='/gerenciamento/mostrarTrt/{{proposta._id}}'
-                                target="_blank"><i class='bi bi-eye'></i></a>
-                        </div>
+                        {{/if}}
                         <div class="col-md-2">
                             <label> Data Registro</label>
                             <input type='date' class='form-control' name='dttrt' value='{{documento.dttrt}}'>

@@ -234,15 +234,17 @@ background-color: rgb(40,55,89)
 
 .botao-filter {
 font-size: 13px;
-color: black;
+color: white;
 line-height: 20px;
 margin-left: 5px;
 text-decoration: none;
 box-shadow: 0px 0px 0px white;
+font-size: 15px;
+font-weight: 400;
 }
 
 .botao-filter:hover {
-color: #847AF4;;
+    color: white;
 font-weight: 900;
 }
 
@@ -877,6 +879,19 @@ padding-left: 10px;
 padding-right: 20px;
 box-shadow: 1px 4px 5px rgba(26, 25, 25, 0.77);
 font-size: 30px;
+}
+
+.labelp {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: hyphenate;
+    max-width: 300px;
+    display: block;
+}
+
+.labelp>span {
+    overflow: hidden;
 }
 
 

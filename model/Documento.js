@@ -19,15 +19,7 @@ const Documento = new Schema({
     dttrt:{
         type: String,
         require: false
-    },
-    trt:{
-        type: String,
-        require: false
-    },
-    dttrt:{
-        type: String,
-        require: false
-    },
+    },      
     memorial:{
         type: String,
         require: false
@@ -96,6 +88,22 @@ const Documento = new Schema({
         type: Boolean,
         require: false
     },          
+    clins:{
+        type: String,
+        require: false
+    },
+    dtclins:{
+        type: String,
+        require: false
+    },   
+    vistoria:{
+        type: String,
+        require: false
+    },
+    dtvistoria:{
+        type: String,
+        require: false
+    },    
     almoxarifado:{
         type: String,
         require: false

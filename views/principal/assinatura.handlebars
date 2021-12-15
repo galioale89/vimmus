@@ -91,10 +91,12 @@
                         <div class="col-md-6">
                             <label class='col-form-label'>{{proposta.assinatura}}</label>
                         </div>
+                        {{#if proposta.assinatura}}
                         <div class="col-md-1">
                             <a class="btn btn-primary" href='/gerenciamento/mostrarProposta/{{proposta._id}}'
                                 target="_blank"><i class='bi bi-eye'></i></a>
                         </div>
+                        {{/if}}
                     </div>
                     <div class="row">
                         <div class="col-md-3 text-start">
@@ -123,10 +125,12 @@
                         <div class="col-md-8">
                             <label class='col-form-label'>{{proposta.contrato}}</label>
                         </div>
+                        {{#if proposta.contrato}}
                         <div class="col-md-1">
                             <a class="btn btn-primary" href='/gerenciamento/mostrarContrato/{{proposta._id}}'
                                 target="_blank"><i class='bi bi-eye'></i></a>
                         </div>
+                        {{/if}}
                     </div>
                     <div class="row">
                         <div class="col-md-3 text-start">

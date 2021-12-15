@@ -88,12 +88,14 @@
                             <label class='col-form-label fw-bold'>Comprovante: </label>
                         </div>
                         <div class="col-md-7">
-                            <label class='col-form-label'>{{documento.comprovante}}</label>
+                            <label class='col-form-label labelp'>{{documento.comprovante}}</label>
                         </div>
+                        {{#if documento.comprovante}}
                         <div class="col-md-1">
                             <a class="btn btn-primary" href='/gerenciamento/mostrarComprovante/{{proposta._id}}'
                                 target="_blank"><i class='bi bi-eye'></i></a>
                         </div>
+                        {{/if}}
                     </div>
                     <div class="row">
                         <div class="col-md-3 text-start">
@@ -122,12 +124,14 @@
                             <label class='col-form-label fw-bold'>Nota Fiscal: </label>
                         </div>
                         <div class="col-md-7">
-                            <label class='col-form-label'>{{documento.faturado}}</label>
+                            <label class='col-form-label labelp'>{{documento.faturado}}</label>
                         </div>
+                        {{#if documento.faturado}}
                         <div class="col-md-1">
                             <a class="btn btn-primary" href='/gerenciamento/mostrarFinanceiro/{{proposta._id}}'
                                 target="_blank"><i class='bi bi-eye'></i></a>
                         </div>
+                        {{/if}}
                     </div>
                     <div class="row">
                         <div class="col-md-3 text-start">

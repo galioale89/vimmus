@@ -96,22 +96,26 @@
     </div>
 
     <div id='bloquear' class='{{proposta.encerrado}}'>
-        <div class="row mt-2">
-            <div class="col-md-2 text-end">
-                <label class='col-form-label fw-bold mt-3'>Documento: </label><br>
+        <div class="row" style="margin-top: 50px;">
+            <div class="col-md-3 text-end">
+                <label class='col-form-label fw-bold mt-3'>Formulário de Treinamento: </label><br>
             </div>
-            <div class="col-md-10 text-start">
+            <div class="col-md-8 text-start">
                 <form action='/gerenciamento/posvenda' method='post' enctype="multipart/form-data">
                     <input type='hidden' name='id' value={{proposta._id}}>
                     <div class="row">
                         {{#if posvenda.feito}}
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <div class="row mt-3">
-                                <label class='col-form-label'>{{posvenda.laudo}}</label>
+                                <label class='col-form-label labelp'>{{posvenda.laudo}}</label>
                             </div>
                         </div>
-                        <div class="col-md-2 mt-3">
-                            <input style="max-width: 150px;" type='file' class='form-control' name='posvenda'
+                        <div class="col-md-1 mt-3">
+                            <a class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#laudoModal"><i class='bi bi-eye'></i></a>
+                        </div>
+                        <div class="col-md-3 mt-3">
+                            <input style="max-width: 152px;" style='font-size: 15px' type='file' class='form-control' name='posvenda'
                                 value='{{posvenda.feito}}'>
                         </div>
                         {{else}}
@@ -119,10 +123,6 @@
                             <input type='file' class='form-control' name='posvenda' value='{{posvenda.laudo}}'>
                         </div>
                         {{/if}}
-                        <div class="col-md-1 mt-3">
-                            <a class="btn btn-primary" href='/gerenciamento/mostrarPosvenda/{{proposta._id}}'
-                                target="_blank"><i class='bi bi-eye'></i></a>
-                        </div>
                         <div class="col-md-3">
                             <label> Data</label>
                             <input type='date' class='form-control' name='data' value='{{posvenda.data}}'>
@@ -135,8 +135,24 @@
             </div>
         </div>
     </div>
+    <div class="row" style="margin-top: 20px;">
+        <div class="card" style="width: 450px;margin-left: 35%;">
+        {{!-- <button class='btn btn-sm btn-success mb-1'><i class='bi bi-save'></i> Check List</button><br>
+        --}}
+        {{#if posvenda.feito}}
+        <a href='/gerenciamento/entrega/{{proposta._id}}' style="width: 150px;margin-left: 30%;"
+            class='btn btn-sm btn-primary mb-1 mt-4'>Finalizar</a><br>
+        {{/if}}
+        {{#if proposta.encerrado}}
+        <a href='/gerenciamento/livro/{{proposta._id}}' style="width: 150px;margin-left: 30%;" class='btn btn-sm btn-primary mb-1'>Livro da
+            Obra</a><br>
+        {{/if}}
+        </div>
+    </div>
 
-    <form action="/gerenciamento/checkposvenda" method='post'>
+
+
+    {{!-- <form action="/gerenciamento/checkposvenda" method='post'>
         <input type='hidden' name='idpos' value='{{posvenda._id}}'>
         <input type='hidden' name='id' value='{{proposta._id}}'>
         <div class="row">
@@ -193,22 +209,24 @@
                     </div>
                     <div class="col">
                         <div class="row" style="margin-top: 20px;">
-                            <button class='btn btn-sm btn-success mb-1'><i class='bi bi-save'></i> Chek List</button><br>
+                            <button class='btn btn-sm btn-success mb-1'><i class='bi bi-save'></i> Chek
+                                List</button><br>
                             {{#if posvenda.feito}}
                             <a href='/gerenciamento/entrega/{{proposta._id}}'
                                 class='btn btn-sm btn-primary mb-1'>Finalizar</a><br>
-                            {{/if}}                                
+                            {{/if}}
                             {{#if proposta.encerrado}}
-                             <a href='/gerenciamento/livro/{{proposta._id}}' class='btn btn-sm btn-primary mb-1'>Livro da
+                            <a href='/gerenciamento/livro/{{proposta._id}}' class='btn btn-sm btn-primary mb-1'>Livro da
                                 Obra</a><br>
                             {{/if}}
-                            <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#laudoModal"> Mostrar
+                            <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#laudoModal">
+                                Mostrar
                                 Laudo</a><br>
-                           
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </form>
+    </form> --}}
 </div>

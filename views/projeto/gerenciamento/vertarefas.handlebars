@@ -11,12 +11,12 @@
         <div style="border: #847AF4 4px solid;border-radius: 20px;padding: 10px;">
             <table>
                 <tr>
-                    <th style="width: 30%;">Cliente</th>
+                    <th style="width: 20%;">Cliente</th>
                     <th>Manutenção</th>
                     <th>Data de Início</th>
                     <th>Data Final</th>
-                    <th style="width: 30%;">Equipe</th>
-                    <th style="width: 10%;"></th>
+                    <th style="width: 20%;">Equipe</th>
+                    <th style="width: 20%;"></th>
                 </tr>
                 <tr>
                     <td>
@@ -41,8 +41,11 @@
                         <label class="col-form-label col-form-label-sm">{{lista_tarefa.ins5}}</label><br>
                     </td>
                     <td>
+                        <div class="btn-group col-12 gap-2">
+                        <a href='/gerenciamento/abrirfotos/{{lista_tarefa.id}}' class='btn btn-sm btn-primary'>Ver Fotos</a>
                         <a href='/gerenciamento/equipetarefa/{{lista_tarefa.id}}' class='btn btn-sm btn-primary'>Definir
                             Equipe</a>
+                        </div>
                     </td>
                 </tr>
             </table>
