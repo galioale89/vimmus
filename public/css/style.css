@@ -4693,7 +4693,7 @@ section#benefits .topics li.active::before {
   background-color: #847AF4;
 }
 section#benefits .descriptions {
-  margin-top: 10px;
+  margin-top: 0px;
   background-color: #847AF4;
   width: 100%;
   padding: 45px;
