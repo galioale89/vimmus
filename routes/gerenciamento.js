@@ -217,9 +217,9 @@ router.get('/consulta', ehAdmin, (req, res) => {
                                                                     }
                                                                 }
                                                             } else {
-                                                                if (e.baixada==false){
-                                                                status = 'Proposta Enviada'
-                                                                }else{
+                                                                if (e.baixada == false) {
+                                                                    status = 'Proposta Enviada'
+                                                                } else {
                                                                     status = 'Baixado'
                                                                 }
                                                             }
@@ -479,26 +479,26 @@ router.get('/livro/:id', ehAdmin, (req, res) => {
     })
 })
 
-router.get('/confirmabaixa/:id', ehAdmin, (req,res)=>{
-    Proposta.findOne({_id: req.params.id}).lean().then((proposta)=>{
-        res.render('principal/confirmabaixa', {proposta})
-    }).catch((err)=>{
-        req.flash('error_msg','Não foi possível encontrar a proposta.')
+router.get('/confirmabaixa/:id', ehAdmin, (req, res) => {
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        res.render('principal/confirmabaixa', { proposta })
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar a proposta.')
         res.redirect('/menu')
     })
 })
 
-router.post('/baixar/', ehAdmin, (req,res)=>{
-    console.log('req.body.id=>'+req.body.id)
-    Proposta.findOne({_id: req.body.id}).then((proposta)=>{
+router.post('/baixar/', ehAdmin, (req, res) => {
+    console.log('req.body.id=>' + req.body.id)
+    Proposta.findOne({ _id: req.body.id }).then((proposta) => {
         proposta.baixada = true
         proposta.motivo = req.body.motivo
         proposta.descmot = req.body.descricao
-        proposta.save().then(()=>{
-            req.flash('success_msg','Proposta baixada com sucesso.')
+        proposta.save().then(() => {
+            req.flash('success_msg', 'Proposta baixada com sucesso.')
             res.redirect('/menu')
-        }).catch((err)=>{
-            req.flash('error_msg','Não foi possível salvar a baixa da proposta.')
+        }).catch((err) => {
+            req.flash('error_msg', 'Não foi possível salvar a baixa da proposta.')
             res.redirect('/menu')
         })
     })
@@ -905,9 +905,9 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                             }
                                                                         }
                                                                     } else {
-                                                                        if (e.baixada == false){
-                                                                        status = 'Proposta Enviada'
-                                                                        }else{
+                                                                        if (e.baixada == false) {
+                                                                            status = 'Proposta Enviada'
+                                                                        } else {
                                                                             status = 'Baixado'
                                                                         }
                                                                     }
@@ -1535,9 +1535,10 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
     var meshoje = hoje.substring(5, 7)
     var anotitulo = req.body.ano
 
-    //console.log('meshoje=>' + meshoje)
-
     var mestitulo = req.body.mes
+
+    var dataini
+    var datafim
 
     switch (mestitulo) {
         case 'Janeiro':
@@ -1585,209 +1586,266 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
             trintaeum = true
             break;
     }
-    var dataini = req.body.ano + '01' + '01'
-    var datafim = req.body.ano + '12' + '31'
+
+    dataini = String(anotitulo) + '01' + '01'
+    datafim = String(anotitulo) + '12' + '31'
+    dataini = parseFloat(dataini)
+    datafim = parseFloat(datafim)
     Proposta.find({ user: id, ganho: true, encerrado: false }).then((proposta) => {
         if (proposta != '') {
             proposta.forEach((e) => {
                 Cliente.findOne({ _id: e.cliente }).then((cliente) => {
-                    Equipe.findOne({ _id: e.equipe, feito: true, 'dtinibusca': { $lte: datafim, $gte: dataini }, 'dtfimbusca': { $lte: datafim, $gte: dataini } }).sort({ dtfimbusca: 'desc' }).then((equipe) => {
+                    Equipe.findOne({ _id: e.equipe, feito: true, $or: [{ 'dtinibusca': { $lte: datafim, $gte: dataini } }, { 'dtfimbusca': { $lte: datafim, $gte: dataini } }] }).sort({ dtfimbusca: 'desc' }).then((equipe) => {
                         q++
-                        inicio = equipe.dtinicio
-                        fim = equipe.dtfim
-                        anoinicio = inicio.substring(0, 4)
-                        anofim = fim.substring(0, 4)
-                        mesinicio = inicio.substring(5, 7)
-                        mesfim = fim.substring(5, 7)
-                        diainicio = inicio.substring(8, 11)
-                        diafim = fim.substring(8, 11)
-                        con1 = String(mesinicio) + String(diainicio)
-                        con2 = String(mesfim) + String(diafim)
-                        dif1 = parseFloat(con2) - parseFloat(con1) + 1
-                        // compara = mesfim - mesinicio]
-                        if (meshoje == mesinicio) {
-                            mes = mesinicio
-                            if (anofim == anoinicio) {
-                                dia = diainicio
-                                dif = parseFloat(diafim) - parseFloat(diainicio) + 1
+                        console.log('equipe=>' + equipe)
+                        if (naoVazio(equipe)) {
+                            inicio = equipe.dtinicio
+                            fim = equipe.dtfim
+                            anoinicio = inicio.substring(0, 4)
+                            anofim = fim.substring(0, 4)
+                            mesinicio = inicio.substring(5, 7)
+                            mesfim = fim.substring(5, 7)
+                            diainicio = inicio.substring(8, 11)
+                            diafim = fim.substring(8, 11)
+                            con1 = String(mesinicio) + String(diainicio)
+                            con2 = String(mesfim) + String(diafim)
+                            dif1 = parseFloat(con2) - parseFloat(con1) + 1
+                            // compara = mesfim - mesinicio
+                            console.log("meshoje=>" + meshoje)
+                            console.log("mesinicio=>" + mesinicio)
+                            console.log("anotitulo=>" + anotitulo)
+                            console.log("anoinicio=>" + anoinicio)
+                            console.log("anofim=>" + anofim)
+                            if (meshoje == mesinicio) {
+                                if (parseFloat(anotitulo) == parseFloat(anoinicio)) {
+                                    mes = meshoje
+                                    if (parseFloat(anofim) > parseFloat(anoinicio)){
+                                        console.log('projeto ultrapassa anos')
+                                        dia = diainicio
+                                        if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
+                                            dif = 31
+                                        } else {
+                                            dif = 30
+                                        }
+                                    } else{
+                                        dia = diainicio
+                                        dif = parseFloat(diafim) - parseFloat(diainicio) + 1
+                                    }
+                                }else{
+                                    console.log('anos diferente')
+                                    dia = 0
+                                    dif = 0
+                                }                                                            
                             } else {
-                                if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
-                                    dif = 31 - parseFloat(diainicio) + 1
+                                console.log('diferente')
+                                difmes = parseFloat(mesfim) - parseFloat(mesinicio) + 1
+                                console.log('difmes=>' + difmes)
+                                if (difmes != 0) {
+                                    //console.log('difmes=>' + difmes)
+                                    if (difmes < 0) {
+                                        difmes = difmes + 12
+                                    }
+                                    //console.log('mesinicio=>' + mesinicio)
+                                    for (i = 0; i < difmes; i++) {
+                                        mes = parseFloat(mesinicio) + i
+                                        if (mes > 12) {
+                                            mes = mes - 12
+                                        }
+                                        console.log('mes=>' + mes)
+                                        console.log('meshoje=>' + meshoje)
+                                        if (mes == meshoje) {
+                                            if (mes < 10) {
+                                                mes = '0' + mes
+                                                dia = '01'
+                                            }
+                                            break;
+                                        }
+                                    }
+                                    if (anotitulo == anofim) {
+                                        if (mes == mesfim) {
+                                            dif = parseFloat(diafim)
+                                        } else {
+                                            if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
+                                                dif = 31
+                                            } else {
+                                                dif = 30
+                                            }
+                                        }
+                                    } else {
+                                        dia = 0
+                                        dif = 0
+                                    }
+                                    // console.log('mes=>' + mes)
+                                    // console.log('anofim=>' + anofim)
+                                    // console.log('anoinicio=>' + anoinicio)
+                                    // console.log('anotitulo=>' + anotitulo)
+                                    // console.log('diafim=>' + diafim)
+                                    // if (parseFloat(anofim) > parseFloat(anoinicio)) {
+                                    //     dia = '01'
+                                    //     if (anotitulo == anofim) {
+                                    //         dif = parseFloat(diafim) + 1
+                                    //     } else {
+                                    //         if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
+                                    //             dif = 31
+                                    //         } else {
+                                    //             dif = 30
+                                    //         }
+                                    //     }
+                                    // } else {
+
+                                    // }
                                 } else {
-                                    dif = 30 - parseFloat(diainicio) + 1
+                                    dif = 0
+                                    dia = 0
                                 }
-                                if (diainicio < 10) {
-                                    dia = '0' + parseFloat(diainicio)
-                                } else {
-                                    dia = parseFloat(diainicio)
+                            }
+
+                            console.log('dif=>' + dif)
+                            console.log('dia=>' + dia)
+                            //console.log('mes=>' + mes)
+
+                            color = cores[c]
+                            todasCores.push({ color })
+
+                            for (i = 0; i < dif; i++) {
+                                // console.log('meshoje=>' + meshoje)
+                                // console.log('mes=>' + mes)
+                                // console.log('dia=>' + dia)
+                                console.log('entrou laço')
+                                if (meshoje == mes) {
+                                    switch (String(dia)) {
+                                        case '01':
+                                            dia01.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '02':
+                                            dia02.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '03':
+                                            dia03.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '04':
+                                            dia04.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '05':
+                                            dia05.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '06':
+                                            dia06.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '07':
+                                            dia07.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '08':
+                                            dia08.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '09':
+                                            dia09.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '10':
+                                            dia10.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '11':
+                                            dia11.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '12':
+                                            dia12.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '13':
+                                            dia13.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '14':
+                                            dia14.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '15':
+                                            dia15.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '16':
+                                            dia16.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '17':
+                                            dia17.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '18':
+                                            dia18.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '19':
+                                            dia19.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '20':
+                                            dia20.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '21':
+                                            dia21.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '22':
+                                            dia22.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '23':
+                                            dia23.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '24':
+                                            dia24.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '25':
+                                            dia25.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '26':
+                                            dia26.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '27':
+                                            dia27.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '28':
+                                            dia28.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '29':
+                                            dia29.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '30':
+                                            dia30.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                        case '31':
+                                            dia31.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
+                                            break;
+                                    }
+                                    dia++
+                                    if (dia < 10) {
+                                        dia = '0' + dia
+                                    }
+                                    //console.log('diainicio=>' + diainicio)
                                 }
+                            }
+                            c++
+                            console.log('dia01_fora=>' + dia01)
+                            if (q == proposta.length) {
+                                console.log('dia01_dentro=>' + dia01)
+                                res.render('principal/vermais', {
+                                    dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
+                                    dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
+                                    dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
+                                    mestitulo, anotitulo, trintaeum, fevereiro, todasCores, listaAndamento: true, anotitulo
+                                })
                             }
                         } else {
-                            //console.log('diferente')
-                            difmes = parseFloat(mesfim) - parseFloat(mesinicio)
-                            if (difmes != 0) {
-                                //console.log('difmes=>' + difmes)
-                                if (difmes < 0) {
-                                    difmes = difmes + 12
-                                }
-                                //console.log('mesinicio=>' + mesinicio)
-                                for (i = 0; i < difmes; i++) {
-                                    mes = parseFloat(mesinicio) + i
-                                    if (mes > 12) {
-                                        mes = mes - 12
-                                    }
-                                    //console.log('mes=>' + mes)
-                                    //console.log('meshoje=>' + meshoje)
-                                    if (mes == meshoje) {
-                                        break;
-                                    }
-                                }
-
-                                if (parseFloat(anofim) > parseFloat(anoinicio)) {
-                                    dia = '01'
-                                    if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
-                                        dif = 31
-                                    } else {
-                                        dif = 30
-                                    }
-                                } else {
-                                    dia = diainicio
-                                    dif = parseFloat(diafim) - parseFloat(diainicio) + 1
-                                }
+                            console.log('dia01_fora_null=>' + dia01)
+                            if (q == proposta.length) {
+                                console.log('dia01_dentro_null=>' + dia01)
+                                res.render('principal/vermais', {
+                                    dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
+                                    dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
+                                    dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
+                                    mestitulo, anotitulo, trintaeum, fevereiro, todasCores, listaAndamento: true, anotitulo
+                                })
                             }
                         }
-
-                        //console.log('dif=>' + dif)
-                        //console.log('dia=>' + dia)
-                        //console.log('mes=>' + mes)
-
-                        color = cores[c]
-                        todasCores.push({ color })
-
-                        for (i = 0; i < dif; i++) {
-                            //console.log('meshoje=>' + meshoje)
-                            //console.log('mes=>' + mes)
-                            //console.log('dia=>' + dia)
-                            //console.log('entrou laço')
-                            if (meshoje == mes) {
-                                switch (String(dia)) {
-                                    case '01':
-                                        dia01.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '02':
-                                        dia02.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '03':
-                                        dia03.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '04':
-                                        dia04.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '05':
-                                        dia05.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '06':
-                                        dia06.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '07':
-                                        dia07.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '08':
-                                        dia08.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '09':
-                                        dia09.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '10':
-                                        dia10.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '11':
-                                        dia11.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '12':
-                                        dia12.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '13':
-                                        dia13.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '14':
-                                        dia14.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '15':
-                                        dia15.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '16':
-                                        dia16.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '17':
-                                        dia17.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '18':
-                                        dia18.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '19':
-                                        dia19.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '20':
-                                        dia20.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '21':
-                                        dia21.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '22':
-                                        dia22.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '23':
-                                        dia23.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '24':
-                                        dia24.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '25':
-                                        dia25.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '26':
-                                        dia26.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '27':
-                                        dia27.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '28':
-                                        dia28.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '29':
-                                        dia29.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '30':
-                                        dia30.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                    case '31':
-                                        dia31.push({ id: e._id, cliente: cliente.nome, cor: cores[c] })
-                                        break;
-                                }
-                                dia++
-                                if (dia < 10) {
-                                    dia = '0' + dia
-                                }
-                                //console.log('diainicio=>' + diainicio)
-                            }
-                        }
-                        c++
-                        //console.log('fevereiro=>' + fevereiro)
-                        res.render('principal/vermais', {
-                            dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
-                            dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
-                            dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
-                            mestitulo, anotitulo, trintaeum, fevereiro, todasCores, listaAndamento: true, anotitulo
-                        })
-
                     }).catch((err) => {
                         req.flash('error_msg', 'Falha ao encontrar a equipe.')
-                        res.redirect('/menu')
+                        res.redirect('/gerenciamento/emandamento/agenda')
                     })
+
                 }).catch((err) => {
                     req.flash('error_msg', 'Falha ao encontrar o cliente.')
-                    res.redirect('/menu')
+                    res.redirect('/gerenciamento/emandamento/agenda')
                 })
             })
         } else {
@@ -2470,9 +2528,11 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                                                                         //console.log('insres.nome=>' + insres.nome)
                                                                                                         //console.log('encontrou ')
                                                                                                         placa = lista_equipe.placa
-                                                                                                        placa.forEach((p)=>{
-                                                                                                            lista_placa.push({idp: proposta._id, ide: lista_equipe._id, id: p._id, desc: p.desc, dtdes: p.dtdes})
-                                                                                                        })
+                                                                                                        if (naoVazio(placa)) {
+                                                                                                            placa.forEach((p) => {
+                                                                                                                lista_placa.push({ idp: proposta._id, ide: lista_equipe._id, id: p._id, desc: p.desc, dtdes: p.dtdes })
+                                                                                                            })
+                                                                                                        }
                                                                                                         res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, ins_fora, ins_dentro, lista_placa, nome_equipe, lista_res, insres })
                                                                                                     }).catch((err) => {
                                                                                                         req.flash('error_msg', 'Falha ao encontrar a pessoa<insres>.')
@@ -2635,9 +2695,11 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                                             //console.log('lista_equipe.insres=>' + lista_equipe.insres)
                                                                             Pessoa.findOne({ _id: lista_equipe.insres }).lean().then((insres) => {
                                                                                 placa = lista_equipe.placa
-                                                                                placa.forEach((p)=>{
-                                                                                    lista_placa.push({idp: proposta._id, ide: lista_equipe._id, id: p._id, desc: p.desc, dtdes: p.dtdes})
-                                                                                })                                                                                
+                                                                                if (naoVazio(placa)) {
+                                                                                    placa.forEach((p) => {
+                                                                                        lista_placa.push({ idp: proposta._id, ide: lista_equipe._id, id: p._id, desc: p.desc, dtdes: p.dtdes })
+                                                                                    })
+                                                                                }
                                                                                 //console.log('insres.nome=>' + insres)
                                                                                 res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, ins_fora, ins_dentro, lista_placa, nome_equipe, lista_res, insres })
                                                                             }).catch((err) => {
@@ -4453,8 +4515,8 @@ router.post('/proposta1', ehAdmin, (req, res) => {
                 file = ''
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-                if (naoVazio(file)){
-                     proposta.proposta1 = file
+                if (naoVazio(file)) {
+                    proposta.proposta1 = file
                 }
                 proposta.dtcadastro1 = String(req.body.dtcadastro1)
                 proposta.dtvalidade1 = String(req.body.dtvalidade1)
@@ -4491,8 +4553,8 @@ router.post('/proposta2', ehAdmin, (req, res) => {
                 file = ''
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-                if (naoVazio(file)){
-                proposta.proposta2 = file
+                if (naoVazio(file)) {
+                    proposta.proposta2 = file
                 }
                 proposta.dtcadastro2 = String(req.body.dtcadastro2)
                 proposta.dtvalidade2 = String(req.body.dtvalidade2)
@@ -4529,8 +4591,8 @@ router.post('/proposta3', ehAdmin, (req, res) => {
                 file = ''
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-                if (naoVazio(file)){
-                proposta.proposta3 = file
+                if (naoVazio(file)) {
+                    proposta.proposta3 = file
                 }
                 proposta.dtcadastro3 = String(req.body.dtcadastro3)
                 proposta.dtvalidade3 = String(req.body.dtvalidade3)
@@ -4567,8 +4629,8 @@ router.post('/proposta4', ehAdmin, (req, res) => {
                 file = ''
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-                if (naoVazio(file)){
-                proposta.proposta4 = file
+                if (naoVazio(file)) {
+                    proposta.proposta4 = file
                 }
                 proposta.dtcadastro4 = String(req.body.dtcadastro4)
                 proposta.dtvalidade4 = String(req.body.dtvalidade4)
@@ -4605,8 +4667,8 @@ router.post('/proposta5', ehAdmin, (req, res) => {
                 file = ''
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-                if (naoVazio(file)){
-                proposta.proposta5 = file
+                if (naoVazio(file)) {
+                    proposta.proposta5 = file
                 }
                 proposta.dtcadastro5 = String(req.body.dtcadastro5)
                 proposta.dtvalidade5 = String(req.body.dtvalidade5)
@@ -4643,8 +4705,8 @@ router.post('/proposta6', ehAdmin, (req, res) => {
                 file = ''
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-                if (naoVazio(file)){
-                proposta.proposta6 = file
+                if (naoVazio(file)) {
+                    proposta.proposta6 = file
                 }
                 proposta.dtcadastro6 = String(req.body.dtcadastro6)
                 proposta.dtvalidade6 = String(req.body.dtvalidade6)
@@ -5637,7 +5699,7 @@ router.get('/enviarequipe/:id', ehAdmin, (req, res) => {
                 data: dataHoje()
             }
 
-            console.log('equipe.liberar=>'+equipe.liberar)
+            console.log('equipe.liberar=>' + equipe.liberar)
             if (equipe.liberar == true) {
                 AtvTelhado.findOneAndDelete({ proposta: req.params.id }).then(() => {
                     AtvAterramento.findOneAndDelete({ proposta: req.params.id }).then(() => {
@@ -5706,10 +5768,10 @@ router.get('/enviarequipe/:id', ehAdmin, (req, res) => {
 })
 
 
-router.post('/addplaca', ehAdmin, (req,res)=>{
-    var placa = {"desc": req.body.desc, 'dtdes': dataMensagem(req.body.dtdes)}
-    Equipe.findOneAndUpdate({_id: req.body.id}, {$push: {placa: placa}}).then((e)=>{
-        req.flash('success_msg','Placa adicionada com sucesso.')
+router.post('/addplaca', ehAdmin, (req, res) => {
+    var placa = { "desc": req.body.desc, 'dtdes': dataMensagem(req.body.dtdes) }
+    Equipe.findOneAndUpdate({ _id: req.body.id }, { $push: { placa: placa } }).then((e) => {
+        req.flash('success_msg', 'Placa adicionada com sucesso.')
         res.redirect('/gerenciamento/equipe/' + req.body.idp)
     }).catch((err) => {
         req.flash('error_msg', 'Houve erro ao salvar a equipe.')
@@ -5717,9 +5779,9 @@ router.post('/addplaca', ehAdmin, (req,res)=>{
     })
 })
 
-router.post('/removeplaca', ehAdmin, (req,res)=>{
-    Equipe.findOneAndUpdate({_id:req.body.ide}, {$pull: {'placa': {'_id': req.body.id}}}).then(()=>{
-        req.flash('success_msg','Placa removida com sucesso.')
+router.post('/removeplaca', ehAdmin, (req, res) => {
+    Equipe.findOneAndUpdate({ _id: req.body.ide }, { $pull: { 'placa': { '_id': req.body.id } } }).then(() => {
+        req.flash('success_msg', 'Placa removida com sucesso.')
         res.redirect('/gerenciamento/equipe/' + req.body.idp)
     }).catch((err) => {
         req.flash('error_msg', 'Houve erro ao excluir a equipe.')
