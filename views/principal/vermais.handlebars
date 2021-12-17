@@ -109,64 +109,60 @@
         </ul>
         {{else}}
         <div class="col-md-4">
-            <h5 class="mt-2 titulo-inicio">Agenda {{pessoa.nome}}</h5>
+            <h5 class="mt-2 titulo-inicio" style="cursor: default;">Agenda {{pessoa.nome}}</h5>
         </div>
         {{/if}}
     </div>
 
+    <label style="font-size: 14px;" class='fw-bold mt-1'>{{mestitulo}} de {{anotitulo}}</label>
     <div class='row mt-4'>
-        <div class='col-md-2'>
-            <label style="font-size: 14px;" class='fw-bold mt-1'>{{mestitulo}} de {{anotitulo}}</label>
-        </div>
-        <div class='col'>
-            {{#if pessoa._id}}
-            <form action="/gerenciamento/vermais" method="post">
-                <input type='hidden' name='id' value='{{pessoa._id}}'>
-                {{else}}
-                <form action="/gerenciamento/emandamento" method="post">
-                    {{/if}}
-                    {{#each todasCores}}
-                    <input type='hidden' name='cores' value='{{color}}'>
-                    {{/each}}
-                    <input type='hidden' name='cores' value='black'>
-                    <div class='row'>
-                        <div class='col-md-9'>
-                            <div class="btn-toolbar">
-                                <div class="btn-group">
-                                    <input type='hidden' name='mes' id='mes' value=''>
-                                    <button type="submit" id='selectjan' onclick="selectJan()"
-                                        class="btn btn-sm btn-primary">Janeiro</button>
-                                    <button type="submit" id='selectfev' onclick="selectFev()"
-                                        class="btn btn-sm btn-primary">Fevereiro</button>
-                                    <button type="submit" id='selectmar' onclick="selectMar()"
-                                        class="btn btn-sm btn-primary">Março</button>
-                                    <button type="submit" id='selectabr' onclick="selectAbr()"
-                                        class="btn btn-sm btn-primary">Abril</button>
-                                    <button type="submit" id='selectmai' onclick="selectMai()"
-                                        class="btn btn-sm btn-primary">Maio</button>
-                                    <button type="submit" id='selectjun' onclick="selectJun()"
-                                        class="btn btn-sm btn-primary">Junho</button>
-                                    <button type="submit" id='selectjul' onclick="selectJul()"
-                                        class="btn btn-sm btn-primary">Julho</button>
-                                    <button type="submit" id='selectago' onclick="selectAgo()"
-                                        class="btn btn-sm btn-primary">Agosto</button>
-                                    <button type="submit" id='selectset' onclick="selectSet()"
-                                        class="btn btn-sm btn-primary">Setembro</button>
-                                    <button type="submit" id='selectout' onclick="selectOut()"
-                                        class="btn btn-sm btn-primary">Outubro</button>
-                                    <button type="submit" id='selectnov' onclick="selectNov()"
-                                        class="btn btn-sm btn-primary">Novembro</button>
-                                    <button type="submit" id='selectdez' onclick="selectDez()"
-                                        class="btn btn-sm btn-primary">Dezembro</button>
-                                </div>
+        {{#if pessoa._id}}
+        <form action="/gerenciamento/vermais" method="post">
+            <input type='hidden' name='id' value='{{pessoa._id}}'>
+            {{else}}
+            <form action="/gerenciamento/emandamento" method="post">
+                {{/if}}
+                {{#each todasCores}}
+                <input type='hidden' name='cores' value='{{color}}'>
+                {{/each}}
+                <input type='hidden' name='cores' value='black'>
+                <div class='row' style="padding-left: 2%;">
+                    <div class='col-md-1 text-start'>
+                        <input type='number' class='form-control form-control-sm' name='ano' value='{{anotitulo}}'>
+                    </div>
+                    <div class='col-md-10'>
+                        <div class="btn-toolbar">
+                            <div class="btn-group col-12">
+                                <input type='hidden' name='mes' id='mes' value=''>
+                                <button type="submit" id='selectjan' onclick="selectJan()"
+                                    class="btn btn-sm btn-primary">Janeiro</button>
+                                <button type="submit" id='selectfev' onclick="selectFev()"
+                                    class="btn btn-sm btn-primary">Fevereiro</button>
+                                <button type="submit" id='selectmar' onclick="selectMar()"
+                                    class="btn btn-sm btn-primary">Março</button>
+                                <button type="submit" id='selectabr' onclick="selectAbr()"
+                                    class="btn btn-sm btn-primary">Abril</button>
+                                <button type="submit" id='selectmai' onclick="selectMai()"
+                                    class="btn btn-sm btn-primary">Maio</button>
+                                <button type="submit" id='selectjun' onclick="selectJun()"
+                                    class="btn btn-sm btn-primary">Junho</button>
+                                <button type="submit" id='selectjul' onclick="selectJul()"
+                                    class="btn btn-sm btn-primary">Julho</button>
+                                <button type="submit" id='selectago' onclick="selectAgo()"
+                                    class="btn btn-sm btn-primary">Agosto</button>
+                                <button type="submit" id='selectset' onclick="selectSet()"
+                                    class="btn btn-sm btn-primary">Setembro</button>
+                                <button type="submit" id='selectout' onclick="selectOut()"
+                                    class="btn btn-sm btn-primary">Outubro</button>
+                                <button type="submit" id='selectnov' onclick="selectNov()"
+                                    class="btn btn-sm btn-primary">Novembro</button>
+                                <button type="submit" id='selectdez' onclick="selectDez()"
+                                    class="btn btn-sm btn-primary">Dezembro</button>
                             </div>
                         </div>
-                        <div class='col-md-1 text-start'>
-                            <input type='number' class='form-control form-control-sm' name='ano' value='{{anotitulo}}'>
-                        </div>
                     </div>
-                </form>
-        </div>
+                </div>
+            </form>
     </div>
     <br>
     <div style="width: 92%;">

@@ -1675,25 +1675,6 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
                                         dia = 0
                                         dif = 0
                                     }
-                                    // console.log('mes=>' + mes)
-                                    // console.log('anofim=>' + anofim)
-                                    // console.log('anoinicio=>' + anoinicio)
-                                    // console.log('anotitulo=>' + anotitulo)
-                                    // console.log('diafim=>' + diafim)
-                                    // if (parseFloat(anofim) > parseFloat(anoinicio)) {
-                                    //     dia = '01'
-                                    //     if (anotitulo == anofim) {
-                                    //         dif = parseFloat(diafim) + 1
-                                    //     } else {
-                                    //         if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
-                                    //             dif = 31
-                                    //         } else {
-                                    //             dif = 30
-                                    //         }
-                                    //     }
-                                    // } else {
-
-                                    // }
                                 } else {
                                     dif = 0
                                     dia = 0
@@ -3637,35 +3618,51 @@ router.get('/vermais/:id/', ehAdmin, (req, res) => {
                         dif1 = parseFloat(con2) - parseFloat(con1) + 1
                         //console.log('mesfim=>'+mesfim)
                         //console.log('mesinicio=>'+mesinicio)
-                        compara = parseFloat(mesfim) - parseFloat(mesinicio)
-                        //console.log('compara=>' + compara)
-                        if (compara > 0) {
-                            if (meshoje == mesinicio) {
-                                mes = mesinicio
-                                if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
-                                    dif = 31 - parseFloat(diainicio) + 1
-                                } else {
-                                    dif = 30 - parseFloat(diainicio) + 1
-                                }
-                                if (diainicio < 10) {
-                                    dia = '0' + parseFloat(diainicio)
-                                } else {
-                                    dia = parseFloat(diainicio)
-                                }
+                        if (meshoje == mesinicio) {
+                            mes = mesinicio
+                            if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
+                                dif = 31 - parseFloat(diainicio) + 1
                             } else {
-                                mes = mesfim
-                                dif = parseFloat(diafim)
-                                dia = '01'
-                                //console.log('dif=>' + dif)
+                                dif = 30 - parseFloat(diainicio) + 1
                             }
-                        } else {
-                            dif = parseFloat(dif1)
                             if (diainicio < 10) {
                                 dia = '0' + parseFloat(diainicio)
                             } else {
                                 dia = parseFloat(diainicio)
                             }
-                            mes = mesinicio
+                        } else {
+                            //console.log('diferente')
+                            difmes = parseFloat(mesfim) - parseFloat(mesinicio)
+                            if (difmes != 0) {
+                                //console.log('difmes=>' + difmes)
+                                if (difmes < 0) {
+                                    difmes = difmes + 12
+                                }
+                                //console.log('mesinicio=>' + mesinicio)
+                                for (i = 0; i < difmes; i++) {
+                                    mes = parseFloat(mesinicio) + i
+                                    if (mes > 12) {
+                                        mes = mes - 12
+                                    }
+                                    //console.log('mes=>' + mes)
+                                    //console.log('meshoje=>' + meshoje)
+                                    if (mes == meshoje) {
+                                        break;
+                                    }
+                                }
+
+                                if (parseFloat(anofim) > parseFloat(anoinicio)) {
+                                    dia = '01'
+                                    if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
+                                        dif = 31
+                                    } else {
+                                        dif = 30
+                                    }
+                                } else {
+                                    dia = diainicio
+                                    dif = parseFloat(diafim) - parseFloat(diainicio) + 1
+                                }
+                            }
                         }
 
                         //console.log('dif=>' + dif)
@@ -3893,7 +3890,7 @@ router.post('/vermais/', ehAdmin, (req, res) => {
 
     var mestitulo = req.body.mes
     var hoje = dataHoje()
-    var ano = req.body.ano
+    var anotitulo = req.body.ano
 
     switch (mestitulo) {
         case 'Janeiro':
@@ -3964,40 +3961,69 @@ router.post('/vermais/', ehAdmin, (req, res) => {
                         con1 = String(mesinicio) + String(diainicio)
                         con2 = String(mesfim) + String(diafim)
                         dif1 = parseFloat(con2) - parseFloat(con1) + 1
-                        if (mesfim > mesinicio || mesinicio == mesfim) {
-                            compara = mesfim - mesinicio
-                        } else {
-                            compara = mesfim
-                        }
-
-                        //console.log('compara')
-                        if (compara > 0) {
-                            if (meshoje == mesinicio) {
-                                mes = mesinicio
-                                if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
-                                    dif = 31 - parseFloat(diainicio) + 1
-                                } else {
-                                    dif = 30 - parseFloat(diainicio) + 1
+                        if (meshoje == mesinicio) {
+                            if (parseFloat(anotitulo) == parseFloat(anoinicio)) {
+                                mes = meshoje
+                                if (parseFloat(anofim) > parseFloat(anoinicio)){
+                                    console.log('projeto ultrapassa anos')
+                                    dia = diainicio
+                                    if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
+                                        dif = 31
+                                    } else {
+                                        dif = 30
+                                    }
+                                } else{
+                                    dia = diainicio
+                                    dif = parseFloat(diafim) - parseFloat(diainicio) + 1
                                 }
-                                if (parseFloat(diainicio) < 10) {
-                                    dia = '0' + parseFloat(diainicio)
+                            }else{
+                                console.log('anos diferente')
+                                dia = 0
+                                dif = 0
+                            }                                                            
+                        } else {
+                            console.log('diferente')
+                            difmes = parseFloat(mesfim) - parseFloat(mesinicio) + 1
+                            console.log('difmes=>' + difmes)
+                            if (difmes != 0) {
+                                //console.log('difmes=>' + difmes)
+                                if (difmes < 0) {
+                                    difmes = difmes + 12
+                                }
+                                //console.log('mesinicio=>' + mesinicio)
+                                for (i = 0; i < difmes; i++) {
+                                    mes = parseFloat(mesinicio) + i
+                                    if (mes > 12) {
+                                        mes = mes - 12
+                                    }
+                                    console.log('mes=>' + mes)
+                                    console.log('meshoje=>' + meshoje)
+                                    if (mes == meshoje) {
+                                        if (mes < 10) {
+                                            mes = '0' + mes
+                                            dia = '01'
+                                        }
+                                        break;
+                                    }
+                                }
+                                if (anotitulo == anofim) {
+                                    if (mes == mesfim) {
+                                        dif = parseFloat(diafim)
+                                    } else {
+                                        if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
+                                            dif = 31
+                                        } else {
+                                            dif = 30
+                                        }
+                                    }
                                 } else {
-                                    dia = parseFloat(diainicio)
+                                    dia = 0
+                                    dif = 0
                                 }
                             } else {
-                                mes = mesfim
-                                dif = parseFloat(diafim)
-                                dia = '01'
+                                dif = 0
+                                dia = 0
                             }
-                        } else {
-                            //console.log('entrou')
-                            dif = parseFloat(dif1)
-                            if (parseFloat(diainicio) < 10) {
-                                dia = '0' + parseFloat(diainicio)
-                            } else {
-                                dia = parseFloat(diainicio)
-                            }
-                            mes = mesinicio
                         }
 
                         //console.log('cores.length=>' + cores.length)
@@ -4122,15 +4148,7 @@ router.post('/vermais/', ehAdmin, (req, res) => {
                             //console.log('anoinicio=>' + anoinicio)
                             //console.log('mes=>' + mes)
                             //console.log('mesfim=>' + mesfim)
-                            if (anofim > anoinicio) {
-                                if (mes > mesfim) {
-                                    anotitulo = anoinicio
-                                } else {
-                                    anotitulo = anofim
-                                }
-                            } else {
-                                anotitulo = anoinicio
-                            }
+
                             res.render('principal/vermais', {
                                 dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
                                 dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
