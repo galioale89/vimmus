@@ -217,7 +217,11 @@ router.get('/consulta', ehAdmin, (req, res) => {
                                                                     }
                                                                 }
                                                             } else {
+                                                                if (e.baixada==false){
                                                                 status = 'Proposta Enviada'
+                                                                }else{
+                                                                    status = 'Baixado'
+                                                                }
                                                             }
 
                                                             if (typeof dtfim == 'undefined') {
@@ -475,6 +479,31 @@ router.get('/livro/:id', ehAdmin, (req, res) => {
     })
 })
 
+router.get('/confirmabaixa/:id', ehAdmin, (req,res)=>{
+    Proposta.findOne({_id: req.params.id}).lean().then((proposta)=>{
+        res.render('principal/confirmabaixa', {proposta})
+    }).catch((err)=>{
+        req.flash('error_msg','Não foi possível encontrar a proposta.')
+        res.redirect('/menu')
+    })
+})
+
+router.post('/baixar/', ehAdmin, (req,res)=>{
+    console.log('req.body.id=>'+req.body.id)
+    Proposta.findOne({_id: req.body.id}).then((proposta)=>{
+        proposta.baixada = true
+        proposta.motivo = req.body.motivo
+        proposta.descmot = req.body.descricao
+        proposta.save().then(()=>{
+            req.flash('success_msg','Proposta baixada com sucesso.')
+            res.redirect('/menu')
+        }).catch((err)=>{
+            req.flash('error_msg','Não foi possível salvar a baixa da proposta.')
+            res.redirect('/menu')
+        })
+    })
+})
+
 router.post('/filtrar', ehAdmin, (req, res) => {
     const { _id } = req.user
     const { user } = req.user
@@ -500,6 +529,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
     var faturado = false
     var posvenda = false
     var encerrado = false
+    var baixado = false
 
     var lista = []
     var listaOrcado = []
@@ -745,6 +775,8 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                     //console.log('status=>' + stats)
 
                     switch (stats) {
+                        case 'Baixado': baixado = true, enviado = true
+                            break;
                         case 'Proposta Enviada': enviado = true
                             break;
                         case 'Preparando para a Visita': ganho = true; enviado = true
@@ -775,13 +807,13 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                             break;
                     }
 
-                    sql = filtrarProposta(1, id, stats, respons, empresa, cliente, enviado, ganho, assinado, encerrado)
+                    sql = filtrarProposta(1, id, stats, respons, empresa, cliente, enviado, ganho, assinado, encerrado, baixado)
 
                     //console.log('data=>'+data)   
                     busca = Object.assign(sql, data)
 
-                    Proposta.find(busca).sort({ datacad: 'asc' }).then((p1) => {
-                        //console.log(p1)
+                    Proposta.find(busca).sort({ datacad: 'asc' }).then((p) => {
+                        console.log(p)
                         if (p != '') {
                             p.forEach((e) => {
                                 Cliente.findOne({ _id: e.cliente }).then((lista_cliente) => {
@@ -873,7 +905,11 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                                                             }
                                                                         }
                                                                     } else {
+                                                                        if (e.baixada == false){
                                                                         status = 'Proposta Enviada'
+                                                                        }else{
+                                                                            status = 'Baixado'
+                                                                        }
                                                                     }
 
                                                                     //console.log('status=>'+status)
@@ -2146,6 +2182,8 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
     var ins_fora = []
     var instalador_alocado = []
     var lista_res = []
+    var lista_placa = []
+    var placa = []
     var custoins = 0
     var qe = 0
     var q = 0
@@ -2431,7 +2469,11 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                                                                     Pessoa.findOne({ _id: lista_equipe.insres }).lean().then((insres) => {
                                                                                                         //console.log('insres.nome=>' + insres.nome)
                                                                                                         //console.log('encontrou ')
-                                                                                                        res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, ins_fora, ins_dentro, nome_equipe, lista_res, insres })
+                                                                                                        placa = lista_equipe.placa
+                                                                                                        placa.forEach((p)=>{
+                                                                                                            lista_placa.push({idp: proposta._id, ide: lista_equipe._id, id: p._id, desc: p.desc, dtdes: p.dtdes})
+                                                                                                        })
+                                                                                                        res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, ins_fora, ins_dentro, lista_placa, nome_equipe, lista_res, insres })
                                                                                                     }).catch((err) => {
                                                                                                         req.flash('error_msg', 'Falha ao encontrar a pessoa<insres>.')
                                                                                                         res.redirect('/gerenciamento/equipe/' + req.params.id)
@@ -2592,8 +2634,12 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                                             nome_equipe = lista_equipe.nome_equipe
                                                                             //console.log('lista_equipe.insres=>' + lista_equipe.insres)
                                                                             Pessoa.findOne({ _id: lista_equipe.insres }).lean().then((insres) => {
+                                                                                placa = lista_equipe.placa
+                                                                                placa.forEach((p)=>{
+                                                                                    lista_placa.push({idp: proposta._id, ide: lista_equipe._id, id: p._id, desc: p.desc, dtdes: p.dtdes})
+                                                                                })                                                                                
                                                                                 //console.log('insres.nome=>' + insres)
-                                                                                res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, ins_fora, ins_dentro, nome_equipe, lista_res, insres })
+                                                                                res.render('principal/equipe', { proposta, cliente, documento, compra, vistoria, posvenda, equipes, lista_equipe, ins_fora, ins_dentro, lista_placa, nome_equipe, lista_res, insres })
                                                                             }).catch((err) => {
                                                                                 req.flash('error_msg', 'Falha ao encontrar a pessoa<insres>.')
                                                                                 res.redirect('/gerenciamento/equipe/' + req.params.id)
@@ -4249,14 +4295,14 @@ router.post('/proposta', ehAdmin, (req, res) => {
             proposta.endereco = req.body.endereco
 
             if (req.body.cidade == '') {
-                proposta.cidade = req.body.cidade
-            } else {
                 proposta.cidade = req.body.cidadeh
+            } else {
+                proposta.cidade = req.body.cidade
             }
             if (req.body.uf == '') {
-                proposta.cidade = req.body.uf
-            } else {
                 proposta.uf = req.body.ufh
+            } else {
+                proposta.uf = req.body.uf
             }
             proposta.data = dataBusca(dataHoje())
             proposta.datacad = dataBusca(dataHoje())
@@ -4295,6 +4341,7 @@ router.post('/proposta', ehAdmin, (req, res) => {
                 ganho: false,
                 assinado: false,
                 encerrado: false,
+                baixada: false,
                 seq: numpro
             }
             new Proposta(proposta).save().then(() => {
@@ -4406,7 +4453,9 @@ router.post('/proposta1', ehAdmin, (req, res) => {
                 file = ''
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-                proposta.proposta1 = file
+                if (naoVazio(file)){
+                     proposta.proposta1 = file
+                }
                 proposta.dtcadastro1 = String(req.body.dtcadastro1)
                 proposta.dtvalidade1 = String(req.body.dtvalidade1)
                 proposta.datacad = dataBusca(dataHoje())
@@ -4442,7 +4491,9 @@ router.post('/proposta2', ehAdmin, (req, res) => {
                 file = ''
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
+                if (naoVazio(file)){
                 proposta.proposta2 = file
+                }
                 proposta.dtcadastro2 = String(req.body.dtcadastro2)
                 proposta.dtvalidade2 = String(req.body.dtvalidade2)
                 proposta.datacad = dataBusca(dataHoje())
@@ -4478,7 +4529,9 @@ router.post('/proposta3', ehAdmin, (req, res) => {
                 file = ''
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
+                if (naoVazio(file)){
                 proposta.proposta3 = file
+                }
                 proposta.dtcadastro3 = String(req.body.dtcadastro3)
                 proposta.dtvalidade3 = String(req.body.dtvalidade3)
                 proposta.datacad = dataBusca(dataHoje())
@@ -4514,7 +4567,9 @@ router.post('/proposta4', ehAdmin, (req, res) => {
                 file = ''
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
+                if (naoVazio(file)){
                 proposta.proposta4 = file
+                }
                 proposta.dtcadastro4 = String(req.body.dtcadastro4)
                 proposta.dtvalidade4 = String(req.body.dtvalidade4)
                 proposta.datacad = dataBusca(dataHoje())
@@ -4550,7 +4605,9 @@ router.post('/proposta5', ehAdmin, (req, res) => {
                 file = ''
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
+                if (naoVazio(file)){
                 proposta.proposta5 = file
+                }
                 proposta.dtcadastro5 = String(req.body.dtcadastro5)
                 proposta.dtvalidade5 = String(req.body.dtvalidade5)
                 proposta.datacad = dataBusca(dataHoje())
@@ -4586,7 +4643,9 @@ router.post('/proposta6', ehAdmin, (req, res) => {
                 file = ''
             }
             Proposta.findOne({ _id: req.body.id }).then((proposta) => {
+                if (naoVazio(file)){
                 proposta.proposta6 = file
+                }
                 proposta.dtcadastro6 = String(req.body.dtcadastro6)
                 proposta.dtvalidade6 = String(req.body.dtvalidade6)
                 proposta.datacad = dataBusca(dataHoje())
@@ -5513,6 +5572,10 @@ router.post("/salvarequipe", ehAdmin, (req, res) => {
             equipe.ins3 = req.body.ins3
             equipe.ins4 = req.body.ins4
             equipe.ins5 = req.body.ins5
+            equipe.dtfim = req.body.datafim
+            equipe.dtinicio = req.body.datainicio
+            equipe.dtfimbusca = dataBusca(req.body.datafim)
+            equipe.dtinibusca = dataBusca(req.body.datainicio)
             equipe.custoins = custototal
             equipe.feito = true
             equipe.save().then(() => {
@@ -5574,10 +5637,11 @@ router.get('/enviarequipe/:id', ehAdmin, (req, res) => {
                 data: dataHoje()
             }
 
+            console.log('equipe.liberar=>'+equipe.liberar)
             if (equipe.liberar == true) {
-                AtvTelhado.findByIdAndDelete({ proposta: req.params.id }).then(() => {
-                    AtvAterramento.findByIdAndDelete({ proposta: req.params.id }).then(() => {
-                        AtvInversor.findByIdAndDelete({ proposta: req.params.id }).then(() => {
+                AtvTelhado.findOneAndDelete({ proposta: req.params.id }).then(() => {
+                    AtvAterramento.findOneAndDelete({ proposta: req.params.id }).then(() => {
+                        AtvInversor.findOneAndDelete({ proposta: req.params.id }).then(() => {
                             liberar = false
                             mensagem = 'Envio cancelado.'
                             tipo = 'error_msg'
@@ -5638,6 +5702,28 @@ router.get('/enviarequipe/:id', ehAdmin, (req, res) => {
     }).catch((err) => {
         req.flash('error_msg', 'Houve erro ao encontrar a proposta.')
         res.redirect('/gerenciamento/equipe/' + req.params.id)
+    })
+})
+
+
+router.post('/addplaca', ehAdmin, (req,res)=>{
+    var placa = {"desc": req.body.desc, 'dtdes': dataMensagem(req.body.dtdes)}
+    Equipe.findOneAndUpdate({_id: req.body.id}, {$push: {placa: placa}}).then((e)=>{
+        req.flash('success_msg','Placa adicionada com sucesso.')
+        res.redirect('/gerenciamento/equipe/' + req.body.idp)
+    }).catch((err) => {
+        req.flash('error_msg', 'Houve erro ao salvar a equipe.')
+        res.redirect('/gerenciamento/equipe/' + req.body.idp)
+    })
+})
+
+router.post('/removeplaca', ehAdmin, (req,res)=>{
+    Equipe.findOneAndUpdate({_id:req.body.ide}, {$pull: {'placa': {'_id': req.body.id}}}).then(()=>{
+        req.flash('success_msg','Placa removida com sucesso.')
+        res.redirect('/gerenciamento/equipe/' + req.body.idp)
+    }).catch((err) => {
+        req.flash('error_msg', 'Houve erro ao excluir a equipe.')
+        res.redirect('/gerenciamento/equipe/' + req.body.idp)
     })
 })
 

@@ -152,6 +152,7 @@ app.get('/menu', ehAdmin, (req, res) => {
   var qtdorcado = 0
   var qtdaberto = 0
   var qtdencerrado = 0
+  var qtdbaixado = 0
 
   var qtdfim = 0
   var qtdpos = 0
@@ -174,17 +175,16 @@ app.get('/menu', ehAdmin, (req, res) => {
     ehMaster = false
   }
 
-  
   var data = new Date()
   var hora = data.getHours()
 
-  if (hora >= 18 && hora <=24) {
+  if (hora >= 18 && hora <= 24) {
     saudacao = 'Boa Noite '
   }
   if (hora >= 12 && hora < 18) {
     saudacao = 'Boa tarde '
   }
-  if (hora >= 0  && hora < 12) {
+  if (hora >= 0 && hora < 12) {
     saudacao = 'Bom dia '
   }
 
@@ -280,7 +280,6 @@ app.get('/menu', ehAdmin, (req, res) => {
                                 if (documento.feitoalmox == true) {
                                   status = 'Almoxarifado Fechado'
                                   qtdalx++
-                                  qtdaberto++
                                   listaAberto.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                 } else {
                                   if (documento.enviaalmox == true) {
@@ -348,16 +347,20 @@ app.get('/menu', ehAdmin, (req, res) => {
                             }
                           }
                         } else {
-                          status = 'Proposta Enviada'
-                          qtdpro++
-                          qtdorcado++
-                          listaOrcado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                          if (proposta.baixada == false) {
+                            status = 'Proposta Enviada'
+                            qtdpro++
+                            qtdorcado++
+                            listaOrcado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                          }else{
+                            qtdbaixado++
+                          }
                         }
 
 
                         //console.log('proposta.ganho=>' + proposta.ganho)
                         //console.log('e._id=>' + e._id)
-                        if (proposta.ganho != true) {
+                        if (proposta.ganho == false && proposta.baixada == false) {
                           //console.log('dtvalidade=>' + dtvalidade)
                           if (dtvalidade != '0000-00-00') {
                             data1 = new Date(dtvalidade)
@@ -367,16 +370,16 @@ app.get('/menu', ehAdmin, (req, res) => {
                             diff = Math.abs(data1.getTime() - data2.getTime())
                             //console.log('diff=>'+diff)
                             days = Math.ceil(diff / (1000 * 60 * 60 * 24))
-                            //console.log('days=>'+days)
+                            console.log('days=>' + days)
                             if (days == 1 || days == 0) {
-                              notpro.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtvalidade) })
+                              notpro.push({ id: proposta._id, cliente: cliente.nome, telefone: cliente.celular, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtvalidade) })
                             } else {
                               if (days < 0) {
-                                atrasado.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtvalidade) })
+                                atrasado.push({ id: proposta._id, cliente: cliente.nome, telefone: cliente.celular, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtvalidade) })
                               }
                             }
                           }
-                        
+
                         } else {
                           if (proposta.ganho == true && naoVazio(proposta.deadline) && naoVazio(proposta.dtassinatura)) {
                             var dtdlassinado = proposta.deadline
@@ -388,7 +391,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                             diff = Math.abs(data2.getTime() - data1.getTime())
                             //console.log('diff=>'+diff)
                             days = Math.ceil(diff / (1000 * 60 * 60 * 24))
-                            console.log('days=>'+days)
+                            //console.log('days=>'+days)
                             //console.log('compara=>'+compara)
                             if (days < 30) {
                               deadlineIns.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), assinado: dataMensagem(proposta.dtassinatura), dliins: dataMensagem(dtdlassinado) })
@@ -400,10 +403,10 @@ app.get('/menu', ehAdmin, (req, res) => {
                         if (q == todasProposta.length) {
                           numprj = todasProposta.length
                           //console.log('numprj=>' + numprj)
-                          // console.log('qtdorcado=>' + qtdorcado)
-                          // console.log('qtdaberto=>' + qtdaberto)
-                          // console.log('qtdencerrado=>' + qtdencerrado)
-                          res.render('menuproposta', { id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, saudacao, nome_lista: nome, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdalx, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, deadlineIns, notpro, atrasado })
+                          //console.log('qtdorcado=>' + qtdorcado)
+                          //console.log('qtdaberto=>' + qtdaberto)
+                          //console.log('qtdencerrado=>' + qtdencerrado)
+                          res.render('menuproposta', { id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, saudacao, nome_lista: nome, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdalx, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, qtdbaixado, deadlineIns, notpro, atrasado })
                         }
                       }).catch((err) => {
                         req.flash('error_msg', 'Houve um erro ao encontrar as pessoas<1>.')
@@ -585,13 +588,17 @@ app.get('/menu', ehAdmin, (req, res) => {
                                     }
                                   }
                                 } else {
-                                  status = 'Proposta Enviada'
-                                  qtdpro++
-                                  qtdorcado++
-                                  listaOrcado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                  if (proposta.baixada == false) {
+                                    status = 'Proposta Enviada'
+                                    qtdpro++
+                                    qtdorcado++
+                                    listaOrcado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                  }else{
+                                    qtdbaixado++
+                                  }
                                 }
 
-                                if (proposta.ganho != true) {
+                                if (proposta.ganho == false && proposta.baixada == false) {
                                   if (dtvalidade != '0000-00-00') {
                                     data1 = new Date(dtvalidade)
                                     data2 = new Date(hoje)
@@ -600,12 +607,12 @@ app.get('/menu', ehAdmin, (req, res) => {
                                     diff = Math.abs(data1.getTime() - data2.getTime())
                                     //console.log('diff=>'+diff)
                                     days = Math.ceil(diff / (1000 * 60 * 60 * 24))
-                                    //console.log('days=>'+days)
+                                    console.log('days=>' + days)
                                     if (days == 1 || days == 0) {
-                                      notpro.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
+                                      notpro.push({ id: proposta._id, cliente: cliente.nome, telefone: cliente.celular, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
                                     } else {
                                       if (days < 0) {
-                                        atrasado.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
+                                        atrasado.push({ id: proposta._id, cliente: cliente.nome, telefone: cliente.celular, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
                                       }
                                     }
                                   }
@@ -620,7 +627,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                   //console.log('qtdaberto=>' + qtdaberto)
                                   //console.log('qtdencerrado=>' + qtdencerrado)
                                   Pessoa.findOne({ _id: pessoa }).lean().then((nome_pessoa) => {
-                                    res.render('menuproposta', { id: _id, owner: owner, saudacao, nome_lista: nome_pessoa.nome, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, notpro, atrasado })
+                                    res.render('menuproposta', { id: _id, owner: owner, saudacao, nome_lista: nome_pessoa.nome, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, qtdbaixado, notpro, atrasado })
                                   }).catch((err) => {
                                     req.flash('error_msg', 'Houve um erro ao encontrar o nome do usuário.')
                                     res.redirect('/')
@@ -831,10 +838,14 @@ app.get('/menu', ehAdmin, (req, res) => {
                                           }
                                         }
                                       } else {
-                                        status = 'Proposta Enviada'
-                                        qtdpro++
-                                        qtdorcado++
-                                        listaOrcado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
+                                        if (proposta.baixada == false) {
+                                          status = 'Proposta Enviada'
+                                          qtdpro++
+                                          qtdorcado++
+                                          listaOrcado.push({ status, id: proposta._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
+                                        }else{
+                                          qtdbaixado++
+                                        }
                                       }
 
                                       q++
@@ -843,7 +854,7 @@ app.get('/menu', ehAdmin, (req, res) => {
 
                                         //console.log(listaAberto)
                                         numprj = numprj
-                                        res.render('menuproposta', { id: _id, owner: owner, listaOrcado, listaAberto, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdorcado, qtdaberto, qtdencerrado, block: true })
+                                        res.render('menuproposta', { id: _id, owner: owner, listaOrcado, listaAberto, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdorcado, qtdaberto, qtdencerrado, qtdbaixado, block: true })
                                       }
                                     })
                                   })
@@ -860,12 +871,12 @@ app.get('/menu', ehAdmin, (req, res) => {
             })
           } else {
             //console.log('sem registro')
-            res.render('menuproposta', { id: _id, owner: owner, nome_lista: nome, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado })
+            res.render('menuproposta', { id: _id, owner: owner, nome_lista: nome, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado, qtdbaixado })
           }
         })
       } else {
         //console.log('sem registro')
-        res.render('menuproposta', { id: _id, owner: owner, nome_lista: nome, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado })
+        res.render('menuproposta', { id: _id, owner: owner, nome_lista: nome, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado, qtdbaixado })
       }
     }
   }).catch((err) => {
