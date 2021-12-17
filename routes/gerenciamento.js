@@ -489,7 +489,7 @@ router.get('/confirmabaixa/:id', ehAdmin, (req, res) => {
 })
 
 router.post('/baixar/', ehAdmin, (req, res) => {
-    console.log('req.body.id=>' + req.body.id)
+    //console.log('req.body.id=>' + req.body.id)
     Proposta.findOne({ _id: req.body.id }).then((proposta) => {
         proposta.baixada = true
         proposta.motivo = req.body.motivo
@@ -813,7 +813,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                     busca = Object.assign(sql, data)
 
                     Proposta.find(busca).sort({ datacad: 'asc' }).then((p) => {
-                        console.log(p)
+                        //console.log(p)
                         if (p != '') {
                             p.forEach((e) => {
                                 Cliente.findOne({ _id: e.cliente }).then((lista_cliente) => {
@@ -1597,7 +1597,7 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
                 Cliente.findOne({ _id: e.cliente }).then((cliente) => {
                     Equipe.findOne({ _id: e.equipe, feito: true, $or: [{ 'dtinibusca': { $lte: datafim, $gte: dataini } }, { 'dtfimbusca': { $lte: datafim, $gte: dataini } }] }).sort({ dtfimbusca: 'desc' }).then((equipe) => {
                         q++
-                        console.log('equipe=>' + equipe)
+                        //console.log('equipe=>' + equipe)
                         if (naoVazio(equipe)) {
                             inicio = equipe.dtinicio
                             fim = equipe.dtfim
@@ -1611,16 +1611,16 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
                             con2 = String(mesfim) + String(diafim)
                             dif1 = parseFloat(con2) - parseFloat(con1) + 1
                             // compara = mesfim - mesinicio
-                            console.log("meshoje=>" + meshoje)
-                            console.log("mesinicio=>" + mesinicio)
-                            console.log("anotitulo=>" + anotitulo)
-                            console.log("anoinicio=>" + anoinicio)
-                            console.log("anofim=>" + anofim)
+                            //console.log("meshoje=>" + meshoje)
+                            //console.log("mesinicio=>" + mesinicio)
+                            //console.log("anotitulo=>" + anotitulo)
+                            //console.log("anoinicio=>" + anoinicio)
+                            //console.log("anofim=>" + anofim)
                             if (meshoje == mesinicio) {
                                 if (parseFloat(anotitulo) == parseFloat(anoinicio)) {
                                     mes = meshoje
                                     if (parseFloat(anofim) > parseFloat(anoinicio)){
-                                        console.log('projeto ultrapassa anos')
+                                        //console.log('projeto ultrapassa anos')
                                         dia = diainicio
                                         if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
                                             dif = 31
@@ -1632,14 +1632,14 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
                                         dif = parseFloat(diafim) - parseFloat(diainicio) + 1
                                     }
                                 }else{
-                                    console.log('anos diferente')
+                                    //console.log('anos diferente')
                                     dia = 0
                                     dif = 0
                                 }                                                            
                             } else {
-                                console.log('diferente')
+                                //console.log('diferente')
                                 difmes = parseFloat(mesfim) - parseFloat(mesinicio) + 1
-                                console.log('difmes=>' + difmes)
+                                //console.log('difmes=>' + difmes)
                                 if (difmes != 0) {
                                     //console.log('difmes=>' + difmes)
                                     if (difmes < 0) {
@@ -1651,8 +1651,8 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
                                         if (mes > 12) {
                                             mes = mes - 12
                                         }
-                                        console.log('mes=>' + mes)
-                                        console.log('meshoje=>' + meshoje)
+                                        //console.log('mes=>' + mes)
+                                        //console.log('meshoje=>' + meshoje)
                                         if (mes == meshoje) {
                                             if (mes < 10) {
                                                 mes = '0' + mes
@@ -1681,18 +1681,18 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
                                 }
                             }
 
-                            console.log('dif=>' + dif)
-                            console.log('dia=>' + dia)
+                            //console.log('dif=>' + dif)
+                            //console.log('dia=>' + dia)
                             //console.log('mes=>' + mes)
 
                             color = cores[c]
                             todasCores.push({ color })
 
                             for (i = 0; i < dif; i++) {
-                                // console.log('meshoje=>' + meshoje)
-                                // console.log('mes=>' + mes)
-                                // console.log('dia=>' + dia)
-                                console.log('entrou laço')
+                                // //console.log('meshoje=>' + meshoje)
+                                // //console.log('mes=>' + mes)
+                                // //console.log('dia=>' + dia)
+                                //console.log('entrou laço')
                                 if (meshoje == mes) {
                                     switch (String(dia)) {
                                         case '01':
@@ -1797,9 +1797,9 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
                                 }
                             }
                             c++
-                            console.log('dia01_fora=>' + dia01)
+                            //console.log('dia01_fora=>' + dia01)
                             if (q == proposta.length) {
-                                console.log('dia01_dentro=>' + dia01)
+                                //console.log('dia01_dentro=>' + dia01)
                                 res.render('principal/vermais', {
                                     dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
                                     dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
@@ -1808,9 +1808,9 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
                                 })
                             }
                         } else {
-                            console.log('dia01_fora_null=>' + dia01)
+                            //console.log('dia01_fora_null=>' + dia01)
                             if (q == proposta.length) {
-                                console.log('dia01_dentro_null=>' + dia01)
+                                //console.log('dia01_dentro_null=>' + dia01)
                                 res.render('principal/vermais', {
                                     dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
                                     dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
@@ -3965,7 +3965,7 @@ router.post('/vermais/', ehAdmin, (req, res) => {
                             if (parseFloat(anotitulo) == parseFloat(anoinicio)) {
                                 mes = meshoje
                                 if (parseFloat(anofim) > parseFloat(anoinicio)){
-                                    console.log('projeto ultrapassa anos')
+                                    //console.log('projeto ultrapassa anos')
                                     dia = diainicio
                                     if (meshoje == 1 || meshoje == 3 || meshoje == 5 || meshoje == 7 || meshoje == 8 || meshoje == 10 || meshoje == 12) {
                                         dif = 31
@@ -3977,14 +3977,14 @@ router.post('/vermais/', ehAdmin, (req, res) => {
                                     dif = parseFloat(diafim) - parseFloat(diainicio) + 1
                                 }
                             }else{
-                                console.log('anos diferente')
+                                //console.log('anos diferente')
                                 dia = 0
                                 dif = 0
                             }                                                            
                         } else {
-                            console.log('diferente')
+                            //console.log('diferente')
                             difmes = parseFloat(mesfim) - parseFloat(mesinicio) + 1
-                            console.log('difmes=>' + difmes)
+                            //console.log('difmes=>' + difmes)
                             if (difmes != 0) {
                                 //console.log('difmes=>' + difmes)
                                 if (difmes < 0) {
@@ -3996,8 +3996,8 @@ router.post('/vermais/', ehAdmin, (req, res) => {
                                     if (mes > 12) {
                                         mes = mes - 12
                                     }
-                                    console.log('mes=>' + mes)
-                                    console.log('meshoje=>' + meshoje)
+                                    //console.log('mes=>' + mes)
+                                    //console.log('meshoje=>' + meshoje)
                                     if (mes == meshoje) {
                                         if (mes < 10) {
                                             mes = '0' + mes
@@ -5717,7 +5717,7 @@ router.get('/enviarequipe/:id', ehAdmin, (req, res) => {
                 data: dataHoje()
             }
 
-            console.log('equipe.liberar=>' + equipe.liberar)
+            //console.log('equipe.liberar=>' + equipe.liberar)
             if (equipe.liberar == true) {
                 AtvTelhado.findOneAndDelete({ proposta: req.params.id }).then(() => {
                     AtvAterramento.findOneAndDelete({ proposta: req.params.id }).then(() => {
