@@ -368,10 +368,10 @@ app.get('/menu', ehAdmin, (req, res) => {
                             //console.log('diff=>'+diff)
                             days = Math.ceil(diff / (1000 * 60 * 60 * 24))
                             //console.log('days=>'+days)
-                            if (days == 1) {
+                            if (days == 1 || days == 0) {
                               notpro.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtvalidade) })
                             } else {
-                              if (compara < 0) {
+                              if (days < 0) {
                                 atrasado.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtvalidade) })
                               }
                             }
@@ -403,7 +403,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                           // console.log('qtdorcado=>' + qtdorcado)
                           // console.log('qtdaberto=>' + qtdaberto)
                           // console.log('qtdencerrado=>' + qtdencerrado)
-                          res.render('menuproposta', { id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, saudacao, nome_lista: nome, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdalx, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado })// deadlineIns, notpro, atrasado
+                          res.render('menuproposta', { id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, saudacao, nome_lista: nome, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdalx, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, deadlineIns, notpro, atrasado })
                         }
                       }).catch((err) => {
                         req.flash('error_msg', 'Houve um erro ao encontrar as pessoas<1>.')
@@ -601,10 +601,10 @@ app.get('/menu', ehAdmin, (req, res) => {
                                     //console.log('diff=>'+diff)
                                     days = Math.ceil(diff / (1000 * 60 * 60 * 24))
                                     //console.log('days=>'+days)
-                                    if (days == 1) {
+                                    if (days == 1 || days == 0) {
                                       notpro.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
                                     } else {
-                                      if (compara < 0) {
+                                      if (days < 0) {
                                         atrasado.push({ id: proposta._id, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
                                       }
                                     }
