@@ -167,7 +167,7 @@
                                 <th>Data Inicio</th>
                                 <th>Data Entrega</th>
                             </tr>
-                            {{#each lista_naoganho}}
+                            {{#each lista_ganho}}
                             <tr>
                                 <td>{{responsavel}}</td>
                                 <td>{{proposta}}</td>
@@ -187,14 +187,16 @@
                     <div class="card card-body">
                         <table>
                             <tr>
+                                <th>Baixado</th>
                                 <th>Responsável</th>
                                 <th>Proposta</th>
                                 <th>Data Cadastro</th>
                                 <th>Data Inicio</th>
                                 <th>Data Entrega</th>
                             </tr>
-                            {{#each lista_ganho}}
+                            {{#each lista_naoganho}}
                             <tr>
+                                <td>{{baixado}}</td>
                                 <td>{{responsavel}}</td>
                                 <td>{{proposta}}</td>
                                 <td>{{datacad}}</td>
@@ -223,7 +225,7 @@
     <input type="hidden" id='naoganho_total' value='{{naoganho_total}}'>
     <input type="hidden" id='envio_total' value='{{envio_total}}'>
 
-    <div style="height: 350px;">
+    <div style="height: 350px;margin-bottom: 100px;">
         <canvas id='chartAG' class='mt-1 mb-1'></canvas>
     </div>
 
@@ -237,9 +239,9 @@
     var chartAG = new Chart(ctxAG, {
         type: 'doughnut',
         data: {
-            labels: ['Ganho', 'Não Ganho'],
+            labels: ['Não Ganho', 'Ganho'],
             datasets: [{
-                data: [ganho.value, naoganho.value],
+                data: [naoganho.value, ganho.value],
                 backgroundColor: [
                     'rgba(37, 139, 33, 0.2)',
                     'rgba(50, 140, 230, 0.2)',
@@ -254,6 +256,15 @@
         options: {
             maintainAspectRatio: false,
             responsive: true,
+                legend: {
+                    position: 'top',
+                    reverse: true,
+                    align: 'center',
+                    labels: {
+                        usePointStyle: true,
+                    }
+                    
+                }
         }
     });    
 </script>

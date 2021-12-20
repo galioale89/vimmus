@@ -51,6 +51,8 @@ router.get('/analiseproposta', ehAdmin, (req, res) => {
     var q = 0
     var qp = 0
 
+    var baixado
+
     var dataini
     var datafim
     var mestitulo
@@ -139,13 +141,18 @@ router.get('/analiseproposta', ehAdmin, (req, res) => {
                                 qp++
                                 console.log('equipe=>' + equipe)
                                 if (naoVazio(equipe)) {
+                                    if (pr.baixada == true){
+                                        baixado = 'Sim'
+                                    }else{
+                                        baixado = 'Não'
+                                    }                                    
                                     if (p.feito == true) {
                                         lista_envio.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
                                     }
                                     if (p.ganho == true) {
                                         lista_ganho.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
                                     } else {
-                                        lista_naoganho.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                        lista_naoganho.push({baixado, responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
                                     }
                                     console.log('qp<1>=>' + qp)
                                     console.log('pr.length<1>=>' + pr.length)
@@ -2747,6 +2754,7 @@ router.post('/analisar', ehAdmin, (req, res) => {
     var qtd_envio = []
 
     var resp
+    var baixado
 
     var q = 0
     var qp = 0
@@ -2813,13 +2821,18 @@ router.post('/analisar', ehAdmin, (req, res) => {
                                         qp++
                                         console.log('equipe=>' + equipe)
                                         if (naoVazio(equipe)) {
+                                            if (pr.baixado == true){
+                                                baixado = 'Sim'
+                                            }else{
+                                                baixado = 'Não'
+                                            }
                                             if (p.feito == true) {
                                                 lista_envio.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
                                             }
                                             if (p.ganho == true) {
-                                                lista_ganho.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                                lista_ganho.push({ esponsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
                                             } else {
-                                                lista_naoganho.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                                lista_naoganho.push({ baixado, responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
                                             }
                                             console.log('qp<1>=>' + qp)
                                             console.log('pr.length<1>=>' + pr.length)
