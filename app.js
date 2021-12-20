@@ -900,7 +900,7 @@ app.use('/fornecedor/', fornecedor)
 
 //Outros
 //Acesso ao localhost
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 21169;
 app.listen(port, function () {
-  console.log('Umbler listening on port %s', port);
+  console.log('KingHost listening on port %s', port);
 });
