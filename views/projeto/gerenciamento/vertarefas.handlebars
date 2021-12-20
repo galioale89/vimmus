@@ -6,78 +6,101 @@
     }
 </style>
 <div style="padding: 20px" style='margin-top: 30px;'>
-    {{!-- <form method="post" action='/gerenciamento/addtarefa' style="text-align: center;"> --}}
-        <label style="font-size: 18px;font-weight: 600;">Lista de Atividades de Manutenção</label><br><br>
-        <div style="border: #847AF4 4px solid;border-radius: 20px;padding: 10px;">
-            <table>
-                <tr>
-                    <th style="width: 20%;">Cliente</th>
-                    <th>Manutenção</th>
-                    <th>Data de Início</th>
-                    <th>Data Final</th>
-                    <th style="width: 20%;">Equipe</th>
-                    <th style="width: 20%;"></th>
-                </tr>
-                <tr>
-                    <td>
-                        <label class="col-form-label col-form-label-sm">{{lista_tarefa.nome}}</label>
-                    </td>
-                    <td>
-                        <a href='/gerenciamento/tarefas/{{lista_tarefa.id}}'><label
-                                class="col-form-label col-form-label-sm">{{lista_tarefa.servico}}</label></a>
-                    </td>
-                    <td>
-                        <label class="col-form-label col-form-label-sm">{{lista_tarefa.dataini}}</label>
-                    </td>
-                    <td>
-                        <label class="col-form-label col-form-label-sm">{{lista_tarefa.datafim}}</label>
-                    </td>
-                    <td>
-                        <label class="col-form-label col-form-label-sm">{{lista_tarefa.ins0}}</label><br>
-                        <label class="col-form-label col-form-label-sm">{{lista_tarefa.ins1}}</label><br>
-                        <label class="col-form-label col-form-label-sm">{{lista_tarefa.ins2}}</label><br>
-                        <label class="col-form-label col-form-label-sm">{{lista_tarefa.ins3}}</label><br>
-                        <label class="col-form-label col-form-label-sm">{{lista_tarefa.ins4}}</label><br>
-                        <label class="col-form-label col-form-label-sm">{{lista_tarefa.ins5}}</label><br>
-                    </td>
-                    <td>
-                        <div class="btn-group col-12 gap-2">
-                        <a href='/gerenciamento/abrirfotos/{{lista_tarefa.id}}' class='btn btn-sm btn-primary'>Ver Fotos</a>
-                        <a href='/gerenciamento/equipetarefa/{{lista_tarefa.id}}' class='btn btn-sm btn-primary'>Definir
+    <label style="font-size: 18px;font-weight: 600;">Lista de Atividades de Manutenção</label><br><br>
+    <div style="border: #847AF4 4px solid;border-radius: 20px;padding: 10px;">
+        <table>
+            <tr>
+                <th>Concluído</th>
+                <th style="width: 20%;">Cliente</th>
+                <th>Manutenção</th>
+                <th>Data de Início</th>
+                <th>Data Final</th>
+                <th style="width: 20%;">Equipe</th>
+                <th style="width: 20%;"></th>
+            </tr>
+            <tr>
+                <td>
+                    <label class="col-form-label col-form-label-sm">{{lista_tarefa.concluido}}</label>
+                </td>
+                <td>
+                    <label class="col-form-label col-form-label-sm">{{lista_tarefa.nome}}</label>
+                </td>
+                <td>
+                    <a href='/gerenciamento/tarefas/{{lista_tarefa.id}}'><label
+                            class="col-form-label col-form-label-sm">{{lista_tarefa.servico}}</label></a>
+                </td>
+                <td>
+                    <label class="col-form-label col-form-label-sm">{{lista_tarefa.dataini}}</label>
+                </td>
+                <td>
+                    <label class="col-form-label col-form-label-sm">{{lista_tarefa.datafim}}</label>
+                </td>
+                <td>
+                    <label class="col-form-label col-form-label-sm">{{lista_tarefa.ins0}}</label><br>
+                    <label class="col-form-label col-form-label-sm">{{lista_tarefa.ins1}}</label><br>
+                    <label class="col-form-label col-form-label-sm">{{lista_tarefa.ins2}}</label><br>
+                    <label class="col-form-label col-form-label-sm">{{lista_tarefa.ins3}}</label><br>
+                    <label class="col-form-label col-form-label-sm">{{lista_tarefa.ins4}}</label><br>
+                    <label class="col-form-label col-form-label-sm">{{lista_tarefa.ins5}}</label><br>
+                </td>
+                <td>
+                    <form action='/gerenciamento/baixartarefa' method="post">
+                        <input type='hidden' name='id' value='{{lista_tarefa.id}}'>
+                        <a style='width: 140px'
+                            class='btn btn-sm btn-primary mb-1'>Ver
+                            Fotos</a><br>
+                        <a href='/gerenciamento/equipetarefa/{{lista_tarefa.id}}' style='width: 140px'
+                            class='btn btn-sm btn-primary mb-2'>Definir
                             Equipe</a>
+                        <div class="row">
+                            <div class="col-md-9">
+                                <input type='date' name='databaixa' class='form-control'>
+                            </div>
+                            <div class="col-md-3">
+                                <button type='submit' class='btn btn-primary'><i style='cursor: pointer; color:white'
+                                        class="bi bi-arrow-down-circle"></i></button>
+                            </div>
                         </div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div class="text-center">
-            <table style="margin-top: 20px;">
-                <tr>
-                    <th style="width: 20%;">Cliente</th>
-                    <th style="width: 20%;">Manutenção</th>
-                    <th style="width: 20%;">Data Inicial</th>
-                    <th style="width: 20%;">Data Final</th>
-                </tr>
-                {{#each todas_tarefas}}
-                <tr>
-                    <td>
-                        <a href='/gerenciamento/tarefas/{{id}}' style="cursor: pointer;"><label
-                                class="col-form-label col-form-label-sm">{{nome}}</label></a>
-                    </td>
-                    <td>
-                        <a href='/gerenciamento/tarefas/{{id}}' style="cursor: pointer;"><label
-                                class="col-form-label col-form-label-sm">{{servico}}</label></a>
-                    </td>
-                    <td>
-                        <a href='/gerenciamento/tarefas/{{id}}' style="cursor: pointer;"><label
-                                class="col-form-label col-form-label-sm">{{dataini}}</label></a>
-                    </td>
-                    <td>
-                        <a href='/gerenciamento/tarefas/{{id}}' style="cursor: pointer;"><label
-                                class="col-form-label col-form-label-sm">{{datafim}}</label></a>
-                    </td>
-                </tr>
-                {{/each}}
-            </table>
-        </div>
+
+
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="text-center">
+        <table style="margin-top: 20px;">
+            <tr>
+                <th style="width: 20%;">Concluido</th>
+                <th style="width: 20%;">Cliente</th>
+                <th style="width: 20%;">Manutenção</th>
+                <th style="width: 20%;">Data Inicial</th>
+                <th style="width: 20%;">Data Final</th>
+            </tr>
+            {{#each todas_tarefas}}
+            <tr>
+                <td>
+                    <a href='/gerenciamento/tarefas/{{id}}' style="cursor: pointer;"><label
+                            class="col-form-label col-form-label-sm">{{concluido}}</label></a>
+                </td>
+                <td>
+                    <a href='/gerenciamento/tarefas/{{id}}' style="cursor: pointer;"><label
+                            class="col-form-label col-form-label-sm">{{nome}}</label></a>
+                </td>
+                <td>
+                    <a href='/gerenciamento/tarefas/{{id}}' style="cursor: pointer;"><label
+                            class="col-form-label col-form-label-sm">{{servico}}</label></a>
+                </td>
+                <td>
+                    <a href='/gerenciamento/tarefas/{{id}}' style="cursor: pointer;"><label
+                            class="col-form-label col-form-label-sm">{{dataini}}</label></a>
+                </td>
+                <td>
+                    <a href='/gerenciamento/tarefas/{{id}}' style="cursor: pointer;"><label
+                            class="col-form-label col-form-label-sm">{{datafim}}</label></a>
+                </td>
+            </tr>
+            {{/each}}
+        </table>
+    </div>
 </div>

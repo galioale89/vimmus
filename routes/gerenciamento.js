@@ -504,6 +504,25 @@ router.post('/baixar/', ehAdmin, (req, res) => {
     })
 })
 
+router.post('/baixartarefa/', ehAdmin, (req, res) => {
+    Tarefa.findOne({ _id: req.body.id }).then((t) => {
+        Usina.findOne({ _id: t.usina }).then((usina) => {
+            Cliente.findOne({ _id: usina.cliente }).then((cliente) => {
+                t.concluido = true
+                t.databaixa = req.body.databaixa
+                t.save().then(() => {
+                    req.flash('success_msg','Tarefa baixada.')
+                    console.log('cliente._id=>'+cliente._id)
+                    res.redirect('/cliente/historico/' + cliente._id)
+                }).catch((err) => {
+                    req.flash('error_msg', 'Houve um erro ao salvar a tarefa.')
+                    res.redirect('/gerenciamento/tarefas/' + req.body.id)
+                })
+            })
+        })
+    })
+})
+
 router.post('/filtrar', ehAdmin, (req, res) => {
     const { _id } = req.user
     const { user } = req.user
@@ -4274,26 +4293,47 @@ router.get('/tarefas/:id', ehAdmin, (req, res) => {
     var todas_tarefas = []
     var q = 0
 
-    Tarefas.find({ user: id, concluido: false }).lean().then((tarefas) => {
+    var concluido
+
+    Tarefas.find({ user: id}).sort({concluido: 'asc'}).then((tarefas) => {
         tarefas.forEach((e) => {
-            Usina.findOne({ _id: e.usina }).then((usina) => {
-                //console.log('usina.cliente=>'+usina.cliente)
-                Cliente.findOne({ _id: usina.cliente }).then((cliente) => {
+            // console.log('e.usina=>'+e.usina)
+            Usina.findOne({ _id: e.usina }).then((usi) => {
+                // console.log('usi.cliente=>'+usi.cliente)
+                Cliente.findOne({ _id: usi.cliente }).then((cli) => {
+                    // console.log('cli.nome=>'+cli.nome)
+                    // console.log('e.servico=>'+e.servico)
                     Atividade.findOne({ _id: e.servico }).then((atv) => {
+                        // console.log('atv.descricao=>'+atv.descricao)
                         q++
-                        todas_tarefas.push({ id: e._id, nome: cliente.nome, servico: atv.descricao, dataini: dataMensagem(e.dataini), datafim: dataMensagem(e.datafim) })
+                        if (e.concluido == true){
+                            concluido = 'Sim'
+                        }else{
+                            concluido = 'Não'
+                        }
+                        todas_tarefas.push({ concluido, id: e._id, nome: cli.nome, servico: atv.descricao, dataini: dataMensagem(e.dataini), datafim: dataMensagem(e.datafim) })
+                        console.log("q=>" + q)
+                        // console.log("tarefas.length=>"+tarefas.length)
                         if (q == tarefas.length) {
-                            Tarefas.findOne({ _id: req.params.id }).lean().then((tarefa) => {
-                                Usina.findOne({ _id: tarefa.usina }).lean().then((usina) => {
-                                    Cliente.findOne({ _id: usina.cliente }).lean().then((cliente) => {
-                                        Atividade.findOne({ _id: tarefa.servico }).lean().then((atv) => {
-                                            Equipe.findOne({ _id: tarefa.equipe }).lean().then((equipe) => {
+                            console.log('req.params.id=>' + req.params.id)
+                            Tarefas.findOne({ _id: req.params.id }).sort({concluido: 'asc'}).then((tarefa) => {
+                                Usina.findOne({ _id: tarefa.usina }).then((usina) => {
+                                    Cliente.findOne({ _id: usina.cliente }).then((cliente) => {
+                                        Atividade.findOne({ _id: tarefa.servico }).then((atv) => {
+                                            Equipe.findOne({ _id: tarefa.equipe }).then((equipe) => {
                                                 var dataini = dataMensagem(tarefa.dataini)
                                                 var datafim = dataMensagem(tarefa.datafim)
+
+                                                if (tarefa.concluido == true){
+                                                    concluido = 'Sim'
+                                                }else{
+                                                    concluido = 'Não'
+                                                }
+
                                                 if (naoVazio(equipe)) {
-                                                    lista_tarefa = { id: tarefa._id, nome: cliente.nome, servico: atv.descricao, dataini, datafim, ins0: equipe.ins0, ins1: equipe.ins1, ins2: equipe.ins2, ins3: equipe.ins3, ins4: equipe.ins4, ins5: equipe.ins5 }
+                                                    lista_tarefa = { concluido, id: tarefa._id, nome: cliente.nome, servico: atv.descricao, dataini, datafim, ins0: equipe.ins0, ins1: equipe.ins1, ins2: equipe.ins2, ins3: equipe.ins3, ins4: equipe.ins4, ins5: equipe.ins5 }
                                                 } else {
-                                                    lista_tarefa = { id: tarefa._id, nome: cliente.nome, servico: atv.descricao, dataini, datafim }
+                                                    lista_tarefa = { concluido, id: tarefa._id, nome: cliente.nome, servico: atv.descricao, dataini, datafim }
                                                 }
                                                 //console.log('lista_tarefa=>'+lista_tarefa)                                                
                                                 res.render('projeto/gerenciamento/vertarefas', { lista_tarefa, todas_tarefas })
@@ -4310,7 +4350,7 @@ router.get('/tarefas/:id', ehAdmin, (req, res) => {
                                         res.redirect('/gerenciamento/agenda')
                                     })
                                 }).catch((err) => {
-                                    req.flash('error_msg', 'Falha ao encontrar a usina.')
+                                    req.flash('error_msg', 'Falha ao encontrar a usina<usina>.')
                                     res.redirect('/gerenciamento/agenda')
                                 })
 
@@ -4328,7 +4368,7 @@ router.get('/tarefas/:id', ehAdmin, (req, res) => {
                     res.redirect('/gerenciamento/agenda')
                 })
             }).catch((err) => {
-                req.flash('error_msg', 'Falha ao encontrar a usina.')
+                req.flash('error_msg', 'Falha ao encontrar a usina<usi>.')
                 res.redirect('/gerenciamento/agenda')
             })
         })
@@ -4462,7 +4502,7 @@ router.post('/proposta', ehAdmin, (req, res) => {
                 proposta.cidade = req.body.cidadeh
             } else {
                 proposta.cidade = req.body.cidade
-            }0
+            }
             if (req.body.uf == '') {
                 proposta.uf = req.body.ufh
             } else {
@@ -6988,7 +7028,7 @@ router.get('/entrega/:id', ehAdmin, (req, res) => {
                     }
                     new Usina(usina).save().then(() => {
                         //console.log('salvou usina')
-                        Usina.find({ user: id }).sort({ field: 'asc', _id: -1 }).then((novausina) => {
+                        Usina.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((novausina) => {
                             var tarefa = {
                                 user: id,
                                 usina: novausina._id,
@@ -6997,7 +7037,10 @@ router.get('/entrega/:id', ehAdmin, (req, res) => {
                                 datafim: setData(dataHoje(), 182),
                                 buscadatafim: dataBusca(setData(dataHoje(), 182)),
                                 cadastro: dataHoje(),
-                                concluido: false
+                                endereco: proposta.endereco,
+                                concluido: false,
+                                servico: '61b2565a9db7e22fd4472e40',
+                                equipe: null
                             }
                             new Tarefas(tarefa).save().then(() => {
                                 proposta.encerrado = true
@@ -9220,23 +9263,23 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                 equipe.save().then(() => {
                     req.flash('success_msg', 'Equipe salva com sucesso.')
                     if (naoVazio(tarefa.programacao)) {
-                        res.redirect('/cliente/programacao/' + req.body.usina)
+                        res.redirect('/cliente/programacao/' + req.body.idusina)
                     } else {
                         res.redirect('/gerenciamento/tarefas/' + tarefa._id)
                     }
                 }).catch((err) => {
                     req.flash('error_msg', 'Houve erro ao salvar a equipe.')
-                    res.redirect('/cliente/programacao/' + req.body.usina)
+                    res.redirect('/cliente/programacao/' + req.body.idusina)
                 })
 
 
             }).catch((err) => {
                 req.flash('error_msg', 'Houve erro ao encontrar a equipe.')
-                res.redirect('/cliente/programacao/' + req.body.usina)
+                res.redirect('/cliente/programacao/' + req.body.idusina)
             })
         }).catch((err) => {
             req.flash('error_msg', 'Houve erro ao encontrar a proposta.')
-            res.redirect('/cliente/programacao/' + req.body.usina)
+            res.redirect('/cliente/programacao/' + req.body.idusina)
         })
 
     } else {
@@ -9312,17 +9355,17 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                         tarefa.equipe = novaequipe._id
                         tarefa.save().then(() => {
                             req.flash('success_msg', 'Equipe alocada com sucesso.')
-                            res.redirect('/cliente/programacao/' + req.body.usina)
+                            res.redirect('/cliente/programacao/' + req.body.idusina)
                         }).catch((err) => {
                             req.flash('error_msg', 'Falha ao salvar a tarefa.')
-                            res.redirect('/cliente/programacao/' + req.body.usina)
+                            res.redirect('/cliente/programacao/' + req.body.idusina)
                         })
                     })
                 } else {
                     const tarefa = {
                         user: id,
                         equipe: novaequipe._id,
-                        responsavel: _id,
+                        responsavel: id,
                         usina: req.body.usina,
                         servico: req.body.manutencao,
                         dataini: dataini,
@@ -9333,33 +9376,33 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                         preco: req.body.preco,
                         concluido: false
                     }
-                    //console.log('tarefa=>'+tarefa)
+                    console.log('tarefa=>' + tarefa)
                     new Tarefas(tarefa).save().then(() => {
                         Tarefas.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((tarefa) => {
                             novaequipe.tarefa = tarefa._id
                             novaequipe.save().then(() => {
                                 req.flash('success_msg', 'Manutenção gerada com sucesso.')
-                                res.redirect('/cliente/programacao/' + req.body.usina)
+                                res.redirect('/gerenciamento/tarefas/' + tarefa._id)
                             }).catch((err) => {
                                 req.flash('error_msg', 'Falha ao salvar a equipe.')
-                                res.redirect('/cliente/programacao/' + req.body.usina)
+                                res.redirect('/gerenciamento/tarefas/' + tarefa._id)
                             })
                         }).catch((err) => {
                             req.flash('error_msg', 'Falha ao encontrar a tarefa.')
-                            res.redirect('/cliente/programacao/' + req.body.usina)
+                            res.redirect('/gerenciamento/tarefas/' + tarefa._id)
                         })
                     }).catch((err) => {
                         req.flash('error_msg', 'Falha ao salvar a manutenção.')
-                        res.redirect('/cliente/programacao/' + req.body.usina)
+                        res.redirect('/gerenciamento/tarefas/' + tarefa._id)
                     })
                 }
             }).catch((err) => {
                 req.flash('error_msg', 'Falha ao encontrar a equipe.')
-                res.redirect('/cliente/programacao/' + req.body.usina)
+                res.redirect('/gerenciamento/tarefas/' + tarefa._id)
             })
         }).catch((err) => {
             req.flash('error_msg', 'Falha ao salvar a equipe.')
-            res.redirect('/cliente/programacao/' + req.body.usina)
+            res.redirect('/gerenciamento/tarefas/' + tarefa._id)
         })
     }
 })
