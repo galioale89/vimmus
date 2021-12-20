@@ -108,10 +108,12 @@
                                 <label class='col-form-label'>{{compra.pedido}}</label>
                             </div>
                         </div>
+                        {{#if compra.pedido}}
                         <div class="col-md-1">
                             <a class="btn btn-primary" href='/gerenciamento/mostrarPedido/{{proposta._id}}'
                                 target="_blank"><i class='bi bi-eye'></i></a>
                         </div>
+                        {{/if}}
                     </div>
                     <div class="row">
                         <div class="col-md-3 text-start">
@@ -140,10 +142,12 @@
                             <label class='col-form-label'>{{compra.nota}}</label>
                         </div>
                     </div>
+                    {{#if compra.nota}}
                     <div class="col-md-1">
                         <a class="btn btn-primary" href='/gerenciamento/mostrarNota/{{proposta._id}}' target="_blank"><i
                                 class='bi bi-eye'></i></a>
                     </div>
+                    {{/if}}
                 </div>
                 <form action='/gerenciamento/nota' method='post' enctype="multipart/form-data">
                     <input type="hidden" name='id' value='{{proposta._id}}'>

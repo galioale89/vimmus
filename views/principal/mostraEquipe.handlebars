@@ -18,7 +18,7 @@
     {{#if proposta._id}}
     <div style="width: 100%;">
         <h5 class="header">{{cliente.nome}} </h5>
-        <h5 class="header">Responsável: {{responsavel.nome}} </h5>
+        <h5 class="">Responsável: {{responsavel.nome}} </h5>
     </div>
     {{/if}}
 
@@ -28,12 +28,17 @@
         <div class='col'>
             <div class="row mt-2">
                 <div class="col">
-                    <label class="col-form-label col-form-label-sm">Previsão Inicio das Obras</label>
-                    <input type='date' name='dtinicio' class='form-control' value='{{equipe.dtinicio}}'>
+                    <label class="col-form-label col-form-label-sm">Previsão Inicio das Obras: {{equipe.dtinicio}}</label>
                 </div>
                 <div class="col">
-                    <label class="col-form-label col-form-label-sm">Previsão Fim das Obras</label>
-                    <input type='date' name='dtfim' class='form-control' value='{{equipe.dtfim}}'>
+                    <label class="col-form-label col-form-label-sm">Previsão Fim das Obras: {{equipe.dtfim}}</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="btn-group col-12 gap-2">
+                    <a class='btn btn-primary' href='/gerenciamento/servicosAtvt/{{proposta._id}}'>Telhado</a>
+                    <a class='btn btn-primary' href='/gerenciamento/servicosAtvi/{{proposta._id}}'>Inversor</a>
+                    <a class='btn btn-primary' href='/gerenciamento/servicosAtva/{{proposta._id}}'>Aterramento</a>
                 </div>
             </div>
             <div style='padding-left: 5%'>
@@ -48,8 +53,6 @@
                             <div clas='btn-grou gap-2 col-12'>
                                 <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mostragps" title="Histórico de localização do técnico"> <i
                                         class='bi bi-geo'></i></a>
-                                <a href='/gerenciamento/atividades/' class="btn btn-primary" title="Serviços"><i
-                                        class='bi bi-list-task'></i></a>
                             </div>
                         </div>
                     </div>
@@ -63,8 +66,6 @@
                             <div clas='btn-grou gap-2 col-12'>
                                 <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mostragps"> <i
                                         class='bi bi-geo'></i></a>
-                                <a href='/gerenciamento/atividades/' class="btn btn-primary"><i
-                                        class='bi bi-list-task'></i></a>
                             </div>
                         </div>
                     </div>
@@ -78,8 +79,6 @@
                             <div clas='btn-grou gap-2 col-12'>
                                 <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mostragps"> <i
                                         class='bi bi-geo'></i></a>
-                                <a href='/gerenciamento/atividades/' class="btn btn-primary"><i
-                                        class='bi bi-list-task'></i></a>
                             </div>
                         </div>
                     </div>
@@ -93,8 +92,6 @@
                             <div clas='btn-grou gap-2 col-12'>
                                 <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mostragps"> <i
                                         class='bi bi-geo'></i></a>
-                                <a href='/gerenciamento/atividades/' class="btn btn-primary"><i
-                                        class='bi bi-list-task'></i></a>
                             </div>
                         </div>
                     </div>
@@ -108,8 +105,6 @@
                             <div clas='btn-grou gap-2 col-12'>
                                 <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mostragps"> <i
                                         class='bi bi-geo'></i></a>
-                                <a href='/gerenciamento/atividades/' class="btn btn-primary"><i
-                                        class='bi bi-list-task'></i></a>
                             </div>
                         </div>
                     </div>
@@ -123,8 +118,6 @@
                             <div clas='btn-grou gap-2 col-12'>
                                 <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mostragps"> <i
                                         class='bi bi-geo'></i></a>
-                                <a href='/gerenciamento/atividades/' class="btn btn-primary"><i
-                                        class='bi bi-list-task'></i></a>
                             </div>
                         </div>
                     </div>

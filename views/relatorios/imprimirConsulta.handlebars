@@ -33,26 +33,61 @@
 </style>
 
 <div id='quadro'>
-    <h5 class="text-center fw-bold mb-2 mt-2">Relatório de Projetos</h5>
+    <form action='/relatorios/filtraRelatorio/' method='post'>
+    <input type='hidden' name='tipo' value='impressao'>
+    <input type='hidden' name='dataini' value='{{dataini}}'>
+    <input type='hidden' name='datafim' value='{{datafim}}'>
+    <input type='hidden' name='empresa' value='{{empresa}}'>
+    <input type='hidden' name='cliente' value='{{cliente}}'>
+    <input type='hidden' name='responsavel' value='{{respons}}'>
+        <div class='row'>
+            <div class='col'>
+                <h5 class="text-center fw-bold mb-2 mt-2">Relatório de Projetos</h5>
+            </div>
+            <div class='col-md-1'>
+                <label class='col-form-label col-form-label-sm'>Instaladores</label>
+            </div>
+            <div class='col-md-4'>
+                <select name='ins' class='form-select form-select-sm'>
+                    <option value='todos'>Todos</option>
+                    {{#each instalador}}
+                    <option value='{{_id}}'>{{nome}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class='col'>
+                <button type='submit' class='btn btn-sm btn-primary'>Procurar</button>
+            </div>
+            <duv class='col text-end'>
+                <a href='/' class='no-print btn btn-sm btn-primary' style="text-decoration: rgb(40, 55, 86);font-size: 15px;" value="Imprimir"
+                    onclick="window.print();return false"><i class="bi bi-printer"></i></a>                
+            </duv>
+        </div>
+    </form>
+
     <table>
         <tr style="line-height: 20px;text-align: center;">
-            <th >Projeto</th>
-            <th >Cliente</th>
-            <th >Data</th>
-            <th >Gestor Responsável</th>
-            <th >Técnico Responsável</th>
-            <th >Equipe</th>
-            <th >Custo Equipe (R$)</th>
-            <th ></th>
+            <th>Projeto</th>
+            <th>Cliente</th>
+            <th>Data</th>
+            <th>Gestor Responsável</th>
+            <th>Técnico Responsável</th>
+            <th>Equipe</th>
+            <th>Custo Equipe (R$)</th>
+            <th></th>
         </tr>
         {{#each lista}}
         <tr style="line-height: 20px;">
-            <td style="text-align: center;">{{id}}</td>
+            <td style="text-align: center;">{{seq}}</td>
             <td style="text-align: center;">{{cliente}}</td>
             <td style="text-align: center;">{{dataini}} a {{datafim}}</td>
             <td style="text-align: center;">{{responsavel}}</td>
             <td style="text-align: center;">{{nome_insres}}</td>
+            {{#if ins0}}
             <td style="text-align: center;">{{ins0}}<br>{{ins1}}<br>{{ins2}}<br>{{ins3}}<br>{{ins4}}<br>{{ins5}}</td>
+            {{else}}
+            <td style="text-align: center;">{{ins0}}</td>
+            {{/if}}
             <td style="text-align: center;">{{custo}}</td>
             <td>
                 <div class='btn-group btn-group-sm col-12 gap-2 mx-auto'>

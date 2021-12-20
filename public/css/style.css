@@ -4381,6 +4381,7 @@ body {
 section#initial-section {
   padding: 60px 0 181px;
 }
+
 section#initial-section .title-banner {
   position: relative;
   color: #07072D;
@@ -4389,9 +4390,10 @@ section#initial-section .title-banner {
   line-height: 3.8125rem;
   padding-bottom: 1rem;
 }
+
 section#initial-section .title-banner .stripe {
   position: absolute;
-  bottom: 19px;
+  bottom: 200px;
   left: 8px;
   height: 25px;
   width: 300px;
@@ -4400,6 +4402,7 @@ section#initial-section .title-banner .stripe {
   opacity: 0.6;
   z-index: -1;
 }
+
 section#initial-section .text {
   padding-bottom: 55px;
 }
@@ -4417,17 +4420,28 @@ section#step-by-step .title-section {
   font-weight: 700;
   z-index: 1;
 }
+
+section#step-by-step .title-section {
+  position: relative;
+  color: #fff;
+  font-size: 2rem;
+  line-height: 3rem;
+  font-weight: 700;
+  z-index: 1;
+}
+
 section#step-by-step .title-section .stripe {
   max-width: 100%;
   position: absolute;
   bottom: 0;
   left: -7px;
   height: 25px;
-  width: 428px;
+  width: 355px;
   background-color: #847AF4;
   opacity: 0.6;
   z-index: -1;
 }
+
 section#step-by-step .wrapper-cards {
   margin: 53px 0 64px;
   display: flex;
@@ -4494,6 +4508,107 @@ section#step-by-step.diferenciais .card .text-card {
   font-weight: 300;
 }
 
+section#resource {
+  padding: 103px 0 57px;
+  background-color: #07072D;
+  overflow-x: hidden;
+}
+section#resource .title-section {
+  position: relative;
+  color: #fff;
+  font-size: 2rem;
+  line-height: 3rem;
+  font-weight: 700;
+  z-index: 1;
+}
+
+section#resource .title-section {
+  position: relative;
+  color: #fff;
+  font-size: 2rem;
+  line-height: 3rem;
+  font-weight: 700;
+  z-index: 1;
+}
+
+section#resource .title-section .stripe {
+  max-width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: -7px;
+  height: 25px;
+  width: 180px;
+  background-color: #847AF4;
+  opacity: 0.6;
+  z-index: -1;
+}
+
+section#resource .wrapper-cards {
+  margin: 53px 0 64px;
+  display: flex;
+  justify-content: space-between;
+}
+section#resource .wrapper-cards .arrow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  transition: all ease 0.5s;
+  opacity: 1;
+}
+section#resource .wrapper-cards .arrow svg {
+  top: 3px;
+}
+section#resource .wrapper-cards .arrow.disabled {
+  opacity: 0;
+}
+section#resource .wrapper-cards #next-step {
+  right: 0;
+  transform: rotate(-90deg);
+}
+section#resource .wrapper-cards #prev-step {
+  left: -20px;
+  transform: rotate(90deg);
+}
+section#resource .wrapper-cards .card {
+  background-color: #fff;
+  padding: 50px 21px 0;
+  width: 224px;
+  height: 280px;
+  border-radius: 12px;
+  text-align: center;
+}
+section#resource .wrapper-cards .card.not-visible {
+  opacity: 0.3;
+}
+section#resource .wrapper-cards .card .picture-card {
+  max-width: 90%;
+  margin-bottom: 35px;
+  margin: 0 auto 35px;
+}
+section#resource .wrapper-cards .card .text-card {
+  text-align: center;
+  font-weight: 800;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+}
+section#resource.diferenciais {
+  background-color: #fff;
+}
+section#resource.diferenciais .title-section {
+  color: #07072D;
+}
+section#resource.diferenciais .card {
+  background-color: #07072D;
+}
+section#resource.diferenciais .card .picture-card {
+  display: none;
+}
+section#resource.diferenciais .card .text-card {
+  color: #fff;
+  font-weight: 300;
+}
+
 section#membership {
   padding: 60px 0;
 }
@@ -4512,7 +4627,7 @@ section#membership .title-section .stripe {
   bottom: 0;
   left: -7px;
   height: 25px;
-  width: 428px;
+  width: 120px;
   background-color: #847AF4;
   opacity: 0.6;
   z-index: -1;
@@ -4541,9 +4656,17 @@ section#membership .card-plan .price span {
   font-size: 16px;
   line-height: none;
 }
+
 section#membership .card-plan .description-plan {
   font-size: 14px;
   padding: 10px 0 20px;
+}
+
+section#membership .card-plan .description-plan-unico {
+  font-size: 14px;
+  padding: 10px 0 20px;
+  text-align: right;
+  padding-right: 150px;
 }
 
 section#about {
@@ -4580,7 +4703,7 @@ section#about .title-section .stripe {
   bottom: 2px;
   left: -7px;
   height: 18px;
-  width: 161px;
+  width: 170px;
   background-color: #847AF4;
   opacity: 0.6;
   z-index: -1;
@@ -4608,7 +4731,7 @@ section#about .two-sides-row .text {
 
 section#banner {
   background-color: gray;
-  background-image: url("../img/grafico.png");
+  /* background-image: url("../img/grafico.png"); */
   background-repeat: round;
   background-size: contain;
   background-position: bottom left;
@@ -4660,7 +4783,7 @@ section#benefits .title-section .stripe {
   bottom: 2px;
   left: -7px;
   height: 18px;
-  width: 356px;
+  width: 790px;
   background-color: #847AF4;
   opacity: 0.6;
   z-index: -1;

@@ -1,0 +1,259 @@
+<style>
+    button {
+        line-height: 0px;
+    }
+
+    #header {
+        width: 100%;
+        border-bottom: rgb(40, 55, 86) 0, 1px solid;
+        color: rgb(40, 55, 86);
+    }
+
+    .filtro-selecao {
+        width: fit-content;
+        height: fit-content;
+        background: white;
+        border: solid 1px;
+        border-radius: 10px;
+        margin-left: 5px;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    th {
+        text-align: center;
+    }
+
+    tr {
+        font-size: 12px;
+        border-bottom: rgba(120, 120, 120, 0.4) solid 1px;
+        text-align: center;
+    }
+</style>
+<script>
+    function select() {
+        var mostrar = document.getElementById('naoganho')
+        var select = document.getElementById('select')
+
+        if (select.value == false) {
+            select.value = true
+            mostrar.style.display = ''
+        } else {
+            select.value = false
+            mostrar.style.display = 'none'
+        }
+
+    }
+    window.onload = function () {
+        var dataini = document.getElementById('dataini')
+        var datafim = document.getElementById('datafim')
+        if (dataini.value == '') {
+            var data = new Date()
+            var mes = data.getMonth()
+            var ano = data.getFullYear()
+            if (mes == 0 || mes == 2 || mes == 4 || mes == 6 || mes == 7 || mes == 9 || mes == 11) {
+                dia = '31'
+            } else {
+                dia = '30'
+            }
+            mes = mes + 1
+            dataini.value = ano + '-' + mes + '-' + '01'
+            datafim.value = ano + '-' + mes + '-' + dia
+        }
+    }
+</script>
+<div class='row' style="width: 100%;padding-left: 2%;">
+    <div id='header'>
+        <div class="row mt-4">
+            <form action='/relatorios/analisar/' method='post'>
+                <div class="col-md-4">
+                    <h5 class="mt-2 titulo-inicio">Análise de Propostas {{titulo}}</h5>
+                    <input type="hidden" name='tipo' value='{{tipo}}'>
+                </div>
+                <div class="row">
+                    {{#if lista}}
+                    <div class="col">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Status</label>
+                        <select class='form-select form-select-sm' name='stats'>
+                            <option>Todos</option>
+                            <option>Proposta Enviada</option>
+                            <option>Preparado para a Visita</option>
+                            <option>Visita</option>
+                            <option>Contrato</option>
+                            <option>Pedido de Compra</option>
+                            <option>NF de Compra</option>
+                            <option>TRT</option>
+                            <option>Protocolado</option>
+                            <option>Execução a Campo</option>
+                            <option>Almoxarifado Em Aberto</option>
+                            <option>Almoxarifado Fechado</option>
+                            <option>Faturado</option>
+                            <option>Pós-Venda</option>
+                            <option>Encerrado</option>
+                            <option>Baixado</option>
+                        </select>
+                    </div>
+                    {{/if}}
+                    <div class='col'>
+                        <label class='col-form-label col-form-label-sm fw-bold'>Empresa</label>
+                        <select name='empresa' class='form-select form-select-sm'>
+                            <option>Todos</option>
+                            {{#each todas_empresas}}
+                            <option value='{{_id}}'>{{nome}}</option>
+                            {{else}}
+                            <option>Nenhuma empresa cadastradas</option>
+                            {{/each}}
+                        </select>
+                    </div>
+
+                    <div class='col'>
+                        <label class='col-form-label col-form-label-sm fw-bold'>Responsável</label>
+                        <select name='responsavel' class='form-select form-select-sm'>
+                            <option>Todos</option>
+                            {{#each pessoa}}
+                            <option value='{{_id}}'>{{nome}}</option>
+                            {{else}}
+                            <option>Nenhum responsável cadastrado</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class='col'>
+                        <label class='col-form-label col-form-label-sm fw-bold'>Cliente</label>
+                        <select name='cliente' class='form-select form-select-sm'>
+                            <option>Todos</option>
+                            {{#each todos_clientes}}
+                            <option value='{{_id}}'>{{nome}}</option>
+                            {{else}}
+                            <option>Nenhum cliente cadastrado</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div style="width: 160px;">
+                        <label class="col-form-label col-form-label-sm">Data Inicial</label>
+                        <input type='date' class='form-control form-control-sm' input='dataini' name='dataini'
+                            id='dataini' value='{{dataini}}'>
+                    </div>
+                    <div style="width: 160px;">
+                        <label class="col-form-label col-form-label-sm">Data Final</label>
+                        <input type='date' class='form-control form-control-sm' input='datafim' name='datafim'
+                            id='datafim' value='{{datafim}}'>
+                    </div>
+                    <div style="width: 70px;">
+                        <button type='submit' class='mt-3 botaofiltrar'><i
+                                class='bi bi-search iconefiltrar'></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <p>
+            <a class="btn btn-primary" data-bs-toggle="collapse" href="#ganhas" role="button" aria-expanded="false"
+                aria-controls="ganhas">Propostas Ganhas</a>
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#naoganhas"
+                aria-expanded="false" aria-controls="naoganhas">Propostas Não Ganhas</button>
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse"
+                aria-expanded="false" aria-controls="ganhas naoganhas">Mostrar Ambos</button>
+        </p>
+        <div class="row mt-2">
+            <div class="col">
+                <div class="collapse multi-collapse" id="ganhas">
+                    <div class="card card-body">
+                        <table>
+                            <tr>
+                                <th>Responsável</th>
+                                <th>Proposta</th>
+                                <th>Data Cadastro</th>
+                                <th>Data Inicio</th>
+                                <th>Data Entrega</th>
+                            </tr>
+                            {{#each lista_naoganho}}
+                            <tr>
+                                <td>{{responsavel}}</td>
+                                <td>{{proposta}}</td>
+                                <td>{{datacad}}</td>
+                                <td>{{dataini}}</td>
+                                <td>{{datafim}}</td>
+                            </tr>
+                            {{else}}
+                            Nenhuma proposta enviada
+                            {{/each}}
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="collapse multi-collapse" id="naoganhas">
+                    <div class="card card-body">
+                        <table>
+                            <tr>
+                                <th>Responsável</th>
+                                <th>Proposta</th>
+                                <th>Data Cadastro</th>
+                                <th>Data Inicio</th>
+                                <th>Data Entrega</th>
+                            </tr>
+                            {{#each lista_ganho}}
+                            <tr>
+                                <td>{{responsavel}}</td>
+                                <td>{{proposta}}</td>
+                                <td>{{datacad}}</td>
+                                <td>{{dataini}}</td>
+                                <td>{{datafim}}</td>
+                            </tr>
+                            {{else}}
+                            Nenhuma proposta ganha
+                            {{/each}}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{#each qtd_envio}}
+    <input type='hidden' id='res_envio[]' value='{{responsavel}}'>
+    <input type='hidden' id='qtd_envio[]' value='{{qtd}}'>
+    {{/each}}
+    {{#each qtd_ganho}}
+    <input type='hidden' id='res_ganho[]' value='{{responsavel}}'>
+    <input type='hidden' id='qtd_ganho[]' value='{{qtd}}'>
+    {{/each}}
+    <input type="hidden" id='ganho_total' value='{{ganho_total}}'>
+    <input type="hidden" id='naoganho_total' value='{{naoganho_total}}'>
+    <input type="hidden" id='envio_total' value='{{envio_total}}'>
+
+    <div style="height: 350px;">
+        <canvas id='chartAG' class='mt-1 mb-1'></canvas>
+    </div>
+
+</div>
+</div>
+<script>
+    var ganho = document.getElementById('ganho_total')
+    var naoganho = document.getElementById('naoganho_total')
+    var envio = document.getElementById('envio_total')
+    var ctxAG = document.getElementById('chartAG').getContext('2d');
+    var chartAG = new Chart(ctxAG, {
+        type: 'doughnut',
+        data: {
+            labels: ['Ganho', 'Não Ganho'],
+            datasets: [{
+                data: [ganho.value, naoganho.value],
+                backgroundColor: [
+                    'rgba(37, 139, 33, 0.2)',
+                    'rgba(50, 140, 230, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(37, 139, 33, 1)',
+                    'rgba(50, 140, 230, 1)',
+                ],
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+        }
+    });    
+</script>

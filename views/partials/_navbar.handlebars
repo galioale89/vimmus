@@ -1,10 +1,10 @@
 <script>
-  window.onload = function(){
+  window.onload = function () {
     var saudacao = document.getElementById('saudacao')
-    
+
     var data = new Date()
     var semana = data.getDay()
-    
+
     if (semana == 1) {
       semana = 'Segunda-feira'
     }
@@ -26,42 +26,42 @@
     if (semana == 0) {
       semana = 'Domingo'
     }
-    
-    
+
+
     var dia = data.getDate()
     var mes = data.getMonth()
-    
-    switch(mes+1) {
+
+    switch (mes + 1) {
       case 1: mes = 'Janeiro'
-      break;
+        break;
       case 2: mes = 'Fevereiro'
-      break;
+        break;
       case 3: mes = 'Março'
-      break;
+        break;
       case 4: mes = 'Abril'
-      break;
+        break;
       case 5: mes = 'Maio'
-      break;
+        break;
       case 6: mes = 'Junho'
-      break;
+        break;
       case 7: mes = 'Julho'
-      break;
+        break;
       case 8: mes = 'Agosto'
-      break;
+        break;
       case 9: mes = 'Setembro'
-      break;
+        break;
       case 10: mes = 'Outubro'
-      break;
+        break;
       case 11: mes = 'Novembro'
-      break;
+        break;
       case 12: mes = 'Dezembro'
-      break;
+        break;
     }
 
     var ano = data.getFullYear()
 
-    saudacao.innerHTML = 'Hoje é '+semana+', dia ' + dia + ' de ' + mes + ' de ' + ano
-    
+    saudacao.innerHTML = 'Hoje é ' + semana + ', dia ' + dia + ' de ' + mes + ' de ' + ano
+
   }
 </script>
 <!-- Default dropstart button -->
@@ -75,14 +75,23 @@
     {{!-- <div class="dropstart">
       <a class="filter" data-bs-toggle="dropdown" aria-expanded="false"><i class='bi bi-filter'></i></a>
       <ul class="dropdown-menu"> --}}
-        {{!-- <a href='/projeto/selectprojeto' class="botao-filter"><i class="bi bi-file-arrow-up"></i> Novo Projeto</a><br> --}}
+        {{!-- <a href='/projeto/selectprojeto' class="botao-filter"><i class="bi bi-file-arrow-up"></i> Novo
+          Projeto</a><br> --}}
         <div class='btn-group col-12 gap-2 justify-content-end'>
-        <a href='/menu' class="botao-filter"><i class='bi bi-menu-button-wide'></i> Dashboard</a><br>          
-        <a href='/gerenciamento/consulta' class="botao-filter"><i class="bi bi-search"></i> Busca Propostas</a><br>
-        <a href='/logout' class="botao-filter"><i class='bi bi-door-open'></i></a>
-        </div> 
+          <a href='/menu' class="botao-filter"><i class='bi bi-menu-button-wide'></i> Dashboard</a><br>
+          <div class="dropdown">
+            <button class="botao-filter dropdown-toggle fw-bold" type="button" style='background-color: rgb(44,55,89);' data-bs-toggle="dropdown"
+              aria-expanded="false" style='font-size: 10px'>Relatórios</button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <a href='/relatorios/analiseproposta' class="contorno-menu"><i class='bi bi-file-earmark-spreadsheet'></i> Analisa Propostas</a>
+            </ul>
+          </div>
+          <a href='/gerenciamento/consulta' class="botao-filter"><i class="bi bi-search"></i> Busca Propostas</a><br>
+          <a href='/logout' class="botao-filter"><i class='bi bi-door-open'></i></a>
+        </div>
       </ul>
-    {{!-- </div>
+      {{!--
+    </div>
   </div> --}}
 </nav>
 {{/if}}
@@ -90,23 +99,23 @@
 
 {{!--
 <script>
-  (function () {
-    var menu = document.getElementById('menu-fixo'); // colocar em cache
-    var titulo_inicio = document.getElementById('titulo-inicio');
-    var titulo_beneficio = document.getElementById('titulo-beneficio');
-    var titulo_avimmus = document.getElementById('titulo-avimmus');
-    window.addEventListener('scroll', function () {
-      if (window.scrollY > 50) {
-        titulo_inicio.classList.add('titulo-mov');
-        titulo_beneficio.classList.add('titulo-mov');
-        titulo_avimmus.classList.add('titulo-mov');
-        menu.classList.add('menu-before');
-      } else {
-        titulo_inicio.classList.remove('titulo-mov');
-        titulo_beneficio.classList.remove('titulo-mov');
-        titulo_avimmus.classList.remove('titulo-mov');
-        menu.classList.remove('menu-before');
-      }
-    });
-  })();
+    (function () {
+      var menu = document.getElementById('menu-fixo'); // colocar em cache
+      var titulo_inicio = document.getElementById('titulo-inicio');
+      var titulo_beneficio = document.getElementById('titulo-beneficio');
+      var titulo_avimmus = document.getElementById('titulo-avimmus');
+      window.addEventListener('scroll', function () {
+        if (window.scrollY > 50) {
+          titulo_inicio.classList.add('titulo-mov');
+          titulo_beneficio.classList.add('titulo-mov');
+          titulo_avimmus.classList.add('titulo-mov');
+          menu.classList.add('menu-before');
+        } else {
+          titulo_inicio.classList.remove('titulo-mov');
+          titulo_beneficio.classList.remove('titulo-mov');
+          titulo_avimmus.classList.remove('titulo-mov');
+          menu.classList.remove('menu-before');
+        }
+      });
+    })();
 </script> --}}

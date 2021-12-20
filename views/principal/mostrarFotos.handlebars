@@ -67,11 +67,13 @@
 
     <div class="row text-center" style="margin-top: 20px;">
         <label style="font-size: 35px;font-weight: 700;margin-bottom: 10px;">{{titulo}}</label>
-    {{#each lista_imagens}}
-    <div class="row text-center mt-2">
-        <a href='/gerenciamento/mostrarImagens/{{imagem}}' target="_blank" style="font-size: 25px;">{{seq}} - {{imagem}}</a>
-        {{!-- <img src="/arquivos/{{imagem}}" height="200px" width="20px"/> --}}
+    <div class="row text-center text-center justify-content-center" style="margin-bottom: 50px;margin-top: 40px">
+        {{#each lista_imagens}}
+        <img src='/gerenciamento/mostrarImagens/{{imagem}}' style="width: 40%;" alt='Minha Figura'>
+        <a href='/gerenciamento/mostrarImagens/{{imagem}}' target="_blank" style="font-size: 25px;">{{seq}} -
+            {{imagem}}</a>
+        {{!-- <img src="/arquivos/{{imagem}}" height="200px" width="20px" /> --}}
+        {{/each}}
     </div>
-    {{/each}}
     </div>
 </div>

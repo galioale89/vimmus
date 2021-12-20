@@ -1,4 +1,4 @@
-var filtrarProposta = function (f, id, stats, responsavel, empresa, cliente, enviado, ganho, assinado, encerrado) {
+var filtrarProposta = function (f, id, stats, responsavel, empresa, cliente, enviado, ganho, assinado, encerrado, baixado) {
     var sql = []
 
     // console.log('id=>' + id)
@@ -17,11 +17,11 @@ var filtrarProposta = function (f, id, stats, responsavel, empresa, cliente, env
         } else {
             if (cliente != 'Todos' && responsavel != 'Todos' && stats != 'Todos' && empresa != 'Todos') {
                 // console.log('nt-nt-nt-nt')
-                sql = { user: id, responsavel: responsavel, empresa: empresa, cliente: cliente, feito: enviado, ganho: ganho, assinado: assinado, encerrado: encerrado }
+                sql = { user: id, responsavel: responsavel, empresa: empresa, cliente: cliente, feito: enviado, ganho: ganho, assinado: assinado, encerrado: encerrado, baixada:baixado }
             } else {
                 if (cliente == 'Todos' && responsavel == 'Todos' && stats != 'Todos' && empresa == 'Todos') {
                     // console.log('t-t-nt-t')
-                    sql = { user: id, feito: enviado, ganho: ganho, assinado: assinado, encerrado: encerrado }
+                    sql = { user: id, feito: enviado, ganho: ganho, assinado: assinado, encerrado: encerrado, baixada: baixado }
                 } else {
                     if (cliente != 'Todos' && responsavel == 'Todos' && stats == 'Todos' && empresa == 'Todos') {
                         // console.log('nt-t-t-t')
@@ -29,11 +29,11 @@ var filtrarProposta = function (f, id, stats, responsavel, empresa, cliente, env
                     } else {
                         if (cliente == 'Todos' && responsavel != 'Todos' && stats != 'Todos' && empresa == 'Todos') {
                             // console.log('t-nt-nt-t')
-                            sql = { user: id, responsavel: responsavel, feito: enviado, ganho: ganho, assinado: assinado, encerrado: encerrado }
+                            sql = { user: id, responsavel: responsavel, feito: enviado, ganho: ganho, assinado: assinado, encerrado: encerrado, baixada:baixado }
                         } else {
                             if (cliente != 'Todos' && responsavel == 'Todos' && stats != 'Todos' && empresa == 'Todos') {
                                 // console.log('nt-t-nt-t')
-                                sql = { user: id, cliente: cliente, feito: enviado, ganho: ganho, assinado: assinado, encerrado: encerrado }
+                                sql = { user: id, cliente: cliente, feito: enviado, ganho: ganho, assinado: assinado, encerrado: encerrado, baixada:baixado }
                             } else {
                                 if (cliente == 'Todos' && responsavel != 'Todos' && stats == 'Todos' && empresa == 'Todos') {
                                     // console.log('t-nt-t-t')
@@ -45,15 +45,15 @@ var filtrarProposta = function (f, id, stats, responsavel, empresa, cliente, env
                                     } else {
                                         if (cliente != 'Todos' && responsavel != 'Todos' && stats != 'Todos' && empresa == 'Todos') {
                                             // console.log('nt-nt-nt-t')
-                                            sql = { user: id, cliente: cliente, responsavel: responsavel, feito: enviado, ganho: ganho, assinado: assinado, encerrado: encerrado }
+                                            sql = { user: id, cliente: cliente, responsavel: responsavel, feito: enviado, ganho: ganho, assinado: assinado, encerrado: encerrado, baixada:baixado }
                                         } else {
                                             if (cliente == 'Todos' && responsavel != 'Todos' && stats != 'Todos' && empresa != 'Todos') {
                                                 // console.log('t-nt-nt-nt')
-                                                sql = { user: id, responsavel: responsavel, feito: enviado, ganho: ganho, assinado: assinado, encerrado: encerrado, empresa: empresa }
+                                                sql = { user: id, responsavel: responsavel, feito: enviado, ganho: ganho, assinado: assinado, encerrado: encerrado, baixada:baixado, empresa: empresa }
                                             } else {
                                                 if (cliente != 'Todos' && responsavel == 'Todos' && stats != 'Todos' && empresa != 'Todos') {
                                                     // console.log('nt-t-nt-nt')
-                                                    sql = { user: id, cliente: cliente, feito: enviado, ganho: ganho, assinado: assinado, encerrado: encerrado, empresa: empresa }
+                                                    sql = { user: id, cliente: cliente, feito: enviado, ganho: ganho, assinado: assinado, encerrado: encerrado, baixada:baixado, empresa: empresa }
                                                 } else {
                                                     if (cliente == 'Todos' && responsavel != 'Todos' && stats == 'Todos' && empresa != 'Todos') {
                                                         // console.log('t-nt-t-nt')

@@ -9,9 +9,10 @@
     }
 </script>
 <div class="container mt-4 card tamanhodiv">
-<label class="mt-2" style='font-weight: bold;font-size:20px'> Configurações Básicas</label>
+    <label class="mt-2" style='font-weight: bold;font-size:20px'> Configurações Básicas</label>
     <br>
-    <form {{#if configuracoes._id}}action='/configuracao/editconfiguracao'{{else}}action='/configuracao/novo'{{/if}} method='post'>
+    <form {{#if configuracoes._id}}action='/configuracao/editconfiguracao' {{else}}action='/configuracao/novo' {{/if}}
+        method='post'>
         <input type='hidden' name='id' value='{{configuracoes._id}}'>
         <div class="row mb-4 text-end">
             <div class="col-md-4">
@@ -23,96 +24,132 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 text-center">
-                <label class='fw-bold col-form-label col-form-label-sm'>Instalação (por minutos)</label>
-                <hr>
-                <div class='row mb-2 text-end'>
-                    <div class="col-md-6">
-                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Aterramento: </label><br>
-                        <label class="fw-bold col-form-label col-form-label-sm mb-1">Estrutura:<i
-                                class='bi bi-info-circle' onmousemove="infoEstrutura()"></i></label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Módulos: </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Inversores: </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> String Box: </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Estação de Armazenamento:
-                        </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Painél Elétrico: </label><br>
-                    </div>
-                    <div class="col-md-6">
-                        <input type='number' id='minatr' name='minatr' value='{{configuracoes.minatr}}'
-                            class='form-control form-control-sm mb-1'>
-                        <input type='number' id='minest' name='minest' value='{{configuracoes.minest}}'
-                            class='form-control form-control-sm mb-1'>
-                        <input type='number' id='minmod' name='minmod' value='{{configuracoes.minmod}}'
-                            class='form-control form-control-sm mb-1'>
-                        <input type='number' id='mininv' name='mininv' value='{{configuracoes.mininv}}'
-                            class='form-control form-control-sm mb-1'>
-                        <input type='number' id='minstb' name='minstb' value='{{configuracoes.minstb}}'
-                            class='form-control form-control-sm mb-1'>
-                        <input type='number' id='mineae' name='mineae' value='{{configuracoes.mineae}}'
-                            class='form-control form-control-sm mb-1'>
-                        <input type='number' id='minpnl' name='minpnl' value='{{configuracoes.minpnl}}'
-                            class='form-control form-control-sm mb-1'>
-                    </div>
+            <div class="col-md-4 text-center">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle fw-bold" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false" style='font-size: 12px'>Instalação (por
+                        minutos)</button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <div class='row' style="width: 500px;">
+                            <div class="col-md-6 text-end">
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'> Aterramento:
+                                </label><br>
+                                <label class="fw-bold col-form-label col-form-label-sm mb-1">Estrutura:<i
+                                        class='bi bi-info-circle' onmousemove="infoEstrutura()"></i></label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'> Módulos: </label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'> Inversores:
+                                </label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'> String Box:
+                                </label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'> Estação de
+                                    Armazenamento:
+                                </label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'> Painél Elétrico:
+                                </label><br>
+                            </div>
+                            <div class="col-md-6">
+                                <input type='number' id='minatr' name='minatr' value='{{configuracoes.minatr}}'
+                                    class='form-control form-control-sm mb-1'>
+                                <input type='number' id='minest' name='minest' value='{{configuracoes.minest}}'
+                                    class='form-control form-control-sm mb-1'>
+                                <input type='number' id='minmod' name='minmod' value='{{configuracoes.minmod}}'
+                                    class='form-control form-control-sm mb-1'>
+                                <input type='number' id='mininv' name='mininv' value='{{configuracoes.mininv}}'
+                                    class='form-control form-control-sm mb-1'>
+                                <input type='number' id='minstb' name='minstb' value='{{configuracoes.minstb}}'
+                                    class='form-control form-control-sm mb-1'>
+                                <input type='number' id='mineae' name='mineae' value='{{configuracoes.mineae}}'
+                                    class='form-control form-control-sm mb-1'>
+                                <input type='number' id='minpnl' name='minpnl' value='{{configuracoes.minpnl}}'
+                                    class='form-control form-control-sm mb-1'>
+                            </div>
+                        </div>
+                    </ul>
                 </div>
+
             </div>
 
-            <div class="col-md-6 text-center">
-                <div class="row">
-                    <div class="col-md-6">
-                        <label class='fw-bold col-form-label col-form-label-sm'>Custo R$/hora</label>
-                        <div class='row mb-2 text-end'>
+            <div class="col-md-2">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle fw-bold" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false" style='font-size: 12px'>Custo R$</button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <div class="row" style="width: 600px;">
                             <div class="col-md-6">
-                                <label class='fw-bold col-form-label col-form-label-sm mb-1'> Projetista:</label><br>
-                                <label class='fw-bold col-form-label col-form-label-sm mb-1'> Gestor: </label><br>
-                                <label class='fw-bold col-form-label col-form-label-sm mb-1'> Instalador:</label>
+                                <div class="row text-center">
+                                    <label class='fw-bold col-form-label col-form-label-sm'>Custo R$/hora</label>
+                                </div>
+                                <div class='row mb-2 text-end'>
+                                    <div class="col-md-6">
+                                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>
+                                            Projetista:</label><br>
+                                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Gestor:
+                                        </label><br>
+                                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>
+                                            Instalador:</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type='number' id='vlrhrp' name='vlrhrp' value='{{configuracoes.vlrhrp}}'
+                                            class='form-control form-control-sm'>
+                                        <input type='number' id='vlrhrg' name='vlrhrg' value='{{configuracoes.vlrhrg}}'
+                                            class='form-control form-control-sm mt-1'>
+                                        <input type='number' id='vlrhri' name='vlrhri' value='{{configuracoes.vlrhri}}'
+                                            class='form-control form-control-sm mt-1'>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-6">
-                                <input type='number' id='vlrhrp' name='vlrhrp' value='{{configuracoes.vlrhrp}}'
-                                    class='form-control form-control-sm'>
-                                <input type='number' id='vlrhrg' name='vlrhrg' value='{{configuracoes.vlrhrg}}'
-                                    class='form-control form-control-sm mt-1'>
-                                <input type='number' id='vlrhri' name='vlrhri' value='{{configuracoes.vlrhri}}'
-                                    class='form-control form-control-sm mt-1'>
+                                <div class="row text-center">
+                                    <label class='fw-bold col-form-label col-form-label-sm'>Custo R$/dia</label>
+                                </div>
+                                <div class='row mb-2 text-end'>
+                                    <div class="col-md-6">
+                                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>
+                                            Projetista:</label><br>
+                                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Gestor:
+                                        </label><br>
+                                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>
+                                            Instalador:</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type='number' id='vlrdrp' name='vlrdrp' value='{{configuracoes.vlrdrp}}'
+                                            class='form-control form-control-sm'>
+                                        <input type='number' id='vlrdrg' name='vlrdrg' value='{{configuracoes.vlrdrg}}'
+                                            class='form-control form-control-sm mt-1'>
+                                        <input type='number' id='vlrdri' name='vlrdri' value='{{configuracoes.vlrdri}}'
+                                            class='form-control form-control-sm mt-1'>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <label class='fw-bold col-form-label col-form-label-sm'>Custo R$/dia</label>
-                        <div class='row mb-2 text-end'>
-                            <div class="col-md-6">
-                                <label class='fw-bold col-form-label col-form-label-sm mb-1'> Projetista:</label><br>
-                                <label class='fw-bold col-form-label col-form-label-sm mb-1'> Gestor: </label><br>
-                                <label class='fw-bold col-form-label col-form-label-sm mb-1'> Instalador:</label>
-                            </div>
-                            <div class="col-md-6">
-                                <input type='number' id='vlrdrp' name='vlrdrp' value='{{configuracoes.vlrdrp}}'
-                                    class='form-control form-control-sm'>
-                                <input type='number' id='vlrdrg' name='vlrdrg' value='{{configuracoes.vlrdrg}}'
-                                    class='form-control form-control-sm mt-1'>
-                                <input type='number' id='vlrdri' name='vlrdri' value='{{configuracoes.vlrdri}}'
-                                    class='form-control form-control-sm mt-1'>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-md-6 text-end">
-                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Média veículo litros/km:</label>
-                        <label class='fw-bold col-form-label col-form-label-sm mb-1'> Horas Efetivas Instalador:</label>
-                    </div>
-                    <div class="col-md-6">
-                        <input type='number' id='medkmh' name='medkmh' value='{{configuracoes.medkmh}}'
-                            class='form-control form-control-sm mb-1'>
-                        <input type='text' id='hrstrb' name='hrstrb' value='{{configuracoes.hrstrb}}'
-                            class='form-control form-control-sm'>
-                    </div>
+                    </ul>
                 </div>
             </div>
-        </div>
-        <div class="row mt-2">
-            <button type='submit' style="width: 100%;" class='btn btn-success tamanhodiv'> Aplicar </button>
+            <div class="col-md-2">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle fw-bold" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false" style='font-size: 12px'>Deslocamento</button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <div class="row" style="width: 400px;">
+                            <div class="col-md-6 text-end">
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'> Média veículo
+                                    litros/km:</label>
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'> Horas Efetivas
+                                    Instalador:</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type='number' id='medkmh' name='medkmh' value='{{configuracoes.medkmh}}'
+                                    class='form-control form-control-sm mb-1'>
+                                <input type='text' id='hrstrb' name='hrstrb' value='{{configuracoes.hrstrb}}'
+                                    class='form-control form-control-sm'>
+                            </div>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-3 text-center">
+                <button type='submit' class='btn btn-sm btn-success tamanhodiv'> Aplicar </button>
+            </div>
         </div>
     </form>
 </div>
