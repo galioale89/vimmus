@@ -42,18 +42,18 @@ const bcrypt = require("bcryptjs")
 const passport = require("passport")
 
 //Configurando envio de e-mail
-const transporter = nodemailer.createTransport({ // Configura os parâmetros de conexão com servidor.
-    host: 'smtp.umbler.com',
-    port: 587,
-    secure: false,
-    auth: {
-        user: 'alexandre@vimmus.com.br',
-        pass: '3rdn4x3L@'
-    },
-    tls: {
-        rejectUnauthorized: false
-    }
-})
+// const transporter = nodemailer.createTransport({ // Configura os parâmetros de conexão com servidor.
+//     host: 'smtp.umbler.com',
+//     port: 587,
+//     secure: false,
+//     auth: {
+//         user: 'alexandre@vimmus.com.br',
+//         pass: '3rdn4x3L@'
+//     },
+//     tls: {
+//         rejectUnauthorized: false
+//     }
+// })
 
 
 const mongoose = require('mongoose')
@@ -7447,34 +7447,34 @@ router.get('/enviaMensagem/:id', ehAdmin, (req, res) => {
                     var ddd = telefone.substring(0, 2)
                     var primdig = telefone.substring(2, 6)
                     var segdig = telefone.substring(6, 12)
-                    telefone = '(' + ddd + ') ' + primdig + ' - ' + segdig
-                    //Enviando SMS                              
-                    var mensagem = 'Olá ' + cliente.nome + ', tudo bem?' + '\n' +
-                        'Segue o cronograma para a instalação de sua usina solar: ' + '\n' +
-                        'Planejamento: ' + dataMensagem(cronograma.dateplaini) + ' a ' + dataMensagem(cronograma.dateplafim) + '\n' +
-                        'Projetista: ' + dataMensagem(cronograma.dateprjini) + ' a ' + dataMensagem(cronograma.dateprjfim) + '\n' +
-                        'Aterramento: ' + dataMensagem(cronograma.dateateini) + ' a ' + dataMensagem(cronograma.dateatefim) + '\n' +
-                        'Inversores e StringBox: ' + dataMensagem(cronograma.dateinvini) + ' a ' + dataMensagem(cronograma.datestbfim) + '\n' +
-                        'Instalação da Estrutura: ' + dataMensagem(cronograma.dateestini) + ' a ' + dataMensagem(cronograma.dateestfim) + '\n' +
-                        'Instalação dos Módulos: ' + dataMensagem(cronograma.datemodini) + ' a ' + dataMensagem(cronograma.datemodfim) + '\n' +
-                        'Vistoria: ' + dataMensagem(cronograma.datevisini) + ' a ' + dataMensagem(cronograma.datevisfim) + '.' + '\n' +
-                        'Para mais detalhes entre em contato com a gente pelo whatsapp:' + telefone
+                    // telefone = '(' + ddd + ') ' + primdig + ' - ' + segdig
+                    // //Enviando SMS                              
+                    // var mensagem = 'Olá ' + cliente.nome + ', tudo bem?' + '\n' +
+                    //     'Segue o cronograma para a instalação de sua usina solar: ' + '\n' +
+                    //     'Planejamento: ' + dataMensagem(cronograma.dateplaini) + ' a ' + dataMensagem(cronograma.dateplafim) + '\n' +
+                    //     'Projetista: ' + dataMensagem(cronograma.dateprjini) + ' a ' + dataMensagem(cronograma.dateprjfim) + '\n' +
+                    //     'Aterramento: ' + dataMensagem(cronograma.dateateini) + ' a ' + dataMensagem(cronograma.dateatefim) + '\n' +
+                    //     'Inversores e StringBox: ' + dataMensagem(cronograma.dateinvini) + ' a ' + dataMensagem(cronograma.datestbfim) + '\n' +
+                    //     'Instalação da Estrutura: ' + dataMensagem(cronograma.dateestini) + ' a ' + dataMensagem(cronograma.dateestfim) + '\n' +
+                    //     'Instalação dos Módulos: ' + dataMensagem(cronograma.datemodini) + ' a ' + dataMensagem(cronograma.datemodfim) + '\n' +
+                    //     'Vistoria: ' + dataMensagem(cronograma.datevisini) + ' a ' + dataMensagem(cronograma.datevisfim) + '.' + '\n' +
+                    //     'Para mais detalhes entre em contato com a gente pelo whatsapp:' + telefone
 
-                    //console.log(mensagem)
-                    to = cliente.celular
-                    //console.log(to)
+                    // //console.log(mensagem)
+                    // to = cliente.celular
+                    // //console.log(to)
 
-                    //console.log('cliente.email=>' + cliente.email)
+                    // //console.log('cliente.email=>' + cliente.email)
 
-                    var email = cliente.email
+                    // var email = cliente.email
 
-                    const mailOptions = { // Define informações pertinentes ao E-mail que será enviado
-                        from: '"VIMMUS Soluções" <alexandre@vimmus.com.br>',
-                        to: email,
-                        subject: 'Cronograma do Projeto de Instalação do Sistema Fotovoltaico',
-                        //text: 'Nome: ' + req.body.nome + ';' + 'Celular: ' + req.body.celular + ';' + 'E-mail: '+ req.body.email
-                        text: mensagem
-                    }
+                    // const mailOptions = { // Define informações pertinentes ao E-mail que será enviado
+                    //     from: '"VIMMUS Soluções" <alexandre@vimmus.com.br>',
+                    //     to: email,
+                    //     subject: 'Cronograma do Projeto de Instalação do Sistema Fotovoltaico',
+                    //     //text: 'Nome: ' + req.body.nome + ';' + 'Celular: ' + req.body.celular + ';' + 'E-mail: '+ req.body.email
+                    //     text: mensagem
+                    // }
 
                     // var textMessageService = new TextMessageService(apiKey)
                     // textMessageService.send('Vimmus', mensagem, ['49991832978'], result => {
@@ -7483,20 +7483,20 @@ router.get('/enviaMensagem/:id', ehAdmin, (req, res) => {
                     //         req.flash('error_msg', 'Falha interna. Não foi possível enviar a mensagem.')
                     //         res.redirect('/gerenciamento/cronograma/' + req.params.id)
                     //     } else {
-                            projeto.mensagem = true
-                            projeto.save().then(() => {
-                                req.flash('success_msg', 'Mensagem enviada para: ' + cliente.nome + ' com sucesso.')
-                                transporter.sendMail(mailOptions, (err, info) => { //Função que, efetivamente, envia o email. 
-                                    if (err) {
-                                        return  //console.log(err)
-                                    } else {
+                    //         projeto.mensagem = true
+                    //         projeto.save().then(() => {
+                    //             req.flash('success_msg', 'Mensagem enviada para: ' + cliente.nome + ' com sucesso.')
+                    //             transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
+                    //                 if (err) {
+                    //                     return  //console.log(err)
+                    //                 } else {
                                         res.redirect('/gerenciamento/cronograma/' + req.params.id)
-                                     }
-                                 })
-                             }).catch((err) => {
-                                 req.flash('error_msg', 'Falha ao salvar o projeto.')
-                                 res.redirect('/gerenciamento/cronograma/' + req.params.id)
-                             })
+                    //                 }
+                    //             })
+                    //         }).catch((err) => {
+                    //             req.flash('error_msg', 'Falha ao salvar o projeto.')
+                    //             res.redirect('/gerenciamento/cronograma/' + req.params.id)
+                    //         })
                     //     }
                     // })
                 }).catch((err) => {

@@ -55,7 +55,7 @@ require("./config/auth")(passport)
 //Configuração
 //Sessions
 app.use(session({
-  secret: "vimmusapp",
+  secret: "vimmus",
   resave: true,
   saveUninitialized: true
 }))

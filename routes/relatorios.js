@@ -17,20 +17,13 @@ const Cliente = mongoose.model('cliente')
 const Equipe = mongoose.model('equipe')
 const Empresa = mongoose.model('empresa')
 
-const comparaDatas = require('../resources/comparaDatas')
+const pegames = require('../resources/pegames')
 const dataBusca = require('../resources/dataBusca')
-const liberaRecursos = require('../resources/liberaRecursos')
-const setData = require('../resources/setData')
 const dataMensagem = require('../resources/dataMensagem')
-const dataMsgNum = require('../resources/dataMsgNum')
-const validaCronograma = require('../resources/validaCronograma')
 const dataHoje = require('../resources/dataHoje')
 const filtrarProposta = require('../resources/filtrar')
 const naoVazio = require('../resources/naoVazio')
-const pegames = require('../resources/pegames')
 const { ehAdmin } = require('../helpers/ehAdmin')
-
-
 
 router.get('/analiseproposta', ehAdmin, (req, res) => {
     const { _id } = req.user
