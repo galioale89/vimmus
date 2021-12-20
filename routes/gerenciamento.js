@@ -101,9 +101,9 @@ const { ehAdmin } = require('../helpers/ehAdmin')
 // router.use(express.static('public/'))
 // router.use(express.static('public/upload'))
 
-const TextMessageService = require('comtele-sdk').TextMessageService
-const e = require('connect-flash')
-const apiKey = "8dbd4fb5-79af-45d6-a0b7-583a3c2c7d30"
+// const TextMessageService = require('comtele-sdk').TextMessageService
+// const e = require('connect-flash')
+// const apiKey = "8dbd4fb5-79af-45d6-a0b7-583a3c2c7d30"
 
 router.use(express.static(path.join(__dirname, 'public')))
 
@@ -7476,29 +7476,29 @@ router.get('/enviaMensagem/:id', ehAdmin, (req, res) => {
                         text: mensagem
                     }
 
-                    var textMessageService = new TextMessageService(apiKey)
-                    textMessageService.send('Vimmus', mensagem, ['49991832978'], result => {
-                        //console.log(result)
-                        if (result == false) {
-                            req.flash('error_msg', 'Falha interna. Não foi possível enviar a mensagem.')
-                            res.redirect('/gerenciamento/cronograma/' + req.params.id)
-                        } else {
+                    // var textMessageService = new TextMessageService(apiKey)
+                    // textMessageService.send('Vimmus', mensagem, ['49991832978'], result => {
+                    //     //console.log(result)
+                    //     if (result == false) {
+                    //         req.flash('error_msg', 'Falha interna. Não foi possível enviar a mensagem.')
+                    //         res.redirect('/gerenciamento/cronograma/' + req.params.id)
+                    //     } else {
                             projeto.mensagem = true
                             projeto.save().then(() => {
                                 req.flash('success_msg', 'Mensagem enviada para: ' + cliente.nome + ' com sucesso.')
-                                transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
+                                transporter.sendMail(mailOptions, (err, info) => { //Função que, efetivamente, envia o email. 
                                     if (err) {
                                         return  //console.log(err)
                                     } else {
                                         res.redirect('/gerenciamento/cronograma/' + req.params.id)
-                                    }
-                                })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Falha ao salvar o projeto.')
-                                res.redirect('/gerenciamento/cronograma/' + req.params.id)
-                            })
-                        }
-                    })
+                                     }
+                                 })
+                             }).catch((err) => {
+                                 req.flash('error_msg', 'Falha ao salvar o projeto.')
+                                 res.redirect('/gerenciamento/cronograma/' + req.params.id)
+                             })
+                    //     }
+                    // })
                 }).catch((err) => {
                     req.flash('error_msg', 'Falha ao encontrar a empresa.')
                     res.redirect('/gerenciamento/cronograma/' + req.params.id)
