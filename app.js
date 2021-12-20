@@ -92,9 +92,9 @@ mongoose.connect('mongodb://alegaliotto:3rdn4x3L4@mongo_vimmus:27017/vimmus', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => {
-  //console.log("Sucesso ao se conectar no Mongo")
+  console.log("Sucesso ao se conectar no Mongo")
 }).catch((errr) => {
-  //console.log("Falha ao se conectar no Mongo")
+  console.log("Falha ao se conectar no Mongo")
 })
 
 //Public para CSS do bootstrap
@@ -902,5 +902,5 @@ app.use('/fornecedor/', fornecedor)
 //Acesso ao localhost
 var port = process.env.PORT || 3000;
 app.listen(port, function () {
-  //console.log('Umbler listening on port %s', port);
+  console.log('Umbler listening on port %s', port);
 });
