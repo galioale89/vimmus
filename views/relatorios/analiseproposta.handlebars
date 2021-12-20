@@ -68,8 +68,10 @@
     <div id='header'>
         <div class="row mt-4">
             <form action='/relatorios/analisar/' method='post'>
-                <div class="col-md-4">
-                    <h5 class="mt-2 titulo-inicio">Análise de Propostas {{titulo}}</h5>
+                <div class="row">
+                    <h5 class="mt-2 titulo-inicio">Análise de Propostas {{titulo}}:
+                        {{#if mestitulo}}{{mestitulo}} de {{anotitulo}}{{else}}{{mestituloinicio}} de
+                        {{anotituloinicio}} a {{mestitulofim}} de {{anotitulofim}} {{/if}}</h5>
                     <input type="hidden" name='tipo' value='{{tipo}}'>
                 </div>
                 <div class="row">
@@ -146,6 +148,23 @@
                     </div>
                 </div>
             </form>
+        </div>
+        <div class="row mt-1 mb-1">
+            {{#if nomeEmpresa}}
+            <div class='filtro-selecao'>Empresa: {{nomeEmpresa}}</div>
+            {{else}}
+            <div class='filtro-selecao'>Empresa: Todos</div>
+            {{/if}}
+            {{#if nomeResponsavel}}
+            <div class='filtro-selecao'>Responsável: {{nomeResponsavel}}</div>
+            {{else}}
+            <div class='filtro-selecao'>Responsável: Todos</div>
+            {{/if}}
+            {{#if nomeCliente}}
+            <div class='filtro-selecao'>Cliente: {{nomeCliente}}</div>
+            {{else}}
+            <div class='filtro-selecao'>Cliente: Todos</div>
+            {{/if}}
         </div>
         <p>
             <a class="btn btn-primary" data-bs-toggle="collapse" href="#ganhas" role="button" aria-expanded="false"
@@ -256,15 +275,15 @@
         options: {
             maintainAspectRatio: false,
             responsive: true,
-                legend: {
-                    position: 'top',
-                    reverse: true,
-                    align: 'center',
-                    labels: {
-                        usePointStyle: true,
-                    }
-                    
+            legend: {
+                position: 'top',
+                reverse: true,
+                align: 'center',
+                labels: {
+                    usePointStyle: true,
                 }
+
+            }
         }
     });    
 </script>
