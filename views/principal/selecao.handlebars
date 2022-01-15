@@ -1,5 +1,4 @@
 <style>
-
     .lists {
         display: flex;
         flex: 1;
@@ -21,22 +20,6 @@
         transition: all 0.2s linear;
     }
 
-    .lists .list .list-item {
-        background-color: #F3F3F3;
-        border-radius: 8px;
-        text-align: center;
-        margin: 4px 0px;
-        cursor: pointer;
-    }
-
-    .lists .list .item-inversor {
-        background-color: #F3F3F3;
-        border-radius: 8px;
-        text-align: center;
-        margin: 4px 0px;
-        cursor: pointer;
-    }
-
     .lists .list .item {
         background-color: #F3F3F3;
         border-radius: 8px;
@@ -44,75 +27,234 @@
         margin: 4px 0px;
         cursor: pointer;
     }
+
+    .lists .list .item-enviado {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+        font-size: 17px;
+        font-weight: 600;
+    }
+
+    .lists .list .item-negociando {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+        font-size: 17px;
+        font-weight: 600;        
+    }
+
+    .lists .list .item-baixado {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+        font-size: 17px;
+        font-weight: 600;        
+    }
+
+    .lists .list .item-ganho {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+        font-size: 17px;
+        font-weight: 600;        
+    }
 </style>
+<script>
+    function salvar() {
+        var txthtml = ''
+        var dados = document.getElementById('dados')
+        var negociando = document.getElementsByClassName('item-negociando')
+        var baixado = document.getElementsByClassName('item-baixado')
+        var ganho = document.getElementsByClassName('item-ganho')
+
+        for (i = 0; i < negociando.length; i++) {
+            txthtml = txthtml + '<input type="hidden" name="idneg[]" value="' + negociando[i].innerText + '">'
+        }
+        for (i = 0; i < baixado.length; i++) {
+            txthtml = txthtml + '<input type="hidden" name="idbax[]" value="' + baixado[i].innerText + '">'
+        }
+        for (i = 0; i < ganho.length; i++) {
+            txthtml = txthtml + '<input type="hidden" name="idgan[]" value="' + ganho[i].innerText + '">'
+        }
+        dados.innerHTML = txthtml
+    }
+
+    function selectJan() {
+        var mes = document.getElementById('selectjan')
+        var mesatu = document.getElementById('mes')
+        mesatu.value = mes.innerText
+    }
+    function selectFev() {
+        var mes = document.getElementById('selectfev')
+        var mesatu = document.getElementById('mes')
+        mesatu.value = mes.innerText
+    }
+    function selectFev() {
+        var mes = document.getElementById('selectfev')
+        var mesatu = document.getElementById('mes')
+        mesatu.value = mes.innerText
+    }
+    function selectMar() {
+        var mes = document.getElementById('selectmar')
+        var mesatu = document.getElementById('mes')
+        mesatu.value = mes.innerText
+    }
+    function selectAbr() {
+        var mes = document.getElementById('selectabr')
+        var mesatu = document.getElementById('mes')
+        mesatu.value = mes.innerText
+    }
+    function selectMai() {
+        var mes = document.getElementById('selectmai')
+        var mesatu = document.getElementById('mes')
+        mesatu.value = mes.innerText
+    }
+    function selectJun() {
+        var mes = document.getElementById('selectjun')
+        var mesatu = document.getElementById('mes')
+        mesatu.value = mes.innerText
+    }
+    function selectJul() {
+        var mes = document.getElementById('selectjul')
+        var mesatu = document.getElementById('mes')
+        mesatu.value = mes.innerText
+    }
+    function selectAgo() {
+        var mes = document.getElementById('selectago')
+        var mesatu = document.getElementById('mes')
+        mesatu.value = mes.innerText
+    }
+    function selectSet() {
+        var mes = document.getElementById('selectset')
+        var mesatu = document.getElementById('mes')
+        mesatu.value = mes.innerText
+    }
+    function selectOut() {
+        var mes = document.getElementById('selectout')
+        var mesatu = document.getElementById('mes')
+        mesatu.value = mes.innerText
+    }
+    function selectNov() {
+        var mes = document.getElementById('selectnov')
+        var mesatu = document.getElementById('mes')
+        mesatu.value = mes.innerText
+    }
+    function selectDez() {
+        var mes = document.getElementById('selectdez')
+        var mesatu = document.getElementById('mes')
+        mesatu.value = mes.innerText
+    }    
+</script>
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
-    {{#if proposta._id}}
-    <div style="width: 100%;">
-        <h5 class="header">{{cliente_proposta.nome}} </h5>
-    </div>
-    {{/if}}
-    <div class="row mt-2" style="padding:20px;width: 100%;">
-        <div class="row">
-            <div class="lists">
-                <div class="list">
-                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">Aguardando
-                        Vistoria</label>
-                    <div class="list-item" style='color: black;' draggable="true"></div>
+    <label style="font-size: 20px;font-weight: 700;margin-top: 20px;">Gestão das Propostas</label>
+    <form action="/gerenciamento/aplicaSelecao/" method="post">
+        <div class="text-center mt-4 mb-2">
+            <label style="font-size: 20px; text-transform: uppercase;" class='fw-bold mt-1'>{{mestitulo}} de
+                {{ano}}</label>
+        </div>
+        <div class='row mb-2 mt-2' style="padding-left: 5%;">
+            <div class='col-md-1 text-start'>
+                <input type='number' class='form-control form-control-sm' name='ano' value='{{ano}}'>
+            </div>
+            <div class='col-md-10'>
+                <div class="btn-toolbar">
+                    <div class="btn-group col-12">
+                        <input type='hidden' name='mes' id='mes' value=''>
+                        <button type="submit" id='selectjan' onclick="selectJan()"
+                            class="btn btn-sm btn-primary {{janeiro}}">Janeiro</button>
+                        <button type="submit" id='selectfev' onclick="selectFev()"
+                            class="btn btn-sm btn-primary {{fevereiro}}">Fevereiro</button>
+                        <button type="submit" id='selectmar' onclick="selectMar()"
+                            class="btn btn-sm btn-primary {{marco}}">Março</button>
+                        <button type="submit" id='selectabr' onclick="selectAbr()"
+                            class="btn btn-sm btn-primary {{abril}}">Abril</button>
+                        <button type="submit" id='selectmai' onclick="selectMai()"
+                            class="btn btn-sm btn-primary {{maio}}">Maio</button>
+                        <button type="submit" id='selectjun' onclick="selectJun()"
+                            class="btn btn-sm btn-primary {{junho}}">Junho</button>
+                        <button type="submit" id='selectjul' onclick="selectJul()"
+                            class="btn btn-sm btn-primary {{julho}}">Julho</button>
+                        <button type="submit" id='selectago' onclick="selectAgo()"
+                            class="btn btn-sm btn-primary {{agosto}}">Agosto</button>
+                        <button type="submit" id='selectset' onclick="selectSet()"
+                            class="btn btn-sm btn-primary {{setembro}}">Setembro</button>
+                        <button type="submit" id='selectout' onclick="selectOut()"
+                            class="btn btn-sm btn-primary {{outubro}}">Outubro</button>
+                        <button type="submit" id='selectnov' onclick="selectNov()"
+                            class="btn btn-sm btn-primary {{novembro}}">Novembro</button>
+                        <button type="submit" id='selectdez' onclick="selectDez()"
+                            class="btn btn-sm btn-primary {{dezembro}}">Dezembro</button>
+                    </div>
                 </div>
-                <div class="list">
-                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">Em
-                        Vistoria</label>
-                    <div class="item-inversor" style='color: black;' draggable="true"></div>
-                </div>
-                <div class="list">
-                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">Contrato</label>
-                    <div class="item-inversor" style='color: black;' draggable="true"></div>
-                </div>
-                <div class="list">
-                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">Compra</label>
-                    <div class="item-inversor" style='color: black;' draggable="true"></div>
-                </div>
-                <div class="list">
-                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">TRT</label>
-                    <div class="item-inversor" style='color: black;' draggable="true"></div>
-                </div>
-                <div class="list">
-                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">Protocolado</label>
-                    <div class="item-inversor" style='color: black;' draggable="true"></div>
-                </div>
-                <div class="list">
-                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">Execução a Campo</label>
-                    <div class="item-inversor" style='color: black;' draggable="true"></div>
-                </div>
-                <div class="list">
-                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">Almoxarifado</label>
-                    <div class="item-inversor" style='color: black;' draggable="true"></div>
-                </div>    
-                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">Faturado</label>
-                    <div class="item-inversor" style='color: black;' draggable="true"></div>
-                </div>
-                <div class="list">
-                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">Pós-Venda</label>
-                    <div class="item-inversor" style='color: black;' draggable="true"></div>
-                </div>                
-                <div class="list">
-                    <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white">Encerrado</label>
-                    <div class="item-inversor" style='color: black;' draggable="true"></div>
-                </div>                                                                                      
             </div>
         </div>
-    </div>
+    </form>
+    <form method="post" action='/gerenciamento/selecao'>
+        <div class="row mt-2" style="padding:20px;width: 100%;">
+            <div class="row">
+                <div class="lists">
+                    <div class="list">
+                        <label class="col-form-label col-form-label-md fw-bold text-center"
+                            style="color: white">Enviado</label>
+                        {{#each enviado}}
+                        <div class="item-enviado" style='color: black;' draggable="true">{{seq}} - {{cliente}}</div>
+                        {{/each}}
+                    </div>
+                    <div class="list" id='negociando'>
+                        <label class="col-form-label col-form-label-md fw-bold text-center"
+                            style="color: white">Negociando</label>
+                        {{#each negociando}}
+                        <div class="item-negociando" style='color: black;' draggable="true"><a
+                                href='/gerenciamento/confirmastatus/{{id}}'>{{seq}} - {{cliente}} - {{status}}</a></div>
+                        {{/each}}
+                    </div>
+                    <div class="list" id='baixado'>
+                        <label class="col-form-label col-form-label-md fw-bold text-center"
+                            style="color: white">Baixado</label>
+                        {{#each baixado}}
+                        <div class="item-baixado" style='color: black; cursor: default'><a
+                                href='/gerenciamento/confirmabaixa/{{id}}' draggable="false">{{seq}} - {{cliente}} - {{motivo}}</a></div>                        
+                        {{/each}}
+                    </div>
+                    <div class="list" id='ganho'>
+                        <label class="col-form-label col-form-label-md fw-bold text-center"
+                            style="color: white">Ganho</label>
+                        {{#each ganho}}
+                        <div class="item-ganho" style='color: black; cursor: default' >{{seq}} - {{cliente}}</div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id='dados'>
+        </div>
+        <div class="text-center">
+            <button class='btn btn-success'  style="width: 100px;" type="submit" onclick="salvar()">Salvar</button>
+        </div>
+    </form>
 </div>
 
 <script>
-    const list_items = document.querySelectorAll('.list-item');
+    const list_enviado = document.querySelectorAll('.item-enviado')
+    const list_negociando = document.querySelectorAll('.item-negociando')
     const lists = document.querySelectorAll('.list');
-    const list_inversor = document.querySelectorAll('.item-inversor');
+    var text
+    var classe
+    var n
 
     let draggedItem = null;
 
-    for (let i = 0; i < list_items.length; i++) {
-        const item = list_items[i];
+    for (let i = 0; i < list_enviado.length; i++) {
+        const item = list_enviado[i];
 
         item.addEventListener('dragstart', function () {
             draggedItem = item;
@@ -122,9 +264,24 @@
         });
 
         item.addEventListener('dragend', function () {
-            this.className = 'item-inversor';
+            n = document.getElementById('negociando')
+            text = String(n.innerHTML)
+            if (text.indexOf("item-enviado") > -1) {
+                classe = 'item-negociando'
+            }
+            n = document.getElementById('baixado')
+            text = String(n.innerHTML)
+            if ((text.indexOf("item-enviado") > -1) || (text.indexOf("item-negociando") > -1)) {
+                classe = 'item-baixado'
+            }
+            n = document.getElementById('ganho')
+            text = String(n.innerHTML)
+            if ((text.indexOf("item-enviado") > -1) || (text.indexOf("item-negociando") > -1)) {
+                classe = 'item-ganho'
+            }
+            this.className = classe
             setTimeout(function () {
-                draggedItem.style.display = 'block';
+                draggedItem.style.display = 'block'
                 draggedItem = null;
             }, 0);
         })
@@ -146,27 +303,42 @@
             });
 
             list.addEventListener('drop', function (e) {
-                console.log('drop');
                 this.append(draggedItem);
                 this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
             });
         }
     }
 
-    if (list_inversor.length > 0 || list_inversor.length != '') {
+    if (list_negociando.length > 0 || list_negociando.length != '') {
 
-        for (let x = 0; x < list_inversor.length; x++) {
-            const inversor = list_inversor[x];
-
-            inversor.addEventListener('dragstart', function () {
-                draggedItem = inversor;
+        for (let x = 0; x < list_negociando.length; x++) {
+            const negociando = list_negociando[x]
+            
+            negociando.addEventListener('dragstart', function () {
+                draggedItem = negociando;
                 setTimeout(function () {
                     item.style.display = 'none';
                 }, 0)
             });
 
-            inversor.addEventListener('dragend', function () {
-                this.className = 'item';
+            negociando.addEventListener('dragend', function () {
+                n = document.getElementById('negociando')
+                text = String(n.innerHTML)
+                if (text.indexOf("item-enviado") > -1) {
+                    classe = 'item-negociando'
+                }
+                n = document.getElementById('baixado')
+                text = String(n.innerHTML)
+                if ((text.indexOf("item-enviado") > -1) || (text.indexOf("item-negociando") > -1)) {
+                    classe = 'item-baixado'
+                }
+                n = document.getElementById('ganho')
+                text = String(n.innerHTML)
+                if ((text.indexOf("item-enviado") > -1) || (text.indexOf("item-negociando") > -1)) {
+                    classe = 'item-ganho'
+                }
+                this.className = classe
+
                 setTimeout(function () {
                     draggedItem.style.display = 'block';
                     draggedItem = null;

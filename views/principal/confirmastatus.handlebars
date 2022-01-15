@@ -1,0 +1,29 @@
+<div class='caixa-confirma' style="width: 60%;">
+    <div class="card-body">
+        <form method='post' action='/gerenciamento/aplicarstatus'>
+        <input type='hidden' name='id' value='{{proposta._id}}'>
+            <div class="row" style="margin-top: 30px;">
+                <label class='text-center col-form-label'>Proposta</label>
+                <h2 class="text-center mb-4">{{proposta.seq}}</h2>
+                <div class='row'>
+                    <label class='col-form-label'>Status</label>
+                    <select class='form-select' name='status'>
+                        <option class='fw-bold'>{{proposta.status}}</option>
+                        <option>Negociando</option>
+                        <option>Analisando Financiamento</option>
+                        <option>Comparando Propostas</option>
+                        <option>Aguardando redução de preço</option>
+                    </select>
+                    <label class='col-form-label'>Descreva uma ação de resposta</label>
+                    <textarea name='descricao' class='form-control' rows="5">{{proposta.descstatus}}</textarea>
+                </div>
+                <div class="row">
+                    <div class='btn-group btn-group-lg gap-2' role='group'>
+                        <button type="submit" class='btn btn-danger'>Sim</button>
+                        <a class='btn btn-secondary' href='/menu'>Não</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

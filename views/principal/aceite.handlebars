@@ -17,7 +17,7 @@
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
     {{#if proposta._id}}
     <div style="width: 100%;">
-        <h5 class="header">{{cliente_proposta.nome}} </h5>
+        <h5 class="header">{{cliente_proposta.nome}} - {{proposta.seq}}</h5>
     </div>
     {{/if}}
 
@@ -99,15 +99,15 @@
                                 <div class="col">
                                     <input type='file' multiple name='fileate' class='form-control'>
                                 </div>
-                                {{#if vistoria.caminhoAte}}
+                                {{#if atvate.caminhoFoto}}
                                 <div class="col-md-1">
                                     <a href='/gerenciamento/mostrarAte/{{proposta._id}}' class='btn  btn-primary'><i
                                             class='bi bi-eye'></i></a>
                                 </div>
-                                {{/if}}                                
+                                {{/if}}
                                 <div class="col-md-2">
                                     <div class="form-check mt-1">
-                                        <input class="form-check-input" name='checkAte' type="checkbox" {{checkAte}}>
+                                        <input class="form-check-input" name='check' type="checkbox" {{checkAte}}>
                                         <label class="form-check-label mt-1" style="font-size: 15px;"
                                             for="flexCheckDefault">
                                             Aprovado
@@ -132,15 +132,15 @@
                                 <div class="col">
                                     <input type='file' multiple name='fileinv' class='form-control'>
                                 </div>
-                                {{#if vistoria.caminhoInv}}
+                                {{#if atvinv.caminhoFoto}}
                                 <div class="col-md-1">
                                     <a href='/gerenciamento/mostrarInv/{{proposta._id}}' class='btn  btn-primary'><i
-                                            class='bi bi-eye'></i></a>                                    
+                                            class='bi bi-eye'></i></a>
                                 </div>
                                 {{/if}}
                                 <div class="col-md-2">
                                     <div class="form-check mt-1">
-                                        <input class="form-check-input" name='checkInv' {{checkInv}} type="checkbox">
+                                        <input class="form-check-input" name='check' {{checkInv}} type="checkbox">
                                         <label class="form-check-label mt-1" style="font-size: 15px;">
                                             Aprovado
                                         </label>
@@ -164,7 +164,7 @@
                                 <div class="col">
                                     <input type='file' multiple name='filemod' class='form-control'>
                                 </div>
-                                {{#if vistoria.caminhoMod}}
+                                {{#if atvtel.caminhoFoto}}
                                 <div class="col-md-1">
                                     <a href='/gerenciamento/mostrarMod/{{proposta._id}}' class='btn  btn-primary'><i
                                             class='bi bi-eye'></i></a>
@@ -172,7 +172,7 @@
                                 {{/if}}
                                 <div class="col-md-2">
                                     <div class="form-check mt-1">
-                                        <input class="form-check-input" type="checkbox" name='checkMod' {{checkMod}} >
+                                        <input class="form-check-input" type="checkbox" name='check' {{checkMod}}>
                                         <label class="form-check-label mt-1" style="font-size: 15px;">
                                             Aprovado
                                         </label>
@@ -189,46 +189,6 @@
                     <hr>
                 </div>
                 <label class='col-form-label fw-bold'>Documentos</label>
-                <form action='/gerenciamento/aceite' class='' method='post' enctype="multipart/form-data">
-                    <div class="row">
-                        <div class="col-md-3 text-end">
-                            <label class='col-form-label fw-bold mt-3'>Aceite da Instalação: </label>
-                        </div>
-                        <div class="col-md-9 text-start">
-                            <input type='hidden' name='id' value='{{proposta._id}}'>
-                            <div class="row">
-                                {{#if documento.aceite}}
-                                <div class="col-md-5">
-                                    <div class="row mt-3">
-                                        <label class='col-form-label labelp'>{{documento.aceite}}</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-1 mt-3">
-                                    <a class="btn btn-primary" href='/gerenciamento/mostrarAceite/{{proposta._id}}'
-                                        target="_blank"><i class='bi bi-eye'></i></a>
-                                </div>                                
-                                <div class="col-md-2 mt-3">
-                                    <input style="max-width: 150px;font-size: 15px;" type='file' class='form-control'
-                                        name='aceite' value='{{documento.aceite}}'>
-                                </div>
-                                {{else}}
-                                <div class="col-md-7 mt-3">
-                                    <input type='file' class='form-control form-control' name='aceite'
-                                        value='{{documento.aceite}}'>
-                                </div>
-                                {{/if}}
-                                <div style="width: 200px;">
-                                    <label> Data</label>
-                                    <input type='date' class='form-control form-control' name='dtaceite'
-                                        value='{{documento.dtaceite}}'>
-                                </div>
-                                <div class="col-md-1 mt-3">
-                                    <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
-                                </div>
-                            </div><br>
-                        </div>
-                    </div>
-                </form>
                 <form action='/gerenciamento/checklist' class='' method='post' enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-md-3 text-end">
@@ -246,7 +206,7 @@
                                 <div class="col-md-1 mt-3">
                                     <a class="btn btn-primary" href='/gerenciamento/mostrarClins/{{proposta._id}}'
                                         target="_blank"><i class='bi bi-eye'></i></a>
-                                </div>                                
+                                </div>
                                 <div class="col-md-2 mt-3">
                                     <input style="max-width: 150px;font-size: 15px;" type='file' class='form-control'
                                         name='clins' value='{{documento.clins}}'>
@@ -260,6 +220,46 @@
                                     <label> Data</label>
                                     <input type='date' class='form-control' name='dtclins'
                                         value='{{documento.dtclins}}'>
+                                </div>
+                                <div class="col-md-1 mt-3">
+                                    <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
+                                </div>
+                            </div><br>
+                        </div>
+                    </div>
+                </form>
+                <form action='/gerenciamento/aceite' class='' method='post' enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-3 text-end">
+                            <label class='col-form-label fw-bold mt-3'>Aceite da Instalação: </label>
+                        </div>
+                        <div class="col-md-9 text-start">
+                            <input type='hidden' name='id' value='{{proposta._id}}'>
+                            <div class="row">
+                                {{#if documento.aceite}}
+                                <div class="col-md-5">
+                                    <div class="row mt-3">
+                                        <label class='col-form-label labelp'>{{documento.aceite}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-1 mt-3">
+                                    <a class="btn btn-primary" href='/gerenciamento/mostrarAceite/{{proposta._id}}'
+                                        target="_blank"><i class='bi bi-eye'></i></a>
+                                </div>
+                                <div class="col-md-2 mt-3">
+                                    <input style="max-width: 150px;font-size: 15px;" type='file' class='form-control'
+                                        name='aceite' value='{{documento.aceite}}'>
+                                </div>
+                                {{else}}
+                                <div class="col-md-7 mt-3">
+                                    <input type='file' class='form-control form-control' name='aceite'
+                                        value='{{documento.aceite}}'>
+                                </div>
+                                {{/if}}
+                                <div style="width: 200px;">
+                                    <label> Data</label>
+                                    <input type='date' class='form-control form-control' name='dtaceite'
+                                        value='{{documento.dtaceite}}'>
                                 </div>
                                 <div class="col-md-1 mt-3">
                                     <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>

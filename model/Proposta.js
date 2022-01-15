@@ -47,15 +47,7 @@ const Proposta = new Schema({
     cidade:{
         type: String,
         require: false
-    },
-    assinatura:{
-        type: String,
-        require: false
-    },
-    dtassinatura:{
-        type: String,
-        require: false
-    },    
+    },  
     proposta1:{
         type: String,
         require: false
@@ -140,26 +132,46 @@ const Proposta = new Schema({
         type: Boolean,
         require:false        
     },
-    contrato:{
-        type: String,
-        require:false  
-    },
-    dtcontrato:{
-        type: String,
-        require: false
-    },    
-    deadline:{
-        type: String,
-        require: false
-    },
     encerrado:{
         type: Boolean,
         require:false        
     },    
+    baixada:{
+        type: Boolean,
+        require:false        
+    },   
+    dtbaixa:{
+        type: String,
+        require:false        
+    },   
+    motivo:{
+        type: String,
+        require:false        
+    },       
+    descmot:{
+        type: String,
+        require:false        
+    },   
+    status:{
+        type: String,
+        require:false  
+    },
+    descstatus: {
+        type: String,
+        require:false  
+    },
+    datastatus: {
+        type: String,
+        require:false  
+    },    
     datacad:{
         type: Number,
-        require:false   
-    },    
+        require: false   
+    },  
+    ref: {
+        type: Boolean,
+        require: false   
+    },
     data:{
         type: Number,
         require:false   

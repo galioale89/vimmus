@@ -232,35 +232,63 @@
         </div>
     </div>
 
-    {{#each qtd_envio}}
+    <input type='hidden' id='qtd_conco' value='{{qtd_conco}}'>
+    <input type='hidden' id='qtd_finan' value='{{qtd_finan}}'>
+    <input type='hidden' id='qtd_prazo' value='{{qtd_prazo}}'>
+    <input type='hidden' id='qtd_preco' value='{{qtd_preco}}'>
+    <input type='hidden' id='qtd_smoti' value='{{qtd_smoti}}'>
+
+    <input type='hidden' id='qtd_envia' value='{{qtd_envia}}'>
+    <input type='hidden' id='qtd_negoc' value='{{qtd_negoc}}'>
+    <input type='hidden' id='qtd_anali' value='{{qtd_anali}}'>
+    <input type='hidden' id='qtd_compa' value='{{qtd_compa}}'>
+    <input type='hidden' id='qtd_reduc' value='{{qtd_reduc}}'>
+
+    {{!-- {{#each qtd_envio}}
     <input type='hidden' id='res_envio[]' value='{{responsavel}}'>
     <input type='hidden' id='qtd_envio[]' value='{{qtd}}'>
     {{/each}}
     {{#each qtd_ganho}}
     <input type='hidden' id='res_ganho[]' value='{{responsavel}}'>
     <input type='hidden' id='qtd_ganho[]' value='{{qtd}}'>
-    {{/each}}
+    {{/each}} --}}
+
     <input type="hidden" id='ganho_total' value='{{ganho_total}}'>
     <input type="hidden" id='naoganho_total' value='{{naoganho_total}}'>
     <input type="hidden" id='envio_total' value='{{envio_total}}'>
 
-    <div style="height: 350px;margin-bottom: 100px;">
-        <canvas id='chartAG' class='mt-1 mb-1'></canvas>
+    <div class="row">
+        <div class="col" style="height: 350px;margin-bottom: 100px;text-align: center;">
+            <label style="font-size: 20px;" id='total_propostas'>Todas Propostas</label>
+            <canvas id='chartAG' class='mt-1 mb-1'></canvas>
+        </div>
+        <div class="col" style="height: 350px;margin-bottom: 100px;text-align: center">
+            <label style="font-size: 20px;" id='total_negociacao'>Em Negociação</label>
+            <canvas id='chartNegociando' class='mt-1 mb-1'></canvas>
+        </div>
+        <div class="col" style="height: 350px;margin-bottom: 100px;text-align: center">
+            <label style="font-size: 20px;" id='total_baixadas'>Propostas Baixadas</label>
+            <canvas id='chartBaixado' class='mt-1 mb-1'></canvas>
+        </div>
     </div>
-
 </div>
 </div>
 <script>
+    var total
+    var total_propostas = document.getElementById('total_propostas')
     var ganho = document.getElementById('ganho_total')
     var naoganho = document.getElementById('naoganho_total')
-    var envio = document.getElementById('envio_total')
+    total = parseFloat(ganho.value) + parseFloat(naoganho.value)
+    total_propostas.innerHTML = total_propostas.innerHTML + ': ' + total
+    perganho = (ganho.value/total * 100).toFixed(1)
+    pernaoganho = (naoganho.value/total * 100).toFixed(1)
     var ctxAG = document.getElementById('chartAG').getContext('2d');
     var chartAG = new Chart(ctxAG, {
         type: 'doughnut',
         data: {
-            labels: ['Não Ganho', 'Ganho'],
+            labels: ['Não Ganho' + '  ' + naoganho.value, 'Ganho' + '  ' + ganho.value ],
             datasets: [{
-                data: [naoganho.value, ganho.value],
+                data: [pernaoganho, perganho],
                 backgroundColor: [
                     'rgba(37, 139, 33, 0.2)',
                     'rgba(50, 140, 230, 0.2)',
@@ -285,5 +313,113 @@
 
             }
         }
-    });    
+    });
+
+    var total_negociacao = document.getElementById('total_negociacao')
+    var envia = document.getElementById('qtd_envia')
+    var negoc = document.getElementById('qtd_negoc')
+    var anali = document.getElementById('qtd_anali')
+    var reduc = document.getElementById('qtd_reduc')
+    var compa = document.getElementById('qtd_compa')
+    total = parseFloat(negoc.value) + parseFloat(anali.value) + parseFloat(reduc.value) + parseFloat(compa.value) + parseFloat(envia.value)
+    total_negociacao.innerHTML = total_negociacao.innerHTML + ': ' + total
+
+    var perenvia = (envia.value/total * 100).toFixed(1)
+    var pernegoc = (negoc.value/total * 100).toFixed(1)
+    var peranali = (anali.value/total * 100).toFixed(1)
+    var perreduc = (reduc.value/total * 100).toFixed(1)
+    var percompa = (compa.value/total * 100).toFixed(1)
+
+    var ctxNegociando = document.getElementById('chartNegociando').getContext('2d');
+    var chartNegociando = new Chart(ctxNegociando, {
+        type: 'doughnut',
+        data: {
+            labels: ['Enviado' + '  ' + envia.value, 'Negociando' + '  ' + negoc.value, 'Analisando Financiamento'+ '  ' + anali.value, 'Aguardando redução de preço'+ '  ' + reduc.value, 'Comparando Propostas'+ '  ' + compa.value],
+            datasets: [{
+                data: [perenvia, pernegoc, peranali, perreduc, percompa],
+                backgroundColor: [
+                    'rgba(255, 255, 20, 0.2)',
+                    'rgba(50, 50, 230, 0.2)',
+                    'rgba(1, 139, 200, 0.2)',
+                    'rgba(230, 140, 50, 0.2)',
+                    'rgba(20, 200, 80, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 255, 20, 1)',
+                    'rgba(50, 50, 230, 1)',
+                    'rgba(1, 139, 200, 1)',
+                    'rgba(230, 140, 50, 1)',
+                    'rgba(20, 200, 80, 1)',
+                ],
+                borderWidth: 1,
+            }],
+        },
+        options: {
+            maintainAspectRatio: false,
+            spanGaps: false,
+            responsive: true,
+            legend: {
+                position: 'top',
+                reverse: true,
+                align: 'center',
+                labels: {
+                    usePointStyle: true,
+                },
+            },
+        },
+    });
+
+    var total_baixadas = document.getElementById('total_baixadas')
+    var conco = document.getElementById('qtd_conco')
+    var finan = document.getElementById('qtd_finan')
+    var prazo = document.getElementById('qtd_prazo')
+    var preco = document.getElementById('qtd_preco')
+    var smoti = document.getElementById('qtd_smoti')
+    total = parseFloat(conco.value) + parseFloat(finan.value) + parseFloat(prazo.value) + parseFloat(preco.value) + parseFloat(smoti.value)
+    total_baixadas.innerHTML =  total_baixadas.innerHTML + ': ' + total
+
+    var perconco = (conco.value/total * 100).toFixed(1)
+    var perfinan = (finan.value/total * 100).toFixed(1)
+    var perprazo = (prazo.value/total * 100).toFixed(1)
+    var perpreco = (preco.value/total * 100).toFixed(1)
+    var persmoti = (smoti.value/total * 100).toFixed(1)
+
+    var ctxBaixado = document.getElementById('chartBaixado').getContext('2d');
+    var chartBaixado = new Chart(ctxBaixado, {
+        type: 'doughnut',
+        data: {
+            labels: ['Concorrente' + '  ' + conco.value, 'Financiamento'+ '  ' + finan.value, 'Prazo'+ '  ' + prazo.value, 'Preço'+ '  ' + preco.value, 'Sem Motivo'+ '  ' + smoti.value],
+            datasets: [{
+                data: [perconco, perfinan, perprazo, perpreco, persmoti],
+                backgroundColor: [
+                    'rgba(255, 255, 20, 0.2)',
+                    'rgba(50, 50, 230, 0.2)',
+                    'rgba(1, 139, 200, 0.2)',
+                    'rgba(230, 140, 50, 0.2)',
+                    'rgba(20, 200, 80, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 255, 20, 1)',
+                    'rgba(50, 50, 230, 1)',
+                    'rgba(1, 139, 200, 1)',
+                    'rgba(230, 140, 50, 1)',
+                    'rgba(20, 200, 80, 1)',
+                ],
+                borderWidth: 1,
+            }],
+        },
+        options: {
+            maintainAspectRatio: false,
+            spanGaps: false,
+            responsive: true,
+            legend: {
+                position: 'top',
+                reverse: true,
+                align: 'center',
+                labels: {
+                    usePointStyle: true,
+                },
+            },
+        },
+    });
 </script>

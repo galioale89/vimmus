@@ -113,8 +113,10 @@
         </div>
         {{/if}}
     </div>
-
-    <label style="font-size: 14px;" class='fw-bold mt-1'>{{mestitulo}} de {{anotitulo}}</label>
+    <div class='text-center'>
+        <label style="font-size: 20px; text-transform: uppercase;" class='fw-bold mt-1'>{{mestitulo}} de
+            {{anotitulo}}</label>
+    </div>
     <div class='row mt-4'>
         {{#if pessoa._id}}
         <form action="/gerenciamento/vermais" method="post">
@@ -135,29 +137,29 @@
                             <div class="btn-group col-12">
                                 <input type='hidden' name='mes' id='mes' value=''>
                                 <button type="submit" id='selectjan' onclick="selectJan()"
-                                    class="btn btn-sm btn-primary">Janeiro</button>
+                                    class="btn btn-sm btn-primary {{janeiro}}">Janeiro</button>
                                 <button type="submit" id='selectfev' onclick="selectFev()"
-                                    class="btn btn-sm btn-primary">Fevereiro</button>
+                                    class="btn btn-sm btn-primary {{fevereiro}}">Fevereiro</button>
                                 <button type="submit" id='selectmar' onclick="selectMar()"
-                                    class="btn btn-sm btn-primary">Março</button>
+                                    class="btn btn-sm btn-primary {{marco}}">Março</button>
                                 <button type="submit" id='selectabr' onclick="selectAbr()"
-                                    class="btn btn-sm btn-primary">Abril</button>
+                                    class="btn btn-sm btn-primary {{abril}}">Abril</button>
                                 <button type="submit" id='selectmai' onclick="selectMai()"
-                                    class="btn btn-sm btn-primary">Maio</button>
+                                    class="btn btn-sm btn-primary {{maio}}">Maio</button>
                                 <button type="submit" id='selectjun' onclick="selectJun()"
-                                    class="btn btn-sm btn-primary">Junho</button>
+                                    class="btn btn-sm btn-primary {{junho}}">Junho</button>
                                 <button type="submit" id='selectjul' onclick="selectJul()"
-                                    class="btn btn-sm btn-primary">Julho</button>
+                                    class="btn btn-sm btn-primary {{julho}}">Julho</button>
                                 <button type="submit" id='selectago' onclick="selectAgo()"
-                                    class="btn btn-sm btn-primary">Agosto</button>
+                                    class="btn btn-sm btn-primary {{agosto}}">Agosto</button>
                                 <button type="submit" id='selectset' onclick="selectSet()"
-                                    class="btn btn-sm btn-primary">Setembro</button>
+                                    class="btn btn-sm btn-primary {{setembro}}">Setembro</button>
                                 <button type="submit" id='selectout' onclick="selectOut()"
-                                    class="btn btn-sm btn-primary">Outubro</button>
+                                    class="btn btn-sm btn-primary {{outubro}}">Outubro</button>
                                 <button type="submit" id='selectnov' onclick="selectNov()"
-                                    class="btn btn-sm btn-primary">Novembro</button>
+                                    class="btn btn-sm btn-primary {{novembro}}">Novembro</button>
                                 <button type="submit" id='selectdez' onclick="selectDez()"
-                                    class="btn btn-sm btn-primary">Dezembro</button>
+                                    class="btn btn-sm btn-primary {{dezembro}}">Dezembro</button>
                             </div>
                         </div>
                     </div>
@@ -430,7 +432,7 @@
                     {{/each}}
                 </td>
             </tr>
-            {{#if fevereiro}}
+            {{#if bisexto}}
             {{else}}
             <tr>
                 <td>5</td>

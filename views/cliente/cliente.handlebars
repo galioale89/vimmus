@@ -238,6 +238,7 @@
 
 <form {{#if cliente._id}}action='/cliente/edicao'{{else}}action='/cliente/novo'{{/if}} method='post' class='form-floating'>
 <input type='hidden' name='id' value='{{cliente._id}}'>
+<input type='hidden' name='voltar' value='{{voltar}}'>
     <div class="cotainer mt-4" style="width: 50%;margin-left: 25%;">
         <ul class="nav nav-tabs mb-2">
             {{#if cliente._id}}
@@ -326,6 +327,11 @@
         <div class="btn-group gap-2 mt-2" style="width: 50%;margin-left: 30%;">
             <a href='/cliente/novo' class='btn btn-sm btn-primary'>Novo</a>
             <button type='submit' class='btn btn-sm btn-success'>Aplicar</button>
+            {{#if cliente._id}}
+            {{#if voltar}}
+            <a href='/gerenciamento/agenda' class='btn btn-sm btn-primary'><i class='bi bi-arrow-return-left'></i></a>
+            {{/if}}
+            {{/if}}
         </div>
     </div>
 </form>

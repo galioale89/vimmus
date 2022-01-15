@@ -39,7 +39,7 @@
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
     {{#if proposta._id}}
     <div style="width: 100%;">
-        <h5 class="header">{{cliente_proposta.nome}} </h5>
+        <h5 class="header">{{cliente_proposta.nome}} - {{proposta.seq}}</h5>
     </div>
     {{/if}}
 
@@ -101,7 +101,7 @@
     </div>
 
     <div id='bloquear' class='{{proposta.encerrado}}'>
-        <div class="row mt-4" style="padding-left: 10%;">
+        <div class="row mt-4" style="padding-left: 5%;">
             <div class='row fw-bold'>
                 <div style="width: 51%;">
                     <label class='col-form-label'>Documento</label>
@@ -223,31 +223,55 @@
                     </div>
                 </div>
             </form>
-
-            <form action='/gerenciamento/protocolar' method="post">
-                <input type='hidden' name='id' value='{{proposta._id}}'>
-                <div class="row mt-4">
-                    <div class="col-md-5 mt-4">
-                        <div class="form-check" style="font-size: 20px;" id='checkProto' onchange="mostraSalvar()">
-                            <input class="form-check-input" type="checkbox" {{check}} id="checkProtocolo">
-                            <label class="form-check-label mt-1" style="font-size: 20px;">
-                                Projeto protocolado na concessionária
-                            </label>
+            <div class="row">
+                <div class="col-md-7">
+                    <form action='/gerenciamento/protocolar' method="post">
+                        <input type='hidden' name='id' value='{{proposta._id}}'>
+                        <div class="row mt-4">
+                            <div class="mt-4" style="width: 340px;">
+                                <div class="form-check" id='checkProto' onchange="mostraSalvar()">
+                                    <input class="form-check-input" type="checkbox" {{check}} id="checkProtocolo">
+                                    <label class="form-check-label mt-1" style="font-size: 15px;">
+                                        Projeto protocolado na concessionária
+                                    </label>
+                                </div>
+                            </div>
+                            <div style='width: 190px;'>
+                                <label>Data Envio</label>
+                                <input type="date" class='form-control' name='dtprotocolo'
+                                    value='{{documento.dtprotocolo}}'>
+                            </div>
+                            <div style='width: 100px;'>
+                                <label>Deadline</label><br>
+                                <label class='col-form-label'>{{documento.dtdeadline}}</label>
+                            </div>
+                            <div class="col-md-1 mt-3" id='salvar' style="display: {{salva}}">
+                                <button type="submit" class='btn btn-success'><i class='bi bi-save'></i></button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-2">
-                        <label>Data Envio</label>
-                        <input type="date" class='form-control' name='dtprotocolo' value='{{documento.dtprotocolo}}'>
-                    </div>
-                    <div class="col-md-1">
-                        <label>Deadline</label><br>
-                        <label class='col-form-label'>{{documento.dtdeadline}}</label>
-                    </div>
-                    <div class="col-md-1 mt-3" id='salvar' style="display: {{salva}}">
-                        <button type="submit" class='btn btn-success'>Salvar</button>
-                    </div>
+                    </form>
                 </div>
-            </form>
+                <div class="col">
+                    <form action='/gerenciamento/salvarParecer' enctype="multipart/form-data" method="post">
+                        <input type='hidden' name='id' value='{{proposta._id}}'>
+                        <div class="row" style="margin-top: 40px;">
+                            <div class='col'>
+                                <input class="form-control" type="file" name='parecer'>
+                            </div>
+                            {{#if documento.parecer}}
+                            <div style="width: 70px;">
+                                <a class="btn btn-primary" href='/gerenciamento/mostrarParecer/{{proposta._id}}'
+                                    target="_blank"><i class='bi bi-eye'></i></a>
+                            </div>
+                            {{/if}}                            
+                            <div style="width: 70px;">
+                                <button type='submit' class="btn btn-success" name='aplicar'><i
+                                        class='bi bi-save'></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</div

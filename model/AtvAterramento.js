@@ -7,6 +7,26 @@ const AtvAterramento = new Schema({
         ref: 'proposta',
         require: true
     },    
+    feito: {
+        type: Boolean,
+        require: false
+    },
+    data:{
+        type: String,
+        require: false
+    },
+    hora:{
+        type: String,
+        require: false
+    },
+    caminhoFoto:{
+        type: Array,
+        require: false,
+    },
+    aprova: {
+        type: Boolean,
+        require: false,
+    },
     ins0: {
         type: Schema.Types.ObjectId,
         ref: 'pessoa',
@@ -36,23 +56,7 @@ const AtvAterramento = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'pessoa',
         require: true
-    },         
-    feito: {
-        type: Boolean,
-        require: false
-    },
-    data:{
-        type: String,
-        require: false
-    },
-    hora:{
-        type: String,
-        require: false
-    },
-    caminhoFoto:{
-        type: Array,
-        require: false,
-    },
+    },             
 })
 
 mongoose.model('atvAterramento', AtvAterramento)

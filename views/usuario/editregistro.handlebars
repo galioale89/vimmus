@@ -118,7 +118,7 @@
 
         <form action="/administrador/editregistro" method="post">
 
-            <input type='hidden' name='id' value='{{usuario._id}}'>
+            <input type='hidden' name='id' value='{{usuario_acesso._id}}'>
             <!-- Modal Alterar Senha -->
             <div class="modal fade" tabindex="-1" id='senha' aria-hidden="true">
                 <div class="modal-dialog modal-md">
@@ -176,10 +176,10 @@
                     {{#if usuario_acesso.razao}}
                     <label class='col-form-label col-form-label-sm' for="razao">Razão Social: </label><br>
                     {{/if}}
-                    {{#if usuario_acesso.nome}}
+                    {{#if usuario_acesso.razao}}
                     <label class='col-form-label col-form-label-sm mt-1' for="fantasia">Nome Fantasia: </label><br>
                     {{/if}}
-                    {{#if usuario.cnpj}}
+                    {{#if usuario_acesso.cnpj}}
                     <label class='col-form-label col-form-label-sm mt-1' for="cnpj">CNPJ: </label><br>
                     {{else}}
                     <label class='col-form-label col-form-label-sm mt-1' for="cnpj">CPF: </label><br>
@@ -194,38 +194,38 @@
 
                 </div>
                 <div class="col-md-7">
-                    <input name="nome" id="nome" class="form-control form-control-sm mb-1" value='{{usuario.nome}}'>
+                    <input name="nome" id="nome" class="form-control form-control-sm mb-1" value='{{usuario_acesso.nome}}'>
                     {{#if usuario_acesso.razao}}
-                    <input name="razao" id="razao" class="form-control form-control-sm" value='{{usuario.razao}}'>
+                    <input name="razao" id="razao" class="form-control form-control-sm" value='{{usuario_acesso.razao}}'>
                     {{/if}}
-                    {{#if usuario_acesso.nome}}
+                    {{#if usuario_acesso.razao}}
                     <input name="fantasia" id="fantasia" class="form-control form-control-sm mt-1"
-                        value='{{usuario.fantasia}}'>
+                        value='{{usuario_acesso.fantasia}}'>
                     {{/if}}
                     <input type='text' class='form-control form-control-sm mt-1' maxlength="18" autocomplete="off"
-                        id='cnpj' name='cnpj' onkeyup="valida_cnpj()" {{#if usuario.cnpj}}value='{{usuario.cnpj}}'
-                        {{else}}value='{{usuario.cpf}}' {{/if}}>
+                        id='cnpj' name='cnpj' onkeyup="valida_cnpj()" {{#if usuario_acesso.cnpj}}value='{{usuario_acesso.cnpj}}'
+                        {{else}}value='{{usuario_acesso.cpf}}' {{/if}}>
                     <input name="endereco" id="endereco" class="form-control form-control-sm mt-1"
-                        value='{{usuario.endereco}}'>
-                    {{#if usuario.uf}}
+                        value='{{usuario_acesso.endereco}}'>
+                    {{#if usuario_acesso.uf}}
                     <div class="row">
                         <div class="col-md-5">
-                            <label class='col-form-label col-form-label-sm mt-1'>{{usuario.uf}}</label><br>
+                            <label class='col-form-label col-form-label-sm mt-1'>{{usuario_acesso.uf}}</label><br>
                         </div>
                         <div class="col-md-7">
                             <select id='estado' name='uf' class='form-select form-select-sm mt-1'></select>
                         </div>
                     </div>
                     <!--
-                    <input name="uf" id="uf" class="form-control form-control-sm mt-1" value='{{usuario.uf}}'>
+                    <input name="uf" id="uf" class="form-control form-control-sm mt-1" value='{{usuario_acesso.uf}}'>
                     -->
                     {{else}}
                     <select id='estado' name='uf' class='form-select form-select-sm mt-1'></select>
                     {{/if}}
-                    {{#if usuario.cidade}}
+                    {{#if usuario_acesso.cidade}}
                     <div class="row">
                         <div class="col-md-5">
-                            <label class='col-form-label col-form-label-sm mt-1'>{{usuario.cidade}}</label><br>
+                            <label class='col-form-label col-form-label-sm mt-1'>{{usuario_acesso.cidade}}</label><br>
                         </div>
                         <div class="col-md-7">
                             <select id='cidade' name='cidade' class='form-select form-select-sm mt-1'></select>
@@ -233,16 +233,20 @@
                     </div>
                     <!--
                     <input name="cidade" id="cidade" class="form-control form-control-sm mt-1"
-                        value='{{usuario.cidade}}'>-->
+                        value='{{usuario_acesso.cidade}}'>-->
 
                     {{else}}
                     <select id='cidade' name='cidade' class='form-select form-select-sm mt-1'></select>
                     {{/if}}
                     <input name="telefone" id="celular" class="form-control form-control-sm mt-1"
-                        value='{{usuario.celular}}' maxlength="16" autocomplete="off">
+                        value='{{usuario_acesso.celular}}' maxlength="16" autocomplete="off">
                     <input name="usuario" id="usuario" class="form-control form-control-sm mt-1"
                         value='{{usuario_acesso.usuario}}'>
-                    <label for="email" class="col-form-label col-form-label-sm">{{usuario.email}}</label>
+                        {{#if ehUserMaster}}
+                        <input type="text" name='email' class='form-control form-control-sm mt-1 mb-1' value='{{usuario_acesso.email}}'>
+                        {{else}}
+                    <label for="email" class="col-form-label col-form-label-sm">{{usuario_acesso.email}}</label>
+                    {{/if}}
                 </div>
 
                 {{#if ehUserMaster}}
@@ -252,8 +256,9 @@
                     </div>
                     <div class="col-md-6">
                         <select name='tipo' class="form-select form-select-sm">
-                            <option style="font-weight: 800;">{{usuario_acesso.ehAdmin}}</option>
-                            <option style="font-weight: 800;">{{usuario_acesso.ehAdmin}}</option>
+                            {{#if usuario_acesso.admin}}
+                            <option style="font-weight: 800;">{{usuario_acesso.admin}}</option>
+                            {{/if}}
                             <option>0</option>
                             <option>1</option>
                             <option>3</option>

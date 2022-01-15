@@ -62,6 +62,20 @@
 
     saudacao.innerHTML = 'Hoje é ' + semana + ', dia ' + dia + ' de ' + mes + ' de ' + ano
 
+    var dim = document.getElementById('dim')
+    var dim1 = document.getElementById('dim1')
+    var altura = parseFloat(window.screen.height)
+    altura = Math.trunc(altura - (altura * 0.4))
+    altura = altura + 'px'
+    dim.style.height = altura
+    dim1.style.height = altura
+    /*
+    var largura = parseFloat(window.screen.width)
+    largura = largura - (largura * 0.03)
+    largura = largura + 'px'
+    dim.style.width = String(largura)
+    */
+
   }
 </script>
 <!-- Default dropstart button -->
@@ -80,10 +94,15 @@
         <div class='btn-group col-12 gap-2 justify-content-end'>
           <a href='/menu' class="botao-filter"><i class='bi bi-menu-button-wide'></i> Dashboard</a><br>
           <div class="dropdown">
-            <button class="botao-filter dropdown-toggle fw-bold" type="button" style='background-color: rgb(44,55,89);' data-bs-toggle="dropdown"
-              aria-expanded="false" style='font-size: 10px'>Relatórios</button>
+            <button class="botao-filter dropdown-toggle fw-bold" type="button" style='background-color: rgb(44,55,89);'
+              data-bs-toggle="dropdown" aria-expanded="false" style='font-size: 10px'>Relatórios</button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-              <a href='/relatorios/analiseproposta' class="contorno-menu"><i class='bi bi-file-earmark-spreadsheet'></i> Analisa Propostas</a>
+              <a href='/relatorios/analiseproposta' class="contorno-menu"><i class='bi bi-file-earmark-spreadsheet'></i>
+                Analisa Propostas</a>
+                <div class='mt-2'>
+              <a href='/relatorios/priorizacao' class="contorno-menu" ><i class='bi bi-file-earmark-arrow-up'></i>
+                Compras</a>  
+                </div>              
             </ul>
           </div>
           <a href='/gerenciamento/consulta' class="botao-filter"><i class="bi bi-search"></i> Busca Propostas</a><br>

@@ -52,6 +52,7 @@
 {{else}} --}}
 <div class="container d-flex justify-content-center" style='padding: 10px;margin-top: 2px;'>
     <form method="post" action='/gerenciamento/addtarefa' style="text-align: center;">
+        <input type='hidden' name='cliente' value='{{cliente}}'>        
         <input type='hidden' name='equipe' value='{{equipe}}'>
         <input type='hidden' name='tarefadtini' value='{{tarefa.dataini}}'>
         <input type='hidden' name='tarefadtfim' value='{{tarefa.datafim}}'>
@@ -61,6 +62,7 @@
         {{#if equipe}}
         {{else}}
         <label style="font-size: 15px;font-weight: 600;">Adicionar Manutenção</label><br><br>
+        {{#if usina}}
         <div class="row">
             <div class="col-md-4 text-end">
                 <label class="col-form-label col-form-label-sm fw-bold">Usina:</label>
@@ -74,10 +76,16 @@
                     {{/each}}
                 </select>
             </div>
-        </div><br>
+        </div>
+        {{/if}}
+        <br>
         <div class="row">
             <div class="col-md-2 text-end">
+                {{#if usina}}
                 <label class="col-form-label col-form-label-sm fw-bold">Manutenção:</label>
+                {{else}}
+                <label class="col-form-label col-form-label-sm fw-bold">Serviço:</label>
+                {{/if}}
             </div>
             <div class="col-md-4">
                 <select class='form-select form-select-sm' name='manutencao'>
@@ -121,8 +129,8 @@
                             style="color: white">Profissionais Disponíveis</label>
                         <div style="overflow-y: scroll;max-height: 200px;">
                             {{#each ins_fora}}
-                            <div class="list-item" style='color: black;' draggable="true" name='{{_id}}'>
-                                {{nome}}<a href='/gerenciamento/vermais/{{_id}}' style="padding-left: 5px;"><i
+                            <div class="list-item" style='color: black;' draggable="true" name='{{id}}'>
+                                {{nome}}<a href='/gerenciamento/vermaistarefas/{{id}}' style="padding-left: 5px;"><i
                                         class='bi bi-eye'></i></a>
                             </div>
                             {{/each}}
@@ -133,7 +141,7 @@
                             style="color: white">Profissionais Alocados</label>
                         {{#each ins_dentro}}
                         <div class="item-instalacao" style='color: black;' draggable="true" name='{{id}}'>
-                            {{nome}}<a href='/gerenciamento/vermais/{{_id}}' style="padding-left: 5px;"><i
+                            {{nome}}<a href='/gerenciamento/vermaistarefas/{{id}}' style="padding-left: 5px;"><i
                                     class='bi bi-eye'></i></a>
                         </div>
                         {{/each}}

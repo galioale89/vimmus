@@ -3,8 +3,9 @@ var setData = function(date,add) {
     var mes = date.substring(5, 7)
     var dia = date.substring(8, 11)
     var data = new Date(ano, mes, dia)
-    data.setDate(data.getDate() + add)
+    //console.log('dif=>'+dif)
 
+    data.setDate(data.getDate() + parseFloat(add))
     ano = data.getFullYear()
     mes = data.getMonth()
     if (parseFloat(mes) < 10){

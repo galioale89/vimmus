@@ -9,13 +9,15 @@
                 <div class='row'>
                     <label class='col-form-label'>Motivo</label>
                     <select class='form-select' name='motivo'>
+                        <option class='fw-bold'>{{proposta.motivo}}</option>
                         <option>Fechou com concorrente</option>
-                        <option>Analisando Financiamento</option>
-                        <option>Comparando Propostas</option>
-                        <option>Sem motivo aparente</option>
+                        <option>Não conseguiu o financiamento</option>
+                        <option>Preço elevado</option>
+                        <option>Prazo de instalação</option>
+                        <option>Sem motivo</option>
                     </select>
                     <label class='col-form-label'>Descreva uma ação de resposta</label>
-                    <textarea name='descricao' class='form-control' rows="5"></textarea>
+                    <textarea name='descricao' class='form-control' rows="5">{{proposta.descmot}}</textarea>
                 </div>
                 <div class="row">
                     <div class='btn-group btn-group-lg gap-2' role='group'>

@@ -1,12 +1,11 @@
 <script>
     function mascara(data) {
-        alert(data)
         if (data.length == 10) {
             var ano = String(data).substring(0, 4)
             var mes = String(data).substring(5, 7)
             var dia = String(data).substring(8, 10)
-                return dia + '/' + mes + '/' + ano
-        }else{
+            return dia + '/' + mes + '/' + ano
+        } else {
             return 'Sem Data'
         }
     }
@@ -27,46 +26,46 @@
         if (dtvalidade2 != null) {
             dtvalidade2.innerHTML = mascara(dtvalidade2.innerHTML)
         }
-        
+
         var dtcadastro3 = document.getElementById('dtcadastro3')
         if (dtcadastro3 != null) {
-        dtcadastro3.innerHTML = mascara(dtcadastro3.innerHTML)
+            dtcadastro3.innerHTML = mascara(dtcadastro3.innerHTML)
         }
 
         var dtvalidade3 = document.getElementById('dtvalidade3')
         if (dtvalidade3 != null) {
-        dtvalidade3.innerHTML = mascara(dtvalidade3.innerHTML)
+            dtvalidade3.innerHTML = mascara(dtvalidade3.innerHTML)
         }
-        
+
         var dtcadastro4 = document.getElementById('dtcadastro4')
         if (dtcadastro4 != null) {
-        dtcadastro4.innerHTML = mascara(dtcadastro4.innerHTML)
+            dtcadastro4.innerHTML = mascara(dtcadastro4.innerHTML)
         }
 
         var dtvalidade4 = document.getElementById('dtvalidade4')
         if (dtvalidade4 != null) {
-        dtvalidade4.innerHTML = mascara(dtvalidade4.innerHTML)
+            dtvalidade4.innerHTML = mascara(dtvalidade4.innerHTML)
         }
 
-        
+
         var dtcadastro5 = document.getElementById('dtcadastro5')
         if (dtcadastro5 != null) {
-        dtcadastro5.innerHTML = mascara(dtcadastro5.innerHTML)
+            dtcadastro5.innerHTML = mascara(dtcadastro5.innerHTML)
         }
 
         var dtvalidade5 = document.getElementById('dtvalidade5')
         if (dtvalidade5 != null) {
-        dtvalidade5.innerHTML = mascara(dtvalidade5.innerHTML)
+            dtvalidade5.innerHTML = mascara(dtvalidade5.innerHTML)
         }
-    
+
         var dtcadastro6 = document.getElementById('dtcadastro6')
         if (dtcadastro6 != null) {
-        dtcadastro6.innerHTML = mascara(dtcadastro6.innerHTML)
+            dtcadastro6.innerHTML = mascara(dtcadastro6.innerHTML)
         }
 
         var dtvalidade6 = document.getElementById('dtvalidade6')
         if (dtvalidade6 != null) {
-        dtvalidade6.innerHTML = mascara(dtvalidade6.innerHTML)
+            dtvalidade6.innerHTML = mascara(dtvalidade6.innerHTML)
         }
 
         var dtPlaSombra = document.getElementById('dtPlaSombra')
@@ -359,7 +358,7 @@
                 </div>
                 <div class='col mt-1'>
                     <label class='col-form-label col-form-label-sm'>Data de Assinatura:</label>
-                    <label class='col-form-label col-form-label-sm' id='dtassinatura'>{{proposta.dtassinatura}}</label>
+                    <label class='col-form-label col-form-label-sm' id='dtassinatura'>{{documento.dtassinatura}}</label>
                 </div>
             </div>
         </div>
@@ -374,7 +373,7 @@
                 </div>
                 <div class="col mt-1">
                     <label class='col-form-label col-form-label-sm'>Data de Assinatura:</label>
-                    <label class='col-form-label col-form-label-sm' id='dtcontrato'>{{proposta.dtcontrato}}</label>
+                    <label class='col-form-label col-form-label-sm' id='dtcontrato'>{{documento.dtcontrato}}</label>
                 </div>
 
             </div>
@@ -497,18 +496,22 @@
         </div>
     </div>
     <div class="row mt-2 mb-2">
-        <div class="col-md-5">
-            <label class="col-form-label col-form-label-sm mt-1">
-                Projeto protocolado na concessionária
+        <div class="col-md-5 text-end">
+            <label class="col-form-label mt-2 fw-bold">
+                Projeto protocolado na concessionária:
             </label>
         </div>
         <div class="col-md-2">
-            <label class='col-form-label col-form-label-sm'>Data de Envio: </label>
-            <label class='col-form-label col-form-label-sm' id='dtprotocolo'>{{documento.dtprotocolo}}</label>
+            <div style="border: rgba(191, 183, 183, 0.5) 1px solid;border-radius: 2px;">
+                <label class='col-form-label col-form-label-sm'>Data de Envio </label><br>
+                <label class='col-form-label col-form-label-sm' id='dtprotocolo'>{{documento.dtprotocolo}}</label>
+            </div>
         </div>
-        <div class="col-md-1">
-            <label class='col-form-label col-form-label-sm'>Deadline </label>
-            <label class='col-form-label col-form-label-sm'>{{documento.dtdeadline}}</label><br>
+        <div class="col-md-2">
+            <div class="card">
+                <label class='col-form-label col-form-label-sm'>Deadline </label>
+                <label class='col-form-label col-form-label-sm'>{{documento.dtdeadline}}</label>
+            </div>
         </div>
     </div>
     <hr>

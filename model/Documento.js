@@ -12,6 +12,30 @@ const Documento = new Schema({
         ref: 'proposta',
         require: false,
     },     
+    assinatura:{
+        type: String,
+        require: false
+    },
+    dtassinatura:{
+        type: String,
+        require: false
+    },      
+    prazo:{
+        type: Number,
+        require: false
+    },       
+    deadline:{
+        type: Number,
+        require: false
+    },      
+    contrato:{
+        type: String,
+        require:false  
+    },
+    dtcontrato:{
+        type: String,
+        require: false
+    },      
     trt:{
         type: String,
         require: false
@@ -49,6 +73,14 @@ const Documento = new Schema({
         require: false
     },
     dttrifilar:{
+        type: String,
+        require: false
+    },    
+    parecer:{
+        type: String,
+        require: false
+    },
+    dtparecer:{
         type: String,
         require: false
     },    
@@ -121,8 +153,8 @@ const Documento = new Schema({
         require: false
     },
     faturado:{
-        type: String,
-        require: false
+        type: Array,
+        require: false,
     },
     dtfaturado:{
         type: String,
@@ -133,8 +165,8 @@ const Documento = new Schema({
         require: false
     },  
     comprovante:{
-        type: String,
-        require: false
+        type: Array,
+        require: false,
     },
     dtcomprovante:{
         type: String,

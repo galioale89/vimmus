@@ -82,6 +82,19 @@
                         </select>
                     </div>
                     {{/if}}
+                    {{#if listaBaixado}}
+                    <div class="col">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Motivo Baixa</label>
+                        <select class='form-select form-select-sm' name='motivo'>
+                            <option>Todos</option>
+                            <option>Fechou com concorrente</option>
+                            <option>Não conseguiu o financiamento</option>
+                            <option>Preço elevado</option>
+                            <option>Prazo de instalação</option>
+                            <option>Sem motivo</option>
+                        </select>
+                    </div>
+                    {{/if}}
                     <div class='col'>
                         <label class='col-form-label col-form-label-sm fw-bold'>Empresa</label>
                         <select name='empresa' class='form-select form-select-sm'>
@@ -93,7 +106,8 @@
                             {{/each}}
                         </select>
                     </div>
-
+                    {{#if listaOrcado}}
+                    {{else}}
                     <div class='col'>
                         <label class='col-form-label col-form-label-sm fw-bold'>Responsável</label>
                         <select name='responsavel' class='form-select form-select-sm'>
@@ -105,6 +119,7 @@
                             {{/each}}
                         </select>
                     </div>
+                    {{/if}}
                     <div class='col'>
                         <label class='col-form-label col-form-label-sm fw-bold'>Cliente</label>
                         <select name='cliente' class='form-select form-select-sm'>
@@ -193,11 +208,17 @@
                 {{/if}}
                 <th style="width: 5%;">Proposta</th>
                 <th style="width: 10%;">Cliente</th>
+                {{#if listaBaixado}}
+                {{else}}
                 <th style="width: 10%;">Gestor Responsável</th>
                 <th style="width: 10%;">Técnico Responsável</th>
+                {{/if}}
                 <th style="width: 5%">Cadastro</th>
+                {{#if listaBaixado}}
+                {{else}}
                 <th style="width: 10%">Inicio Instalação</th>
                 <th style="width: 6%">Fim Instalação</th>
+                {{/if}}
                 {{!-- <th style="width: 5%;"></th> --}}
             </tr>
             {{#each lista}}
@@ -245,7 +266,15 @@
                 <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{fim}}</a></td>
             </tr>
             {{else}}
+            {{#each listaBaixado}}
+            <tr style="line-height: 20px;">
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{seq}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{cliente}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/proposta/{{id}}'>{{cadastro}}</a></td>
+            </tr>
+            {{else}}
             <h6>Nenhum projeto encontrado.</h6>
+            {{/each}}
             {{/each}}
             {{/each}}
             {{/each}}

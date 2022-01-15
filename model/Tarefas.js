@@ -12,6 +12,11 @@ const Tarefas = new Schema({
         ref: 'usina',
         require: false,
     },
+    cliente: {
+        type: Schema.Types.ObjectId,
+        ref: 'cliente',
+        require: false,
+    },    
     equipe: {
         type: Schema.Types.ObjectId,
         ref: 'equipe',
@@ -36,6 +41,10 @@ const Tarefas = new Schema({
         type: Boolean,
         require:false        
     },
+    databaixa: {
+        type: String,
+        require:false        
+    },    
     dataini:{
         type: String,
         require:false        
@@ -52,6 +61,16 @@ const Tarefas = new Schema({
         type: Number,
         require: false
     },
+    dias: [{
+        dia: {
+            type: Number,
+            require: false
+        },
+        feito: {
+            type: Boolean,
+            require: false
+        }        
+    }],
     cadastro:{
         type: String,
         require:false        
@@ -64,6 +83,22 @@ const Tarefas = new Schema({
         type: String,
         require:false  
     },
+    status:{
+        type: String,
+        require:false  
+    },
+    descstatus: {
+        type: String,
+        require:false  
+    },
+    datastatus: {
+        type: String,
+        require:false  
+    }, 
+    tipo: {
+        type: String,
+        require:false  
+    }    
 })
 
 mongoose.model('tarefas', Tarefas)

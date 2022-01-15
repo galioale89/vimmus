@@ -1,0 +1,94 @@
+<style>
+    table {
+        width: 100%;
+        font-size: 18px;
+    }
+
+    th {
+        text-align: center;
+    }
+
+    tr {
+        border-bottom: rgba(120, 120, 120, 0.4) solid 1px;
+        text-align: center;
+        line-height: 30px;
+    }
+</style>
+
+<div class='row' style="width: 100%;padding-left: 2%;">
+
+    <div class="row">
+        <div class="col-md-5 text-center">
+            <div class='titulo-inicio'>
+                <label class="mt-2 mb-2" style='font-size: 20px;'>Propostas por ordem crescente de emissão</label>
+            </div>
+            <table>
+                <tr>
+                    <th>Referência</th>
+                    <th>Cliente</th>
+                    <th>Cadastro</th>
+                    <th>Pedido</th>
+                </tr>
+                {{#each lista_propostas}}
+                <tr>
+                    <td><a href='/gerenciamento/proposta/{{id}}'>{{seq}}</a></td>
+                    <td>{{cliente}}</td>
+                    <td>{{data}}</td>
+                    {{#if match}}
+                    <td>
+                        <div style="margin: auto;" id='execucao'></div>
+                    </td>
+                    {{else}}
+                    <td>
+                        <div style="margin: auto;" id='parado'></div>
+                    </td>                    
+                    {{/if}}
+                </tr>
+                {{/each}}
+            </table>
+        </div>
+        <div class="col text-center">
+            <div class='titulo-inicio'>
+                <label class="mt-2 mb-2" style='font-size: 20px;'>Compras por ordem crescente de previsão de
+                    chegada</label>
+            </div>
+            <table>
+                <tr>
+                    <th>Referência</th>
+                    <th>Cliente</th>
+                    <th>Previsão</th>
+                    <th>Recebimento</th>
+                    <th>Nota</th>
+                    <th>Recebido</th>
+                </tr>
+                {{#each lista_compras}}
+                <tr>
+                    <td><a href='/gerenciamento/proposta/{{id}}'>{{seq}}</a></td>
+                    <td>{{cliente}}</td>
+                    <td>{{previsao}}</td>
+                    <td>{{recebimento}}</td>
+                    {{#if match}}
+                    {{#if nota}}
+                    <td>
+                        <div style="margin: auto;" id='execucao'></div>
+                    </td>
+                    {{else}}
+                    <td>
+                        <div style="margin: auto;" id='aguardando'></div>
+                    </td>
+                    {{/if}}
+                    {{/if}}
+                    <td>
+                        {{#if recebido}}
+                        <div style="margin: auto;" id='execucao'></div>
+                        {{else}}
+                        <div style="margin: auto;" id='aguardando'></div>
+                        {{/if}}
+                    </td>
+                </tr>
+                {{/each}}
+            </table>
+        </div>
+    </div>
+
+</div>

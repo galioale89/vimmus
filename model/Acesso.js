@@ -22,7 +22,7 @@ const Acesso = new Schema({
     },
     ehAdmin: {
         type: Number,
-        default: 1
+        default: 3
     },
     funges:{
         type: Boolean,

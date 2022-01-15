@@ -9,6 +9,7 @@ require('../model/Pessoa')
 require('../model/Cliente')
 require('../model/Equipe')
 require('../model/Empresa')
+require('../model/Compra')
 const Projetos = mongoose.model('projeto')
 const Realizado = mongoose.model('realizado')
 const Proposta = mongoose.model('proposta')
@@ -16,6 +17,7 @@ const Pessoa = mongoose.model('pessoa')
 const Cliente = mongoose.model('cliente')
 const Equipe = mongoose.model('equipe')
 const Empresa = mongoose.model('empresa')
+const Compra = mongoose.model('compra')
 
 const pegames = require('../resources/pegames')
 const dataBusca = require('../resources/dataBusca')
@@ -24,6 +26,7 @@ const dataHoje = require('../resources/dataHoje')
 const filtrarProposta = require('../resources/filtrar')
 const naoVazio = require('../resources/naoVazio')
 const { ehAdmin } = require('../helpers/ehAdmin')
+const dataMsgNum = require('../resources/dataMsgNum')
 
 router.get('/analiseproposta', ehAdmin, (req, res) => {
     const { _id } = req.user
@@ -36,14 +39,29 @@ router.get('/analiseproposta', ehAdmin, (req, res) => {
         id = user
     }
 
-    var lista_envio = []
+    // var lista_envio = []
     var lista_ganho = []
     var lista_naoganho = []
-    var qtd_ganho = []
-    var qtd_naoganho = []
-    var qtd_envio = []
+    var lista_preco = []
+    var lista_prazo = []
+    var lista_finan = []
+    var lista_conco = []
+    var lista_smoti = []
+    var lista_negoc = []
+    var lista_anali = []
+    var lista_compa = []
+    var lista_reduc = []
+    var lista_envia = []
+    // var qtd_ganho = []
+    // var qtd_naoganho = []
+    // var qtd_envio = []
+    // var qtd_preco = []
+    // var qtd_prazo = []
+    // var qtd_finan = []
+    // var qtd_conco = []
+    // var qtd_smoti = []    
     var q = 0
-    var qp = 0
+    var t = 0
 
     var baixado
 
@@ -125,64 +143,94 @@ router.get('/analiseproposta', ehAdmin, (req, res) => {
 
     Cliente.find({ user: id }).lean().then((todos_clientes) => {
         Empresa.find({ user: id }).lean().then((todas_empresas) => {
-            Pessoa.find({ user: id, funges: 'checked' }).lean().then((pessoa) => {
-                pessoa.forEach((e) => {
-                    q++
-                    Proposta.find({ responsavel: e._id, datacad: { $lte: datafim, $gte: dataini } }).sort({ datacad: 'asc' }).then((pr) => {
-                        pr.forEach((p) => {
-                            //console.log('proposta=>' + p.equipe)
-                            Equipe.findOne({ _id: p.equipe, 'nome_projeto': { $exists: true } }).then((equipe) => {
-                                qp++
-                                //console.log('equipe=>' + equipe)
-                                if (naoVazio(equipe)) {
-                                    if (pr.baixada == true) {
-                                        baixado = 'Sim'
-                                    } else {
-                                        baixado = 'Não'
-                                    }
-                                    if (p.feito == true) {
-                                        lista_envio.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                    }
-                                    if (p.ganho == true) {
-                                        lista_ganho.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                    } else {
-                                        lista_naoganho.push({ baixado, responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                    }
-                                    //console.log('qp<1>=>' + qp)
-                                    //console.log('pr.length<1>=>' + pr.length)
-                                    if (qp == pr.length) {
-                                        qp = 0
-                                        qtd_ganho.push({ responsavel: e.nome, qtd: lista_ganho.length })
-                                        qtd_naoganho.push({ responsavel: e.nome, qtd: lista_naoganho.length })
-                                        qtd_envio.push({ responsavel: e.nome, qtd: lista_envio.length })
-                                        //console.log('q<1>=>' + q)
-                                        //console.log('pessoa.length<1>=>' + pessoa.length)
-                                        if (q == pessoa.length) {
-                                            res.render('relatorios/analiseproposta', { todos_clientes, todas_empresas, pessoa, lista_ganho, lista_naoganho, lista_envio, qtd_envio, qtd_ganho, naoganho_total: lista_naoganho.length, ganho_total: lista_ganho.length, envio_total: lista_envio.length, mestitulo, anotitulo })
+            Proposta.find({ user: id, datacad: { $lte: datafim, $gte: dataini } }).then((proposta) => {
+                if (naoVazio(proposta)) {
+                    Pessoa.find({ user: id, funges: 'checked' }).lean().then((pessoa) => {
+                        pessoa.forEach((e) => {
+                            Proposta.find({ responsavel: e._id, datacad: { $lte: datafim, $gte: dataini } }).sort({ datacad: 'asc' }).then((pr) => {
+                                pr.forEach((p) => {
+                                    //console.log('proposta=>' + p.equipe)
+                                    Equipe.findOne({ _id: p.equipe, 'nome_projeto': { $exists: true } }).then((equipe) => {
+                                        //console.log('equipe=>' + equipe)
+                                        q++
+                                        if (p.baixada == true) {
+                                            baixado = 'Sim'
+                                        } else {
+                                            baixado = 'Não'
                                         }
-                                    }
-                                } else {
-                                    //console.log('qp<2>=>' + qp)
-                                    //console.log('pr.length<2>=>' + pr.length)
-                                    if (qp == pr.length) {
-                                        qp = 0
-                                        qtd_ganho.push({ responsavel: e.nome, qtd: lista_ganho.length })
-                                        qtd_naoganho.push({ responsavel: e.nome, qtd: lista_naoganho.length })
-                                        qtd_envio.push({ responsavel: e.nome, qtd: lista_envio.length })
-                                        //console.log('q<2>=>' + q)
-                                        //console.log('pessoa.length<2>=>' + pessoa.length)
-                                        if (q == pessoa.length) {
-                                            res.render('relatorios/analiseproposta', { todos_clientes, todas_empresas, pessoa, lista_ganho, lista_naoganho, lista_envio, qtd_envio, qtd_ganho, naoganho_total: lista_naoganho.length, ganho_total: lista_ganho.length, envio_total: lista_envio.length, mestitulo, anotitulo })
-                                        }
-                                    }
-                                }
 
+                                        if (naoVazio(p.motivo) && p.ganho == false) {
+                                            if (p.motivo == 'Fechou com concorrente') {
+                                                lista_conco.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                            }
+                                            if (p.motivo == 'Não conseguiu o financiamento') {
+                                                lista_finan.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                            }
+                                            if (p.motivo == 'Preço elevado') {
+                                                lista_preco.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                            }
+                                            if (p.motivo == 'Prazo de instalação') {
+                                                lista_prazo.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                            }
+                                            if (p.motivo == 'Sem motivo') {
+                                                lista_smoti.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                            }
+                                        } else {
+                                            if (naoVazio(p.status) && p.ganho == false) {
+                                                if (p.status == 'Enviado') {
+                                                    lista_envia.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                                }
+                                                if (p.status == 'Negociando') {
+                                                    lista_negoc.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                                }
+                                                if (p.status == 'Analisando Financiamento') {
+                                                    lista_anali.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                                }
+                                                if (p.status == 'Comparando Propostas') {
+                                                    lista_compa.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                                }
+                                                if (p.status == 'Aguardando redução de preço') {
+                                                    lista_reduc.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                                }
+                                            }
+                                        }
+
+                                        // if (p.feito == true) {
+                                        //     lista_envio.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                        // }
+                                        if (p.ganho == true) {
+                                            lista_ganho.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                        } else {
+                                            lista_naoganho.push({ baixado, responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                        }
+
+                                        if (q == proposta.length) {
+                                            res.render('relatorios/analiseproposta', {
+                                                todos_clientes, todas_empresas, pessoa, lista_ganho, lista_naoganho,
+                                                qtd_conco: lista_conco.length, qtd_finan: lista_finan.length, qtd_preco: lista_preco.length, qtd_prazo: lista_prazo.length,
+                                                qtd_smoti: lista_smoti.length, qtd_negoc: lista_negoc.length, qtd_anali: lista_anali.length, qtd_compa: lista_compa.length, qtd_reduc: lista_reduc.length, qtd_envia: lista_envia.length,
+                                                naoganho_total: lista_naoganho.length, ganho_total: lista_ganho.length, mestitulo, anotitulo
+                                            })
+                                        }
+                                    })
+                                })
                             })
                         })
+
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Nenhum responsável encontrado.')
+                        res.redirect('/gerenciamento/consulta')
                     })
-                })
+                } else {
+                    res.render('relatorios/analiseproposta', {
+                        todos_clientes, todas_empresas, pessoa, lista_ganho, lista_naoganho,
+                        qtd_conco: lista_conco.length, qtd_finan: lista_finan.length, qtd_preco: lista_preco.length, qtd_prazo: lista_prazo.length,
+                        qtd_smoti: lista_smoti.length, qtd_negoc: lista_negoc.length, qtd_anali: lista_anali.length, qtd_compa: lista_compa.length, qtd_reduc: lista_reduc.length, qtd_envia: lista_envia.length,
+                        naoganho_total: lista_naoganho.length, ganho_total: lista_ganho.length, mestitulo, anotitulo
+                    })
+                }
             }).catch((err) => {
-                req.flash('error_msg', 'Nenhum responsável encontrado.')
+                req.flash('error_msg', 'Nenhuma proposta encontrada.')
                 res.redirect('/gerenciamento/consulta')
             })
         }).catch((err) => {
@@ -2717,6 +2765,120 @@ router.get('/dashboardbi', ehAdmin, (req, res) => {
     })
 })
 
+router.get('/priorizacao', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+    var lista_propostas = []
+    var lista_compras = []
+    var q = 0
+    var qc = 0
+    var dtprevisao
+    var dtrecebimento
+    Proposta.find({ user: id, ganho: true, encerrado: false, baixada: false }).sort({ data: 'asc' }).then((propostas) => {
+        propostas.forEach((p) => {
+            Cliente.findOne({ _id: p.cliente }).then((cli) => {
+                q++
+                lista_propostas.push({ id: p._id, seq: p.seq, cliente: cli.nome, data: dataMsgNum(p.data), nota: false, match: false })
+                // console.log('q=>'+q)
+                // console.log('propostas=>'+propostas.length)
+                if (q == propostas.length) {
+                    var nota
+                    var recebido
+                    Compra.find({ user: id, feitopedido: true, encerrado: false }).sort({ data: 'asc' }).then((compras) => {
+                        if (naoVazio(compras)) {
+                            compras.forEach((c) => {
+                                Proposta.findOne({ _id: c.proposta }).then((proposta) => {
+                                    Cliente.findOne({ _id: proposta.cliente }).then((cli1) => {
+                                        // console.log('c._id=>'+c._id)
+                                        qc++
+                                        // console.log('proposta.seq=>'+proposta.seq)
+                                        // console.log('c.dtprevisao=>'+c.dtprevisao)
+                                        if (naoVazio(c.dtprevisao)) {
+                                            dtprevisao = c.dtprevisao
+                                        } else {
+                                            dtprevisao = '00000000'
+                                        }
+
+                                        if (naoVazio(c.dtrecebimento)) {
+                                            dtrecebimento = c.dtrecebimento
+                                            recebido = true
+                                        } else {
+                                            dtrecebimento = '0000-00-00'
+                                            recebido = false
+                                        }
+
+                                        if (c.feitonota){
+                                            nota = true
+                                        }else{
+                                            nota = false
+                                        }
+
+                                        // console.log('dtprevisao=>'+dtprevisao)
+                                        lista_compras.push({ id: proposta._id, seq: proposta.seq, cliente: cli1.nome, previsao: dataMsgNum(dtprevisao), recebimento: dataMensagem(dtrecebimento), recebido, nota, match: false })
+                                        // console.log('qc=>'+qc)
+                                        // console.log('compras.length=>'+compras.length)
+                                        if (qc == compras.length) {
+                                            // console.log('lista_propostas=>'+lista_propostas)
+                                            var i
+                                            lista_propostas.forEach((e) => {
+                                                console.log('e=>'+e.seq)
+                                                console.log('i=>'+i)
+                                                i = 0
+                                                while (i < lista_compras.length) {
+                                                    console.log('e.seq=>' + e.seq)
+                                                    console.log('lista_compras[i].seq=>' + lista_compras[i].seq)
+                                                    if (e.seq == lista_compras[i].seq) {
+                                                        console.log('encontrou')
+                                                         e.match = true
+                                                         lista_compras[i].match = true
+                                                         console.log('nota=>'+lista_compras[i].nota)
+                                                         if (lista_compras[i].nota){
+                                                            e.nota = true
+                                                         }
+                                                         break
+                                                    }
+                                                    i++
+                                                }
+                                                console.log('saiu do laço')
+                                            })
+                                            res.render('relatorios/priorizacao', { lista_propostas, lista_compras })
+                                        }
+                                    }).catch((err) => {
+                                        req.flash('error_msg', 'Nenhum cliente encontrado.')
+                                        res.redirect('/menu')
+                                    })
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Nenhuma propostsa encontrada.')
+                                    res.redirect('/menu')
+                                })
+                            })
+                        } else {
+                            res.render('relatorios/priorizacao', { lista_propostas, lista_compras })
+                        }
+
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Nenhuma compra encontrada.')
+                        res.redirect('/menu')
+                    })
+                }
+            }).catch((err) => {
+                req.flash('error_msg', 'Nenhum cliente encontrado.')
+                res.redirect('/menu')
+            })
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Nenhuma proposta encontrada.')
+        res.redirect('/menu')
+    })
+})
+
 router.post('/analisar', ehAdmin, (req, res) => {
     const { _id } = req.user
     const { user } = req.user
@@ -2740,18 +2902,23 @@ router.post('/analisar', ehAdmin, (req, res) => {
     var anotituloinicio
     var anotitulofim
 
-    var lista_envio = []
     var lista_ganho = []
     var lista_naoganho = []
-    var qtd_ganho = []
-    var qtd_naoganho = []
-    var qtd_envio = []
+    var lista_preco = []
+    var lista_prazo = []
+    var lista_finan = []
+    var lista_conco = []
+    var lista_smoti = []
+    var lista_negoc = []
+    var lista_anali = []
+    var lista_compa = []
+    var lista_reduc = []
+    var lista_envia = []
 
     var resp
     var baixado
 
     var q = 0
-    var qp = 0
 
     var nomeCliente
     var nomeEmpresa
@@ -2763,6 +2930,7 @@ router.post('/analisar', ehAdmin, (req, res) => {
     var empresa = req.body.empresa
     var cliente = req.body.cliente
     var respons = req.body.responsavel
+    var motivo = 'Todos'
 
     if (req.body.dataini == '' || req.body.datafim == '' || (dataBusca(req.body.dataini) > dataBusca(req.body.datafim))) {
         req.flash('error_msg', 'Verificar as datas de busca escolhidas.')
@@ -2774,17 +2942,17 @@ router.post('/analisar', ehAdmin, (req, res) => {
     }
     if (cliente == 'Todos') {
         clibusca = '111111111111111111111111'
-    }else{
+    } else {
         clibusca = cliente
     }
     if (respons == 'Todos') {
         resbusca = '111111111111111111111111'
-    }else{
+    } else {
         resbusca = respons
     }
     if (empresa == 'Todos') {
         empbusca = '111111111111111111111111'
-    }else{
+    } else {
         empbusca = empresa
     }
     Pessoa.find({ user: id, funges: 'checked' }).lean().then((todas_pessoas) => {
@@ -2831,75 +2999,101 @@ router.post('/analisar', ehAdmin, (req, res) => {
                             }
 
                             //console.log('buscapessoa=>' + buscapessoa)
+                            Proposta.find({ user: id, datacad: { $lte: datafim, $gte: dataini } }).then((proposta) => {
+                                Pessoa.find(buscapessoa).then((pessoa) => {
+                                    pessoa.forEach((e) => {
+                                        //console.log('e=>' + e)
+                                        data = { 'datacad': { $lte: datafim, $gte: dataini } }
+                                        if (respons != 'Todos') {
+                                            resp = e._id
+                                        } else {
+                                            resp = respons
+                                        }
 
-                            Pessoa.find(buscapessoa).then((pessoa) => {
-                                pessoa.forEach((e) => {
-                                    //console.log('e=>' + e)
-                                    q++
+                                        sql = filtrarProposta(2, id, stats, motivo, resp, empresa, cliente, false, false, false, false)
+                                        busca = Object.assign(sql, data)
 
-                                    data = { 'datacad': { $lte: datafim, $gte: dataini } }
-                                    if (respons != 'Todos') {
-                                        resp = e._id
-                                    } else {
-                                        resp = respons
-                                    }
-                                    sql = filtrarProposta(2, id, stats, resp, empresa, cliente, false, false, false, false)
-                                    busca = Object.assign(sql, data)
-
-                                    Proposta.find(busca).sort({ datacad: 'asc' }).then((pr) => {
-                                        if (naoVazio(pr)) {
-                                            pr.forEach((p) => {
-                                                //console.log('e._id=>' + e._id)
-                                                Equipe.findOne({ _id: p.equipe, 'nome_projeto': { $exists: true } }).then((equipe) => {
-                                                    qp++
-                                                    //console.log('equipe=>' + equipe)
-                                                    if (naoVazio(equipe)) {
-                                                        if (pr.baixado == true) {
+                                        Proposta.find(busca).sort({ datacad: 'asc' }).then((pr) => {
+                                            if (naoVazio(pr)) {
+                                                pr.forEach((p) => {
+                                                    //console.log('e._id=>' + e._id)
+                                                    Equipe.findOne({ _id: p.equipe, 'nome_projeto': { $exists: true } }).then((equipe) => {
+                                                        q++
+                                                        if (p.baixada == true) {
                                                             baixado = 'Sim'
                                                         } else {
                                                             baixado = 'Não'
                                                         }
-                                                        if (p.feito == true) {
-                                                            lista_envio.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+
+                                                        if (naoVazio(p.motivo) && p.ganho == false) {
+                                                            if (p.motivo == 'Fechou com concorrente') {
+                                                                lista_conco.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                                            }
+                                                            if (p.motivo == 'Não conseguiu o financiamento') {
+                                                                lista_finan.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                                            }
+                                                            if (p.motivo == 'Preço elevado') {
+                                                                lista_preco.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                                            }
+                                                            if (p.motivo == 'Prazo de instalação') {
+                                                                lista_prazo.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                                            }
+                                                            if (p.motivo == 'Sem motivo') {
+                                                                lista_smoti.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                                            }
+                                                        } else {
+                                                            if (naoVazio(p.status) && p.ganho == false) {
+                                                                if (p.status == 'Enviado') {
+                                                                    lista_envia.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                                                }
+                                                                if (p.status == 'Negociando') {
+                                                                    lista_negoc.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                                                }
+                                                                if (p.status == 'Analisando Financiamento') {
+                                                                    lista_anali.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                                                }
+                                                                if (p.status == 'Comparando Propostas') {
+                                                                    lista_compa.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                                                }
+                                                                if (p.status == 'Aguardando redução de preço') {
+                                                                    lista_reduc.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                                                }
+                                                            }
                                                         }
+
+                                                        // if (p.feito == true) {
+                                                        //     lista_envio.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                                        // }
                                                         if (p.ganho == true) {
-                                                            lista_ganho.push({ esponsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
+                                                            lista_ganho.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
                                                         } else {
                                                             lista_naoganho.push({ baixado, responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
                                                         }
-                                                        //console.log('qp<1>=>' + qp)
-                                                        //console.log('pr.length<1>=>' + pr.length)
-                                                        if (qp == pr.length) {
-                                                            qp = 0
-                                                            qtd_ganho.push({ responsavel: e.nome, qtd: lista_ganho.length })
-                                                            qtd_naoganho.push({ responsavel: e.nome, qtd: lista_naoganho.length })
-                                                            qtd_envio.push({ responsavel: e.nome, qtd: lista_envio.length })
-                                                            //console.log('q<1>=>' + q)
-                                                            //console.log('pessoa.length<1>=>' + pessoa.length)
-                                                            if (q == pessoa.length) {
-                                                                res.render('relatorios/analiseproposta', { todos_clientes, todas_empresas, pessoa: todas_pessoas, lista_ganho, lista_naoganho, lista_envio, qtd_envio, qtd_ganho, naoganho_total: lista_naoganho.length, ganho_total: lista_ganho.length, envio_total: lista_envio.length, mestituloinicio, anotituloinicio, mestitulofim, anotitulofim, nomeCliente, nomeResponsavel, nomeEmpresa })
-                                                            }
+
+                                                        console.log('q=>' + q)
+                                                        console.log('proposta.length=>' + proposta.length)
+                                                        if (q == proposta.length) {
+                                                            res.render('relatorios/analiseproposta', {
+                                                                todos_clientes, todas_empresas, pessoa: todas_pessoas, lista_ganho, lista_naoganho,
+                                                                qtd_conco: lista_conco.length, qtd_finan: lista_finan.length, qtd_preco: lista_preco.length, qtd_prazo: lista_prazo.length,
+                                                                qtd_smoti: lista_smoti.length, qtd_negoc: lista_negoc.length, qtd_anali: lista_anali.length, qtd_compa: lista_compa.length, qtd_reduc: lista_reduc.length, qtd_envia: lista_envia.length,
+                                                                naoganho_total: lista_naoganho.length, ganho_total: lista_ganho.length, mestituloinicio, anotituloinicio, mestitulofim, anotitulofim
+                                                            })
                                                         }
-                                                    } else {
-                                                        if (qp == pr.length) {
-                                                            qp = 0
-                                                            qtd_ganho.push({ responsavel: e.nome, qtd: lista_ganho.length })
-                                                            qtd_naoganho.push({ responsavel: e.nome, qtd: lista_naoganho.length })
-                                                            qtd_envio.push({ responsavel: e.nome, qtd: lista_envio.length })
-                                                            //console.log('q<1>=>' + q)
-                                                            //console.log('pessoa.length<1>=>' + pessoa.length)
-                                                            if (q == pessoa.length) {
-                                                                res.render('relatorios/analiseproposta', { todos_clientes, todas_empresas, pessoa: todas_pessoas, lista_ganho, lista_naoganho, lista_envio, qtd_envio, qtd_ganho, naoganho_total: lista_naoganho.length, ganho_total: lista_ganho.length, envio_total: lista_envio.length, mestituloinicio, anotituloinicio, mestitulofim, anotitulofim, nomeCliente, nomeResponsavel, nomeEmpresa })
-                                                            }
-                                                        }
-                                                    }
+                                                    })
                                                 })
-                                            })
-                                        } else {
-                                            res.render('relatorios/analiseproposta', { todos_clientes, todas_empresas, pessoa: todas_pessoas, lista_ganho, lista_naoganho, lista_envio, qtd_envio, qtd_ganho, naoganho_total: lista_naoganho.length, ganho_total: lista_ganho.length, envio_total: lista_envio.length, mestituloinicio, anotituloinicio, mestitulofim, anotitulofim })
-                                        }
+                                            } else {
+                                                res.render('relatorios/analiseproposta', { todos_clientes, todas_empresas, pessoa: todas_pessoas, lista_ganho, lista_naoganho, lista_envio, qtd_envio, qtd_ganho, naoganho_total: lista_naoganho.length, ganho_total: lista_ganho.length, envio_total: lista_envio.length, mestituloinicio, anotituloinicio, mestitulofim, anotitulofim })
+                                            }
+                                        })
                                     })
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Nenhuma pessoa encontrada.')
+                                    res.redirect('/relatorios/analiseproposta')
                                 })
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Nenhuma proposta encontrada.')
+                                res.redirect('/relatorios/analiseproposta')
                             })
                         }).catch((err) => {
                             req.flash('error_msg', 'Nenhuma empresas encontrada.')
@@ -3474,7 +3668,7 @@ router.post('/imprimir', ehAdmin, (req, res) => {
     //console.log(datafim)
 
     data = { 'datacad': { $lte: datafim, $gte: dataini } }
-    sql = filtrarProposta(2, id, 'emandamento', respons, empresa, cliente, false, false, false, false)
+    sql = filtrarProposta(2, id, 'Todos', 'Todos', respons, empresa, cliente, false, false, false, false)
     encerrado = { encerrado: true }
     busca = Object.assign(data, sql, encerrado)
     Proposta.find(busca).then((proposta) => {
@@ -3568,7 +3762,7 @@ router.post('/filtraRelatorio', ehAdmin, (req, res) => {
     //console.log(datafim)
 
     data = { 'datacad': { $lte: datafim, $gte: dataini } }
-    sql = filtrarProposta(2, id, 'encerrado', respons, empresa, cliente, false, false, false, false)
+    sql = filtrarProposta(2, id, 'Todos', 'Todos', respons, empresa, cliente, false, false, false, false)
     encerrado = { encerrado: true }
     busca = Object.assign(data, sql, encerrado)
     //console.log("req.body.ins=>" + req.body.ins)

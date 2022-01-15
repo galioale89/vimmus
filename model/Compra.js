@@ -25,6 +25,14 @@ const Compra = new Schema({
         type: String,
         require: false
     },
+    prazo:{
+        type: Number,
+        require: false
+    },    
+    dtprevisao:{
+        type: Number,
+        require: false
+    },
     nota: {
         type: String,
         require: false
@@ -34,7 +42,7 @@ const Compra = new Schema({
         require: false
     }, 
     data:{
-        type: String,
+        type: Number,
         require: false        
     },
     feitopedido:{
@@ -42,6 +50,10 @@ const Compra = new Schema({
         require: false
     },
     feitonota:{
+        type: Boolean,
+        require: false
+    },
+    encerrado: {
         type: Boolean,
         require: false
     }

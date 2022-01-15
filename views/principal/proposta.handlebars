@@ -162,7 +162,6 @@
             br1.style.display = 'none'
             cidade.style.display = 'flex'
             estado.style.display = 'flex'
-
         } else {
             labelCidade.style.display = ''
             labelUf.style.display = ''
@@ -196,7 +195,7 @@
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;height: auto">
     {{#if proposta._id}}
     <div style="width: 100%;">
-        <h5 class="header">{{cliente_proposta.nome}} </h5>
+        <h5 class="header">{{cliente_proposta.nome}} - {{proposta.seq}} </h5>
     </div>
     {{/if}}
     {{#if proposta.ganho}}
@@ -261,11 +260,12 @@
     {{#if proposta._id}}
     <div style='text-align: center'>
         <label class='col-form-label fw-bold' style="font-size: 20px;color: tomato;">Proposta {{proposta.seq}} em
-            Aberto</label>
+            Aberto - Status: {{proposta.status}}</label>
     </div>
     {{else}}
     <div style='text-align: center'>
-        <label class='col-form-label fw-bold' style="font-size: 20px;color: rgb(44,55,89);">Iniciar Proposta</label>
+        <label class='col-form-label fw-bold' style="font-size: 20px;color: rgb(44,55,89);">{{#if
+            tipo}}Proposta{{else}}Iniciar{{/if}}</label>
     </div>
     {{/if}}
     {{/if}}
@@ -273,6 +273,68 @@
     <div id='bloquear' class='{{proposta.encerrado}}'>
         <div class='card' style="margin-bottom: 5%;">
             <form action='/gerenciamento/proposta' method='post'>
+                <input type="hidden" name='tipo' value='{{tipo}}'>
+                {{#if tipo}}
+                <div class='text-center' style="padding: 20px;width: 100%">
+                    <div class="row">
+                        <div class="col-md-4 text-end">
+                            <label style="font-size: 20px;" class='fw-bold mt-2'>Referência:</label>
+                        </div>
+                        <div class="col text-start">
+                            <input type="text" name='ref' class='form-control' style="width: 500px;"
+                                value='{{proposta.seq}}'>
+                        </div>
+                    </div>
+
+
+                    <div class='row mt-4'>
+                        <div class='col-md-2 text-end'>
+                            <label class='col-form-label fw-bold mt-4'>Local: </label>
+                        </div>
+                        <div class='col-md-10'>
+                            <div class='row'>
+                                <div class='col-md-4'>
+                                    <label style="font-size: 15px;margin-top: 5px;" class='fw-bold'>Endereço</label>
+                                    <input class='form-control' type='text' name='endereco'
+                                        value='{{proposta.endereco}}'>
+                                </div>
+                                <div class='col'>
+                                    <label style="font-size: 15px;" class='fw-bold'>Estado</label>
+                                    {{#if proposta.uf}}
+                                    <br>
+                                    {{/if}}
+                                    <label style='display: {{mostraLabel}}' id='labelUf'
+                                        class='col-form-label mb-1'>{{proposta.uf}}</label>
+                                    <select style='display: {{mostraSelect}}' id="estado" name='uf'
+                                        class='form-select mb-1'></select>
+                                </div>
+                                <div class='col'>
+                                    <label style="font-size: 15px;" class='fw-bold'>Cidade</label>
+                                    {{#if proposta.cidade}}
+                                    <br>
+                                    {{/if}}
+                                    <label style='display: {{mostraLabel}}' id='labelCidade'
+                                        class='col-form-label mb-1'>{{proposta.cidade}}</label>
+                                    <select style='display: {{mostraSelect}}' id="cidade" name='cidade'
+                                        class='form-select mb-1'></select>
+                                </div>
+                                {{#if mostraSelect}}
+                                <div class='col-md-1 mt-1'>
+                                    <div class="form-check form-switch mt-3" onchange="editarLocal()">
+                                        <input class="form-check-input" type="checkbox" id='checkLocal'>
+                                        <label class="form-check-label" style="padding-top: 6px;">Editar</label>
+                                    </div>
+                                </div>
+                                {{/if}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <button type='submit' class="btn btn-success"><i style="font-size: 20px"
+                                class='bi bi-arrow-right-circle'></i></button>
+                    </div>
+                </div>
+                {{else}}
                 <div class='row'>
                     <div class='col-md-11'>
                         <div class="row mt-2">
@@ -280,7 +342,7 @@
                                 <label class='col-form-label fw-bold mb-1'>Cliente: </label><br>
                             </div>
                             <div class="col-md-10 text-start">
-                                <input type='hidden' name='id' value='{{proposta._id}}'>
+                                <input type='hidden' name="id" value='{{proposta._id}}'>
                                 <select class='form-select' name='cliente'>
                                     <option class='fw-bold' value='{{cliente.proposta._id}}'>{{cliente_proposta.nome}}
                                     </option>
@@ -370,7 +432,10 @@
                                 class='bi bi-arrow-right-circle'></i></button>
                     </div>
                 </div>
+                {{/if}}
             </form>
+            {{#if tipo}}
+            {{else}}
             {{#if proposta.endereco}}
             <hr>
             <div class='row'>
@@ -393,8 +458,8 @@
                     {{/if}}
                 </div>
                 <div class='col-md-10'>
-                    <form action='/gerenciamento/proposta1' method='post' enctype="multipart/form-data">
-                        <input type="hidden" name='id' value='{{proposta._id}}'>
+                    <form action="/gerenciamento/proposta1" method="post">
+                        <input type="hidden" name="id" value='{{proposta._id}}'>
                         <div class="row">
                             <div class="col-md-4">
                                 {{#if proposta.proposta1}}
@@ -404,7 +469,7 @@
                                 </div>
                                 {{else}}
                                 <div>
-                                    <input type='file' class='form-control mt-3' name='proposta1'
+                                    <input type="file" class='form-control mt-3' name="proposta1"
                                         value='{{proposta.proposta1}}'>
                                 </div>
                                 {{/if}}
@@ -426,14 +491,14 @@
                                     value='{{proposta.dtvalidade1}}'>
                             </div>
                             <div class="col-md-1 mt-3">
-                                <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
+                                <button type="submit" value="Upload file" class='btn btn-success'><i class='bi bi-save'></i></button>
                             </div>
                         </div>
                     </form>
 
                     {{#if proposta.proposta1}}
                     <form action='/gerenciamento/proposta2' method='post' enctype="multipart/form-data">
-                        <input type="hidden" name='id' value='{{proposta._id}}'>
+                        <input type="hidden" name="id" value='{{proposta._id}}'>
                         <div class="row">
 
                             {{#if proposta.proposta2}}
@@ -474,7 +539,7 @@
                     {{/if}}
                     {{#if proposta.proposta2}}
                     <form action='/gerenciamento/proposta3' method='post' enctype="multipart/form-data">
-                        <input type="hidden" name='id' value='{{proposta._id}}'>
+                        <input type="hidden" name="id" value='{{proposta._id}}'>
                         <div class="row">
 
                             {{#if proposta.proposta3}}
@@ -512,7 +577,7 @@
                     {{/if}}
                     {{#if proposta.proposta3}}
                     <form action='/gerenciamento/proposta4' method='post' enctype="multipart/form-data">
-                        <input type="hidden" name='id' value='{{proposta._id}}'>
+                        <input type="hidden" name="id" value='{{proposta._id}}'>
                         <div class="row">
 
                             {{#if proposta.proposta4}}
@@ -550,7 +615,7 @@
                     {{/if}}
                     {{#if proposta.proposta4}}
                     <form action='/gerenciamento/proposta5' method='post' enctype="multipart/form-data">
-                        <input type="hidden" name='id' value='{{proposta._id}}'>
+                        <input type="hidden" name="id" value='{{proposta._id}}'>
                         <div class="row">
                             {{#if proposta.proposta5}}
                             <div class="col-md-4">
@@ -587,7 +652,7 @@
                     {{/if}}
                     {{#if proposta.proposta5}}
                     <form action='/gerenciamento/proposta6' method='post' enctype="multipart/form-data">
-                        <input type="hidden" name='id' value='{{proposta._id}}'>
+                        <input type="hidden" name="id" value='{{proposta._id}}'>
                         <div class="row">
 
                             {{#if proposta.proposta6}}
@@ -630,7 +695,7 @@
             <hr>
             <div class="row mb-1 mt-1">
                 <form action='/gerenciamento/visita/' method="post">
-                    <input type='hidden' name='id' value="{{proposta._id}}">
+                    <input type='hidden' name="id" value="{{proposta._id}}">
                     <div class="row">
                         <div class="col">
                             <div class='row mt-1'>
@@ -724,6 +789,7 @@
                     </div>
                 </form>
             </div>
+            {{/if}}
             {{/if}}
         </div>
     </div>
