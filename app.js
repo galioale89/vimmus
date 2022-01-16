@@ -922,7 +922,7 @@ app.use('/fornecedor/', fornecedor)
 
 //Outros
 
-var port = process.env.PORT || 21169
+var port = process.env.PORT || 21128
 app.listen(port, function () {
   console.log('KingHost listening on port %s', port);
 });

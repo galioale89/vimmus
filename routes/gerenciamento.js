@@ -28,7 +28,7 @@ const fs = require('fs')
 const path = require('path')
 const multer = require('multer')
 const nodemailer = require('nodemailer')
-const PromiseFtp = require('promise-ftp')
+// const PromiseFtp = require('promise-ftp')
 
 
 const Usuario = mongoose.model('usuario')
@@ -4335,24 +4335,24 @@ router.post('/proposta/', ehAdmin, (req, res) => {
 })
 
 router.post('/proposta1', ehAdmin, (req, res) => {
-    var ftp = new PromiseFtp()
-    try {
-        ftp.connect({
-            host: "ftp.vimmus.com.br", 
-            user: "vimmus", 
-            password: "t6a6u8k2",
-            port: 21,
-            secure: false
-          })
-          .then(function (serverMessage) {
-            console.log(serverMessage)
-            return ftp.put('foo.txt', '/apps_nodejs/public/arquivos/foo.test-copy.txt') 
-          }).then(function () {
-            return ftp.destroy();
-          })
-     } catch (error) {
-         console.log(error)   
-     }
+    // var ftp = new PromiseFtp()
+    // try {
+    //     ftp.connect({
+    //         host: "ftp.vimmus.com.br", 
+    //         user: "vimmus", 
+    //         password: "t6a6u8k2",
+    //         port: 21,
+    //         secure: false
+    //       })
+    //       .then(function (serverMessage) {
+    //         console.log(serverMessage)
+    //         return ftp.put('foo.txt', '/apps_nodejs/public/arquivos/foo.test-copy.txt') 
+    //       }).then(function () {
+    //         return ftp.destroy();
+    //       })
+    //  } catch (error) {
+    //      console.log(error)   
+    //  }
 
 
     //  var ftp = new PromiseFtp()
