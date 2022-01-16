@@ -4334,88 +4334,88 @@ router.post('/proposta/', ehAdmin, (req, res) => {
     }
 })
 
-router.post('/proposta1', ehAdmin, (req, res) => {
-    // var ftp = new PromiseFtp()
-    // try {
-    //     ftp.connect({
-    //         host: "ftp.vimmus.com.br", 
-    //         user: "vimmus", 
-    //         password: "t6a6u8k2",
-    //         port: 21,
-    //         secure: false
-    //       })
-    //       .then(function (serverMessage) {
-    //         console.log(serverMessage)
-    //         return ftp.put('foo.txt', '/apps_nodejs/public/arquivos/foo.test-copy.txt') 
-    //       }).then(function () {
-    //         return ftp.destroy();
-    //       })
-    //  } catch (error) {
-    //      console.log(error)   
-    //  }
+// router.post('/proposta1', ehAdmin, (req, res) => {
+//     // var ftp = new PromiseFtp()
+//     // try {
+//     //     ftp.connect({
+//     //         host: "ftp.vimmus.com.br", 
+//     //         user: "vimmus", 
+//     //         password: "t6a6u8k2",
+//     //         port: 21,
+//     //         secure: false
+//     //       })
+//     //       .then(function (serverMessage) {
+//     //         console.log(serverMessage)
+//     //         return ftp.put('foo.txt', '/apps_nodejs/public/arquivos/foo.test-copy.txt') 
+//     //       }).then(function () {
+//     //         return ftp.destroy();
+//     //       })
+//     //  } catch (error) {
+//     //      console.log(error)   
+//     //  }
 
 
-    //  var ftp = new PromiseFtp()
-    //  try {
-    //      await ftp.connect({
-    //          host: "ftp.vimmus.com.br", 
-    //          user: "vimmus", 
-    //          password: "t6a6u8k2",
-    //          port: 21,
-    //          secure: false
-    //        })
-    //        const stream = await ftp.put('foo.txt', '/apps_nodejs/public/arquivos/foo.test-copy.txt') 
-    //            res.type("pdf")
-    //            await new Promise((resolve,reject) => {
-    //                res.on('finish', resolve)
-    //                stream.once('error', reject)
-    //                stream.pipe(res)
+//     //  var ftp = new PromiseFtp()
+//     //  try {
+//     //      await ftp.connect({
+//     //          host: "ftp.vimmus.com.br", 
+//     //          user: "vimmus", 
+//     //          password: "t6a6u8k2",
+//     //          port: 21,
+//     //          secure: false
+//     //        })
+//     //        const stream = await ftp.put('foo.txt', '/apps_nodejs/public/arquivos/foo.test-copy.txt') 
+//     //            res.type("pdf")
+//     //            await new Promise((resolve,reject) => {
+//     //                res.on('finish', resolve)
+//     //                stream.once('error', reject)
+//     //                stream.pipe(res)
                    
-    //        }) 
-    //   } catch (error) {
-    //       console.log(error)   
-    //   }
+//     //        }) 
+//     //   } catch (error) {
+//     //       console.log(error)   
+//     //   }
 
-    // //Basic Setup
-    // const uploadFolder = path.join(caminho, 'public', 'arquivos')
-    // const form = new formidable.IncomingForm()
-    // //Parsing
-    // form.parse(req, (err, fields, files) => {
-    //     console.log('files=>'+files)
-    //     var oldPath = files.proposta1.filepath
-    //     console.log('oldPath=>'+oldPath)
-    //     var newPath = path.join(caminho, 'public/arquivos') + '/' + files.proposta1.originalFilename
-    //     console.log('newPath=>'+newPath)
-    //     var rawData = fs.readFileSync(oldPath)
-    //     fs.writeFile(newPath, rawData, function(err){
-    //         if(err) console.log(err)
-    //         return res.send("Successfully uploaded")
-    //     })    
-    // })
-})
-
-// router.post('/proposta1', upload.single('proposta1'), ehAdmin, (req, res) => {
-//     var file
-//     console.log('req.file=>' + req.file)
-//     if (req.file != null) {
-//         file = req.file.originalname
-//     } else {
-//         file = ''
-//     }
-//     console.log('file=>' + file)
-//     Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-//         if (naoVazio(file)) {
-//             proposta.proposta1 = file
-//         }
-//         proposta.dtcadastro1 = req.body.dtcadastro1
-//         proposta.dtvalidade1 = req.body.dtvalidade1
-//         proposta.datacad = dataBusca(dataHoje())
-//         proposta.save().then(() => {
-//             req.flash('success_msg', 'Proposta salva com sucesso')
-//             res.redirect('/gerenciamento/proposta/' + req.body.id)
-//         })
-//     })
+//     // //Basic Setup
+//     // const uploadFolder = path.join(caminho, 'public', 'arquivos')
+//     // const form = new formidable.IncomingForm()
+//     // //Parsing
+//     // form.parse(req, (err, fields, files) => {
+//     //     console.log('files=>'+files)
+//     //     var oldPath = files.proposta1.filepath
+//     //     console.log('oldPath=>'+oldPath)
+//     //     var newPath = path.join(caminho, 'public/arquivos') + '/' + files.proposta1.originalFilename
+//     //     console.log('newPath=>'+newPath)
+//     //     var rawData = fs.readFileSync(oldPath)
+//     //     fs.writeFile(newPath, rawData, function(err){
+//     //         if(err) console.log(err)
+//     //         return res.send("Successfully uploaded")
+//     //     })    
+//     // })
 // })
+
+router.post('/proposta1', upload.single('proposta1'), ehAdmin, (req, res) => {
+    var file
+    console.log('req.file=>' + req.file)
+    if (req.file != null) {
+        file = req.file.originalname
+    } else {
+        file = ''
+    }
+    console.log('file=>' + file)
+    Proposta.findOne({ _id: req.body.id }).then((proposta) => {
+        if (naoVazio(file)) {
+            proposta.proposta1 = file
+        }
+        proposta.dtcadastro1 = req.body.dtcadastro1
+        proposta.dtvalidade1 = req.body.dtvalidade1
+        proposta.datacad = dataBusca(dataHoje())
+        proposta.save().then(() => {
+            req.flash('success_msg', 'Proposta salva com sucesso')
+            res.redirect('/gerenciamento/proposta/' + req.body.id)
+        })
+    })
+})
 
 router.get('/mostrarProposta1/:id', ehAdmin, (req, res) => {
     Proposta.findOne({ _id: req.params.id }).then((proposta) => {
