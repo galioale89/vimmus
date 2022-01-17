@@ -9,35 +9,35 @@ const Cliente = new Schema({
     },
     nome: {
         type: String,
-        require: true
+        require: false
     },
     endereco: {
         type: String,
-        require: true
+        require: false
     },
     cidade: {
         type: String,
-        require: true
+        require: false
     },
     uf: {
         type: String,
-        require: true
+        require: false
     },
     cnpj: {
         type: String,
-        require: true
+        require: false
     },
     cpf: {
         type: String,
-        require: true
+        require: false
     },
     celular: {
         type: String,
-        require: true
+        require: false
     },
     email: {
         type: String,
-        require: true
+        require: false
     },
     sissolar: {
         type: String,

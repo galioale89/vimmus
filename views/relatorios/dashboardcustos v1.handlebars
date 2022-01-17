@@ -1,0 +1,414 @@
+<style>
+    table,
+    td,
+    tr,
+    th {
+        text-align: center;
+    }
+
+    td {
+        font-weight: 700;
+    }
+</style>
+<div style="margin-top: 20px;padding-left:20px;padding-right:20px">
+
+    <!-- Modal -->
+    <div class='modal fade' id='partComponentes' tabindex="-1" aria-hidden="true">
+        <div class='modal-dialog modal-xl'>
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <h5 class="modal-title">Participação dos Componentes (Kit Gerador)</h5>
+                    <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class='modal-body'>
+                    <table align="center">
+                        <tr>
+                            <td style="font-size: 20px;">Módulos</td>
+                            <td style="font-size: 20px;">Inversor</td>
+                            <td style="font-size: 20px;">Estrutura</td>
+                            <td style="font-size: 20px;">Cabos</td>
+                            <td style="font-size: 20px;">Disjuntores</td>
+                            <td style="font-size: 20px;">DPS</td>
+                            <td style="font-size: 20px;">String Box</td>
+                            <td style="font-size: 20px;">Outros</td>
+                        </tr>
+                        <tr>
+                            <td>R$ {{med_modequ}}</td>
+                            <td>R$ {{med_invequ}}</td>
+                            <td>R$ {{med_estequ}}</td>
+                            <td>R$ {{med_cabequ}}</td>
+                            <td>R$ {{med_disequ}}</td>
+                            <td>R$ {{med_dpsequ}}</td>
+                            <td>R$ {{med_sbxequ}}</td>
+                            <td>R$ {{med_ocpequ}}</td>
+                        </tr>
+                        <td>
+                            <div class="sessao-dash textoper" style="margin-left: 5px;">
+                                <label>{{per_modequ}}%</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="sessao-dash textoper" style="margin-left: 5px;">
+                                <label>{{per_invequ}}%</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="sessao-dash textoper" style="margin-left: 5px;">
+                                <label>{{per_estequ}}%</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="sessao-dash textoper" style="margin-left: 5px;">
+                                <label>{{per_cabequ}}%</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="sessao-dash textoper" style="margin-left: 5px;">
+                                <label>{{per_disequ}}%</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="sessao-dash textoper" style="margin-left: 5px;">
+                                <label>{{per_dpsequ}}%</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="sessao-dash textoper" style="margin-left: 5px;">
+                                <label>{{per_sbxequ}}%</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="sessao-dash textoper" style="margin-left: 5px;">
+                                <label>{{per_ocpequ}}%</label>
+                            </div>
+                        </td>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+
+    <div class="contorno-titulo mb-2" style="width: 100%;padding-left: 20px;padding-right: 20px">
+        <table style="width: 100%;">
+            <tr>
+                <th style="font-size: 20px;">Projetos Realizados</th>
+                <th style="font-size: 20px;width: 200px;">Total kWp</th>
+                <th style="font-size: 20px;">Faturado/kWp</th>
+
+                <th colspan="2" style="font-size: 20px;">Dispêndios/kWp</th>
+                <th style="font-size: 20px;">% Lucro Liquido</th>
+            </tr>
+            <tr>
+                <td><label style="font-size: 50px;"> {{numprj}}</label></td>
+                <td><label style="font-size: 50px;width: 200px;">{{soma_kwp}}</label></td>
+                <td><label style="font-size: 30px;">R$ {{medkwp_totfat}}</label></td>
+
+                <td><label style='font-size: 30px;margin-left: 40px;'>R$ {{medkwp_total}}</label></td>
+                <td>
+                    <div class="sessao-dash-gd" style="font-size: 40px;">
+                        <label>{{per_deducao}}%</label>
+                    </div>
+                </td>
+                <td>
+                    <div class="sessao-dash-gd" style="font-size: 40px;margin-left: 50px;"><label>{{per_LL}}%</label>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <table style="width: 100%;">
+        <tr>
+            <td>
+                <table align="left" style="width: 50%;">
+                    <tr>
+                        <th colspan='7' style="font-size: 30px;">Custo Operacional Médio por kWp</th>
+                    </tr>
+
+                    <tr>
+                        <td>Custo Operacional</td>
+                        <td>Despesas Adm</td>
+                        <td>Média Comissão</td>
+                        <td>Tributos</td>
+                        <td>Dispêndios Totais</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>R$ {{medkwp_totcop}}</td>
+                        <td>R$ {{medkwp_totadm}}</td>
+                        <td>R$ {{medkwp_totcom}}</td>
+                        <td>R$ {{medkwp_tottrb}}</td>
+                        <td>R$ {{medkwp_total}}</td>
+                        <td></td>
+                    </tr>
+                    <td>
+                        <div class="sessao-dash-cop textoper" style="margin-left: 5px;">
+                            <label>{{per_totcop}}%</label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="sessao-dash textoper" style="margin-left: 5px;">
+                            <label>{{per_totadm}}%</label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="sessao-dash textoper" style="margin-left: 5px;">
+                            <label>{{per_totcom}}%</label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="sessao-dash textoper" style="margin-left: 5px;">
+                            <label>{{per_tottrb}}%</label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="sessao-dash-total textoper" style="margin-left: 5px;">
+                            <label>{{per_deducao}}%</label>
+                        </div>
+                    </td>
+                    <td>
+                        <a style="margin-left: 20px" class='btn btn-sm btn-primary' data-bs-toggle='modal'
+                                data-bs-target='#partComponentes'>Equipamento</a>
+                    </td>                    
+                    <tr>
+
+                    </tr>
+                    <tr>
+                        <td>Instalação</td>
+                        <td>Projetista</td>
+                        <td>Gestão</td>
+                        <td>Deslocamento</td>
+                        <td>Alimentação</td>
+                        
+                    </tr>
+                    <tr>
+                        <td>R$ {{medkwp_totint}}</td>
+                        <td>R$ {{medkwp_totpro}}</td>
+                        <td>R$ {{medkwp_totges}}</td>
+                        <td>R$ {{medkwp_totdes}}</td>
+                        <td>R$ {{medkwp_totali}}</td>
+                        <td>Adicional</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="sessao-dash-cop textoper" style="margin-inline-start: 5px;">
+                                <label>{{per_totint}}%</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="sessao-dash-cop textoper" style="margin-left: 5px;">
+                                <label>{{per_totpro}}%</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="sessao-dash-cop textoper" style="margin-left: 5px;">
+                                <label>{{per_totges}}%</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="sessao-dash-cop textoper" style="margin-left: 5px;">
+                                <label>{{per_totdes}}%</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="sessao-dash-cop textoper" style="margin-left: 5px;">
+                                <label>{{per_totali}}%</label>
+                            </div>
+                        </td>
+                        <td>
+                            Descrição <br>
+                            Cercamento<br>
+                            Poste Condução<br>
+                            Central
+                        </td>
+                        <td style="border-left: 1px solid gray">
+                            R$ <br>
+                            {{medkwp_cercamento}}<br>
+                            {{medkwp_postecond}}<br>
+                            {{medkwp_central}}
+                        </td>
+                        <td style="border-left: 1px solid gray">
+                            % <br>
+                            {{per_cercamento}}<br>
+                            {{per_postecond}}<br>
+                            {{per_central}}
+                        </td>                        
+                    </tr>
+                </table>
+
+            </td>
+            <td>
+                <!--
+                <div style="width: 700px;height: 300px;margin-top: 30px;">
+                    <input id='prjjan' type="hidden" value='{{prjjan}}'>
+                    <input id='prjfev' type="hidden" value='{{prjfev}}'>
+                    <input id='prjmar' type="hidden" value='{{prjmar}}'>
+                    <input id='prjabr' type="hidden" value='{{prjabr}}'>
+                    <input id='prjmai' type="hidden" value='{{prjmai}}'>
+                    <input id='prjjun' type="hidden" value='{{prjjun}}'>
+                    <input id='prjjul' type="hidden" value='{{prjjul}}'>
+                    <input id='prjago' type="hidden" value='{{prjago}}'>
+                    <input id='prjset' type="hidden" value='{{prjset}}'>
+                    <input id='prjout' type="hidden" value='{{prjout}}'>
+                    <input id='prjnov' type="hidden" value='{{prjnov}}'>
+                    <input id='prjdez' type="hidden" value='{{prjdez}}'>
+                    <canvas id='chartPrj' class='mt-2 mb-1'></canvas>
+                </div>
+                -->
+                <form method='post' action='/relatorios/filtradash'>
+                    <div style="width: 90%;height: fit-content;margin-left: 5%;">
+                        <div class="row">
+                            <label class='col-form-label col-form-label-lg'>{{mestitulo}}{{ano}}</label>
+                            <div class="col-md-5">
+                                <label class='col-form-label col-form-label-sm'>Selecione o mês e digite o ano
+                                    desejado:<label>
+                            </div>
+                            <div class="col-md-3">
+                                <select class='form-select form-select-sm' name='messel'>
+                                    <option>Janeiro</option>
+                                    <option>Fevereiro</option>
+                                    <option>Março</option>
+                                    <option>Abril</option>
+                                    <option>Maio</option>
+                                    <option>Junho</option>
+                                    <option>Julho</option>
+                                    <option>Agosto</option>
+                                    <option>Setembro</option>
+                                    <option>Outubro</option>
+                                    <option>Novembro</option>
+                                    <option>Dezembro</option>
+                                    <option>Todos</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <input class='form-control form-control-sm' type='number' name='mesano'
+                                    placeholder="Ano">
+                            </div>
+                            <div class="col-md-2">
+                                <button type='submit' class='btn btn-primary btn-sm'>Filtrar</button>
+                            </div>
+                        </div>
+                        <div style="height: 100%;">
+                            <input id='totfat' type="hidden" value='{{soma_totfat}}'>
+                            <input id='totliq' type="hidden" value='{{soma_totliq}}'>
+                            <input id='totkit' type="hidden" value='{{soma_totkit}}'>
+                            <input id='totcom' type="hidden" value='{{soma_totcom}}'>
+                            <input id='totcop' type="hidden" value='{{soma_totcop}}'>
+                            <input id='totadm' type="hidden" value='{{soma_totadm}}'>
+                            <input id='tottrb' type="hidden" value='{{soma_tottrb}}'>
+                            <canvas id='chartTot' class='mt-2 mb-1'></canvas>
+                            <h5>Total dos Projetos Vendidos: R$ {{soma_totprj}}</h5>
+                        </div>
+                    </div>
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script>
+    var soma_totfat = document.getElementById('totfat')
+    var soma_totcop = document.getElementById('totcop')
+    var soma_totkit = document.getElementById('totkit')
+    var soma_totcom = document.getElementById('totcom')
+    var soma_totliq = document.getElementById('totliq')
+    var soma_totadm = document.getElementById('totadm')
+    var soma_tottrb = document.getElementById('tottrb')
+    var ctxTot = document.getElementById('chartTot').getContext('2d')
+    var chartTot = new Chart(ctxTot, {
+        type: 'bar',
+        data: {
+            labels: ['Faturado', 'Equipamentos', 'Comissão', 'Custos', 'Despesas', 'Tributos', 'Lucro Liquido'],
+            datasets: [{
+                data: [soma_totfat.value, soma_totkit.value, soma_totcom.value, soma_totcop.value, soma_totadm.value, soma_tottrb.value, soma_totliq.value],
+                backgroundColor: [
+                    'rgba(41, 8, 159, 0.5)',
+                    'rgba(249, 240, 71, 0.5)',
+                    'rgba(255, 161, 8, 0.5)',
+                    'rgba(194, 189, 188, 0.5)',
+                    'rgba(194, 189, 188, 0.5)',
+                    'rgba(255, 49, 53, 0.5)',
+                    'rgb(32, 255, 62, 0.5)'
+                ],
+
+                borderColor: [
+                    'rgba(41, 8, 159, 1)',
+                    'rgba(249,240,71, 1)',
+                    'rgba(255, 161, 8, 1)',
+                    'rgba(194, 189, 188, 1)',
+                    'rgba(194, 189, 188, 1)',
+                    'rgba(255, 49, 53, 1)',
+                    'rgb(32, 255, 62, 1)'
+                ],
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+            scales: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Resultados'
+                    },
+                    ticks: {
+                        min: 0,
+                    },
+                }],
+            },
+            legend: {
+                labels: {
+                    boxWidth: 0,
+                },
+                display: false,
+            },
+        }
+    })
+
+    var prjjan = document.getElementById('prjjan')
+    var prjfev = document.getElementById('prjfev')
+    var prjmar = document.getElementById('prjmar')
+    var prjabr = document.getElementById('prjabr')
+    var prjmai = document.getElementById('prjmai')
+    var prjjun = document.getElementById('prjjun')
+    var prjjul = document.getElementById('prjjul')
+    var prjago = document.getElementById('prjago')
+    var prjset = document.getElementById('prjset')
+    var prjout = document.getElementById('prjout')
+    var prjnov = document.getElementById('prjnov')
+    var prjdez = document.getElementById('prjdez')
+
+    var ctxPrj = document.getElementById('chartPrj').getContext('2d')
+    var chartPrj = new Chart(ctxPrj, {
+        type: 'line',
+        data: {
+            labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            datasets: [{
+                data: [prjjan.value, prjfev.value, prjmar.value, prjabr.value, prjmai.value, prjjun.value, prjjul.value, prjago.value, prjset.value, prjout.value, prjnov.value, prjdez.value],
+                backgroundColor: ['rgb(79, 99, 140)'],
+                borderColor: ['rgb(79, 99, 140)']
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+            scales: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Quantidade de Projetos'
+                    },
+                    ticks: {
+                        min: 0,
+                    },
+                }],
+            },
+            legend: {
+                labels: {
+                    boxWidth: 0,
+                },
+                display: false,
+            },
+        }
+    })
+</script>

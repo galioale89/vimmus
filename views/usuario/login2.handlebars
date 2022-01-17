@@ -1,0 +1,42 @@
+<style type="text/css">
+  .botao {
+    height: 30px;
+    width: 100px;
+    margin-left: 28px;
+    text-decoration: none;
+    border-radius: 10px;
+    color: rgb(11, 19, 58, 1);
+  }
+
+  .botao:hover {
+    height: 30px;
+    width: 120px;
+    background: linear-gradient(45deg, rgb(62, 81, 177), rgb(11, 19, 58, 1), rgb(11, 19, 58, 1));
+    color: white;
+    border: solid 1px;
+    border-color: rgb(155, 155, 155);
+    border-radius: 10px;
+    text-decoration: none;
+  }
+</style>
+<div id='principal'>
+  {{!-- <img src='/body/login.svg' width="100%"> --}}
+  <div style="margin: auto; margin-top: 5%;margin-bottom: 11%;height: fit-content;width: fit-content">
+    <label style="font-size: 40px;color: white;font-weight: 800;padding: 35px;"> VIMMUS</label>
+    <form action="/usuario/login" method="post">
+      <div class="row">
+        <div class="col-md-1 text-end">
+          <div style="margin-bottom: 5px;color: white"><i class='bi bi-person'></i></div>
+          <div><i style="color: white" class='bi bi-key white'></i></div>
+        </div>
+        <div class="col-md-10">
+          <input name="usuario" class="form-control form-control-sm mb-1">
+          <input type="password" name="senha" class="form-control form-control-sm">
+        </div>
+      </div>
+      <br>
+      <button type="submit" class="btn btn-sm col-6"
+        style="margin-left: 25%;color: white;background-color: rgba(24, 155, 24, 0.9)"> Entrar</button>
+    </form>
+  </div>
+</div>

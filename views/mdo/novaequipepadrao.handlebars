@@ -79,7 +79,8 @@
               <label class="col-form-label col-form-label-md fw-bold text-center" style="color: white;">Profissionais
                 Disponíveis</label>
               {{#each instaladores}}
-              <div class="list-item" style='color: rgb(40,55,89);' draggable="true" name='{{_id}}'>{{nome}}</div>
+              <div class="list-item" style='color: rgb(40,55,89);' draggable="true"  name='{{_id}}'>{{nome}}</div>
+              <input type='hidden' value='{{_id}}' id='id'>
               {{else}}
               {{/each}}
             </div>
@@ -95,6 +96,12 @@
         <input type='hidden' class='ins3' name='ins3' id='ins3' value=''>
         <input type='hidden' class='ins4' name='ins4' id='ins4' value=''>
         <input type='hidden' class='ins5' name='ins5' id='ins5' value=''>
+        <input type='hidden' name='idins0' id='idins0' value=''>
+        <input type='hidden' name='idins1' id='idins1' value=''>
+        <input type='hidden' name='idins2' id='idins2' value=''>
+        <input type='hidden' name='idins3' id='idins3' value=''>
+        <input type='hidden' name='idins4' id='idins4' value=''>
+        <input type='hidden' name='idins5' id='idins5' value=''>        
       </div>
     </div>
   </div>
@@ -153,31 +160,44 @@
     const item = document.querySelectorAll('.item');
     for (i = 0; i < item.length; i++) {
       const insitem = document.getElementsByClassName(item[i].getAttribute('class'));
-      var element = insitem[i].innerText;
+      var element = insitem[i].innerText
+      var ins = insitem[i].getAttribute('name')
       switch (i) {
         case 0:
-          var insdes = document.getElementById('ins0');
-          insdes.value = element;
+          var insdes = document.getElementById('ins0')
+          var idins = document.getElementById('idins0')
+          insdes.value = element
+          idins.value = ins
           break;
         case 1:
-          var insdes = document.getElementById('ins1');
+          var insdes = document.getElementById('ins1')
+          var idins = document.getElementById('idins1')
           insdes.value = element
+          idins.value = ins
           break;
         case 2:
-          var insdes = document.getElementById('ins2');
+          var insdes = document.getElementById('ins2')
+          var idins = document.getElementById('idins2')
           insdes.value = element
+          idins.value = ins
           break;
         case 3:
-          var insdes = document.getElementById('ins3');
+          var insdes = document.getElementById('ins3')
+          var idins = document.getElementById('idins3')
           insdes.value = element
+          idins.value = ins
           break;
         case 4:
-          var insdes = document.getElementById('ins4');
+          var insdes = document.getElementById('ins4')
+          var idins = document.getElementById('idins4')
           insdes.value = element
+          idins.value = ins
           break;
         case 5:
-          var insdes = document.getElementById('ins5');
+          var insdes = document.getElementById('ins5')
+          var idins = document.getElementById('idins5')
           insdes.value = element
+          idins.value = ins
           break;
       }
     }

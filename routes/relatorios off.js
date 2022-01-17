@@ -4,299 +4,10 @@ const router = express.Router()
 const mongoose = require('mongoose')
 require('../model/Realizado')
 require('../model/Projeto')
-require('../model/Proposta')
-require('../model/Pessoa')
-require('../model/Cliente')
-require('../model/Equipe')
-require('../model/Empresa')
-require('../model/Compra')
 const Projetos = mongoose.model('projeto')
 const Realizado = mongoose.model('realizado')
-const Proposta = mongoose.model('proposta')
-const Pessoa = mongoose.model('pessoa')
-const Cliente = mongoose.model('cliente')
-const Equipe = mongoose.model('equipe')
-const Empresa = mongoose.model('empresa')
-const Compra = mongoose.model('compra')
 
-const pegames = require('../resources/pegames')
-const dataBusca = require('../resources/dataBusca')
-const dataMensagem = require('../resources/dataMensagem')
-const dataHoje = require('../resources/dataHoje')
-const filtrarProposta = require('../resources/filtrar')
-const naoVazio = require('../resources/naoVazio')
 const { ehAdmin } = require('../helpers/ehAdmin')
-const dataMsgNum = require('../resources/dataMsgNum')
-
-router.get('/analiseproposta', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    const { user } = req.user
-    var id
-
-    if (typeof user == 'undefined') {
-        id = _id
-    } else {
-        id = user
-    }
-
-    // var lista_envio = []
-    var lista_ganho = []
-    var lista_naoganho = []
-    var lista_preco = []
-    var lista_prazo = []
-    var lista_finan = []
-    var lista_conco = []
-    var lista_smoti = []
-    var lista_negoc = []
-    var lista_anali = []
-    var lista_compa = []
-    var lista_reduc = []
-    var lista_envia = []
-    // var qtd_ganho = []
-    // var qtd_naoganho = []
-    // var qtd_envio = []
-    // var qtd_preco = []
-    // var qtd_prazo = []
-    // var qtd_finan = []
-    // var qtd_conco = []
-    // var qtd_smoti = []    
-    var q = 0
-    var t = 0
-
-    var baixado
-
-    var dataini
-    var datafim
-    var mestitulo
-    var hoje = dataHoje()
-    var meshoje = hoje.substring(5, 7)
-    var anotitulo = hoje.substring(0, 4)
-
-    //console.log('meshoje=>' + meshoje)
-
-    switch (meshoje) {
-        case '01':
-            dataini = anotitulo + '01' + '01'
-            datafim = anotitulo + '01' + '31'
-            mestitulo = 'Janeiro '
-            break;
-        case '02':
-            dataini = anotitulo + '02' + '01'
-            datafim = anotitulo + '02' + '28'
-            mestitulo = 'Fevereiro '
-            break;
-        case '03':
-            dataini = anotitulo + '03' + '01'
-            datafim = anotitulo + '03' + '31'
-            mestitulo = 'Março '
-            break;
-        case '04':
-            dataini = anotitulo + '04' + '01'
-            datafim = anotitulo + '04' + '30'
-            mestitulo = 'Abril '
-            break;
-        case '05':
-            dataini = anotitulo + '05' + '01'
-            datafim = anotitulo + '05' + '31'
-            mestitulo = 'Maio '
-            break;
-        case '06':
-            dataini = anotitulo + '06' + '01'
-            datafim = anotitulo + '06' + '30'
-            mestitulo = 'Junho '
-            break;
-        case '07':
-            dataini = anotitulo + '07' + '01'
-            datafim = anotitulo + '07' + '31'
-            mestitulo = 'Julho '
-            break;
-        case '08':
-            dataini = anotitulo + '08' + '01'
-            datafim = anotitulo + '08' + '30'
-            mestitulo = 'Agosto '
-            break;
-        case '09':
-            dataini = anotitulo + '09' + '01'
-            datafim = anotitulo + '09' + '31'
-            mestitulo = 'Setembro '
-            break;
-        case '10':
-            dataini = anotitulo + '10' + '01'
-            datafim = anotitulo + '10' + '31'
-            mestitulo = 'Outubro '
-            break;
-        case '11':
-            dataini = anotitulo + '11' + '01'
-            datafim = anotitulo + '11' + '30'
-            mestitulo = 'Novembro '
-            break;
-        case '12':
-            dataini = anotitulo + '12' + '01'
-            datafim = anotitulo + '12' + '31'
-            mestitulo = 'Dezembro '
-            break;
-        default:
-            dataini = anotitulo + '01' + '01'
-            datafim = anotitulo + '12' + '31'
-            mestitulo = 'Todo ano '
-    }
-
-    Cliente.find({ user: id }).lean().then((todos_clientes) => {
-        Empresa.find({ user: id }).lean().then((todas_empresas) => {
-            Proposta.find({ user: id, datacad: { $lte: datafim, $gte: dataini } }).then((proposta) => {
-                if (naoVazio(proposta)) {
-                    Pessoa.find({ user: id, funges: 'checked' }).lean().then((pessoa) => {
-                        pessoa.forEach((e) => {
-                            Proposta.find({ responsavel: e._id, datacad: { $lte: datafim, $gte: dataini } }).sort({ datacad: 'asc' }).then((pr) => {
-                                pr.forEach((p) => {
-                                    //console.log('proposta=>' + p.equipe)
-                                    Equipe.findOne({ _id: p.equipe, 'nome_projeto': { $exists: true } }).then((equipe) => {
-                                        //console.log('equipe=>' + equipe)
-                                        q++
-                                        if (p.baixada == true) {
-                                            baixado = 'Sim'
-                                        } else {
-                                            baixado = 'Não'
-                                        }
-
-                                        if (naoVazio(p.motivo) && p.ganho == false) {
-                                            if (p.motivo == 'Fechou com concorrente') {
-                                                lista_conco.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                            }
-                                            if (p.motivo == 'Não conseguiu o financiamento') {
-                                                lista_finan.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                            }
-                                            if (p.motivo == 'Preço elevado') {
-                                                lista_preco.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                            }
-                                            if (p.motivo == 'Prazo de instalação') {
-                                                lista_prazo.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                            }
-                                            if (p.motivo == 'Sem motivo') {
-                                                lista_smoti.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                            }
-                                        } else {
-                                            if (naoVazio(p.status) && p.ganho == false) {
-                                                if (p.status == 'Enviado') {
-                                                    lista_envia.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                                }
-                                                if (p.status == 'Negociando') {
-                                                    lista_negoc.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                                }
-                                                if (p.status == 'Analisando Financiamento') {
-                                                    lista_anali.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                                }
-                                                if (p.status == 'Comparando Propostas') {
-                                                    lista_compa.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                                }
-                                                if (p.status == 'Aguardando redução de preço') {
-                                                    lista_reduc.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                                }
-                                            }
-                                        }
-
-                                        // if (p.feito == true) {
-                                        //     lista_envio.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                        // }
-                                        if (p.ganho == true) {
-                                            lista_ganho.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                        } else {
-                                            lista_naoganho.push({ baixado, responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                        }
-
-                                        if (q == proposta.length) {
-                                            res.render('relatorios/analiseproposta', {
-                                                todos_clientes, todas_empresas, pessoa, lista_ganho, lista_naoganho,
-                                                qtd_conco: lista_conco.length, qtd_finan: lista_finan.length, qtd_preco: lista_preco.length, qtd_prazo: lista_prazo.length,
-                                                qtd_smoti: lista_smoti.length, qtd_negoc: lista_negoc.length, qtd_anali: lista_anali.length, qtd_compa: lista_compa.length, qtd_reduc: lista_reduc.length, qtd_envia: lista_envia.length,
-                                                naoganho_total: lista_naoganho.length, ganho_total: lista_ganho.length, mestitulo, anotitulo
-                                            })
-                                        }
-                                    })
-                                })
-                            })
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Nenhum responsável encontrado.')
-                        res.redirect('/gerenciamento/consulta')
-                    })
-                } else {
-                    res.render('relatorios/analiseproposta', {
-                        todos_clientes, todas_empresas, pessoa, lista_ganho, lista_naoganho,
-                        qtd_conco: lista_conco.length, qtd_finan: lista_finan.length, qtd_preco: lista_preco.length, qtd_prazo: lista_prazo.length,
-                        qtd_smoti: lista_smoti.length, qtd_negoc: lista_negoc.length, qtd_anali: lista_anali.length, qtd_compa: lista_compa.length, qtd_reduc: lista_reduc.length, qtd_envia: lista_envia.length,
-                        naoganho_total: lista_naoganho.length, ganho_total: lista_ganho.length, mestitulo, anotitulo
-                    })
-                }
-            }).catch((err) => {
-                req.flash('error_msg', 'Nenhuma proposta encontrada.')
-                res.redirect('/gerenciamento/consulta')
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Nenhuma empresas encontrada.')
-            res.redirect('/gerenciamento/consulta')
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Nenhum cliente encontrado.')
-        res.redirect('/gerenciamento/consulta')
-    })
-
-})
-
-router.get('/analisegeral/', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    var potencia = 0
-    var valor = 0
-    var totint = 0
-    var qtdmod = 0
-    var custoPlano = 0
-    var q = 0
-    Realizado.find({ user: _id }).sort({ datafim: 'asc' }).lean().then((realizado) => {
-        realizado.forEach((element) => {
-            Projetos.findOne({ _id: element.projeto }).then((projeto) => {
-
-                // if (projeto.ehDireto) {
-                if (projeto.qtdmod > 0) {
-                    qtdmod = qtdmod + projeto.qtdmod
-                } else {
-                    qtdmod = qtdmod + 0
-                }
-                // }
-                // } else {
-                //     if (projeto.unimod != '' || typeof projeto.unimod != 'undefined'){
-                //         qtdmod = qtdmod + projeto.unimod
-                //     }
-                // }
-                //console.log('realizado._id=>' + element._id)
-                //console.log("potencia=>" + element.potencia)
-                //console.log("qtdmod=>" + qtdmod)
-                if (element.potencia != '' && typeof element.potencia != 'undefined') {
-                    potencia = parseFloat(potencia) + parseFloat(element.potencia)
-                }
-                valor = valor + element.valor
-                totint = totint + element.totint
-                custoPlano = custoPlano + element.custoPlano
-
-                q = q + 1
-                if (q == realizado.length) {
-                    var rspmod = (parseFloat(valor) / parseFloat(qtdmod)).toFixed(2)
-                    var rspkwp = (parseFloat(valor) / parseFloat(potencia)).toFixed(2)
-                    var rsimod = (parseFloat(totint) / parseFloat(qtdmod)).toFixed(2)
-                    var rsikwp = (parseFloat(totint) / parseFloat(potencia)).toFixed(2)
-                    var custoPorModulo = (parseFloat(custoPlano) / parseFloat(qtdmod)).toFixed(2)
-                    var custoPorKwp = (parseFloat(custoPlano) / parseFloat(potencia)).toFixed(2)
-                    res.render('relatorios/analisegeral', { potencia, qtdmod, valor, rspkwp, rspmod, rsimod, rsikwp, custoPorModulo, custoPorKwp })
-                }
-            }).catch((err) => {
-                req.flash('error_msg', 'Houve um erro para encontrar projetos realizados')
-                res.redirect('/menu')
-            })
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Houve um erro para encontrar projetos realizados')
-        res.redirect('/menu')
-    })
-})
 
 router.get('/listarealizados', ehAdmin, (req, res) => {
     const { _id } = req.user
@@ -454,6 +165,333 @@ router.get('/listarabertos', ehAdmin, (req, res) => {
     }).catch((err) => {
         req.flash('error_msg', 'Houve um erro para encontrar projetos realizados')
         res.redirect('/menu')
+    })
+})
+
+router.get('/dashboardcustosversus', ehAdmin, (req, res) => {
+    const { _id } = req.user
+
+    var numprj_com = 0
+    var numprj_sem = 0
+    var soma_totfat_com = 0
+    var soma_totfat_sem = 0
+
+    var soma_totcop_com = 0
+    var soma_totcop_sem = 0
+    var soma_totkit_com = 0
+    var soma_totprj_com = 0
+    var soma_totprj_sem = 0
+    var soma_totliq_com = 0
+    var soma_totliq_sem = 0
+
+    var soma_totkwp_com = 0
+    var soma_totkwp_sem = 0
+    var soma_equkwp_com = 0
+    var soma_equkwp_sem = 0
+    var soma_varkwp_com = 0
+    var soma_varkwp_sem = 0
+    var soma_estkwp_com = 0
+    var soma_estkwp_sem = 0
+
+    //Custos Fixos
+    //Serviço
+    var soma_totint_com = 0
+    var soma_totint_sem = 0
+    var soma_totpro_com = 0
+    var soma_totpro_sem = 0
+    var soma_totges_com = 0
+    var soma_totges_sem = 0
+    var soma_totart_com = 0
+    var soma_totart_sem = 0
+    //Despesas Administrativas
+    var soma_totadm_com = 0
+    var soma_totadm_sem = 0
+    //Comissões
+    var soma_totcom_com = 0
+    var soma_totcom_sem = 0
+    //Tributos
+    var soma_tottrb_com = 0
+    var soma_tottrb_sem = 0
+    //Custos Variáveis
+    var soma_varfat_com = 0
+    var soma_varfat_sem = 0
+    var soma_totdes_com = 0
+    var soma_totdes_sem = 0
+    var soma_totali_com = 0
+    var soma_totali_sem = 0
+    var soma_totcmb_com = 0
+    var soma_totcmb_sem = 0
+    var soma_tothtl_com = 0
+    var soma_tothtl_sem = 0
+    //Custos Variáveis Estruturais
+    var soma_estfat_com = 0
+    var soma_estfat_sem = 0
+    var soma_totcer_com = 0
+    var soma_totcer_sem = 0
+    var soma_totcen_com = 0
+    var soma_totcen_sem = 0
+    var soma_totpos_com = 0
+    var soma_totpos_sem = 0
+
+
+    Realizado.find({ user: _id }).lean().then((realizado) => {
+
+        for (i = 0; i < realizado.length; i++) {
+
+            const { potencia } = realizado[i]
+            const { fatequ } = realizado[i]
+            const { vlrkit } = realizado[i]
+            const { valor } = realizado[i]
+            const { vlrNFS } = realizado[i]
+            const { custoPlano } = realizado[i]
+            const { lucroLiquido } = realizado[i]
+
+            //Custos Fixos
+            //Serviços
+            const { totpro } = realizado[i]
+            const { totges } = realizado[i]
+            const { totint } = realizado[i]
+            const { vlrart } = realizado[i]
+            //Administrativo
+            const { desAdm } = realizado[i]
+            //Comissão
+            const { vlrcom } = realizado[i]
+            //Tributos
+            const { totalTributos } = realizado[i]
+            //Custo Variável
+            const { totdes } = realizado[i]
+            const { totali } = realizado[i]
+            const { totcmb } = realizado[i]
+            const { tothtl } = realizado[i]
+            //Custo Variavel Estrutural
+            const { valorCer } = realizado[i]
+            const { valorCen } = realizado[i]
+            const { valorPos } = realizado[i]
+
+            //Percentuais Conmponentes
+            const { valorMod } = realizado[i]
+            const { valorInv } = realizado[i]
+            const { valorEst } = realizado[i]
+            const { valorCab } = realizado[i]
+            const { valorDis } = realizado[i]
+            const { valorDPS } = realizado[i]
+            const { valorSB } = realizado[i]
+            const { valorOcp } = realizado[i]
+
+            if (fatequ == true) {
+
+                numprj_com++
+
+                soma_totkwp_com = (parseFloat(soma_totkwp_com) + parseFloat(potencia)).toFixed(2)
+                soma_totcop_com = (parseFloat(soma_totcop_com) + parseFloat(custoPlano)).toFixed(2)
+                //Totalizador de Faturamento            
+                soma_totfat_com = parseFloat(soma_totfat_com) + parseFloat(vlrNFS)
+                //Totalizador de Kit   
+                soma_totkit_com = parseFloat(soma_totkit_com) + parseFloat(vlrkit)
+
+                //Custos Fixos 
+                //Serviços
+                soma_totint_com = (parseFloat(soma_totint_com) + parseFloat(totint)).toFixed(2)
+                soma_totpro_com = (parseFloat(soma_totpro_com) + parseFloat(totpro)).toFixed(2)
+                soma_totges_com = (parseFloat(soma_totges_com) + parseFloat(totges)).toFixed(2)
+                soma_totart_com = (parseFloat(soma_totart_com) + parseFloat(vlrart)).toFixed(2)
+                //Tributos
+                soma_tottrb_com = (parseFloat(soma_tottrb_com) + parseFloat(totalTributos)).toFixed(2)
+                //Comissão
+                soma_totcom_com = (parseFloat(soma_totcom_com) + parseFloat(vlrcom)).toFixed(2)
+                //Despesas Administrativas
+                if (desAdm != undefined) {
+                    soma_totadm_com = (parseFloat(soma_totadm_com) + parseFloat(desAdm)).toFixed(2)
+                }
+
+                //Custos Variáveis
+                if (totdes > 0 || totali > 0 || totcmb > 0 || tothtl > 0) {
+                    soma_varkwp_com = parseFloat(soma_varkwp_com) + parseFloat(potencia)
+                    //console.log('soma_varkwp=>' + soma_varkwp)
+                    soma_varfat_com = parseFloat(soma_varfat_com) + parseFloat(vlrNFS)
+                }
+                soma_totdes_com = (parseFloat(soma_totdes_com) + parseFloat(totdes)).toFixed(2)
+                soma_totali_com = (parseFloat(soma_totali_com) + parseFloat(totali)).toFixed(2)
+                //console.log('soma_totali=>' + soma_totali)
+                soma_totcmb_com = (parseFloat(soma_totcmb_com) + parseFloat(totcmb)).toFixed(2)
+                soma_tothtl_com = (parseFloat(soma_tothtl_com) + parseFloat(tothtl)).toFixed(2)
+
+                //Custos Variáveis Estruturais
+                if (valorCer > 0 || valorCen > 0 || valorPos > 0) {
+                    soma_estkwp_com = parseFloat(soma_estkwp_com) + parseFloat(potencia)
+                    soma_estfat_com = parseFloat(soma_estfat_com) + parseFloat(vlrNFS)
+                }else{
+                    soma_estkwp_com = parseFloat(soma_estkwp_com) + 0
+                    soma_estfat_com = parseFloat(soma_estfat_com) + 0
+                }
+                if (valorCer > 0){
+                    soma_totcer = (parseFloat(soma_totcer) + parseFloat(valorCer)).toFixed(2)
+                }else{
+                    soma_totcer = (parseFloat(soma_totcer) + 0).toFixed(2)
+                }
+                if (valorCen > 0) {
+                    soma_totcen_com = (parseFloat(soma_totcen_com) + parseFloat(valorCen)).toFixed(2)
+                }
+                if (valorPos > 0) {
+                    soma_totpos_com = (parseFloat(soma_totpos_com) + parseFloat(valorPos)).toFixed(2)
+                }
+
+                if (parseFloat(valorMod) > 0) {
+                    soma_equkwp_com = parseFloat(soma_equkwp_com) + parseFloat(potencia)
+                }
+                //Soma percentuais componentes
+                //console.log('valorMod=>' + valorMod)
+                if (valorMod != undefined) {
+                    soma_modequ_com = (parseFloat(soma_modequ_com) + parseFloat(valorMod)).toFixed(2)
+                }
+                //console.log('soma_modequ=>' + soma_modequ)
+                //console.log('valorInv=>' + valorInv)
+                if (valorInv != undefined) {
+                    soma_invequ_com = (parseFloat(soma_invequ_com) + parseFloat(valorInv)).toFixed(2)
+                }
+                //console.log('soma_invequ=>' + soma_invequ)
+                //console.log('valorCab=>' + valorCab)
+                if (valorCab != undefined) {
+                    soma_cabequ_com = (parseFloat(soma_cabequ_com) + parseFloat(valorCab)).toFixed(2)
+                }
+                //console.log('soma_cabequ=>' + soma_cabequ)
+                //console.log('valorDis=>' + valorDis)
+                if (valorDis != undefined) {
+                    soma_disequ_com = (parseFloat(soma_disequ_com) + parseFloat(valorDis)).toFixed(2)
+                }
+                //console.log('soma_disequ=>' + soma_disequ)
+                //console.log('valorDPS=>' + valorDPS)
+                if (valorDPS != undefined) {
+                    soma_dpsequ_com = (parseFloat(soma_dpsequ_com) + parseFloat(valorDPS)).toFixed(2)
+                }
+                //console.log('soma_dpsequ=>' + soma_dpsequ)
+                //console.log('valorSB=>' + valorSB)
+                if (valorSB != undefined) {
+                    soma_sbxequ_com = (parseFloat(soma_sbxequ_com) + parseFloat(valorSB)).toFixed(2)
+                }
+                //console.log('soma_sbxequ=>' + soma_sbxequ)
+                //console.log('valorOcp=>' + valorOcp)
+                if (valorOcp != undefined) {
+                    soma_ocpequ_com = (parseFloat(soma_ocpequ_com) + parseFloat(valorOcp)).toFixed(2)
+                }
+                //console.log('soma_ocpequ=>' + soma_ocpequ)
+
+                //Totais: Projetos Vendidos, Faturamento e Lucro Líquido
+                soma_totprj_com = (parseFloat(soma_totprj_com) + parseFloat(valor)).toFixed(2)
+                soma_totliq_com = (parseFloat(soma_totliq_com) + parseFloat(lucroLiquido)).toFixed(2)
+            } else {
+                numprj_sem++
+
+                soma_totkwp_sem = (parseFloat(soma_totkwp_sem) + parseFloat(potencia)).toFixed(2)
+                soma_totcop_sem = (parseFloat(soma_totcop_sem) + parseFloat(custoPlano)).toFixed(2)
+                //Totalizador de Faturamento            
+                soma_totfat_sem = parseFloat(soma_totfat_sem) + parseFloat(vlrNFS)
+
+                //Custos Fixos 
+                //Serviços
+                soma_totint_sem = (parseFloat(soma_totint_sem) + parseFloat(totint)).toFixed(2)
+                soma_totpro_sem = (parseFloat(soma_totpro_sem) + parseFloat(totpro)).toFixed(2)
+                soma_totges_sem = (parseFloat(soma_totges_sem) + parseFloat(totges)).toFixed(2)
+                soma_totart_sem = (parseFloat(soma_totart_sem) + parseFloat(vlrart)).toFixed(2)
+                //Tributos
+                soma_tottrb_sem = (parseFloat(soma_tottrb_sem) + parseFloat(totalTributos)).toFixed(2)
+                //Comissão
+                soma_totcom_sem = (parseFloat(soma_totcom_sem) + parseFloat(vlrcom)).toFixed(2)
+                //Despesas Administrativas
+                if (desAdm != undefined) {
+                    soma_totadm_sem = (parseFloat(soma_totadm_sem) + parseFloat(desAdm)).toFixed(2)
+                }
+
+                //Custos Variáveis
+                if (totdes > 0 || totali > 0 || totcmb > 0 || tothtl > 0) {
+                    soma_varkwp_sem = parseFloat(soma_varkwp_sem) + parseFloat(potencia)
+                    //console.log('soma_varkwp=>' + soma_varkwp)
+                    soma_varfat_sem = parseFloat(soma_varfat_sem) + parseFloat(vlrNFS)
+                }
+                soma_totdes_sem = (parseFloat(soma_totdes_sem) + parseFloat(totdes)).toFixed(2)
+                soma_totali_sem = (parseFloat(soma_totali_sem) + parseFloat(totali)).toFixed(2)
+                //console.log('soma_totali=>' + soma_totali)
+                soma_totcmb_sem = (parseFloat(soma_totcmb_sem) + parseFloat(totcmb)).toFixed(2)
+                soma_tothtl_sem = (parseFloat(soma_tothtl_sem) + parseFloat(tothtl)).toFixed(2)
+
+                //Custos Variáveis Estruturais
+                if (valorCer > 0 || valorCen > 0 || valorPos > 0) {
+                    soma_estkwp_sem = parseFloat(soma_estkwp_sem) + parseFloat(potencia)
+                    soma_estfat_sem = parseFloat(soma_estfat_sem) + parseFloat(vlrNFS)
+                }else{
+                    soma_estkwp_sem = parseFloat(soma_estkwp_sem) + 0
+                    soma_estfat_sem = parseFloat(soma_estfat_sem) + 0
+                }
+                if (valorCer > 0){
+                    soma_totcer_sem = (parseFloat(soma_totcer_sem) + parseFloat(valorCer)).toFixed(2)
+                }else{
+                    soma_totcer_sem = (parseFloat(soma_totcer_sem) + 0).toFixed(2)
+                }
+                if (valorCen > 0) {
+                    soma_totcen_sem = (parseFloat(soma_totcen_sem) + parseFloat(valorCen)).toFixed(2)
+                }else{
+                    soma_totcen_sem = (parseFloat(soma_totcen_sem) + 0).toFixed(2)
+                }
+                if (valorPos > 0) {
+                    soma_totpos_sem = (parseFloat(soma_totpos_sem) + parseFloat(valorPos)).toFixed(2)
+                }else{
+                    soma_totpos_sem = (parseFloat(soma_totpos_sem) + 0).toFixed(2)
+                }
+
+                if (parseFloat(valorMod) > 0) {
+                    soma_equkwp_sem = parseFloat(soma_equkwp_sem) + parseFloat(potencia)
+                }
+                //Soma percentuais componentes
+                //console.log('valorMod=>' + valorMod)
+                if (valorMod != undefined) {
+                    soma_modequ_sem = (parseFloat(soma_modequ_sem) + parseFloat(valorMod)).toFixed(2)
+                }
+                //console.log('soma_modequ=>' + soma_modequ)
+                //console.log('valorInv=>' + valorInv)
+                if (valorInv != undefined) {
+                    soma_invequ_sem = (parseFloat(soma_invequ_sem) + parseFloat(valorInv)).toFixed(2)
+                }
+                //console.log('soma_invequ=>' + soma_invequ)
+                //console.log('valorCab=>' + valorCab)
+                if (valorCab != undefined) {
+                    soma_cabequ_sem = (parseFloat(soma_cabequ_sem) + parseFloat(valorCab)).toFixed(2)
+                }
+                //console.log('soma_cabequ=>' + soma_cabequ)
+                //console.log('valorDis=>' + valorDis)
+                if (valorDis != undefined) {
+                    soma_disequ_sem = (parseFloat(soma_disequ_sem) + parseFloat(valorDis)).toFixed(2)
+                }
+                //console.log('soma_disequ=>' + soma_disequ)
+                //console.log('valorDPS=>' + valorDPS)
+                if (valorDPS != undefined) {
+                    soma_dpsequ_sem = (parseFloat(soma_dpsequ_sem) + parseFloat(valorDPS)).toFixed(2)
+                }
+                //console.log('soma_dpsequ=>' + soma_dpsequ)
+                //console.log('valorSB=>' + valorSB)
+                if (valorSB != undefined) {
+                    soma_sbxequ_sem = (parseFloat(soma_sbxequ_sem) + parseFloat(valorSB)).toFixed(2)
+                }
+                //console.log('soma_sbxequ=>' + soma_sbxequ)
+                //console.log('valorOcp=>' + valorOcp)
+                if (valorOcp != undefined) {
+                    soma_ocpequ_sem = (parseFloat(soma_ocpequ_sem) + parseFloat(valorOcp)).toFixed(2)
+                }
+                //console.log('soma_ocpequ=>' + soma_ocpequ)
+
+                //Totais: Projetos Vendidos, Faturamento e Lucro Líquido
+                soma_totprj_sem = (parseFloat(soma_totprj_sem) + parseFloat(valor)).toFixed(2)
+                soma_totliq_sem = (parseFloat(soma_totliq_sem) + parseFloat(lucroLiquido)).toFixed(2)
+            }
+
+        }
+        per_totint = ((parseFloat(soma_totint_com) * parseFloat(soma_totkwp_com)) + (parseFloat(soma_totint_sem) * parseFloat(soma_totkwp_sem))) / ((parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem)))
+        per_totadm = ((parseFloat(soma_totadm_com) * parseFloat(soma_totkwp_com)) + (parseFloat(soma_totadm_sem) * parseFloat(soma_totkwp_sem))) / ((parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem)))
+        per_totali = ((parseFloat(soma_totali_com) * parseFloat(soma_varkwp_com)) + (parseFloat(soma_totali_sem) * parseFloat(soma_varkwp_sem))) / ((parseFloat(soma_varkwp_com) + parseFloat(soma_varkwp_sem)))
+
+
+        res.render('relatorios/dashboardcustos', {
+
+        })
     })
 })
 
@@ -628,7 +666,6 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
     var soma_totpos_com = 0
     var soma_totpos_sem = 0
     //----------------------------------------
-    var ticketkwp = 0
 
 
     Realizado.find({ user: _id }).lean().then((realizado) => {
@@ -683,6 +720,9 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
             //Média ponderada da participação do gastos- INÍCIO
             //-------------------------------
             if (fatequ == true) {
+
+                //numprj_com++
+
                 soma_totkwp_com = (parseFloat(soma_totkwp_com) + parseFloat(potencia)).toFixed(2)
                 soma_totcop_com = (parseFloat(soma_totcop_com) + parseFloat(custoPlano)).toFixed(2)
                 //Totalizador de Faturamento            
@@ -691,30 +731,16 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
                 soma_totkit_com = parseFloat(soma_totkit_com) + parseFloat(vlrkit)
 
                 //Custos Fixos 
-                if (custofix > 0) {
-                    soma_totcus_com = (parseFloat(soma_totcus_com) + parseFloat(custofix)).toFixed(2)
-                }
+                soma_totcus_com = (parseFloat(soma_totcus_com) + parseFloat(custofix)).toFixed(2)
                 //Serviços
-                if (totint > 0) {
-                    soma_totint_com = (parseFloat(soma_totint_com) + parseFloat(totint)).toFixed(2)
-                }
-                if (totpro > 0) {
-                    soma_totpro_com = (parseFloat(soma_totpro_com) + parseFloat(totpro)).toFixed(2)
-                }
-                if (totges > 0) {
-                    soma_totges_com = (parseFloat(soma_totges_com) + parseFloat(totges)).toFixed(2)
-                }
-                if (vlrart > 0) {
-                    soma_totart_com = (parseFloat(soma_totart_com) + parseFloat(vlrart)).toFixed(2)
-                }
+                soma_totint_com = (parseFloat(soma_totint_com) + parseFloat(totint)).toFixed(2)
+                soma_totpro_com = (parseFloat(soma_totpro_com) + parseFloat(totpro)).toFixed(2)
+                soma_totges_com = (parseFloat(soma_totges_com) + parseFloat(totges)).toFixed(2)
+                soma_totart_com = (parseFloat(soma_totart_com) + parseFloat(vlrart)).toFixed(2)
                 //Tributos
-                if (totalTributos > 0) {
-                    soma_tottrb_com = (parseFloat(soma_tottrb_com) + parseFloat(totalTributos)).toFixed(2)
-                }
+                soma_tottrb_com = (parseFloat(soma_tottrb_com) + parseFloat(totalTributos)).toFixed(2)
                 //Comissão
-                if (vlrcom > 0) {
-                    soma_totcom_com = (parseFloat(soma_totcom_com) + parseFloat(vlrcom)).toFixed(2)
-                }
+                soma_totcom_com = (parseFloat(soma_totcom_com) + parseFloat(vlrcom)).toFixed(2)
                 //Despesas Administrativas
                 if (desAdm != undefined) {
                     soma_totadm_com = (parseFloat(soma_totadm_com) + parseFloat(desAdm)).toFixed(2)
@@ -728,41 +754,33 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
                     soma_totvar_com = (parseFloat(soma_totvar_com) + parseFloat(custovar)).toFixed(2)
                 }
 
-                if (totdes > 0) {
-                    soma_totdes_com = (parseFloat(soma_totdes_com) + parseFloat(totdes)).toFixed(2)
-                }
-                if (totali > 0) {
-                    soma_totali_com = (parseFloat(soma_totali_com) + parseFloat(totali)).toFixed(2)
-                }
-                if (totcmb > 0) {
-                    soma_totcmb_com = (parseFloat(soma_totcmb_com) + parseFloat(totcmb)).toFixed(2)
-                }
-                if (tothtl > 0) {
-                    soma_tothtl_com = (parseFloat(soma_tothtl_com) + parseFloat(tothtl)).toFixed(2)
-                }
+                soma_totdes_com = (parseFloat(soma_totdes_com) + parseFloat(totdes)).toFixed(2)
+                soma_totali_com = (parseFloat(soma_totali_com) + parseFloat(totali)).toFixed(2)
+                soma_totcmb_com = (parseFloat(soma_totcmb_com) + parseFloat(totcmb)).toFixed(2)
+                soma_tothtl_com = (parseFloat(soma_tothtl_com) + parseFloat(tothtl)).toFixed(2)
 
                 //Custos Variáveis Estruturais
                 if (valorCer > 0 || valorCen > 0 || valorPos > 0) {
                     soma_estkwp_com = parseFloat(soma_estkwp_com) + parseFloat(potencia)
                     soma_estfat_com = parseFloat(soma_estfat_com) + parseFloat(vlrNFS)
                     soma_totest_com = (parseFloat(soma_totest_com) + parseFloat(custoest)).toFixed(2)
-                } else {
+                }else{
                     soma_totest_com = (parseFloat(soma_totest_com) + 0).toFixed(2)
                 }
                 if (valorCer > 0) {
                     soma_totcer_com = (parseFloat(soma_totcer_com) + parseFloat(valorCer)).toFixed(2)
-                } else {
+                }else{
                     soma_totcer_com = (parseFloat(soma_totcer_com) + 0).toFixed(2)
                 }
                 if (valorCen > 0) {
                     soma_totcen_com = (parseFloat(soma_totcen_com) + parseFloat(valorCen)).toFixed(2)
-                } else {
-                    soma_totcen_com = (parseFloat(soma_totcen_com) + 0).toFixed(2)
+                }else{
+                    soma_totcen_com = (parseFloat(soma_totcen_com) + 0).toFixed(2) 
                 }
                 if (valorPos > 0) {
                     soma_totpos_com = (parseFloat(soma_totpos_com) + parseFloat(valorPos)).toFixed(2)
-                } else {
-                    soma_totpos_com = (parseFloat(soma_totpos_com) + 0).toFixed(2)
+                }else{
+                    soma_totpos_com = (parseFloat(soma_totpos_com) + 0).toFixed(2) 
                 }
 
             } else {
@@ -807,22 +825,22 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
                     soma_estkwp_sem = parseFloat(soma_estkwp_sem) + parseFloat(potencia)
                     soma_estfat_sem = parseFloat(soma_estfat_sem) + parseFloat(vlrNFS)
                     soma_totest_sem = (parseFloat(soma_totest_sem) + parseFloat(custoest)).toFixed(2)
-                } else {
+                }else{
                     soma_totest_sem = (parseFloat(soma_totest_sem) + 0).toFixed(2)
                 }
                 if (valorCer > 0) {
                     soma_totcer_sem = (parseFloat(soma_totcer_sem) + parseFloat(valorCer)).toFixed(2)
-                } else {
+                }else{
                     soma_totcer_sem = (parseFloat(soma_totcer_sem) + 0).toFixed(2)
                 }
                 if (valorCen > 0) {
                     soma_totcen_sem = (parseFloat(soma_totcen_sem) + parseFloat(valorCen)).toFixed(2)
-                } else {
+                }else{
                     soma_totcen_sem = (parseFloat(soma_totcen_sem) + 0).toFixed(2)
                 }
                 if (valorPos > 0) {
                     soma_totpos_sem = (parseFloat(soma_totpos_sem) + parseFloat(valorPos)).toFixed(2)
-                } else {
+                }else{
                     soma_totpos_sem = (parseFloat(soma_totpos_sem) + 0).toFixed(2)
                 }
             }
@@ -831,8 +849,6 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
             //Média ponderada da paticipação dos gastos- FIM
             //----------------------------------------
 
-            //console.log('valor=>' + valor)
-            //console.log('potencia=>' + potencia)
             soma_totkwp = (parseFloat(soma_totkwp) + parseFloat(potencia)).toFixed(2)
             soma_totcop = (parseFloat(soma_totcop) + parseFloat(custoPlano)).toFixed(2)
             //Totalizador de Faturamento            
@@ -845,26 +861,10 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
 
             //Custos Fixos 
             //Serviços
-            if (totint > 0) {
-                soma_totint = (parseFloat(soma_totint) + parseFloat(totint)).toFixed(2)
-            } else {
-                soma_totint = (parseFloat(soma_totint) + 0).toFixed(2)
-            }
-            if (totpro > 0) {
-                soma_totpro = (parseFloat(soma_totpro) + parseFloat(totpro)).toFixed(2)
-            } else {
-                soma_totpro = (parseFloat(soma_totpro) + 0).toFixed(2)
-            }
-            if (totges > 0) {
-                soma_totges = (parseFloat(soma_totges) + parseFloat(totges)).toFixed(2)
-            } else {
-                soma_totges = (parseFloat(soma_totges) + 0).toFixed(2)
-            }
-            if (vlrart > 0) {
-                soma_totart = (parseFloat(soma_totart) + parseFloat(vlrart)).toFixed(2)
-            } else {
-                soma_totart = (parseFloat(soma_totart) + 0).toFixed(2)
-            }
+            soma_totint = (parseFloat(soma_totint) + parseFloat(totint)).toFixed(2)
+            soma_totpro = (parseFloat(soma_totpro) + parseFloat(totpro)).toFixed(2)
+            soma_totges = (parseFloat(soma_totges) + parseFloat(totges)).toFixed(2)
+            soma_totart = (parseFloat(soma_totart) + parseFloat(vlrart)).toFixed(2)
             //Tributos
             soma_tottrb = (parseFloat(soma_tottrb) + parseFloat(totalTributos)).toFixed(2)
             //Comissão
@@ -880,48 +880,33 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
                 //console.log('soma_varkwp=>' + soma_varkwp)
                 soma_varfat = parseFloat(soma_varfat) + parseFloat(vlrNFS)
             }
-            if (totdes > 0) {
-                soma_totdes = (parseFloat(soma_totdes) + parseFloat(totdes)).toFixed(2)
-            } else {
-                soma_totdes = (parseFloat(soma_totdes) + 0).toFixed(2)
-            }
-            if (totali > 0) {
-                soma_totali = (parseFloat(soma_totali) + parseFloat(totali)).toFixed(2)
-            } else {
-                soma_totali = (parseFloat(soma_totali) + 0).toFixed(2)
-            }
-            if (totcmb > 0) {
-                soma_totcmb = (parseFloat(soma_totcmb) + parseFloat(totcmb)).toFixed(2)
-            } else {
-                soma_totcmb = (parseFloat(soma_totcmb) + 0).toFixed(2)
-            }
-            if (tothtl > 0) {
-                soma_tothtl = (parseFloat(soma_tothtl) + parseFloat(tothtl)).toFixed(2)
-            } else {
-                soma_tothtl = (parseFloat(soma_tothtl) + 0).toFixed(2)
-            }
+
+            soma_totdes = (parseFloat(soma_totdes) + parseFloat(totdes)).toFixed(2)
+            soma_totali = (parseFloat(soma_totali) + parseFloat(totali)).toFixed(2)
+            soma_totcmb = (parseFloat(soma_totcmb) + parseFloat(totcmb)).toFixed(2)
+            soma_tothtl = (parseFloat(soma_tothtl) + parseFloat(tothtl)).toFixed(2)
 
             //Custos Variáveis Estruturais
             if (valorCer > 0 || valorCen > 0 || valorPos > 0) {
                 soma_estkwp = parseFloat(soma_estkwp) + parseFloat(potencia)
                 soma_estfat = parseFloat(soma_estfat) + parseFloat(vlrNFS)
-            } else {
+            }else{
                 soma_estkwp = parseFloat(soma_estkwp) + 0
                 soma_estfat = parseFloat(soma_estfat) + 0
             }
             if (valorCer > 0) {
                 soma_totcer = (parseFloat(soma_totcer) + parseFloat(valorCer)).toFixed(2)
-            } else {
+            }else{
                 soma_totcer = (parseFloat(soma_totcer) + 0).toFixed(2)
             }
             if (valorCen > 0) {
                 soma_totcen = (parseFloat(soma_totcen) + parseFloat(valorCen)).toFixed(2)
-            } else {
+            }else{
                 soma_totcen = (parseFloat(soma_totcen) + 0).toFixed(2)
             }
             if (valorPos > 0) {
                 soma_totpos = (parseFloat(soma_totpos) + parseFloat(valorPos)).toFixed(2)
-            } else {
+            }else{
                 soma_totpos = (parseFloat(soma_totpos) + 0).toFixed(2)
             }
 
@@ -974,380 +959,246 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
             //Totais: Projetos Vendidos, Faturamento e Lucro Líquido
             soma_totprj = (parseFloat(soma_totprj) + parseFloat(valor)).toFixed(2)
             soma_totliq = (parseFloat(soma_totliq) + parseFloat(lucroLiquido)).toFixed(2)
+
         }
 
         //Média Ponderada projetista
         var per_totpro_com = parseFloat(soma_totpro_com) / parseFloat(soma_totfat_com) * 100
-        if (isNaN(per_totpro_com)) {
-            per_totpro_com = 0
-        }
         var per_totpro_sem = parseFloat(soma_totpro_sem) / parseFloat(soma_totfat_sem) * 100
-        if (isNaN(per_totpro_sem)) {
-            per_totpro_sem = 0
-        }
         var medkwp_totpro_com = parseFloat(soma_totpro_com) / parseFloat(soma_totkwp_com)
-        if (isNaN(medkwp_totpro_com)) {
-            medkwp_totpro_com = 0
-        }
         var medkwp_totpro_sem = parseFloat(soma_totpro_sem) / parseFloat(soma_totkwp_sem)
-        if (isNaN(medkwp_totpro_sem)) {
-            medkwp_totpro_sem = 0
-        }
-        var per_totpro = (((parseFloat(soma_totkwp_com) * parseFloat(per_totpro_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_totpro_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
-        if (isNaN(per_totpro)) {
-            per_totpro = 0
-        }
+        var per_totpro = (((parseFloat(medkwp_totpro_com) * parseFloat(per_totpro_com)) + (parseFloat(medkwp_totpro_sem) * parseFloat(per_totpro_sem))) / (parseFloat(medkwp_totpro_com) + parseFloat(medkwp_totpro_sem))).toFixed(2)
         //Média Ponderada ART
         var per_totart_com = parseFloat(soma_totart_com) / parseFloat(soma_totfat_com) * 100
-        if (isNaN(per_totart_com)) {
-            per_totart_com = 0
-        }
         var per_totart_sem = parseFloat(soma_totart_sem) / parseFloat(soma_totfat_sem) * 100
-        if (isNaN(per_totart_sem)) {
-            per_totart_sem = 0
-        }
         var medkwp_totart_com = parseFloat(soma_totart_com) / parseFloat(soma_totkwp_com)
-        if (isNaN(medkwp_totart_com)) {
-            medkwp_totart_com = 0
-        }
         var medkwp_totart_sem = parseFloat(soma_totart_sem) / parseFloat(soma_totkwp_sem)
-        if (isNaN(medkwp_totart_sem)) {
-            medkwp_totart_sem = 0
-        }
         var per_totart = (((parseFloat(medkwp_totart_com) * parseFloat(per_totart_com)) + (parseFloat(medkwp_totart_sem) * parseFloat(per_totart_sem))) / (parseFloat(medkwp_totart_com) + parseFloat(medkwp_totart_sem))).toFixed(2)
-        if (isNaN(per_totart)) {
-            per_totart = 0
-        }
         //Média Ponderada Gestão
         var per_totges_com = parseFloat(soma_totges_com) / parseFloat(soma_totfat_com) * 100
-        if (isNaN(per_totges_com)) {
-            per_totges_com = 0
-        }
         var per_totges_sem = parseFloat(soma_totges_sem) / parseFloat(soma_totfat_sem) * 100
-        if (isNaN(per_totges_sem)) {
-            per_totges_sem = 0
-        }
         var medkwp_totges_com = parseFloat(soma_totges_com) / parseFloat(soma_totkwp_com)
-        if (isNaN(medkwp_totges_com)) {
-            medkwp_totges_com = 0
-        }
         var medkwp_totges_sem = parseFloat(soma_totges_sem) / parseFloat(soma_totkwp_sem)
-        if (isNaN(medkwp_totges_sem)) {
-            medkwp_totges_sem = 0
-        }
-        var per_totges = (((parseFloat(soma_totkwp_com) * parseFloat(per_totges_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_totges_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
-        if (isNaN(per_totges)) {
-            per_totges = 0
-        }
+        var per_totges = (((parseFloat(medkwp_totges_com) * parseFloat(per_totges_com)) + (parseFloat(medkwp_totges_sem) * parseFloat(per_totges_sem))) / (parseFloat(medkwp_totges_com) + parseFloat(medkwp_totges_sem))).toFixed(2)
         //Média Ponderada instalação
         var per_totint_com = parseFloat(soma_totint_com) / parseFloat(soma_totfat_com) * 100
-        if (isNaN(per_totint_com)) {
-            per_totint_com = 0
-        }
         var per_totint_sem = parseFloat(soma_totint_sem) / parseFloat(soma_totfat_sem) * 100
-        if (isNaN(per_totint_sem)) {
-            per_totint_sem = 0
-        }
         var medkwp_totint_com = parseFloat(soma_totint_com) / parseFloat(soma_totkwp_com)
-        if (isNaN(medkwp_totint_com)) {
-            medkwp_totint_com = 0
-        }
         var medkwp_totint_sem = parseFloat(soma_totint_sem) / parseFloat(soma_totkwp_sem)
-        if (isNaN(medkwp_totint_sem)) {
-            medkwp_totint_sem = 0
-        }
-        var per_totint = (((parseFloat(soma_totkwp_com) * parseFloat(per_totint_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_totint_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
-        if (isNaN(per_totint)) {
-            per_totint = 0
-        }
+        var per_totint = (((parseFloat(medkwp_totint_com) * parseFloat(per_totint_com)) + (parseFloat(medkwp_totint_sem) * parseFloat(per_totint_sem))) / (parseFloat(medkwp_totint_com) + parseFloat(medkwp_totint_sem))).toFixed(2)
         //Média Ponderada Administração
         var per_totadm_com = parseFloat(soma_totadm_com) / parseFloat(soma_totfat_com) * 100
-        if (isNaN(per_totadm_com)) {
-            per_totadm_com = 0
-        }
         var per_totadm_sem = parseFloat(soma_totadm_sem) / parseFloat(soma_totfat_sem) * 100
-        if (isNaN(per_totadm_sem)) {
-            per_totadm_sem = 0
-        }
         var medkwp_totadm_com = parseFloat(soma_totadm_com) / parseFloat(soma_totkwp_com)
-        if (isNaN(medkwp_totadm_com)) {
-            medkwp_totadm_com = 0
-        }
         var medkwp_totadm_sem = parseFloat(soma_totadm_sem) / parseFloat(soma_totkwp_sem)
-        if (isNaN(medkwp_totadm_sem)) {
-            medkwp_totadm_sem = 0
-        }
-        var per_totadm = (((parseFloat(soma_totkwp_com) * parseFloat(per_totadm_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_totadm_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
-        if (isNaN(per_totadm)) {
-            per_totadm = 0
-        }
+        var per_totadm = (((parseFloat(medkwp_totadm_com) * parseFloat(per_totadm_com)) + (parseFloat(medkwp_totadm_sem) * parseFloat(per_totadm_sem))) / (parseFloat(medkwp_totadm_com) + parseFloat(medkwp_totadm_sem))).toFixed(2)
         //Média Ponderada Comissão
         var per_totcom_com = parseFloat(soma_totcom_com) / parseFloat(soma_totfat_com) * 100
-        if (isNaN(per_totcom_com)) {
+        if (isNaN(per_totcom_com)){
             per_totcom_com = 0
         }
         var per_totcom_sem = parseFloat(soma_totcom_sem) / parseFloat(soma_totfat_sem) * 100
-        if (isNaN(per_totcom_sem)) {
+        if (isNaN(per_totcom_sem)){
             per_totcom_sem = 0
         }
         var medkwp_totcom_com = parseFloat(soma_totcom_com) / parseFloat(soma_totkwp_com)
-        if (isNaN(medkwp_totcom_com)) {
+        if (isNaN(medkwp_totcom_com)){
             medkwp_totcom_com = 0
         }
         var medkwp_totcom_sem = parseFloat(soma_totcom_sem) / parseFloat(soma_totkwp_sem)
-        if (isNaN(medkwp_totcom_sem)) {
+        if (isNaN(medkwp_totcom_sem)){
             medkwp_totcom_sem = 0
         }
-        var per_totcom = (((parseFloat(soma_totkwp_com) * parseFloat(per_totcom_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_totcom_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
-        if (isNaN(per_totcom)) {
+        var per_totcom = (((parseFloat(medkwp_totcom_com) * parseFloat(per_totcom_com)) + (parseFloat(medkwp_totcom_sem) * parseFloat(per_totcom_sem))) / (parseFloat(medkwp_totcom_com) + parseFloat(medkwp_totcom_sem))).toFixed(2)
+        if (isNaN(per_totcom)){
             per_totcom = 0
         }
         //Média Ponderada Tributos
         var per_tottrb_com = parseFloat(soma_tottrb_com) / parseFloat(soma_totfat_com) * 100
-        if (isNaN(per_tottrb_com)) {
-            per_tottrb_com = 0
-        }
         var per_tottrb_sem = parseFloat(soma_tottrb_sem) / parseFloat(soma_totfat_sem) * 100
-        if (isNaN(per_tottrb_sem)) {
-            per_tottrb_sem = 0
-        }
         var medkwp_tottrb_com = parseFloat(soma_tottrb_com) / parseFloat(soma_totkwp_com)
-        if (isNaN(medkwp_tottrb_com)) {
-            medkwp_tottrb_com = 0
-        }
         var medkwp_tottrb_sem = parseFloat(soma_tottrb_sem) / parseFloat(soma_totkwp_sem)
-        if (isNaN(medkwp_tottrb_sem)) {
-            medkwp_tottrb_sem = 0
-        }
-        var per_tottrb = (((parseFloat(soma_totkwp_com) * parseFloat(per_tottrb_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_tottrb_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
-        if (isNaN(per_tottrb)) {
-            per_tottrb = 0
-        }
+        var per_tottrb = (((parseFloat(medkwp_tottrb_com) * parseFloat(per_tottrb_com)) + (parseFloat(medkwp_tottrb_sem) * parseFloat(per_tottrb_sem))) / (parseFloat(medkwp_tottrb_com) + parseFloat(medkwp_tottrb_sem))).toFixed(2)
         //Total Custos
         var custoFix_com = parseFloat(soma_totcus_com) + parseFloat(soma_totadm_com) + parseFloat(soma_totcom_com) + parseFloat(soma_tottrb_com)
         var custoFix_sem = parseFloat(soma_totcus_sem) + parseFloat(soma_totadm_sem) + parseFloat(soma_totcom_sem) + parseFloat(soma_tottrb_sem)
         var per_totcus_com = parseFloat(custoFix_com) / parseFloat(soma_totfat_com) * 100
-        if (isNaN(per_totcus_com)) {
-            per_totcus_com = 0
-        }
         var per_totcus_sem = parseFloat(custoFix_sem) / parseFloat(soma_totfat_sem) * 100
-        if (isNaN(per_totcus_sem)) {
-            per_totcus_sem = 0
-        }
         var medkwp_totcus_com = parseFloat(custoFix_com) / parseFloat(soma_totkwp_com)
-        if (isNaN(medkwp_totcus_com)) {
-            medkwp_totcus_com = 0
-        }
         var medkwp_totcus_sem = parseFloat(custoFix_sem) / parseFloat(soma_totkwp_sem)
-        if (isNaN(medkwp_totcus_sem)) {
-            medkwp_totcus_sem = 0
-        }
-        var per_totcus = (((parseFloat(soma_totkwp_com) * parseFloat(per_totcus_com)) + (parseFloat(soma_totkwp_sem) * parseFloat(per_totcus_sem))) / (parseFloat(soma_totkwp_com) + parseFloat(soma_totkwp_sem))).toFixed(2)
-        if (isNaN(per_totcus)) {
-            per_totcus = 0
-        }
+        var per_totcus = (((parseFloat(medkwp_totcus_com) * parseFloat(per_totcus_com)) + (parseFloat(medkwp_totcus_sem) * parseFloat(per_totcus_sem))) / (parseFloat(medkwp_totcus_com) + parseFloat(medkwp_totcus_sem))).toFixed(2)
         //Média Ponderada Custos Variáveis Alimentação
         var per_totali_com = parseFloat(soma_totali_com) / parseFloat(soma_varfat_com) * 100
-        if (isNaN(per_totali_com)) {
+        if (isNaN(per_totali_com)){
             per_totali_com = 0
         }
         var per_totali_sem = parseFloat(soma_totali_sem) / parseFloat(soma_varfat_sem) * 100
-        if (isNaN(per_totali_sem)) {
+        if (isNaN(per_totali_sem)){
             per_totali_sem = 0
         }
         var medkwp_totali_com = parseFloat(soma_totali_com) / parseFloat(soma_varkwp_com)
-        if (isNaN(medkwp_totali_com)) {
+        if (isNaN(medkwp_totali_com)){
             medkwp_totali_com = 0
         }
         var medkwp_totali_sem = parseFloat(soma_totali_sem) / parseFloat(soma_varkwp_sem)
-        if (isNaN(medkwp_totali_sem)) {
+        if (isNaN(medkwp_totali_sem)){
             medkwp_totali_sem = 0
         }
-        var per_totali = (((parseFloat(soma_varkwp_com) * parseFloat(per_totali_com)) + (parseFloat(soma_varkwp_sem) * parseFloat(per_totali_sem))) / (parseFloat(soma_varkwp_sem) + parseFloat(soma_varkwp_com))).toFixed(2)
-        if (isNaN(per_totali)) {
+        var per_totali = (((parseFloat(medkwp_totali_com) * parseFloat(per_totali_com)) + (parseFloat(medkwp_totali_sem) * parseFloat(per_totali_sem))) / (parseFloat(medkwp_totali_com) + parseFloat(medkwp_totali_sem))).toFixed(2)
+        if (isNaN(per_totali)){
             per_totali = 0
         }
         //Média Ponderada Custos Variáveis Deslocamento
         var per_totdes_com = parseFloat(soma_totdes_com) / parseFloat(soma_varfat_com) * 100
-        if (isNaN(per_totdes_com)) {
+        if (isNaN(per_totdes_com)){
             per_totdes_com = 0
-        }
+        }        
         var per_totdes_sem = parseFloat(soma_totdes_sem) / parseFloat(soma_varfat_sem) * 100
-        if (isNaN(per_totdes_sem)) {
+        if (isNaN(per_totdes_sem)){
             per_totdes_sem = 0
-        }
+        }        
         var medkwp_totdes_com = parseFloat(soma_totdes_com) / parseFloat(soma_varkwp_com)
-        if (isNaN(medkwp_totdes_com)) {
+        if (isNaN(medkwp_totdes_com)){
             medkwp_totdes_com = 0
-        }
+        }        
         var medkwp_totdes_sem = parseFloat(soma_totdes_sem) / parseFloat(soma_varkwp_sem)
-        if (isNaN(medkwp_totdes_sem)) {
+        if (isNaN(medkwp_totdes_sem)){
             medkwp_totdes_sem = 0
-        }
-        var per_totdes = (((parseFloat(soma_varkwp_com) * parseFloat(per_totdes_com)) + (parseFloat(soma_varkwp_sem) * parseFloat(per_totdes_sem))) / (parseFloat(soma_varkwp_com) + parseFloat(soma_varkwp_sem))).toFixed(2)
-        if (isNaN(per_totdes)) {
+        }        
+        var per_totdes = (((parseFloat(medkwp_totdes_com) * parseFloat(per_totdes_com)) + (parseFloat(medkwp_totdes_sem) * parseFloat(per_totdes_sem))) / (parseFloat(medkwp_totdes_com) + parseFloat(medkwp_totdes_sem))).toFixed(2)
+        if (isNaN(per_totdes)){
             per_totdes = 0
-        }
+        }        
         //Média Ponderada Custos Variáveis Combustível
         var per_totcmb_com = parseFloat(soma_totcmb_com) / parseFloat(soma_varfat_com) * 100
-        if (isNaN(per_totcmb_com)) {
-            per_totcmb_com = 0
-        }
         var per_totcmb_sem = parseFloat(soma_totcmb_sem) / parseFloat(soma_varfat_sem) * 100
-        if (isNaN(per_totcmb_sem)) {
-            per_totcmb_sem = 0
-        }
         var medkwp_totcmb_com = parseFloat(soma_totcmb_com) / parseFloat(soma_varkwp_com)
-        if (isNaN(medkwp_totcmb_com)) {
-            medkwp_totcmb_com = 0
-        }
         var medkwp_totcmb_sem = parseFloat(soma_totcmb_sem) / parseFloat(soma_varkwp_sem)
-        if (isNaN(medkwp_totcmb_sem)) {
-            medkwp_totcmb_sem = 0
-        }
-        var per_totcmb = (((parseFloat(soma_varkwp_com) * parseFloat(per_totcmb_com)) + (parseFloat(soma_varkwp_sem) * parseFloat(per_totcmb_sem))) / (parseFloat(soma_varkwp_com) + parseFloat(soma_varkwp_sem))).toFixed(2)
-        if (isNaN(per_totcmb)) {
-            per_totcmb = 0
-        }
+        var per_totcmb = (((parseFloat(medkwp_totcmb_com) * parseFloat(per_totcmb_com)) + (parseFloat(medkwp_totcmb_sem) * parseFloat(per_totcmb_sem))) / (parseFloat(medkwp_totcmb_com) + parseFloat(medkwp_totcmb_sem))).toFixed(2)
         //Média Ponderada Custos Variáveis Hotel
         var per_tothtl_com = parseFloat(soma_tothtl_com) / parseFloat(soma_varfat_com) * 100
-        if (isNaN(per_tothtl_com)) {
-            per_tothtl_com = 0
-        }
         var per_tothtl_sem = parseFloat(soma_tothtl_sem) / parseFloat(soma_varfat_sem) * 100
-        if (isNaN(per_tothtl_sem)) {
-            per_tothtl_sem = 0
-        }
         var medkwp_tothtl_com = parseFloat(soma_tothtl_com) / parseFloat(soma_varkwp_com)
-        if (isNaN(medkwp_tothtl_com)) {
-            medkwp_tothtl_com = 0
-        }
         var medkwp_tothtl_sem = parseFloat(soma_tothtl_sem) / parseFloat(soma_varkwp_sem)
-        if (isNaN(medkwp_tothtl_sem)) {
-            medkwp_tothtl_sem = 0
-        }
-        var per_tothtl = (((parseFloat(soma_varkwp_com) * parseFloat(per_tothtl_com)) + (parseFloat(soma_varkwp_sem) * parseFloat(per_tothtl_sem))) / (parseFloat(soma_varkwp_com) + parseFloat(soma_varkwp_sem))).toFixed(2)
-        if (isNaN(per_tothtl)) {
-            per_tothtl = 0
-        }
+        var per_tothtl = (((parseFloat(medkwp_tothtl_com) * parseFloat(per_tothtl_com)) + (parseFloat(medkwp_tothtl_sem) * parseFloat(per_tothtl_sem))) / (parseFloat(medkwp_tothtl_com) + parseFloat(medkwp_tothtl_sem))).toFixed(2)
         //Total Custos Variáveis
         var custoVar_com = parseFloat(soma_totvar_com)
         var custoVar_sem = parseFloat(soma_totvar_sem)
         var per_totvar_com = parseFloat(custoVar_com) / parseFloat(soma_varfat_com) * 100
-        if (isNaN(per_totvar_com)) {
+        if (isNaN(per_totvar_com)){
             per_totvar_com = 0
-        }
+        }           
         var per_totvar_sem = parseFloat(custoVar_sem) / parseFloat(soma_varfat_sem) * 100
-        if (isNaN(per_totvar_sem)) {
+        if (isNaN(per_totvar_sem)){
             per_totvar_sem = 0
-        }
+        }           
         var medkwp_totvar_com = parseFloat(custoVar_com) / parseFloat(soma_varkwp_com)
-        if (isNaN(medkwp_totvar_com)) {
+        if (isNaN(medkwp_totvar_com)){
             medkwp_totvar_com = 0
-        }
+        }           
         var medkwp_totvar_sem = parseFloat(custoVar_sem) / parseFloat(soma_varkwp_sem)
-        if (isNaN(medkwp_totvar_sem)) {
+        if (isNaN(medkwp_totvar_sem)){
             medkwp_totvar_sem = 0
-        }
-        var per_totvar = (((parseFloat(soma_varkwp_com) * parseFloat(per_totvar_com)) + (parseFloat(soma_varkwp_sem) * parseFloat(per_totvar_sem))) / (parseFloat(soma_varkwp_com) + parseFloat(soma_varkwp_sem))).toFixed(2)
-        if (isNaN(per_totvar)) {
+        }           
+        var per_totvar = (((parseFloat(medkwp_totvar_com) * parseFloat(per_totvar_com)) + (parseFloat(medkwp_totvar_sem) * parseFloat(per_totvar_sem))) / (parseFloat(medkwp_totvar_com) + parseFloat(medkwp_totvar_sem))).toFixed(2)
+        if (isNaN(per_totvar)){
             per_totvar = 0
-        }
+        }           
         //Média Ponderada Variáveis Estruturais Cercamento  
         var per_totcer_com = parseFloat(soma_totcer_com) / parseFloat(soma_estfat_com) * 100
-        if (isNaN(per_totcer_com)) {
+        if (isNaN(per_totcer_com)){
             per_totcer_com = 0
         }
         var per_totcer_sem = parseFloat(soma_totcer_sem) / parseFloat(soma_estfat_sem) * 100
-        if (isNaN(per_totcer_sem)) {
+        if (isNaN(per_totcer_sem)){
             per_totcer_sem = 0
         }
         var medkwp_totcer_com = parseFloat(soma_totcer_com) / parseFloat(soma_estkwp_com)
-        if (isNaN(medkwp_totcer_com)) {
+        if (isNaN(medkwp_totcer_com)){
             medkwp_totcer_com = 0
         }
         var medkwp_totcer_sem = parseFloat(soma_totcer_sem) / parseFloat(soma_estkwp_sem)
-        if (isNaN(medkwp_totcer_sem)) {
+        if (isNaN(medkwp_totcer_sem)){
             medkwp_totcer_sem = 0
         }
-        var per_totcer = (((parseFloat(soma_estkwp_com) * parseFloat(per_totcer_com)) + (parseFloat(soma_estkwp_sem) * parseFloat(soma_estkwp_com))) / (parseFloat(soma_estkwp_sem) + parseFloat(soma_varkwp_sem))).toFixed(2)
-        if (isNaN(per_totcer)) {
+        var per_totcer = (((parseFloat(medkwp_totcer_com) * parseFloat(per_totcer_com)) + (parseFloat(medkwp_totcer_sem) * parseFloat(per_totcer_sem))) / (parseFloat(medkwp_totcer_com) + parseFloat(medkwp_totcer_sem))).toFixed(2)
+        if (isNaN(per_totcer)){
             per_totcer = 0
-        }
+        }        
         //Média Ponderada Variáveis Estruturais Central
         var per_totcen_com = parseFloat(soma_totcen_com) / parseFloat(soma_estfat_com) * 100
-        if (isNaN(per_totcen_com)) {
+        if (isNaN(per_totcen_com)){
             per_totcen_com = 0
-        }
+        }        
         var per_totcen_sem = parseFloat(soma_totcen_sem) / parseFloat(soma_estfat_sem) * 100
-        if (isNaN(per_totcen_sem)) {
+        if (isNaN(per_totcen_sem)){
             per_totcen_sem = 0
-        }
+        }        
         var medkwp_totcen_com = parseFloat(soma_totcen_com) / parseFloat(soma_estkwp_com)
-        if (isNaN(medkwp_totcen_com)) {
+        if (isNaN(medkwp_totcen_com)){
             medkwp_totcen_com = 0
-        }
+        }        
         var medkwp_totcen_sem = parseFloat(soma_totcen_sem) / parseFloat(soma_estkwp_sem)
-        if (isNaN(medkwp_totcen_sem)) {
+        if (isNaN(medkwp_totcen_sem)){
             medkwp_totcen_sem = 0
         }
-        var per_totcen = (((parseFloat(soma_estkwp_com) * parseFloat(per_totcen_com)) + (parseFloat(soma_estkwp_sem) * parseFloat(per_totcen_sem))) / (parseFloat(soma_estkwp_com) + parseFloat(soma_estkwp_sem))).toFixed(2)
-        if (isNaN(per_totcen)) {
+        var per_totcen = (((parseFloat(medkwp_totcen_com) * parseFloat(per_totcen_com)) + (parseFloat(medkwp_totcen_sem) * parseFloat(per_totcen_sem))) / (parseFloat(medkwp_totcen_com) + parseFloat(medkwp_totcen_sem))).toFixed(2)
+        if (isNaN(per_totcen)){
             per_totcen = 0
         }
         //Média Ponderada Variáveis Estruturais Postes
         var per_totpos_com = parseFloat(soma_totpos_com) / parseFloat(soma_estfat_com) * 100
-        if (isNaN(per_totpos_com)) {
+        if (isNaN(per_totpos_com)){
             per_totpos_com = 0
         }
         var per_totpos_sem = parseFloat(soma_totpos_sem) / parseFloat(soma_estfat_sem) * 100
-        if (isNaN(per_totpos_sem)) {
+        if (isNaN(per_totpos_sem)){
             per_totpos_sem = 0
         }
         var medkwp_totpos_com = parseFloat(soma_totpos_com) / parseFloat(soma_estkwp_com)
-        if (isNaN(medkwp_totpos_com)) {
+        if (isNaN(medkwp_totpos_com)){
             medkwp_totpos_com = 0
         }
         var medkwp_totpos_sem = parseFloat(soma_totpos_sem) / parseFloat(soma_estkwp_sem)
-        if (isNaN(medkwp_totpos_sem)) {
+        if (isNaN(medkwp_totpos_sem)){
             medkwp_totpos_sem = 0
         }
-        var per_totpos = (((parseFloat(soma_estkwp_com) * parseFloat(per_totpos_com)) + (parseFloat(soma_estkwp_sem) * parseFloat(per_totpos_sem))) / (parseFloat(soma_estkwp_com) + parseFloat(soma_estkwp_sem))).toFixed(2)
-        if (isNaN(per_totpos)) {
+        var per_totpos = (((parseFloat(medkwp_totpos_com) * parseFloat(per_totpos_com)) + (parseFloat(medkwp_totpos_sem) * parseFloat(per_totpos_sem))) / (parseFloat(medkwp_totpos_com) + parseFloat(medkwp_totpos_sem))).toFixed(2)
+        if (isNaN(per_totpos)){
             per_totpos = 0
         }
         //Total Custos Variáveis Estruturais
         var custoEst_com = parseFloat(soma_totest_com)
-        if (isNaN(custoEst_com)) {
+        if (isNaN(custoEst_com)){
             custoEst_com = 0
         }
         var custoEst_sem = parseFloat(soma_totest_sem)
-        if (isNaN(custoEst_sem)) {
+        if (isNaN(custoEst_sem)){
             custoEst_sem = 0
         }
         var per_totest_com = parseFloat(custoEst_com) / parseFloat(soma_estfat_com) * 100
-        if (isNaN(per_totest_com)) {
+        if (isNaN(per_totest_com)){
             per_totest_com = 0
         }
         var per_totest_sem = parseFloat(custoEst_sem) / parseFloat(soma_estfat_sem) * 100
-        if (isNaN(per_totest_sem)) {
+        if (isNaN(per_totest_sem)){
             per_totest_sem = 0
         }
         var medkwp_totest_com = parseFloat(custoEst_com) / parseFloat(soma_estkwp_com)
-        if (isNaN(medkwp_totest_com)) {
+        if (isNaN(medkwp_totest_com)){
             medkwp_totest_com = 0
         }
         var medkwp_totest_sem = parseFloat(custoEst_sem) / parseFloat(soma_estkwp_sem)
-        if (isNaN(medkwp_totest_sem)) {
+        if (isNaN(medkwp_totest_sem)){
             medkwp_totest_sem = 0
         }
-        var per_totest = (((parseFloat(soma_estkwp_com) * parseFloat(per_totest_com)) + (parseFloat(soma_estkwp_sem) * parseFloat(per_totest_sem))) / (parseFloat(soma_estkwp_com) + parseFloat(soma_estkwp_sem))).toFixed(2)
-        if (isNaN(per_totest)) {
+        var per_totest = (((parseFloat(medkwp_totest_com) * parseFloat(per_totest_com)) + (parseFloat(medkwp_totest_sem) * parseFloat(per_totest_sem))) / (parseFloat(medkwp_totest_com) + parseFloat(medkwp_totest_sem))).toFixed(2)
+        if (isNaN(per_totest)){
             per_totest = 0
         }
 
         soma_custoFix = parseFloat(soma_totint) + parseFloat(soma_totpro) + parseFloat(soma_totart) + parseFloat(soma_totges) + parseFloat(soma_tottrb) + parseFloat(soma_totcom) + parseFloat(soma_totadm)
-        soma_custoVar = parseFloat(soma_totali) + parseFloat(soma_totdes)
+        soma_custoVar = parseFloat(soma_totali) + parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)
         soma_custoEst = parseFloat(soma_totcer) + parseFloat(soma_totcen) + parseFloat(soma_totpos)
         soma_totfat = parseFloat(soma_kitfat) + parseFloat(soma_serfat)
 
@@ -1356,9 +1207,6 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
 
         //Custos Fixos 
         medkwp_custoFix = (parseFloat(soma_custoFix) / parseFloat(soma_totkwp)).toFixed(2)
-        if (isNaN(medkwp_custoFix)) {
-            medkwp_custoFix = 0
-        }
         //Serviço
         medkwp_totint = (parseFloat(soma_totint) / parseFloat(soma_totkwp)).toFixed(2)
         medkwp_totpro = (parseFloat(soma_totpro) / parseFloat(soma_totkwp)).toFixed(2)
@@ -1372,33 +1220,18 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
         medkwp_totadm = (parseFloat(soma_totadm) / parseFloat(soma_totkwp)).toFixed(2)
         //Custos Variáveis
         medkwp_custoVar = (parseFloat(soma_custoVar) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_custoVar)) {
-            medkwp_custoVar = 0
-        }
         medkwp_varfat = (parseFloat(soma_varfat) / parseFloat(soma_varkwp)).toFixed(2)
-        medkwp_totdes = (parseFloat(soma_totdes) / parseFloat(soma_varkwp)).toFixed(2)
+        medkwp_totdes = ((parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)) / parseFloat(soma_varkwp)).toFixed(2)
         medkwp_totali = (parseFloat(soma_totali) / parseFloat(soma_varkwp)).toFixed(2)
         medkwp_tothtl = (parseFloat(soma_tothtl) / parseFloat(soma_varkwp)).toFixed(2)
         medkwp_totcmb = (parseFloat(soma_totcmb) / parseFloat(soma_varkwp)).toFixed(2)
         //Custos Variáveis Estruturais
         medkwp_custoEst = (parseFloat(soma_custoEst) / parseFloat(soma_estkwp)).toFixed(2)
-        if (isNaN(medkwp_custoEst)) {
-            medkwp_custoEst = 0
-        }
         medkwp_totcer = (parseFloat(soma_totcer) / parseFloat(soma_estkwp)).toFixed(2)
-        if (isNaN(medkwp_totcer)) {
-            medkwp_totcer = 0
-        }
         medkwp_totcen = (parseFloat(soma_totcen) / parseFloat(soma_estkwp)).toFixed(2)
-        if (isNaN(medkwp_totcen)) {
-            medkwp_totcen = 0
-        }
         medkwp_totpos = (parseFloat(soma_totpos) / parseFloat(soma_estkwp)).toFixed(2)
-        if (isNaN(medkwp_totpos)) {
-            medkwp_totpos = 0
-        }
         //Médias de total faturado por kit e por serviços
-        soma_totser = (parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)).toFixed(2)
+        soma_totser = parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)
 
         //medkwp_serfat = parseFloat(soma_serfat) / parseFloat(soma_serkwp)
         per_totliq = ((parseFloat(soma_totliq) / parseFloat(soma_totfat)) * 100).toFixed(2)
@@ -1428,14 +1261,9 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
         per_sbxequ = ((parseFloat(soma_sbxequ) / parseFloat(soma_totequ)) * 100).toFixed(2)
         per_ocpequ = ((parseFloat(soma_ocpequ) / parseFloat(soma_totequ)) * 100).toFixed(2)
 
-        //ticket médio de kwp instalados
-        ticketwkp = (parseFloat(soma_totkwp) / parseFloat(numprj)).toFixed(2)
-
-        //console.log('soma_totkwp=>' + soma_totkwp)
-
         res.render('relatorios/dashboardcustos', {
             soma_totkwp, soma_varkwp, soma_estkwp,
-            soma_totfat, soma_totcop, ticketkwp,
+            soma_totfat, soma_totcop,
 
             soma_totint, soma_totpro, soma_totges, soma_totadm, soma_totcom, soma_tottrb, soma_totart,
             soma_custoFix, soma_totdes, soma_totali, soma_totcmb, soma_tothtl, soma_custoVar,
@@ -1458,15 +1286,15 @@ router.get('/dashboardcustos', ehAdmin, (req, res) => {
             per_modequ, per_invequ, per_estequ, per_cabequ, per_dpsequ, per_disequ, per_sbxequ, per_ocpequ,
             med_modequ, med_invequ, med_estequ, med_cabequ, med_dpsequ, med_disequ, med_sbxequ, med_ocpequ, med_totequ
         })
-
     })
-
 })
 
 router.get('/dashboardcustoscomkit', ehAdmin, (req, res) => {
     const { _id } = req.user
 
     var numprj = 0
+    var soma_kitfat = 0
+    var soma_serfat = 0
     var soma_totfat = 0
 
     var soma_totcop = 0
@@ -1644,7 +1472,6 @@ router.get('/dashboardcustoscomkit', ehAdmin, (req, res) => {
             const { valorSB } = realizado[i]
             const { valorOcp } = realizado[i]
 
-
             if (fatequ == true) {
 
                 numprj++
@@ -1652,40 +1479,20 @@ router.get('/dashboardcustoscomkit', ehAdmin, (req, res) => {
                 soma_totkwp = (parseFloat(soma_totkwp) + parseFloat(potencia)).toFixed(2)
                 soma_totcop = (parseFloat(soma_totcop) + parseFloat(custoPlano)).toFixed(2)
                 //Totalizador de Faturamento            
-                soma_totfat = parseFloat(soma_totfat) + parseFloat(vlrNFS)
+                soma_kitfat = parseFloat(soma_kitfat) + parseFloat(vlrNFS)
                 //Totalizador de Kit   
                 soma_totkit = parseFloat(soma_totkit) + parseFloat(vlrkit)
 
                 //Custos Fixos 
                 //Serviços
-                if (totint > 0) {
-                    soma_totint = (parseFloat(soma_totint) + parseFloat(totint)).toFixed(2)
-                } else {
-                    soma_totint = (parseFloat(soma_totint) + 0).toFixed(2)
-                }
-                if (totpro > 0) {
-                    soma_totpro = (parseFloat(soma_totpro) + parseFloat(totpro)).toFixed(2)
-                } else {
-                    soma_totpro = (parseFloat(soma_totpro) + 0).toFixed(2)
-                }
-                if (totges > 0) {
-                    soma_totges = (parseFloat(soma_totges) + parseFloat(totges)).toFixed(2)
-                } else {
-                    soma_totges = (parseFloat(soma_totges) + 0).toFixed(2)
-                }
-                if (vlrart > 0) {
-                    soma_totart = (parseFloat(soma_totart) + parseFloat(vlrart)).toFixed(2)
-                } else {
-                    soma_totart = (parseFloat(soma_totart) + 0).toFixed(2)
-                }
+                soma_totint = (parseFloat(soma_totint) + parseFloat(totint)).toFixed(2)
+                soma_totpro = (parseFloat(soma_totpro) + parseFloat(totpro)).toFixed(2)
+                soma_totges = (parseFloat(soma_totges) + parseFloat(totges)).toFixed(2)
+                soma_totart = (parseFloat(soma_totart) + parseFloat(vlrart)).toFixed(2)
                 //Tributos
-                if (totalTributos > 0) {
-                    soma_tottrb = (parseFloat(soma_tottrb) + parseFloat(totalTributos)).toFixed(2)
-                }
+                soma_tottrb = (parseFloat(soma_tottrb) + parseFloat(totalTributos)).toFixed(2)
                 //Comissão
-                if (vlrcom > 0) {
-                    soma_totcom = (parseFloat(soma_totcom) + parseFloat(vlrcom)).toFixed(2)
-                }
+                soma_totcom = (parseFloat(soma_totcom) + parseFloat(vlrcom)).toFixed(2)
                 //Despesas Administrativas
                 if (desAdm != undefined) {
                     soma_totadm = (parseFloat(soma_totadm) + parseFloat(desAdm)).toFixed(2)
@@ -1697,49 +1504,24 @@ router.get('/dashboardcustoscomkit', ehAdmin, (req, res) => {
                     //console.log('soma_varkwp=>' + soma_varkwp)
                     soma_varfat = parseFloat(soma_varfat) + parseFloat(vlrNFS)
                 }
-                if (totdes > 0) {
-                    soma_totdes = (parseFloat(soma_totdes) + parseFloat(totdes)).toFixed(2)
-                } else {
-                    soma_totdes = (parseFloat(soma_totdes) + 0).toFixed(2)
-                }
-                if (totali > 0) {
-                    soma_totali = (parseFloat(soma_totali) + parseFloat(totali)).toFixed(2)
-                } else {
-                    soma_totali = (parseFloat(soma_totali) + 0).toFixed(2)
-                }
-                if (totcmb > 0) {
-                    soma_totcmb = (parseFloat(soma_totcmb) + parseFloat(totcmb)).toFixed(2)
-                } else {
-                    soma_totcmb = (parseFloat(soma_totcmb) + 0).toFixed(2)
-                }
-                if (tothtl > 0) {
-                    soma_tothtl = (parseFloat(soma_tothtl) + parseFloat(tothtl)).toFixed(2)
-                } else {
-                    soma_tothtl = (parseFloat(soma_tothtl) + 0).toFixed(2)
-                }
+                soma_totdes = (parseFloat(soma_totdes) + parseFloat(totdes)).toFixed(2)
+                soma_totali = (parseFloat(soma_totali) + parseFloat(totali)).toFixed(2)
+                soma_totcmb = (parseFloat(soma_totcmb) + parseFloat(totcmb)).toFixed(2)
+                soma_tothtl = (parseFloat(soma_tothtl) + parseFloat(tothtl)).toFixed(2)
 
                 //Custos Variáveis Estruturais
                 if (valorCer > 0 || valorCen > 0 || valorPos > 0) {
                     soma_estkwp = parseFloat(soma_estkwp) + parseFloat(potencia)
                     soma_estfat = parseFloat(soma_estfat) + parseFloat(vlrNFS)
-                } else {
-                    soma_estkwp = parseFloat(soma_estkwp) + 0
-                    soma_estfat = parseFloat(soma_estfat) + 0
                 }
-                if (valorCer > 0) {
+                if (valorCer > 0){
                     soma_totcer = (parseFloat(soma_totcer) + parseFloat(valorCer)).toFixed(2)
-                } else {
-                    soma_totcer = (parseFloat(soma_totcer) + 0).toFixed(2)
                 }
                 if (valorCen > 0) {
                     soma_totcen = (parseFloat(soma_totcen) + parseFloat(valorCen)).toFixed(2)
-                } else {
-                    soma_totcen = (parseFloat(soma_totcen) + 0).toFixed(2)
                 }
                 if (valorPos > 0) {
                     soma_totpos = (parseFloat(soma_totpos) + parseFloat(valorPos)).toFixed(2)
-                } else {
-                    soma_totpos = (parseFloat(soma_totpos) + 0).toFixed(2)
                 }
 
                 if (parseFloat(valorMod) > 0) {
@@ -1791,105 +1573,41 @@ router.get('/dashboardcustoscomkit', ehAdmin, (req, res) => {
                 soma_totprj = (parseFloat(soma_totprj) + parseFloat(valor)).toFixed(2)
                 soma_totliq = (parseFloat(soma_totliq) + parseFloat(lucroLiquido)).toFixed(2)
             }
-        }
 
-
-        if (isNaN(soma_totcer)) {
-            soma_totcer = 0
-        }
-        if (isNaN(soma_totcen)) {
-            soma_totcen = 0
-        }
-        if (isNaN(soma_totpos)) {
-            soma_totpos = 0
         }
 
         soma_custoFix = parseFloat(soma_totint) + parseFloat(soma_totpro) + parseFloat(soma_totart) + parseFloat(soma_totges) + parseFloat(soma_tottrb) + parseFloat(soma_totcom) + parseFloat(soma_totadm)
         soma_custoVar = parseFloat(soma_totali) + parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)
         soma_custoEst = parseFloat(soma_totcer) + parseFloat(soma_totcen) + parseFloat(soma_totpos)
+        soma_totfat = parseFloat(soma_kitfat) + parseFloat(soma_serfat)
 
         //Soma Total Componentes
         soma_totequ = parseFloat(soma_modequ) + parseFloat(soma_invequ) + parseFloat(soma_estequ) + parseFloat(soma_cabequ) + parseFloat(soma_disequ) + parseFloat(soma_dpsequ) + parseFloat(soma_sbxequ) + parseFloat(soma_ocpequ)
         //Médias
         medkwp_totfat = (parseFloat(soma_totfat) / parseFloat(soma_totkwp)).toFixed(2)
-        if (isNaN(medkwp_totfat)) {
-            medkwp_totfat = 0
-        }
         medkwp_totkit = (parseFloat(soma_totkit) / parseFloat(soma_totkwp)).toFixed(2)
-        if (isNaN(medkwp_totkit)) {
-            medkwp_totkit = 0
-        }
         medkwp_totcop = (parseFloat(soma_totcop) / parseFloat(soma_totkwp)).toFixed(2)
-        if (isNaN(medkwp_totcop)) {
-            medkwp_totcop = 0
-        }
-
         //Custos Fixos 
         medkwp_custoFix = (parseFloat(soma_custoFix) / parseFloat(soma_totkwp)).toFixed(2)
-        if (isNaN(medkwp_custoFix)) {
-            medkwp_custoFix = 0
-        }
         medkwp_cusfat = (parseFloat(soma_totfat) / parseFloat(soma_totkwp)).toFixed(2)
-        if (isNaN(medkwp_cusfat)) {
-            medkwp_cusfat = 0
-        }
         //Serviço
         medkwp_totint = (parseFloat(soma_totint) / parseFloat(soma_totkwp)).toFixed(2)
-        if (isNaN(medkwp_totint)) {
-            medkwp_totint = 0
-        }
         medkwp_totpro = (parseFloat(soma_totpro) / parseFloat(soma_totkwp)).toFixed(2)
-        if (isNaN(medkwp_totpro)) {
-            medkwp_totpro = 0
-        }
         medkwp_totges = (parseFloat(soma_totges) / parseFloat(soma_totkwp)).toFixed(2)
-        if (isNaN(medkwp_totges)) {
-            medkwp_totges = 0
-        }
         medkwp_totart = (parseFloat(soma_totart) / parseFloat(soma_totkwp)).toFixed(2)
-        if (isNaN(medkwp_totart)) {
-            medkwp_totart = 0
-        }
         //Tributos
         medkwp_tottrb = (parseFloat(soma_tottrb) / parseFloat(soma_totkwp)).toFixed(2)
-        if (isNaN(medkwp_tottrb)) {
-            medkwp_tottrb = 0
-        }
         //Comissão
         medkwp_totcom = (parseFloat(soma_totcom) / parseFloat(soma_totkwp)).toFixed(2)
-        if (isNaN(medkwp_totcom)) {
-            medkwp_totcom = 0
-        }
         //Despesas Administrativas
         medkwp_totadm = (parseFloat(soma_totadm) / parseFloat(soma_totkwp)).toFixed(2)
-        if (isNaN(medkwp_totadm)) {
-            medkwp_totadm = 0
-        }
         //Custos Variáveis
         medkwp_custoVar = (parseFloat(soma_custoVar) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_custoVar)) {
-            medkwp_custoVar = 0
-        }
         medkwp_varfat = (parseFloat(soma_varfat) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_varfat)) {
-            medkwp_varfat = 0
-        }
         medkwp_totdes = ((parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_totdes)) {
-            medkwp_totdes = 0
-        }
-        medkwp_totali = (parseFloat(soma_totali) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_totali)) {
-            medkwp_totali = 0
-        }
         medkwp_tothtl = (parseFloat(soma_tothtl) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_tothtl)) {
-            medkwp_tothtl = 0
-        }
-        medkwp_totcmb = (parseFloat(soma_totcmb) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_totcmb)) {
-            medkwp_totcmb = 0
-        }
+        medkwp_totcmb = (parseFloat(soma_totcmb) + parseFloat(soma_varkwp)).toFixed(2)
+        medkwp_totali = (parseFloat(soma_totali) / parseFloat(soma_varkwp)).toFixed(2)
 
         //Custos Variáveis Estruturais
         if (parseFloat(soma_estkwp) > 0) {
@@ -1899,105 +1617,38 @@ router.get('/dashboardcustoscomkit', ehAdmin, (req, res) => {
             medkwp_totcen = (parseFloat(soma_totcen) / parseFloat(soma_estkwp)).toFixed(2)
             medkwp_totpos = (parseFloat(soma_totpos) / parseFloat(soma_estkwp)).toFixed(2)
         }
-
         //Custos Fixos
         per_totpro = (parseFloat(medkwp_totpro) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_totpro)) {
-            per_totpro = 0
-        }
         per_totart = (parseFloat(medkwp_totart) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_totart)) {
-            per_totart = 0
-        }
         per_totges = (parseFloat(medkwp_totges) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_totges)) {
-            per_totges = 0
-        }
         per_totint = (parseFloat(medkwp_totint) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_totint)) {
-            per_totint = 0
-        }
         per_totadm = (parseFloat(medkwp_totadm) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_totadm)) {
-            per_totadm = 0
-        }
         per_totcom = (parseFloat(medkwp_totcom) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_totcom)) {
-            per_totcom = 0
-        }
         per_tottrb = (parseFloat(medkwp_tottrb) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_tottrb)) {
-            per_tottrb = 0
-        }
         per_custoFix = (parseFloat(medkwp_custoFix) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_custoFix)) {
-            per_custoFix = 0
-        }
         //Custos Variáveis
         per_totali = (parseFloat(medkwp_totali) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_totali)) {
-            per_totali = 0
-        }
         per_totdes = (parseFloat(medkwp_totdes) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_totdes)) {
-            per_totdes = 0
-        }
         per_tothtl = (parseFloat(medkwp_tothtl) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_tothtl)) {
-            per_tothtl = 0
-        }
         per_totcmb = (parseFloat(medkwp_totcmb) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_totcmb)) {
-            per_totcmb = 0
-        }
         per_custoVar = (parseFloat(medkwp_custoVar) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_custoVar)) {
-            per_custoVar = 0
-        }
         //Custos Variáveis Estruturais
         per_totcen = (parseFloat(medkwp_totcen) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_totcen)) {
-            per_totcen = 0
-        }
         per_totcer = (parseFloat(medkwp_totcer) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_totcer)) {
-            per_totcer = 0
-        }
         per_totpos = (parseFloat(medkwp_totpos) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_totpos)) {
-            per_totpos = 0
-        }
         per_custoEst = (parseFloat(medkwp_custoEst) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_custoEst)) {
-            per_custoEst = 0
-        }
 
         //Médias de total faturado por kit e por serviços
-        soma_totser = (parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)).toFixed(2)
+        soma_totser = parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)
         //Lucro Liquido x Gastos
         per_totliq = ((parseFloat(soma_totliq) / parseFloat(soma_totfat)) * 100).toFixed(2)
         per_dispendio = (100 - parseFloat(per_totliq)).toFixed(2)
         //Participação dos equipamento, custos e despesas
         per_kitfat = ((parseFloat(soma_totkit) / parseFloat(soma_totfat)) * 100).toFixed(2)
-        if (isNaN(per_kitfat)) {
-            per_kitfat = 0
-        }
         per_comfat = ((parseFloat(soma_totcom) / parseFloat(soma_totfat)) * 100).toFixed(2)
-        if (isNaN(per_comfat)) {
-            per_comfat = 0
-        }
         per_cusfat = ((parseFloat(soma_totcop) / parseFloat(soma_totfat)) * 100).toFixed(2)
-        if (isNaN(per_cusfat)) {
-            per_cusfat = 0
-        }
         per_desfat = ((parseFloat(soma_totadm) / parseFloat(soma_totfat)) * 100).toFixed(2)
-        if (isNaN(per_desfat)) {
-            per_desfat = 0
-        }
         per_trbfat = ((parseFloat(soma_tottrb) / parseFloat(soma_totfat)) * 100).toFixed(2)
-        if (isNaN(per_trbfat)) {
-            per_trbfat = 0
-        }
         //Média componentes
         med_modequ = (parseFloat(soma_modequ) / parseFloat(soma_equkwp)).toFixed(2)
         med_invequ = (parseFloat(soma_invequ) / parseFloat(soma_equkwp)).toFixed(2)
@@ -2042,7 +1693,6 @@ router.get('/dashboardcustoscomkit', ehAdmin, (req, res) => {
             per_modequ, per_invequ, per_estequ, per_cabequ, per_dpsequ, per_disequ, per_sbxequ, per_ocpequ,
             med_modequ, med_invequ, med_estequ, med_cabequ, med_dpsequ, med_disequ, med_sbxequ, med_ocpequ, med_totequ
         })
-
     })
 })
 
@@ -2050,6 +1700,8 @@ router.get('/dashboardcustossemkit', ehAdmin, (req, res) => {
     const { _id } = req.user
 
     var numprj = 0
+    var soma_kitfat = 0
+    var soma_serfat = 0
     var soma_totfat = 0
 
     var soma_totcop = 0
@@ -2282,8 +1934,6 @@ router.get('/dashboardcustossemkit', ehAdmin, (req, res) => {
             const { valorDPS } = realizado[i]
             const { valorSB } = realizado[i]
             const { valorOcp } = realizado[i]
-            const { foiRealizado } = realizado[i]
-
 
             if (fatequ == false) {
 
@@ -2292,32 +1942,16 @@ router.get('/dashboardcustossemkit', ehAdmin, (req, res) => {
                 soma_totkwp = (parseFloat(soma_totkwp) + parseFloat(potencia)).toFixed(2)
                 soma_totcop = (parseFloat(soma_totcop) + parseFloat(custoPlano)).toFixed(2)
                 //Totalizador de Faturamento            
-                soma_totfat = parseFloat(soma_totfat) + parseFloat(vlrNFS)
+                soma_kitfat = parseFloat(soma_kitfat) + parseFloat(vlrNFS)
                 //Totalizador de Kit   
                 soma_totkit = parseFloat(soma_totkit) + parseFloat(vlrkit)
 
                 //Custos Fixos 
                 //Serviços
-                if (totint > 0) {
-                    soma_totint = (parseFloat(soma_totint) + parseFloat(totint)).toFixed(2)
-                } else {
-                    soma_totint = (parseFloat(soma_totint) + 0).toFixed(2)
-                }
-                if (totpro > 0) {
-                    soma_totpro = (parseFloat(soma_totpro) + parseFloat(totpro)).toFixed(2)
-                } else {
-                    soma_totpro = (parseFloat(soma_totpro) + 0).toFixed(2)
-                }
-                if (totges > 0) {
-                    soma_totges = (parseFloat(soma_totges) + parseFloat(totges)).toFixed(2)
-                } else {
-                    soma_totges = (parseFloat(soma_totges) + 0).toFixed(2)
-                }
-                if (vlrart > 0) {
-                    soma_totart = (parseFloat(soma_totart) + parseFloat(vlrart)).toFixed(2)
-                } else {
-                    soma_totart = (parseFloat(soma_totart) + 0).toFixed(2)
-                }
+                soma_totint = (parseFloat(soma_totint) + parseFloat(totint)).toFixed(2)
+                soma_totpro = (parseFloat(soma_totpro) + parseFloat(totpro)).toFixed(2)
+                soma_totges = (parseFloat(soma_totges) + parseFloat(totges)).toFixed(2)
+                soma_totart = (parseFloat(soma_totart) + parseFloat(vlrart)).toFixed(2)
                 //Tributos
                 soma_tottrb = (parseFloat(soma_tottrb) + parseFloat(totalTributos)).toFixed(2)
                 //Comissão
@@ -2333,49 +1967,25 @@ router.get('/dashboardcustossemkit', ehAdmin, (req, res) => {
                     //console.log('soma_varkwp=>' + soma_varkwp)
                     soma_varfat = parseFloat(soma_varfat) + parseFloat(vlrNFS)
                 }
-                if (totdes > 0) {
-                    soma_totdes = (parseFloat(soma_totdes) + parseFloat(totdes)).toFixed(2)
-                } else {
-                    soma_totdes = (parseFloat(soma_totdes) + 0).toFixed(2)
-                }
-                if (totali > 0) {
-                    soma_totali = (parseFloat(soma_totali) + parseFloat(totali)).toFixed(2)
-                } else {
-                    soma_totali = (parseFloat(soma_totali) + 0).toFixed(2)
-                }
-                if (totcmb > 0) {
-                    soma_totcmb = (parseFloat(soma_totcmb) + parseFloat(totcmb)).toFixed(2)
-                } else {
-                    soma_totcmb = (parseFloat(soma_totcmb) + 0).toFixed(2)
-                }
-                if (tothtl > 0) {
-                    soma_tothtl = (parseFloat(soma_tothtl) + parseFloat(tothtl)).toFixed(2)
-                } else {
-                    soma_tothtl = (parseFloat(soma_tothtl) + 0).toFixed(2)
-                }
+                soma_totdes = (parseFloat(soma_totdes) + parseFloat(totdes)).toFixed(2)
+                soma_totali = (parseFloat(soma_totali) + parseFloat(totali)).toFixed(2)
+                //console.log('soma_totali=>' + soma_totali)
+                soma_totcmb = (parseFloat(soma_totcmb) + parseFloat(totcmb)).toFixed(2)
+                soma_tothtl = (parseFloat(soma_tothtl) + parseFloat(tothtl)).toFixed(2)
 
                 //Custos Variáveis Estruturais
                 if (valorCer > 0 || valorCen > 0 || valorPos > 0) {
                     soma_estkwp = parseFloat(soma_estkwp) + parseFloat(potencia)
                     soma_estfat = parseFloat(soma_estfat) + parseFloat(vlrNFS)
-                } else {
-                    soma_estkwp = parseFloat(soma_estkwp) + 0
-                    soma_estfat = parseFloat(soma_estfat) + 0
                 }
-                if (valorCer > 0) {
+                if (valorCer > 0){
                     soma_totcer = (parseFloat(soma_totcer) + parseFloat(valorCer)).toFixed(2)
-                } else {
-                    soma_totcer = (parseFloat(soma_totcer) + 0).toFixed(2)
                 }
                 if (valorCen > 0) {
                     soma_totcen = (parseFloat(soma_totcen) + parseFloat(valorCen)).toFixed(2)
-                } else {
-                    soma_totcen = (parseFloat(soma_totcen) + 0).toFixed(2)
                 }
                 if (valorPos > 0) {
                     soma_totpos = (parseFloat(soma_totpos) + parseFloat(valorPos)).toFixed(2)
-                } else {
-                    soma_totpos = (parseFloat(soma_totpos) + 0).toFixed(2)
                 }
 
 
@@ -2428,31 +2038,23 @@ router.get('/dashboardcustossemkit', ehAdmin, (req, res) => {
                 soma_totprj = (parseFloat(soma_totprj) + parseFloat(valor)).toFixed(2)
                 soma_totliq = (parseFloat(soma_totliq) + parseFloat(lucroLiquido)).toFixed(2)
             }
+
         }
 
-        if (isNaN(soma_totcer)) {
-            soma_totcer = 0
-        }
-        if (isNaN(soma_totcen)) {
-            soma_totcen = 0
-        }
-        if (isNaN(soma_totpos)) {
-            soma_totpos = 0
-        }
         soma_custoFix = parseFloat(soma_totint) + parseFloat(soma_totpro) + parseFloat(soma_totart) + parseFloat(soma_totges) + parseFloat(soma_tottrb) + parseFloat(soma_totcom) + parseFloat(soma_totadm)
         soma_custoVar = parseFloat(soma_totali) + parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)
         soma_custoEst = parseFloat(soma_totcer) + parseFloat(soma_totcen) + parseFloat(soma_totpos)
+        soma_totfat = parseFloat(soma_kitfat) + parseFloat(soma_serfat)
 
         //Soma Total Componentes
         soma_totequ = parseFloat(soma_modequ) + parseFloat(soma_invequ) + parseFloat(soma_estequ) + parseFloat(soma_cabequ) + parseFloat(soma_disequ) + parseFloat(soma_dpsequ) + parseFloat(soma_sbxequ) + parseFloat(soma_ocpequ)
         //Médias
         medkwp_totfat = (parseFloat(soma_totfat) / parseFloat(soma_totkwp)).toFixed(2)
+        medkwp_totkit = (parseFloat(soma_totkit) / parseFloat(soma_totkwp)).toFixed(2)
         medkwp_totcop = (parseFloat(soma_totcop) / parseFloat(soma_totkwp)).toFixed(2)
+
         //Custos Fixos 
         medkwp_custoFix = (parseFloat(soma_custoFix) / parseFloat(soma_totkwp)).toFixed(2)
-        if (isNaN(medkwp_custoFix)) {
-            medkwp_custoFix = 0
-        }
         medkwp_cusfat = (parseFloat(soma_totfat) / parseFloat(soma_totkwp)).toFixed(2)
         //Serviço
         medkwp_totint = (parseFloat(soma_totint) / parseFloat(soma_totkwp)).toFixed(2)
@@ -2467,30 +2069,11 @@ router.get('/dashboardcustossemkit', ehAdmin, (req, res) => {
         medkwp_totadm = (parseFloat(soma_totadm) / parseFloat(soma_totkwp)).toFixed(2)
         //Custos Variáveis
         medkwp_custoVar = (parseFloat(soma_custoVar) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_custoVar)) {
-            medkwp_custoVar = 0
-        }
         medkwp_varfat = (parseFloat(soma_varfat) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_varfat)) {
-            medkwp_varfat = 0
-        }
         medkwp_totdes = ((parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_totdes)) {
-            medkwp_totdes = 0
-        }
-        medkwp_totali = (parseFloat(soma_totali) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_totali)) {
-            medkwp_totali = 0
-        }
         medkwp_tothtl = (parseFloat(soma_tothtl) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_tothtl)) {
-            medkwp_tothtl = 0
-        }
         medkwp_totcmb = (parseFloat(soma_totcmb) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_totcmb)) {
-            medkwp_totcmb = 0
-        }
-
+        medkwp_totali = (parseFloat(soma_totali) / parseFloat(soma_varkwp)).toFixed(2)
         //Custos Variáveis Estruturais
         if (parseFloat(soma_estkwp) > 0) {
             medkwp_custoEst = (parseFloat(soma_custoEst) / parseFloat(soma_estkwp)).toFixed(2)
@@ -2501,37 +2084,13 @@ router.get('/dashboardcustossemkit', ehAdmin, (req, res) => {
         }
         //Custos Fixos
         per_totpro = (parseFloat(medkwp_totpro) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_totpro)) {
-            per_totpro = 0
-        }
         per_totart = (parseFloat(medkwp_totart) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_totart)) {
-            per_totart = 0
-        }
         per_totges = (parseFloat(medkwp_totges) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_totges)) {
-            per_totges = 0
-        }
         per_totint = (parseFloat(medkwp_totint) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_totint)) {
-            per_totint = 0
-        }
         per_totadm = (parseFloat(medkwp_totadm) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_totadm)) {
-            per_totadm = 0
-        }
         per_totcom = (parseFloat(medkwp_totcom) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_totcom)) {
-            per_totcom = 0
-        }
         per_tottrb = (parseFloat(medkwp_tottrb) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_tottrb)) {
-            per_tottrb = 0
-        }
         per_custoFix = (parseFloat(medkwp_custoFix) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
-        if (isNaN(per_custoFix)) {
-            per_custoFix = 0
-        }
         //Custos Variáveis
         per_totali = (parseFloat(medkwp_totali) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
         per_totdes = (parseFloat(medkwp_totdes) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
@@ -2545,7 +2104,7 @@ router.get('/dashboardcustossemkit', ehAdmin, (req, res) => {
         per_custoEst = (parseFloat(medkwp_custoEst) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
 
         //Médias de total faturado por kit e por serviços
-        soma_totser = (parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)).toFixed(2)
+        soma_totser = parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)
         //Lucro Liquido x Gastos
         per_totliq = ((parseFloat(soma_totliq) / parseFloat(soma_totfat)) * 100).toFixed(2)
         per_dispendio = (100 - parseFloat(per_totliq)).toFixed(2)
@@ -2588,7 +2147,7 @@ router.get('/dashboardcustossemkit', ehAdmin, (req, res) => {
             medkwp_totint, medkwp_totpro, medkwp_totges, medkwp_totadm, medkwp_totcom, medkwp_totart,
             medkwp_tottrb, medkwp_custoFix, medkwp_cusfat, medkwp_totdes, medkwp_totali, medkwp_totcmb,
             medkwp_tothtl, medkwp_custoVar, medkwp_varfat, medkwp_totcer, medkwp_totcen, medkwp_totpos,
-            medkwp_totcop, medkwp_custoEst, medkwp_estfat, medkwp_totfat,
+            medkwp_totcop, medkwp_custoEst, medkwp_estfat, medkwp_totfat, medkwp_totkit,
 
             per_totpro, per_totart, per_totges, per_totint, per_totadm, per_totcom, per_tottrb, per_custoFix,
             per_totali, per_totdes, per_tothtl, per_totcmb, per_custoVar, per_totcen, per_totcer, per_totpos, per_custoEst,
@@ -2599,1354 +2158,6 @@ router.get('/dashboardcustossemkit', ehAdmin, (req, res) => {
             per_modequ, per_invequ, per_estequ, per_cabequ, per_dpsequ, per_disequ, per_sbxequ, per_ocpequ,
             med_modequ, med_invequ, med_estequ, med_cabequ, med_dpsequ, med_disequ, med_sbxequ, med_ocpequ, med_totequ
         })
-
-    })
-})
-
-router.get('/dashboardbi', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    var checkKwp
-    var checkQtd
-    var checkFat
-    var fatrural = 0
-    var fatresid = 0
-    var fatcomer = 0
-    var fatindus = 0
-    var fatmono = 0
-    var fatbifa = 0
-    var fattrif = 0
-    var fatnivel1 = 0
-    var fatnivel2 = 0
-    var fatnivel3 = 0
-    var fatnivel4 = 0
-    var fatnivel5 = 0
-    var fatnivel6 = 0
-    var fatsolo = 0
-    var fattelhado = 0
-
-    checkFat = 'checked'
-    checkKwp = 'unchecked'
-    checkQtd = 'unchecked'
-    Projetos.find({ user: _id, $or: [{ 'classUsina': 'Rural' }, { 'classUsina': 'Rural Residencial' }, { 'classUsina': 'Rural Granja' }, { 'classUsina': 'Rural Irrigação' }] }).then((rural) => {
-        for (i = 0; i < rural.length; i++) {
-            fatrural = fatrural + parseFloat(rural[i].vlrNFS)
-        }
-        Projetos.find({ user: _id, classUsina: 'Residencial' }).then((residencial) => {
-            for (i = 0; i < residencial.length; i++) {
-                fatresid = fatresid + parseFloat(residencial[i].vlrNFS)
-            }
-            Projetos.find({ user: _id, classUsina: 'Comercial' }).then((comercial) => {
-                for (i = 0; i < comercial.length; i++) {
-                    fatcomer = fatcomer + parseFloat(comercial[i].vlrNFS)
-                }
-                Projetos.find({ user: _id, classUsina: 'Industrial' }).then((industrial) => {
-                    for (i = 0; i < industrial.length; i++) {
-                        fatindus = fatindus + parseFloat(industrial[i].vlrNFS)
-                    }
-                    Projetos.find({ user: _id, $or: [{ 'tipoUsina': 'Solo Concreto' }, { 'tipoUsina': 'Solo Metal' }, { 'tipoUsina': 'Laje' }] }).then((solo) => {
-                        for (i = 0; i < solo.length; i++) {
-                            fatsolo = fatsolo + parseFloat(solo[i].vlrNFS)
-                        }
-                        Projetos.find({ user: _id, $or: [{ 'tipoUsina': 'Telhado Fibrocimento' }, { 'tipoUsina': 'Telhado Madeira' }, { 'tipoUsina': 'Telhado Cerâmica' }, { 'tipoUsina': 'Telhado Gambrel' }, { 'tipoUsina': 'Telhado Metálico' }] }).then((telhado) => {
-                            for (i = 0; i < telhado.length; i++) {
-                                fattelhado = fattelhado + parseFloat(telhado[i].vlrNFS)
-                            }
-                            Projetos.find({ user: _id, $or: [{ 'tipoConexao': 'Monofásico 127V' }, { 'tipoConexao': 'Monofásico 220V' }] }).then((monofasico) => {
-                                for (i = 0; i < monofasico.length; i++) {
-                                    fatmono = fatmono + parseFloat(monofasico[i].vlrNFS)
-                                }
-                                Projetos.find({ user: _id, tipoConexao: 'Bifásico 220V' }).then((bifasico) => {
-                                    for (i = 0; i < bifasico.length; i++) {
-                                        fatbifa = fatbifa + parseFloat(bifasico[i].vlrNFS)
-                                    }
-                                    Projetos.find({ user: _id, $or: [{ 'tipoConexao': 'Trifásico 220V' }, { 'tipoConexao': 'Trifásico 380V' }] }).then((trifasico) => {
-                                        for (i = 0; i < trifasico.length; i++) {
-                                            fattrif = fattrif + parseFloat(trifasico[i].vlrNFS)
-                                        }
-                                        Projetos.find({ user: _id, 'potencia': { $lte: 10 } }).then((nivel1) => {
-                                            for (i = 0; i < nivel1.length; i++) {
-                                                fatnivel1 = fatnivel1 + parseFloat(nivel1[i].vlrNFS)
-                                            }
-                                            Projetos.find({ user: _id, 'potencia': { $lte: 30, $gte: 11 } }).then((nivel2) => {
-                                                for (i = 0; i < nivel2.length; i++) {
-                                                    fatnivel2 = fatnivel2 + parseFloat(nivel2[i].vlrNFS)
-                                                }
-                                                Projetos.find({ user: _id, 'potencia': { $lte: 50, $gte: 31 } }).then((nivel3) => {
-                                                    for (i = 0; i < nivel3.length; i++) {
-                                                        fatnivel3 = fatnivel3 + parseFloat(nivel3[i].vlrNFS)
-                                                    }
-                                                    Projetos.find({ user: _id, 'potencia': { $lte: 100, $gte: 51 } }).then((nivel4) => {
-                                                        for (i = 0; i < nivel4.length; i++) {
-                                                            fatnivel4 = fatnivel4 + parseFloat(nivel4[i].vlrNFS)
-                                                        }
-                                                        Projetos.find({ user: _id, 'potencia': { $lte: 150, $gte: 101 } }).then((nivel5) => {
-                                                            for (i = 0; i < nivel5.length; i++) {
-                                                                fatnivel5 = fatnivel5 + parseFloat(nivel5[i].vlrNFS)
-                                                            }
-                                                            Projetos.find({ user: _id, 'potencia': { $lte: 200, $gte: 151 } }).then((nivel6) => {
-                                                                for (i = 0; i < nivel6.length; i++) {
-                                                                    fatnivel6 = fatnivel6 + parseFloat(nivel6[i].vlrNFS)
-                                                                }
-                                                                Realizado.find({ user: _id }).lean().then((realizados) => {
-                                                                    Projetos.find({ user: _id, homologado: true }).lean().then((homologado) => {
-                                                                        Projetos.find({ user: _id, atrasado: true }).lean().then((atrasado) => {
-                                                                            Projetos.find({ user: _id, executando: true }).lean().then((executando) => {
-                                                                                Projetos.find({ user: _id, orcado: true }).lean().then((orcado) => {
-                                                                                    Projetos.find({ user: _id, parado: true }).lean().then((parado) => {
-                                                                                        Projetos.find({ user: _id, foiRealizado: true }).lean().then((foirealizado) => {
-                                                                                            res.render('relatorios/dashboardbi', { realizados, homologado, atrasado, executando, orcado, foirealizado, parado, checkFat, checkKwp, checkQtd, fatrural, fatresid, fatcomer, fatindus, fatsolo, fattelhado, fatmono, fatbifa, fattrif, fatnivel1, fatnivel2, fatnivel3, fatnivel4, fatnivel5, fatnivel6 })
-                                                                                        })
-                                                                                    })
-                                                                                })
-                                                                            })
-                                                                        })
-                                                                    })
-                                                                })
-                                                            }).catch((err) => {
-                                                                req.flash('error_msg', 'Falha ao encontrar usinas nivel 6.')
-                                                                res.redirect('/relatorios/dashboardbi')
-                                                            })
-                                                        }).catch((err) => {
-                                                            req.flash('error_msg', 'Falha ao encontrar usinas nivel 5.')
-                                                            res.redirect('/relatorios/dashboardbi')
-                                                        })
-                                                    }).catch((err) => {
-                                                        req.flash('error_msg', 'Falha ao encontrar usinas nivel 4.')
-                                                        res.redirect('/relatorios/dashboardbi')
-                                                    })
-                                                }).catch((err) => {
-                                                    req.flash('error_msg', 'Falha ao encontrar usinas nivel 3.')
-                                                    res.redirect('/relatorios/dashboardbi')
-                                                })
-                                            }).catch((err) => {
-                                                req.flash('error_msg', 'Falha ao encontrar usinas nivel 2.')
-                                                res.redirect('/relatorios/dashboardbi')
-                                            })
-                                        }).catch((err) => {
-                                            req.flash('error_msg', 'Falha ao encontrar usinas nivel 1.')
-                                            res.redirect('/relatorios/dashboardbi')
-                                        })
-                                    }).catch((err) => {
-                                        req.flash('error_msg', 'Falha ao encontrar usinas trifásicas.')
-                                        res.redirect('/relatorios/dashboardbi')
-                                    })
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Falha ao encontrar usinas bifásicas.')
-                                    res.redirect('/relatorios/dashboardbi')
-                                })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Falha ao encontrar usinas monofásicas.')
-                                res.redirect('/relatorios/dashboardbi')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Falha ao encontrar usinas telhado.')
-                            res.redirect('/relatorios/dashboardbi')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Falha ao encontrar usinas solo.')
-                        res.redirect('/relatorios/dashboardbi')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Falha ao encontrar usinas industriais.')
-                    res.redirect('/relatorios/dashboardbi')
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Falha ao encontrar usinas comerciais.')
-                res.redirect('/relatorios/dashboardbi')
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Falha ao encontrar usinas residenciais.')
-            res.redirect('/relatorios/dashboardbi')
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Falha ao encontrar usinas rurais.')
-        res.redirect('/relatorios/dashboardbi')
-    })
-})
-
-router.get('/priorizacao', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    const { user } = req.user
-    var id
-
-    if (typeof user == 'undefined') {
-        id = _id
-    } else {
-        id = user
-    }
-    var lista_propostas = []
-    var lista_compras = []
-    var q = 0
-    var qc = 0
-    var dtprevisao
-    var dtrecebimento
-    Proposta.find({ user: id, ganho: true, encerrado: false, baixada: false }).sort({ data: 'asc' }).then((propostas) => {
-        propostas.forEach((p) => {
-            Cliente.findOne({ _id: p.cliente }).then((cli) => {
-                q++
-                lista_propostas.push({ id: p._id, seq: p.seq, cliente: cli.nome, data: dataMsgNum(p.data), nota: false, match: false })
-                // console.log('q=>'+q)
-                // console.log('propostas=>'+propostas.length)
-                if (q == propostas.length) {
-                    var nota
-                    var recebido
-                    Compra.find({ user: id, feitopedido: true, encerrado: false }).sort({ data: 'asc' }).then((compras) => {
-                        if (naoVazio(compras)) {
-                            compras.forEach((c) => {
-                                Proposta.findOne({ _id: c.proposta }).then((proposta) => {
-                                    Cliente.findOne({ _id: proposta.cliente }).then((cli1) => {
-                                        // console.log('c._id=>'+c._id)
-                                        qc++
-                                        // console.log('proposta.seq=>'+proposta.seq)
-                                        // console.log('c.dtprevisao=>'+c.dtprevisao)
-                                        if (naoVazio(c.dtprevisao)) {
-                                            dtprevisao = c.dtprevisao
-                                        } else {
-                                            dtprevisao = '00000000'
-                                        }
-
-                                        if (naoVazio(c.dtrecebimento)) {
-                                            dtrecebimento = c.dtrecebimento
-                                            recebido = true
-                                        } else {
-                                            dtrecebimento = '0000-00-00'
-                                            recebido = false
-                                        }
-
-                                        if (c.feitonota){
-                                            nota = true
-                                        }else{
-                                            nota = false
-                                        }
-
-                                        // console.log('dtprevisao=>'+dtprevisao)
-                                        lista_compras.push({ id: proposta._id, seq: proposta.seq, cliente: cli1.nome, previsao: dataMsgNum(dtprevisao), recebimento: dataMensagem(dtrecebimento), recebido, nota, match: false })
-                                        // console.log('qc=>'+qc)
-                                        // console.log('compras.length=>'+compras.length)
-                                        if (qc == compras.length) {
-                                            // console.log('lista_propostas=>'+lista_propostas)
-                                            var i
-                                            lista_propostas.forEach((e) => {
-                                                console.log('e=>'+e.seq)
-                                                console.log('i=>'+i)
-                                                i = 0
-                                                while (i < lista_compras.length) {
-                                                    console.log('e.seq=>' + e.seq)
-                                                    console.log('lista_compras[i].seq=>' + lista_compras[i].seq)
-                                                    if (e.seq == lista_compras[i].seq) {
-                                                        console.log('encontrou')
-                                                         e.match = true
-                                                         lista_compras[i].match = true
-                                                         console.log('nota=>'+lista_compras[i].nota)
-                                                         if (lista_compras[i].nota){
-                                                            e.nota = true
-                                                         }
-                                                         break
-                                                    }
-                                                    i++
-                                                }
-                                                console.log('saiu do laço')
-                                            })
-                                            res.render('relatorios/priorizacao', { lista_propostas, lista_compras })
-                                        }
-                                    }).catch((err) => {
-                                        req.flash('error_msg', 'Nenhum cliente encontrado.')
-                                        res.redirect('/menu')
-                                    })
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Nenhuma propostsa encontrada.')
-                                    res.redirect('/menu')
-                                })
-                            })
-                        } else {
-                            res.render('relatorios/priorizacao', { lista_propostas, lista_compras })
-                        }
-
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Nenhuma compra encontrada.')
-                        res.redirect('/menu')
-                    })
-                }
-            }).catch((err) => {
-                req.flash('error_msg', 'Nenhum cliente encontrado.')
-                res.redirect('/menu')
-            })
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Nenhuma proposta encontrada.')
-        res.redirect('/menu')
-    })
-})
-
-router.post('/analisar', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    const { user } = req.user
-    var id
-
-    if (typeof user == 'undefined') {
-        id = _id
-    } else {
-        id = user
-    }
-
-    var dataini
-    var datafim
-    var data = []
-    var sql = []
-    var busca = []
-    var buscapessoa = []
-
-    var mestituloinicio
-    var mestitulofim
-    var anotituloinicio
-    var anotitulofim
-
-    var lista_ganho = []
-    var lista_naoganho = []
-    var lista_preco = []
-    var lista_prazo = []
-    var lista_finan = []
-    var lista_conco = []
-    var lista_smoti = []
-    var lista_negoc = []
-    var lista_anali = []
-    var lista_compa = []
-    var lista_reduc = []
-    var lista_envia = []
-
-    var resp
-    var baixado
-
-    var q = 0
-
-    var nomeCliente
-    var nomeEmpresa
-    var nomeResponsavel
-
-    //console.log('req.body.dataini=>' + req.body.dataini)
-    //console.log('req.body.datafim=>' + req.body.datafim)
-    var stats = req.body.stats
-    var empresa = req.body.empresa
-    var cliente = req.body.cliente
-    var respons = req.body.responsavel
-    var motivo = 'Todos'
-
-    if (req.body.dataini == '' || req.body.datafim == '' || (dataBusca(req.body.dataini) > dataBusca(req.body.datafim))) {
-        req.flash('error_msg', 'Verificar as datas de busca escolhidas.')
-        if (req.body.tipo != '') {
-            res.redirect('/gerenciamento/consulta/' + req.body.tipo)
-        } else {
-            res.redirect('/gerenciamento/consulta/')
-        }
-    }
-    if (cliente == 'Todos') {
-        clibusca = '111111111111111111111111'
-    } else {
-        clibusca = cliente
-    }
-    if (respons == 'Todos') {
-        resbusca = '111111111111111111111111'
-    } else {
-        resbusca = respons
-    }
-    if (empresa == 'Todos') {
-        empbusca = '111111111111111111111111'
-    } else {
-        empbusca = empresa
-    }
-    Pessoa.find({ user: id, funges: 'checked' }).lean().then((todas_pessoas) => {
-        Cliente.find({ user: id }).lean().then((todos_clientes) => {
-            Empresa.find({ user: id }).lean().then((todas_empresas) => {
-                Pessoa.findOne({ _id: resbusca }).then((nome_res) => {
-                    Cliente.findOne({ _id: clibusca }).then((nome_cli) => {
-                        Empresa.findOne({ _id: empbusca }).then((nome_emp) => {
-                            // console.log('nome_cli=>' + nome_cli)
-                            // console.log('nome_res=>' + nome_res)
-                            // console.log('nome_emp=>' + nome_emp)
-                            if (nome_cli == null) {
-                                nomeCliente = 'Todos'
-                            } else {
-                                nomeCliente = nome_cli.nome
-                            }
-                            if (nome_res == null) {
-                                nomeResponsavel = 'Todos'
-                            } else {
-                                nomeResponsavel = nome_res.nome
-                            }
-                            if (nome_emp == null) {
-                                nomeEmpresa = 'Todos'
-                            } else {
-                                nomeEmpresa = nome_emp.nome
-                            }
-
-                            dataini = req.body.dataini
-                            datafim = req.body.datafim
-                            mestituloinicio = pegames(dataini.substring(5, 7))
-                            mestitulofim = pegames(datafim.substring(5, 7))
-                            anotituloinicio = dataini.substring(0, 4)
-                            anotitulofim = datafim.substring(0, 4)
-                            dataini = dataBusca(req.body.dataini)
-                            datafim = dataBusca(req.body.datafim)
-
-                            //console.log('dataini=>' + dataini)
-                            //console.log('datafim=>' + datafim)
-                            //console.log('busca=>' + busca)
-                            if (req.body.responsavel == 'Todos') {
-                                buscapessoa = { user: id, funges: 'checked' }
-                            } else {
-                                buscapessoa = { user: id, _id: respons }
-                            }
-
-                            //console.log('buscapessoa=>' + buscapessoa)
-                            Proposta.find({ user: id, datacad: { $lte: datafim, $gte: dataini } }).then((proposta) => {
-                                Pessoa.find(buscapessoa).then((pessoa) => {
-                                    pessoa.forEach((e) => {
-                                        //console.log('e=>' + e)
-                                        data = { 'datacad': { $lte: datafim, $gte: dataini } }
-                                        if (respons != 'Todos') {
-                                            resp = e._id
-                                        } else {
-                                            resp = respons
-                                        }
-
-                                        sql = filtrarProposta(2, id, stats, motivo, resp, empresa, cliente, false, false, false, false)
-                                        busca = Object.assign(sql, data)
-
-                                        Proposta.find(busca).sort({ datacad: 'asc' }).then((pr) => {
-                                            if (naoVazio(pr)) {
-                                                pr.forEach((p) => {
-                                                    //console.log('e._id=>' + e._id)
-                                                    Equipe.findOne({ _id: p.equipe, 'nome_projeto': { $exists: true } }).then((equipe) => {
-                                                        q++
-                                                        if (p.baixada == true) {
-                                                            baixado = 'Sim'
-                                                        } else {
-                                                            baixado = 'Não'
-                                                        }
-
-                                                        if (naoVazio(p.motivo) && p.ganho == false) {
-                                                            if (p.motivo == 'Fechou com concorrente') {
-                                                                lista_conco.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                                            }
-                                                            if (p.motivo == 'Não conseguiu o financiamento') {
-                                                                lista_finan.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                                            }
-                                                            if (p.motivo == 'Preço elevado') {
-                                                                lista_preco.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                                            }
-                                                            if (p.motivo == 'Prazo de instalação') {
-                                                                lista_prazo.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                                            }
-                                                            if (p.motivo == 'Sem motivo') {
-                                                                lista_smoti.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                                            }
-                                                        } else {
-                                                            if (naoVazio(p.status) && p.ganho == false) {
-                                                                if (p.status == 'Enviado') {
-                                                                    lista_envia.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                                                }
-                                                                if (p.status == 'Negociando') {
-                                                                    lista_negoc.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                                                }
-                                                                if (p.status == 'Analisando Financiamento') {
-                                                                    lista_anali.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                                                }
-                                                                if (p.status == 'Comparando Propostas') {
-                                                                    lista_compa.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                                                }
-                                                                if (p.status == 'Aguardando redução de preço') {
-                                                                    lista_reduc.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                                                }
-                                                            }
-                                                        }
-
-                                                        // if (p.feito == true) {
-                                                        //     lista_envio.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                                        // }
-                                                        if (p.ganho == true) {
-                                                            lista_ganho.push({ responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                                        } else {
-                                                            lista_naoganho.push({ baixado, responsavel: e.nome, proposta: p.seq, datacad: p.datacad, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim) })
-                                                        }
-
-                                                        console.log('q=>' + q)
-                                                        console.log('proposta.length=>' + proposta.length)
-                                                        if (q == proposta.length) {
-                                                            res.render('relatorios/analiseproposta', {
-                                                                todos_clientes, todas_empresas, pessoa: todas_pessoas, lista_ganho, lista_naoganho,
-                                                                qtd_conco: lista_conco.length, qtd_finan: lista_finan.length, qtd_preco: lista_preco.length, qtd_prazo: lista_prazo.length,
-                                                                qtd_smoti: lista_smoti.length, qtd_negoc: lista_negoc.length, qtd_anali: lista_anali.length, qtd_compa: lista_compa.length, qtd_reduc: lista_reduc.length, qtd_envia: lista_envia.length,
-                                                                naoganho_total: lista_naoganho.length, ganho_total: lista_ganho.length, mestituloinicio, anotituloinicio, mestitulofim, anotitulofim
-                                                            })
-                                                        }
-                                                    })
-                                                })
-                                            } else {
-                                                res.render('relatorios/analiseproposta', { todos_clientes, todas_empresas, pessoa: todas_pessoas, lista_ganho, lista_naoganho, lista_envio, qtd_envio, qtd_ganho, naoganho_total: lista_naoganho.length, ganho_total: lista_ganho.length, envio_total: lista_envio.length, mestituloinicio, anotituloinicio, mestitulofim, anotitulofim })
-                                            }
-                                        })
-                                    })
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Nenhuma pessoa encontrada.')
-                                    res.redirect('/relatorios/analiseproposta')
-                                })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Nenhuma proposta encontrada.')
-                                res.redirect('/relatorios/analiseproposta')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Nenhuma empresas encontrada.')
-                            res.redirect('/relatorios/analiseproposta')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Nenhum cliente encontrado.')
-                        res.redirect('/relatorios/analiseproposta')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Nenhuma responsável encontrado.')
-                    res.redirect('/relatorios/analiseproposta')
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Nenhuma empresas encontrada.')
-                res.redirect('/relatorios/analiseproposta')
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Nenhum cliente encontrado.')
-            res.redirect('/relatorios/analiseproposta')
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Nenhuma responsável encontrado.')
-        res.redirect('/relatorios/analiseproposta')
-    })
-})
-
-router.post('/aplicar', ehAdmin, (req, res) => {
-    const { _id } = req.user
-
-    var checkKwp
-    var checkQtd
-    var checkFat
-    var fatrural = 0
-    var fatresid = 0
-    var fatcomer = 0
-    var fatindus = 0
-    var fatmono = 0
-    var fatbifa = 0
-    var fattrif = 0
-    var fatnivel1 = 0
-    var fatnivel2 = 0
-    var fatnivel3 = 0
-    var fatnivel4 = 0
-    var fatnivel5 = 0
-    var fatnivel6 = 0
-    var qtdrural = 0
-    var qtdresid = 0
-    var qtdcomer = 0
-    var qtdindus = 0
-    var qtdmono = 0
-    var qtdbifa = 0
-    var qtdtrif = 0
-    var qtdnivel1 = 0
-    var qtdnivel2 = 0
-    var qtdnivel3 = 0
-    var qtdnivel4 = 0
-    var qtdnivel5 = 0
-    var qtdnivel6 = 0
-    var kwprural = 0
-    var kwpresid = 0
-    var kwpcomer = 0
-    var kwpindus = 0
-    var kwpmono = 0
-    var kwpbifa = 0
-    var kwptrif = 0
-    var kwpnivel1 = 0
-    var kwpnivel2 = 0
-    var kwpnivel3 = 0
-    var kwpnivel4 = 0
-    var kwpnivel5 = 0
-    var kwpnivel6 = 0
-    var fatsolo = 0
-    var fattelhado = 0
-    var qtdsolo = 0
-    var qtdtelhado = 0
-    var kwpsolo = 0
-    var kwptelhado = 0
-
-    var dataini
-    var datafim
-    var mestitulo = ''
-    var ano = req.body.mesano
-    switch (req.body.messel) {
-        case 'Janeiro':
-            dataini = ano + '01' + '01'
-            datafim = ano + '01' + '31'
-            mestitulo = 'Janeiro de '
-            break;
-        case 'Fevereiro':
-            dataini = ano + '02' + '01'
-            datafim = ano + '02' + '28'
-            mestitulo = 'Fevereiro de '
-            break;
-        case 'Março':
-            dataini = ano + '03' + '01'
-            datafim = ano + '03' + '31'
-            mestitulo = 'Março /'
-            break;
-        case 'Abril':
-            dataini = ano + '04' + '01'
-            datafim = ano + '04' + '30'
-            mestitulo = 'Abril de '
-            break;
-        case 'Maio':
-            dataini = ano + '05' + '01'
-            datafim = ano + '05' + '31'
-            mestitulo = 'Maio de '
-            break;
-        case 'Junho':
-            dataini = ano + '06' + '01'
-            datafim = ano + '06' + '30'
-            mestitulo = 'Junho de '
-            break;
-        case 'Julho':
-            dataini = ano + '07' + '01'
-            datafim = ano + '07' + '31'
-            mestitulo = 'Julho de '
-            break;
-        case 'Agosto':
-            dataini = ano + '08' + '01'
-            datafim = ano + '08' + '30'
-            mestitulo = 'Agosto de '
-            break;
-        case 'Setembro':
-            dataini = ano + '09' + '01'
-            datafim = ano + '09' + '31'
-            mestitulo = 'Setembro de '
-            break;
-        case 'Outubro':
-            dataini = ano + '10' + '01'
-            datafim = ano + '10' + '31'
-            mestitulo = 'Outubro de '
-            break;
-        case 'Novembro':
-            dataini = ano + '11' + '01'
-            datafim = ano + '11' + '30'
-            mestitulo = 'Novembro de '
-            break;
-        case 'Dezembro':
-            dataini = ano + '12' + '01'
-            datafim = ano + '12' + '31'
-            mestitulo = 'Dezembro de '
-            break;
-        default:
-            dataini = ano + '01' + '01'
-            datafim = ano + '12' + '31'
-            mestitulo = 'Todo ano de '
-    }
-
-    var selecionado = req.body.selecionado
-    //console.log('selecionado=>' + selecionado)
-
-    //console.log('dataini=>' + dataini)
-    //console.log('datafim=>' + datafim)
-
-    if (selecionado == 'faturamento') {
-        checkFat = 'checked'
-        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'classUsina': 'Rural' }, { 'classUsina': 'Rural Residencial' }, { 'classUsina': 'Rural Granja' }, { 'classUsina': 'Rural Irrigação' }] }).then((rural) => {
-            for (i = 0; i < rural.length; i++) {
-                fatrural = fatrural + parseFloat(rural[i].vlrNFS)
-            }
-            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, classUsina: 'Residencial' }).then((residencial) => {
-                for (i = 0; i < residencial.length; i++) {
-                    fatresid = fatresid + parseFloat(residencial[i].vlrNFS)
-                }
-                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, classUsina: 'Comercial' }).then((comercial) => {
-                    for (i = 0; i < comercial.length; i++) {
-                        fatcomer = fatcomer + parseFloat(comercial[i].vlrNFS)
-                    }
-                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, classUsina: 'Industrial' }).then((industrial) => {
-                        for (i = 0; i < industrial.length; i++) {
-                            fatindus = fatindus + parseFloat(industrial[i].vlrNFS)
-                        }
-                        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoUsina': 'Solo Concreto' }, { 'tipoUsina': 'Solo Metal' }, { 'tipoUsina': 'Laje' }] }).then((solo) => {
-                            for (i = 0; i < solo.length; i++) {
-                                fatsolo = fatsolo + parseFloat(solo[i].vlrNFS)
-                            }
-                            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoUsina': 'Telhado Fibrocimento' }, { 'tipoUsina': 'Telhado Madeira' }, { 'tipoUsina': 'Telhado Cerâmica' }, { 'tipoUsina': 'Telhado Gambrel' }] }).then((telhado) => {
-                                for (i = 0; i < telhado.length; i++) {
-                                    fattelhado = fattelhado + parseFloat(telhado[i].vlrNFS)
-                                }
-                                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoConexao': 'Monofásico 127V' }, { 'tipoConexao': 'Monofásico 220V' }] }).then((monofasico) => {
-                                    for (i = 0; i < monofasico.length; i++) {
-                                        fatmono = fatmono + parseFloat(monofasico[i].vlrNFS)
-                                    }
-                                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, tipoConexao: 'Bifásico 220V' }).then((bifasico) => {
-                                        for (i = 0; i < bifasico.length; i++) {
-                                            fatbifa = fatbifa + parseFloat(bifasico[i].vlrNFS)
-                                        }
-                                        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoConexao': 'Trifásico 220V' }, { 'tipoConexao': 'Trifásico 380V' }] }).then((trifasico) => {
-                                            for (i = 0; i < trifasico.length; i++) {
-                                                fattrif = fattrif + parseFloat(trifasico[i].vlrNFS)
-                                            }
-                                            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 10 } }).then((nivel1) => {
-                                                for (i = 0; i < nivel1.length; i++) {
-                                                    fatnivel1 = fatnivel1 + parseFloat(nivel1[i].vlrNFS)
-                                                }
-                                                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 30, $gte: 11 } }).then((nivel2) => {
-                                                    for (i = 0; i < nivel2.length; i++) {
-                                                        fatnivel2 = fatnivel2 + parseFloat(nivel2[i].vlrNFS)
-                                                    }
-                                                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 50, $gte: 31 } }).then((nivel3) => {
-                                                        for (i = 0; i < nivel3.length; i++) {
-                                                            fatnivel3 = fatnivel3 + parseFloat(nivel3[i].vlrNFS)
-                                                        }
-                                                        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 100, $gte: 51 } }).then((nivel4) => {
-                                                            for (i = 0; i < nivel4.length; i++) {
-                                                                fatnivel4 = fatnivel4 + parseFloat(nivel4[i].vlrNFS)
-                                                            }
-                                                            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 150, $gte: 101 } }).then((nivel5) => {
-                                                                for (i = 0; i < nivel5.length; i++) {
-                                                                    fatnivel5 = fatnivel5 + parseFloat(nivel5[i].vlrNFS)
-                                                                }
-                                                                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 200, $gte: 151 } }).then((nivel6) => {
-                                                                    for (i = 0; i < nivel6.length; i++) {
-                                                                        fatnivel6 = fatnivel6 + parseFloat(nivel6[i].vlrNFS)
-                                                                    }
-                                                                    Realizado.find({ user: _id }).lean().then((realizados) => {
-                                                                        Projetos.find({ user: _id, homologado: true }).lean().then((homologado) => {
-                                                                            Projetos.find({ user: _id, atrasado: true }).lean().then((atrasado) => {
-                                                                                Projetos.find({ user: _id, executando: true }).lean().then((executando) => {
-                                                                                    Projetos.find({ user: _id, orcado: true }).lean().then((orcado) => {
-                                                                                        Projetos.find({ user: _id, parado: true }).lean().then((parado) => {
-                                                                                            Projetos.find({ user: _id, foiRealizado: true }).lean().then((foirealizado) => {
-                                                                                                res.render('relatorios/dashboardbi', { realizados, homologado, atrasado, executando, orcado, foirealizado, parado, checkFat, checkKwp, checkQtd, fatrural, fatresid, fatcomer, fatindus, fatsolo, fattelhado, fatmono, fatbifa, fattrif, fatnivel1, fatnivel2, fatnivel3, fatnivel4, fatnivel5, fatnivel6, mestitulo, ano, selecionado })
-                                                                                            })
-                                                                                        })
-                                                                                    })
-                                                                                })
-                                                                            })
-                                                                        })
-                                                                    })
-                                                                }).catch((err) => {
-                                                                    req.flash('error_msg', 'Falha ao encontrar usinas nivel 6.')
-                                                                    res.redirect('/relatorios/dashboardbi')
-                                                                })
-                                                            }).catch((err) => {
-                                                                req.flash('error_msg', 'Falha ao encontrar usinas nivel 5.')
-                                                                res.redirect('/relatorios/dashboardbi')
-                                                            })
-                                                        }).catch((err) => {
-                                                            req.flash('error_msg', 'Falha ao encontrar usinas nivel 4.')
-                                                            res.redirect('/relatorios/dashboardbi')
-                                                        })
-                                                    }).catch((err) => {
-                                                        req.flash('error_msg', 'Falha ao encontrar usinas nivel 3.')
-                                                        res.redirect('/relatorios/dashboardbi')
-                                                    })
-                                                }).catch((err) => {
-                                                    req.flash('error_msg', 'Falha ao encontrar usinas nivel 2.')
-                                                    res.redirect('/relatorios/dashboardbi')
-                                                })
-                                            }).catch((err) => {
-                                                req.flash('error_msg', 'Falha ao encontrar usinas nivel 1.')
-                                                res.redirect('/relatorios/dashboardbi')
-                                            })
-                                        }).catch((err) => {
-                                            req.flash('error_msg', 'Falha ao encontrar usinas trifásicas.')
-                                            res.redirect('/relatorios/dashboardbi')
-                                        })
-                                    }).catch((err) => {
-                                        req.flash('error_msg', 'Falha ao encontrar usinas bifásicas.')
-                                        res.redirect('/relatorios/dashboardbi')
-                                    })
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Falha ao encontrar usinas monofásicas.')
-                                    res.redirect('/relatorios/dashboardbi')
-                                })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Falha ao encontrar usinas telhado.')
-                                res.redirect('/relatorios/dashboardbi')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Falha ao encontrar usinas solo.')
-                            res.redirect('/relatorios/dashboardbi')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Falha ao encontrar usinas industriais.')
-                        res.redirect('/relatorios/dashboardbi')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Falha ao encontrar usinas comerciais.')
-                    res.redirect('/relatorios/dashboardbi')
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Falha ao encontrar usinas residenciais.')
-                res.redirect('/relatorios/dashboardbi')
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Falha ao encontrar usinas rurais.')
-            res.redirect('/relatorios/dashboardbi')
-        })
-
-    } else {
-        if (selecionado == 'quantidade') {
-            checkQtd = 'checked'
-            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'classUsina': 'Rural' }, { 'classUsina': 'Rural Residencial' }, { 'classUsina': 'Rural Granja' }, { 'classUsina': 'Rural Irrigação' }] }).then((rural) => {
-                qtdrural = rural.length
-                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, classUsina: 'Residencial' }).then((residencial) => {
-                    qtdresid = residencial.length
-                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, classUsina: 'Comercial' }).then((comercial) => {
-                        qtdcomer = comercial.length
-                        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, classUsina: 'Industrial' }).then((industrial) => {
-                            qtdindus = industrial.length
-                            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoUsina': 'Solo Concreto' }, { 'tipoUsina': 'Solo Metal' }, { 'tipoUsina': 'Laje' }] }).then((solo) => {
-                                qtdsolo = solo.length
-                                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoUsina': 'Telhado Fibrocimento' }, { 'tipoUsina': 'Telhado Madeira' }, { 'tipoUsina': 'Telhado Cerâmica' }, { 'tipoUsina': 'Telhado Gambrel' }] }).then((telhado) => {
-                                    qtdtelhado = telhado.length
-                                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoConexao': 'Monofásico 127V' }, { 'tipoConexao': 'Monofásico 220V' }] }).then((monofasico) => {
-                                        qtdmono = monofasico.length
-                                        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, tipoConexao: 'Bifásico 220V' }).then((bifasico) => {
-                                            qtdbifa = bifasico.length
-                                            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoConexao': 'Trifásico 220V' }, { 'tipoConexao': 'Trifásico 380V' }] }).then((trifasico) => {
-                                                qtdtrif = trifasico.length
-                                                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 10 } }).then((nivel1) => {
-                                                    qtdnivel1 = nivel1.length
-                                                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 30, $gte: 11 } }).then((nivel2) => {
-                                                        qtdnivel2 = nivel2.length
-                                                        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 50, $gte: 31 } }).then((nivel3) => {
-                                                            qtdnivel3 = nivel3.length
-                                                            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 100, $gte: 51 } }).then((nivel4) => {
-                                                                qtdnivel4 = nivel4.length
-                                                                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 150, $gte: 101 } }).then((nivel5) => {
-                                                                    qtdnivel5 = nivel5.length
-                                                                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 200, $gte: 151 } }).then((nivel6) => {
-                                                                        qtdnivel6 = nivel6.length
-                                                                        res.render('relatorios/dashboardbi', { checkFat, checkKwp, checkQtd, qtdrural, qtdresid, qtdcomer, qtdindus, qtdsolo, qtdtelhado, qtdmono, qtdbifa, qtdtrif, qtdnivel1, qtdnivel2, qtdnivel3, qtdnivel4, qtdnivel5, qtdnivel6, mestitulo, ano, selecionado })
-                                                                    }).catch((err) => {
-                                                                        req.flash('error_msg', 'Falha ao encontrar usinas nivel 6.')
-                                                                        res.redirect('/relatorios/dashboardbi')
-                                                                    })
-                                                                }).catch((err) => {
-                                                                    req.flash('error_msg', 'Falha ao encontrar usinas nivel 5.')
-                                                                    res.redirect('/relatorios/dashboardbi')
-                                                                })
-                                                            }).catch((err) => {
-                                                                req.flash('error_msg', 'Falha ao encontrar usinas nivel 4.')
-                                                                res.redirect('/relatorios/dashboardbi')
-                                                            })
-                                                        }).catch((err) => {
-                                                            req.flash('error_msg', 'Falha ao encontrar usinas nivel 3.')
-                                                            res.redirect('/relatorios/dashboardbi')
-                                                        })
-                                                    }).catch((err) => {
-                                                        req.flash('error_msg', 'Falha ao encontrar usinas nivel 2.')
-                                                        res.redirect('/relatorios/dashboardbi')
-                                                    })
-                                                }).catch((err) => {
-                                                    req.flash('error_msg', 'Falha ao encontrar usinas nivel 1.')
-                                                    res.redirect('/relatorios/dashboardbi')
-                                                })
-                                            }).catch((err) => {
-                                                req.flash('error_msg', 'Falha ao encontrar usinas trifásicas.')
-                                                res.redirect('/relatorios/dashboardbi')
-                                            })
-                                        }).catch((err) => {
-                                            req.flash('error_msg', 'Falha ao encontrar usinas bifásicas.')
-                                            res.redirect('/relatorios/dashboardbi')
-                                        })
-                                    }).catch((err) => {
-                                        req.flash('error_msg', 'Falha ao encontrar usinas monofásicas.')
-                                        res.redirect('/relatorios/dashboardbi')
-                                    })
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Falha ao encontrar usinas telhado.')
-                                    res.redirect('/relatorios/dashboardbi')
-                                })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Falha ao encontrar usinas solo.')
-                                res.redirect('/relatorios/dashboardbi')
-                            })
-
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Falha ao encontrar usinas industriais.')
-                            res.redirect('/relatorios/dashboardbi')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Falha ao encontrar usinas comerciais.')
-                        res.redirect('/relatorios/dashboardbi')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Falha ao encontrar usinas residenciais.')
-                    res.redirect('/relatorios/dashboardbi')
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Falha ao encontrar usinas rurais.')
-                res.redirect('/relatorios/dashboardbi')
-            })
-        } else {
-            if (selecionado == 'potencia') {
-                checkKwp = 'checked'
-                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'classUsina': 'Rural' }, { 'classUsina': 'Rural Residencial' }, { 'classUsina': 'Rural Granja' }, { 'classUsina': 'Rural Irrigação' }] }).then((rural) => {
-                    for (i = 0; i < rural.length; i++) {
-                        kwprural = kwprural + parseFloat(rural[i].potencia)
-                    }
-                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, classUsina: 'Residencial' }).then((residencial) => {
-                        for (i = 0; i < residencial.length; i++) {
-                            kwpresid = kwpresid + parseFloat(residencial[i].potencia)
-                        }
-                        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, classUsina: 'Comercial' }).then((comercial) => {
-                            for (i = 0; i < comercial.length; i++) {
-                                kwpcomer = kwpcomer + parseFloat(comercial[i].potencia)
-                            }
-                            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, classUsina: 'Industrial' }).then((industrial) => {
-                                for (i = 0; i < industrial.length; i++) {
-                                    kwpindus = kwpindus + parseFloat(industrial[i].potencia)
-                                }
-                                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoUsina': 'Solo Concreto' }, { 'tipoUsina': 'Solo Metal' }, { 'tipoUsina': 'Laje' }] }).then((solo) => {
-                                    for (i = 0; i < solo.length; i++) {
-                                        kwpsolo = kwpsolo + parseFloat(solo[i].potencia)
-                                    }
-                                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoUsina': 'Telhado Fibrocimento' }, { 'tipoUsina': 'Telhado Madeira' }, { 'tipoUsina': 'Telhado Cerâmica' }, { 'tipoUsina': 'Telhado Gambrel' }] }).then((telhado) => {
-                                        for (i = 0; i < telhado.length; i++) {
-                                            kwptelhado = kwptelhado + parseFloat(telhado[i].potencia)
-                                        }
-                                        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoConexao': 'Monofásico 127V' }, { 'tipoConexao': 'Monofásico 220V' }] }).then((monofasico) => {
-                                            for (i = 0; i < monofasico.length; i++) {
-                                                kwpmono = kwpmono + parseFloat(monofasico[i].potencia)
-                                            }
-                                            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, tipoConexao: 'Bifásico 220V' }).then((bifasico) => {
-                                                for (i = 0; i < bifasico.length; i++) {
-                                                    kwpbifa = kwpbifa + parseFloat(bifasico[i].potencia)
-                                                }
-                                                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, $or: [{ 'tipoConexao': 'Trifásico 220V' }, { 'tipoConexao': 'Trifásico 380V' }] }).then((trifasico) => {
-                                                    for (i = 0; i < trifasico.length; i++) {
-                                                        kwptrif = kwptrif + parseFloat(trifasico[i].potencia)
-                                                    }
-                                                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 10 } }).then((nivel1) => {
-                                                        for (i = 0; i < nivel1.length; i++) {
-                                                            kwpnivel1 = kwpnivel1 + parseFloat(nivel1[i].potencia)
-                                                        }
-                                                        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 30, $gte: 11 } }).then((nivel2) => {
-                                                            for (i = 0; i < nivel2.length; i++) {
-                                                                kwpnivel2 = kwpnivel2 + parseFloat(nivel2[i].potencia)
-                                                            }
-                                                            Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 50, $gte: 31 } }).then((nivel3) => {
-                                                                for (i = 0; i < nivel3.length; i++) {
-                                                                    kwpnivel3 = kwpnivel3 + parseFloat(nivel3[i].potencia)
-                                                                }
-                                                                Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 100, $gte: 51 } }).then((nivel4) => {
-                                                                    for (i = 0; i < nivel4.length; i++) {
-                                                                        kwpnivel4 = kwpnivel4 + parseFloat(nivel4[i].potencia)
-                                                                    }
-                                                                    Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 150, $gte: 101 } }).then((nivel5) => {
-                                                                        for (i = 0; i < nivel5.length; i++) {
-                                                                            kwpnivel5 = kwpnivel5 + parseFloat(nivel5[i].potencia)
-                                                                        }
-                                                                        Projetos.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini }, 'potencia': { $lte: 200, $gte: 151 } }).then((nivel6) => {
-                                                                            for (i = 0; i < nivel6.length; i++) {
-                                                                                kwpnivel6 = kwpnivel6 + parseFloat(nivel6[i].potencia)
-                                                                            }
-                                                                            res.render('relatorios/dashboardbi', { checkFat, checkKwp, checkQtd, kwprural, kwpresid, kwpcomer, kwpindus, kwpsolo, kwptelhado, kwpmono, kwpbifa, kwptrif, kwpnivel1, kwpnivel2, kwpnivel3, kwpnivel4, kwpnivel5, kwpnivel6, mestitulo, ano, selecionado })
-                                                                        }).catch((err) => {
-                                                                            req.flash('error_msg', 'Falha ao encontrar usinas nivel 6.')
-                                                                            res.redirect('/relatorios/dashboardbi')
-                                                                        })
-                                                                    }).catch((err) => {
-                                                                        req.flash('error_msg', 'Falha ao encontrar usinas nivel 5.')
-                                                                        res.redirect('/relatorios/dashboardbi')
-                                                                    })
-                                                                }).catch((err) => {
-                                                                    req.flash('error_msg', 'Falha ao encontrar usinas nivel 4.')
-                                                                    res.redirect('/relatorios/dashboardbi')
-                                                                })
-                                                            }).catch((err) => {
-                                                                req.flash('error_msg', 'Falha ao encontrar usinas nivel 3.')
-                                                                res.redirect('/relatorios/dashboardbi')
-                                                            })
-                                                        }).catch((err) => {
-                                                            req.flash('error_msg', 'Falha ao encontrar usinas nivel 2.')
-                                                            res.redirect('/relatorios/dashboardbi')
-                                                        })
-                                                    }).catch((err) => {
-                                                        req.flash('error_msg', 'Falha ao encontrar usinas nivel 1.')
-                                                        res.redirect('/relatorios/dashboardbi')
-                                                    })
-                                                }).catch((err) => {
-                                                    req.flash('error_msg', 'Falha ao encontrar usinas trifásicas.')
-                                                    res.redirect('/relatorios/dashboardbi')
-                                                })
-                                            }).catch((err) => {
-                                                req.flash('error_msg', 'Falha ao encontrar usinas bifásicas.')
-                                                res.redirect('/relatorios/dashboardbi')
-                                            })
-                                        }).catch((err) => {
-                                            req.flash('error_msg', 'Falha ao encontrar usinas monofásicas.')
-                                            res.redirect('/relatorios/dashboardbi')
-                                        })
-                                    }).catch((err) => {
-                                        req.flash('error_msg', 'Falha ao encontrar usinas telhado.')
-                                        res.redirect('/relatorios/dashboardbi')
-                                    })
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Falha ao encontrar usinas solo.')
-                                    res.redirect('/relatorios/dashboardbi')
-                                })
-
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Falha ao encontrar usinas industriais.')
-                                res.redirect('/relatorios/dashboardbi')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Falha ao encontrar usinas comerciais.')
-                            res.redirect('/relatorios/dashboardbi')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Falha ao encontrar usinas residenciais.')
-                        res.redirect('/relatorios/dashboardbi')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Falha ao encontrar usinas rurais.')
-                    res.redirect('/relatorios/dashboardbi')
-                })
-            } else {
-                var aviso = []
-                aviso.push({ texto: 'Nenhum registro encontrado.' })
-                if (selecionado == 'faturamento') {
-                    checkFat = 'checked'
-                    checkQtd = 'unchecked'
-                    checkKwp = 'unchecked'
-                } else {
-                    if (selecionado == 'quantidade') {
-                        checkQtd = 'checked'
-                        checkFat = 'unchecked'
-                        checkKwp = 'unchecked'
-                    } else {
-                        checkKwp = 'checked'
-                        checkQtd = 'unchecked'
-                        checkFat = 'unchecked'
-                    }
-                }
-                res.render('relatorios/dashboardbi/', { aviso, mestitulo, ano, checkFat, checkQtd, checkKwp })
-            }
-        }
-    }
-})
-
-router.post('/imprimir', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    const { user } = req.user
-    var id
-    if (typeof user == 'undefined') {
-        id = _id
-    } else {
-        id = user
-    }
-
-    var lista = []
-    var busca = []
-    var sql = []
-    var data = []
-    var encerrado = []
-    var q = 0
-
-    var responsavel
-    var nome_insres
-    var dif
-    var data1
-    var data2
-    var dif
-
-    var cliente = req.body.idcli
-    var empresa = req.body.idemp
-    var respons = req.body.idres
-    var dataini = dataBusca(req.body.dataini)
-    var datafim = dataBusca(req.body.datafim)
-    //console.log(cliente)
-    //console.log(empresa)
-    //console.log(respons)
-    //console.log(dataini)
-    //console.log(datafim)
-
-    data = { 'datacad': { $lte: datafim, $gte: dataini } }
-    sql = filtrarProposta(2, id, 'Todos', 'Todos', respons, empresa, cliente, false, false, false, false)
-    encerrado = { encerrado: true }
-    busca = Object.assign(data, sql, encerrado)
-    Proposta.find(busca).then((proposta) => {
-        proposta.forEach((e) => {
-            //console.log('e=>' + e.id)
-            Cliente.findOne({ _id: e.cliente }).lean().then((lista_cliente) => {
-                Equipe.findOne({ _id: e.equipe, $and: [{ 'custoins': { $ne: 0 } }, { 'custoins': { $ne: null } }] }).then((equipe) => {
-                    Pessoa.findOne({ _id: e.responsavel }).then((lista_responsavel) => {
-                        Pessoa.findOne({ _id: equipe.insres }).then((insres) => {
-                            q++
-                            if (naoVazio(lista_responsavel)) {
-                                responsavel = lista_responsavel.nome
-                            } else {
-                                responsavel = ''
-                            }
-
-                            if (naoVazio(insres)) {
-                                nome_insres = insres.nome
-                            } else {
-                                nome_insres = ''
-                            }
-                            data1 = new Date(equipe.dtfim)
-                            data2 = new Date(equipe.dtinicio)
-                            dif = Math.abs(data1.getTime() - data2.getTime())
-                            //console.log('dif=>'+dif)
-                            days = Math.ceil(dif / (1000 * 60 * 60 * 24))
-                            //console.log('dif=>'+dif)
-                            custototal = parseFloat(equipe.custoins) * parseFloat(days)
-                            lista.push({ id: e._id, seq: e.seq, cliente: lista_cliente.nome, responsavel, nome_insres, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim), custo: custototal, ins0: equipe.ins0, ins1: equipe.ins1, ins2: equipe.ins2, ins3: equipe.ins3, ins4: equipe.ins4, ins5: equipe.ins5 })
-                            if (q == proposta.length) {
-                                Pessoa.find({ user: id, $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }] }).lean().then((instalador) => {
-                                    res.render('relatorios/imprimirConsulta', { lista, instalador, respons, cliente, empresa, datafim, dataini })
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Falha ao encontrar os instaladores.')
-                                    res.redirect('/gerenciamento/consulta/encerrado')
-                                })
-                            }
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Nenhum técnico responsável encontrado.')
-                            res.redirect('/gerenciamento/consulta/encerrado')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Nenhum gestor responsável encontrado')
-                        res.redirect('/gerenciamento/consulta/encerrado')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Houve uma falha ao encontrar a equipe.')
-                    res.redirect('/gerenciamento/consulta/encerrado')
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Houve uma falha ao encontrar o cliente.')
-                res.redirect('/gerenciamento/consulta/encerrado')
-            })
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Houve uma falha ao encontrar a proposta.')
-        res.redirect('/gerenciamento/consulta/encerrado')
-    })
-})
-
-router.post('/filtraRelatorio', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    const { user } = req.user
-    var id
-    if (typeof user == 'undefined') {
-        id = _id
-    } else {
-        id = user
-    }
-
-    var lista = []
-    var busca = []
-    var sql = []
-    var data = []
-    var encerrado = []
-    var q = 0
-
-    var responsavel
-    var nome_insres
-    var dif
-
-    var cliente = req.body.cliente
-    var empresa = req.body.empresa
-    var respons = req.body.responsavel
-    var dataini = req.body.dataini
-    var datafim = req.body.datafim
-    //console.log(cliente)
-    //console.log(empresa)
-    //console.log(respons)
-    //console.log(dataini)
-    //console.log(datafim)
-
-    data = { 'datacad': { $lte: datafim, $gte: dataini } }
-    sql = filtrarProposta(2, id, 'Todos', 'Todos', respons, empresa, cliente, false, false, false, false)
-    encerrado = { encerrado: true }
-    busca = Object.assign(data, sql, encerrado)
-    //console.log("req.body.ins=>" + req.body.ins)
-    Pessoa.findOne({ _id: req.body.ins }).then((ins) => {
-        Proposta.find(busca).then((proposta) => {
-            proposta.forEach((e) => {
-                //console.log('e=>' + e.id)
-                Cliente.findOne({ _id: e.cliente }).lean().then((lista_cliente) => {
-                    Equipe.findOne({ _id: e.equipe, $or: [{ 'idins0': ins }, { 'idins1': ins }, { 'idins2': ins }, { 'idins3': ins }, { 'idins4': ins }, { 'idins5': ins }], $and: [{ 'custoins': { $ne: 0 } }, { 'custoins': { $ne: null } }] }).then((equipe) => {
-                        //console.log('equipe=>' + equipe)
-                        Pessoa.findOne({ _id: e.responsavel }).then((lista_responsavel) => {
-                            Pessoa.findOne({ _id: equipe.insres }).then((insres) => {
-                                q++
-                                if (naoVazio(lista_responsavel)) {
-                                    responsavel = lista_responsavel.nome
-                                } else {
-                                    responsavel = ''
-                                }
-
-                                if (naoVazio(insres)) {
-                                    nome_insres = insres.nome
-                                } else {
-                                    nome_insres = ''
-                                }
-                                dif = parseFloat(dataBusca(equipe.dtfim)) - parseFloat(dataBusca(equipe.dtinicio)) + 1
-                                //console.log('dif=>'+dif)
-                                custototal = parseFloat(ins.custo) * parseFloat(dif)
-                                lista.push({ id: e._id, cliente: lista_cliente.nome, responsavel, nome_insres, dataini: dataMensagem(equipe.dtinicio), datafim: dataMensagem(equipe.dtfim), custo: custototal, ins0: ins.nome })
-                                if (q == proposta.length) {
-                                    Pessoa.find({ user: id, $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }] }).lean().then((instalador) => {
-                                        res.render('relatorios/imprimirConsulta', { lista, instalador, respons, cliente, empresa, datafim, dataini })
-                                    }).catch((err) => {
-                                        req.flash('error_msg', 'Falha ao encontrar os instaladores.')
-                                        res.redirect('/gerenciamento/consulta/encerrado')
-                                    })
-                                }
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Nenhum técnico responsável encontrado.')
-                                res.redirect('/gerenciamento/consulta/encerrado')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Nenhum gestor responsável encontrado')
-                            res.redirect('/gerenciamento/consulta/encerrado')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Houve uma falha ao encontrar a equipe.')
-                        res.redirect('/gerenciamento/consulta/encerrado')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Houve uma falha ao encontrar o cliente.')
-                    res.redirect('/gerenciamento/consulta/encerrado')
-                })
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Houve uma falha ao encontrar a proposta.')
-            res.redirect('/gerenciamento/consulta/encerrado')
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Houve uma falha ao encontrar o instalador.')
-        res.redirect('/gerenciamento/consulta/encerrado')
-    })
-})
-
-router.post('/analiseGeral', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    var potencia = 0
-    var valor = 0
-    var totint = 0
-    var qtdmod = 0
-    var custoPlano = 0
-    var q = 0
-
-    var dataini
-    var datafim
-    var mestitulo = ''
-    var ano = req.body.mesano
-    switch (req.body.messel) {
-        case 'Janeiro':
-            dataini = ano + '01' + '01'
-            datafim = ano + '01' + '31'
-            mestitulo = 'Janeiro de '
-            break;
-        case 'Fevereiro':
-            dataini = ano + '02' + '01'
-            datafim = ano + '02' + '28'
-            mestitulo = 'Fevereiro de '
-            break;
-        case 'Março':
-            dataini = ano + '03' + '01'
-            datafim = ano + '03' + '31'
-            mestitulo = 'Março /'
-            break;
-        case 'Abril':
-            dataini = ano + '04' + '01'
-            datafim = ano + '04' + '30'
-            mestitulo = 'Abril de '
-            break;
-        case 'Maio':
-            dataini = ano + '05' + '01'
-            datafim = ano + '05' + '31'
-            mestitulo = 'Maio de '
-            break;
-        case 'Junho':
-            dataini = ano + '06' + '01'
-            datafim = ano + '06' + '30'
-            mestitulo = 'Junho de '
-            break;
-        case 'Julho':
-            dataini = ano + '07' + '01'
-            datafim = ano + '07' + '31'
-            mestitulo = 'Julho de '
-            break;
-        case 'Agosto':
-            dataini = ano + '08' + '01'
-            datafim = ano + '08' + '30'
-            mestitulo = 'Agosto de '
-            break;
-        case 'Setembro':
-            dataini = ano + '09' + '01'
-            datafim = ano + '09' + '31'
-            mestitulo = 'Setembro de '
-            break;
-        case 'Outubro':
-            dataini = ano + '10' + '01'
-            datafim = ano + '10' + '31'
-            mestitulo = 'Outubro de '
-            break;
-        case 'Novembro':
-            dataini = ano + '11' + '01'
-            datafim = ano + '11' + '30'
-            mestitulo = 'Novembro de '
-            break;
-        case 'Dezembro':
-            dataini = ano + '12' + '01'
-            datafim = ano + '12' + '31'
-            mestitulo = 'Dezembro de '
-            break;
-        default:
-            dataini = ano + '01' + '01'
-            datafim = ano + '12' + '31'
-            mestitulo = 'Todo ano de '
-    }
-
-    Realizado.find({ user: _id, 'datareg': { $lte: datafim, $gte: dataini } }).sort({ datafim: 'asc' }).lean().then((realizado) => {
-        realizado.forEach((element) => {
-            Projetos.findOne({ _id: element.projeto }).then((projeto) => {
-                if (projeto.ehDireto) {
-                    if (projeto.qtdmod > 0) {
-                        qtdmod = qtdmod + projeto.qtdmod
-                    } else {
-                        qtdmod = qtdmod + 0
-                    }
-                } else {
-                    qtdmod = qtdmod + projeto.unimod
-                }
-                potencia = parseFloat(potencia) + parseFloat(element.potencia)
-
-                valor = valor + element.valor
-                totint = totint + element.totint
-                custoPlano = custoPlano + element.custoPlano
-
-                //console.log('q=>'+q)
-                q = q + 1
-                if (q == realizado.length) {
-                    var rspmod = (parseFloat(valor) / parseFloat(qtdmod)).toFixed(2)
-                    var rspkwp = (parseFloat(valor) / parseFloat(potencia)).toFixed(2)
-                    var rsimod = (parseFloat(totint) / parseFloat(qtdmod)).toFixed(2)
-                    var rsikwp = (parseFloat(totint) / parseFloat(potencia)).toFixed(2)
-                    var custoPorModulo = (parseFloat(custoPlano) / parseFloat(qtdmod)).toFixed(2)
-                    var custoPorKwp = (parseFloat(custoPlano) / parseFloat(potencia)).toFixed(2)
-                    res.render('relatorios/analisegeral', { potencia, qtdmod, valor, rspkwp, rspmod, rsimod, rsikwp, custoPorModulo, custoPorKwp, mestitulo, ano })
-                }
-            }).catch((err) => {
-                req.flash('error_msg', 'Houve um erro para encontrar projetos.')
-                res.redirect('/menu')
-            })
-        })
-        if (realizado.length == 0) {
-            aviso = []
-            aviso.push({ texto: 'Nenhum projeto realizado no período de: ' + mestitulo + ' de ' + ano })
-            res.render('relatorios/analisegeral', { aviso, mestitulo, ano })
-        }
-    }).catch((err) => {
-        req.flash('error_msg', 'Houve um erro para encontrar projetos realizados.')
-        res.redirect('/menu')
     })
 })
 
@@ -4295,23 +2506,23 @@ router.post('/filtradash', ehAdmin, (req, res) => {
                     soma_estkwp_com = parseFloat(soma_estkwp_com) + parseFloat(potencia)
                     soma_estfat_com = parseFloat(soma_estfat_com) + parseFloat(vlrNFS)
                     soma_totest_com = (parseFloat(soma_totest_com) + parseFloat(custoest)).toFixed(2)
-                } else {
+                }else{
                     soma_totest_com = (parseFloat(soma_totest_com) + 0).toFixed(2)
                 }
                 if (valorCer > 0) {
                     soma_totcer_com = (parseFloat(soma_totcer_com) + parseFloat(valorCer)).toFixed(2)
-                } else {
+                }else{
                     soma_totcer_com = (parseFloat(soma_totcer_com) + 0).toFixed(2)
                 }
                 if (valorCen > 0) {
                     soma_totcen_com = (parseFloat(soma_totcen_com) + parseFloat(valorCen)).toFixed(2)
-                } else {
-                    soma_totcen_com = (parseFloat(soma_totcen_com) + 0).toFixed(2)
+                }else{
+                    soma_totcen_com = (parseFloat(soma_totcen_com) + 0).toFixed(2) 
                 }
                 if (valorPos > 0) {
                     soma_totpos_com = (parseFloat(soma_totpos_com) + parseFloat(valorPos)).toFixed(2)
-                } else {
-                    soma_totpos_com = (parseFloat(soma_totpos_com) + 0).toFixed(2)
+                }else{
+                    soma_totpos_com = (parseFloat(soma_totpos_com) + 0).toFixed(2) 
                 }
 
             } else {
@@ -4356,22 +2567,22 @@ router.post('/filtradash', ehAdmin, (req, res) => {
                     soma_estkwp_sem = parseFloat(soma_estkwp_sem) + parseFloat(potencia)
                     soma_estfat_sem = parseFloat(soma_estfat_sem) + parseFloat(vlrNFS)
                     soma_totest_sem = (parseFloat(soma_totest_sem) + parseFloat(custoest)).toFixed(2)
-                } else {
+                }else{
                     soma_totest_sem = (parseFloat(soma_totest_sem) + 0).toFixed(2)
                 }
                 if (valorCer > 0) {
                     soma_totcer_sem = (parseFloat(soma_totcer_sem) + parseFloat(valorCer)).toFixed(2)
-                } else {
+                }else{
                     soma_totcer_sem = (parseFloat(soma_totcer_sem) + 0).toFixed(2)
                 }
                 if (valorCen > 0) {
                     soma_totcen_sem = (parseFloat(soma_totcen_sem) + parseFloat(valorCen)).toFixed(2)
-                } else {
+                }else{
                     soma_totcen_sem = (parseFloat(soma_totcen_sem) + 0).toFixed(2)
                 }
                 if (valorPos > 0) {
                     soma_totpos_sem = (parseFloat(soma_totpos_sem) + parseFloat(valorPos)).toFixed(2)
-                } else {
+                }else{
                     soma_totpos_sem = (parseFloat(soma_totpos_sem) + 0).toFixed(2)
                 }
             }
@@ -4392,26 +2603,10 @@ router.post('/filtradash', ehAdmin, (req, res) => {
 
             //Custos Fixos 
             //Serviços
-            if (totint > 0) {
-                soma_totint = (parseFloat(soma_totint) + parseFloat(totint)).toFixed(2)
-            } else {
-                soma_totint = (parseFloat(soma_totint) + 0).toFixed(2)
-            }
-            if (totpro > 0) {
-                soma_totpro = (parseFloat(soma_totpro) + parseFloat(totpro)).toFixed(2)
-            } else {
-                soma_totpro = (parseFloat(soma_totpro) + 0).toFixed(2)
-            }
-            if (totges > 0) {
-                soma_totges = (parseFloat(soma_totges) + parseFloat(totges)).toFixed(2)
-            } else {
-                soma_totges = (parseFloat(soma_totges) + 0).toFixed(2)
-            }
-            if (vlrart > 0) {
-                soma_totart = (parseFloat(soma_totart) + parseFloat(vlrart)).toFixed(2)
-            } else {
-                soma_totart = (parseFloat(soma_totart) + 0).toFixed(2)
-            }
+            soma_totint = (parseFloat(soma_totint) + parseFloat(totint)).toFixed(2)
+            soma_totpro = (parseFloat(soma_totpro) + parseFloat(totpro)).toFixed(2)
+            soma_totges = (parseFloat(soma_totges) + parseFloat(totges)).toFixed(2)
+            soma_totart = (parseFloat(soma_totart) + parseFloat(vlrart)).toFixed(2)
             //Tributos
             soma_tottrb = (parseFloat(soma_tottrb) + parseFloat(totalTributos)).toFixed(2)
             //Comissão
@@ -4427,26 +2622,11 @@ router.post('/filtradash', ehAdmin, (req, res) => {
                 //console.log('soma_varkwp=>' + soma_varkwp)
                 soma_varfat = parseFloat(soma_varfat) + parseFloat(vlrNFS)
             }
-            if (totdes > 0) {
-                soma_totdes = (parseFloat(soma_totdes) + parseFloat(totdes)).toFixed(2)
-            } else {
-                soma_totdes = (parseFloat(soma_totdes) + 0).toFixed(2)
-            }
-            if (totali > 0) {
-                soma_totali = (parseFloat(soma_totali) + parseFloat(totali)).toFixed(2)
-            } else {
-                soma_totali = (parseFloat(soma_totali) + 0).toFixed(2)
-            }
-            if (totcmb > 0) {
-                soma_totcmb = (parseFloat(soma_totcmb) + parseFloat(totcmb)).toFixed(2)
-            } else {
-                soma_totcmb = (parseFloat(soma_totcmb) + 0).toFixed(2)
-            }
-            if (tothtl > 0) {
-                soma_tothtl = (parseFloat(soma_tothtl) + parseFloat(tothtl)).toFixed(2)
-            } else {
-                soma_tothtl = (parseFloat(soma_tothtl) + 0).toFixed(2)
-            }
+
+            soma_totdes = (parseFloat(soma_totdes) + parseFloat(totdes)).toFixed(2)
+            soma_totali = (parseFloat(soma_totali) + parseFloat(totali)).toFixed(2)
+            soma_totcmb = (parseFloat(soma_totcmb) + parseFloat(totcmb)).toFixed(2)
+            soma_tothtl = (parseFloat(soma_tothtl) + parseFloat(tothtl)).toFixed(2)
 
             //Custos Variáveis Estruturais
             if (valorCer > 0 || valorCen > 0 || valorPos > 0) {
@@ -4509,374 +2689,238 @@ router.post('/filtradash', ehAdmin, (req, res) => {
             soma_totliq = (parseFloat(soma_totliq) + parseFloat(lucroLiquido)).toFixed(2)
         }
 
-
         //Média Ponderada projetista
         var per_totpro_com = parseFloat(soma_totpro_com) / parseFloat(soma_totfat_com) * 100
-        if (isNaN(per_totpro_com)) {
-            per_totpro_com = 0
-        }
         var per_totpro_sem = parseFloat(soma_totpro_sem) / parseFloat(soma_totfat_sem) * 100
-        if (isNaN(per_totpro_sem)) {
-            per_totpro_sem = 0
-        }
         var medkwp_totpro_com = parseFloat(soma_totpro_com) / parseFloat(soma_totkwp_com)
-        if (isNaN(medkwp_totpro_com)) {
-            medkwp_totpro_com = 0
-        }
         var medkwp_totpro_sem = parseFloat(soma_totpro_sem) / parseFloat(soma_totkwp_sem)
-        if (isNaN(medkwp_totpro_sem)) {
-            medkwp_totpro_sem = 0
-        }
         var per_totpro = (((parseFloat(medkwp_totpro_com) * parseFloat(per_totpro_com)) + (parseFloat(medkwp_totpro_sem) * parseFloat(per_totpro_sem))) / (parseFloat(medkwp_totpro_com) + parseFloat(medkwp_totpro_sem))).toFixed(2)
-        if (isNaN(per_totpro)) {
-            per_totpro = 0
-        }
         //Média Ponderada ART
         var per_totart_com = parseFloat(soma_totart_com) / parseFloat(soma_totfat_com) * 100
-        if (isNaN(per_totart_com)) {
-            per_totart_com = 0
-        }
         var per_totart_sem = parseFloat(soma_totart_sem) / parseFloat(soma_totfat_sem) * 100
-        if (isNaN(per_totart_sem)) {
-            per_totart_sem = 0
-        }
         var medkwp_totart_com = parseFloat(soma_totart_com) / parseFloat(soma_totkwp_com)
-        if (isNaN(medkwp_totart_com)) {
-            medkwp_totart_com = 0
-        }
         var medkwp_totart_sem = parseFloat(soma_totart_sem) / parseFloat(soma_totkwp_sem)
-        if (isNaN(medkwp_totart_sem)) {
-            medkwp_totart_sem = 0
-        }
         var per_totart = (((parseFloat(medkwp_totart_com) * parseFloat(per_totart_com)) + (parseFloat(medkwp_totart_sem) * parseFloat(per_totart_sem))) / (parseFloat(medkwp_totart_com) + parseFloat(medkwp_totart_sem))).toFixed(2)
-        if (isNaN(per_totart)) {
-            per_totart = 0
-        }
         //Média Ponderada Gestão
         var per_totges_com = parseFloat(soma_totges_com) / parseFloat(soma_totfat_com) * 100
-        if (isNaN(per_totges_com)) {
-            per_totges_com = 0
-        }
         var per_totges_sem = parseFloat(soma_totges_sem) / parseFloat(soma_totfat_sem) * 100
-        if (isNaN(per_totges_sem)) {
-            per_totges_sem = 0
-        }
         var medkwp_totges_com = parseFloat(soma_totges_com) / parseFloat(soma_totkwp_com)
-        if (isNaN(medkwp_totges_com)) {
-            medkwp_totges_com = 0
-        }
         var medkwp_totges_sem = parseFloat(soma_totges_sem) / parseFloat(soma_totkwp_sem)
-        if (isNaN(medkwp_totges_sem)) {
-            medkwp_totges_sem = 0
-        }
         var per_totges = (((parseFloat(medkwp_totges_com) * parseFloat(per_totges_com)) + (parseFloat(medkwp_totges_sem) * parseFloat(per_totges_sem))) / (parseFloat(medkwp_totges_com) + parseFloat(medkwp_totges_sem))).toFixed(2)
-        if (isNaN(per_totges)) {
-            per_totges = 0
-        }
         //Média Ponderada instalação
         var per_totint_com = parseFloat(soma_totint_com) / parseFloat(soma_totfat_com) * 100
-        if (isNaN(per_totint_com)) {
-            per_totint_com = 0
-        }
         var per_totint_sem = parseFloat(soma_totint_sem) / parseFloat(soma_totfat_sem) * 100
-        if (isNaN(per_totint_sem)) {
-            per_totint_sem = 0
-        }
         var medkwp_totint_com = parseFloat(soma_totint_com) / parseFloat(soma_totkwp_com)
-        if (isNaN(medkwp_totint_com)) {
-            medkwp_totint_com = 0
-        }
         var medkwp_totint_sem = parseFloat(soma_totint_sem) / parseFloat(soma_totkwp_sem)
-        if (isNaN(medkwp_totint_sem)) {
-            medkwp_totint_sem = 0
-        }
         var per_totint = (((parseFloat(medkwp_totint_com) * parseFloat(per_totint_com)) + (parseFloat(medkwp_totint_sem) * parseFloat(per_totint_sem))) / (parseFloat(medkwp_totint_com) + parseFloat(medkwp_totint_sem))).toFixed(2)
-        if (isNaN(per_totint)) {
-            per_totint = 0
-        }
         //Média Ponderada Administração
         var per_totadm_com = parseFloat(soma_totadm_com) / parseFloat(soma_totfat_com) * 100
-        if (isNaN(per_totadm_com)) {
-            per_totadm_com = 0
-        }
         var per_totadm_sem = parseFloat(soma_totadm_sem) / parseFloat(soma_totfat_sem) * 100
-        if (isNaN(per_totadm_sem)) {
-            per_totadm_sem = 0
-        }
         var medkwp_totadm_com = parseFloat(soma_totadm_com) / parseFloat(soma_totkwp_com)
-        if (isNaN(medkwp_totadm_com)) {
-            medkwp_totadm_com = 0
-        }
         var medkwp_totadm_sem = parseFloat(soma_totadm_sem) / parseFloat(soma_totkwp_sem)
-        if (isNaN(medkwp_totadm_sem)) {
-            medkwp_totadm_sem = 0
-        }
         var per_totadm = (((parseFloat(medkwp_totadm_com) * parseFloat(per_totadm_com)) + (parseFloat(medkwp_totadm_sem) * parseFloat(per_totadm_sem))) / (parseFloat(medkwp_totadm_com) + parseFloat(medkwp_totadm_sem))).toFixed(2)
-        if (isNaN(per_totadm)) {
-            per_totadm = 0
-        }
         //Média Ponderada Comissão
         var per_totcom_com = parseFloat(soma_totcom_com) / parseFloat(soma_totfat_com) * 100
-        if (isNaN(per_totcom_com)) {
+        if (isNaN(per_totcom_com)){
             per_totcom_com = 0
         }
         var per_totcom_sem = parseFloat(soma_totcom_sem) / parseFloat(soma_totfat_sem) * 100
-        if (isNaN(per_totcom_sem)) {
+        if (isNaN(per_totcom_sem)){
             per_totcom_sem = 0
         }
         var medkwp_totcom_com = parseFloat(soma_totcom_com) / parseFloat(soma_totkwp_com)
-        if (isNaN(medkwp_totcom_com)) {
+        if (isNaN(medkwp_totcom_com)){
             medkwp_totcom_com = 0
         }
         var medkwp_totcom_sem = parseFloat(soma_totcom_sem) / parseFloat(soma_totkwp_sem)
-        if (isNaN(medkwp_totcom_sem)) {
+        if (isNaN(medkwp_totcom_sem)){
             medkwp_totcom_sem = 0
         }
         var per_totcom = (((parseFloat(medkwp_totcom_com) * parseFloat(per_totcom_com)) + (parseFloat(medkwp_totcom_sem) * parseFloat(per_totcom_sem))) / (parseFloat(medkwp_totcom_com) + parseFloat(medkwp_totcom_sem))).toFixed(2)
-        if (isNaN(per_totcom)) {
+        if (isNaN(per_totcom)){
             per_totcom = 0
         }
         //Média Ponderada Tributos
         var per_tottrb_com = parseFloat(soma_tottrb_com) / parseFloat(soma_totfat_com) * 100
-        if (isNaN(per_tottrb_com)) {
-            per_tottrb_com = 0
-        }
         var per_tottrb_sem = parseFloat(soma_tottrb_sem) / parseFloat(soma_totfat_sem) * 100
-        if (isNaN(per_tottrb_sem)) {
-            per_tottrb_sem = 0
-        }
         var medkwp_tottrb_com = parseFloat(soma_tottrb_com) / parseFloat(soma_totkwp_com)
-        if (isNaN(medkwp_tottrb_com)) {
-            medkwp_tottrb_com = 0
-        }
         var medkwp_tottrb_sem = parseFloat(soma_tottrb_sem) / parseFloat(soma_totkwp_sem)
-        if (isNaN(medkwp_tottrb_sem)) {
-            medkwp_tottrb_sem = 0
-        }
         var per_tottrb = (((parseFloat(medkwp_tottrb_com) * parseFloat(per_tottrb_com)) + (parseFloat(medkwp_tottrb_sem) * parseFloat(per_tottrb_sem))) / (parseFloat(medkwp_tottrb_com) + parseFloat(medkwp_tottrb_sem))).toFixed(2)
-        if (isNaN(per_tottrb)) {
-            per_tottrb = 0
-        }
         //Total Custos
         var custoFix_com = parseFloat(soma_totcus_com) + parseFloat(soma_totadm_com) + parseFloat(soma_totcom_com) + parseFloat(soma_tottrb_com)
         var custoFix_sem = parseFloat(soma_totcus_sem) + parseFloat(soma_totadm_sem) + parseFloat(soma_totcom_sem) + parseFloat(soma_tottrb_sem)
         var per_totcus_com = parseFloat(custoFix_com) / parseFloat(soma_totfat_com) * 100
-        if (isNaN(per_totcus_com)) {
-            per_totcus_com = 0
-        }
         var per_totcus_sem = parseFloat(custoFix_sem) / parseFloat(soma_totfat_sem) * 100
-        if (isNaN(per_totcus_sem)) {
-            per_totcus_sem = 0
-        }
         var medkwp_totcus_com = parseFloat(custoFix_com) / parseFloat(soma_totkwp_com)
-        if (isNaN(medkwp_totcus_com)) {
-            medkwp_totcus_com = 0
-        }
         var medkwp_totcus_sem = parseFloat(custoFix_sem) / parseFloat(soma_totkwp_sem)
-        if (isNaN(medkwp_totcus_sem)) {
-            medkwp_totcus_sem = 0
-        }
         var per_totcus = (((parseFloat(medkwp_totcus_com) * parseFloat(per_totcus_com)) + (parseFloat(medkwp_totcus_sem) * parseFloat(per_totcus_sem))) / (parseFloat(medkwp_totcus_com) + parseFloat(medkwp_totcus_sem))).toFixed(2)
-        if (isNaN(per_totcus)) {
-            per_totcus = 0
-        }
         //Média Ponderada Custos Variáveis Alimentação
         var per_totali_com = parseFloat(soma_totali_com) / parseFloat(soma_varfat_com) * 100
-        if (isNaN(per_totali_com)) {
+        if (isNaN(per_totali_com)){
             per_totali_com = 0
         }
         var per_totali_sem = parseFloat(soma_totali_sem) / parseFloat(soma_varfat_sem) * 100
-        if (isNaN(per_totali_sem)) {
+        if (isNaN(per_totali_sem)){
             per_totali_sem = 0
         }
         var medkwp_totali_com = parseFloat(soma_totali_com) / parseFloat(soma_varkwp_com)
-        if (isNaN(medkwp_totali_com)) {
+        if (isNaN(medkwp_totali_com)){
             medkwp_totali_com = 0
         }
         var medkwp_totali_sem = parseFloat(soma_totali_sem) / parseFloat(soma_varkwp_sem)
-        if (isNaN(medkwp_totali_sem)) {
+        if (isNaN(medkwp_totali_sem)){
             medkwp_totali_sem = 0
         }
         var per_totali = (((parseFloat(medkwp_totali_com) * parseFloat(per_totali_com)) + (parseFloat(medkwp_totali_sem) * parseFloat(per_totali_sem))) / (parseFloat(medkwp_totali_com) + parseFloat(medkwp_totali_sem))).toFixed(2)
-        if (isNaN(per_totali)) {
+        if (isNaN(per_totali)){
             per_totali = 0
         }
         //Média Ponderada Custos Variáveis Deslocamento
         var per_totdes_com = parseFloat(soma_totdes_com) / parseFloat(soma_varfat_com) * 100
-        if (isNaN(per_totdes_com)) {
+        if (isNaN(per_totdes_com)){
             per_totdes_com = 0
-        }
+        }        
         var per_totdes_sem = parseFloat(soma_totdes_sem) / parseFloat(soma_varfat_sem) * 100
-        if (isNaN(per_totdes_sem)) {
+        if (isNaN(per_totdes_sem)){
             per_totdes_sem = 0
-        }
+        }        
         var medkwp_totdes_com = parseFloat(soma_totdes_com) / parseFloat(soma_varkwp_com)
-        if (isNaN(medkwp_totdes_com)) {
+        if (isNaN(medkwp_totdes_com)){
             medkwp_totdes_com = 0
-        }
+        }        
         var medkwp_totdes_sem = parseFloat(soma_totdes_sem) / parseFloat(soma_varkwp_sem)
-        if (isNaN(medkwp_totdes_sem)) {
+        if (isNaN(medkwp_totdes_sem)){
             medkwp_totdes_sem = 0
-        }
+        }        
         var per_totdes = (((parseFloat(medkwp_totdes_com) * parseFloat(per_totdes_com)) + (parseFloat(medkwp_totdes_sem) * parseFloat(per_totdes_sem))) / (parseFloat(medkwp_totdes_com) + parseFloat(medkwp_totdes_sem))).toFixed(2)
-        if (isNaN(per_totdes)) {
+        if (isNaN(per_totdes)){
             per_totdes = 0
-        }
+        }        
         //Média Ponderada Custos Variáveis Combustível
         var per_totcmb_com = parseFloat(soma_totcmb_com) / parseFloat(soma_varfat_com) * 100
-        if (isNaN(per_totcmb_com)) {
-            per_totcmb_com = 0
-        }
         var per_totcmb_sem = parseFloat(soma_totcmb_sem) / parseFloat(soma_varfat_sem) * 100
-        if (isNaN(per_totcmb_sem)) {
-            per_totcmb_sem = 0
-        }
         var medkwp_totcmb_com = parseFloat(soma_totcmb_com) / parseFloat(soma_varkwp_com)
-        if (isNaN(medkwp_totcmb_com)) {
-            medkwp_totcmb_com = 0
-        }
         var medkwp_totcmb_sem = parseFloat(soma_totcmb_sem) / parseFloat(soma_varkwp_sem)
-        if (isNaN(medkwp_totcmb_sem)) {
-            medkwp_totcmb_sem = 0
-        }
         var per_totcmb = (((parseFloat(medkwp_totcmb_com) * parseFloat(per_totcmb_com)) + (parseFloat(medkwp_totcmb_sem) * parseFloat(per_totcmb_sem))) / (parseFloat(medkwp_totcmb_com) + parseFloat(medkwp_totcmb_sem))).toFixed(2)
-        if (isNaN(per_totcmb)) {
-            per_totcmb = 0
-        }
         //Média Ponderada Custos Variáveis Hotel
         var per_tothtl_com = parseFloat(soma_tothtl_com) / parseFloat(soma_varfat_com) * 100
-        if (isNaN(per_tothtl_com)) {
-            per_tothtl_com = 0
-        }
         var per_tothtl_sem = parseFloat(soma_tothtl_sem) / parseFloat(soma_varfat_sem) * 100
-        if (isNaN(per_tothtl_sem)) {
-            per_tothtl_sem = 0
-        }
         var medkwp_tothtl_com = parseFloat(soma_tothtl_com) / parseFloat(soma_varkwp_com)
-        if (isNaN(medkwp_tothtl_com)) {
-            medkwp_tothtl_com = 0
-        }
         var medkwp_tothtl_sem = parseFloat(soma_tothtl_sem) / parseFloat(soma_varkwp_sem)
-        if (isNaN(medkwp_tothtl_sem)) {
-            medkwp_tothtl_sem = 0
-        }
         var per_tothtl = (((parseFloat(medkwp_tothtl_com) * parseFloat(per_tothtl_com)) + (parseFloat(medkwp_tothtl_sem) * parseFloat(per_tothtl_sem))) / (parseFloat(medkwp_tothtl_com) + parseFloat(medkwp_tothtl_sem))).toFixed(2)
-        if (isNaN(per_tothtl)) {
-            per_tothtl = 0
-        }
         //Total Custos Variáveis
         var custoVar_com = parseFloat(soma_totvar_com)
         var custoVar_sem = parseFloat(soma_totvar_sem)
         var per_totvar_com = parseFloat(custoVar_com) / parseFloat(soma_varfat_com) * 100
-        if (isNaN(per_totvar_com)) {
+        if (isNaN(per_totvar_com)){
             per_totvar_com = 0
-        }
+        }           
         var per_totvar_sem = parseFloat(custoVar_sem) / parseFloat(soma_varfat_sem) * 100
-        if (isNaN(per_totvar_sem)) {
+        if (isNaN(per_totvar_sem)){
             per_totvar_sem = 0
-        }
+        }           
         var medkwp_totvar_com = parseFloat(custoVar_com) / parseFloat(soma_varkwp_com)
-        if (isNaN(medkwp_totvar_com)) {
+        if (isNaN(medkwp_totvar_com)){
             medkwp_totvar_com = 0
-        }
+        }           
         var medkwp_totvar_sem = parseFloat(custoVar_sem) / parseFloat(soma_varkwp_sem)
-        if (isNaN(medkwp_totvar_sem)) {
+        if (isNaN(medkwp_totvar_sem)){
             medkwp_totvar_sem = 0
-        }
+        }           
         var per_totvar = (((parseFloat(medkwp_totvar_com) * parseFloat(per_totvar_com)) + (parseFloat(medkwp_totvar_sem) * parseFloat(per_totvar_sem))) / (parseFloat(medkwp_totvar_com) + parseFloat(medkwp_totvar_sem))).toFixed(2)
-        if (isNaN(per_totvar)) {
+        if (isNaN(per_totvar)){
             per_totvar = 0
-        }
+        }           
         //Média Ponderada Variáveis Estruturais Cercamento  
         var per_totcer_com = parseFloat(soma_totcer_com) / parseFloat(soma_estfat_com) * 100
-        if (isNaN(per_totcer_com)) {
+        if (isNaN(per_totcer_com)){
             per_totcer_com = 0
         }
         var per_totcer_sem = parseFloat(soma_totcer_sem) / parseFloat(soma_estfat_sem) * 100
-        if (isNaN(per_totcer_sem)) {
+        if (isNaN(per_totcer_sem)){
             per_totcer_sem = 0
         }
         var medkwp_totcer_com = parseFloat(soma_totcer_com) / parseFloat(soma_estkwp_com)
-        if (isNaN(medkwp_totcer_com)) {
+        if (isNaN(medkwp_totcer_com)){
             medkwp_totcer_com = 0
         }
         var medkwp_totcer_sem = parseFloat(soma_totcer_sem) / parseFloat(soma_estkwp_sem)
-        if (isNaN(medkwp_totcer_sem)) {
+        if (isNaN(medkwp_totcer_sem)){
             medkwp_totcer_sem = 0
         }
         var per_totcer = (((parseFloat(medkwp_totcer_com) * parseFloat(per_totcer_com)) + (parseFloat(medkwp_totcer_sem) * parseFloat(per_totcer_sem))) / (parseFloat(medkwp_totcer_com) + parseFloat(medkwp_totcer_sem))).toFixed(2)
-        if (isNaN(per_totcer)) {
+        if (isNaN(per_totcer)){
             per_totcer = 0
-        }
+        }        
         //Média Ponderada Variáveis Estruturais Central
         var per_totcen_com = parseFloat(soma_totcen_com) / parseFloat(soma_estfat_com) * 100
-        if (isNaN(per_totcen_com)) {
+        if (isNaN(per_totcen_com)){
             per_totcen_com = 0
-        }
+        }        
         var per_totcen_sem = parseFloat(soma_totcen_sem) / parseFloat(soma_estfat_sem) * 100
-        if (isNaN(per_totcen_sem)) {
+        if (isNaN(per_totcen_sem)){
             per_totcen_sem = 0
-        }
+        }        
         var medkwp_totcen_com = parseFloat(soma_totcen_com) / parseFloat(soma_estkwp_com)
-        if (isNaN(medkwp_totcen_com)) {
+        if (isNaN(medkwp_totcen_com)){
             medkwp_totcen_com = 0
-        }
+        }        
         var medkwp_totcen_sem = parseFloat(soma_totcen_sem) / parseFloat(soma_estkwp_sem)
-        if (isNaN(medkwp_totcen_sem)) {
+        if (isNaN(medkwp_totcen_sem)){
             medkwp_totcen_sem = 0
         }
         var per_totcen = (((parseFloat(medkwp_totcen_com) * parseFloat(per_totcen_com)) + (parseFloat(medkwp_totcen_sem) * parseFloat(per_totcen_sem))) / (parseFloat(medkwp_totcen_com) + parseFloat(medkwp_totcen_sem))).toFixed(2)
-        if (isNaN(per_totcen)) {
+        if (isNaN(per_totcen)){
             per_totcen = 0
         }
         //Média Ponderada Variáveis Estruturais Postes
         var per_totpos_com = parseFloat(soma_totpos_com) / parseFloat(soma_estfat_com) * 100
-        if (isNaN(per_totpos_com)) {
+        if (isNaN(per_totpos_com)){
             per_totpos_com = 0
         }
         var per_totpos_sem = parseFloat(soma_totpos_sem) / parseFloat(soma_estfat_sem) * 100
-        if (isNaN(per_totpos_sem)) {
+        if (isNaN(per_totpos_sem)){
             per_totpos_sem = 0
         }
         var medkwp_totpos_com = parseFloat(soma_totpos_com) / parseFloat(soma_estkwp_com)
-        if (isNaN(medkwp_totpos_com)) {
+        if (isNaN(medkwp_totpos_com)){
             medkwp_totpos_com = 0
         }
         var medkwp_totpos_sem = parseFloat(soma_totpos_sem) / parseFloat(soma_estkwp_sem)
-        if (isNaN(medkwp_totpos_sem)) {
+        if (isNaN(medkwp_totpos_sem)){
             medkwp_totpos_sem = 0
         }
         var per_totpos = (((parseFloat(medkwp_totpos_com) * parseFloat(per_totpos_com)) + (parseFloat(medkwp_totpos_sem) * parseFloat(per_totpos_sem))) / (parseFloat(medkwp_totpos_com) + parseFloat(medkwp_totpos_sem))).toFixed(2)
-        if (isNaN(per_totpos)) {
+        if (isNaN(per_totpos)){
             per_totpos = 0
         }
         //Total Custos Variáveis Estruturais
         var custoEst_com = parseFloat(soma_totest_com)
-        if (isNaN(custoEst_com)) {
+        if (isNaN(custoEst_com)){
             custoEst_com = 0
         }
         var custoEst_sem = parseFloat(soma_totest_sem)
-        if (isNaN(custoEst_sem)) {
+        if (isNaN(custoEst_sem)){
             custoEst_sem = 0
         }
         var per_totest_com = parseFloat(custoEst_com) / parseFloat(soma_estfat_com) * 100
-        if (isNaN(per_totest_com)) {
+        if (isNaN(per_totest_com)){
             per_totest_com = 0
         }
         var per_totest_sem = parseFloat(custoEst_sem) / parseFloat(soma_estfat_sem) * 100
-        if (isNaN(per_totest_sem)) {
+        if (isNaN(per_totest_sem)){
             per_totest_sem = 0
         }
         var medkwp_totest_com = parseFloat(custoEst_com) / parseFloat(soma_estkwp_com)
-        if (isNaN(medkwp_totest_com)) {
+        if (isNaN(medkwp_totest_com)){
             medkwp_totest_com = 0
         }
         var medkwp_totest_sem = parseFloat(custoEst_sem) / parseFloat(soma_estkwp_sem)
-        if (isNaN(medkwp_totest_sem)) {
+        if (isNaN(medkwp_totest_sem)){
             medkwp_totest_sem = 0
         }
         var per_totest = (((parseFloat(medkwp_totest_com) * parseFloat(per_totest_com)) + (parseFloat(medkwp_totest_sem) * parseFloat(per_totest_sem))) / (parseFloat(medkwp_totest_com) + parseFloat(medkwp_totest_sem))).toFixed(2)
-        if (isNaN(per_totest)) {
+        if (isNaN(per_totest)){
             per_totest = 0
         }
 
@@ -4890,10 +2934,6 @@ router.post('/filtradash', ehAdmin, (req, res) => {
 
         //Custos Fixos 
         medkwp_custoFix = (parseFloat(soma_custoFix) / parseFloat(soma_totkwp)).toFixed(2)
-        if (isNaN(medkwp_custoFix)) {
-            medkwp_custoFix = 0
-        }
-        medkwp_cusfat = (parseFloat(soma_totfat) / parseFloat(soma_totkwp)).toFixed(2)
         //Serviço
         medkwp_totint = (parseFloat(soma_totint) / parseFloat(soma_totkwp)).toFixed(2)
         medkwp_totpro = (parseFloat(soma_totpro) / parseFloat(soma_totkwp)).toFixed(2)
@@ -4907,9 +2947,6 @@ router.post('/filtradash', ehAdmin, (req, res) => {
         medkwp_totadm = (parseFloat(soma_totadm) / parseFloat(soma_totkwp)).toFixed(2)
         //Custos Variáveis
         medkwp_custoVar = (parseFloat(soma_custoVar) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_custoVar)) {
-            medkwp_custoVar = 0
-        }
         medkwp_varfat = (parseFloat(soma_varfat) / parseFloat(soma_varkwp)).toFixed(2)
         medkwp_totdes = ((parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)) / parseFloat(soma_varkwp)).toFixed(2)
         medkwp_totali = (parseFloat(soma_totali) / parseFloat(soma_varkwp)).toFixed(2)
@@ -4917,14 +2954,11 @@ router.post('/filtradash', ehAdmin, (req, res) => {
         medkwp_totcmb = (parseFloat(soma_totcmb) / parseFloat(soma_varkwp)).toFixed(2)
         //Custos Variáveis Estruturais
         medkwp_custoEst = (parseFloat(soma_custoEst) / parseFloat(soma_estkwp)).toFixed(2)
-        if (isNaN(medkwp_custoEst)) {
-            medkwp_custoEst = 0
-        }
         medkwp_totcer = (parseFloat(soma_totcer) / parseFloat(soma_estkwp)).toFixed(2)
         medkwp_totcen = (parseFloat(soma_totcen) / parseFloat(soma_estkwp)).toFixed(2)
         medkwp_totpos = (parseFloat(soma_totpos) / parseFloat(soma_estkwp)).toFixed(2)
         //Médias de total faturado por kit e por serviços
-        soma_totser = (parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)).toFixed(2)
+        soma_totser = parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)
 
         //medkwp_serfat = parseFloat(soma_serfat) / parseFloat(soma_serkwp)
         per_totliq = ((parseFloat(soma_totliq) / parseFloat(soma_totfat)) * 100).toFixed(2)
@@ -5063,6 +3097,8 @@ router.post('/filtradashcomkit', ehAdmin, (req, res) => {
     //console.log('datafim=>' + datafim)
 
     var numprj = 0
+    var soma_kitfat = 0
+    var soma_serfat = 0
     var soma_totfat = 0
 
     var soma_totcop = 0
@@ -5245,32 +3281,16 @@ router.post('/filtradashcomkit', ehAdmin, (req, res) => {
                 soma_totkwp = (parseFloat(soma_totkwp) + parseFloat(potencia)).toFixed(2)
                 soma_totcop = (parseFloat(soma_totcop) + parseFloat(custoPlano)).toFixed(2)
                 //Totalizador de Faturamento            
-                soma_totfat = parseFloat(soma_totfat) + parseFloat(vlrNFS)
+                soma_kitfat = parseFloat(soma_kitfat) + parseFloat(vlrNFS)
                 //Totalizador de Kit   
                 soma_totkit = parseFloat(soma_totkit) + parseFloat(vlrkit)
 
                 //Custos Fixos 
                 //Serviços
-                if (totint > 0) {
-                    soma_totint = (parseFloat(soma_totint) + parseFloat(totint)).toFixed(2)
-                } else {
-                    soma_totint = (parseFloat(soma_totint) + 0).toFixed(2)
-                }
-                if (totpro > 0) {
-                    soma_totpro = (parseFloat(soma_totpro) + parseFloat(totpro)).toFixed(2)
-                } else {
-                    soma_totpro = (parseFloat(soma_totpro) + 0).toFixed(2)
-                }
-                if (totges > 0) {
-                    soma_totges = (parseFloat(soma_totges) + parseFloat(totges)).toFixed(2)
-                } else {
-                    soma_totges = (parseFloat(soma_totges) + 0).toFixed(2)
-                }
-                if (vlrart > 0) {
-                    soma_totart = (parseFloat(soma_totart) + parseFloat(vlrart)).toFixed(2)
-                } else {
-                    soma_totart = (parseFloat(soma_totart) + 0).toFixed(2)
-                }
+                soma_totint = (parseFloat(soma_totint) + parseFloat(totint)).toFixed(2)
+                soma_totpro = (parseFloat(soma_totpro) + parseFloat(totpro)).toFixed(2)
+                soma_totges = (parseFloat(soma_totges) + parseFloat(totges)).toFixed(2)
+                soma_totart = (parseFloat(soma_totart) + parseFloat(vlrart)).toFixed(2)
                 //Tributos
                 soma_tottrb = (parseFloat(soma_tottrb) + parseFloat(totalTributos)).toFixed(2)
                 //Comissão
@@ -5286,49 +3306,25 @@ router.post('/filtradashcomkit', ehAdmin, (req, res) => {
                     //console.log('soma_varkwp=>' + soma_varkwp)
                     soma_varfat = parseFloat(soma_varfat) + parseFloat(vlrNFS)
                 }
-                if (totdes > 0) {
-                    soma_totdes = (parseFloat(soma_totdes) + parseFloat(totdes)).toFixed(2)
-                } else {
-                    soma_totdes = (parseFloat(soma_totdes) + 0).toFixed(2)
-                }
-                if (totali > 0) {
-                    soma_totali = (parseFloat(soma_totali) + parseFloat(totali)).toFixed(2)
-                } else {
-                    soma_totali = (parseFloat(soma_totali) + 0).toFixed(2)
-                }
-                if (totcmb > 0) {
-                    soma_totcmb = (parseFloat(soma_totcmb) + parseFloat(totcmb)).toFixed(2)
-                } else {
-                    soma_totcmb = (parseFloat(soma_totcmb) + 0).toFixed(2)
-                }
-                if (tothtl > 0) {
-                    soma_tothtl = (parseFloat(soma_tothtl) + parseFloat(tothtl)).toFixed(2)
-                } else {
-                    soma_tothtl = (parseFloat(soma_tothtl) + 0).toFixed(2)
-                }
+                soma_totdes = (parseFloat(soma_totdes) + parseFloat(totdes)).toFixed(2)
+                soma_totali = (parseFloat(soma_totali) + parseFloat(totali)).toFixed(2)
+                //console.log('soma_totali=>' + soma_totali)
+                soma_totcmb = (parseFloat(soma_totcmb) + parseFloat(totcmb)).toFixed(2)
+                soma_tothtl = (parseFloat(soma_tothtl) + parseFloat(tothtl)).toFixed(2)
 
                 //Custos Variáveis Estruturais
                 if (valorCer > 0 || valorCen > 0 || valorPos > 0) {
                     soma_estkwp = parseFloat(soma_estkwp) + parseFloat(potencia)
                     soma_estfat = parseFloat(soma_estfat) + parseFloat(vlrNFS)
-                } else {
-                    soma_estkwp = parseFloat(soma_estkwp) + 0
-                    soma_estfat = parseFloat(soma_estfat) + 0
                 }
-                if (valorCer > 0) {
+                if (valorCer > 0){
                     soma_totcer = (parseFloat(soma_totcer) + parseFloat(valorCer)).toFixed(2)
-                } else {
-                    soma_totcer = (parseFloat(soma_totcer) + 0).toFixed(2)
                 }
                 if (valorCen > 0) {
                     soma_totcen = (parseFloat(soma_totcen) + parseFloat(valorCen)).toFixed(2)
-                } else {
-                    soma_totcen = (parseFloat(soma_totcen) + 0).toFixed(2)
                 }
                 if (valorPos > 0) {
                     soma_totpos = (parseFloat(soma_totpos) + parseFloat(valorPos)).toFixed(2)
-                } else {
-                    soma_totpos = (parseFloat(soma_totpos) + 0).toFixed(2)
                 }
 
                 if (parseFloat(valorMod) > 0) {
@@ -5386,6 +3382,7 @@ router.post('/filtradashcomkit', ehAdmin, (req, res) => {
         soma_custoFix = parseFloat(soma_totint) + parseFloat(soma_totpro) + parseFloat(soma_totart) + parseFloat(soma_totges) + parseFloat(soma_tottrb) + parseFloat(soma_totcom) + parseFloat(soma_totadm)
         soma_custoVar = parseFloat(soma_totali) + parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)
         soma_custoEst = parseFloat(soma_totcer) + parseFloat(soma_totcen) + parseFloat(soma_totpos)
+        soma_totfat = parseFloat(soma_kitfat) + parseFloat(soma_serfat)
 
         //Soma Total Componentes
         soma_totequ = parseFloat(soma_modequ) + parseFloat(soma_invequ) + parseFloat(soma_estequ) + parseFloat(soma_cabequ) + parseFloat(soma_disequ) + parseFloat(soma_dpsequ) + parseFloat(soma_sbxequ) + parseFloat(soma_ocpequ)
@@ -5396,9 +3393,6 @@ router.post('/filtradashcomkit', ehAdmin, (req, res) => {
 
         //Custos Fixos 
         medkwp_custoFix = (parseFloat(soma_custoFix) / parseFloat(soma_totkwp)).toFixed(2)
-        if (isNaN(medkwp_custoFix)) {
-            medkwp_custoFix = 0
-        }
         medkwp_cusfat = (parseFloat(soma_totfat) / parseFloat(soma_totkwp)).toFixed(2)
         //Serviço
         medkwp_totint = (parseFloat(soma_totint) / parseFloat(soma_totkwp)).toFixed(2)
@@ -5413,30 +3407,11 @@ router.post('/filtradashcomkit', ehAdmin, (req, res) => {
         medkwp_totadm = (parseFloat(soma_totadm) / parseFloat(soma_totkwp)).toFixed(2)
         //Custos Variáveis
         medkwp_custoVar = (parseFloat(soma_custoVar) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_custoVar)) {
-            medkwp_custoVar = 0
-        }
         medkwp_varfat = (parseFloat(soma_varfat) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_varfat)) {
-            medkwp_varfat = 0
-        }
-        medkwp_totdes = ((parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_totdes)) {
-            medkwp_totdes = 0
-        }
+        medkwp_totdes = ((parseFloat(soma_totdes) + parseFloat(soma_totcmb) + parseFloat(soma_tothtl)) / parseFloat(soma_varkwp)).toFixed(2)
         medkwp_totali = (parseFloat(soma_totali) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_totdes)) {
-            medkwp_totdes = 0
-        }
         medkwp_tothtl = (parseFloat(soma_tothtl) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_tothtl)) {
-            medkwp_tothtl = 0
-        }
         medkwp_totcmb = (parseFloat(soma_totcmb) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_totcmb)) {
-            medkwp_totcmb = 0
-        }
-
         //Custos Variáveis Estruturais
         if (parseFloat(soma_estkwp) > 0) {
             medkwp_custoEst = (parseFloat(soma_custoEst) / parseFloat(soma_estkwp)).toFixed(2)
@@ -5445,7 +3420,6 @@ router.post('/filtradashcomkit', ehAdmin, (req, res) => {
             medkwp_totcen = (parseFloat(soma_totcen) / parseFloat(soma_estkwp)).toFixed(2)
             medkwp_totpos = (parseFloat(soma_totpos) / parseFloat(soma_estkwp)).toFixed(2)
         }
-
         //Custos Fixos
         per_totpro = (parseFloat(medkwp_totpro) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
         per_totart = (parseFloat(medkwp_totart) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
@@ -5468,7 +3442,7 @@ router.post('/filtradashcomkit', ehAdmin, (req, res) => {
         per_custoEst = (parseFloat(medkwp_custoEst) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
 
         //Médias de total faturado por kit e por serviços
-        soma_totser = (parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)).toFixed(2)
+        soma_totser = parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)
         //Lucro Liquido x Gastos
         per_totliq = ((parseFloat(soma_totliq) / parseFloat(soma_totfat)) * 100).toFixed(2)
         per_dispendio = (100 - parseFloat(per_totliq)).toFixed(2)
@@ -5606,6 +3580,8 @@ router.post('/filtradashsemkit', ehAdmin, (req, res) => {
     //console.log('datafim=>' + datafim)
 
     var numprj = 0
+    var soma_kitfat = 0
+    var soma_serfat = 0
     var soma_totfat = 0
 
     var soma_totcop = 0
@@ -5797,6 +3773,7 @@ router.post('/filtradashsemkit', ehAdmin, (req, res) => {
             }
             */
 
+
             const { potencia } = realizado[i]
             const { fatequ } = realizado[i]
             const { vlrkit } = realizado[i]
@@ -5844,32 +3821,16 @@ router.post('/filtradashsemkit', ehAdmin, (req, res) => {
                 soma_totkwp = (parseFloat(soma_totkwp) + parseFloat(potencia)).toFixed(2)
                 soma_totcop = (parseFloat(soma_totcop) + parseFloat(custoPlano)).toFixed(2)
                 //Totalizador de Faturamento            
-                soma_totfat = parseFloat(soma_totfat) + parseFloat(vlrNFS)
+                soma_kitfat = parseFloat(soma_kitfat) + parseFloat(vlrNFS)
                 //Totalizador de Kit   
                 soma_totkit = parseFloat(soma_totkit) + parseFloat(vlrkit)
 
                 //Custos Fixos 
                 //Serviços
-                if (totint > 0) {
-                    soma_totint = (parseFloat(soma_totint) + parseFloat(totint)).toFixed(2)
-                } else {
-                    soma_totint = (parseFloat(soma_totint) + 0).toFixed(2)
-                }
-                if (totpro > 0) {
-                    soma_totpro = (parseFloat(soma_totpro) + parseFloat(totpro)).toFixed(2)
-                } else {
-                    soma_totpro = (parseFloat(soma_totpro) + 0).toFixed(2)
-                }
-                if (totges > 0) {
-                    soma_totges = (parseFloat(soma_totges) + parseFloat(totges)).toFixed(2)
-                } else {
-                    soma_totges = (parseFloat(soma_totges) + 0).toFixed(2)
-                }
-                if (vlrart > 0) {
-                    soma_totart = (parseFloat(soma_totart) + parseFloat(vlrart)).toFixed(2)
-                } else {
-                    soma_totart = (parseFloat(soma_totart) + 0).toFixed(2)
-                }
+                soma_totint = (parseFloat(soma_totint) + parseFloat(totint)).toFixed(2)
+                soma_totpro = (parseFloat(soma_totpro) + parseFloat(totpro)).toFixed(2)
+                soma_totges = (parseFloat(soma_totges) + parseFloat(totges)).toFixed(2)
+                soma_totart = (parseFloat(soma_totart) + parseFloat(vlrart)).toFixed(2)
                 //Tributos
                 soma_tottrb = (parseFloat(soma_tottrb) + parseFloat(totalTributos)).toFixed(2)
                 //Comissão
@@ -5885,49 +3846,26 @@ router.post('/filtradashsemkit', ehAdmin, (req, res) => {
                     //console.log('soma_varkwp=>' + soma_varkwp)
                     soma_varfat = parseFloat(soma_varfat) + parseFloat(vlrNFS)
                 }
-                if (totdes > 0) {
-                    soma_totdes = (parseFloat(soma_totdes) + parseFloat(totdes)).toFixed(2)
-                } else {
-                    soma_totdes = (parseFloat(soma_totdes) + 0).toFixed(2)
-                }
-                if (totali > 0) {
-                    soma_totali = (parseFloat(soma_totali) + parseFloat(totali)).toFixed(2)
-                } else {
-                    soma_totali = (parseFloat(soma_totali) + 0).toFixed(2)
-                }
-                if (totcmb > 0) {
-                    soma_totcmb = (parseFloat(soma_totcmb) + parseFloat(totcmb)).toFixed(2)
-                } else {
-                    soma_totcmb = (parseFloat(soma_totcmb) + 0).toFixed(2)
-                }
-                if (tothtl > 0) {
-                    soma_tothtl = (parseFloat(soma_tothtl) + parseFloat(tothtl)).toFixed(2)
-                } else {
-                    soma_tothtl = (parseFloat(soma_tothtl) + 0).toFixed(2)
-                }
+                soma_totdes = (parseFloat(soma_totdes) + parseFloat(totdes)).toFixed(2)
+                soma_totali = (parseFloat(soma_totali) + parseFloat(totali)).toFixed(2)
+                //console.log('soma_totali=>' + soma_totali)
+                soma_totcmb = (parseFloat(soma_totcmb) + parseFloat(totcmb)).toFixed(2)
+                soma_tothtl = (parseFloat(soma_tothtl) + parseFloat(tothtl)).toFixed(2)
 
                 //Custos Variáveis Estruturais
                 if (valorCer > 0 || valorCen > 0 || valorPos > 0) {
                     soma_estkwp = parseFloat(soma_estkwp) + parseFloat(potencia)
                     soma_estfat = parseFloat(soma_estfat) + parseFloat(vlrNFS)
-                } else {
-                    soma_estkwp = parseFloat(soma_estkwp) + 0
-                    soma_estfat = parseFloat(soma_estfat) + 0
+                    
                 }
-                if (valorCer > 0) {
+                if (valorCer > 0){
                     soma_totcer = (parseFloat(soma_totcer) + parseFloat(valorCer)).toFixed(2)
-                } else {
-                    soma_totcer = (parseFloat(soma_totcer) + 0).toFixed(2)
                 }
                 if (valorCen > 0) {
                     soma_totcen = (parseFloat(soma_totcen) + parseFloat(valorCen)).toFixed(2)
-                } else {
-                    soma_totcen = (parseFloat(soma_totcen) + 0).toFixed(2)
                 }
                 if (valorPos > 0) {
                     soma_totpos = (parseFloat(soma_totpos) + parseFloat(valorPos)).toFixed(2)
-                } else {
-                    soma_totpos = (parseFloat(soma_totpos) + 0).toFixed(2)
                 }
 
                 if (parseFloat(valorMod) > 0) {
@@ -5985,6 +3923,7 @@ router.post('/filtradashsemkit', ehAdmin, (req, res) => {
         soma_custoFix = parseFloat(soma_totint) + parseFloat(soma_totpro) + parseFloat(soma_totart) + parseFloat(soma_totges) + parseFloat(soma_tottrb) + parseFloat(soma_totcom) + parseFloat(soma_totadm)
         soma_custoVar = parseFloat(soma_totali) + parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)
         soma_custoEst = parseFloat(soma_totcer) + parseFloat(soma_totcen) + parseFloat(soma_totpos)
+        soma_totfat = parseFloat(soma_kitfat) + parseFloat(soma_serfat)
 
         //Soma Total Componentes
         soma_totequ = parseFloat(soma_modequ) + parseFloat(soma_invequ) + parseFloat(soma_estequ) + parseFloat(soma_cabequ) + parseFloat(soma_disequ) + parseFloat(soma_dpsequ) + parseFloat(soma_sbxequ) + parseFloat(soma_ocpequ)
@@ -5995,9 +3934,6 @@ router.post('/filtradashsemkit', ehAdmin, (req, res) => {
 
         //Custos Fixos 
         medkwp_custoFix = (parseFloat(soma_custoFix) / parseFloat(soma_totkwp)).toFixed(2)
-        if (isNaN(medkwp_custoFix)) {
-            medkwp_custoFix = 0
-        }
         medkwp_cusfat = (parseFloat(soma_totfat) / parseFloat(soma_totkwp)).toFixed(2)
         //Serviço
         medkwp_totint = (parseFloat(soma_totint) / parseFloat(soma_totkwp)).toFixed(2)
@@ -6012,30 +3948,9 @@ router.post('/filtradashsemkit', ehAdmin, (req, res) => {
         medkwp_totadm = (parseFloat(soma_totadm) / parseFloat(soma_totkwp)).toFixed(2)
         //Custos Variáveis
         medkwp_custoVar = (parseFloat(soma_custoVar) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_custoVar)) {
-            medkwp_custoVar = 0
-        }
         medkwp_varfat = (parseFloat(soma_varfat) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_varfat)) {
-            medkwp_varfat = 0
-        }
-        medkwp_totdes = ((parseFloat(soma_totdes) + parseFloat(soma_tothtl) + parseFloat(soma_totcmb)) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_totdes)) {
-            medkwp_totdes = 0
-        }
+        medkwp_totdes = ((parseFloat(soma_totdes) + parseFloat(soma_totcmb) + parseFloat(soma_tothtl)) / parseFloat(soma_varkwp)).toFixed(2)
         medkwp_totali = (parseFloat(soma_totali) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_totdes)) {
-            medkwp_totdes = 0
-        }
-        medkwp_tothtl = (parseFloat(soma_tothtl) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_tothtl)) {
-            medkwp_tothtl = 0
-        }
-        medkwp_totcmb = (parseFloat(soma_totcmb) / parseFloat(soma_varkwp)).toFixed(2)
-        if (isNaN(medkwp_totcmb)) {
-            medkwp_totcmb = 0
-        }
-
         //Custos Variáveis Estruturais
         if (parseFloat(soma_estkwp) > 0) {
             medkwp_custoEst = (parseFloat(soma_custoEst) / parseFloat(soma_estkwp)).toFixed(2)
@@ -6044,7 +3959,6 @@ router.post('/filtradashsemkit', ehAdmin, (req, res) => {
             medkwp_totcen = (parseFloat(soma_totcen) / parseFloat(soma_estkwp)).toFixed(2)
             medkwp_totpos = (parseFloat(soma_totpos) / parseFloat(soma_estkwp)).toFixed(2)
         }
-
         //Custos Fixos
         per_totpro = (parseFloat(medkwp_totpro) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
         per_totart = (parseFloat(medkwp_totart) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
@@ -6067,7 +3981,7 @@ router.post('/filtradashsemkit', ehAdmin, (req, res) => {
         per_custoEst = (parseFloat(medkwp_custoEst) / parseFloat(medkwp_cusfat) * 100).toFixed(2)
 
         //Médias de total faturado por kit e por serviços
-        soma_totser = (parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)).toFixed(2)
+        soma_totser = parseFloat(medkwp_custoFix) + parseFloat(medkwp_custoVar) + parseFloat(medkwp_custoEst)
         //Lucro Liquido x Gastos
         per_totliq = ((parseFloat(soma_totliq) / parseFloat(soma_totfat)) * 100).toFixed(2)
         per_dispendio = (100 - parseFloat(per_totliq)).toFixed(2)
@@ -6110,7 +4024,7 @@ router.post('/filtradashsemkit', ehAdmin, (req, res) => {
             medkwp_totint, medkwp_totpro, medkwp_totges, medkwp_totadm, medkwp_totcom, medkwp_totart,
             medkwp_tottrb, medkwp_custoFix, medkwp_cusfat, medkwp_totdes, medkwp_totali, medkwp_custoVar,
             medkwp_varfat, medkwp_totcer, medkwp_totcen, medkwp_totpos, medkwp_totcop,
-            medkwp_custoEst, medkwp_estfat, medkwp_totfat,
+            medkwp_custoEst, medkwp_estfat, medkwp_totfat, medkwp_totkit,
 
             per_totpro, per_totart, per_totges, per_totint, per_totadm, per_totcom, per_tottrb, per_custoFix,
             per_totali, per_totdes, per_custoVar, per_totcen, per_totcer, per_totpos, per_custoEst,

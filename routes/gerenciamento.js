@@ -1,3 +1,5 @@
+const { TextEncoder, TextDecoder } = require("util");
+
 require('../app')
 require('../model/Usuario')
 require('../model/Proposta')
@@ -88,7 +90,7 @@ const transporter = nodemailer.createTransport({ // Configura os parâmetros de 
 
 var caminho = __dirname
 caminho = caminho.replace('routes', '')
-// console.log('caminho=>'+caminho)
+console.log('caminho=>'+caminho)
 // caminho = caminho + 'public/arquivos/'
 // router.use('/public/arquivos', express.static(caminho))
 const storage = multer.diskStorage({
@@ -102,6 +104,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage, limits: { fileSize: 1000000 } })
 
 // router.use(express.static(path.join(__dirname, 'public')))
+
 
 router.get('/confirmaexclusao/:id', ehAdmin, (req, res) => {
     Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
@@ -4335,47 +4338,18 @@ router.post('/proposta/', ehAdmin, (req, res) => {
 })
 
 // router.post('/proposta1', ehAdmin, (req, res) => {
-//     // var ftp = new PromiseFtp()
-//     // try {
-//     //     ftp.connect({
-//     //         host: "ftp.vimmus.com.br", 
-//     //         user: "vimmus", 
-//     //         password: "t6a6u8k2",
-//     //         port: 21,
-//     //         secure: false
-//     //       })
-//     //       .then(function (serverMessage) {
-//     //         console.log(serverMessage)
-//     //         return ftp.put('foo.txt', '/apps_nodejs/public/arquivos/foo.test-copy.txt') 
-//     //       }).then(function () {
-//     //         return ftp.destroy();
-//     //       })
-//     //  } catch (error) {
-//     //      console.log(error)   
-//     //  }
-
-
-//     //  var ftp = new PromiseFtp()
-//     //  try {
-//     //      await ftp.connect({
-//     //          host: "ftp.vimmus.com.br", 
-//     //          user: "vimmus", 
-//     //          password: "t6a6u8k2",
-//     //          port: 21,
-//     //          secure: false
-//     //        })
-//     //        const stream = await ftp.put('foo.txt', '/apps_nodejs/public/arquivos/foo.test-copy.txt') 
-//     //            res.type("pdf")
-//     //            await new Promise((resolve,reject) => {
-//     //                res.on('finish', resolve)
-//     //                stream.once('error', reject)
-//     //                stream.pipe(res)
-                   
-//     //        }) 
-//     //   } catch (error) {
-//     //       console.log(error)   
-//     //   }
-
+//     var ftp = new PromiseFtp()
+//     ftp.connect({
+//         host: "ftp.nodejs10f04.kinghost.net", 
+//         user: "vimmus", 
+//         password: "64l10770",
+//       })
+//       .then(function (serverMessage) {
+//         console.log(serverMessage)
+//         return ftp.put('foo.txt', '/apps_nodejs/public/arquivos/foo.remote-copy.txt')
+//       }).then(function () {
+//         return ftp.destroy();
+//       });
 //     // //Basic Setup
 //     // const uploadFolder = path.join(caminho, 'public', 'arquivos')
 //     // const form = new formidable.IncomingForm()

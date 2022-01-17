@@ -54,7 +54,7 @@ const Proposta = new Schema({
     },
     dtcadastro1:{
         type: String,
-        require:false
+        require:false   
     },
     dtvalidade1:{
         type: String,

@@ -1,0 +1,276 @@
+<style>
+    .icone {
+        font-size: 30px;
+        color: rgb(2, 38, 78);
+    }    
+</style>
+<script>
+    function valida_celular() {
+        var cel = document.getElementById('celular')
+        if (cel.value.length == 1) {
+            cel.value = '(' + cel.value
+        }
+        if (cel.value.length == 3) {
+            cel.value += ')'
+        }
+        if (cel.value.length == 4) {
+            cel.value += ' '
+        }
+        if (cel.value.length == 6) {
+            cel.value += ' '
+        }
+        if (cel.value.length == 11) {
+            cel.value += '-'
+        }
+    };
+
+    function preview_foto() {
+        var imagem = document.querySelector('input[name=foto]').files[0]
+        var preview = document.querySelector('img[name=foto]')
+
+        var reader = new FileReader()
+        reader.onloadend = function () {
+            preview.src = reader.result
+        }
+
+        if (imagem) {
+            reader.readAsDataURL(imagem)
+        } else {
+            preview.src = ''
+        }
+    };
+
+    function mascara_data() {
+        var data = document.getElementById('data')
+        var currenTime = new Date()
+        var year = currenTime.getFullYear()
+        var ano = data.value
+        ano1 = ano.substring(3, 7)
+        mes1 = ano.substring(0, 2)
+
+        if (data.value.length == 2) {
+            data.value += "/"
+        }
+        if (data.value.length == 7) {
+            if (parseFloat(ano1) > parseFloat(year) || parseFloat(ano1) < 1846 || parseFloat(mes1) > 12) {
+                data.value = ''
+            }
+        }
+    };
+
+    function valida_cnpj() {
+        var cnpj = document.getElementById('cnpj')
+
+        if (cnpj.value.length == 2 || cnpj.value.length == 6) {
+            cnpj.value += '.'
+        }
+        if (cnpj.value.length == 10) {
+            cnpj.value += '/'
+        }
+        if (cnpj.value.length == 15) {
+            cnpj.value += '-'
+        }
+
+        if (cnpj.value.length == 18) {
+
+            var d1 = cnpj.value
+            var p1 = d1.substring(0, 2)
+            var p2 = d1.substring(3, 6)
+            var p3 = d1.substring(7, 10)
+            var p4 = d1.substring(11, 15)
+            var p5 = d1.substring(16, 18)
+            var numdoc = p1 + p2 + p3 + p4 + p5
+
+            if (numdoc == "00000000000000" ||
+                numdoc == "11111111111111" ||
+                numdoc == "22222222222222" ||
+                numdoc == "33333333333333" ||
+                numdoc == "44444444444444" ||
+                numdoc == "55555555555555" ||
+                numdoc == "66666666666666" ||
+                numdoc == "77777777777777" ||
+                numdoc == "88888888888888" ||
+                numdoc == "99999999999999") {
+                cnpj.value = ''
+            }
+            
+            // Valida DVs
+            var tamanho = numdoc.length - 2
+            var numeros = numdoc.substring(0, tamanho)
+            var digitos = numdoc.substring(tamanho)
+            var soma = 0
+            var pos = tamanho - 7;
+            for (i = tamanho; i >= 1; i--) {
+                soma += numeros.charAt(tamanho - i) * pos--;
+                if (pos < 2)
+                    pos = 9;
+            }
+            var resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+            if (resultado != digitos.charAt(0)) {
+                cnpj.value = ''
+            }
+
+            tamanho = tamanho + 1;
+            numeros = numdoc.substring(0, tamanho);
+            soma = 0;
+            pos = tamanho - 7;
+            for (i = tamanho; i >= 1; i--) {
+                soma += numeros.charAt(tamanho - i) * pos--;
+                if (pos < 2)
+                    pos = 9;
+            }
+            resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+            if (resultado != digitos.charAt(1)) {
+                cnpj.value = ''
+            }
+        }
+    };
+
+    function valida_cpf() {
+        var doc = document.getElementById('cpf')
+        var soma
+        var resto
+
+        soma = 0
+
+        if (doc.value.length == 3 || doc.value.length == 7) {
+            doc.value += '.'
+        }
+        if (doc.value.length == 11) {
+            doc.value += '-'
+        }
+        if (doc.value.length == 14) {
+
+            var d1 = doc.value
+            var p1 = d1.substring(0, 3)
+            var p2 = d1.substring(4, 7)
+            var p3 = d1.substring(8, 11)
+            var p4 = d1.substring(12, 14)
+            var numdoc = p1 + p2 + p3 + p4
+
+            if (numdoc == "00000000000") {
+                doc.value = '';
+            }
+
+            for (i = 1; i <= 9; i++) {
+                soma = soma + parseInt(numdoc.substring(i - 1, i)) * (11 - i);
+            }
+            resto = (soma * 10) % 11;
+
+            if ((resto == 10) || (resto == 11)) {
+                resto = 0;
+            }
+            if (resto != parseInt(numdoc.substring(9, 10))) {
+                doc.value = ''
+            }
+
+            soma = 0;
+            for (i = 1; i <= 10; i++) {
+                soma = soma + parseInt(numdoc.substring(i - 1, i)) * (12 - i)
+            }
+
+            resto = (soma * 10) % 11
+            if ((resto == 10) || (resto == 11)) {
+                resto = 0
+            }
+
+            if (resto != parseInt(numdoc.substring(10, 11))) {
+                doc.value = ''
+            }
+
+        }
+    };
+    //Selecionar estados e cidades
+    window.onload = function () {
+
+        var estados = document.getElementById('estado');
+        var cidades = document.getElementById('cidade');
+        /*
+        cidades.onchange = function () {
+            if (cidades.value !== "") {
+                //Basta modificar está linha conforme a necessidade
+                window.location = "pagina.asp?estado=" + estados.value + "&cidade=" + cidades.value
+            }
+        };
+        */
+        new dgCidadesEstados({
+            estado: estados,
+            cidade: cidades,
+            estadoVal: '<%=Request("estado") %>',
+            cidadeVal: '<%=Request("cidade") %>'
+        });
+    };
+</script>
+
+<form action='/cliente/edicao' method='post'>
+    <div class="cotainer mt-4" style="width: 50%;margin-left: 25%;">
+        <input type='hidden' name='id' value='{{cliente._id}}'>
+        <h5><i class="bi bi-person icone"></i> Edição de Cliente</h5>
+        <hr>
+        <div class="container row mb-2">
+            <div class="col-md-3 text-end">
+                <label class='fw-bold col-form-label col-form-label-sm mb-1'>Nome Completo: </label><br>
+                <label class='fw-bold col-form-label col-form-label-sm'>Endereço: </label><br>
+                <label class='fw-bold col-form-label col-form-label-sm mb-1'>Estado: </label><br>
+                <label class='fw-bold col-form-label col-form-label-sm mb-1'>Cidade: </label><br>
+                {{#if cliente.cnpj}}
+                <label class='fw-bold col-form-label col-form-label-sm mb-1'>CNPJ: </label><br>
+                {{/if}}
+                {{#if cliente.cpf}}
+                <label class='fw-bold col-form-label col-form-label-sm mb-1'>CPF: </label><br>
+                {{/if}}
+                <label class='fw-bold col-form-label col-form-label-sm mb-1'>Celular: </label><br>
+                <label class='fw-bold col-form-label col-form-label-sm mb-1'>E-mail: </label>
+            </div>
+            <div class="col-md-8">
+                <input type='text' name='nome' class='form-control form-control-sm mb-1' value='{{cliente.nome}}'>
+                <input type='text' name='endereco' class='form-control form-control-sm'
+                    value='{{cliente.endereco}}'>
+                <div class="row" style="margin-top: 3px">
+                    <div class="col-md-5">
+                        <label class='col-form-label col-form-label-sm'>{{cliente.uf}}</label>
+                    </div>
+                    <div class="col-md-7">
+                        <select id="estado" name='uf' class='form-select form-select-sm mb-1'>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label class='col-form-label col-form-label-sm'>{{cliente.cidade}}</label>
+                    </div>
+                    <div class="col-md-7">
+                        <select id="cidade" name='cidade' class='form-select form-select-sm mb-1'>
+                        </select>
+                    </div>
+                </div>
+                {{#if cliente.cnpj}}
+                <input type='text' class='form-control form-control-sm mb-1' maxlength="18" autocomplete="off" id='cnpj'
+                    name='cnpj' onkeyup="valida_cnpj()" value='{{cliente.cnpj}}'>
+                {{/if}}
+                {{#if cliente.cpf}}
+                <input type='text' class='form-control form-control-sm mb-1' maxlength="14" autocomplete="off" id='cpf'
+                    name='cpf' onkeyup="valida_cpf()" value='{{cliente.cpf}}'>
+                {{/if}}
+                <input type='text ' name='celular' id='celular' class='form-control form-control-sm mb-1' maxlength="16"
+                    autocomplete="off" onkeyup="valida_celular()" value='{{cliente.celular}}'>
+                <input type='text' name='email' class='form-control form-control-sm mb-1' value='{{cliente.email}}'>
+            </div>
+        </div>
+        <div class="row" style="margin-left: 30%;">
+            <div class="form-check form-switch">
+                <input name='checkSolar' class="form-check-input" type="checkbox" {{cliente.sissolar}}>
+                <label class="form-check-label">Sistema Solar</label>
+            </div>
+            <div class="form-check form-switch">
+                <input name='checkPos' class="form-check-input" type="checkbox" {{cliente.posvenda}}>
+                <label class="form-check-label"> Pós-venda</label>
+            </div>
+        </div>
+        <div class="btn-group gap-2 mt-2" style="width: 50%;margin-left: 30%;">
+            <a href='/cliente/novo' class='btn btn-sm col-6 btn-primary'>Novo</a>
+            <a href='/cliente/consulta' class='btn btn-sm col-6 btn-primary'>Buscar</a>
+            <button type='submit' class='btn btn-sm col-6 btn-success'>Salvar</button>
+        </div>
+    </div>
+</form>
