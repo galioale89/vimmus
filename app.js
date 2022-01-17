@@ -922,7 +922,8 @@ app.use('/fornecedor/', fornecedor)
 
 //Outros
 
-var port = process.env.PORT || 21128
-app.listen(port, function () {
-  console.log('KingHost listening on port %s', port);
-});
+const APP_PORT = process.env.APP_PORT || 80
+
+app.listen(APP_PORT, () => {
+  console.log(`Running app at port:${APP_PORT}`)
+})
