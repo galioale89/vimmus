@@ -1,6 +1,6 @@
 const { TextEncoder, TextDecoder } = require("util");
 
-require('../app')
+// require('../app')
 require('../model/Usuario')
 require('../model/Proposta')
 require('../model/Empresa')
@@ -26,7 +26,7 @@ const { ehAdmin } = require('../helpers/ehAdmin')
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
-const fs = require('fs')
+// const fs = require('fs')
 const path = require('path')
 const multer = require('multer')
 const nodemailer = require('nodemailer')
@@ -88,9 +88,9 @@ const transporter = nodemailer.createTransport({ // Configura os parâmetros de 
     }
 })
 
-var caminho = __dirname
-caminho = caminho.replace('routes', '')
-console.log('caminho=>'+caminho)
+// var caminho = __dirname
+// caminho = caminho.replace('routes', '')
+// console.log('caminho=>'+caminho)
 // caminho = caminho + 'public/arquivos/'
 // router.use('/public/arquivos', express.static(caminho))
 const storage = multer.diskStorage({
