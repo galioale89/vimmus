@@ -927,7 +927,7 @@ app.use('/fornecedor/', fornecedor)
 
 //Outros
 
-const APP_PORT = process.env.APP_PORT || 3000
+const APP_PORT = process.env.APP_PORT || 8080
 
 app.listen(APP_PORT, () => {
   console.log(`Running app at port:${APP_PORT}`)
