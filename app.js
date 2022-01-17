@@ -1,6 +1,12 @@
 const express = require('express')
 const app = express()
 
+var AWS = require('aws-sdk');
+// import AWS object without services
+var AWS = require('aws-sdk/global');
+// import individual service
+var S3 = require('aws-sdk/clients/s3');
+
 // // Enable CORS
 // app.use(function(req, res, next) {
 //   res.header('Access-Control-Allow-Origin', '*');
@@ -8,8 +14,8 @@ const app = express()
 //   next();
 // });
 
-const handlebars = require('express-handlebars')
-//const { engine } = require( 'express-handlebars' )
+//const handlebars = require('express-handlebars')
+const { engine } = require( 'express-handlebars' )
 const bodyParser = require('body-parser')
 const path = require("path")
 const mongoose = require('mongoose')
@@ -78,15 +84,14 @@ app.use((req, res, next) => {
 })
 
 //Body-Parser
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ 
+app.use(express.json())
+app.use(express.urlencoded({ 
   extended: true 
 }))
 //Handlebars
-// app.disable( 'x-powered-by' )
-// app.engine( 'handlebars', engine({defaultLayout: 'main'}))
-// app.set( 'view engine', 'handlebars' )
- app.engine('handlebars', handlebars({ defaulLayout: "main" }))
+app.disable( 'x-powered-by' )
+app.engine( 'handlebars', engine({defaultLayout: 'main'}))
+ //app.engine('handlebars', handlebars({ defaulLayout: "main" }))
  app.set('view engine', 'handlebars')
 
 
