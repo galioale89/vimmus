@@ -497,7 +497,7 @@
                     </form>
 
                     {{#if proposta.proposta1}}
-                    <form action='/gerenciamento/proposta2' method='post' content-type="multipart/form-data">
+                    <form action='/gerenciamento/proposta2' method='post' enctype="multipart/form-data">
                         <input type="hidden" name="id" value='{{proposta._id}}'>
                         <div class="row">
 
