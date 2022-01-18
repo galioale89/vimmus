@@ -426,10 +426,7 @@
                                         <div id='br0' style="display: {{mostraLabel}}"></div>
                                         <label style='display: {{mostraLabel}}' id='labelUf'
                                                class='col-form-label mb-1'>
-                                            {{
-#if
-                                            proposta.uf
-                                            }}{{proposta.uf}}{{else}}{{cliente_proposta.uf}}{{/if}}
+                                            {{#if proposta.uf }}{{proposta.uf}}{{else}}{{cliente_proposta.uf}}{{/if}}
                                         </label><br>
                                         <select style='display: {{mostraSelect}}' id="estado" name='uf'
                                                 class='form-select mb-1'></select>
@@ -440,10 +437,7 @@
                                         <div id='br1' style="display: {{mostraLabel}}"></div>
                                         <label style='display: {{mostraLabel}}' id='labelCidade'
                                                class='col-form-label mb-1'>
-                                            {{
-#if
-                                            proposta.cidade
-                                            }}{{proposta.cidade}}{{else}}{{cliente_proposta.cidade}}{{/if}}
+                                            {{#if proposta.cidade }}{{proposta.cidade}}{{else}}{{cliente_proposta.cidade}}{{/if}}
                                         </label><br>
                                         <select style='display: {{mostraSelect}}' id="cidade" name='cidade'
                                                 class='form-select mb-1'></select>
