@@ -25,58 +25,78 @@
     <div class='btn-group col-12'>
         <div class='numero'>1</div>
         <a href='/gerenciamento/proposta/{{proposta._id}}/'
-            class='btn btn-sm{{#if proposta.feito}} check-menu {{else}} botao-menu {{/if}}'
-            style="border-bottom-left-radius: 30px;"> <i class="bi bi-house"></i> Proposta</a>
+           class='btn btn-sm{{#if proposta.feito}} check-menu {{else}} botao-menu {{/if}}'
+           style="border-bottom-left-radius: 30px;"> <i class="bi bi-house"></i> Proposta</a>
         <div class='numero'>2</div>
         <a href="/gerenciamento/visita/{{proposta._id}}"
-            class="btn btn-sm {{#if vistoria.feito}} check-menu {{else}} botao-menu {{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-gear"></i>
-            Visita Técnica</a>
+           class="btn btn-sm {{#if vistoria.feito}} check-menu {{else}} botao-menu {{/if}}"
+           style="border-bottom-left-radius: 30px;">
+            <i class="bi bi-gear"></i>
+            Visita Técnica
+        </a>
         <div class='numero '>3</div>
         <a href="/gerenciamento/assinatura/{{proposta._id}}"
-            class="btn btn-sm {{#if proposta.assinado}} check-menu {{else}} botao-menu {{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-pencil"></i>
-            Contrato</a>
+           class="btn btn-sm {{#if proposta.assinado}} check-menu {{else}} botao-menu {{/if}}"
+           style="border-bottom-left-radius: 30px;">
+            <i class="bi bi-pencil"></i>
+            Contrato
+        </a>
         <div class='numero ativo'>4</div>
         <a href="/gerenciamento/compra/{{proposta._id}}"
-            class="btn btn-sm {{#if compra.feitonota}} check-menu {{else}} botao-menu  ativo {{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-cart-check"></i>
-            Compra Sistema</a>
+           class="btn btn-sm {{#if compra.feitonota}} check-menu {{else}} botao-menu  ativo {{/if}}"
+           style="border-bottom-left-radius: 30px;">
+            <i class="bi bi-cart-check"></i>
+            Compra Sistema
+        </a>
         <div class='numero'>5</div>
         <a href="/gerenciamento/trt/{{proposta._id}}"
-            class="btn btn-sm {{#if documento.feitotrt}} check-menu {{else}} botao-menu {{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-tools"></i>
-            TRT</a>
+           class="btn btn-sm {{#if documento.feitotrt}} check-menu {{else}} botao-menu {{/if}}"
+           style="border-bottom-left-radius: 30px;">
+            <i class="bi bi-tools"></i>
+            TRT
+        </a>
         <div class='numero'>6</div>
         <a href="/gerenciamento/execucao/{{proposta._id}}"
-            class="btn btn-sm {{#if documento.protocolado}} check-menu {{else}} botao-menu {{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-clock-history"></i>
-            Execução</a>
+           class="btn btn-sm {{#if documento.protocolado}} check-menu {{else}} botao-menu {{/if}}"
+           style="border-bottom-left-radius: 30px;">
+            <i class="bi bi-clock-history"></i>
+            Execução
+        </a>
         <div class='numero'>7</div>
         <a href="/gerenciamento/equipe/{{proposta._id}}"
-            class="btn btn-sm {{#if lista_equipe.feito}} check-menu {{else}} botao-menu {{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-people"></i>
-            Equipes</a>
+           class="btn btn-sm {{#if lista_equipe.feito}} check-menu {{else}} botao-menu {{/if}}"
+           style="border-bottom-left-radius: 30px;">
+            <i class="bi bi-people"></i>
+            Equipes
+        </a>
         <div class='numero'>8</div>
         <a href="/gerenciamento/aceite/{{proposta._id}}"
-            class="btn btn-sm {{#if documento.feitoaceite}} check-menu {{else}} botao-menu{{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-check2-square"></i>
-            Aceite Obra</a>
+           class="btn btn-sm {{#if documento.feitoaceite}} check-menu {{else}} botao-menu{{/if}}"
+           style="border-bottom-left-radius: 30px;">
+            <i class="bi bi-check2-square"></i>
+            Aceite Obra
+        </a>
         <div class='numero'>9</div>
         <a href="/gerenciamento/almoxarifado/{{proposta._id}}"
-            class="btn btn-sm {{#if documento.feitoalmox}} check-menu {{else}} botao-menu{{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-layers"></i>
-            Almoxarifado</a>
+           class="btn btn-sm {{#if documento.feitoalmox}} check-menu {{else}} botao-menu{{/if}}"
+           style="border-bottom-left-radius: 30px;">
+            <i class="bi bi-layers"></i>
+            Almoxarifado
+        </a>
         <div class='numero'>10</div>
         <a href="/gerenciamento/financeiro/{{proposta._id}}"
-            class="btn btn-sm {{#if documento.feitofaturado}} check-menu {{else}} botao-menu{{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-calculator"></i>
-            Financeiro</a>
+           class="btn btn-sm {{#if documento.feitofaturado}} check-menu {{else}} botao-menu{{/if}}"
+           style="border-bottom-left-radius: 30px;">
+            <i class="bi bi-calculator"></i>
+            Financeiro
+        </a>
         <div class='numero'>11</div>
         <a href="/gerenciamento/posvenda/{{proposta._id}}"
-            class="btn btn-sm {{#if posvenda.feito}} check-menu {{else}} botao-menu{{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-door-open"></i>
-            Pós Venda</a>
+           class="btn btn-sm {{#if posvenda.feito}} check-menu {{else}} botao-menu{{/if}}"
+           style="border-bottom-left-radius: 30px;">
+            <i class="bi bi-door-open"></i>
+            Pós Venda
+        </a>
     </div>
 
     <div id='bloquear' class='{{proposta.encerrado}}'>
@@ -84,31 +104,37 @@
             <div class="col">
                 <form action='/gerenciamento/pedido' method='post' enctype="multipart/form-data">
                     <input type="hidden" name='id' value='{{proposta._id}}'>
-                    <div class='row mb-1 mt-2'>
-                        <div class='col-md-2'>
-                            <label class='col-form-label fw-bold'>Fornecedor: </label>
+                    <div class='row text-center mt-3'>
+                        <div class="col-md-2">
+                            <div style="margin-top: 12px">
+                                <label class='fw-bold' style="font-size: 20px;">Pedido</label>
+                            </div>
                         </div>
-                        <div class='col-md-6'>
-                            <select class='form-select' name='fornecedor'>
-                                <option class='fw-bold' value='{{for_pro._id}}'>{{for_pro.nome}}</option>
-                                {{#each fornecedores}}
-                                <option value='{{_id}}'>{{nome}}</option>
-                                {{else}}
-                                <option>Sem fornecedores cadastrados</option>
-                                {{/each}}
-                            </select>
+                        <div class="col">
+                            <div class='row'>
+                                <div class='col-md-3'>
+                                    <label class='col-form-label fw-bold' style="font-size: 20px;">Fornecedor: </label>
+                                </div>
+                                <div class='col-md-8'>
+                                    <select class='form-select' name='fornecedor'>
+                                        <option class='fw-bold' value='{{for_pro._id}}'>{{for_pro.nome}}</option>
+                                        {{#each fornecedores}}
+                                        <option value='{{_id}}'>{{nome}}</option>
+                                        {{else}}
+                                        <option>Sem fornecedores cadastrados</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class='row text-center'>
-                        <label class='fw-bold' style="font-size: 20px;">Pedido</label>
                         <a href='/gerenciamento/mostrarDocumentos/{{compra.pedido}}' target="_blank"
-                            style="font-size: 20px;line-height: 30px;">{{compra.pedido}}</a>
+                           style="font-size: 20px;line-height: 30px;">{{compra.pedido}}</a>
                         <br>
                     </div>
                     <div class="row justify-content-center">
-                        <div class="text-start mt-3" style="width: 200px;">
+                        <div class="text-start mt-3" style="max-width: 164px">
                             <input type='file' class='form-control' name='pedido'
-                                style='max-width: 152px;font-size: 15px;' value='{{compra.pedido}}'>
+                                   style='font-size: 15px;' value='{{compra.pedido}}'>
                         </div>
                         <div style="width: 190px;">
                             <label>Emissão:</label>
@@ -126,26 +152,28 @@
             </div>
             <div class="col">
                 <div class="text-center">
-                    <label class='fw-bold text-center mb-2' style="font-size: 20px;margin-top: 50px;">Nota Fiscal do
-                        Fornecedor</label>
+                    <label class='fw-bold text-center mb-1' style="font-size: 20px;margin-top: 25px;">
+                        Nota Fiscal do
+                        Fornecedor
+                    </label>
                     <br>
                     <a href='/gerenciamento/mostrarDocumentos/{{compra.nota}}' target="_blank"
-                        style="font-size: 20px;line-height: 30px;">{{compra.nota}}</a>
+                       style="font-size: 20px;line-height: 43px;">{{compra.nota}}</a>
                     <br>
                 </div>
                 <form action='/gerenciamento/nota' method='post' enctype="multipart/form-data">
                     <input type="hidden" name='id' value='{{proposta._id}}'>
-                    <div class="row mt-2">
-                        <div style="width: 160px">
+                    <div class="row" style="margin-top: 15px">
+                        <div style="width: 164px;">
                             <input type='file' class='form-control' name='nota'
-                                style='font-size: 15px;' value='{{compra.nota}}'>
+                                   style='font-size: 15px;' value='{{compra.nota}}'>
                         </div>
                         <div style="width: 210px;" class='text-end'>
                             <label class='col-form-label'>Data de Recebimento: </label>
                         </div>
                         <div style="width: 200px;">
                             <input type='date' class='form-control' name='dtrecebimento'
-                                value='{{compra.dtrecebimento}}'>
+                                   value='{{compra.dtrecebimento}}'>
                         </div>
                         <div style="width: 80px;">
                             <button type='submit' class='btn btn-success'><i class='bi bi-save'></i></button>
@@ -156,13 +184,13 @@
             <div class="row mt-1">
                 <div class="col">
                     <object data="/gerenciamento/mostrarDocumentos/{{compra.pedido}}" type="application/pdf"
-                        width="100%" height="330px">
+                            width="100%" height="330px">
                         <p>Seu navegador não tem um plugin pra PDF</p>
                     </object>
                 </div>
                 <div class="col">
                     <object data="/gerenciamento/mostrarDocumentos/{{compra.nota}}" type="application/pdf" width="100%"
-                        height="330px">
+                            height="330px">
                         <p>Seu navegador não tem um plugin pra PDF</p>
                     </object>
                 </div>
