@@ -287,10 +287,7 @@
     {{else}}
     <div style='text-align: center'>
         <label class='col-form-label fw-bold' style="font-size: 20px;color: rgb(44,55,89);">
-            {{
-#if
-            tipo
-            }}Proposta{{else}}Iniciar{{/if}}
+            {{#if tipo}}Proposta{{else}}Iniciar{{/if}}
         </label>
     </div>
     {{/if}}
