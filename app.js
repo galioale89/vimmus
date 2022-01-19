@@ -141,6 +141,12 @@ app.get('/menu', ehAdmin, (req, res) => {
   const { nome } = req.user
   const { owner } = req.user
 
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+
   var saudacao
 
   var hoje = dataHoje()
@@ -203,7 +209,7 @@ app.get('/menu', ehAdmin, (req, res) => {
     saudacao = 'Bom dia '
   }
 
-  Proposta.find({ user: _id }).sort({ data: 'asc' }).then((todasProposta) => {
+  Proposta.find({ user: id }).sort({ data: 'asc' }).then((todasProposta) => {
     if (todasProposta != '') {
       todasProposta.forEach((e) => {
         dtcadastro = ''
