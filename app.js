@@ -438,6 +438,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                 //console.log('qtdaberto=>' + qtdaberto)
                                                 //console.log('qtdencerrado=>' + qtdencerrado)
                                                 Usuario.findOne({ _id: id }).then((user_ativo) => {
+                                                    console.log('crm=>' + user_ativo.crm)
                                                     res.render('menuproposta', { crm: user_ativo.crm, id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, saudacao, nome_lista: nome, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdalx, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, qtdbaixado, deadlineIns, notpro, atrasado })
                                                 })
                                             }
@@ -659,6 +660,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                                 //console.log('qtdencerrado=>' + qtdencerrado)
                                                                 Pessoa.findOne({ _id: pessoa }).lean().then((nome_pessoa) => {
                                                                     Usuario.findOne({ _id: id }).then((user_ativo) => {
+                                                                        console.log('crm=>' + user_ativo.crm)
                                                                         res.render('menuproposta', { crm: user_ativo.crm, id: _id, owner: owner, saudacao, nome_lista: nome_pessoa.nome, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, qtdbaixado, notpro, atrasado })
                                                                     })
                                                                 }).catch((err) => {
@@ -884,6 +886,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                                             //console.log(listaAberto)
                                                                             numprj = numprj
                                                                             Usuario.findOne({ _id: id }).then((user_ativo) => {
+                                                                                console.log('crm=>' + user_ativo.crm)
                                                                                 res.render('menuproposta', { user: user_ativo.crm, id: _id, owner: owner, saucadacao, listaOrcado, listaAberto, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdorcado, qtdaberto, qtdencerrado, qtdbaixado, block: true })
                                                                             })
                                                                         }
@@ -903,6 +906,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                     } else {
                         //console.log('sem registro')
                         Usuario.findOne({ _id: id }).then((user_ativo) => {
+                            console.log('crm=>' + user_ativo.crm)
                             res.render('menuproposta', { crm: user_ativo.crm, id: _id, owner: owner, saudacao, nome_lista: nome, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado, qtdbaixado })
                         })
                     }
@@ -910,6 +914,7 @@ app.get('/menu', ehAdmin, (req, res) => {
             } else {
                 //console.log('sem registro')
                 Usuario.findOne({ _id: id }).then((user_ativo) => {
+                    console.log('crm=>' + user_ativo.crm)
                     res.render('menuproposta', { crm: user_ativo.crm, id: _id, owner: owner, saudacao, nome_lista: nome, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado, qtdbaixado })
                 })
             }
