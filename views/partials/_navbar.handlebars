@@ -88,7 +88,8 @@
   <div class="collapse navbar-collapse d-flex justify-content-end">
       <div class='btn-group col-12 gap-2 justify-content-end'>
           <a href='/menu' class="botao-filter"><i class='bi bi-menu-button-wide'></i> Dashboard</a><br>
-          
+
+          {{#if crm}}
           <div class="dropdown">
               <button class="botao-filter dropdown-toggle fw-bold" type="button" style='background-color: rgb(44,55,89);'
                       data-bs-toggle="dropdown" aria-expanded="false" style='font-size: 10px'>
@@ -107,9 +108,9 @@
                   </div>
               </ul>
           </div>
-
           <a href='/gerenciamento/consulta' class="botao-filter"><i class="bi bi-search"></i> Busca Propostas</a><br>
-          
+          {{/if}}
+
           <a href='/logout' class="botao-filter"><i class='bi bi-door-open'></i></a>
       </div>
       </div>
