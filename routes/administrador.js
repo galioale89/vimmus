@@ -352,8 +352,8 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                 usuario.save().then(() => {
                                     Usuarios.find().sort({ data: 'desc' }).lean().then((usuarios) => {
                                         if (owner) {
-                                            sucesso.push({ texto: "Alterações do usuário realizadas com sucesso!" })
-                                            res.render("usuario/administrador", { usuarios, sucesso, owner })
+                                            req.flash('success_msg', "Alterações do usuário realizadas com sucesso!")
+                                            res.redirect('/usuario/editar/'+req.body.id)
                                         } else {
                                             req.flash('success_msg', "Alterações do usuário realizadas com sucesso!")
                                             res.redirect('/menu')
@@ -500,7 +500,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                                 res.render("usuario/administrador/", { usuarios, sucesso, owner })
                                             }).catch((err) => {
                                                 req.flash("error_msg", "Ocorreu uma falha interna.")
-                                                res.redirect("/usuario/editar//+req.body.id")
+                                                res.redirect("/usuario/editar/"+req.body.id)
                                             })
                                         }).catch((err) => {
                                             req.flash("error_msg", "Não foi possível salvar o registro.")
@@ -513,10 +513,10 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                 usuario.save().then(() => {
                                     Usuarios.find().sort({ data: 'desc' }).lean().then((usuarios) => {
                                         sucesso.push({ texto: "Alterações do usuário realizadas com sucesso!" })
-                                        res.render("usuario/administrador/", { usuarios, sucesso, owner })
+                                        res.render("usuario/menu/", { usuarios, sucesso, owner })
                                     }).catch((err) => {
                                         req.flash("error_msg", "Ocorreu uma falha interna.")
-                                        res.redirect("/usuario/editar//+req.body.id")
+                                        res.redirect("/usuario/editar/"+req.body.id)
                                     })
                                 }).catch((err) => {
                                     req.flash("error_msg", "Não foi possível salvar o registro.")
@@ -620,10 +620,13 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                         // //console.log('atualizou')
                                         Acesso.findOne({ usuario: acesso_existe.usuario }).then((acesso) => {
                                             //console.log('req.body.usuario=>' + req.body.usuario)
-                                            tipo = req.body.tipo
                                             //console.log('req.body.tipo=>' + tipo)
-                                            acesso.usuario = req.body.usuario
-                                            acesso.ehAdmin = tipo
+                                            if (naoVazio(req.body.usuario)) {
+                                                acesso.usuario = req.body.usuario
+                                            }
+                                            if (naoVazio(req.body.tipo)) {
+                                                acesso.ehAdmin = req.body.tipo
+                                            }
 
                                             if (acesso.datalib == '' || acesso.datalib == null) {
                                                 data = new Date()
