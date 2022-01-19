@@ -8111,16 +8111,23 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
     var ehSelecao = false
     var mes = ''
 
-    if (parseFloat(req.body.dia) < 10) {
-        dia = '0' + req.body.dia
-    } else {
-        dia = req.body.dia
-    }
-
     var hoje = new Date()
     var mes = parseFloat(hoje.getMonth()) + 1
     if (mes < 10) {
         mes = '0' + mes
+    }
+
+    if (naoVazio(req.body.dia)) {
+        if (parseFloat(req.body.dia) < 10) {
+            dia = '0' + req.body.dia
+        } else {
+            dia = req.body.dia
+        }
+    } else {
+        dia = parseFloat(hoje.getDay)
+        if (diadia < 10) {
+            dia = '0' + dia
+        }
     }
 
     var nome
@@ -8133,6 +8140,7 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
     //console.log('req.body.cliente=>' + req.body.cliente)
     Atividade.find({ user: id }).lean().then((atividades) => {
         if (naoVazio(atividades)) {
+
             if (req.body.cliente == 'Nenhum cliente selecionado') {
                 idcliente = '111111111111111111111111'
             } else {
