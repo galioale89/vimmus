@@ -149,7 +149,7 @@
                         <div class="text-start">
                             <a href="/gerenciamento/proposta/selecao/com" class="contorno-menu">
                                 <i class='bi bi-file-arrow-up'></i>
-                                {{#if crm}}Proposta{{else}}Serviço{{/if}}
+                                Proposta
                             </a>
                             <a href="/gerenciamento/consulta" class="botaomenu"> <i class='bi bi-search'></i> </a>
                         </div>
@@ -160,7 +160,7 @@
                             <a href='/pessoa/consulta' class="botaomenu"><i class='bi bi-search'></i> </a>
                         </div>
                     </div>
-                    {{#if crm}}
+                    
                     <div class="row mb-2">
                         <div class="text-start">
                             <a href='/fornecedor/novo' class="contorno-menu"><i class='bi bi-file-arrow-up'></i>Fornecedor</a>
@@ -172,7 +172,7 @@
                             <i class="bi bi-file-arrow-up"></i> Planos
                         </a>
                     </div>
-                    {{/if}}
+                    
                     <div style="margin-bottom: 1%;margin-top: 6%;">
                         <a href='/pessoa/consultaequipepadrao/' class="relatorio titulo-relatorio" style="padding-right: 20%;">
                             <i class="bi bi-people"></i> Equipe
@@ -194,7 +194,7 @@
                             Agenda de Serviços
                         </a><br>
                     </div>
-                    {{#if crm}}
+                    
                     <div style="margin-top: 6%;margin-bottom: 7%;">
                         <a href='/gerenciamento/cenarios' class="relatorio titulo-relatorio">
                             <i class='bi bi-display'></i>
@@ -203,7 +203,7 @@
                             Cenários
                         </a>
                     </div>
-                    {{/if}}
+                    
                     <div style="margin-bottom: 7%;">
                         <a href='/usuario/editar/{{id}}' class="relatorio titulo-relatorio">
                             <i class="bi bi-house-fill"></i>
@@ -230,7 +230,7 @@
         </div>
 
         <a href='/cliente/novo/' class='btn btn-sm btn-primary mb-1'>Novo Ciente</a>
-        {{#if crm}}
+        
         <div class="dropdown">
             <button class="btn btn-sm btn-primary mb-1' dropdown-toggle" style="font-size: 13px;" type="button"
                     data-bs-toggle="dropdown" aria-expanded="false">
@@ -249,13 +249,13 @@
             Propostas Vencidas e
             a Vencer
         </a>
-        {{/if}}
+        
         <a href='/gerenciamento/emandamento/lista' class="btn btn-sm btn-primary mb-1"> Serviços em Andamento</a>
     </div>
   </div>
   {{/if}}
   <div class="row">
-      {{#if crm}}
+      
     <div class='col-md-2 mt-3'>
       <div class="text-center">
         <label style="font-size: 21px;color:#6557fc{{#if block}}{{else}};margin-top: 10%{{/if}}"> Total de
@@ -388,7 +388,7 @@
         </div>
 
     </div>
-      {{/if}}
+      
   </div>
 </div>
 <script>
