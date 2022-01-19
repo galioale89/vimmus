@@ -531,59 +531,42 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                 } else {
                     //console.log('atual: acesso_existe=>' + acesso_existe.usuario)
                     Pessoa.findOne({ _id: acesso_existe.pessoa }).then((pessoa) => {
-                        nome = 0
-                        cpf = 0
-                        endereco = 0
-                        cidade = 0
-                        uf = 0
-                        telefone = 0
-
-                        if (req.body.nome == '') {
-                            nome = 0
-                        } else {
-                            nome = req.body.nome
+                        console.log('entrou acesso')
+                        if (req.body.detalhes != 'true') {
+                            if (req.body.nome == '') {
+                                pessoa.nome = req.body.nome
+                            }else {
+                                pessoa.nome = 0
+                            }
+                            if (req.body.cpf == '') {
+                                pessoa.cpf = req.body.cpf
+                            } else {
+                                pessoa.cpf = 0
+                            }
+                            if (req.body.endereco == '') {
+                                pessoa.endereco = req.body.endereco
+                            } else {
+                                pessoa.endereco = 0
+                            }
+                            if (req.body.cidade == '') {
+                                pessoa.cidade = req.body.cidade
+                            }
+                            if (req.body.uf == '') {
+                                pessoa.uf = req.body.uf
+                            }
                         }
-                        if (req.body.cpf == '') {
-                            cpf = 0
-                        } else {
-                            cpf = req.body.cpf
-                        }
-                        if (req.body.endereco == '') {
-                            endereco = 0
-                        } else {
-                            endereco = req.body.endereco
-                        }
-
-                        if (req.body.cidade == '') {
-                            cidade = 0
-                        } else {
-                            cidade = req.body.cidade
-                        }
-                        if (req.body.uf == '') {
-                            uf = 0
-                        } else {
-                            uf = req.body.uf
-                        }
-
-                        if (req.body.telefone == '') {
-                            telefone = 0
-                        } else {
-                            telefone = req.body.telefone
-                        }
-
-                        pessoa.nome = nome
-                        pessoa.cpf = cpf
-                        pessoa.endereco = endereco
+                        console.log('req.body.email=>'+req.body.email)
                         if (naoVazio(req.body.email)) {
                             pessoa.email = req.body.email
+                        } else {
+                            pessoa.email = pessoa.email
                         }
-                        if (req.body.cidade != '') {
-                            pessoa.cidade = cidade
+                        if (naoVazio(req.body.telefone)) {
+                            pessoa.celular = req.body.telefone
+                        } else {
+                            pessoa.celular = pessoa.celular
                         }
-                        if (req.body.uf != '') {
-                            pessoa.uf = uf
-                        }
-                        pessoa.celular = telefone
+
                         pessoa.save().then(() => {
                             Acesso.findOne({ usuario: acesso_existe.usuario }).lean().then((acesso_atual) => {
                                 //console.log('Acesso existe.')

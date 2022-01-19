@@ -1,7 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\model"
   ],
-  "SelectedNode": "\\app.js",
+  "SelectedNode": "\\model\\Tarefas.js",
   "PreviewInSolutionExplorer": false
 }

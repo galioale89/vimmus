@@ -311,12 +311,19 @@ router.get('/selecao', ehAdmin, (req, res) => {
 
 router.get('/consulta', ehAdmin, (req, res) => {
     var id
+    var sql_pro
+    var sql_pes
     const { _id } = req.user
     const { user } = req.user
-    if (typeof user == 'undefined') {
-        id = _id
-    } else {
+    const { pessoa } = req.user
+    if (naoVazio(user)) {
         id = user
+        sql_pro = { user: id, responsvel: pessoa }
+        sql_pes = {_id: pessoa}
+    } else {
+        id = _id
+        sql_pro = { user: id }
+        sql_pes = { user: id, funges: 'checked' }
     }
 
     var status = ''
@@ -327,11 +334,12 @@ router.get('/consulta', ehAdmin, (req, res) => {
     var dtfim = '0000-00-00'
     var responsavel
     var nome_insres
+    
 
     Cliente.find({ user: id }).lean().then((todos_clientes) => {
-        Pessoa.find({ user: id, funges: 'checked' }).lean().then((todos_responsaveis) => {
+        Pessoa.find(sql_pes).lean().then((todos_responsaveis) => {
             Empresa.find({ user: id }).lean().then((todas_empresas) => {
-                Proposta.find({ user: id }).sort({ datacad: 'asc' }).then((proposta) => {
+                Proposta.find(sql_pro).sort({ datacad: 'asc' }).then((proposta) => {
                     //console.log('proposta._id=>'+proposta._id)
                     if (proposta != '') {
                         proposta.forEach((e) => {
@@ -1270,6 +1278,7 @@ router.get('/servicosAtvi/:id', ehAdmin, (req, res) => {
 })
 
 router.get('/proposta/selecao/:tipo', ehAdmin, (req, res) => {
+    const { pessoa } = req.user
     const { _id } = req.user
     const { user } = req.user
     var id
@@ -1279,11 +1288,18 @@ router.get('/proposta/selecao/:tipo', ehAdmin, (req, res) => {
     } else {
         id = user
     }
+
+    var sql = []
+    if (naoVazio(pessoa)) {
+        sql = { _id: pessoa }
+    } else {
+        sql = { user: id, funges: 'checked' }
+    }
     //console.log(_id)
     if (req.params.tipo == 'com') {
         Cliente.find({ user: id }).lean().then((todos_clientes) => {
             //console.log(todos_clientes)
-            Pessoa.find({ user: id, funges: 'checked' }).lean().then((todos_responsaveis) => {
+            Pessoa.find(sql).lean().then((todos_responsaveis) => {
                 Empresa.find({ user: id }).lean().then((todas_empresas) => {
                     res.render('principal/proposta', { todos_clientes, todos_responsaveis, todas_empresas, mostraSelect: 'none', tipo: false })
                 }).catch((err) => {

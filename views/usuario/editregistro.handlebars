@@ -153,21 +153,29 @@
             </div>
             <!-- -->
             {{#if mostraDetalhes}}
+            <input type="hidden" name="detalhes" value="true"/>
             <div class="row mb-2">
                 <div class="col-md-4 text-end">
                     <label class='col-form-label col-form-label-sm mt-1' for="usuraio">Nome de Usuário: </label><br>
+                    <label class='col-form-label col-form-label-sm mt-1' for="email">E-mail: </label><br>
+                    <label class='col-form-label col-form-label-sm mt-1' for="celular">Celular: </label>
                 </div>
                 <div class="col-md-7">
-                    <input name="usuario" id="usuario" class="form-control form-control-sm mt-1"
-                        value='{{usuario_acesso.usuario}}'>
-                    <label for="email" class="col-form-label col-form-label-sm">{{usuario_acesso.email}}</label>
+                    <input name="usuario" id="usuario" class="form-control form-control-sm mt-1 mb-1"
+                           value='{{usuario_acesso.usuario}}'>
+                    <input type="text" name="email" class="form-control form-control-sm mb-1" value="{{usuario_acesso.email}}">
+                    <input type="text" name="telefone" class="form-control form-control-sm" value="{{usuario_acesso.celular}}">
                 </div>
             </div>
-            <div class="btn-group btn-group-sm mx-auto gap-2 col-6 text-center">
-                <a class="mt-2 btn btn-sm btn-primary" data-bs-toggle='modal' data-bs-target='#senha'>Alterar
-                    Senha</a>
-                <button type="submit" class="btn btn-sm btn-success mt-2">Salvar</button>
-                <a href='/menu' class="btn btn-sm btn-primary mt-2">Voltar</a>
+            <div class="text-center mb-4">
+                <div class="btn-group btn-group-sm mx-auto gap-2 col-6">
+                    <a class="mt-2 btn btn-sm btn-primary" data-bs-toggle='modal' data-bs-target='#senha'>
+                        Alterar
+                        Senha
+                    </a>
+                    <button type="submit" class="btn btn-sm btn-success mt-2">Salvar</button>
+                    <a href='/menu' class="btn btn-sm btn-primary mt-2">Voltar</a>
+                </div>
             </div>
             {{else}}
             <div class="row mb-2">

@@ -47,6 +47,8 @@ const { ehAdmin } = require('./helpers/ehAdmin')
 require('./model/Posvenda')
 
 const Usuario = mongoose.model('usuario')
+const Tarefa = mongoose.model('tarefas')
+const Atividade = mongoose.model('atividade')
 const Proposta = mongoose.model('proposta')
 const Cliente = mongoose.model('cliente')
 const Pessoa = mongoose.model('pessoa')
@@ -138,14 +140,14 @@ app.get('/menu', ehAdmin, (req, res) => {
     const { user } = req.user
     const { ehAdmin } = req.user
     const { funges } = req.user
-    const { pessoa } = req.user
     const { nome } = req.user
     const { owner } = req.user
+    const { pessoa } = req.user
 
-    if (typeof user == 'undefined') {
-        id = _id
-    } else {
+    if (naoVazio(user)) {
         id = user
+    } else {
+        id = _id
     }
 
     var saudacao
@@ -156,7 +158,7 @@ app.get('/menu', ehAdmin, (req, res) => {
     var compara = 0
     var days = 0
     var dif = 0
-    //console.log('owner=>'+owner)
+    var nome_lista
 
     var numprj = 0
 
@@ -210,402 +212,141 @@ app.get('/menu', ehAdmin, (req, res) => {
         saudacao = 'Bom dia '
     }
 
-    Proposta.find({ user: id }).sort({ data: 'asc' }).then((todasProposta) => {
-        if (todasProposta != '') {
-            todasProposta.forEach((e) => {
-                dtcadastro = ''
-                dtvalidade = ''
-                status = ''
-                Cliente.findOne({ _id: e.cliente }).then((cliente) => {
-                    Documento.findOne({ proposta: e._id }).then((documento) => {
-                        Compra.findOne({ proposta: e._id }).then((compra) => {
-                            Vistoria.findOne({ proposta: e._id }).then((vistoria) => {
-                                Equipe.findOne({ _id: e.equipe }).then((equipe) => {
-                                    Posvenda.findOne({ proposta: e._id }).then((posvenda) => {
-                                        Pessoa.findOne({ _id: e.responsavel }).then((pesso_res) => {
-                                            q++
-                                            //console.log('e._id=>' + e._id)
-                                            if (naoVazio(e.dtcadastro6)) {
-                                                dtcadastro = e.dtcadastro6
-                                                dtvalidade = e.dtvalidade6
-                                            } else {
-                                                if (naoVazio(e.dtcadastro5)) {
-                                                    dtcadastro = e.dtcadastro5
-                                                    dtvalidade = e.dtvalidade5
-                                                } else {
-                                                    if (naoVazio(e.dtcadastro4)) {
-                                                        dtcadastro = e.dtcadastro4
-                                                        dtvalidade = e.dtvalidade4
-                                                    } else {
-                                                        if (naoVazio(e.dtcadastro3)) {
-                                                            dtcadastro = e.dtcadastro3
-                                                            dtvalidade = e.dtvalidade3
+    var sql = []
+    if (naoVazio(user)) {
+        sql = { user: id, responsavel: pessoa }
+    } else {
+        sql = { user: id }
+    }
+
+    Usuario.findOne({ _id: id }).then((user_ativo) => {
+        let esta_pessoa = pessoa
+        if (user_ativo.crm == true) {
+            Proposta.find(sql).sort({ data: 'asc' }).then((todasPropostas) => {
+                if (naoVazio(todasPropostas)) {
+                    todasPropostas.forEach((e) => {
+                        if (funges == true || ehAdmin == 0) {
+                            Cliente.findOne({ _id: e.cliente }).then((cliente) => {
+                                Documento.findOne({ proposta: e._id }).then((documento) => {
+                                    Compra.findOne({ proposta: e._id }).then((compra) => {
+                                        Vistoria.findOne({ proposta: e._id }).then((vistoria) => {
+                                            Equipe.findOne({ _id: e.equipe }).then((equipe) => {
+                                                Posvenda.findOne({ proposta: e._id }).then((posvenda) => {
+                                                    Pessoa.findOne({ _id: e.responsavel }).then((pessoa_res) => {
+                                                        if (naoVazio(e.dtcadastro6)) {
+                                                            dtcadastro = e.dtcadastro6
+                                                            dtvalidade = e.dtvalidade6
                                                         } else {
-                                                            if (naoVazio(e.dtcadastro2)) {
-                                                                dtcadastro = e.dtcadastro2
-                                                                dtvalidade = e.dtvalidade2
+                                                            if (naoVazio(e.dtcadastro5)) {
+                                                                dtcadastro = e.dtcadastro5
+                                                                dtvalidade = e.dtvalidade5
                                                             } else {
-                                                                if (naoVazio(e.dtcadastro1)) {
-                                                                    dtcadastro = e.dtcadastro1
-                                                                    dtvalidade = e.dtvalidade1
+                                                                if (naoVazio(e.dtcadastro4)) {
+                                                                    dtcadastro = e.dtcadastro4
+                                                                    dtvalidade = e.dtvalidade4
                                                                 } else {
-                                                                    dtcadastro = '0000-00-00'
-                                                                    dtvalidade = '0000-00-00'
+                                                                    if (naoVazio(e.dtcadastro3)) {
+                                                                        dtcadastro = e.dtcadastro3
+                                                                        dtvalidade = e.dtvalidade3
+                                                                    } else {
+                                                                        if (naoVazio(e.dtcadastro2)) {
+                                                                            dtcadastro = e.dtcadastro2
+                                                                            dtvalidade = e.dtvalidade2
+                                                                        } else {
+                                                                            if (naoVazio(e.dtcadastro1)) {
+                                                                                dtcadastro = e.dtcadastro1
+                                                                                dtvalidade = e.dtvalidade1
+                                                                            } else {
+                                                                                dtcadastro = '0000-00-00'
+                                                                                dtvalidade = '0000-00-00'
+                                                                            }
+                                                                        }
+                                                                    }
                                                                 }
                                                             }
                                                         }
-                                                    }
-                                                }
-                                            }
-
-                                            //console.log('documento.protocolado=>' + documento.protocolado)
-                                            //console.log('posvenda.feito=>' + posvenda.feito)
-                                            //console.log('documento.feitofaturado=>' + documento.feitofaturado)
-                                            //console.log('documento.feitoalmox=>' + documento.feitoalmox)
-                                            //console.log('documento.enviaalmox=>' + documento.enviaalmox)
-                                            //console.log('equipe.feito=>' + equipe.feito)
-                                            //console.log('documento.feitotrt=>' + documento.feitotrt)
-                                            //console.log('compra.feitonota=>' + compra.feitonota)
-                                            //console.log('compra.feitopedido=>' + compra.feitopedido)
-                                            //console.log('e.assinado=>' + e.assinado)
-                                            //console.log('vistoria.feito=>' + vistoria.feito)
 
 
-
-                                            if (pesso_res != null && typeof pesso_res != 'undefined') {
-                                                responsavel = pesso_res.nome
-                                            } else {
-                                                responsavel = ''
-                                            }
-                                            //console.log('responsavel=>'+responsavel)
-                                            //console.log('pessoa responsavel=>' + pessoa)
-                                            if (e.ganho == true) {
-                                                if (e.encerrado == true) {
-                                                    status = 'Encerrado'
-                                                    qtdfim++
-                                                    qtdencerrado++
-                                                    listaEncerrado.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
-                                                } else {
-                                                    if (posvenda.feito == true) {
-                                                        status = 'Pós-Venda'
-                                                        qtdpos++
-                                                        qtdaberto++
-                                                        listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
-                                                    } else {
-                                                        if (documento.feitofaturado == true) {
-                                                            status = 'Faturado'
-                                                            qtdfat++
-                                                            qtdaberto++
-                                                            listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                                        if (pessoa_res != null) {
+                                                            responsavel = pessoa_res.nome
                                                         } else {
-                                                            if (documento.feitoalmox == true) {
-                                                                status = 'Almoxarifado Fechado'
-                                                                qtdalx++
-                                                                listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
+                                                            responsavel = ''
+                                                        }
+                                                        if (e.ganho == true) {
+                                                            if (e.encerrado == true) {
+                                                                status = 'Encerrado'
+                                                                qtdfim++
+                                                                qtdencerrado++
+                                                                listaEncerrado.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                             } else {
-                                                                if (documento.enviaalmox == true) {
-                                                                    status = 'Almoxarifado Em Aberto'
-                                                                    qtdalx++
+                                                                if (posvenda.feito == true) {
+                                                                    status = 'Pós-Venda'
+                                                                    qtdpos++
                                                                     qtdaberto++
                                                                     listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                                 } else {
-                                                                    if (equipe.feito == true) {
-                                                                        status = 'Execução a Campo'
-                                                                        qtdequ++
+                                                                    if (documento.feitofaturado == true) {
+                                                                        status = 'Faturado'
+                                                                        qtdfat++
                                                                         qtdaberto++
                                                                         listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                                     } else {
-                                                                        if (documento.protocolado == true) {
-                                                                            status = 'Protocolado'
-                                                                            qtdpcl++
+                                                                        if (documento.feitoalmox == true) {
+                                                                            status = 'Almoxarifado Fechado'
                                                                             qtdaberto++
                                                                             listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                                         } else {
-                                                                            if (documento.feitotrt == true) {
-                                                                                status = 'TRT'
-                                                                                qtdtrt++
+                                                                            if (documento.enviaalmox == true) {
+                                                                                status = 'Almoxarifado Em Aberto'
                                                                                 qtdaberto++
                                                                                 listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                                             } else {
-                                                                                if (compra.feitonota == true) {
-                                                                                    status = 'NF'
-                                                                                    qtdnot++
+                                                                                if (equipe.feito == true) {
+                                                                                    status = 'Execução a Campo'
+                                                                                    qtdequ++
                                                                                     qtdaberto++
                                                                                     listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                                                 } else {
-                                                                                    if (compra.feitopedido == true) {
-                                                                                        status = 'Pedido'
-                                                                                        qtdped++
+                                                                                    if (documento.protocolado == true) {
+                                                                                        status = 'Protocolado'
+                                                                                        qtdpcl++
                                                                                         qtdaberto++
                                                                                         listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                                                     } else {
-                                                                                        if (e.assinado == true) {
-                                                                                            status = 'Assinado'
-                                                                                            qtdass++
+                                                                                        if (documento.feitotrt == true) {
+                                                                                            status = 'TRT'
+                                                                                            qtdtrt++
                                                                                             qtdaberto++
                                                                                             listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                                                         } else {
-                                                                                            if (vistoria.feito == true) {
-                                                                                                status = 'Visita'
-                                                                                                qtdvis++
+                                                                                            if (compra.feitonota == true) {
+                                                                                                status = 'NF'
+                                                                                                qtdnot++
                                                                                                 qtdaberto++
                                                                                                 listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                                                             } else {
-                                                                                                status = 'Preparado para a Visita'
-                                                                                                qtdpro++
-                                                                                                qtdaberto++
-                                                                                                listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            } else {
-                                                if (e.baixada == false) {
-                                                    status = 'Proposta Enviada'
-                                                    qtdpro++
-                                                    qtdorcado++
-                                                    listaOrcado.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
-                                                } else {
-                                                    qtdbaixado++
-                                                }
-                                            }
-
-
-                                            //console.log('e.ganho=>' + e.ganho)
-                                            //console.log('e._id=>' + e._id)
-                                            if (e.ganho == false && e.baixada == false) {
-                                                //console.log('dtvalidade=>' + dtvalidade)
-                                                if (dtvalidade != '0000-00-00') {
-                                                    data1 = new Date(dtvalidade)
-                                                    data2 = new Date(hoje)
-                                                    //console.log('data1=>' + data1)
-                                                    //console.log('data2=>' + data2)
-                                                    dif = Math.abs(data2.getTime() - data1.getTime())
-                                                    // //console.log('dif=>'+dif)
-                                                    days = Math.ceil(dif / (1000 * 60 * 60 * 24))
-                                                    if (data1.getTime() < data2.getTime()) {
-                                                        days = days * -1
-                                                    }
-                                                    // //console.log('days=>' + days)
-                                                    if (days == 1 || days == 0) {
-                                                        notpro.push({ proposta: e.seq, id: e._id, status: e.status, cliente: cliente.nome, telefone: cliente.celular, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtvalidade) })
-                                                    } else {
-                                                        if (days < 0) {
-                                                            atrasado.push({ proposta: e.seq, id: e._id, status: e.status, cliente: cliente.nome, telefone: cliente.celular, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtvalidade) })
-                                                        }
-                                                    }
-                                                }
-
-                                            } else {
-                                                // //console.log('e._id=>'+e._id)
-                                                if (e.ganho == true && e.encerrado == false) {
-                                                    var dtassinatura
-                                                    if (naoVazio(e.dtassinatura)) {
-                                                        dtassinatura = e.dtassinatura
-                                                    } else {
-                                                        dtassinatura = '0000-00-00'
-                                                    }
-
-                                                    //console.log('dtdlassinado=>' + dtdlassinado)
-                                                    data2 = new Date(equipe.dtfim)
-                                                    data1 = new Date(hoje)
-                                                    // //console.log('data1=>' + data1)
-                                                    // //console.log('data2=>' + data2)
-                                                    dif = Math.abs(data2.getTime() - data1.getTime())
-                                                    //console.log('dif=>'+dif)
-                                                    days = Math.ceil(dif / (1000 * 60 * 60 * 24))
-                                                    // //console.log('days=>'+days)
-                                                    //console.log('compara=>'+compara)
-                                                    if (days < 30) {
-                                                        deadlineIns.push({ id: e._id, proposta: e.seq, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(equipe.dtinicio), dliins: dataMensagem(equipe.dtfim) })
-                                                    }
-                                                }
-                                            }
-                                            //console.log('status=>' + status)
-                                            //console.log('q=>' + q)
-                                            if (q == todasProposta.length) {
-                                                numprj = todasProposta.length
-                                                //console.log('numprj=>' + numprj)
-                                                //console.log('qtdorcado=>' + qtdorcado)
-                                                //console.log('qtdaberto=>' + qtdaberto)
-                                                //console.log('qtdencerrado=>' + qtdencerrado)
-                                                Usuario.findOne({ _id: id }).then((user_ativo) => {
-                                                    console.log('crm=>' + user_ativo.crm)
-                                                    res.render('menuproposta', { crm: user_ativo.crm, id: _id, owner: owner, listaAberto, listaOrcado, listaEncerrado, saudacao, nome_lista: nome, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdalx, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, qtdbaixado, deadlineIns, notpro, atrasado })
-                                                })
-                                            }
-                                        }).catch((err) => {
-                                            req.flash('error_msg', 'Houve um erro ao encontrar as pessoas<1>.')
-                                            res.redirect('/')
-                                        })
-                                    }).catch((err) => {
-                                        req.flash('error_msg', 'Houve um erro ao encontrar o pós venda.')
-                                        res.redirect('/')
-                                    })
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Houve um erro ao encontrar a equipe.')
-                                    res.redirect('/')
-                                })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Houve um erro ao encontrar a vistoria.')
-                                res.redirect('/')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Houve um erro ao encontrar a compra.')
-                            res.redirect('/')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Houve um erro ao encontrar o documento.')
-                        res.redirect('/')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Houve um erro ao encontrar os clientes.')
-                    res.redirect('/')
-                })
-
-            })
-        } else {
-            //console.log('user=>'+user)
-            if (user != '' && typeof user != 'undefined') {
-                var instalador = ''
-                //console.log('funges=>'+funges)
-                Proposta.find({ user: user }).sort({ data: 'asc' }).then((todasProposta) => {
-                    //console.log('todasProposta=>'+todasProposta)
-                    if (todasProposta != '') {
-                        todasProposta.forEach((e) => {
-                            if (funges == true) {
-                                //console.log(e)
-                                Cliente.findOne({ _id: e.cliente }).then((cliente) => {
-                                    Documento.findOne({ proposta: e._id }).then((documento) => {
-                                        Compra.findOne({ proposta: e._id }).then((compra) => {
-                                            Vistoria.findOne({ proposta: e._id }).then((vistoria) => {
-                                                Equipe.findOne({ _id: e.equipe }).then((equipe) => {
-                                                    Posvenda.findOne({ proposta: e._id }).then((posvenda) => {
-                                                        Pessoa.findOne({ _id: e.responsavel }).then((pessoa_res) => {
-                                                            //console.log('e._id=>' + e._id)
-                                                            if (naoVazio(e.dtcadastro6)) {
-                                                                dtcadastro = e.dtcadastro6
-                                                                dtvalidade = e.dtvalidade6
-                                                            } else {
-                                                                if (naoVazio(e.dtcadastro5)) {
-                                                                    dtcadastro = e.dtcadastro5
-                                                                    dtvalidade = e.dtvalidade5
-                                                                } else {
-                                                                    if (naoVazio(e.dtcadastro4)) {
-                                                                        dtcadastro = e.dtcadastro4
-                                                                        dtvalidade = e.dtvalidade4
-                                                                    } else {
-                                                                        if (naoVazio(e.dtcadastro3)) {
-                                                                            dtcadastro = e.dtcadastro3
-                                                                            dtvalidade = e.dtvalidade3
-                                                                        } else {
-                                                                            if (naoVazio(e.dtcadastro2)) {
-                                                                                dtcadastro = e.dtcadastro2
-                                                                                dtvalidade = e.dtvalidade2
-                                                                            } else {
-                                                                                if (naoVazio(e.dtcadastro1)) {
-                                                                                    dtcadastro = e.dtcadastro1
-                                                                                    dtvalidade = e.dtvalidade1
-                                                                                } else {
-                                                                                    dtcadastro = '0000-00-00'
-                                                                                    dtvalidade = '0000-00-00'
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-
-
-                                                            if (pessoa_res != null) {
-                                                                responsavel = pessoa_res.nome
-                                                            } else {
-                                                                responsavel = ''
-                                                            }
-                                                            if (e.ganho == true) {
-                                                                if (e.encerrado == true) {
-                                                                    status = 'Encerrado'
-                                                                    qtdfim++
-                                                                    qtdencerrado++
-                                                                    listaEncerrado.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
-                                                                } else {
-                                                                    if (posvenda.feito == true) {
-                                                                        status = 'Pós-Venda'
-                                                                        qtdpos++
-                                                                        qtdaberto++
-                                                                        listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
-                                                                    } else {
-                                                                        if (documento.feitofaturado == true) {
-                                                                            status = 'Faturado'
-                                                                            qtdfat++
-                                                                            qtdaberto++
-                                                                            listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
-                                                                        } else {
-                                                                            if (documento.feitoalmox == true) {
-                                                                                status = 'Almoxarifado Fechado'
-                                                                                qtdaberto++
-                                                                                listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
-                                                                            } else {
-                                                                                if (documento.enviaalmox == true) {
-                                                                                    status = 'Almoxarifado Em Aberto'
-                                                                                    qtdaberto++
-                                                                                    listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
-                                                                                } else {
-                                                                                    if (equipe.feito == true) {
-                                                                                        status = 'Execução a Campo'
-                                                                                        qtdequ++
-                                                                                        qtdaberto++
-                                                                                        listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
-                                                                                    } else {
-                                                                                        if (documento.protocolado == true) {
-                                                                                            status = 'Protocolado'
-                                                                                            qtdpcl++
-                                                                                            qtdaberto++
-                                                                                            listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
-                                                                                        } else {
-                                                                                            if (documento.feitotrt == true) {
-                                                                                                status = 'TRT'
-                                                                                                qtdtrt++
-                                                                                                qtdaberto++
-                                                                                                listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
-                                                                                            } else {
-                                                                                                if (compra.feitonota == true) {
-                                                                                                    status = 'NF'
-                                                                                                    qtdnot++
+                                                                                                if (compra.feitopedido == true) {
+                                                                                                    status = 'Pedido'
+                                                                                                    qtdped++
                                                                                                     qtdaberto++
                                                                                                     listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                                                                 } else {
-                                                                                                    if (compra.feitopedido == true) {
-                                                                                                        status = 'Pedido'
-                                                                                                        qtdped++
+                                                                                                    if (e.assinado == true) {
+                                                                                                        status = 'Assinado'
+                                                                                                        qtdass++
                                                                                                         qtdaberto++
                                                                                                         listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                                                                     } else {
-                                                                                                        if (e.assinado == true) {
-                                                                                                            status = 'Assinado'
-                                                                                                            qtdass++
+                                                                                                        if (vistoria.feito == true) {
+                                                                                                            status = 'Visita'
+                                                                                                            qtdvis++
                                                                                                             qtdaberto++
                                                                                                             listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                                                                         } else {
-                                                                                                            if (vistoria.feito == true) {
-                                                                                                                status = 'Visita'
-                                                                                                                qtdvis++
-                                                                                                                qtdaberto++
-                                                                                                                listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
-                                                                                                            } else {
-                                                                                                                status = 'Preparado para a Visita'
-                                                                                                                qtdpro++
-                                                                                                                qtdaberto++
-                                                                                                                listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
-                                                                                                            }
+                                                                                                            status = 'Preparado para a Visita'
+                                                                                                            qtdpro++
+                                                                                                            qtdaberto++
+                                                                                                            listaAberto.push({ proposta: e.seq, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                                                                         }
                                                                                                     }
                                                                                                 }
@@ -617,246 +358,253 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                                         }
                                                                     }
                                                                 }
+                                                            }
+                                                        } else {
+                                                            if (e.baixada == false) {
+                                                                status = 'Proposta Enviada'
+                                                                qtdpro++
+                                                                qtdorcado++
+                                                                listaOrcado.push({ proposta: e.seq, saudacao, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
                                                             } else {
-                                                                if (e.baixada == false) {
-                                                                    status = 'Proposta Enviada'
-                                                                    qtdpro++
-                                                                    qtdorcado++
-                                                                    listaOrcado.push({ proposta: e.seq, saudacao, status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade) })
-                                                                } else {
-                                                                    qtdbaixado++
-                                                                }
+                                                                qtdbaixado++
                                                             }
+                                                        }
 
-                                                            if (e.ganho == false && e.baixada == false) {
-                                                                if (dtvalidade != '0000-00-00') {
-                                                                    data1 = new Date(dtvalidade)
-                                                                    data2 = new Date(hoje)
-                                                                    //console.log('data1=>'+data1)
-                                                                    //console.log('data2=>'+data2)
-                                                                    dif = Math.abs(data1.getTime() - data2.getTime())
-                                                                    //console.log('dif=>'+dif)
-                                                                    days = Math.ceil(dif / (1000 * 60 * 60 * 24))
-                                                                    if (data1.getTime() < data2.getTime()) {
-                                                                        days = days * -1
-                                                                    }
-                                                                    if (days == 1 || days == 0) {
-                                                                        notpro.push({ id: e._id, proposta: e.seq, status: e.status, cliente: cliente.nome, telefone: cliente.celular, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
-                                                                    } else {
-                                                                        if (days < 0) {
-                                                                            atrasado.push({ id: e._id, proposta: e.seq, status: e.status, cliente: cliente.nome, telefone: cliente.celular, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
-                                                                        }
+                                                        if (e.ganho == false && e.baixada == false) {
+                                                            if (dtvalidade != '0000-00-00') {
+                                                                data1 = new Date(dtvalidade)
+                                                                data2 = new Date(hoje)
+                                                                //console.log('data1=>'+data1)
+                                                                //console.log('data2=>'+data2)
+                                                                dif = Math.abs(data1.getTime() - data2.getTime())
+                                                                //console.log('dif=>'+dif)
+                                                                days = Math.ceil(dif / (1000 * 60 * 60 * 24))
+                                                                if (data1.getTime() < data2.getTime()) {
+                                                                    days = days * -1
+                                                                }
+                                                                if (days == 1 || days == 0) {
+                                                                    notpro.push({ id: e._id, proposta: e.seq, status: e.status, cliente: cliente.nome, telefone: cliente.celular, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
+                                                                } else {
+                                                                    if (days < 0) {
+                                                                        atrasado.push({ id: e._id, proposta: e.seq, status: e.status, cliente: cliente.nome, telefone: cliente.celular, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
                                                                     }
                                                                 }
                                                             }
-                                                            //console.log('status=>' + status)
-                                                            q++
-                                                            //console.log('q=>' + q)
-                                                            if (q == todasProposta.length) {
-                                                                numprj = todasProposta.length
-                                                                //console.log('numprj=>' + numprj)
-                                                                //console.log('qtdorcado=>' + qtdorcado)
-                                                                //console.log('qtdaberto=>' + qtdaberto)
-                                                                //console.log('qtdencerrado=>' + qtdencerrado)
-                                                                Pessoa.findOne({ _id: pessoa }).lean().then((nome_pessoa) => {
-                                                                    Usuario.findOne({ _id: id }).then((user_ativo) => {
-                                                                        console.log('crm=>' + user_ativo.crm)
-                                                                        res.render('menuproposta', { crm: user_ativo.crm, id: _id, owner: owner, saudacao, nome_lista: nome_pessoa.nome, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, qtdbaixado, notpro, atrasado })
-                                                                    })
-                                                                }).catch((err) => {
-                                                                    req.flash('error_msg', 'Houve um erro ao encontrar o nome do usuário.')
-                                                                    res.redirect('/')
-                                                                })
+                                                        }
+                                                        //console.log('status=>' + status)
+                                                        q++
+                                                        //console.log('q=>' + q)
+                                                        if (q == todasPropostas.length) {
+                                                            numprj = todasPropostas.length
+                                                            //console.log('numprj=>' + numprj)
+                                                            //console.log('qtdorcado=>' + qtdorcado)
+                                                            //console.log('qtdaberto=>' + qtdaberto)
+                                                            //console.log('qtdencerrado=>' + qtdencerrado)
+                                                            console.log('achou')
+                                                            console.log('pessoa=>' + pessoa)
+                                                            console.log('passou')
+                                                            if (typeof pessoa == 'undefined') {
+                                                                   esta_pessoa = '111111111111111111111111'
                                                             }
-                                                        }).catch((err) => {
-                                                            req.flash('error_msg', 'Houve um erro ao encontrar as pessoas<2>.')
-                                                            res.redirect('/')
-                                                        })
+                                                            Pessoa.findOne({ _id: esta_pessoa }).lean().then((nome_pessoa) => {
+                                                                console.log('nome_pessoa=>' + nome_pessoa)
+                                                                if (naoVazio(nome_pessoa)) {
+                                                                    nome_lista = nome_pessoa.nome
+                                                                } else {
+                                                                    nome_lista = nome
+                                                                }
+                                                                res.render('menuproposta', { crm: true, id: _id, owner: owner, saudacao, nome_lista, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, qtdbaixado, notpro, atrasado })
+                                                            }).catch((err) => {
+                                                                req.flash('error_msg', 'Houve um erro ao encontrar o nome do usuário.')
+                                                                res.redirect('/')
+                                                            })
+                                                        }
                                                     }).catch((err) => {
-                                                        req.flash('error_msg', 'Houve um erro ao encontrar o pós venda.')
+                                                        req.flash('error_msg', 'Houve um erro ao encontrar as pessoas<2>.')
                                                         res.redirect('/')
                                                     })
                                                 }).catch((err) => {
-                                                    req.flash('error_msg', 'Houve um erro ao encontrar a equipe.')
+                                                    req.flash('error_msg', 'Houve um erro ao encontrar o pós venda.')
                                                     res.redirect('/')
                                                 })
                                             }).catch((err) => {
-                                                req.flash('error_msg', 'Houve um erro ao encontrar a vistoria.')
+                                                req.flash('error_msg', 'Houve um erro ao encontrar a equipe.')
                                                 res.redirect('/')
                                             })
                                         }).catch((err) => {
-                                            req.flash('error_msg', 'Houve um erro ao encontrar a compra.')
+                                            req.flash('error_msg', 'Houve um erro ao encontrar a vistoria.')
                                             res.redirect('/')
                                         })
                                     }).catch((err) => {
-                                        req.flash('error_msg', 'Houve um erro ao encontrar o documento.')
+                                        req.flash('error_msg', 'Houve um erro ao encontrar a compra.')
                                         res.redirect('/')
                                     })
                                 }).catch((err) => {
-                                    req.flash('error_msg', 'Houve um erro ao encontrar os clientes.')
+                                    req.flash('error_msg', 'Houve um erro ao encontrar o documento.')
                                     res.redirect('/')
                                 })
-                            } else {
-                                //console.log('e.equipe=>'+e.equipe)
-                                //console.log('pessoa=>'+pessoa)
-                                Equipe.findOne({ _id: e.equipe }).then((equipe) => {
-                                    Pessoa.findOne({ _id: pessoa }).then((usuario) => {
-                                        //console.log('pessoa=>' + pessoa)
-                                        //console.log('usuario.nome=>' + usuario.nome)
-                                        //console.log('equipe.ins0=>' + equipe.ins0)
-                                        //console.log('equipe.ins1=>' + equipe.ins1)
-                                        //console.log('equipe.ins2=>' + equipe.ins2)
-                                        //console.log('equipe.ins3=>' + equipe.ins3)
-                                        //console.log('equipe.ins4=>' + equipe.ins4)
-                                        //console.log('equipe.ins5=>' + equipe.ins5)
-                                        instalador = ''
-                                        if (equipe.ins0 == usuario.nome) {
-                                            instalador = equipe.ins0
-                                        }
-                                        if (equipe.ins1 == usuario.nome) {
-                                            instalador = equipe.ins1
-                                        }
-                                        if (equipe.ins2 == usuario.nome) {
-                                            instalador = equipe.ins2
-                                        }
-                                        if (equipe.ins3 == usuario.nome) {
-                                            instalador = equipe.ins3
-                                        }
-                                        if (equipe.ins4 == usuario.nome) {
-                                            instalador = equipe.ins4
-                                        }
-                                        if (equipe.ins5 == usuario.nome) {
-                                            instalador = equipe.ins5
-                                        }
-                                        //console.log('instalador=>' + instalador)
-                                        if (instalador != '') {
-                                            numprj++
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Houve um erro ao encontrar os clientes.')
+                                res.redirect('/')
+                            })
+                        } else {
+                            Equipe.findOne({ _id: e.equipe }).then((equipe) => {
+                                Pessoa.findOne({ _id: pessoa }).then((usuario) => {
+                                    //console.log('pessoa=>' + pessoa)
+                                    //console.log('usuario.nome=>' + usuario.nome)
+                                    //console.log('equipe.ins0=>' + equipe.ins0)
+                                    //console.log('equipe.ins1=>' + equipe.ins1)
+                                    //console.log('equipe.ins2=>' + equipe.ins2)
+                                    //console.log('equipe.ins3=>' + equipe.ins3)
+                                    //console.log('equipe.ins4=>' + equipe.ins4)
+                                    //console.log('equipe.ins5=>' + equipe.ins5)
+                                    instalador = ''
+                                    if (equipe.ins0 == usuario.nome) {
+                                        instalador = equipe.ins0
+                                    }
+                                    if (equipe.ins1 == usuario.nome) {
+                                        instalador = equipe.ins1
+                                    }
+                                    if (equipe.ins2 == usuario.nome) {
+                                        instalador = equipe.ins2
+                                    }
+                                    if (equipe.ins3 == usuario.nome) {
+                                        instalador = equipe.ins3
+                                    }
+                                    if (equipe.ins4 == usuario.nome) {
+                                        instalador = equipe.ins4
+                                    }
+                                    if (equipe.ins5 == usuario.nome) {
+                                        instalador = equipe.ins5
+                                    }
+                                    //console.log('instalador=>' + instalador)
+                                    if (instalador != '') {
+                                        numprj++
 
-                                            Cliente.findOne({ _id: e.cliente }).then((cliente) => {
-                                                Documento.findOne({ proposta: e._id }).then((documento) => {
-                                                    Compra.findOne({ proposta: e._id }).then((compra) => {
-                                                        Vistoria.findOne({ proposta: e._id }).then((vistoria) => {
-                                                            Equipe.findOne({ _id: e.equipe }).then((equipe) => {
-                                                                Posvenda.findOne({ proposta: e._id }).then((posvenda) => {
-                                                                    Pessoa.findOne({ _id: e.responsavel }).then((pessoa_res) => {
-                                                                        //console.log('entrou')
-                                                                        if (naoVazio(e.dtcadastro6)) {
-                                                                            dtcadastro = e.dtcadastro6
-                                                                            dtvalidade = e.dtvalidade6
+                                        Cliente.findOne({ _id: e.cliente }).then((cliente) => {
+                                            Documento.findOne({ proposta: e._id }).then((documento) => {
+                                                Compra.findOne({ proposta: e._id }).then((compra) => {
+                                                    Vistoria.findOne({ proposta: e._id }).then((vistoria) => {
+                                                        Equipe.findOne({ _id: e.equipe }).then((equipe) => {
+                                                            Posvenda.findOne({ proposta: e._id }).then((posvenda) => {
+                                                                Pessoa.findOne({ _id: e.responsavel }).then((pessoa_res) => {
+                                                                    //console.log('entrou')
+                                                                    if (naoVazio(e.dtcadastro6)) {
+                                                                        dtcadastro = e.dtcadastro6
+                                                                        dtvalidade = e.dtvalidade6
+                                                                    } else {
+                                                                        if (naoVazio(e.dtcadastro5)) {
+                                                                            dtcadastro = e.dtcadastro5
+                                                                            dtvalidade = e.dtvalidade5
                                                                         } else {
-                                                                            if (naoVazio(e.dtcadastro5)) {
-                                                                                dtcadastro = e.dtcadastro5
-                                                                                dtvalidade = e.dtvalidade5
+                                                                            if (naoVazio(e.dtcadastro4)) {
+                                                                                dtcadastro = e.dtcadastro4
+                                                                                dtvalidade = e.dtvalidade4
                                                                             } else {
-                                                                                if (naoVazio(e.dtcadastro4)) {
-                                                                                    dtcadastro = e.dtcadastro4
-                                                                                    dtvalidade = e.dtvalidade4
+                                                                                if (naoVazio(e.dtcadastro3)) {
+                                                                                    dtcadastro = e.dtcadastro3
+                                                                                    dtvalidade = e.dtvalidade3
                                                                                 } else {
-                                                                                    if (naoVazio(e.dtcadastro3)) {
-                                                                                        dtcadastro = e.dtcadastro3
-                                                                                        dtvalidade = e.dtvalidade3
+                                                                                    if (naoVazio(e.dtcadastro2)) {
+                                                                                        dtcadastro = e.dtcadastro2
+                                                                                        dtvalidade = e.dtvalidade2
                                                                                     } else {
-                                                                                        if (naoVazio(e.dtcadastro2)) {
-                                                                                            dtcadastro = e.dtcadastro2
-                                                                                            dtvalidade = e.dtvalidade2
+                                                                                        if (naoVazio(e.dtcadastro1)) {
+                                                                                            dtcadastro = e.dtcadastro1
+                                                                                            dtvalidade = e.dtvalidade1
                                                                                         } else {
-                                                                                            if (naoVazio(e.dtcadastro1)) {
-                                                                                                dtcadastro = e.dtcadastro1
-                                                                                                dtvalidade = e.dtvalidade1
-                                                                                            } else {
-                                                                                                dtcadastro = '0000-00-00'
-                                                                                                dtvalidade = '0000-00-00'
-                                                                                            }
+                                                                                            dtcadastro = '0000-00-00'
+                                                                                            dtvalidade = '0000-00-00'
                                                                                         }
                                                                                     }
                                                                                 }
                                                                             }
                                                                         }
+                                                                    }
 
 
-                                                                        if (pessoa_res != null) {
-                                                                            responsavel = pessoa_res.nome
+                                                                    if (pessoa_res != null) {
+                                                                        responsavel = pessoa_res.nome
+                                                                    } else {
+                                                                        responsavel = ''
+                                                                    }
+                                                                    if (e.ganho == true) {
+                                                                        if (e.encerrado == true) {
+                                                                            status = 'Encerrado'
+                                                                            qtdfim++
+                                                                            qtdencerrado++
+                                                                            listaEncerrado.push({ status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                                         } else {
-                                                                            responsavel = ''
-                                                                        }
-                                                                        if (e.ganho == true) {
-                                                                            if (e.encerrado == true) {
-                                                                                status = 'Encerrado'
-                                                                                qtdfim++
-                                                                                qtdencerrado++
-                                                                                listaEncerrado.push({ status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
+                                                                            if (posvenda.feito == true) {
+                                                                                status = 'Pós-Venda'
+                                                                                qtdpos++
+                                                                                qtdaberto++
+                                                                                listaAberto.push({ status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                                             } else {
-                                                                                if (posvenda.feito == true) {
-                                                                                    status = 'Pós-Venda'
-                                                                                    qtdpos++
+                                                                                if (documento.feitofaturado == true) {
+                                                                                    status = 'Faturado'
+                                                                                    qtdfat++
                                                                                     qtdaberto++
                                                                                     listaAberto.push({ status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                                                 } else {
                                                                                     if (documento.feitofaturado == true) {
-                                                                                        status = 'Faturado'
-                                                                                        qtdfat++
+                                                                                        status = 'Almoxarifado Fechado'
+                                                                                        qtdalx++
                                                                                         qtdaberto++
                                                                                         listaAberto.push({ status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                                                     } else {
                                                                                         if (documento.feitofaturado == true) {
-                                                                                            status = 'Almoxarifado Fechado'
-                                                                                            qtdalx++
+                                                                                            status = 'Almoxarifado em Aberto'
+                                                                                            qtdenv++
                                                                                             qtdaberto++
                                                                                             listaAberto.push({ status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                                                         } else {
-                                                                                            if (documento.feitofaturado == true) {
-                                                                                                status = 'Almoxarifado em Aberto'
-                                                                                                qtdenv++
+                                                                                            if (equipe.feito == true) {
+                                                                                                status = 'Execução a Campo'
+                                                                                                qtdequ++
                                                                                                 qtdaberto++
                                                                                                 listaAberto.push({ status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                                                             } else {
-                                                                                                if (equipe.feito == true) {
-                                                                                                    status = 'Execução a Campo'
-                                                                                                    qtdequ++
+                                                                                                if (documento.protocolado == true) {
+                                                                                                    status = 'Protocolado'
+                                                                                                    qtdpcl++
                                                                                                     qtdaberto++
                                                                                                     listaAberto.push({ status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                                                                 } else {
-                                                                                                    if (documento.protocolado == true) {
-                                                                                                        status = 'Protocolado'
-                                                                                                        qtdpcl++
+                                                                                                    if (documento.feitotrt == true) {
+                                                                                                        status = 'TRT'
+                                                                                                        qtdtrt++
                                                                                                         qtdaberto++
                                                                                                         listaAberto.push({ status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                                                                     } else {
-                                                                                                        if (documento.feitotrt == true) {
-                                                                                                            status = 'TRT'
-                                                                                                            qtdtrt++
+                                                                                                        if (compra.feitonota == true) {
+                                                                                                            status = 'NF'
+                                                                                                            qtdnot++
                                                                                                             qtdaberto++
                                                                                                             listaAberto.push({ status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                                                                         } else {
-                                                                                                            if (compra.feitonota == true) {
-                                                                                                                status = 'NF'
-                                                                                                                qtdnot++
+                                                                                                            if (compra.feitopedido == true) {
+                                                                                                                status = 'Pedido'
+                                                                                                                qtdped++
                                                                                                                 qtdaberto++
                                                                                                                 listaAberto.push({ status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                                                                             } else {
-                                                                                                                if (compra.feitopedido == true) {
-                                                                                                                    status = 'Pedido'
-                                                                                                                    qtdped++
+                                                                                                                if (e.assinado == true) {
+                                                                                                                    status = 'Assinado'
+                                                                                                                    qtdass++
                                                                                                                     qtdaberto++
                                                                                                                     listaAberto.push({ status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                                                                                 } else {
-                                                                                                                    if (e.assinado == true) {
-                                                                                                                        status = 'Assinado'
-                                                                                                                        qtdass++
+                                                                                                                    if (vistoria.feito == true) {
+                                                                                                                        status = 'Visita'
+                                                                                                                        qtdvis++
                                                                                                                         qtdaberto++
                                                                                                                         listaAberto.push({ status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                                                                                     } else {
-                                                                                                                        if (vistoria.feito == true) {
-                                                                                                                            status = 'Visita'
-                                                                                                                            qtdvis++
-                                                                                                                            qtdaberto++
-                                                                                                                            listaAberto.push({ status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
-                                                                                                                        } else {
-                                                                                                                            status = 'Preparado para a Visita'
-                                                                                                                            qtdpro++
-                                                                                                                            qtdorcado++
-                                                                                                                            listaAberto.push({ status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
-                                                                                                                        }
+                                                                                                                        status = 'Preparado para a Visita'
+                                                                                                                        qtdpro++
+                                                                                                                        qtdorcado++
+                                                                                                                        listaAberto.push({ status, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                                                                                     }
                                                                                                                 }
                                                                                                             }
@@ -868,60 +616,111 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                                                     }
                                                                                 }
                                                                             }
+                                                                        }
+                                                                    } else {
+                                                                        if (e.baixada == false) {
+                                                                            status = 'Proposta Enviada'
+                                                                            qtdpro++
+                                                                            qtdorcado++
+                                                                            listaOrcado.push({ status, saudacao, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
                                                                         } else {
-                                                                            if (e.baixada == false) {
-                                                                                status = 'Proposta Enviada'
-                                                                                qtdpro++
-                                                                                qtdorcado++
-                                                                                listaOrcado.push({ status, saudacao, id: e._id, cliente: cliente.nome, email: cliente.email, telefone: cliente.celular, responsavel, dtcadastro: dataMensagem(dtcadastro), dtvalidade: dataMensagem(dtvalidade), block: true })
-                                                                            } else {
-                                                                                qtdbaixado++
-                                                                            }
+                                                                            qtdbaixado++
                                                                         }
+                                                                    }
 
-                                                                        q++
+                                                                    q++
 
-                                                                        if (q == todasProposta.length) {
+                                                                    if (q == todasPropostas.length) {
 
-                                                                            //console.log(listaAberto)
-                                                                            numprj = numprj
-                                                                            Usuario.findOne({ _id: id }).then((user_ativo) => {
-                                                                                console.log('crm=>' + user_ativo.crm)
-                                                                                res.render('menuproposta', { user: user_ativo.crm, id: _id, owner: owner, saucadacao, listaOrcado, listaAberto, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdorcado, qtdaberto, qtdencerrado, qtdbaixado, block: true })
-                                                                            })
-                                                                        }
-                                                                    })
+                                                                        //console.log(listaAberto)
+                                                                        numprj = numprj
+                                                                        Pessoa.findOne({ _id: pessoa }).lean().then((nome_pessoa) => {
+                                                                            res.render('menuproposta', { user: true, id: _id, owner: owner, saucadacao, listaOrcado, listaAberto, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdorcado, qtdaberto, qtdencerrado, qtdbaixado, block: true })
+                                                                        })
+                                                                    }
                                                                 })
                                                             })
                                                         })
                                                     })
                                                 })
                                             })
+                                        })
 
-                                        }
-                                    })
+                                    }
                                 })
-                            }
-                        })
-                    } else {
-                        //console.log('sem registro')
-                        Usuario.findOne({ _id: id }).then((user_ativo) => {
-                            console.log('crm=>' + user_ativo.crm)
-                            res.render('menuproposta', { crm: user_ativo.crm, id: _id, owner: owner, saudacao, nome_lista: nome, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado, qtdbaixado })
-                        })
+                            })
+                        }
+                    })
+                } else {
+                    if (typeof pessoa == 'undefined') {
+                        esta_pessoa = '111111111111111111111111'
                     }
+                    Pessoa.findOne({ _id: pessoa }).lean().then((nome_pessoa) => {
+                        console.log('nome_pessoa=>'+nome_pessoa)
+                        if (naoVazio(nome_pessoa)) {
+                            nome_lista = nome_pessoa.nome
+                        } else {
+                            nome_lista = nome
+                        }
+                        res.render('menuproposta', { crm: true, id: _id, owner: owner, saudacao, nome_lista })
+                    })
+                }
+            }).catch((err) => {
+                if (typeof pessoa == 'undefined') {
+                    esta_pessoa = '111111111111111111111111'
+                }
+                Pessoa.findOne({ _id: pessoa }).lean().then((nome_pessoa) => {
+                    if (naoVazio(nome_pessoa)) {
+                        nome_lista = nome_pessoa.nome
+                    } else {
+                        nome_lista = nome
+                    }
+                    res.render('menuproposta', { crm: true, id: _id, owner: owner, saudacao, nome_lista})
                 })
-            } else {
-                //console.log('sem registro')
-                Usuario.findOne({ _id: id }).then((user_ativo) => {
-                    console.log('crm=>' + user_ativo.crm)
-                    res.render('menuproposta', { crm: user_ativo.crm, id: _id, owner: owner, saudacao, nome_lista: nome, ehMaster, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, numprj, qtdorcado, qtdaberto, qtdencerrado, qtdbaixado })
-                })
-            }
+            })
+        } else {
+            lista_tarefas = []
+            Tarefa.find({ user: _id }).then((tarefas) => {
+                if (naoVazio(tarefas)) {
+                    tarefas.forEach((e) => {
+                        Atividade.findOne({ _id: e.servico }).then((atividade) => {
+                            Equipe.findOne({ tarefa: e._id }).then((equipe) => {
+                                Cliente.findOne({ _id: e.cliente }).then((cliente) => {
+                                    Pessoa.findOne({ _id: e.responsavel }).then((pessoa_res) => {
+                                        lista_tarefas.push({ id: e._id, nome_cli: cliente.nome, servico: atividade.nome, nomes_res: pessoa_res.nome, id_equipe: equipe._id })
+                                        res.render('menuproposta', { lista_tarefas })
+                                    }).catch((err) => {
+                                        req.flash("error_msg", "Ocorreu uma falha interna para encontrar a pessoa<s>.")
+                                        res.redirect("/")
+                                    })
+                                }).catch((err) => {
+                                    req.flash("error_msg", "Ocorreu uma falha interna para encontrar o cliente<s>.")
+                                    res.redirect("/")
+                                })
+                            }).catch((err) => {
+                                req.flash("error_msg", "Ocorreu uma falha interna para encontrar a equipe<s>.")
+                                res.redirect("/")
+                            })
+                        }).catch((err) => {
+                            req.flash("error_msg", "Ocorreu uma falha interna para encontrar a pessoa<s>.")
+                            res.redirect("/")
+                        })
+                    })
+                } else {
+                    if (typeof pessoa == 'undefined') {
+                        esta_pessoa = '111111111111111111111111'
+                    }
+                    Pessoa.findOne({ _id: pessoa }).lean().then((nome_pessoa) => {
+                        if (naoVazio(nome_pessoa)) {
+                            nome_lista = nome_pessoa.nome
+                        } else {
+                            nome_lista = nome
+                        }
+                        res.render('menuproposta', { crm: false, id: _id, owner: owner, saudacao, nome_lista })
+                    })
+                }
+            })
         }
-    }).catch((err) => {
-        req.flash("error_msg", "Ocorreu uma falha interna para encontrar a proposta.")
-        res.redirect("/")
     })
 })
 
