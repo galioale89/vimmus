@@ -1,8 +1,11 @@
 {
   "ExpandedNodes": [
     "",
-    "\\model"
+    "\\routes",
+    "\\views",
+    "\\views\\projeto",
+    "\\views\\projeto\\gerenciamento"
   ],
-  "SelectedNode": "\\model\\Tarefas.js",
+  "SelectedNode": "\\app.js",
   "PreviewInSolutionExplorer": false
 }

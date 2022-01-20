@@ -139,10 +139,10 @@ app.get('/menu', ehAdmin, (req, res) => {
     const { _id } = req.user
     const { user } = req.user
     const { ehAdmin } = req.user
-    const { funges } = req.user
     const { nome } = req.user
     const { owner } = req.user
     const { pessoa } = req.user
+    const { funges } = req.user
 
     if (naoVazio(user)) {
         id = user
@@ -155,9 +155,9 @@ app.get('/menu', ehAdmin, (req, res) => {
     var hoje = dataHoje()
     var data1 = 0
     var data2 = 0
-    var compara = 0
     var days = 0
     var dif = 0
+    var dtnovo
     var nome_lista
 
     var numprj = 0
@@ -213,6 +213,7 @@ app.get('/menu', ehAdmin, (req, res) => {
     }
 
     var sql = []
+
     if (naoVazio(user)) {
         sql = { user: id, responsavel: pessoa }
     } else {
@@ -220,12 +221,12 @@ app.get('/menu', ehAdmin, (req, res) => {
     }
 
     Usuario.findOne({ _id: id }).then((user_ativo) => {
-        let esta_pessoa = pessoa
+
         if (user_ativo.crm == true) {
             Proposta.find(sql).sort({ data: 'asc' }).then((todasPropostas) => {
                 if (naoVazio(todasPropostas)) {
                     todasPropostas.forEach((e) => {
-                        if (funges == true || ehAdmin == 0) {
+                        if (funges == 1 || ehAdmin == 0) {
                             Cliente.findOne({ _id: e.cliente }).then((cliente) => {
                                 Documento.findOne({ proposta: e._id }).then((documento) => {
                                     Compra.findOne({ proposta: e._id }).then((compra) => {
@@ -265,8 +266,6 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                                 }
                                                             }
                                                         }
-
-
                                                         if (pessoa_res != null) {
                                                             responsavel = pessoa_res.nome
                                                         } else {
@@ -370,50 +369,65 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                             }
                                                         }
 
+
                                                         if (e.ganho == false && e.baixada == false) {
                                                             if (dtvalidade != '0000-00-00') {
                                                                 data1 = new Date(dtvalidade)
                                                                 data2 = new Date(hoje)
-                                                                //console.log('data1=>'+data1)
-                                                                //console.log('data2=>'+data2)
                                                                 dif = Math.abs(data1.getTime() - data2.getTime())
-                                                                //console.log('dif=>'+dif)
                                                                 days = Math.ceil(dif / (1000 * 60 * 60 * 24))
                                                                 if (data1.getTime() < data2.getTime()) {
                                                                     days = days * -1
                                                                 }
                                                                 if (days == 1 || days == 0) {
-                                                                    notpro.push({ id: e._id, proposta: e.seq, status: e.status, cliente: cliente.nome, telefone: cliente.celular, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
+                                                                    notpro.push({ id: e._id, proposta: e.seq, status: e.status, cliente: cliente.nome, telefone: cliente.celular, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtvalidade) })
                                                                 } else {
                                                                     if (days < 0) {
-                                                                        atrasado.push({ id: e._id, proposta: e.seq, status: e.status, cliente: cliente.nome, telefone: cliente.celular, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtnovo) })
+                                                                        atrasado.push({ id: e._id, proposta: e.seq, status: e.status, cliente: cliente.nome, telefone: cliente.celular, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtvalidade) })
                                                                     }
                                                                 }
                                                             }
+                                                        } else {
+                                                            // console.log('proposta._id=>'+proposta._id)
+                                                            if (proposta.ganho == true && proposta.encerrado == false) {
+                                                                var dtassinatura
+                                                                if (naoVazio(documento.dtassinatura)) {
+                                                                    dtassinatura = documento.dtassinatura
+                                                                } else {
+                                                                    dtassinatura = '0000-00-00'
+                                                                }
+
+                                                                //console.log('dtdlassinado=>' + dtdlassinado)
+                                                                data2 = new Date(equipe.dtfim)
+                                                                data1 = new Date(hoje)
+                                                                // console.log('data1=>' + data1)
+                                                                // console.log('data2=>' + data2)
+                                                                dif = Math.abs(data2.getTime() - data1.getTime())
+                                                                //console.log('dif=>'+dif)
+                                                                days = Math.ceil(dif / (1000 * 60 * 60 * 24))
+                                                                // console.log('days=>'+days)
+                                                                //console.log('compara=>'+compara)
+                                                                if (days < 30) {
+                                                                    deadlineIns.push({ id: proposta._id, proposta: proposta.seq, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(equipe.dtinicio), dliins: dataMensagem(equipe.dtfim) })
+                                                                }
+                                                            }
                                                         }
-                                                        //console.log('status=>' + status)
+
                                                         q++
-                                                        //console.log('q=>' + q)
                                                         if (q == todasPropostas.length) {
                                                             numprj = todasPropostas.length
-                                                            //console.log('numprj=>' + numprj)
-                                                            //console.log('qtdorcado=>' + qtdorcado)
-                                                            //console.log('qtdaberto=>' + qtdaberto)
-                                                            //console.log('qtdencerrado=>' + qtdencerrado)
-                                                            console.log('achou')
-                                                            console.log('pessoa=>' + pessoa)
-                                                            console.log('passou')
+
                                                             if (typeof pessoa == 'undefined') {
-                                                                   esta_pessoa = '111111111111111111111111'
+                                                                esta_pessoa = '111111111111111111111111'
                                                             }
                                                             Pessoa.findOne({ _id: esta_pessoa }).lean().then((nome_pessoa) => {
-                                                                console.log('nome_pessoa=>' + nome_pessoa)
                                                                 if (naoVazio(nome_pessoa)) {
                                                                     nome_lista = nome_pessoa.nome
                                                                 } else {
                                                                     nome_lista = nome
                                                                 }
-                                                                res.render('menuproposta', { crm: true, id: _id, owner: owner, saudacao, nome_lista, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, qtdbaixado, notpro, atrasado })
+                                                                console.log(notpro)
+                                                                res.render('menuproposta', { crm: true, id: _id, owner: owner, saudacao, nome_lista, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, qtdbaixado, notpro, atrasado, deadlineIns })
                                                             }).catch((err) => {
                                                                 req.flash('error_msg', 'Houve um erro ao encontrar o nome do usuário.')
                                                                 res.redirect('/')
@@ -631,7 +645,6 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                                     q++
 
                                                                     if (q == todasPropostas.length) {
-
                                                                         //console.log(listaAberto)
                                                                         numprj = numprj
                                                                         Pessoa.findOne({ _id: pessoa }).lean().then((nome_pessoa) => {
@@ -656,7 +669,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                         esta_pessoa = '111111111111111111111111'
                     }
                     Pessoa.findOne({ _id: pessoa }).lean().then((nome_pessoa) => {
-                        console.log('nome_pessoa=>'+nome_pessoa)
+                        console.log('nome_pessoa=>' + nome_pessoa)
                         if (naoVazio(nome_pessoa)) {
                             nome_lista = nome_pessoa.nome
                         } else {
@@ -675,7 +688,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                     } else {
                         nome_lista = nome
                     }
-                    res.render('menuproposta', { crm: true, id: _id, owner: owner, saudacao, nome_lista})
+                    res.render('menuproposta', { crm: true, id: _id, owner: owner, saudacao, nome_lista })
                 })
             })
         } else {
@@ -687,7 +700,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                             Equipe.findOne({ tarefa: e._id }).then((equipe) => {
                                 Cliente.findOne({ _id: e.cliente }).then((cliente) => {
                                     Pessoa.findOne({ _id: e.responsavel }).then((pessoa_res) => {
-                                        lista_tarefas.push({ id: e._id, nome_cli: cliente.nome, servico: atividade.nome, nomes_res: pessoa_res.nome, id_equipe: equipe._id })
+                                        lista_tarefas.push({ id: e._id, nome_cli: cliente.nome, servico: atividade.nome, nomes_res: pessoa_res.nome, id_equipe: equipe._id, dtini: dataMensagem(equipe.dtinicio), dtfim: dataMensagem(equipe.dtfim) })
                                         res.render('menuproposta', { lista_tarefas })
                                     }).catch((err) => {
                                         req.flash("error_msg", "Ocorreu uma falha interna para encontrar a pessoa<s>.")

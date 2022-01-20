@@ -5776,15 +5776,15 @@ router.post('/caminhoAte', ehAdmin, upload.array('fileate', 10), (req, res) => {
                 res.redirect('/gerenciamento/servicosAtva/' + req.body.id)
             }).catch(() => {
                 req.flash('error_msg', 'Falha ao salvar as imagens do aterramento.')
-                res.redirect('/gerenciamento/mostrarEquipe/' + req.body.id)
+                res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
             })
         }).catch(() => {
             req.flash('error_msg', 'Falha ao encontrar a atividade de aterramento.')
-            res.redirect('/gerenciamento/mostrarEquipe/' + req.body.id)
+            res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
         })
     }).catch(() => {
         req.flash('error_msg', 'Falha ao atualizar o aterramento.')
-        res.redirect('/gerenciamento/mostrarEquipe/' + req.body.id)
+        res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
     })
 
 })
@@ -5820,15 +5820,15 @@ router.post('/caminhoInv', ehAdmin, upload.array('fileinv', 10), (req, res) => {
                 res.redirect('/gerenciamento/servicosAtvi/' + req.body.id)
             }).catch(() => {
                 req.flash('error_msg', 'Falha ao salvar a vistoria.')
-                res.redirect('/gerenciamento/mostrarEquipe/' + req.body.id)
+                res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
             })
         }).catch(() => {
             req.flash('error_msg', 'Falha ao encontrar a atividade de inversor.')
-            res.redirect('/gerenciamento/mostrarEquipe/' + req.body.id)
+            res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
         })
     }).catch(() => {
         req.flash('error_msg', 'Falha ao atualizar o inversor.')
-        res.redirect('/gerenciamento/mostrarEquipe/' + req.body.id)
+        res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
     })
 
 })
@@ -6016,11 +6016,11 @@ router.post('/caminhoInsi', ehAdmin, upload.array('fileinsi', 10), (req, res) =>
             })
         }).catch(() => {
             req.flash('error_msg', 'Falha ao encontrar a atividade de aterramento.')
-            res.redirect('/gerenciamento/mostrarEquipe/' + req.body.id)
+            res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
         })
     }).catch(() => {
         req.flash('error_msg', 'Falha ao atualizar o aterramento.')
-        res.redirect('/gerenciamento/mostrarEquipe/' + req.body.id)
+        res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
     })
 
 })
@@ -6057,11 +6057,11 @@ router.post('/caminhoInsa', ehAdmin, upload.array('fileinsa', 10), (req, res) =>
             })
         }).catch(() => {
             req.flash('error_msg', 'Falha ao encontrar a atividade de aterramento.')
-            res.redirect('/gerenciamento/mostrarEquipe/' + req.body.id)
+            res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
         })
     }).catch(() => {
         req.flash('error_msg', 'Falha ao atualizar o aterramento.')
-        res.redirect('/gerenciamento/mostrarEquipe/' + req.body.id)
+        res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
     })
 
 })
@@ -8141,7 +8141,7 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
         }
     } else {
         dia = parseFloat(hoje.getDay)
-        if (diadia < 10) {
+        if (dia < 10) {
             dia = '0' + dia
         }
     }
@@ -8327,7 +8327,7 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
             datafim = req.body.datafim
         }
 
-        //console.log('req.body.idns0')
+        console.log('req.body.idns0=>' + req.body.idns0)
 
         const corpo = {
             user: id,
@@ -8382,6 +8382,7 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
             equipe = corpo
         }
         new Equipe(equipe).save().then(() => {
+            console.log('salvou equipe')
             Equipe.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((novaequipe) => {
                 //console.log('req.body.equipe=>' + req.body.equipe)
                 if (req.body.equipe == 'true') {
@@ -8402,11 +8403,11 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                     dif = Math.abs(data2.getTime() - data1.getTime())
                     days = Math.ceil(dif / (1000 * 60 * 60 * 24))
                     days = days + 1
-                    //console.log('days=>' + days)
+                    console.log('days=>' + days)
                     for (i = 1; i < days + 1; i++) {
                         dias.push({ dia: i, feito: false })
                     }
-                    //console.log("dias=>" + dias)
+                    console.log("dias=>" + dias)
                     const tarefa = {
                         user: id,
                         equipe: novaequipe._id,
@@ -8428,8 +8429,9 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                     } else {
                         adiciona = tarefa
                     }
-
+                    console.log('adiciona=>' + JSON.stringify(adiciona))
                     new Tarefas(adiciona).save().then(() => {
+                        console.log("salvou tarefa")
                         Tarefas.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((tarefa) => {
                             novaequipe.tarefa = tarefa._id
                             novaequipe.save().then(() => {
