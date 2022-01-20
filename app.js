@@ -107,9 +107,9 @@ mongoose.connect('mongodb://vimmus01:64l10770@mongo71-farm10.kinghost.net/vimmus
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
-    console.log("Sucesso ao se conectar no Mongo")
+    //console.log("Sucesso ao se conectar no Mongo")
 }).catch((errr) => {
-    console.log("Falha ao se conectar no Mongo")
+    //console.log("Falha ao se conectar no Mongo")
 })
 
 //Public para CSS do bootstrap
@@ -221,11 +221,12 @@ app.get('/menu', ehAdmin, (req, res) => {
     }
 
     Usuario.findOne({ _id: id }).then((user_ativo) => {
-
+        let esta_pessoa = pessoa
         if (user_ativo.crm == true) {
             Proposta.find(sql).sort({ data: 'asc' }).then((todasPropostas) => {
                 if (naoVazio(todasPropostas)) {
                     todasPropostas.forEach((e) => {
+                        //console.log('ehAdmin=>'+ehAdmin)
                         if (funges == 1 || ehAdmin == 0) {
                             Cliente.findOne({ _id: e.cliente }).then((cliente) => {
                                 Documento.findOne({ proposta: e._id }).then((documento) => {
@@ -266,11 +267,21 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                                 }
                                                             }
                                                         }
+                                                        //console.log('tdcadastro=>'+dtcadastro)
+                                                        //console.log('dtvalidade=>'+dtvalidade)
                                                         if (pessoa_res != null) {
                                                             responsavel = pessoa_res.nome
                                                         } else {
                                                             responsavel = ''
                                                         }
+                                                        //console.log('responsavel=>'+responsavel)
+                                                        //console.log('status=>'+status)
+                                                        //console.log('e.seq=>'+e.seq)
+                                                        //console.log(' cliente.nome=>'+ cliente.nome)
+                                                        //console.log(' cliente.celular=>'+ cliente.celular)
+                                                        //console.log(' cliente.email=>'+ cliente.email)
+                                                        //console.log('e.seq=>'+e.seq)
+
                                                         if (e.ganho == true) {
                                                             if (e.encerrado == true) {
                                                                 status = 'Encerrado'
@@ -369,8 +380,9 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                             }
                                                         }
 
-
+                                                        
                                                         if (e.ganho == false && e.baixada == false) {
+                                                            //console.log('vencimento')
                                                             if (dtvalidade != '0000-00-00') {
                                                                 data1 = new Date(dtvalidade)
                                                                 data2 = new Date(hoje)
@@ -379,6 +391,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                                 if (data1.getTime() < data2.getTime()) {
                                                                     days = days * -1
                                                                 }
+                                                                //console.log('days=>'+days)
                                                                 if (days == 1 || days == 0) {
                                                                     notpro.push({ id: e._id, proposta: e.seq, status: e.status, cliente: cliente.nome, telefone: cliente.celular, cadastro: dataMensagem(dtcadastro), validade: dataMensagem(dtvalidade) })
                                                                 } else {
@@ -388,9 +401,10 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                                 }
                                                             }
                                                         } else {
-                                                            // console.log('proposta._id=>'+proposta._id)
-                                                            if (proposta.ganho == true && proposta.encerrado == false) {
+                                                            //console.log('deadline')
+                                                            if (e.ganho == true && e.encerrado == false) {
                                                                 var dtassinatura
+                                                                //console.log('documento.dtassinatura=>'+documento.dtassinatura)
                                                                 if (naoVazio(documento.dtassinatura)) {
                                                                     dtassinatura = documento.dtassinatura
                                                                 } else {
@@ -400,33 +414,38 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                                 //console.log('dtdlassinado=>' + dtdlassinado)
                                                                 data2 = new Date(equipe.dtfim)
                                                                 data1 = new Date(hoje)
-                                                                // console.log('data1=>' + data1)
-                                                                // console.log('data2=>' + data2)
+                                                                // //console.log('data1=>' + data1)
+                                                                // //console.log('data2=>' + data2)
                                                                 dif = Math.abs(data2.getTime() - data1.getTime())
                                                                 //console.log('dif=>'+dif)
                                                                 days = Math.ceil(dif / (1000 * 60 * 60 * 24))
-                                                                // console.log('days=>'+days)
-                                                                //console.log('compara=>'+compara)
+                                                                // //console.log('days=>'+days)
+                                                                //console.log('equipe.dtinicio=>'+equipe.dtinicio)
+                                                                //console.log('equipe.dtfim=>'+equipe.dtfim)
                                                                 if (days < 30) {
-                                                                    deadlineIns.push({ id: proposta._id, proposta: proposta.seq, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(equipe.dtinicio), dliins: dataMensagem(equipe.dtfim) })
+                                                                    deadlineIns.push({ id: e._id, proposta: e.seq, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(equipe.dtinicio), dliins: dataMensagem(equipe.dtfim) })
                                                                 }
                                                             }
                                                         }
-
+                                                        
+                                                        
                                                         q++
+                                                        //console.log('q=>'+q)
+                                                        //console.log('todasPropostas.length=>'+todasPropostas.length)
                                                         if (q == todasPropostas.length) {
                                                             numprj = todasPropostas.length
-
+                                                            //console.log('pessoa=>'+pessoa)
                                                             if (typeof pessoa == 'undefined') {
                                                                 esta_pessoa = '111111111111111111111111'
                                                             }
+                                                            //console.log('esta_pessoa=>'+esta_pessoa)
                                                             Pessoa.findOne({ _id: esta_pessoa }).lean().then((nome_pessoa) => {
                                                                 if (naoVazio(nome_pessoa)) {
                                                                     nome_lista = nome_pessoa.nome
                                                                 } else {
                                                                     nome_lista = nome
                                                                 }
-                                                                console.log(notpro)
+                                                                //console.log(notpro)
                                                                 res.render('menuproposta', { crm: true, id: _id, owner: owner, saudacao, nome_lista, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, qtdbaixado, notpro, atrasado, deadlineIns })
                                                             }).catch((err) => {
                                                                 req.flash('error_msg', 'Houve um erro ao encontrar o nome do usuário.')
@@ -669,7 +688,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                         esta_pessoa = '111111111111111111111111'
                     }
                     Pessoa.findOne({ _id: pessoa }).lean().then((nome_pessoa) => {
-                        console.log('nome_pessoa=>' + nome_pessoa)
+                        //console.log('nome_pessoa=>' + nome_pessoa)
                         if (naoVazio(nome_pessoa)) {
                             nome_lista = nome_pessoa.nome
                         } else {
@@ -755,5 +774,5 @@ app.use('/fornecedor/', fornecedor)
 const APP_PORT = process.env.APP_PORT || 3000
 
 app.listen(APP_PORT, () => {
-    console.log(`Running app at port:${APP_PORT}`)
+    //console.log(`Running app at port:${APP_PORT}`)
 })
