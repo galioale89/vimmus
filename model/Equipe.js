@@ -319,6 +319,10 @@ const Equipe = new Schema({
     type: Boolean,
     require: false    
   },
+  parado: {
+    type: Boolean,
+    require: false    
+  },
   prjfeito: {
     type: Boolean,
     require: false    

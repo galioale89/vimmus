@@ -12,7 +12,8 @@
 
         width: 400px;
         border-radius: 20px;
-        min-height: 250px;
+        min-height: 75px;
+        max-height: 250px;
 
         background-color: #001263e5;
         margin: 0 5px;
@@ -52,7 +53,7 @@
 {{else}} --}}
 <div class="container d-flex justify-content-center" style='padding: 10px;margin-top: 2px;'>
     <form method="post" action='/gerenciamento/addtarefa' style="text-align: center;">
-        <input type='hidden' name='cliente' value='{{cliente}}'>        
+        <input type='hidden' name='cliente' value='{{cliente}}'>
         <input type='hidden' name='equipe' value='{{equipe}}'>
         <input type='hidden' name='tarefadtini' value='{{tarefa.dataini}}'>
         <input type='hidden' name='tarefadtfim' value='{{tarefa.datafim}}'>
@@ -79,6 +80,35 @@
         </div>
         {{/if}}
         <br>
+        <div class="row">
+            <div class="col-md-3 text-end">
+                <label class="col-form-label col-form-label-sm fw-bold">Empresa:</label>
+            </div>
+            <div class="col-md-6">
+                <select class='form-select form-select-sm' name='empresa'>
+                    {{#each empresa}}
+                    <option value='{{_id}}'>{{nome}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div><br>          
+        <div class="row">
+            <div class="col-md-3 text-end">
+                <label class="col-form-label col-form-label-sm fw-bold">Gestor Responsável:</label>
+            </div>
+            <div class="col-md-6">
+                <select class='form-select form-select-sm' name='gestor'>
+                    {{#each gestor}}
+                    <option value='{{_id}}'>{{nome}}</option>
+                    {{else}}
+                    <option>Cadastrar gestor =></option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="col-md-1">
+                <a href='/pessoa/novo' class="contorno-menu"><i class='bi bi-person-plus'></i></a>
+            </div>
+        </div><br>        
         <div class="row">
             <div class="col-md-2 text-end">
                 {{#if usina}}
@@ -121,31 +151,47 @@
 
         <label class='col-form-label col-form-label-sm'>Lembre-se de verificar a disponibilidade da pessoa para realizar
             a manutenção!</label>
-        <div class="row mt-1" style="padding-left: 20px;">
-            <div class="row">
-                <div class="lists">
-                    <div class="list">
-                        <label class="col-form-label col-form-label-md fw-bold text-center"
-                            style="color: white">Profissionais Disponíveis</label>
-                        <div style="overflow-y: scroll;max-height: 200px;">
-                            {{#each ins_fora}}
-                            <div class="list-item" style='color: black;' draggable="true" name='{{id}}'>
-                                {{nome}}<a href='/gerenciamento/vermaistarefas/{{id}}' style="padding-left: 5px;"><i
-                                        class='bi bi-eye'></i></a>
-                            </div>
-                            {{/each}}
-                        </div>
-                    </div>
-                    <div class="list">
-                        <label class="col-form-label col-form-label-md fw-bold text-center"
-                            style="color: white">Profissionais Alocados</label>
-                        {{#each ins_dentro}}
-                        <div class="item-instalacao" style='color: black;' draggable="true" name='{{id}}'>
+        <div class="row">
+            <div class="col-md-3 text-end">
+                <label class="col-form-label col-form-label-sm fw-bold">Técnico Responsável:</label>
+            </div>
+            <div class="col-md-6">
+                <select class='form-select form-select-sm' name='responsavel'>
+                    {{#each instalacao}}
+                    <option value='{{_id}}'>{{nome}}</option>
+                    {{else}}
+                    <option>Cadastrar técnicos =></option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="col-md-1">
+                <a href='/pessoa/novo' class="contorno-menu"><i class='bi bi-person-plus'></i></a>
+            </div>
+        </div><br>
+
+        <div class="row">
+            <div class="lists">
+                <div class="list">
+                    <label class="col-form-label col-form-label-sm fw-bold text-center"
+                        style="color: white">Instaladores Disponíveis</label>
+                    <div style="overflow-y: scroll;height: fit-content">
+                        {{#each ins_fora}}
+                        <div class="list-item" style='color: black;' draggable="true" name='{{id}}'>
                             {{nome}}<a href='/gerenciamento/vermaistarefas/{{id}}' style="padding-left: 5px;"><i
                                     class='bi bi-eye'></i></a>
                         </div>
                         {{/each}}
                     </div>
+                </div>
+                <div class="list">
+                    <label class="col-form-label col-form-label-sm fw-bold text-center"
+                        style="color: white">Instaladores Alocados</label>
+                    {{#each ins_dentro}}
+                    <div class="item-instalacao" style='color: black;' draggable="true" name='{{id}}'>
+                        {{nome}}<a href='/gerenciamento/vermaistarefas/{{id}}' style="padding-left: 5px;"><i
+                                class='bi bi-eye'></i></a>
+                    </div>
+                    {{/each}}
                 </div>
             </div>
         </div>
@@ -163,15 +209,17 @@
         <input type='hidden' name='idins4' id='idins4' value=''>
         <input type='hidden' name='idins5' id='idins5' value=''>
         <div class='btn-group gap-2 col-6 mt-2'>
-        <button type="submit" style="width: 30px;" class="btn btn-sm btn-success"
-            onclick="getItemValue()">Salva</button>
-        {{#if tarefa.programacao}}
-        <a href='/cliente/programacao/{{tarefa.usina}}' class='btn btn-sm btn-primary'><i class='bi bi-arrow-left'>Voltar Programação</i></a> 
-        {{/if}}
-        {{#if tarefa._id}}
-        <a href='/gerenciamento/tarefas/{{tarefa._id}}' class='btn btn-sm btn-primary'><i class='bi bi-arrow-left'>Voltar Tarefas</i></a> 
-        {{/if}}
-</div>            
+            <button type="submit" style="width: 30px;" class="btn btn-sm btn-success"
+                onclick="getItemValue()">Salva</button>
+            {{#if tarefa.programacao}}
+            <a href='/cliente/programacao/{{tarefa.usina}}' class='btn btn-sm btn-primary'><i
+                    class='bi bi-arrow-left'>Voltar Programação</i></a>
+            {{/if}}
+            {{#if tarefa._id}}
+            <a href='/gerenciamento/tarefas/{{tarefa._id}}' class='btn btn-sm btn-primary'><i
+                    class='bi bi-arrow-left'>Voltar Tarefas</i></a>
+            {{/if}}
+        </div>
     </form>
 </div>
 {{!-- {{/if}} --}}

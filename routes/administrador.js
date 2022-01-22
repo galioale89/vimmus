@@ -533,25 +533,28 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                     Pessoa.findOne({ _id: acesso_existe.pessoa }).then((pessoa) => {
                         console.log('entrou acesso')
                         if (req.body.detalhes != 'true') {
-                            if (req.body.nome == '') {
+                            console.log(req.body.nome)
+                            if (naoVazio(req.body.nome)) {
+                                console.log("tem nome")
                                 pessoa.nome = req.body.nome
                             }else {
+                                console.log("nome 0")
                                 pessoa.nome = 0
                             }
-                            if (req.body.cpf == '') {
+                            if (naoVazio(req.body.cpf)) {
                                 pessoa.cpf = req.body.cpf
                             } else {
                                 pessoa.cpf = 0
                             }
-                            if (req.body.endereco == '') {
+                            if (naoVazio(req.body.endereco)) {
                                 pessoa.endereco = req.body.endereco
                             } else {
                                 pessoa.endereco = 0
                             }
-                            if (req.body.cidade == '') {
+                            if (naoVazio(req.body.cidade)) {
                                 pessoa.cidade = req.body.cidade
                             }
-                            if (req.body.uf == '') {
+                            if (naoVazio(req.body.uf)) {
                                 pessoa.uf = req.body.uf
                             }
                         }

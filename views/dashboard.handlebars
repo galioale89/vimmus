@@ -11,6 +11,7 @@
 
     td {
         text-align: center;
+        line-height: 30px;
     }
 
     table {
@@ -26,6 +27,18 @@
         width: 850px !important;
     }
 </style>
+<script>
+    function selecao() {
+        var asc = document.getElementById('asc')
+        var desc = document.getElementById('desc')
+        var ordem = document.getElementById('ordem')
+        if (asc.checked) {
+            ordem.value = 1
+        } else {
+            ordem.value = -1
+        }
+    }
+</script>
 
 <div class="modal fade" id="atrasados" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -138,7 +151,7 @@
     {{/each}}
     <div class="row">
         <input type="hidden" id="crm" value='{{crm}}'>
-        <div class='btn-group gap-2 col-12' style="padding-left: 20px;">
+        <div class='btn-group gap-2' style="padding-left: 20px;">
             <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle fw-bold" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false" style='font-size: 10px'>
@@ -155,15 +168,17 @@
                                 </a>
                             </div>
                         </div>
+                        {{#if crm}}
                         <div class="row mb-2">
                             <div class="text-start">
                                 <a href="/gerenciamento/proposta/selecao/com" class="contorno-menu">
                                     <i class='bi bi-file-arrow-up'></i>
-                                    {{#if crm}}Proposta{{else}}Serviço{{/if}}
+                                    Proposta
                                 </a>
                                 <a href="/gerenciamento/consulta" class="botaomenu"> <i class='bi bi-search'></i> </a>
                             </div>
                         </div>
+                        {{/if}}
                         <div class="row mb-2">
                             <div class="text-start">
                                 <a href='/pessoa/novo' class="contorno-menu"><i class='bi bi-person-plus'></i>
@@ -184,6 +199,13 @@
                                 style="padding-right: 20%;">
                                 <i class="bi bi-file-arrow-up"></i> Planos
                             </a>
+                        </div>
+                        {{else}}
+                        <div class="row mb-2">
+                            <div class="text-start">
+                                <a href='/gerenciamento/atividades' class="contorno-menu"><i
+                                        class='bi bi-file-arrow-up'></i>Atividades</a>
+                            </div>
                         </div>
                         {{/if}}
                         <div style="margin-bottom: 1%;margin-top: 6%;">
@@ -265,7 +287,13 @@
                 a Vencer
             </a>
             {{/if}}
+            {{#if lista_tarefas}}
+            <a href='/gerenciamento/agenda' class="btn btn-sm btn-primary mb-1"> Agenda de Serviços</a>
+            <button onclick='manutencao()' class="btn btn-sm btn-primary mb-1" style="max-width: 50px;"
+                title='Adicionar Tarefa'><i class='bi bi-calendar-plus d-flex justify-content-center'></i></button>
+            {{else}}
             <a href='/gerenciamento/emandamento/lista' class="btn btn-sm btn-primary mb-1"> Serviços em Andamento</a>
+            {{/if}}
         </div>
     </div>
     {{/if}}
@@ -274,8 +302,7 @@
         <div class='col-md-2 mt-3'>
             <div class="text-center">
                 <label style="font-size: 21px;color:#6557fc{{#if block}}{{else}};margin-top: 10%{{/if}}">
-                    Total de
-                    Propostas
+                    Total de Propostas
                 </label>
                 <label class="mt-2" style="font-size: 50px;">{{numprj}}</label>
                 <div class="row mt-4">
@@ -318,8 +345,7 @@
                     <div class='quadro-scroll' id='dim' style="padding-left: 5px;">
                         <div class="text-center mt-1 mb-3" style="position: sticky;">
                             <a href='/gerenciamento/selecao' style="cursor: pointer;font-size: 15px;font-weight: 600;">
-                                Propostas
-                                Enviadas
+                                Propostas Enviadas
                             </a>
                         </div>
                         <table style="width: 100%;">
@@ -327,8 +353,6 @@
                                 <th>Proposta</th>
                                 <th>Cliente</th>
                                 <th>Telefone</th>
-                                {{!-- <th>E-mail</th> --}}
-                                {{!-- <th>Estágio</th> --}}
                                 <th></th>
                             </tr>
                             {{#each listaOrcado}}
@@ -336,7 +360,6 @@
                                 <td>{{proposta}}</td>
                                 <td>{{cliente}}</td>
                                 <td>{{telefone}}</td>
-                                {{!-- <td>{{email}}</td> --}}
                                 {{#if block}}
                                 {{else}}
                                 <td style="padding-top: 3px;">
@@ -373,8 +396,6 @@
                                 <th>Follow-up</th>
                                 <th>Cliente</th>
                                 <th>Telefone</th>
-                                {{!-- <th>E-mail</th> --}}
-                                {{!-- <th>Estágio</th> --}}
                                 {{#if block}}
                                 {{else}}
                                 <th></th>
@@ -386,7 +407,6 @@
                                 <td>{{status}}</td>
                                 <td>{{cliente}}</td>
                                 <td>{{telefone}}</td>
-                                {{!-- <td>{{email}}</td> --}}
                                 <td style="padding-top: 3px;">
                                     <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
                                         {{#if block}}
@@ -405,94 +425,265 @@
             </div>
         </div>
         {{else}}
-        {{#if lista_tarefas}}
-        <div class="text-center">
-            <table>
-                <tr>
-                    <th>
-                        Cliente
-                    </th>
-                    <th>
-                        Serviço
-                    </th>
-                    <th>
-                        Responsável
-                    </th>
-                    <th>
-                        Inicio
-                    </th>
-                    <th>
-                        Fim
-                    </th>
-                    <th>
-
-                    </th>
-                </tr>
-                {{#each lista_tarefas}}
-                <tr>
-                    <td>
-                        {{nome_cli}}
-                    </td>
-                    <td>
-                        {{servico}}
-                    </td>
-                    <td>
-                        {{nome_res}}
-                    </td>
-                    <td>
-                        {{dtini}}
-                    </td>
-                    <td>
-                        {{dtfim}}
-                    </td>
-                    <td>
-                        <a href='/gerenciamento/mostraEquipe/{{id}}' class="btn btn=primary">Equipe</a>
-                    </td>
-                </tr>
-                {{/each}}
-            </table>
-        </div>
-        {{else}}
-        <div class="containe text-center" style="padding-left: 20px">
-            <div class="card">
-                <div class="body-card" style="margin:auto">
-                    <label class="col-form-label" style="font-size: 50px;margin-top: 180px;margin-bottom: 180px">Agende
-                        seu primeiro serviço.</label>
+        <form action="/gerenciamento/filtrodash" method="post">
+            <div class="row">
+                <div class="col text-end">
+                    <label class='col-form-label col-form-label-sm'>Empresa:</label>
+                </div>
+                <div class="col">
+                    <select name='empresa' class='form-select form-select-sm'>
+                        <option value='111111111111111111111111'>Todas</option>
+                        {{#each todas_empresas}}
+                        <option value='{{_id}}'>{{nome}}</option>
+                        {{else}}
+                        <option>Cadastre uma empresa</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="col text-end">
+                    <label class='col-form-label col-form-label-sm'>Status:</label>
+                </div>
+                <div class="col">
+                    <select name='status' class='form-select form-select-sm'>
+                        {{#if empselect}}
+                        <option>{{empselect}}</option>
+                        {{/if}}
+                        <option>Todos</option>
+                        <option>Aguardando</option>
+                        <option>Em execução</option>
+                        <option>Parado</option>
+                        <option>Realizado</option>
+                    </select>
+                </div>
+                <div class="col text-end">
+                    <label class='col-form-label col-form-label-sm'>Ordem:</label>
+                </div>
+                <div class="col-md-1">
+                    <div class="form-check d-flex align-items-center" onchange="selecao()">
+                        <input class="form-check-input" type="radio" name="check" id="asc" {{asc}}>
+                        <label class="form-check-label mt-1">
+                            Crescente
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div class="form-check d-flex align-items-center" onchange="selecao()">
+                        <input class="form-check-input" type="radio" name="check" id="desc" {{desc}}>
+                        <label class="form-check-label mt-1">
+                            Decrescente
+                        </label>
+                    </div>
+                </div>
+                <input type='hidden' id='ordem' name='ordem' value="{{ordem}}">
+                <div class="col d-flex align-items-center">
+                    <button type="submit" class="btn btn-sm btn-success"><i
+                            class='bi bi-check d-flex align-items-center'></i></button>
                 </div>
             </div>
+        </form>
+        {{#if lista_tarefas}}
+        <div class='quadro-scroll' id='tarefa' style="padding-left: 5px;">
+            <div class="text-center mt-4">
+                <table style="font-size: 15px;">
+                    <tr>
+                        <th style="font-size: 15px;padding-left: 10px;">
+                            Sequência
+                        </th>
+                        <th style="width: 25%;font-size: 15px;">
+                            Cliente
+                        </th>
+                        <th style="width: 15%;font-size: 15px;">
+                            Serviço
+                        </th>
+                        <th style="width: 25%;font-size: 15px;">
+                            Responsável
+                        </th>
+                        <th style="width: 10%;font-size: 15px;">
+                            Inicio
+                        </th>
+                        <th style="width: 10%;font-size: 15px;">
+                            Fim
+                        </th>
+                        <th style="width: 10%;font-size: 15px;">
+                            Equipe
+                        </th>
+                        <th style="width: 15%;font-size: 15px;">
+                            Execução
+                        </th>
+                    </tr>
+            </div>
+            {{#each lista_tarefas}}
+            <tr>
+                <td>
+                    {{seq}}
+                </td>
+                <td>
+                    {{nome_cli}}
+                </td>
+                <td>
+                    {{servico}}
+                </td>
+                <td>
+                    {{nome_res}}
+                </td>
+                <td>
+                    {{dtini}}
+                </td>
+                <td>
+                    {{dtfim}}
+                </td>
+                <td>
+                    <a href='/gerenciamento/mostraEquipe/{{id}}' class="btn btn-sm btn-primary"><i
+                            class='bi bi-people-fill d-flex' title="Equipe"></i></a>
+                </td>
+                <td>
+                    <div style="padding-left: 20px;display: flex;align-items:center;">
+                        {{#if liberado}}
+                        <div id='execucao' style="position: relative ;"></div>
+                        {{else}}
+                        {{#if feito}}
+                        <div id='realizado' style="position: relative ;"></div>
+                        {{else}}
+                        <div id='aguardando' style="position: relative ;"></div>
+                        {{/if}}
+                        {{/if}}
+                    </div>
+                </td>
+            </tr>
+            {{/each}}
+            </table>
         </div>
-        {{/if}}
-        {{/if}}
     </div>
+    <div class="row mt-4">
+        <label style="font-size: 20px;padding-left: 20px;font-weight: 800;">Visão Geral das Tarefas</label>
+        <canvas id='chartGeral' id='grafico' style='height: 150px;' class='mt-1 mb-1'></canvas>
+    </div>
+    {{else}}
+    <div class="container text-center" style="padding-left: 20px">
+        <div class="card">
+            <div class="body-card" style="margin:auto">
+                <label class="col-form-label" style="font-size: 50px;margin-top: 180px;margin-bottom: 180px">Agende seu
+                    primeiro serviço.</label>
+            </div>
+        </div>
+    </div>
+    {{/if}}
+    {{/if}}
+</div>
+{{#each todos_clientes}}
+<input type="hidden" name="clinome[]" value="{{nome}}">
+<input type="hidden" name="cliid[]" value="{{_id}}">
+{{/each}}
+<input type='hidden' id='qtdagua' value='{{qtdagua}}'>
+<input type='hidden' id='qtdexec' value='{{qtdexec}}'>
+<input type='hidden' id='qtdpara' value='{{qtdpara}}'>
+<input type='hidden' id='qtdreal' value='{{qtdreal}}'>
 </div>
 <script>
-    var txt = ''
-    var txtins = ''
-    var cliav = document.getElementsByName('cliav[]')
-    var proav = document.getElementsByName('proav[]')
-    var statav = document.getElementsByName('statav[]')
-    var valav = document.getElementsByName('valav[]')
-    var idav = document.getElementsByName('idav[]')
-    var idins = document.getElementsByName('idins[]')
-    var proins = document.getElementsByName('proins[]')
-    var cliins = document.getElementsByName('cliins[]')
-    var cadins = document.getElementsByName('cadins[]')
-    var dtiass = document.getElementsByName('dtiass[]')
-    var dliins = document.getElementsByName('dliins[]')
+    //grafico tarefas
+    var qtdagua = document.getElementById('qtdagua')
+    var qtdexec = document.getElementById('qtdexec')
+    var qtdpara = document.getElementById('qtdpara')
+    var qtdreal = document.getElementById('qtdreal')
 
-    var crm = document.getElementById('crm')
+    var ctxGeral = document.getElementById('chartGeral').getContext('2d')
+    var chartGeral = new Chart(ctxGeral, {
+        type: 'bar',
+        data: {
+            labels: ['Aguardando', 'Em execução', 'Parado', 'Realizado'],
+            datasets: [{
+                data: [qtdagua.value, qtdexec.value, qtdpara.value, qtdreal.value],
+                backgroundColor: [
+                    'rgba(37, 139, 33, 0.2)',
+                    'rgba(50, 140, 230, 0.2)',
+                    'rgba(140, 50, 230, 0.2)',
+                    'rgba(240, 37, 33, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(37, 139, 33, 1)',
+                    'rgba(50, 140, 230, 1)',
+                    'rgba(140, 50, 230, 1)',
+                    'rgba(240, 37, 33, 1)',
+                ],
+                borderWidth: 1,
+            }],
+        },
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+            legend: {
+                position: 'top',
+                reverse: true,
+                align: 'center',
+                labels: {
+                    usePointStyle: true,
+                }
+            }
+        }
+    })
+
+    function manutencao() {
+        let hoje = new Date()
+        let ano = hoje.getFullYear()
+        let dia = hoje.getDay()
+        if (parseFloat(dia) < 10) {
+            dia = '0' + dia
+        }
+        let html = ''
+        let htmloption = ''
+        let htmlabresel = '<div class="row" style="width: 100%"><div class="col"><select name="cliente" class="form-select mt-2">'
+        let htmlfechsel = '</select></div>'
+        let htmlcliente = '<div class="col-md-1"><a href="/cliente/novo/voltar" style="font-size: 35px;color: rgb(44,55,89)"> + </a></div></div>'
+        let htmliniform = '<form action="/gerenciamento/addmanutencao" method="post">'
+        let htmlmeio = '<input type="hidden" name="dia" value="' + String(dia) + '"><input type="hidden" name="ano" value="' + String(ano) + '">'
+        let htmlsubmit = '<div class="row" style="width: 100%"><div class="col-md-5 text-start" style="padding-left: 20px"><div class="form-check mt-2"><input class="form-check-input" name="check" type="checkbox""><label class="form-check-label mt-1" style="font-size: 15px;">Sem Cliente</label></div></div><div class="col text-start"><button type="submit" style="border: white 1px solid;margin-top: 10px;margin-bottom: 10px;background-color: green;color: white">Próximo</button></div></div>'
+        let htmlfimform = '</form>'
+        let clinome = document.getElementsByName('clinome[]')
+        let cliid = document.getElementsByName('cliid[]')
+        for (i = 0; i < clinome.length; i++) {
+            htmloption = htmloption + '<option value="' + cliid[i].value + '">' + clinome[i].value + '</option>'
+        }
+        html = htmliniform + htmlabresel + htmloption + htmlfechsel + htmlcliente + htmlmeio + htmlsubmit + htmlfimform
+        if (clinome.length > 0) {
+            Swal.fire({
+                title: '<strong style="font-size: 25px">Adicionar Nova Atividade</strong>' + '\n' +
+                    '<label style="font-size: 15px">Selecione o cliente para a nova instalação, manutenção ou tarefa.</label>',
+                width: 800,
+                icon: 'success',
+                html: html,
+                showCloseButton: true,
+                showConfirmButton: false,
+            })
+        }
+    }
+    //popup vencidos
+    let txt = ''
+    let txtins = ''
+    let cliav = document.getElementsByName('cliav[]')
+    let proav = document.getElementsByName('proav[]')
+    let statav = document.getElementsByName('statav[]')
+    let valav = document.getElementsByName('valav[]')
+    let idav = document.getElementsByName('idav[]')
+    let idins = document.getElementsByName('idins[]')
+    let proins = document.getElementsByName('proins[]')
+    let cliins = document.getElementsByName('cliins[]')
+    let cadins = document.getElementsByName('cadins[]')
+    let dtiass = document.getElementsByName('dtiass[]')
+    let dliins = document.getElementsByName('dliins[]')
+
+    let crm = document.getElementById('crm')
     if (crm.value == 'true') {
         const wrapperini = document.createElement('div');
-        var htmlpro = ''
+        let htmlpro = ''
         if (cliav.length > 0) {
             htmlpro = '<div style="font-size: 16px">Propostas a menos de 1 (um) dia de vencer </div><br><table style="font-size:15px"><tr><th style="width: 10%;text-align:center">Proposta</th><th style="width: 10%;text-align:center">Cliente</th><th style="width: 10%;text-align:center">Status</th><th style="width: 10%;text-align:center">Data Validade</th><th style="width: 1%;text-align:center">Ações</th></tr><tr>'
         }
-        var htmlfim = '</table>'
-        for (var i = 0; i < cliav.length; i++) {
+        let htmlfim = '</table>'
+        for (let i = 0; i < cliav.length; i++) {
             txt = txt + '<tr><td>' + proav[i].value + '</td><td>' + cliav[i].value + '</td><td>' + statav[i].value + '</td><td>' + valav[i].value + '</td><td><div class="btn-group gap-2 col-12"><a href="/gerenciamento/proposta/' + idav[i].value + '"><i style="color: rgb(44,55,89)" class="bi bi-pen icone-tabela"></i></a><a href="/gerenciamento/confirmastatus/' + idav[i].value + '"><i style="color:rgba(44,55,89)" class="bi bi-front icone-tabela"></i></a><a href="/gerenciamento/ganho/' + idav[i].value + '"><i style="color:rgba(44,55,89);title:"Ganho"" class="bi bi-file-earmark-check icone-tabela"></i></a></div></td></tr>'
         }
-        var htmlins = '<div style="font-size: 16px">Instalação Agendada</div><br><table style="font-size:15px"><tr><th style="width: 5%;text-align:center">Proposta</th><th style="width: 20%;text-align:center">Cliente</th><th style="width: 10%;text-align:center">Início</th><th style="width: 10%;text-align:center">Deadline</th><th style="width: 10%;text-align:center">Ações</th></tr><tr>'
-        for (var x = 0; x < cliins.length; x++) {
+        let htmlins = '<div style="font-size: 16px">Instalação Agendada</div><br><table style="font-size:15px"><tr><th style="width: 5%;text-align:center">Proposta</th><th style="width: 20%;text-align:center">Cliente</th><th style="width: 10%;text-align:center">Início</th><th style="width: 10%;text-align:center">Deadline</th><th style="width: 10%;text-align:center">Ações</th></tr><tr>'
+        for (let x = 0; x < cliins.length; x++) {
             txtins = txtins + '<tr><td>' + proins[x].value + '</td><td>' + cliins[x].value + '</td><td>' + dtiass[x].value + '</td><td>' + dliins[x].value + '</td><td><a href="/gerenciamento/proposta/' + idins[x].value + '"><i style="color: rgb(44,55,89)" class="bi bi-pen icone-tabela"></i></a></td></tr>'
         }
 
@@ -512,5 +703,4 @@
             })
         }
     }
-    
 </script>

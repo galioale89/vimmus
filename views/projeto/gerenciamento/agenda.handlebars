@@ -2,7 +2,6 @@
     table {
         border: gray 1px solid;
         margin-left: 20px;
-        width: 100%;
     }
 
     th {
@@ -21,6 +20,34 @@
     }
 </style>
 <script>
+    function dia(d) {
+        var html = ''
+        var htmloption = ''
+        var ano = document.getElementById('ano')
+        var htmlabresel = '<div class="row" style="width: 100%"><div class="col"><select name="cliente" class="form-select mt-2">'
+        var htmlfechsel = '</select></div>'
+        var htmlcliente = '<div class="col-md-1"><a href="/cliente/novo/voltar" style="font-size: 35px;color: rgb(44,55,89)"> + </a></div></div>'
+        var htmliniform = '<form action="/gerenciamento/addmanutencao" method="post">'
+        var htmlmeio = '<input type="hidden" name="dia" value="' + String(d) + '"><input type="hidden" name="ano" value="' + String(ano.value) + '">'
+        var htmlsubmit = '<div class="row" style="width: 100%"><div class="col-md-5 text-start" style="padding-left: 20px"><div class="form-check mt-2"><input class="form-check-input" name="check" type="checkbox""><label class="form-check-label mt-1" style="font-size: 15px;">Sem Cliente</label></div></div><div class="col text-start"><button type="submit" style="border: white 1px solid;margin-top: 10px;margin-bottom: 10px;background-color: green;color: white">Próximo</button></div></div>'
+        var htmlfimform = '</form>'
+        var dia = document.getElementById('dia')
+        var clinome = document.getElementsByName('clinome[]')
+        var cliid = document.getElementsByName('cliid[]')
+        for (i = 0; i < clinome.length; i++) {
+            htmloption = htmloption + '<option value="' + cliid[i].value + '">' + clinome[i].value + '</option>'
+        }
+        html = htmliniform + htmlabresel + htmloption + htmlfechsel + htmlcliente + htmlmeio + htmlsubmit + htmlfimform
+        if (clinome.length > 0) {
+            Swal.fire({
+                title: '<strong style="font-size: 25px">Selecione o cliente</strong>',
+                width: 800,
+                html: html,
+                showCloseButton: true,
+                showConfirmButton: false,
+            })
+        }
+    }
     function selectJan() {
         var mes = document.getElementById('selectjan')
         var mesatu = document.getElementById('mes')
@@ -108,13 +135,12 @@
         <input type='hidden' name='pessoa' value='{{pessoa._id}}'>
         <div class="text-center">
             <label style="font-size: 20px; text-transform: uppercase;" class='fw-bold mt-1'>
-                {{mestitulo}} de
-                {{ano}}
+Agenda de Tarefas                
             </label>
         </div>
         <div class='row mb-2 mt-2' style="padding-left: 2%;">
             <div class='col-md-1 text-start'>
-                <input type='number' class='form-control form-control-sm' name='ano' value='{{ano}}'>
+                <input type='number' class='form-control form-control-sm' id='ano' name='ano' value='{{ano}}'>
             </div>
             <div class='col-md-11'>
                 <div class="btn-toolbar">
@@ -173,533 +199,483 @@
             </div>
         </div>
     </form>
-    <form action='/gerenciamento/addmanutencao' method="post">
-
-        <div class="card mb-2" id='cliente' style="display: ;background-color: rgba(44,55,89,0.9);margin-left: 30px;">
-            <div class="row text-center"
-                style="width: 100%; padding-left: 100px;padding-right: 100px;padding-top: 20px;">
-                <div class="col-md-5 text-end">
-                    <label class='col-form-label' style="font-weight: 600;margin-bottom: 20px;color: white">
-                        Selecione o
-                        cliente para gerar a
-                        manutenção:
-                    </label>
-                </div>
-                <div class="col-md-5">
-                    <select class='form-select' name="cliente" id="cliente">
-                        <option>Nenhum cliente selecionado</option>
-                        {{#each todos_clientes}}
-                        <option value="{{_id}}">{{nome}}</option>
-                        {{else}}
-                        <option value="">Não existem clientes cadastradas</option>
-                        {{/each}}
-                    </select>
-                </div>
-                <div style='width: 10px;' class="text-start mt-1">
-                    <a href='/cliente/novo/voltar'><i class='bi bi-person-plus icone-tabela'></i></a>
-                </div>
-            </div>
+    <div class="row text-center">
+        <div class="card mb-2" id='cliente' style="background-color: rgba(44,55,89,0.9);margin-left: 20px;">
+            <label style="font-size: 30px;color: white;margin-top: 20px;margin-bottom:20px">
+                {{mestitulo}} de {{ano}}
+            </label>
         </div>
-        <input type="hidden" name='dia' id='dia' value="">
-        <input type="hidden" name='messel' value="{{mes}}">
-        <input type="hidden" name='ano' value="{{ano}}">
-        <table>
-            <tr>
-                <th style="text-align: right;width: 2%;">S|D</th>
-                <th style="width: 14%;">1</th>
-                <th style="width: 14%;">2</th>
-                <th style="width: 14%;">3</th>
-                <th style="width: 14%;">4</th>
-                <th style="width: 14%;">5</th>
-                <th style="width: 14%;">6</th>
-                <th style="width: 14%;">7</th>
-            </tr>
-            <tr>
-                <td style="text-align: right;font-size: 17px">1</td>
-                <td>
-                    <label style="font-size: 10px">1</label>
-                    <button id='dia1' style='display: ' class='btn btn-sm' style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer" onclick='dia()'>
-                    </button></i><br>
-                    {{#each tarefas01}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-01' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">2</label>
-                    <button id='dia2' style='display: ' class='btn btn-sm' style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(02)'>
-                    </button></i><br>
-                    {{#each tarefas02}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-02' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">3</label><button id='dia3' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(03)'></i>
-                    </button></i><br>
-                    {{#each tarefas03}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-03' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">4</label><button id='dia4' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(04)'></i>
-                    </button></i><br>
-                    {{#each tarefas04}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-04' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">5</label><button id='dia5' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(05)'></i>
-                    </button></i><br>
-                    {{#each tarefas05}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-05' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">6</label><button id='dia6' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(06)'></i>
-                    </button></i><br>
-                    {{#each tarefas06}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-06' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">7</label><button id='dia7' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(07)'></i>
-                    </button></i><br>
-                    {{#each tarefas07}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-07' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-            <tr>
-                <td style="text-align: right;font-size: 17px">2</td>
-                <td>
-                    <label style="font-size: 10px">8</label><button id='dia8' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(08)'></i>
-                    </button></i><br>
-                    {{#each tarefas08}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-08' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">9</label><button id='dia9' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(09)'></i>
-                    </button></i><br>
-                    {{#each tarefas09}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-09' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">10</label><button id='dia10' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(10)'></i>
-                    </button></i><br>
-                    {{#each tarefas10}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-10' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">11</label><button id='dia11' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(11)'></i>
-                    </button></i><br>
-                    {{#each tarefas11}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-11' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">12</label><button id='dia12' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(12)'></i>
-                    </button></i><br>
-                    {{#each tarefas12}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-12' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">13</label><button id='dia13' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(13)'></i>
-                    </button></i><br>
-                    {{#each tarefas13}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-13' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">14</label><button id='dia14' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(14)'></i>
-                    </button></i><br>
-                    {{#each tarefas14}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-14' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-            </tr>
-            <tr>
-                <td style="text-align: right;font-size: 17px">3</td>
-                <td>
-                    <label style="font-size: 10px">15</label><button id='dia15' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(15)'></i>
-                    </button></i><br>
-                    {{#each tarefas15}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-15' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">16</label><button id='dia16' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(16)'></i>
-                    </button></i><br>
-                    {{#each tarefas16}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-16' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">17</label><button id='dia17' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(17)'></i>
-                    </button></i><br>
-                    {{#each tarefas17}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-17' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">18</label><button id='dia18' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(18)'></i>
-                    </button></i><br>
-                    {{#each tarefas18}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-18' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">19</label><button id='dia19' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(19)'></i>
-                    </button></i><br>
-                    {{#each tarefas19}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-19' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">20</label><button id='dia20' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(20)'></i>
-                    </button></i><br>
-                    {{#each tarefas20}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-20' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">21</label><button id='dia21' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(21)'></i>
-                    </button></i><br>
-                    {{#each tarefas21}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-21' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-            </tr>
-            <tr>
-                <td style="text-align: right;font-size: 17px">4</td>
-                <td>
-                    <label style="font-size: 10px">22</label><button id='dia22' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(22)'></i>
-                    </button></i><br>
-                    {{#each tarefas22}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-22' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">23</label><button id='dia23' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(23)'></i>
-                    </button></i><br>
-                    {{#each tarefas23}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-23' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">24</label><button id='dia24' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(24)'></i>
-                    </button></i><br>
-                    {{#each tarefas24}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-24' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">25</label><button id='dia25' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(25)'></i>
-                    </button></i><br>
-                    {{#each tarefas25}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-25' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">26</label><button id='dia26' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(26)'></i>
-                    </button></i><br>
-                    {{#each tarefas26}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-26' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">27</label><button id='dia27' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(27)'></i>
-                    </button></i><br>
-                    {{#each tarefas27}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-27' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">28</label><button id='dia28' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(28)'></i>
-                    </button></i><br>
-                    {{#each tarefas28}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-28' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-            </tr>
-            {{#if fevereiro}}
-            {{else}}
-            <tr>
-                <td style="text-align: right;font-size: 17px">5</td>
+    </div>
+    <input type="hidden" name='dia' id='dia' value="">
+    <input type="hidden" name='messel' value="{{mes}}">
+    <table style="width: 98%;">
+        <tr>
+            <th style="text-align: right;width: 2%;">S|D</th>
+            <th style="width: 12%;">1</th>
+            <th style="width: 12%;">2</th>
+            <th style="width: 12%;">3</th>
+            <th style="width: 12%;">4</th>
+            <th style="width: 12%;">5</th>
+            <th style="width: 12%;">6</th>
+            <th style="width: 12%;">7</th>
+        </tr>
+        <tr>
+            <td style="text-align: right;font-size: 17px">1</td>
+            <td>
+                <label style="font-size: 10px">1</label>
+                <button id='dia1' style='display: ' class='btn btn-sm' style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer" onclick='dia(01,{{id}})'>
+                </button></i><br>
+                {{#each tarefas01}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-01' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">2</label>
+                <button id='dia2' style='display: ' class='btn btn-sm' style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(02)'>
+                </button></i><br>
+                {{#each tarefas02}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-02' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">3</label><button id='dia3' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(03)'></i>
+                </button></i><br>
+                {{#each tarefas03}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-03' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">4</label><button id='dia4' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(04)'></i>
+                </button></i><br>
+                {{#each tarefas04}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-04' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">5</label><button id='dia5' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(05)'></i>
+                </button></i><br>
+                {{#each tarefas05}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-05' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">6</label><button id='dia6' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(06)'></i>
+                </button></i><br>
+                {{#each tarefas06}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-06' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">7</label><button id='dia7' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(07)'></i>
+                </button></i><br>
+                {{#each tarefas07}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-07' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+        <tr>
+            <td style="text-align: right;font-size: 17px">2</td>
+            <td>
+                <label style="font-size: 10px">8</label><button id='dia8' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(08)'></i>
+                </button></i><br>
+                {{#each tarefas08}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-08' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">9</label><button id='dia9' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(09)'></i>
+                </button></i><br>
+                {{#each tarefas09}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-09' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">10</label><button id='dia10' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(10)'></i>
+                </button></i><br>
+                {{#each tarefas10}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-10' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">11</label><button id='dia11' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(11)'></i>
+                </button></i><br>
+                {{#each tarefas11}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-11' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">12</label><button id='dia12' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(12)'></i>
+                </button></i><br>
+                {{#each tarefas12}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-12' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">13</label><button id='dia13' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(13)'></i>
+                </button></i><br>
+                {{#each tarefas13}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-13' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">14</label><button id='dia14' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(14)'></i>
+                </button></i><br>
+                {{#each tarefas14}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-14' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align: right;font-size: 17px">3</td>
+            <td>
+                <label style="font-size: 10px">15</label><button id='dia15' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(15)'></i>
+                </button></i><br>
+                {{#each tarefas15}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-15' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">16</label><button id='dia16' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(16)'></i>
+                </button></i><br>
+                {{#each tarefas16}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-16' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">17</label><button id='dia17' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(17)'></i>
+                </button></i><br>
+                {{#each tarefas17}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-17' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">18</label><button id='dia18' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(18)'></i>
+                </button></i><br>
+                {{#each tarefas18}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-18' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">19</label><button id='dia19' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(19)'></i>
+                </button></i><br>
+                {{#each tarefas19}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-19' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">20</label><button id='dia20' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(20)'></i>
+                </button></i><br>
+                {{#each tarefas20}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-20' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">21</label><button id='dia21' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(21)'></i>
+                </button></i><br>
+                {{#each tarefas21}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-21' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align: right;font-size: 17px">4</td>
+            <td>
+                <label style="font-size: 10px">22</label><button id='dia22' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(22)'></i>
+                </button></i><br>
+                {{#each tarefas22}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-22' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">23</label><button id='dia23' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(23)'></i>
+                </button></i><br>
+                {{#each tarefas23}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-23' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">24</label><button id='dia24' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(24)'></i>
+                </button></i><br>
+                {{#each tarefas24}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-24' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">25</label><button id='dia25' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(25)'></i>
+                </button></i><br>
+                {{#each tarefas25}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-25' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">26</label><button id='dia26' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(26)'></i>
+                </button></i><br>
+                {{#each tarefas26}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-26' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">27</label><button id='dia27' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(27)'></i>
+                </button></i><br>
+                {{#each tarefas27}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-27' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">28</label><button id='dia28' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(28)'></i>
+                </button></i><br>
+                {{#each tarefas28}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-28' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+        </tr>
+        {{#if fevereiro}}
+        {{else}}
+        <tr>
+            <td style="text-align: right;font-size: 17px">5</td>
 
-                <td>
-                    <label style="font-size: 10px">29</label><button id='dia29' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(29)'></i>
-                    </button></i><br>
-                    {{#each tarefas29}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-29' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                <td>
-                    <label style="font-size: 10px">30</label><button id='dia30' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(30)'></i>
-                    </button></i><br>
-                    {{#each tarefas30}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-30' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                {{#if trintaeum}}
-                <td>
-                    <label style="font-size: 10px">31</label><button id='dia31' style='display: ' class='btn btn-sm'
-                        style="font-size: 15px;" type='submit'>
-                        <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(31)'></i>
-                    </button></i><br>
-                    {{#each tarefas31}}
-                    <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-31' {{else}}
-                        href='/gerenciamento/cronograma/{{id}}' {{/if}}
-                        class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
-                        <i class='bi bi-check'></i> {{projeto}}
-                        ({{tarefa}})
-                    </a><br>
-                    {{/each}}
-                </td>
-                {{/if}}
-            </tr>
+            <td>
+                <label style="font-size: 10px">29</label><button id='dia29' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(29)'></i>
+                </button></i><br>
+                {{#each tarefas29}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-29' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            <td>
+                <label style="font-size: 10px">30</label><button id='dia30' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(30)'></i>
+                </button></i><br>
+                {{#each tarefas30}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-30' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
+            {{#if trintaeum}}
+            <td>
+                <label style="font-size: 10px">31</label><button id='dia31' style='display: ' class='btn btn-sm'
+                    style="font-size: 15px;" type='submit'>
+                    <i class='bi bi-calendar2-plus' style="cursor: pointer;" onclick='dia(31)'></i>
+                </button></i><br>
+                {{#each tarefas31}}
+                <a {{#if ehManutencao}} href='/gerenciamento/tarefas/{{id}}-31' {{else}}
+                    href='/gerenciamento/cronograma/{{id}}' {{/if}}
+                    class='{{#if feito}}finalizado{{else}}emandamento{{/if}}'>
+                    <i class='bi bi-check'></i> {{projeto}}
+                    ({{tarefa}})
+                </a><br>
+                {{/each}}
+            </td>
             {{/if}}
-        </table>
-    </form>
+        </tr>
+        {{/if}}
+    </table>
     {{#each todos_clientes}}
-    <input type="hidden" name="cliente[]" value="{{nome}}">
+    <input type="hidden" name="clinome[]" value="{{nome}}">
+    <input type="hidden" name="cliid[]" value="{{_id}}">
     {{/each}}
 </div>
-<script>
-    function dia(d) {
-        var dia = document.getElementById('dia')
-        lista_cliente = document.getElementsByName('cliente[]')
-        const { value: cliente } = await Swal.fire({
-            title: 'Escolha um cliente',
-            input: 'select',
-            inputOptions: {
-                lista_cliente
-            },
-            inputPlaceholder: 'Cliente',
-            showCancelButton: true,
-            inputValidator: (value) => {
-                return new Promise((resolve) => {
-                    if (value != '') {
-                        resolve()
-                    } else {
-                        resolve('É necessário informar um cliente :)')
-                    }
-                })
-            }
-        })
-
-        if (cliente) {
-            dia.value = d
-        }
-        
-    }            
-</script>

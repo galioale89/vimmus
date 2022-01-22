@@ -7,6 +7,15 @@ const Tarefas = new Schema({
         ref: 'usuario',
         require: false,
     },  
+    empresa: {
+        type: Schema.Types.ObjectId,
+        ref: 'empresa',
+        require: false,
+    },    
+    seq: {
+        type: Number,
+        require: false
+    },
     usina: {
         type: Schema.Types.ObjectId,
         ref: 'usina',
@@ -25,6 +34,10 @@ const Tarefas = new Schema({
     responsavel: {
         type: Schema.Types.ObjectId,
         ref: 'pessoa',
+        require: false,
+    },
+    gestor: {
+        type: Schema.Types.ObjectId,
         require: false,
     },
     programacao: {

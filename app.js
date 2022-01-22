@@ -57,7 +57,7 @@ const Compra = mongoose.model('compra')
 const Vistoria = mongoose.model('vistoria')
 const Equipe = mongoose.model('equipe')
 const Posvenda = mongoose.model('posvenda')
-
+const Empresa = mongoose.model('empresa')
 
 //Chamando função de validação de autenticação do usuário pela função passport
 const passport = require("passport")
@@ -107,7 +107,7 @@ mongoose.connect('mongodb://vimmus01:64l10770@mongo71-farm10.kinghost.net/vimmus
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
-    //console.log("Sucesso ao se conectar no Mongo")
+    console.log("Sucesso ao se conectar no Mongo")
 }).catch((errr) => {
     //console.log("Falha ao se conectar no Mongo")
 })
@@ -149,8 +149,6 @@ app.get('/menu', ehAdmin, (req, res) => {
     } else {
         id = _id
     }
-
-    var saudacao
 
     var hoje = dataHoje()
     var data1 = 0
@@ -221,7 +219,7 @@ app.get('/menu', ehAdmin, (req, res) => {
     }
 
     Usuario.findOne({ _id: id }).then((user_ativo) => {
-        let esta_pessoa = pessoa
+        var esta_pessoa = pessoa
         if (user_ativo.crm == true) {
             Proposta.find(sql).sort({ data: 'asc' }).then((todasPropostas) => {
                 if (naoVazio(todasPropostas)) {
@@ -380,7 +378,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                             }
                                                         }
 
-                                                        
+
                                                         if (e.ganho == false && e.baixada == false) {
                                                             //console.log('vencimento')
                                                             if (dtvalidade != '0000-00-00') {
@@ -427,8 +425,8 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                                 }
                                                             }
                                                         }
-                                                        
-                                                        
+
+
                                                         q++
                                                         //console.log('q=>'+q)
                                                         //console.log('todasPropostas.length=>'+todasPropostas.length)
@@ -446,7 +444,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                                     nome_lista = nome
                                                                 }
                                                                 //console.log(notpro)
-                                                                res.render('menuproposta', { crm: true, id: _id, owner: owner, saudacao, nome_lista, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, qtdbaixado, notpro, atrasado, deadlineIns })
+                                                                res.render('dashboard', { crm: true, id: _id, owner: owner, saudacao, nome_lista, listaAberto, listaOrcado, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdaberto, qtdencerrado, qtdorcado, qtdbaixado, notpro, atrasado, deadlineIns })
                                                             }).catch((err) => {
                                                                 req.flash('error_msg', 'Houve um erro ao encontrar o nome do usuário.')
                                                                 res.redirect('/')
@@ -667,7 +665,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                                         //console.log(listaAberto)
                                                                         numprj = numprj
                                                                         Pessoa.findOne({ _id: pessoa }).lean().then((nome_pessoa) => {
-                                                                            res.render('menuproposta', { user: true, id: _id, owner: owner, saucadacao, listaOrcado, listaAberto, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdorcado, qtdaberto, qtdencerrado, qtdbaixado, block: true })
+                                                                            res.render('dashboard', { user: true, id: _id, owner: owner, saucadacao, listaOrcado, listaAberto, listaEncerrado, ehMaster, numprj, qtdpro, qtdvis, qtdass, qtdped, qtdnot, qtdtrt, qtdpcl, qtdequ, qtdfim, qtdpos, qtdorcado, qtdaberto, qtdencerrado, qtdbaixado, block: true })
                                                                         })
                                                                     }
                                                                 })
@@ -694,7 +692,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                         } else {
                             nome_lista = nome
                         }
-                        res.render('menuproposta', { crm: true, id: _id, owner: owner, saudacao, nome_lista })
+                        res.render('dashboard', { crm: true, id: _id, owner: owner, saudacao, nome_lista })
                     })
                 }
             }).catch((err) => {
@@ -707,50 +705,104 @@ app.get('/menu', ehAdmin, (req, res) => {
                     } else {
                         nome_lista = nome
                     }
-                    res.render('menuproposta', { crm: true, id: _id, owner: owner, saudacao, nome_lista })
+                    res.render('dashboard', { crm: true, id: _id, owner: owner, saudacao, nome_lista })
                 })
             })
         } else {
-            lista_tarefas = []
-            Tarefa.find({ user: _id }).then((tarefas) => {
-                if (naoVazio(tarefas)) {
-                    tarefas.forEach((e) => {
-                        Atividade.findOne({ _id: e.servico }).then((atividade) => {
-                            Equipe.findOne({ tarefa: e._id }).then((equipe) => {
-                                Cliente.findOne({ _id: e.cliente }).then((cliente) => {
-                                    Pessoa.findOne({ _id: e.responsavel }).then((pessoa_res) => {
-                                        lista_tarefas.push({ id: e._id, nome_cli: cliente.nome, servico: atividade.nome, nomes_res: pessoa_res.nome, id_equipe: equipe._id, dtini: dataMensagem(equipe.dtinicio), dtfim: dataMensagem(equipe.dtfim) })
-                                        res.render('menuproposta', { lista_tarefas })
+            var lista_tarefas = []
+            var qtdexec = 0
+            var qtdagua = 0
+            var qtdreal = 0
+            var qtdpara = 0
+            var asc = 'unchecked'
+            var desc = 'checked'
+            var ordem = -1
+            var numtrf = 0
+            Empresa.find({ user: id }).lean().then((todas_empresas) => {
+                Tarefa.find({ user: id }).sort({ buscadataini: ordem }).then((tarefas) => {
+                    if (naoVazio(tarefas)) {
+                        tarefas.forEach((e) => {
+                            Atividade.findOne({ _id: e.servico }).then((atividade) => {
+                                Equipe.findOne({ tarefa: e._id }).then((equipe) => {
+                                     if (equipe.feito == false && equipe.parado == false && equipe.liberar == false){
+                                         qtdagua++
+                                     }else{
+                                         if (equipe.feito == false && equipe.parado == false && equipe.liberar == true) {
+                                             qtdexec++
+                                         }else{
+                                             if (equipe.feito == false && equipe.parado == true && equipe.liberar == true) {
+                                                 qtdpara++
+                                             }else{
+                                                 if (equipe.feito == true && equipe.parado == false && equipe.liberar == true) {
+                                                     qtdreal++
+                                                 }
+                                             }
+                                         }
+                                     }
+                                    Cliente.findOne({ _id: e.cliente }).then((cliente) => {
+                                        Pessoa.findOne({ _id: e.responsavel }).then((pessoa_res) => {
+                                            lista_tarefas.push({ id: e._id, seq: e.seq, liberado: equipe.liberar, feito: equipe.feito, nome_cli: cliente.nome, servico: atividade.descricao, nome_res: pessoa_res.nome, id_equipe: equipe._id, dtini: dataMensagem(equipe.dtinicio), dtfim: dataMensagem(equipe.dtfim) })
+                                            q++
+                                            if (q == tarefas.length) {
+                                                numtrf = tarefas.length
+                                                Cliente.find({ user: id }).lean().then((todos_clientes) => {
+                                                    Pessoa.findOne({ _id: esta_pessoa }).lean().then((nome_pessoa) => {
+                                                        if (naoVazio(nome_pessoa)) {
+                                                            nome_lista = nome_pessoa.nome
+                                                        } else {
+                                                            nome_lista = nome
+                                                        }
+                                                        console.log(qtdagua)
+                                                        console.log(qtdexec)
+                                                        console.log(qtdpara)
+                                                        console.log(qtdreal)
+                                                        res.render('dashboard', {  numtrf, qtdagua, qtdexec, qtdpara, qtdreal, crm: false, lista_tarefas, nome_lista, saudacao, todos_clientes, asc, desc, ordem, todas_empresas })
+                                                    }).catch((err) => {
+                                                        req.flash("error_msg", "Ocorreu uma falha interna para encontrar a pessoa<s>.")
+                                                        res.redirect("/")
+                                                    })
+                                                }).catch((err) => {
+                                                    req.flash("error_msg", "Ocorreu uma falha interna para encontrar os clientes<s>.")
+                                                    res.redirect("/")
+                                                })
+                                            }
+                                        }).catch((err) => {
+                                            req.flash("error_msg", "Ocorreu uma falha interna para encontrar a pessoa<s>.")
+                                            res.redirect("/")
+                                        })
                                     }).catch((err) => {
-                                        req.flash("error_msg", "Ocorreu uma falha interna para encontrar a pessoa<s>.")
+                                        req.flash("error_msg", "Ocorreu uma falha interna para encontrar o cliente<s>.")
                                         res.redirect("/")
                                     })
                                 }).catch((err) => {
-                                    req.flash("error_msg", "Ocorreu uma falha interna para encontrar o cliente<s>.")
+                                    req.flash("error_msg", "Ocorreu uma falha interna para encontrar a equipe<s>.")
                                     res.redirect("/")
                                 })
                             }).catch((err) => {
-                                req.flash("error_msg", "Ocorreu uma falha interna para encontrar a equipe<s>.")
+                                req.flash("error_msg", "Ocorreu uma falha interna para encontrar a pessoa<s>.")
                                 res.redirect("/")
                             })
-                        }).catch((err) => {
-                            req.flash("error_msg", "Ocorreu uma falha interna para encontrar a pessoa<s>.")
-                            res.redirect("/")
                         })
-                    })
-                } else {
-                    if (typeof pessoa == 'undefined') {
-                        esta_pessoa = '111111111111111111111111'
-                    }
-                    Pessoa.findOne({ _id: pessoa }).lean().then((nome_pessoa) => {
-                        if (naoVazio(nome_pessoa)) {
-                            nome_lista = nome_pessoa.nome
-                        } else {
-                            nome_lista = nome
+                    } else {
+                        if (typeof pessoa == 'undefined') {
+                            esta_pessoa = '111111111111111111111111'
                         }
-                        res.render('menuproposta', { crm: false, id: _id, owner: owner, saudacao, nome_lista })
-                    })
-                }
+                        Pessoa.findOne({ _id: pessoa }).lean().then((nome_pessoa) => {
+                            if (naoVazio(nome_pessoa)) {
+                                nome_lista = nome_pessoa.nome
+                            } else {
+                                nome_lista = nome
+                            }
+                            res.render('dashboard', { crm: false, id: _id, owner: owner, saudacao, nome_lista, asc, desc, ordem, todas_empresas })
+                        })
+                    }
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi possível encontrar a tarefa.')
+                    res.redirect('/')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar as empresa.')
+                res.redirect('/')
             })
         }
     })
@@ -774,5 +826,5 @@ app.use('/fornecedor/', fornecedor)
 const APP_PORT = process.env.APP_PORT || 3000
 
 app.listen(APP_PORT, () => {
-    //console.log(`Running app at port:${APP_PORT}`)
+    console.log(`Running app at port:${APP_PORT}`)
 })
