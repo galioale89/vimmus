@@ -26,6 +26,18 @@ const Tarefas = new Schema({
         ref: 'cliente',
         require: false,
     },    
+    endereco:{
+        type: String,
+        require: false
+    },
+    uf:{
+        type: String,
+        require: false
+    },
+    cidade:{
+        type: String,
+        require: false
+    },      
     equipe: {
         type: Schema.Types.ObjectId,
         ref: 'equipe',

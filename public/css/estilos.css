@@ -172,7 +172,7 @@ box-shadow: 3px 1px 5px rgba(200,200,200,0.8);
 height: 25px;
 width: 25px;
 border-radius: 25px;
-background-color: rgb(73, 53, 255);
+background-color: rgb(73, 53, 255, 0.6);
 border: rgb(0, 76, 255) 3px solid;
 }
 

@@ -1190,7 +1190,7 @@ router.get('/mostraEquipe/:id', ehAdmin, (req, res) => {
             })
         } else {
             var realizar
-            Tarefa.findOne({ _id: req.params.id }).then((tarefa) => {
+            Tarefa.findOne({ _id: req.params.id }).lean().then((tarefa) => {
                 // console.log(tarefa)
                 if (naoVazio(tarefa)) {
                     Cliente.findOne({ _id: tarefa.cliente }).lean().then((cliente) => {
@@ -4708,42 +4708,11 @@ router.post('/assinatura', upload.single('assinado'), ehAdmin, (req, res) => {
                 proposta.save().then(() => {
                     // //console.log('proposta salva')
                     documento.save().then(() => {
-                        AtvTelhado.findOne({ proposta: req.body.id }).then((telhado) => {
-                            //console.log(telhado)
-                            if (typeof telhado != 'undefined' && telhado != '' && telhado != null) {
-                                // //console.log('previsao existe=>'+previsao)
-                                // //console.log('equipe=>'+equipe)
-                                // //console.log('equipe.dtfim=>'+equipe.dtfim)
-                                equipe.dtfim = previsao
-                                equipe.dtfimbusca = dataBusca(previsao)
-                                equipe.save().then(() => {
-                                    req.flash('success_msg', 'Documento salvo com sucesso.')
-                                    res.redirect('/gerenciamento/assinatura/' + req.body.id)
-                                })
-                            } else {
-                                new AtvTelhado({
-                                    proposta: proposta._id,
-                                    feito: false
-                                }).save().then(() => {
-                                    new AtvAterramento({
-                                        proposta: proposta._id,
-                                        feito: false
-                                    }).save().then(() => {
-                                        new AtvInversor({
-                                            proposta: proposta._id,
-                                            feito: false
-                                        }).save().then(() => {
-                                            //console.log('previsao novo=>' + previsao)
-                                            equipe.dtfim = previsao
-                                            equipe.dtfimbusca = dataBusca(previsao)
-                                            equipe.save().then(() => {
-                                                req.flash('success_msg', 'Documento salvo com sucesso.')
-                                                res.redirect('/gerenciamento/assinatura/' + req.body.id)
-                                            })
-                                        })
-                                    })
-                                })
-                            }
+                        equipe.dtfim = previsao
+                        equipe.dtfimbusca = dataBusca(previsao)
+                        equipe.save().then(() => {
+                            req.flash('success_msg', 'Documento salvo com sucesso.')
+                            res.redirect('/gerenciamento/assinatura/' + req.body.id)
                         })
                     }).catch(() => {
                         req.flash('error_msg', 'Falha ao salvar o documento.')
@@ -5474,25 +5443,17 @@ router.post("/salvarequipe", ehAdmin, (req, res) => {
         Equipe.findOne({ _id: proposta.equipe }).then((equipe) => {
 
             //Adicionar custo por instalador
-            //equipe.custins = custototal
-            // equipe.dtinicio = req.body.dtinicio
-            // equipe.dtfim = req.body.dtfim
-            // equipe.dtfimbusca = dataBusca(req.body.dtfim)
-            // equipe.dtinibusca = dataBusca(req.body.dtinicio)
-
             custoins = req.body.custo
             email = req.body.email
-            //console.log('custoins=>' + custoins)
+            
             for (i = 0; i < custoins.length; i++) {
                 //console.log('custoins[i]' + custoins[i])
                 custototal = parseFloat(custototal) + parseFloat(custoins[i])
             }
             for (i = 0; i < email.length; i++) {
-                //console.log('custoins[i]' + custoins[i])
                 todos_emails = todos_emails + email[i] + ';'
             }
 
-            //console.log('todos_emails=>' + todos_emails)
             if (naoVazio(req.body.idins0)) {
                 equipe.idins0 = req.body.idins0
                 equipe.insres = req.body.insres
@@ -5527,7 +5488,6 @@ router.post("/salvarequipe", ehAdmin, (req, res) => {
             } else {
                 equipe.idins5 = null
             }
-            //console.log('custototal=>' + custototal)
 
             equipe.ins0 = req.body.ins0
             equipe.ins1 = req.body.ins1
@@ -5571,35 +5531,14 @@ router.get('/enviarequipe/:id', ehAdmin, (req, res) => {
     var liberar
     var mensagem
     var tipo
-    var ins = []
-    var email
     Proposta.findOne({ _id: req.params.id }).then((proposta) => {
-        //console.log("proposta.equipe=>" + proposta.equipe)
+        if (naoVazio(proposta)){
         Equipe.findOne({ _id: proposta.equipe }).then((equipe) => {
-            //  if (equipe.idins0 != '' || typeof equipe.idins0 != 'undefined') {
-            //      ins = { idins0: equipe.idins0, ins0: equipe.ins0 }
-            //  }
-            //     if (equipe.idins1 != '' || typeof equipe.idins1 != 'undefined') {
-            //         ins = ins + { idins1: equipe.idins1, ins1: equipe.ins1 }
-            //     }
-            //     if (equipe.idins2 != '' || typeof equipe.idins2 != 'undefined') {
-            //         ins = ins + { idins2: equipe.idins2, ins2: equipe.ins2 }
-            //     }
-            //     if (equipe.idins3 != '' || typeof equipe.idins3 != 'undefined') {
-            //         ins = ins + { idins3: equipe.idins3, ins3: equipe.ins3 }
-            //     }
-            //     if (equipe.idins4 != '' || typeof equipe.idins4 != 'undefined') {
-            //         ins = ins + { idins4: equipe.idins4, ins4: equipe.ins4 }
-            //     }
-            //     if (equipe.idins5 != '' || typeof equipe.idins5 != 'undefined') {
-            //         ins = ins + { idins5: equipe.idins5, ins5: equipe.ins5 }
-            //     }
-            //console.log('ins=>' + ins)
             const corpo = {
                 proposta: req.params.id,
+                equipe: equipe,
                 data: dataHoje()
             }
-
             //console.log('equipe.liberar=>' + equipe.liberar)
             if (equipe.liberar == true) {
                 AtvTelhado.findOneAndDelete({ proposta: req.params.id }).then(() => {
@@ -5644,11 +5583,10 @@ router.get('/enviarequipe/:id', ehAdmin, (req, res) => {
                     res.redirect('/gerenciamento/equipe/' + req.params.id)
                 })
             } else {
-                const novaatv = Object.assign(ins, corpo)
                 //console.log('novaatv=>' + novaatv)
-                new AtvTelhado(novaatv).save().then(() => {
-                    new AtvAterramento(novaatv).save().then(() => {
-                        new AtvInversor(novaatv).save().then(() => {
+                new AtvTelhado(corpo).save().then(() => {
+                    new AtvAterramento(corpo).save().then(() => {
+                        new AtvInversor(corpo).save().then(() => {
                             liberar = true
                             mensagem = 'Equipe liberada para a obra.'
                             tipo = 'success_msg'
@@ -5700,6 +5638,51 @@ router.get('/enviarequipe/:id', ehAdmin, (req, res) => {
             req.flash('error_msg', 'Houve erro ao encontrar a equipe.')
             res.redirect('/gerenciamento/equipe/' + req.params.id)
         })
+    }else{
+        Tarefa.findOne({_id: req,params,id}).then((tarefa)=>{
+        Equipe.findOne({ _id: proposta.equipe }).then((equipe) => {
+        mensagem = 'Equipe liberada para o serviço.'
+        tipo = 'success_msg'
+        equipe.liberar = true
+        equipe.save().then(() => {
+            //console.log('equipe.email=>'+equipe.email)
+            Pessoa.findOne({ _id: equipe.insres }).then((insres) => {
+                var mailOptions = { // Define informações pertinentes ao E-mail que será enviado
+                    from: '"Nova equipe" <equipe@vimmus.com.br>',
+                    to: equipe.email,
+                    subject: 'Atividades da equipe',
+                    text: 'Olá Instalador,' + '\n' +
+                        'Você esta alocado para a equipe do projeto: ' + tarefa.seq + '/' + equipe.nome_projeto + ', esta instalação está planejada para ser realizada entre os dias: ' + dataMensagem(equipe.dtinicio) + ' e ' + dataMensagem(equipe.dtfim) + '\n' +
+                        'O endereço para a instalação é: ' + tarefa.endereco + ' município de: ' + tarefa.cidade + '/' + tarefa.uf + '\n' +
+                        'O técnico responsável pelo serviço será: ' + insres.nome + '\n' +
+                        'Acesse seu aplicativo para acopanhar a evolução da obra.'
+                }
+                transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
+                    if (err) {
+                        return //console.log(err)
+                    } else {
+                        req.flash(tipo, mensagem)
+                        res.redirect('/gerenciamento/equipe/' + req.params.id)
+                    }
+
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Houve erro ao encontrar o instalador responsável.')
+                res.redirect('/gerenciamento/equipe/' + req.params.id)
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Houve erro ao salvar a equipe.')
+            res.redirect('/gerenciamento/equipe/' + req.params.id)
+        })    
+    }).catch((err) => {
+        req.flash('error_msg', 'Houve erro ao encontrar a equipe.')
+        res.redirect('/gerenciamento/equipe/' + req.params.id)
+    })      
+}).catch((err) => {
+    req.flash('error_msg', 'Houve erro ao encontrar a tarefa.')
+    res.redirect('/gerenciamento/equipe/' + req.params.id)
+})      
+    }
     }).catch((err) => {
         req.flash('error_msg', 'Houve erro ao encontrar a proposta.')
         res.redirect('/gerenciamento/equipe/' + req.params.id)
@@ -8085,25 +8068,31 @@ router.get('/equipetarefa/:id', ehAdmin, (req, res) => {
                         //     custoins = pesins.custo
                         // }
 
+                        if (naoVazio(pesins.email)) {
+                            email = pesins.email
+                        } else {
+                            email = ''
+                        }
+
                         if (nome == ins0) {
-                            ins_dentro.push({ id, nome, custo: custoins })
+                            ins_dentro.push({ id, nome, email })
                         } else {
                             if (nome == ins1) {
-                                ins_dentro.push({ id, nome, custo: custoins })
+                                ins_dentro.push({ id, nome, email })
                             } else {
                                 if (nome == ins2) {
-                                    ins_dentro.push({ id, nome, custo: custoins })
+                                    ins_dentro.push({ id, nome, email })
                                 } else {
                                     if (nome == ins3) {
-                                        ins_dentro.push({ id, nome, custo: custoins })
+                                        ins_dentro.push({ id, nome, email })
                                     } else {
                                         if (nome == ins4) {
-                                            ins_dentro.push({ id, nome, custo: custoins })
+                                            ins_dentro.push({ id, nome, email })
                                         } else {
                                             if (nome == ins5) {
-                                                ins_dentro.push({ id, nome, custo: custoins })
+                                                ins_dentro.push({ id, nome, email })
                                             } else {
-                                                ins_fora.push({ id, nome, custo: custoins })
+                                                ins_fora.push({ id, nome, email })
                                             }
                                         }
                                     }
@@ -8175,14 +8164,14 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
         mes = '0' + mes
     }
 
-    if (naoVazio(req.body.dia)) {
+    if (naoVazio(req.body.dia) && dia != 0) {
         if (parseFloat(req.body.dia) < 10) {
             dia = '0' + req.body.dia
         } else {
             dia = req.body.dia
         }
     } else {
-        dia = parseFloat(hoje.getDay)
+        dia = parseFloat(hoje.getDate())
         if (dia < 10) {
             dia = '0' + dia
         }
@@ -8299,6 +8288,11 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
     var dif
     var dias = []
     var cadastro = dataHoje()
+    var corpo = []
+    var email = []
+    var todos_emails = ''
+
+    email = req.body.email
 
     if (naoVazio(req.body.idequipe)) {
         //console.log('equipe não vazio')
@@ -8339,13 +8333,17 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                     equipe.idins5 = null
                 }
                 //console.log('custototal=>' + custototal)
-
+                for (i = 0; i < email.length; i++) {
+                    //console.log('custoins[i]' + custoins[i])
+                    todos_emails = todos_emails + email[i] + ';'
+                }
                 equipe.ins0 = req.body.ins0
                 equipe.ins1 = req.body.ins1
                 equipe.ins2 = req.body.ins2
                 equipe.ins3 = req.body.ins3
                 equipe.ins4 = req.body.ins4
                 equipe.ins5 = req.body.ins5
+                equipe.email = todos_emails
                 // equipe.custoins = custototal
                 // equipe.feito = true
                 equipe.save().then(() => {
@@ -8376,7 +8374,11 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
             dataini = req.body.dataini
             datafim = req.body.datafim
         }
-        const corpo = {
+        for (i = 0; i < email.length; i++) {
+            //console.log('custoins[i]' + custoins[i])
+            todos_emails = todos_emails + email[i] + ';'
+        }        
+        corpo = {
             user: id,
             ins0: req.body.ins0,
             ins1: req.body.ins1,
@@ -8391,6 +8393,7 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
             feito: false,
             liberar: false,
             parado: false,
+            email: todos_emails
         }
         var idins = []
         var equipe = []
@@ -8432,9 +8435,7 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
             equipe = corpo
         }
         new Equipe(equipe).save().then(() => {
-            //console.log('salvou equipe')
             Equipe.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((novaequipe) => {
-                //console.log('req.body.equipe=>' + req.body.equipe)
                 if (req.body.equipe == 'true') {
                     //console.log('req.body.id=>' + req.body.id)
                     Tarefas.findOne({ _id: req.body.id }).then((tarefa) => {
@@ -8494,13 +8495,35 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                         }
                         //console.log('adiciona=>' + JSON.stringify(adiciona))
                         new Tarefas(adiciona).save().then(() => {
-                            //console.log("salvou tarefa")
+                            console.log("salvou tarefa")
                             Tarefas.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((tarefa) => {
                                 novaequipe.tarefa = tarefa._id
                                 novaequipe.save().then(() => {
                                     emp_tarefa.save().then(() => {
-                                        req.flash('success_msg', 'Tarefa gerada com sucesso.')
-                                        res.redirect('/gerenciamento/tarefas/' + tarefa._id)
+                                        console.log('novaequipe._id=>'+novaequipe._id)
+                                        corpo = {
+                                            tarefa: tarefa._id,
+                                            equipe: novaequipe._id,
+                                            data: dataHoje()
+                                        }
+                                        new AtvTelhado(corpo).save().then(() => {
+                                            new AtvAterramento(corpo).save().then(() => {
+                                                new AtvInversor(corpo).save().then(() => {
+                                                    console.log("salvou atividades")
+                                                    req.flash('success_msg', 'Tarefa gerada com sucesso.')
+                                                    res.redirect('/gerenciamento/tarefas/' + tarefa._id)
+                                                }).catch((err) => {
+                                                    req.flash('error_msg', 'Houve erro ao salvar a atividade de instalação do inversor.')
+                                                    res.redirect('/menu')
+                                                })
+                                            }).catch((err) => {
+                                                req.flash('error_msg', 'Houve erro ao salvar a atividade de instalação do aterramento.')
+                                                res.redirect('/menu')
+                                            })
+                                        }).catch((err) => {
+                                            req.flash('error_msg', 'Houve erro ao salvar a atividade de instalação do telhado.')
+                                            res.redirect('/menu')
+                                        })
                                     }).catch((err) => {
                                         req.flash('error_msg', 'Falha ao salvar a empresa.')
                                         res.redirect('/gerenciamento/tarefas/' + tarefa._id)
@@ -12356,7 +12379,7 @@ router.post('/filtrodash', ehAdmin, (req, res) => {
     }
 
     sqldata = { dtinibusca: { $lte: datafim, $gte: dataini } }
-    
+
     if (hora >= 18 && hora <= 24) {
         saudacao = 'Boa Noite '
     }
@@ -12380,7 +12403,7 @@ router.post('/filtrodash', ehAdmin, (req, res) => {
     }
 
     sql = Object.assign(sqlstatus, sqldata)
-    
+
     var esta_pessoa = pessoa
 
     if (req.body.ordem == '1') {

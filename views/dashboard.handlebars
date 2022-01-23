@@ -565,12 +565,12 @@
                 <td>
                     <div style="padding-left: 20px;display: flex;align-items:center;">
                         {{#if liberado}}
-                        <div id='execucao' style="positio: relative;top: 50%;transform: translateY(30%);"></div></div>
+                        <div id='execucao' style="position: relative;top: 40%;transform: translateY(30%);"></div></div>
                         {{else}}
                         {{#if feito}}
-                        <div id='realizado' style="positio: relative;top: 50%;transform: translateY(30%);"></div></div>
+                        <div><i id='realizado' class='bi bi-check d-flex align-items-center mt-1' style="position: relative;transform: translateY(10%);color: rgb(55,49,89);"></i></div>
                         {{else}}
-                        <div id='aguardando' style="positio: relative;top: 50%;transform: translateY(30%);"></div>
+                        <div id='aguardando' style="position: relative;top: 50%;transform: translateY(30%);"></div>
                         {{/if}}
                         {{/if}}
                     </div>

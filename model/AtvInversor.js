@@ -7,6 +7,16 @@ const AtvInversor = new Schema({
         ref: 'proposta',
         require: true
     },    
+    tarefa: {
+        type: Schema.Types.ObjectId,
+        ref: 'tarefa',
+        require: true
+    },        
+    equipe: {
+        type: Schema.Types.ObjectId,
+        ref: 'equipe',
+        require: true
+    },      
     feito: {
         type: Boolean,
         require: false
@@ -26,37 +36,7 @@ const AtvInversor = new Schema({
     aprova: {
         type: Boolean,
         require: false,
-    },        
-    ins0: {
-        type: Schema.Types.ObjectId,
-        ref: 'pessoa',
-        require: true
-    },
-    ins1: {
-        type: Schema.Types.ObjectId,
-        ref: 'pessoa',
-        require: true
-    },
-    ins2: {
-        type: Schema.Types.ObjectId,
-        ref: 'pessoa',
-        require: true
-    },      
-    ins3: {
-        type: Schema.Types.ObjectId,
-        ref: 'pessoa',
-        require: true
-    },    
-    ins4: {
-        type: Schema.Types.ObjectId,
-        ref: 'pessoa',
-        require: true
-    },        
-    ins5: {
-        type: Schema.Types.ObjectId,
-        ref: 'pessoa',
-        require: true
-    },           
+    },            
 })
 
 mongoose.model('atvInversor', AtvInversor)
