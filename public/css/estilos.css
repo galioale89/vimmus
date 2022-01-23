@@ -429,7 +429,7 @@ border: rgba(200, 200, 200, 0.8) solid 1px;
 border-radius: 5px;
 padding: 6px;
 box-shadow: 1px 4px 5px rgba(26, 25, 25, 0.77);
-overflow-y: scroll;
+overflow: auto;
 }
 
 .quadro {

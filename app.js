@@ -155,7 +155,7 @@ app.get('/menu', ehAdmin, (req, res) => {
     var data2 = 0
     var days = 0
     var dif = 0
-    var dtnovo
+    var ano = hoje.substring(0,4)
     var nome_lista
 
     var numprj = 0
@@ -756,7 +756,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                         console.log(qtdexec)
                                                         console.log(qtdpara)
                                                         console.log(qtdreal)
-                                                        res.render('dashboard', {  numtrf, qtdagua, qtdexec, qtdpara, qtdreal, crm: false, lista_tarefas, nome_lista, saudacao, todos_clientes, asc, desc, ordem, todas_empresas })
+                                                        res.render('dashboard', { ano, numtrf, qtdagua, qtdexec, qtdpara, qtdreal, crm: false, lista_tarefas, nome_lista, saudacao, todos_clientes, asc, desc, ordem, todas_empresas })
                                                     }).catch((err) => {
                                                         req.flash("error_msg", "Ocorreu uma falha interna para encontrar a pessoa<s>.")
                                                         res.redirect("/")
@@ -793,7 +793,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                             } else {
                                 nome_lista = nome
                             }
-                            res.render('dashboard', { crm: false, id: _id, owner: owner, saudacao, nome_lista, asc, desc, ordem, todas_empresas })
+                            res.render('dashboard', { ano, crm: false, id: _id, owner: owner, saudacao, nome_lista, asc, desc, ordem, todas_empresas })
                         })
                     }
                 }).catch((err) => {

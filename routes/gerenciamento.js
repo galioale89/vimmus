@@ -1189,15 +1189,16 @@ router.get('/mostraEquipe/:id', ehAdmin, (req, res) => {
                 res.redirect('/menu')
             })
         } else {
+            var realizar
             Tarefa.findOne({ _id: req.params.id }).then((tarefa) => {
                 // console.log(tarefa)
                 if (naoVazio(tarefa)) {
                     Cliente.findOne({ _id: tarefa.cliente }).lean().then((cliente) => {
                         Equipe.findOne({ _id: tarefa.equipe }).lean().then((equipe) => {
                             Pessoa.findOne({ _id: tarefa.responsavel }).lean().then((tecnico) => {
-                                console.log('tarefa.gestor=>' + tarefa.gestor)
+                                realizar = equipe.feito
                                 Pessoa.findOne({ _id: tarefa.gestor }).lean().then((gestor) => {
-                                    res.render('principal/mostraEquipe', { tarefa, equipe, cliente, tecnico, gestor })
+                                    res.render('principal/mostraEquipe', { realizar, tarefa, equipe, cliente, tecnico, gestor })
                                 }).catch((err) => {
                                     req.flash('error_msg', 'Falha ao encontrar o gestor responsável.')
                                     res.redirect('/menu')
@@ -1225,6 +1226,32 @@ router.get('/mostraEquipe/:id', ehAdmin, (req, res) => {
         }
     }).catch((err) => {
         req.flash('error_msg', 'Falha ao encontrar a proposta<me>.')
+        res.redirect('/menu')
+    })
+})
+
+router.get('/realizar/:id', ehAdmin, (req, res) => {
+    Tarefa.findOne({ _id: req.params.id }).then((tarefa) => {
+        Equipe.findOne({ _id: tarefa.equipe }).then((equipe) => {
+            equipe.feito = true
+            equipe.save().then(() => {
+                tarefa.concluido = true
+                tarefa.save().then(() => {
+                    res.redirect('/gerenciamento/mostraEquipe/' + tarefa._id)
+                }).catch((err) => {
+                    req.flash('error_msg', 'Falha ao salvar a tarefa.')
+                    res.redirect('/menu')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Falha ao salvar a equipe.')
+                res.redirect('/menu')
+            })
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha ao encontrar a equipe.')
+            res.redirect('/menu')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Falha ao encontrar a tarefa.')
         res.redirect('/menu')
     })
 })
@@ -5839,7 +5866,6 @@ router.post('/caminhoInv', ehAdmin, upload.array('fileinv', 10), (req, res) => {
         req.flash('error_msg', 'Falha ao atualizar o inversor.')
         res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
     })
-
 })
 
 router.post('/caminhoStb', ehAdmin, upload.array('filestb', 10), (req, res) => {
@@ -12233,11 +12259,11 @@ router.post('/filtrodash', ehAdmin, (req, res) => {
     const { nome } = req.user
     var id
 
-    if (typeof user == 'undefined') {
-        id = _id
-    } else {
-        id = user
-    }
+    var qtdexec = 0
+    var qtdagua = 0
+    var qtdreal = 0
+    var qtdpara = 0
+    var numtrf = 0
 
     var lista_tarefas = []
     var nome_lista
@@ -12253,6 +12279,84 @@ router.post('/filtrodash', ehAdmin, (req, res) => {
 
     var data = new Date()
     var hora = data.getHours()
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+
+    var sqldata = []
+    ano = req.body.ano
+    switch (req.body.mes) {
+        case 'Janeiro':
+            dataini = ano + '01' + '01'
+            datafim = ano + '01' + '31'
+            mestitulo = 'Janeiro de '
+            break;
+        case 'Fevereiro':
+            dataini = ano + '02' + '01'
+            datafim = ano + '02' + '28'
+            mestitulo = 'Fevereiro de '
+            break;
+        case 'Março':
+            dataini = ano + '03' + '01'
+            datafim = ano + '03' + '31'
+            mestitulo = 'Março /'
+            break;
+        case 'Abril':
+            dataini = ano + '04' + '01'
+            datafim = ano + '04' + '30'
+            mestitulo = 'Abril de '
+            break;
+        case 'Maio':
+            dataini = ano + '05' + '01'
+            datafim = ano + '05' + '31'
+            mestitulo = 'Maio de '
+            break;
+        case 'Junho':
+            dataini = ano + '06' + '01'
+            datafim = ano + '06' + '30'
+            mestitulo = 'Junho de '
+            break;
+        case 'Julho':
+            dataini = ano + '07' + '01'
+            datafim = ano + '07' + '31'
+            mestitulo = 'Julho de '
+            break;
+        case 'Agosto':
+            dataini = ano + '08' + '01'
+            datafim = ano + '08' + '30'
+            mestitulo = 'Agosto de '
+            break;
+        case 'Setembro':
+            dataini = ano + '09' + '01'
+            datafim = ano + '09' + '31'
+            mestitulo = 'Setembro de '
+            break;
+        case 'Outubro':
+            dataini = ano + '10' + '01'
+            datafim = ano + '10' + '31'
+            mestitulo = 'Outubro de '
+            break;
+        case 'Novembro':
+            dataini = ano + '11' + '01'
+            datafim = ano + '11' + '30'
+            mestitulo = 'Novembro de '
+            break;
+        case 'Dezembro':
+            dataini = ano + '12' + '01'
+            datafim = ano + '12' + '31'
+            mestitulo = 'Dezembro de '
+            break;
+        default:
+            dataini = ano + '01' + '01'
+            datafim = ano + '12' + '31'
+            mestitulo = 'Todo ano de '
+    }
+
+    sqldata = { dtinibusca: { $lte: datafim, $gte: dataini } }
+    
     if (hora >= 18 && hora <= 24) {
         saudacao = 'Boa Noite '
     }
@@ -12262,7 +12366,7 @@ router.post('/filtrodash', ehAdmin, (req, res) => {
     if (hora >= 0 && hora < 12) {
         saudacao = 'Bom dia '
     }
-    console.log('req.body.status=>' + req.body.status)
+
     switch (req.body.status) {
         case 'Em execução': sqlstatus = { user: id, tarefa: { $exists: true }, feito: false, liberar: true, parado: false }
             break;
@@ -12274,9 +12378,11 @@ router.post('/filtrodash', ehAdmin, (req, res) => {
             break;
         default: sqlstatus = { user: id, tarefa: { $exists: true } }
     }
+
+    sql = Object.assign(sqlstatus, sqldata)
+    
     var esta_pessoa = pessoa
 
-    console.log('req.body.ordem=>' + req.body.ordem)
     if (req.body.ordem == '1') {
         ordem = 1
         asc = 'checked'
@@ -12285,26 +12391,43 @@ router.post('/filtrodash', ehAdmin, (req, res) => {
         ordem = -1
         asc = 'unchecked'
         desc = 'checked'
-    }         
+    }
+
     Empresa.find({ user: id }).lean().then((todas_empresas) => {
-        Equipe.find(sqlstatus).sort({dtinibusca: ordem}).then((equipe) => {
+        Equipe.find(sqlstatus).sort({ dtinibusca: ordem }).then((equipe) => {
             // console.log('tarefas=>'+tarefas)
             if (naoVazio(equipe)) {
                 equipe.forEach((e) => {
+                    if (e.feito == false && e.parado == false && e.liberar == false) {
+                        qtdagua++
+                    } else {
+                        if (e.feito == false && e.parado == false && e.liberar == true) {
+                            qtdexec++
+                        } else {
+                            if (e.feito == false && e.parado == true && e.liberar == true) {
+                                qtdpara++
+                            } else {
+                                if (e.feito == true && e.parado == false && e.liberar == true) {
+                                    qtdreal++
+                                }
+                            }
+                        }
+                    }
                     sql = { user: id, _id: e.tarefa }
                     if (naoVazio(req.body.empresa) && req.body.empresa != '111111111111111111111111') {
                         sqlemp = { empresa: req.body.empresa }
                         sql = Object.assign(sql, sqlemp)
-                    }               
+                    }
                     console.log('sql>' + JSON.stringify(sql))
                     Tarefa.findOne(sql).then((tarefas) => {
-                        console.log('tarefas=>'+tarefas._id)
+                        console.log('tarefas=>' + tarefas._id)
                         Atividade.findOne({ _id: tarefas.servico }).then((atividade) => {
                             Cliente.findOne({ _id: tarefas.cliente }).then((cliente) => {
                                 Pessoa.findOne({ _id: tarefas.responsavel }).then((pessoa_res) => {
                                     lista_tarefas.push({ id: tarefas._id, seq: tarefas.seq, liberado: e.liberar, feito: e.feito, nome_cli: cliente.nome, servico: atividade.descricao, nome_res: pessoa_res.nome, id_equipe: e._id, dtini: dataMensagem(e.dtinicio), dtfim: dataMensagem(e.dtfim) })
                                     q++
                                     if (q == equipe.length) {
+                                        numtrf = equipe.length
                                         Cliente.find({ user: id }).lean().then((todos_clientes) => {
                                             if (typeof pessoa == 'undefined') {
                                                 esta_pessoa = '111111111111111111111111'
@@ -12319,7 +12442,7 @@ router.post('/filtrodash', ehAdmin, (req, res) => {
                                                     if (naoVazio(emp)) {
                                                         empselect = emp.nome
                                                     }
-                                                    res.render('dashboard', { crm: false, lista_tarefas, nome_lista, saudacao, todos_clientes, todas_empresas, asc, desc, ordem, empselect })
+                                                    res.render('dashboard', { ano, mes: req.body.mes, numtrf, qtdagua, qtdexec, qtdpara, crm: false, lista_tarefas, nome_lista, saudacao, todos_clientes, todas_empresas, asc, desc, ordem, empselect })
                                                 }).catch((err) => {
                                                     req.flash("error_msg", "Ocorreu uma falha interna para encontrar a empresa<s>.")
                                                     res.redirect("/")
@@ -12364,7 +12487,7 @@ router.post('/filtrodash', ehAdmin, (req, res) => {
                         if (naoVazio(emp)) {
                             empselect = emp.nome
                         }
-                        res.render('dashboard', { crm: false, id: _id, owner: owner, saudacao, nome_lista, todas_empresas, asc, desc, ordem, empselect })
+                        res.render('dashboard', { ano, mes: req.body.mes, numtrf, qtdagua, qtdexec, qtdpara, crm: false, id: _id, owner: owner, saudacao, nome_lista, todas_empresas, asc, desc, ordem, empselect })
                     }).catch((err) => {
                         req.flash("error_msg", "Ocorreu uma falha interna para encontrar a empresa<s>.")
                         res.redirect("/")

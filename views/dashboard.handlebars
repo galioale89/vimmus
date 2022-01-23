@@ -425,12 +425,38 @@
             </div>
         </div>
         {{else}}
-        <form action="/gerenciamento/filtrodash" method="post">
+        <form action="/gerenciamento/filtrodash" method="post" class='mb-3'>
             <div class="row">
+                <div class="col text-end">
+                    <label class='col-form-label col-form-label-sm'>Data:</label>
+                </div>
+                <div class="col-md-2 text-start">
+                    <select name='mes' class='form-select form-select-sm'>
+                        {{#if mes}}
+                        <option>{{mes}}</option>
+                        {{/if}}
+                        <option>Todas</option>
+                        <option>Janeiro</option>
+                        <option>Fevereiro</option>                        
+                        <option>Março</option>
+                        <option>Abril</option>
+                        <option>Maio</option>
+                        <option>Junho</option>
+                        <option>Julho</option>
+                        <option>Agosto</option>
+                        <option>Setembro</option>
+                        <option>Outubro</option>
+                        <option>Novembro</option>                                                                                                                                                                        
+                        <option>Dezembro</option>                        
+                    </select>
+                </div>       
+                <div class="col-md-1 text-start">
+                    <input type="number" name='ano' class='form-control form-control-sm' value='{{ano}}'>
+                </div>         
                 <div class="col text-end">
                     <label class='col-form-label col-form-label-sm'>Empresa:</label>
                 </div>
-                <div class="col">
+                <div class="col-md-2 text-start">
                     <select name='empresa' class='form-select form-select-sm'>
                         <option value='111111111111111111111111'>Todas</option>
                         {{#each todas_empresas}}
@@ -443,7 +469,7 @@
                 <div class="col text-end">
                     <label class='col-form-label col-form-label-sm'>Status:</label>
                 </div>
-                <div class="col">
+                <div class="col-md-2">
                     <select name='status' class='form-select form-select-sm'>
                         {{#if empselect}}
                         <option>{{empselect}}</option>
@@ -482,8 +508,8 @@
             </div>
         </form>
         {{#if lista_tarefas}}
-        <div class='quadro-scroll' id='tarefa' style="padding-left: 5px;">
-            <div class="text-center mt-4">
+        <div class='quadro-scroll' id='tarefa' style="margin-left: 20px;width: 98%;" >
+            <div class="text-center">
                 <table style="font-size: 15px;">
                     <tr>
                         <th style="font-size: 15px;padding-left: 10px;">
@@ -539,12 +565,12 @@
                 <td>
                     <div style="padding-left: 20px;display: flex;align-items:center;">
                         {{#if liberado}}
-                        <div id='execucao' style="position: relative ;"></div>
+                        <div id='execucao' style="positio: relative;top: 50%;transform: translateY(30%);"></div></div>
                         {{else}}
                         {{#if feito}}
-                        <div id='realizado' style="position: relative ;"></div>
+                        <div id='realizado' style="positio: relative;top: 50%;transform: translateY(30%);"></div></div>
                         {{else}}
-                        <div id='aguardando' style="position: relative ;"></div>
+                        <div id='aguardando' style="positio: relative;top: 50%;transform: translateY(30%);"></div>
                         {{/if}}
                         {{/if}}
                     </div>
@@ -556,7 +582,9 @@
     </div>
     <div class="row mt-4">
         <label style="font-size: 20px;padding-left: 20px;font-weight: 800;">Visão Geral das Tarefas</label>
-        <canvas id='chartGeral' id='grafico' style='height: 150px;' class='mt-1 mb-1'></canvas>
+        <div id='grafico' style="width: 95%;padding-left: 50px;">
+        <canvas id='chartGeral' class='mt-1 mb-1'></canvas>
+        </div>
     </div>
     {{else}}
     <div class="container text-center" style="padding-left: 20px">
@@ -612,6 +640,7 @@
             maintainAspectRatio: false,
             responsive: true,
             legend: {
+                display: false,
                 position: 'top',
                 reverse: true,
                 align: 'center',

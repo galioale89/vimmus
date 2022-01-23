@@ -40,7 +40,7 @@
         <h5 class="">Técnico Responsável: {{tecnico.nome}} </h5>
     </div>
 
-    <input type="hidden" name="id" value='{{#if propsota}}{{proposta._id}}{{else}}{{tarefa._id}}{{/if}}'>
+    <input type="hidden" name="id" value='{{#if proposta}}{{proposta._id}}{{else}}{{tarefa._id}}{{/if}}'>
 
     <div class='row' style="height: 80%;">
         <div class='col'>
@@ -52,6 +52,13 @@
                 <div class="col">
                     <label class="col-form-label col-form-label-sm">Previsão Fim:</label>
                     <label class='col-form-label col-form-label-sm' id='dtfim'>{{equipe.dtfim}}</label>
+                </div>
+                <div class="col">
+                    {{#if realizar}}
+                    <label><i class='bi bi-check'>Projeto Realizado</i></label>
+                    {{else}}
+                    <a href='/gerenciamento/realizar/{{tarefa._id}}' class='btn btn-sm btn-primary'></i>Realizar</a>
+                    {{/if}}
                 </div>
             </div>
             {{#if proposta}}
