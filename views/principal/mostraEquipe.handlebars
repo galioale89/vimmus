@@ -56,20 +56,29 @@
                     <h5 class="">Gestor Responsável: {{gestor.nome}} </h5>
                     <h5 class="">Técnico Responsável: {{tecnico.nome}} </h5>
                 </div>
+                {{#if tarefa}}
                 <div class="col text-end">
                     <div class="btn-group gap-1">
                         {{#if realizar}}
-                        <label class='col-form-label'><i class='bi bi-check d-flex align-items-center'>Projeto
+                        <label class='col-form-label col-form-label-sm'><i class='bi bi-check d-flex align-items-center'>Tarefa
                                 Realizado</i></label>
                         {{else}}
                         <button onclick="confirma()" class='btn btn-sm btn-primary'></i>Realizar</button>
                         {{/if}}
+                        {{#if equipe.liberar}}
+                        <label class='col-form-label col-form-label-sm'><i class='bi bi-check d-flex align-items-center'>Equipe
+                                Liberada</i></label>                        
+                        {{else}}
                         <a href='/gerenciamento/enviarequipe/{{tarefa._id}}' class='btn btn-sm btn-primary'>Comunicar
                             Equipe</a>
+                        {{/if}}
+                            {{#if proposta}}
                         <a href='/gerenciamento/emandamento/' class='btn btn-sm btn-primary'><i
                                 class='bi bi-arrow-return-left'></i></a>
+                                {{/if}}
                     </div>
                 </div>
+                {{/if}}
             </div>
             <hr>
             <div class="row">
@@ -95,17 +104,6 @@
                     <label class="col-form-label">{{tarefa.uf}}</label>
                 </div>
             </div>
-
-            <div class="row mt-2 mb-3">
-                <div class="col">
-                    <label class="col-form-label">Previsão Inicio: </label>
-                    <label class='col-form-label' id='dtinicio'>{{equipe.dtinicio}}</label>
-                </div>
-                <div class="col">
-                    <label class="col-form-label">Previsão Fim:</label>
-                    <label class='col-form-label' id='dtfim'>{{equipe.dtfim}}</label>
-                </div>
-            </div>
             <hr>
             {{#if proposta}}
             <div class="row">
@@ -126,88 +124,48 @@
                 </div>
             </div>
             {{/if}}
-            <div style='padding-left: 5%'>
-                <div class='row mt-4'>
-                    <label class='col-form-label fw-bold'>Técnicos a campo</label>
+            <div class="row mt-2">
+                <div class="col">
+                    <label class="col-form-label">Previsão Inicio: </label>
+                    <label class='col-form-label' id='dtinicio'>{{equipe.dtinicio}}</label>
+                </div>
+                <div class="col">
+                    <label class="col-form-label">Previsão Fim:</label>
+                    <label class='col-form-label' id='dtfim'>{{equipe.dtfim}}</label>
+                </div>
+            </div>
+            <div class='row mt-1'>
+                <label class='col-form-label fw-bold'>Equipe</label>
+                <div class='row'>
                     {{#if equipe.ins0}}
-                    <div class='row'>
-                        <div class='col-md-3'>
-                            <div class='col-form-label'>{{equipe.ins0}}</div>
-                        </div>
-                        <div class='col-md-4'>
-                            <div clas='btn-grou gap-2 col-12'>
-                                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mostragps"
-                                    title="Histórico de localização do técnico"> <i class='bi bi-geo'></i></a>
-                            </div>
-                        </div>
+                    <div class='col-form-label'>{{equipe.ins0}}</div>
                     </div>
                     {{/if}}
                     {{#if equipe.ins1}}
                     <div class='row mt-1'>
-                        <div class='col-md-3'>
-                            <div class='col-form-label'>{{equipe.ins1}}</div>
-                        </div>
-                        <div class='col-md-4'>
-                            <div clas='btn-grou gap-2 col-12'>
-                                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mostragps"> <i
-                                        class='bi bi-geo'></i></a>
-                            </div>
-                        </div>
+                        <div class='col-form-label'>{{equipe.ins1}}</div>
                     </div>
                     {{/if}}
                     {{#if equipe.ins2}}
                     <div class='row mt-1'>
-                        <div class='col-md-3'>
-                            <div class='col-form-label'>{{equipe.ins2}}</div>
-                        </div>
-                        <div class='col-md-4'>
-                            <div clas='btn-grou gap-2 col-12'>
-                                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mostragps"> <i
-                                        class='bi bi-geo'></i></a>
-                            </div>
-                        </div>
+                        <div class='col-form-label'>{{equipe.ins2}}</div>
                     </div>
                     {{/if}}
                     {{#if equipe.ins3}}
                     <div class='row mt-1'>
-                        <div class='col-md-3'>
-                            <div class='col-form-label'>{{equipe.ins3}}</div>
-                        </div>
-                        <div class='col-md-4'>
-                            <div clas='btn-grou gap-2 col-12'>
-                                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mostragps"> <i
-                                        class='bi bi-geo'></i></a>
-                            </div>
-                        </div>
+                        <div class='col-form-label'>{{equipe.ins3}}</div>
                     </div>
                     {{/if}}
                     {{#if equipe.ins4}}
                     <div class='row mt-1'>
-                        <div class='col-md-3'>
-                            <div class='col-form-label'>{{equipe.ins4}}</div>
-                        </div>
-                        <div class='col-md-4'>
-                            <div clas='btn-grou gap-2 col-12'>
-                                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mostragps"> <i
-                                        class='bi bi-geo'></i></a>
-                            </div>
-                        </div>
+                        <div class='col-form-label'>{{equipe.ins4}}</div>
                     </div>
                     {{/if}}
                     {{#if equipe.ins5}}
                     <div class='row mt-1'>
-                        <div class='col-md-3'>
-                            <div class='col-form-label'>{{equipe.ins5}}</div>
-                        </div>
-                        <div class='col-md-4'>
-                            <div clas='btn-grou gap-2 col-12'>
-                                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mostragps"> <i
-                                        class='bi bi-geo'></i></a>
-                            </div>
-                        </div>
+                        <div class='col-form-label'>{{equipe.ins5}}</div>
                     </div>
                     {{/if}}
-                </div>
             </div>
         </div>
         <div class='col'>

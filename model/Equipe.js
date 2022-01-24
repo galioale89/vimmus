@@ -5,7 +5,7 @@ const Equipe = new Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: 'usuario',
-    require: true
+    require: true 
   },
   ehpadrao: {
     type: Boolean,

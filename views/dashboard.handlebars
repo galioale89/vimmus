@@ -437,7 +437,7 @@
                         {{/if}}
                         <option>Todas</option>
                         <option>Janeiro</option>
-                        <option>Fevereiro</option>                        
+                        <option>Fevereiro</option>
                         <option>Março</option>
                         <option>Abril</option>
                         <option>Maio</option>
@@ -446,13 +446,13 @@
                         <option>Agosto</option>
                         <option>Setembro</option>
                         <option>Outubro</option>
-                        <option>Novembro</option>                                                                                                                                                                        
-                        <option>Dezembro</option>                        
+                        <option>Novembro</option>
+                        <option>Dezembro</option>
                     </select>
-                </div>       
+                </div>
                 <div class="col-md-1 text-start">
                     <input type="number" name='ano' class='form-control form-control-sm' value='{{ano}}'>
-                </div>         
+                </div>
                 <div class="col text-end">
                     <label class='col-form-label col-form-label-sm'>Empresa:</label>
                 </div>
@@ -508,7 +508,7 @@
             </div>
         </form>
         {{#if lista_tarefas}}
-        <div class='quadro-scroll' id='tarefa' style="margin-left: 20px;width: 98%;" >
+        <div class='quadro-scroll' id='tarefa' style="margin-left: 20px;width: 98%;">
             <div class="text-center">
                 <table style="font-size: 15px;">
                     <tr>
@@ -565,38 +565,40 @@
                 <td>
                     <div style="padding-left: 20px;display: flex;align-items:center;">
                         {{#if liberado}}
-                        <div id='execucao' style="position: relative;top: 40%;transform: translateY(30%);"></div></div>
-                        {{else}}
-                        {{#if feito}}
-                        <div><i id='realizado' class='bi bi-check d-flex align-items-center mt-1' style="position: relative;transform: translateY(10%);color: rgb(55,49,89);"></i></div>
-                        {{else}}
-                        <div id='aguardando' style="position: relative;top: 50%;transform: translateY(30%);"></div>
-                        {{/if}}
-                        {{/if}}
+                        <div id='execucao' style="position: relative;top: 40%;transform: translateY(30%);"></div>
                     </div>
-                </td>
-            </tr>
-            {{/each}}
-            </table>
+                    {{else}}
+                    {{#if feito}}
+                    <div><i id='realizado' class='bi bi-check d-flex align-items-center mt-1'
+                            style="position: relative;transform: translateY(10%);color: rgb(55,49,89);"></i></div>
+                    {{else}}
+                    <div id='aguardando' style="position: relative;top: 50%;transform: translateY(30%);"></div>
+                    {{/if}}
+                    {{/if}}
         </div>
+        </td>
+        </tr>
+        {{/each}}
+        </table>
     </div>
-    <div class="row mt-4">
-        <label style="font-size: 20px;padding-left: 20px;font-weight: 800;">Visão Geral das Tarefas</label>
-        <div id='grafico' style="width: 95%;padding-left: 50px;">
+</div>
+<div class="row mt-4">
+    <label style="font-size: 20px;padding-left: 20px;font-weight: 800;">Visão Geral das Tarefas</label>
+    <div id='grafico' style="width: 95%;padding-left: 50px;">
         <canvas id='chartGeral' class='mt-1 mb-1'></canvas>
+    </div>
+</div>
+{{else}}
+<div class="container text-center" style="padding-left: 20px">
+    <div class="card">
+        <div class="body-card" style="margin:auto">
+            <label class="col-form-label" style="font-size: 50px;margin-top: 180px;margin-bottom: 180px">Agende seu
+                primeiro serviço.</label>
         </div>
     </div>
-    {{else}}
-    <div class="container text-center" style="padding-left: 20px">
-        <div class="card">
-            <div class="body-card" style="margin:auto">
-                <label class="col-form-label" style="font-size: 50px;margin-top: 180px;margin-bottom: 180px">Agende seu
-                    primeiro serviço.</label>
-            </div>
-        </div>
-    </div>
-    {{/if}}
-    {{/if}}
+</div>
+{{/if}}
+{{/if}}
 </div>
 {{#each todos_clientes}}
 <input type="hidden" name="clinome[]" value="{{nome}}">

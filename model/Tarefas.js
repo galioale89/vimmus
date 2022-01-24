@@ -123,7 +123,11 @@ const Tarefas = new Schema({
     tipo: {
         type: String,
         require:false  
-    }    
+    },
+    dataentrega:{
+        type: Number,
+        require:false
+    }
 })
 
 mongoose.model('tarefas', Tarefas)

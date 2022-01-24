@@ -94,6 +94,7 @@
                 <form action="/gerenciamento/caminhoAte" method="post" enctype="multipart/form-data">
                     <div class='row'>
                         <input type='hidden' name='id' value='{{proposta._id}}'>
+                        <input type='hidden' name='aceite' value='true'>
                         <div class='col-md-3 text-end'>
                             <label class='col-form-label fw-bold'>Aterramento:</label>
                         </div>
@@ -127,6 +128,7 @@
                 <form action="/gerenciamento/caminhoInv" class='mt-4' method="post" enctype="multipart/form-data">
                     <div class='row'>
                         <input type='hidden' name='id' value='{{proposta._id}}'>
+                        <input type='hidden' name='aceite' value='true'>
                         <div class="col-md-3 text-end">
                             <label class='col-form-label fw-bold'>Inversor e String Box:</label>
                         </div>
@@ -159,6 +161,7 @@
                 <form action="/gerenciamento/caminhoMod" class='mt-4' method="post" enctype="multipart/form-data">
                     <div class="row">
                         <input type='hidden' name='id' value='{{proposta._id}}'>
+                        <input type='hidden' name='aceite' value='true'>
                         <div class="col-md-3 text-end">
                             <label class='col-form-label fw-bold'>Estruturas e Módulos:</label>
                         </div>

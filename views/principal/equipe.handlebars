@@ -214,12 +214,9 @@
                 <div class="col-md-4">
                     <label for="nome" class=" fw-bold col-form-label col-form-label-sm"> Equipe:</label>
                     <select class='form-select mb-1' name='equipe'>
-                        {{!-- {{#if lista_equipe.nome_equipe}}
-                        <option class='fw-bold' value='{{lista_equipe.nome_equipe}}'>{{lista_equipe.nome_equipe}}
-                        </option>
-                        {{else}} --}}
+                        {{#if nome_equipe}}
                         <option class='fw-bold' value='{{nome_equipe}}'>{{nome_equipe}}</option>
-                        {{!-- {{/if}} --}}
+                        {{/if}}
                         <option value='todos'>Todos</option>
                         {{#each equipes}}
                         <option value="{{nome}}">{{nome}}</option>
@@ -253,7 +250,7 @@
                 {{#each lista_nomes}}
                 <div style="width: fit-content">
                     <div class='filtro-selecao' style="line-height: 20px;">{{nome}} <a
-                            href='/gerenciamento/vermais/{{id}}/{{proposta._id}}'><i class='bi bi-eye'></i></a></div>
+                            href='/gerenciamento/vermais/{{id}}/'><i class='bi bi-eye'></i></a></div>
                 </div>
                 {{/each}}
             </div>

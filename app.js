@@ -143,12 +143,23 @@ app.get('/menu', ehAdmin, (req, res) => {
     const { owner } = req.user
     const { pessoa } = req.user
     const { funges } = req.user
+    var id
+    var sql = []
+
+    console.log('ehAdmin=>'+ehAdmin)
+    console.log('user=>'+user)
+    console.log('pessoa=>'+pessoa)
 
     if (naoVazio(user)) {
         id = user
+        sql = { user: id, responsavel: pessoa }
     } else {
         id = _id
+        sql = { user: id }
     }
+
+    console.log('id=>'+id)
+    console.log('sql=>'+JSON.stringify(sql))
 
     var hoje = dataHoje()
     var data1 = 0
@@ -210,24 +221,17 @@ app.get('/menu', ehAdmin, (req, res) => {
         saudacao = 'Bom dia '
     }
 
-    var sql = []
-
-    if (naoVazio(user)) {
-        sql = { user: id, responsavel: pessoa }
-    } else {
-        sql = { user: id }
-    }
-
     Usuario.findOne({ _id: id }).then((user_ativo) => {
         var esta_pessoa = pessoa
         if (user_ativo.crm == true) {
             Proposta.find(sql).sort({ data: 'asc' }).then((todasPropostas) => {
                 if (naoVazio(todasPropostas)) {
                     todasPropostas.forEach((e) => {
-                        //console.log('ehAdmin=>'+ehAdmin)
                         if (funges == 1 || ehAdmin == 0) {
                             Cliente.findOne({ _id: e.cliente }).then((cliente) => {
+                                console.log('e._id=>'+e._id)
                                 Documento.findOne({ proposta: e._id }).then((documento) => {
+                                    console.log('documento=>'+documento)
                                     Compra.findOne({ proposta: e._id }).then((compra) => {
                                         Vistoria.findOne({ proposta: e._id }).then((vistoria) => {
                                             Equipe.findOne({ _id: e.equipe }).then((equipe) => {
@@ -265,21 +269,31 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                                 }
                                                             }
                                                         }
-                                                        //console.log('tdcadastro=>'+dtcadastro)
-                                                        //console.log('dtvalidade=>'+dtvalidade)
+                                                        // console.log('dtcadastro=>'+dtcadastro)
+                                                        // console.log('dtvalidade=>'+dtvalidade)
                                                         if (pessoa_res != null) {
                                                             responsavel = pessoa_res.nome
                                                         } else {
                                                             responsavel = ''
                                                         }
-                                                        //console.log('responsavel=>'+responsavel)
-                                                        //console.log('status=>'+status)
-                                                        //console.log('e.seq=>'+e.seq)
-                                                        //console.log(' cliente.nome=>'+ cliente.nome)
-                                                        //console.log(' cliente.celular=>'+ cliente.celular)
-                                                        //console.log(' cliente.email=>'+ cliente.email)
-                                                        //console.log('e.seq=>'+e.seq)
-
+                                                        // console.log('responsavel=>'+responsavel)
+                                                        // console.log('e.seq=>'+e.seq)
+                                                        // console.log('cliente.nome=>'+ cliente.nome)
+                                                        // console.log('cliente.celular=>'+ cliente.celular)
+                                                        // console.log('cliente.email=>'+ cliente.email)
+                                                        // console.log('e.ganho=>'+ e.ganho)
+                                                        // console.log('posvenda.feito=>'+ posvenda.feito)
+                                                        // console.log('documento.feitofaturado>'+ documento.feitofaturado)
+                                                        // console.log('documento.feitoalmox>'+ documento.feitoalmox)
+                                                        // console.log('documento.enviaalmox>'+ documento.enviaalmox)
+                                                        // console.log('equipe.feito=>'+ equipe.feito)
+                                                        // console.log('documento.protcolado>'+ documento.protocolado)
+                                                        // console.log('documento.feitotrt>'+ documento.feitotrt)
+                                                        // console.log('compra.feitonota=>'+ compra.feitonota)
+                                                        // console.log('compra.feitopedido=>'+ compra.feitopedido)
+                                                        // console.log('e.assinado=>'+ e.assinado)
+                                                        // console.log('vistoria.feito=>'+ vistoria.feito)
+                                                        
                                                         if (e.ganho == true) {
                                                             if (e.encerrado == true) {
                                                                 status = 'Encerrado'
@@ -368,6 +382,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                                 }
                                                             }
                                                         } else {
+                                                            console.log('proposta enviada')
                                                             if (e.baixada == false) {
                                                                 status = 'Proposta Enviada'
                                                                 qtdpro++
@@ -377,10 +392,11 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                                 qtdbaixado++
                                                             }
                                                         }
-
-
+                                                        
+                                                        // console.log('e.ganho=>'+e.ganho)
+                                                        // console.log('e.baixada=>'+e.baixada)
+                                                        // console.log('dtvalidade=>'+dtvalidade)
                                                         if (e.ganho == false && e.baixada == false) {
-                                                            //console.log('vencimento')
                                                             if (dtvalidade != '0000-00-00') {
                                                                 data1 = new Date(dtvalidade)
                                                                 data2 = new Date(hoje)
@@ -399,37 +415,37 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                                 }
                                                             }
                                                         } else {
-                                                            //console.log('deadline')
+                                                            console.log('deadline')
                                                             if (e.ganho == true && e.encerrado == false) {
                                                                 var dtassinatura
-                                                                //console.log('documento.dtassinatura=>'+documento.dtassinatura)
+                                                                console.log('documento.dtassinatura=>'+documento.dtassinatura)
                                                                 if (naoVazio(documento.dtassinatura)) {
                                                                     dtassinatura = documento.dtassinatura
                                                                 } else {
                                                                     dtassinatura = '0000-00-00'
                                                                 }
 
-                                                                //console.log('dtdlassinado=>' + dtdlassinado)
+                                                                console.log('dtassinatura=>' + dtassinatura)
                                                                 data2 = new Date(equipe.dtfim)
                                                                 data1 = new Date(hoje)
-                                                                // //console.log('data1=>' + data1)
-                                                                // //console.log('data2=>' + data2)
+                                                                console.log('data1=>' + data1)
+                                                                console.log('data2=>' + data2)
                                                                 dif = Math.abs(data2.getTime() - data1.getTime())
-                                                                //console.log('dif=>'+dif)
+                                                                console.log('dif=>'+dif)
                                                                 days = Math.ceil(dif / (1000 * 60 * 60 * 24))
-                                                                // //console.log('days=>'+days)
-                                                                //console.log('equipe.dtinicio=>'+equipe.dtinicio)
-                                                                //console.log('equipe.dtfim=>'+equipe.dtfim)
+                                                                console.log('days=>'+days)
+                                                                console.log('equipe.dtinicio=>'+equipe.dtinicio)
+                                                                console.log('equipe.dtfim=>'+equipe.dtfim)
                                                                 if (days < 30) {
                                                                     deadlineIns.push({ id: e._id, proposta: e.seq, cliente: cliente.nome, cadastro: dataMensagem(dtcadastro), inicio: dataMensagem(equipe.dtinicio), dliins: dataMensagem(equipe.dtfim) })
                                                                 }
                                                             }
                                                         }
-
+                                                        
 
                                                         q++
-                                                        //console.log('q=>'+q)
-                                                        //console.log('todasPropostas.length=>'+todasPropostas.length)
+                                                        console.log('q=>'+q)
+                                                        console.log('todasPropostas.length=>'+todasPropostas.length)
                                                         if (q == todasPropostas.length) {
                                                             numprj = todasPropostas.length
                                                             //console.log('pessoa=>'+pessoa)
