@@ -100,31 +100,31 @@
   </div>
   <div class="collapse navbar-collapse d-flex justify-content-end">
     <div class='btn-group col-12 gap-2 justify-content-end'>
-      <a href='/menu' class="botao-filter"><i class='bi bi-menu-button-wide'></i> Dashboard</a><br>
-
       {{#if crm}}
-      <div class="dropdown">
+<div class="dropdown">
         <button class="botao-filter dropdown-toggle fw-bold" type="button" style='background-color: rgb(44,55,89);'
-          data-bs-toggle="dropdown" aria-expanded="false" style='font-size: 10px'>
+          data-bs-toggle="dropdown" aria-expanded="false">
           Relatórios
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-          <a href='/relatorios/analiseproposta' class="contorno-menu">
-            <i class='bi bi-file-earmark-spreadsheet'></i>
+          <a href='/relatorios/analiseproposta' class="contorno-menu d-flex align-items-center'">
+            <i class='bi bi-file-earmark-spreadsheet d-flex align-items-center'></i>
             Analisa Propostas
           </a>
           <div class='mt-2'>
-            <a href='/relatorios/priorizacao' class="contorno-menu">
-              <i class='bi bi-file-earmark-arrow-up'></i>
+            <a href='/relatorios/priorizacao' class="contorno-menu d-flex align-items-center">
+              <i class='bi bi-file-earmark-arrow-up d-flex align-items-center'></i>
               Compras
             </a>
           </div>
         </ul>
-      </div>
-      <a href='/gerenciamento/consulta' class="botao-filter"><i class="bi bi-search"></i> Busca Propostas</a><br>
+      </div>           
       {{/if}}
-
-      <a href='/logout' class="botao-filter"><i class='bi bi-door-open'></i></a>
+      <a href='/menu' class="d-flex align-items-center"><i class='bi bi-house botao-filter d-flex align-items-center' title="Dashboard"></i></a><br>      
+      {{#if crm}}  
+      <a href='/gerenciamento/consulta' class="d-flex align-items-center"><i class="bi bi-search botao-filter d-flex align-items-center" title="Busca Propostas"></i></a><br>
+      {{/if}}
+      <a href='/logout' class="d-flex align-items-center"><i class='bi bi-door-open botao-filter d-flex align-items-center' title="Sair"></i></a>
     </div>
   </div>
 </nav>

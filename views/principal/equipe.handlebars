@@ -217,11 +217,9 @@
                         {{#if nome_equipe}}
                         <option class='fw-bold' value='{{nome_equipe}}'>{{nome_equipe}}</option>
                         {{/if}}
-                        <option value='todos'>Todos</option>
+                        <option value='Todos'>Todos</option>
                         {{#each equipes}}
                         <option value="{{nome}}">{{nome}}</option>
-                        {{else}}
-                        <option value=''>Nenhuma equipe cadastrada.</option>
                         {{/each}}
                     </select>
                 </div>

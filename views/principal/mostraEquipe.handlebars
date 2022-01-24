@@ -53,8 +53,8 @@
         <div class='col'>
             <div class="row">
                 <div class="col">
-                    <h5 class="">Gestor Responsável: {{gestor.nome}} </h5>
-                    <h5 class="">Técnico Responsável: {{tecnico.nome}} </h5>
+                    <label class="col-form-label">Gestor Responsável: {{gestor.nome}} {{responsavel.nome}}</label><br>
+                    <label class="col-form-label">Técnico Responsável: {{tecnico.nome}} {{insres.nome}} </label>
                 </div>
                 {{#if tarefa}}
                 <div class="col text-end">
@@ -83,11 +83,11 @@
             <hr>
             <div class="row">
                 <label class="col-form-label fw-bold text-center mt-1">Local do Serviço</label>
-                <div class="col-md-1 text-end">
+                <div class="col-md-2 text-start">
                     <label class="col-form-label">Endereço:</label>
                 </div>
                 <div class="col text-start">
-                    <label class="col-form-label">{{tarefa.endereco}}</label>
+                    <label class="col-form-label">{{tarefa.endereco}}{{proposta.endereco}}</label>
                 </div>
             </div>
             <div class="row">
@@ -95,35 +95,24 @@
                     <label class="col-form-label">Cidade:</label>
                 </div>
                 <div class="col-md-5 text-start">
-                    <label class="col-form-label">{{tarefa.cidade}}</label>
+                    <label class="col-form-label">{{tarefa.cidade}}{{proposta.cidade}}</label>
                 </div>
                 <div class="col-md-1 text-end">
                     <label class="col-form-label">Estado:</label>
                 </div>
                 <div class="col text-start">
-                    <label class="col-form-label">{{tarefa.uf}}</label>
+                    <label class="col-form-label">{{tarefa.uf}}{{proposta.uf}}</label>
                 </div>
             </div>
             <hr>
-            {{#if proposta}}
             <div class="row">
                 <label class="col-form-label fw-bold text-center mt-1">Atividades</label>
                 <div class="btn-group gap-4">
-                    <a class='btn btn-primary' href='/gerenciamento/servicosAtvt/{{proposta._id}}'>Telhado</a>
-                    <a class='btn btn-primary' href='/gerenciamento/servicosAtvi/{{proposta._id}}'>Inversor</a>
-                    <a class='btn btn-primary' href='/gerenciamento/servicosAtva/{{proposta._id}}'>Aterramento</a>
+                    <a class='btn btn-primary' href='/gerenciamento/servicosAtvt/{{proposta._id}}{{tarefa._id}}'>Telhado</a>
+                    <a class='btn btn-primary' href='/gerenciamento/servicosAtvi/{{proposta._id}}{{tarefa._id}}'>Inversor</a>
+                    <a class='btn btn-primary' href='/gerenciamento/servicosAtva/{{proposta._id}}{{tarefa._id}}'>Aterramento</a>
                 </div>
             </div>
-            {{else}}
-            <div class="row">
-                <label class="col-form-label fw-bold text-center mt-1">Atividades</label>
-                <div class="btn-group gap-4">
-                    <a class='btn btn-primary' href='/gerenciamento/servicosAtvt/{{tarefa._id}}'>Telhado</a>
-                    <a class='btn btn-primary' href='/gerenciamento/servicosAtvi/{{tarefa._id}}'>Inversor</a>
-                    <a class='btn btn-primary' href='/gerenciamento/servicosAtva/{{tarefa._id}}'>Aterramento</a>
-                </div>
-            </div>
-            {{/if}}
             <div class="row mt-2">
                 <div class="col">
                     <label class="col-form-label">Previsão Inicio: </label>
