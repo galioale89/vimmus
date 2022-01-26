@@ -2,12 +2,13 @@
 
     {{#if atva}}
     <h1>Aterramento</h1>
-    <form action="/gerenciamento/caminhoAte" method="post" enctype="multipart/form-data">
+    <form action="/gerenciamento/salvarImagem" method="post" enctype="multipart/form-data">
         <input type="hidden" name="ida" value='{{atva._id}}'>
         <input type="hidden" name="id" value='{{proposta._id}}'>
+        <input type='hidden' name='caminho' value='aterramento'>
         <div class="row">
             <div class="col-md-9">
-                <input type='file' multiple name='fileate' class='form-control'>
+                <input type='file' multiple name='files' class='form-control'>
             </div>
             <div class="col-md-1">
                 <div class="form-check mt-1">
@@ -28,13 +29,14 @@
     </form>
     {{else}}
     {{#if atvt}}
-    <h2>Telhado</h2>
-    <form action="/gerenciamento/caminhoMod" method="post" enctype="multipart/form-data">
+    <h2>Estruturas e Módulos</h2>
+    <form action="/gerenciamento/salvarImagem" method="post" enctype="multipart/form-data">
         <input type="hidden" name="idt" value='{{atvt._id}}'>
         <input type="hidden" name="id" value='{{proposta._id}}'>
+        <input type='hidden' name='caminho' value='telhado'>
         <div class="row">
             <div class="col-md-9">
-                <input type='file' multiple name='filemod' class='form-control'>
+                <input type='file' multiple name='files' class='form-control'>
             </div>
             <div class="col-md-1">
                 <div class="form-check mt-1">
@@ -55,13 +57,14 @@
     </form>
     {{else}}
     {{#if atvi}}
-    <h2>Inversor</h2>
-    <form action="/gerenciamento/caminhoInv" method="post" enctype="multipart/form-data">
+    <h2>Inversor e String Box</h2>
+    <form action="/gerenciamento/salvarImagem" method="post" enctype="multipart/form-data">
         <input type="hidden" name="idi" value='{{atvi._id}}'>
         <input type="hidden" name="id" value='{{proposta._id}}'>
+        <input type='hidden' name='caminho' value='inversor'>
         <div class="row">
             <div class="col-md-9">
-                <input type='file' multiple name='fileinv' class='form-control'>
+                <input type='file' multiple name='files' class='form-control'>
             </div>
             <div class="col-md-1">
                 <div class="form-check mt-1">
@@ -85,12 +88,18 @@
     {{/if}}
 
     <div class="row text-center text-center justify-content-center" style="margin-bottom: 50px;margin-top: 40px">
-        {{#each lista_imagens}}
-        <img src='/gerenciamento/mostrarImagens/{{imagem}}' style="width: 40%;" alt='Minha Figura'>
-        <a href='/gerenciamento/mostrarImagens/{{imagem}}' target="_blank" style="font-size: 25px;">{{seq}} -
-            {{imagem}}</a>
-        {{!-- <img src="/arquivos/{{imagem}}" height="200px" width="20px" /> --}}
-        {{/each}}
+        <div class="row">
+            {{#each lista_imagens}}
+            <div class="col-md-4">
+                <div style="width: 5px;">
+                    <a href='/gerenciamento/deletaImagem/{{imagem}}delimg{{id}}delimg{{atv}}delimgatv' class='botao-filter'><i
+                            class='bi bi-x-circle' style="font-size: 20px;color: orangered"></i></a>
+                </div>
+                <a href='/gerenciamento/mostrarImagens/{{imagem}}' target="_blank" style="font-size: 25px;">
+                    <img src='/gerenciamento/mostrarImagens/{{imagem}}' style="width: 80%;" alt='Minha Figura'></a>
+            </div>
+            {{/each}}
+        </div>
     </div>
 
 </div>

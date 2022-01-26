@@ -101,7 +101,7 @@ const storage = multer.diskStorage({
         cb(null, file.originalname)
     },
 })
-const upload = multer({ storage: storage, limits: { fileSize: 1000000 } })
+const upload = multer({ storage: storage})
 
 // router.use(express.static(path.join(__dirname, 'public')))
 
@@ -1273,7 +1273,7 @@ router.get('/atvt/:id', ehAdmin, (req, res) => {
             img = atvt.caminhoFoto
             img.forEach((e) => {
                 //console.log(e)
-                lista_imagens.push({ seq: 'Foto' + q, imagem: e, atv: 'telhado' })
+                lista_imagens.push({ seq: 'Foto' + q, imagem: e.desc, atv: 'telhado', id: req.params.id })
                 q++
             })
             if (atvt.aprova == true) {
@@ -1301,7 +1301,7 @@ router.get('/atva/:id', ehAdmin, (req, res) => {
             img = atva.caminhoFoto
             img.forEach((e) => {
                 //console.log(e)
-                lista_imagens.push({ seq: 'Foto' + q, imagem: e, atv: 'atva' })
+                lista_imagens.push({ seq: 'Foto' + q, imagem: e.desc, atv: 'aterramento', id: req.params.id })
                 q++
             })
             if (atva.aprova == true) {
@@ -1329,7 +1329,7 @@ router.get('/atvi/:id', ehAdmin, (req, res) => {
             img = atvi.caminhoFoto
             img.forEach((e) => {
                 //console.log(e)
-                lista_imagens.push({ seq: 'Foto' + q, imagem: e, atv: 'atvi' })
+                lista_imagens.push({ seq: 'Foto' + q, imagem: e.desc, atv: 'inversor', id: req.params.id })
                 q++
             })
             if (atvi.aprova == true) {
@@ -2373,7 +2373,6 @@ router.get('/aceite/:id', ehAdmin, (req, res) => {
                                     AtvAterramento.findOne({ proposta: proposta._id }).lean().then((atvate) => {
                                         AtvInversor.findOne({ proposta: proposta._id }).lean().then((atvinv) => {
                                             AtvTelhado.findOne({ proposta: proposta._id }).lean().then((atvtel) => {
-
                                                 if (atvate.aprova == true) {
                                                     checkAte = 'checked'
                                                 }
@@ -2383,7 +2382,28 @@ router.get('/aceite/:id', ehAdmin, (req, res) => {
                                                 if (atvtel.aprova == true) {
                                                     checkMod = 'checked'
                                                 }
-                                                res.render('principal/aceite', { cliente_proposta, documento, proposta, compra, vistoria, lista_equipe, posvenda, checkAte, checkInv, checkMod, atvate, atvinv, atvtel })
+                                                var imgate = ''
+                                                var imginv = ''
+                                                var imgtel = ''
+                                                var ate = atvate.caminhoFoto
+                                                var inv = atvinv.caminhoFoto
+                                                var tel = atvtel.caminhoFoto
+                                                if (naoVazio(ate)) {
+                                                    ate.forEach((e) => {
+                                                        imgate = imgate + e.desc + ' | '
+                                                    })
+                                                }
+                                                if (naoVazio(inv)) {
+                                                    inv.forEach((e) => {
+                                                        imginv = imginv + e.desc + ' | '
+                                                    })
+                                                }
+                                                if (naoVazio(tel)) {
+                                                    tel.forEach((e) => {
+                                                        imgtel = imgtel + e.desc + ' | '
+                                                    })
+                                                }
+                                                res.render('principal/aceite', { imgate, imginv, imgtel ,cliente_proposta, documento, proposta, compra, vistoria, lista_equipe, posvenda, checkAte, checkInv, checkMod, atvate, atvinv, atvtel })
                                             }).catch((err) => {
                                                 req.flash('error_msg', 'Não foi possível encontrar a atividade do telhado.')
                                                 res.redirect('/menu')
@@ -5835,15 +5855,25 @@ router.post('/aceite', upload.single('aceite'), ehAdmin, (req, res) => {
         if (file != '') {
             documento.aceite = file
         }
-        documento.dtaceite = String(req.body.dtaceite)
-        documento.feitoaceite = true
-        documento.save().then(() => {
-            req.flash('success_msg', 'Documento salvo com sucesso.')
-            res.redirect('/gerenciamento/aceite/' + req.body.id)
-        }).catch(() => {
-            req.flash('error_msg', 'Falha ao encontrar o documento.')
-            res.redirect('/gerenciamento/aceite/' + req.body.id)
-        })
+        AtvAterramento.findOne({proposta: req.body.id}).then((atva)=>{
+            AtvTelhado.findOne({proposta: req.body.id}).then((atvt)=>{
+                AtvInversor.findOne({proposta: req.body.id}).then((atvi)=>{
+                    if (atva.aprova == true && atvt.aprova == true && atvi.aprova == true ){
+                        documento.feitoaceite = true
+                    }else{
+                        documento.feitoaceite = false
+                    }
+                    documento.dtaceite = String(req.body.dtaceite)
+                    documento.save().then(() => {
+                        req.flash('success_msg', 'Documento salvo com sucesso.')
+                        res.redirect('/gerenciamento/aceite/' + req.body.id)
+                    }).catch(() => {
+                        req.flash('error_msg', 'Falha ao encontrar o documento.')
+                        res.redirect('/gerenciamento/aceite/' + req.body.id)
+                    })                    
+                })
+            })
+        })        
     }).catch(() => {
         req.flash('error_msg', 'Falha ao encontrar o documento.')
         res.redirect('/gerenciamento/aceite/' + req.body.id)
@@ -5961,10 +5991,23 @@ router.post('/salvarImagem', ehAdmin, upload.array('files', 10), (req, res) => {
                     req.flash('success_msg', 'Imagem(ns) do aterramento aprovadas.')
                 })
             }
+
             if (naoVazio(req.body.aceite)) {
                 res.redirect('/gerenciamento/aceite/' + req.body.id)
             } else {
-                res.redirect('/gerenciamento/visita/' + req.body.id)
+                if (naoVazio(req.body.idi)) {
+                    res.redirect('/gerenciamento/atvi/' + req.body.id)
+                } else {
+                    if (naoVazio(req.body.ida)) {
+                        res.redirect('/gerenciamento/atva/' + req.body.id)
+                    } else {
+                        if (naoVazio(req.body.idt)) {
+                            res.redirect('/gerenciamento/atvt/' + req.body.id)
+                        } else {
+                            res.redirect('/gerenciamento/visita/' + req.body.id)
+                        }
+                    }
+                }
             }
         }
     }).catch(() => {
@@ -6109,19 +6152,30 @@ router.get('/deletaImagem/:msg', ehAdmin, (req, res) => {
     console.log(params[0])
     console.log(params[1])
     console.log(params[2])
+    console.log(params[3])
+    console.log('params[3]=>' + params[3])
     if (params[2] == 'aterramento') {
         AtvAterramento.findOneAndUpdate({ proposta: params[1] }, { $pull: { 'caminhoFoto': { 'desc': params[0] } } }).then((e) => {
             req.flash('aviso_msg', 'Imagem removida com sucesso')
-            res.redirect('/gerenciamento/mostrarGaleria/' + params[1] + 'galeria-' + params[2])
+            if (naoVazio(params[3])) {
+                res.redirect('/gerenciamento/atva/' + params[1])
+            } else {
+                res.redirect('/gerenciamento/mostrarGaleria/' + params[1] + 'galeria-' + params[2])
+            }
         }).catch((err) => {
             req.flash('error_msg', 'Falha ao remover a imagem.')
             res.redirect('/gerenciamento/mostrarGaleria/' + params[1] + 'galeria-' + params[2])
         })
     } else {
         if (params[2] == 'inversor') {
+
             AtvInversor.findOneAndUpdate({ proposta: params[1] }, { $pull: { 'caminhoFoto': { 'desc': params[0] } } }).then((e) => {
                 req.flash('aviso_msg', 'Imagem removida com sucesso')
-                res.redirect('/gerenciamento/mostrarGaleria/' + params[1] + 'galeria-' + params[2])
+                if (naoVazio(params[3])) {
+                    res.redirect('/gerenciamento/atvi/' + params[1])
+                } else {
+                    res.redirect('/gerenciamento/mostrarGaleria/' + params[1] + 'galeria-' + params[2])
+                }
             }).catch((err) => {
                 req.flash('error_msg', 'Falha ao remover a imagem.')
                 res.redirect('/gerenciamento/mostrarGaleria/' + params[1] + 'galeria-' + params[2])
@@ -6130,7 +6184,11 @@ router.get('/deletaImagem/:msg', ehAdmin, (req, res) => {
             if (params[2] == 'telhado') {
                 AtvTelhado.findOneAndUpdate({ proposta: params[1] }, { $pull: { 'caminhoFoto': { 'desc': params[0] } } }).then((e) => {
                     req.flash('aviso_msg', 'Imagem removida com sucesso')
-                    res.redirect('/gerenciamento/mostrarGaleria/' + params[1] + 'galeria-' + params[2])
+                    if (naoVazio(params[3])) {
+                        res.redirect('/gerenciamento/atvt/' + params[1])
+                    } else {
+                        res.redirect('/gerenciamento/mostrarGaleria/' + params[1] + 'galeria-' + params[2])
+                    }
                 }).catch((err) => {
                     req.flash('error_msg', 'Falha ao remover a imagem.')
                     res.redirect('/gerenciamento/mostrarGaleria/' + params[1] + 'galeria-' + params[2])

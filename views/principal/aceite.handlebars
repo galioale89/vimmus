@@ -94,24 +94,36 @@
                         </div>
                         <div class='col-md-9'>
                             <div class="row">
+                                {{#if atvate.caminhoFoto}}
+                                <div class="col-md-5">
+                                    <div class="row">
+                                        <label class='col-form-label labelp'>{{imgate}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <input style="max-width: 200px;font-size: 14px;" type='file' multiple class='form-control'
+                                        name='files'>
+                                </div>
+                                {{else}}
                                 <div class="col">
                                     <input type='file' multiple name='files' class='form-control'>
                                 </div>
+                                {{/if}}
                                 {{#if atvate.caminhoFoto}}
                                 <div class="col-md-1">
-                                    <a href='/gerenciamento/mostrarGaleria/{{proposta._id}}galeria-aterramento' class='btn  btn-primary'><i
-                                            class='bi bi-eye'></i></a>
+                                    <a href='/gerenciamento/mostrarGaleria/{{proposta._id}}galeria-aterramento'
+                                        class='btn  btn-primary'><i class='bi bi-eye'></i></a>
                                 </div>
-                                {{/if}}
                                 <div class="col-md-2">
                                     <div class="form-check mt-1">
                                         <input class="form-check-input" name='check' type="checkbox" {{checkAte}}>
-                                        <label class="form-check-label mt-1" style="font-size: 15px;"
+                                        <label class="form-check-label mt-1" style="font-size: 14px;"
                                             for="flexCheckDefault">
                                             Aprovado
                                         </label>
                                     </div>
                                 </div>
+                                {{/if}}
                                 <div class="col-md-2">
                                     <button type='submit' class='btn  btn-success'><i class='bi bi-save'></i></button>
                                 </div>
@@ -129,23 +141,35 @@
                         </div>
                         <div class="col-md-9">
                             <div class="row">
+                                {{#if atvinv.caminhoFoto}}
+                                <div class="col-md-5">
+                                    <div class="row">
+                                        <label class='col-form-label labelp'>{{imginv}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <input style="max-width: 200px;font-size: 14px;" type='file' multiple class='form-control'
+                                        name='files'>
+                                </div>
+                                {{else}}
                                 <div class="col">
                                     <input type='file' multiple name='files' class='form-control'>
                                 </div>
+                                {{/if}}
                                 {{#if atvinv.caminhoFoto}}
                                 <div class="col-md-1">
-                                    <a href='/gerenciamento/mostrarGaleria/{{proposta._id}}galeria-inversor' class='btn  btn-primary'><i
-                                            class='bi bi-eye'></i></a>
+                                    <a href='/gerenciamento/mostrarGaleria/{{proposta._id}}galeria-inversor'
+                                        class='btn  btn-primary'><i class='bi bi-eye'></i></a>
                                 </div>
-                                {{/if}}
                                 <div class="col-md-2">
                                     <div class="form-check mt-1">
                                         <input class="form-check-input" name='check' {{checkInv}} type="checkbox">
-                                        <label class="form-check-label mt-1" style="font-size: 15px;">
+                                        <label class="form-check-label mt-1" style="font-size: 14px;">
                                             Aprovado
                                         </label>
                                     </div>
                                 </div>
+                                {{/if}}
                                 <div class="col-md-2">
                                     <button type='submit' class='btn  btn-success'><i class='bi bi-save'></i></button>
                                 </div>
@@ -163,23 +187,35 @@
                         </div>
                         <div class="col-md-9">
                             <div class="row">
+                                {{#if atvtel.caminhoFoto}}
+                                <div class="col-md-5">
+                                    <div class="row">
+                                        <label class='col-form-label labelp'>{{imgtel}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <input style="max-width: 200px;font-size: 14px;" type='file' multiple class='form-control'
+                                        name='files'>
+                                </div>
+                                {{else}}
                                 <div class="col">
                                     <input type='file' multiple name='files' class='form-control'>
                                 </div>
+                                {{/if}}
                                 {{#if atvtel.caminhoFoto}}
                                 <div class="col-md-1">
-                                    <a href='/gerenciamento/mostrarGaleria/{{proposta._id}}galeria-telhado' class='btn  btn-primary'><i
-                                            class='bi bi-eye'></i></a>
+                                    <a href='/gerenciamento/mostrarGaleria/{{proposta._id}}galeria-telhado'
+                                        class='btn  btn-primary'><i class='bi bi-eye'></i></a>
                                 </div>
-                                {{/if}}
                                 <div class="col-md-2">
                                     <div class="form-check mt-1">
                                         <input class="form-check-input" type="checkbox" name='check' {{checkMod}}>
-                                        <label class="form-check-label mt-1" style="font-size: 15px;">
+                                        <label class="form-check-label mt-1" style="font-size: 14px;">
                                             Aprovado
                                         </label>
                                     </div>
                                 </div>
+                                {{/if}}
                                 <div class="col-md-2">
                                     <button type='submit' class='btn  btn-success'><i class='bi bi-save'></i></button>
                                 </div>
@@ -210,7 +246,7 @@
                                         target="_blank"><i class='bi bi-eye'></i></a>
                                 </div>
                                 <div class="col-md-2 mt-3">
-                                    <input style="max-width: 150px;font-size: 15px;" type='file' class='form-control'
+                                    <input style="max-width: 150px;font-size: 14px;" type='file' class='form-control'
                                         name='clins' value='{{documento.clins}}'>
                                 </div>
                                 {{else}}
@@ -249,7 +285,7 @@
                                         target="_blank"><i class='bi bi-eye'></i></a>
                                 </div>
                                 <div class="col-md-2 mt-3">
-                                    <input style="max-width: 150px;font-size: 15px;" type='file' class='form-control'
+                                    <input style="max-width: 150px;font-size: 14px;" type='file' class='form-control'
                                         name='aceite' value='{{documento.aceite}}'>
                                 </div>
                                 {{else}}

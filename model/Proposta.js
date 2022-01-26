@@ -140,6 +140,10 @@ const Proposta = new Schema({
         type: Boolean,
         require:false        
     },   
+    aceite:{
+        type: Boolean,
+        require:false
+    },    
     dtbaixa:{
         type: String,
         require:false        

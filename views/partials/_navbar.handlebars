@@ -69,18 +69,18 @@
     var grafico = document.getElementById('grafico')
     var altura = parseFloat(window.screen.height)
     var alttarefa
-    
+
     altura = Math.trunc(altura - (altura * 0.4))
     alttarefa = (Math.trunc(altura - (altura * 0.2))) / 2
     altura = altura + 'px'
     alttarefa = alttarefa + 'px'
 
-    if(crm.value == 'false'){
+    if (crm.value == 'false') {
       tarefa.style.height = alttarefa
-      grafico.style.height = alttarefa    
-    }else{
+      grafico.style.height = alttarefa
+    } else {
       dim.style.height = altura
-      dim1.style.height = altura     
+      dim1.style.height = altura
     }
 
     /*
@@ -101,7 +101,7 @@
   <div class="collapse navbar-collapse d-flex justify-content-end">
     <div class='btn-group col-12 gap-2 justify-content-end'>
       {{#if crm}}
-<div class="dropdown">
+      <div class="dropdown">
         <button class="botao-filter dropdown-toggle fw-bold" type="button" style='background-color: rgb(44,55,89);'
           data-bs-toggle="dropdown" aria-expanded="false">
           Relatórios
@@ -118,13 +118,16 @@
             </a>
           </div>
         </ul>
-      </div>           
+      </div>
       {{/if}}
-      <a href='/menu' class="d-flex align-items-center"><i class='bi bi-house botao-filter d-flex align-items-center' title="Dashboard"></i></a><br>      
-      {{#if crm}}  
-      <a href='/gerenciamento/consulta' class="d-flex align-items-center"><i class="bi bi-search botao-filter d-flex align-items-center" title="Busca Propostas"></i></a><br>
+      <a href='/menu' class="d-flex align-items-center"><i class='bi bi-house botao-filter d-flex align-items-center'
+          title="Dashboard"></i></a><br>
+      {{#if crm}}
+      <a href='/gerenciamento/consulta' class="d-flex align-items-center"><i
+          class="bi bi-search botao-filter d-flex align-items-center" title="Busca Propostas"></i></a><br>
       {{/if}}
-      <a href='/logout' class="d-flex align-items-center"><i class='bi bi-door-open botao-filter d-flex align-items-center' title="Sair"></i></a>
+      <a href='/logout' class="d-flex align-items-center"><i
+          class='bi bi-door-open botao-filter d-flex align-items-center' title="Sair"></i></a>
     </div>
   </div>
 </nav>
