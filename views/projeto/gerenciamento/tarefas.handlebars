@@ -45,14 +45,31 @@
         cursor: pointer;
     }
 </style>
+<script>
+    //Selecionar estados e cidades
+    window.onload = function () {
 
-{{!-- {{#if ehSelecao}}
-<form action='/gerenciamento/addmanutencao' method="post">
+        var estados = document.getElementById('estado');
+        var cidades = document.getElementById('cidade');
+        /*
+        cidades.onchange = function () {
+            if (cidades.value !== "") {
+                //Basta modificar está linha conforme a necessidade
+                window.location = "pagina.asp?estado=" + estados.value + "&cidade=" + cidades.value
+            }
+        };
+        */
+        new dgCidadesEstados({
+            estado: estados,
+            cidade: cidades,
+            estadoVal: '<%=Request("estado") %>',
+            cidadeVal: '<%=Request("cidade") %>'
+        });
+    };    
+</script>
 
-</form>
-{{else}} --}}
-<div class="container d-flex justify-content-center" style='padding: 10px;margin-top: 2px;'>
-    <form method="post" action='/gerenciamento/addtarefa' style="text-align: center;">
+<div class="container justify-content-center" style='padding: 10px;margin-top: 2px;'>
+    <form method="post" name='tarefa' action='/gerenciamento/addtarefa' style="text-align: center;">
         <input type='hidden' name='cliente' value='{{cliente}}'>
         <input type='hidden' name='equipe' value='{{equipe}}'>
         <input type='hidden' name='tarefadtini' value='{{tarefa.dataini}}'>
@@ -61,8 +78,10 @@
         <input type='hidden' name='idusina' value='{{tarefa.usina}}'>
         <input type='hidden' name='idequipe' value='{{tarefa.equipe}}'>
         {{#if equipe}}
+        <label style="font-size: 15px;font-weight: 600;margin-top: 10px;">Alterar Serviço</label><br><br>
         {{else}}
-        <label style="font-size: 15px;font-weight: 600;">Adicionar Manutenção</label><br><br>
+        <label style="font-size: 15px;font-weight: 600;margin-top: 10px;">Adicionar Serviço</label><br><br>
+        {{/if}}
         {{#if usina}}
         <div class="row">
             <div class="col-md-4 text-end">
@@ -79,25 +98,28 @@
             </div>
         </div>
         {{/if}}
-        <br>
         <div class="row">
-            <div class="col-md-3 text-end">
+            <div class="col-md-2 text-end">
                 <label class="col-form-label col-form-label-sm fw-bold">Empresa:</label>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <select class='form-select form-select-sm' name='empresa'>
+                    {{#if trf_empresa}}
+                    <option value='{{trf_empid}}'>{{trf_empresa}}</option>
+                    {{/if}}
                     {{#each empresa}}
                     <option value='{{_id}}'>{{nome}}</option>
                     {{/each}}
                 </select>
             </div>
-        </div><br>          
-        <div class="row">
             <div class="col-md-3 text-end">
                 <label class="col-form-label col-form-label-sm fw-bold">Gestor Responsável:</label>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <select class='form-select form-select-sm' name='gestor'>
+                    {{#if trf_gestor}}
+                    <option value='{{trf_gesid}}'>{{trf_gestor}}</option>
+                    {{/if}}
                     {{#each gestor}}
                     <option value='{{_id}}'>{{nome}}</option>
                     {{else}}
@@ -108,7 +130,44 @@
             <div class="col-md-1">
                 <a href='/pessoa/novo' class="contorno-menu"><i class='bi bi-person-plus'></i></a>
             </div>
-        </div><br>        
+        </div><br>
+        <div class="row">
+            <div class="col-md-1">
+                <label class="col-form-label col-form-label-sm">Endereço:</label>
+            </div>
+            <div class="col">
+                <input type="text" name='endereco' id='endereco' class='form-control form-control-sm'
+                    value='{{tarefa.endereco}}'>
+            </div>
+            <div class="col-md-1">
+                <label class="col-form-label col-form-label-sm">Estado:</label>
+            </div>
+            {{#if tarefa.uf}}
+            <div class="col">
+                <label class='col-form-label col-form-label-sm'>{{tarefa.uf}}</label>
+            </div>
+            {{else}}
+            <div class="col">
+                <select id="estado" name='uf' class='form-select form-select-sm mb-1'>
+                    <option selected disabled>Selecione um estado...</option>
+                </select>
+            </div>
+            {{/if}}
+            <div class="col-md-1">
+                <label class="col-form-label col-form-label-sm">Cidade:</label>
+            </div>
+            {{#if tarefa.cidade}}
+            <div class="col">
+                <label class='col-form-label col-form-label-sm'>{{tarefa.cidade}}</label>
+            </div>
+            {{else}}
+            <div class="col">
+                <select id="cidade" name='cidade' class='form-select form-select-sm mb-1'>
+                    <option selected disabled>Selecione um cidade...</option>
+                </select>
+            </div>
+            {{/if}}
+        </div><br>
         <div class="row">
             <div class="col-md-2 text-end">
                 {{#if usina}}
@@ -119,7 +178,10 @@
             </div>
             <div class="col-md-4">
                 <select class='form-select form-select-sm' name='manutencao'>
-                    {{#each atividades}}
+                    {{#if trf_servico}}
+                    <option value='{{trf_srvid}}'>{{trf_servico}}</option>
+                    {{/if}}
+                    {{#each servicos}}
                     <option value='{{_id}}'>{{descricao}}</option>
                     {{/each}}
                 </select>
@@ -129,7 +191,7 @@
             </div>
             <div class="col-md-3 text-end">
                 <input class="form-control form-control-sm" type="number" step='0.010' name='preco' id='preco'
-                    placeholder="R$">
+                    placeholder="R$" value='{{tarefa.preco}}'>
             </div>
         </div><br>
         <div class="row">
@@ -137,18 +199,16 @@
                 <label class="col-form-label col-form-label-sm fw-bold">Período da Atividade:</label>
             </div>
             <div class="col-md-3">
-                <input class='form-control form-control-sm' type='date' name='dataini' value='{{data}}'>
+                <input class='form-control form-control-sm' type='date' name='dataini' value='{{tarefa.dataini}}'>
             </div>
             <div class="col-md-1">
                 <label class='col-form-label col-form-label-sm'>a</label>
             </div>
             <div class="col-md-3">
-                <input class='form-control form-control-sm' type='date' name='datafim' value='{{data}}'>
+                <input class='form-control form-control-sm' type='date' name='datafim' value='{{tarefa.datafim}}'>
             </div>
         </div><br>
         <hr>
-        {{/if}}
-
         <label class='col-form-label col-form-label-sm'>Lembre-se de verificar a disponibilidade da pessoa para realizar
             a manutenção!</label>
         <div class="row">
@@ -157,6 +217,9 @@
             </div>
             <div class="col-md-6">
                 <select class='form-select form-select-sm' name='responsavel'>
+                    {{#if trf_tecnico}}
+                    <option value='{{trf_tecid}}'>{{trf_tecnico}}</option>
+                    {{/if}}
                     {{#each instalacao}}
                     <option value='{{_id}}'>{{nome}}</option>
                     {{else}}
@@ -180,7 +243,7 @@
                             {{nome}}<a href='/gerenciamento/vermaistarefas/{{id}}' style="padding-left: 5px;"><i
                                     class='bi bi-eye'></i></a>
                         </div>
-                        <input type='hidden' name='email' value='{{email}}'>     
+                        <input type='hidden' name='email' value='{{email}}'>
                         {{/each}}
                     </div>
                 </div>
@@ -191,7 +254,7 @@
                     <div class="item-instalacao" style='color: black;' draggable="true" name='{{id}}'>
                         {{nome}}<a href='/gerenciamento/vermaistarefas/{{id}}' style="padding-left: 5px;"><i
                                 class='bi bi-eye'></i></a>
-                    <input type='hidden' name='email' value='{{email}}'>                                
+                        <input type='hidden' name='email' value='{{email}}'>
                     </div>
                     {{/each}}
                 </div>
@@ -211,8 +274,7 @@
         <input type='hidden' name='idins4' id='idins4' value=''>
         <input type='hidden' name='idins5' id='idins5' value=''>
         <div class='btn-group gap-2 col-6 mt-2'>
-            <button type="submit" style="width: 30px;" class="btn btn-sm btn-success"
-                onclick="getItemValue()">Salva</button>
+            <input type='button' id='salvar' style="width: 30px;" class="btn btn-sm btn-success" value="Salvar">
             {{#if tarefa.programacao}}
             <a href='/cliente/programacao/{{tarefa.usina}}' class='btn btn-sm btn-primary'><i
                     class='bi bi-arrow-left'>Voltar Programação</i></a>
@@ -318,6 +380,35 @@
             }
         }
     }
+
+    function stopDefAction(evt) {
+        getItemValue()
+        var endereco = document.getElementById('endereco')
+        var ins0 = document.getElementById('ins0')
+        var msg = ''
+        if (endereco.value == '') {
+            msg = msg + ' ☻ O endereço da instalação é obrigatório.' + '\n'
+        }
+        if (ins0.value == '') {
+            msg = msg + ' ☻ É necessário cadastrar ao menos um técnico para prestar o serviço.'
+        }
+        alert(msg.length)
+        if (msg.length > 0) {
+            document.getElementById('endereco').focus()
+            evt.preventDefault();
+            Swal.fire({
+                icon: 'error',
+                title: 'Ops...',
+                text: msg,
+                showConfirmButton: false,
+                showCloseButton: true
+            })
+        } else {
+            document.tarefa.submit()
+        }
+    }
+
+    document.getElementById('salvar').addEventListener('click', stopDefAction, false);
 
     function getItemValue() {
         const item = document.querySelectorAll('.item-instalacao');

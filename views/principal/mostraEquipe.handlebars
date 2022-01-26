@@ -50,32 +50,44 @@
 
     </div>
     <div class='row'>
-        <div class='col'>
+        <div class='col-md-7'>
             <div class="row">
                 <div class="col">
-                    <label class="col-form-label">Gestor Responsável: {{gestor.nome}} {{responsavel.nome}}</label><br>
-                    <label class="col-form-label">Técnico Responsável: {{tecnico.nome}} {{insres.nome}} </label>
+                    <label class="col-form-label">Responsáveis</label><br>
+                    <label class="col-form-label col-form-label-sm">Gestor: {{gestor.nome}} {{responsavel.nome}}</label><br>
+                    <label class="col-form-label col-form-label-sm">Técnico: {{tecnico.nome}} {{insres.nome}} </label>
                 </div>
                 {{#if tarefa}}
-                <div class="col text-end">
+                <div class="col-md-7 text-end">
                     <div class="btn-group gap-1">
                         {{#if realizar}}
-                        <label class='col-form-label col-form-label-sm'><i class='bi bi-check d-flex align-items-center'>Tarefa
-                                Realizado</i></label>
+                        <label class='col-form-label col-form-label-sm'><i
+                                class='bi bi-check d-flex align-items-center'>Tarefa
+                                Realizada</i></label>
                         {{else}}
                         <button onclick="confirma()" class='btn btn-sm btn-primary'></i>Realizar</button>
                         {{/if}}
                         {{#if equipe.liberar}}
-                        <label class='col-form-label col-form-label-sm'><i class='bi bi-check d-flex align-items-center'>Equipe
-                                Liberada</i></label>                        
+                        <label class='col-form-label col-form-label-sm'><i
+                                class='bi bi-check d-flex align-items-center'>Equipe
+                                Liberada</i></label>
                         {{else}}
                         <a href='/gerenciamento/enviarequipe/{{tarefa._id}}' class='btn btn-sm btn-primary'>Comunicar
                             Equipe</a>
                         {{/if}}
-                            {{#if proposta}}
-                        <a href='/gerenciamento/emandamento/' class='btn btn-sm btn-primary'><i
-                                class='bi bi-arrow-return-left'></i></a>
-                                {{/if}}
+                        <a href='/gerenciamento/enviarequipe/{{tarefa._id}}' class='btn btn-sm btn-primary'>Comunicar
+                            Equipe</a>
+                        <a href='/gerenciamento/tarefas/{{tarefa._id}}' class='btn btn-sm btn-primary'><i
+                                class='bi bi-arrow'></i>Tarefa</a>                            
+                    </div>
+                </div>
+                {{else}}
+                <div class="col text-end">
+                    <div class="btn-group gap-1">
+                        <a href='/gerenciamento/emandamento/lista' class='btn btn-sm btn-primary'><i
+                                class='bi bi-arrow-return-left'></i>Lista</a>
+                        <a href='/gerenciamento/proposta/{{proposta._id}}' class='btn btn-sm btn-primary'><i
+                                class='bi bi-arrow-return-left'></i>Proposta</a>
                     </div>
                 </div>
                 {{/if}}
@@ -108,9 +120,12 @@
             <div class="row">
                 <label class="col-form-label fw-bold text-center mt-1">Atividades</label>
                 <div class="btn-group gap-4">
-                    <a class='btn btn-primary' href='/gerenciamento/servicosAtvt/{{proposta._id}}{{tarefa._id}}'>Telhado</a>
-                    <a class='btn btn-primary' href='/gerenciamento/servicosAtvi/{{proposta._id}}{{tarefa._id}}'>Inversor</a>
-                    <a class='btn btn-primary' href='/gerenciamento/servicosAtva/{{proposta._id}}{{tarefa._id}}'>Aterramento</a>
+                    <a class='btn btn-primary'
+                        href='/gerenciamento/atvt/{{proposta._id}}{{tarefa._id}}'>Telhado</a>
+                    <a class='btn btn-primary'
+                        href='/gerenciamento/atvi/{{proposta._id}}{{tarefa._id}}'>Inversor</a>
+                    <a class='btn btn-primary'
+                        href='/gerenciamento/atva/{{proposta._id}}{{tarefa._id}}'>Aterramento</a>
                 </div>
             </div>
             <div class="row mt-2">
@@ -128,33 +143,33 @@
                 <div class='row'>
                     {{#if equipe.ins0}}
                     <div class='col-form-label'>{{equipe.ins0}}</div>
-                    </div>
-                    {{/if}}
-                    {{#if equipe.ins1}}
-                    <div class='row mt-1'>
-                        <div class='col-form-label'>{{equipe.ins1}}</div>
-                    </div>
-                    {{/if}}
-                    {{#if equipe.ins2}}
-                    <div class='row mt-1'>
-                        <div class='col-form-label'>{{equipe.ins2}}</div>
-                    </div>
-                    {{/if}}
-                    {{#if equipe.ins3}}
-                    <div class='row mt-1'>
-                        <div class='col-form-label'>{{equipe.ins3}}</div>
-                    </div>
-                    {{/if}}
-                    {{#if equipe.ins4}}
-                    <div class='row mt-1'>
-                        <div class='col-form-label'>{{equipe.ins4}}</div>
-                    </div>
-                    {{/if}}
-                    {{#if equipe.ins5}}
-                    <div class='row mt-1'>
-                        <div class='col-form-label'>{{equipe.ins5}}</div>
-                    </div>
-                    {{/if}}
+                </div>
+                {{/if}}
+                {{#if equipe.ins1}}
+                <div class='row mt-1'>
+                    <div class='col-form-label'>{{equipe.ins1}}</div>
+                </div>
+                {{/if}}
+                {{#if equipe.ins2}}
+                <div class='row mt-1'>
+                    <div class='col-form-label'>{{equipe.ins2}}</div>
+                </div>
+                {{/if}}
+                {{#if equipe.ins3}}
+                <div class='row mt-1'>
+                    <div class='col-form-label'>{{equipe.ins3}}</div>
+                </div>
+                {{/if}}
+                {{#if equipe.ins4}}
+                <div class='row mt-1'>
+                    <div class='col-form-label'>{{equipe.ins4}}</div>
+                </div>
+                {{/if}}
+                {{#if equipe.ins5}}
+                <div class='row mt-1'>
+                    <div class='col-form-label'>{{equipe.ins5}}</div>
+                </div>
+                {{/if}}
             </div>
         </div>
         <div class='col'>

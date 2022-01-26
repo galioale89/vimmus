@@ -1,4 +1,8 @@
-
+<script>
+    function confirma(){
+        var 
+    }
+</script>
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
     {{#if proposta._id}}
     <div style="width: 100%;">
@@ -67,13 +71,30 @@
 
     <div class="row text-center" style="margin-top: 20px;">
         <label style="font-size: 35px;font-weight: 700;margin-bottom: 10px;">{{titulo}}</label>
-    <div class="row text-center text-center justify-content-center" style="margin-bottom: 50px;margin-top: 40px">
-        {{#each lista_imagens}}
-        <img src='/gerenciamento/mostrarImagens/{{imagem}}' style="width: 40%;" alt='Minha Figura'>
-        <a href='/gerenciamento/mostrarImagens/{{imagem}}' target="_blank" style="font-size: 25px;">{{seq}} -
-            {{imagem}}</a>
-        {{!-- <img src="/arquivos/{{imagem}}" height="200px" width="20px" /> --}}
-        {{/each}}
-    </div>
+        <div class="row text-center text-center justify-content-center" style="margin-bottom: 50px;margin-top: 40px">
+            {{#each lista_imagens}}
+            <img src='/gerenciamento/mostrarImagens/{{imagem}}' style="width: 40%;" alt='Minha Figura'>
+            <div class="btn-group gap-4 mb-4 text-center">
+                <a href='/gerenciamento/mostrarImagens/{{imagem}}' target="_blank" style="font-size: 25px;">{{seq}} -{{imagem}}</a>
+                <input type='hidden' id='imagem' value='{{imagem}}'>
+                <a href='/gerenciamento/deletaImagem/{{imagem}}delmsg{{id}}delmsg{{atv}}' style="cursor: pointer;"><i class='bi bi-trash2-fill d-flex align-items-center' style="font-size: 20px;"></i></a>
+            </div>
+            {{/each}}
+        </div>
     </div>
 </div>
+
+<script>
+    function confirma(){
+        Swal.fire({
+            title: 'Confirma a exclusão da imagem?',
+            showCancelButton: true,
+            confirmButtonText: 'Sim',
+            cancelButtonText: 'Não',
+        }).then((result)=>{
+            if (result.isDismissed){
+                evt.preventDefault()
+            }
+        })
+    }
+</script>

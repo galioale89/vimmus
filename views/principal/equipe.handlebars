@@ -292,7 +292,7 @@
                 </div>
             </div>
             <div class="row mt-2" style="margin-left: 30px;">
-                <div class='col-md-5 text-end'>
+                <div class='col-md-4 text-end'>
                     <label class='col-form-label'>Instalador Responsável:</label>
                 </div>
                 <div class='col-md-4'>
@@ -311,7 +311,7 @@
                 <div class='col-md-2'>
                     <a href='/gerenciamento/enviarequipe/{{proposta._id}}' class="btn btn-primary">{{#if
                         lista_equipe.liberar}}
-                        Cancelar{{else}}Envia Equipe{{/if}}</a>
+                        <i class='bi bi-check d-flex align-items-center' title="Clque para cancelar!">Equipe Liberada</i>{{else}}Envia Equipe{{/if}}</a>
                 </div>
             </div>
             <input type='hidden' name='ins0' id='ins0' value=''>

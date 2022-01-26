@@ -1,7 +1,7 @@
 const Mongoose = require("mongoose")
 const Schema = Mongoose.Schema
 
-const Atividade = new Schema({
+const Servico = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: 'usuario',
@@ -21,4 +21,4 @@ const Atividade = new Schema({
     },
 })
 
-Mongoose.model("atividade", Atividade)
+Mongoose.model("servico", Servico)

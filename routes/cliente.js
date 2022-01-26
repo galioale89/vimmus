@@ -7,7 +7,7 @@ require('../model/Projeto')
 require('../model/Tarefas')
 require('../model/Plano')
 require('../model/Proposta')
-require('../model/Atividade')
+require('../model/Servico')
 require('../model/Programacao')
 require('../model/Pessoa')
 require('../model/Usuario')
@@ -17,7 +17,7 @@ const Usina = mongoose.model('usina')
 const Tarefa = mongoose.model('tarefas')
 const Plano = mongoose.model('plano')
 const Proposta = mongoose.model('proposta')
-const Atividade = mongoose.model('atividade')
+const Servico = mongoose.model('servico')
 const Programacao = mongoose.model('programacao')
 const Usuario = mongoose.model('usuario')
 const Acesso = mongoose.model('acesso')
@@ -64,19 +64,19 @@ router.get('/programacao/:id', ehAdmin, (req, res) => {
 
     var tarefas = []
     var q = 0
-    Atividade.find({ user: id }).lean().then((atividades) => {
+    Servico.find({ user: id }).lean().then((servico) => {
         Usina.findOne({ _id: req.params.id }).lean().then((usina) => {
             Cliente.findOne({ _id: usina.cliente }).lean().then((cliente) => {
-                if (naoVazio(atividades)) {
+                if (naoVazio(servico)) {
                     Tarefa.find({ usina: req.params.id, concluido: false, responsavel: id, programacao: { $exists: true } }).then((t) => {
                         if (naoVazio(t)) {
                             t.forEach((e) => {
-                                Atividade.findOne({ _id: e.servico }).then((atv) => {
+                                Servico.findOne({ _id: e.servico }).then((atv) => {
                                     //console.log('e._id=>' + e._id)
                                     q++
                                     tarefas.push({ id: e._id, usina: usina._id, seq: q, dataini: e.dataini, idser: atv._id, servico: atv.descricao, responsavel: nome })
                                     if (q == t.length) {
-                                        res.render('cliente/programacao', { usina, atividades, tarefas, cliente, tipo: 'auto' })
+                                        res.render('cliente/programacao', { usina, servico, tarefas, cliente, tipo: 'auto' })
                                     }
                                 }).catch((err) => {
                                     req.flash('error_msg', 'Não foi possível encontrar a atividade.')
@@ -84,14 +84,14 @@ router.get('/programacao/:id', ehAdmin, (req, res) => {
                                 })
                             })
                         } else {
-                            res.render('cliente/programacao', { usina, atividades, cliente, tipo: 'auto' })
+                            res.render('cliente/programacao', { usina, servico, cliente, tipo: 'auto' })
                         }
                     }).catch((err) => {
                         req.flash('error_msg', 'Não foi possível encontrar a tarefa.')
                         res.redirect('/cliente/novo')
                     })
                 } else {
-                    req.flash('error_msg', 'Não encontramos atividades cadastradas. Acesse o módulo de manutenção e cadastre atividades.')
+                    req.flash('error_msg', 'Não encontramos tipos de serviços cadastradas. Acesse o módulo de manutenção e cadastre um tipo de serviço.')
                     res.redirect('/menu')
                 }
             }).catch((err) => {
@@ -103,7 +103,7 @@ router.get('/programacao/:id', ehAdmin, (req, res) => {
             res.redirect('/cliente/novo')
         })
     }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar as atividades.')
+        req.flash('error_msg', 'Não foi possível encontrar os serviços.')
         res.redirect('/cliente/novo')
     })
 })
@@ -226,7 +226,7 @@ router.get('/historico/:id', ehAdmin, (req, res) => {
                         //console.log('tarefas=>'+tarefas)
                         // if (naoVazio(tarefas)) {
                         tarefas.forEach((et) => {
-                            Atividade.findOne({ _id: et.servico }).then((atv) => {
+                            Servico.findOne({ _id: et.servico }).then((atv) => {
                                 temtarefa = true
                                 q++
                                 //console.log('et.concluido=>' + et.concluido)

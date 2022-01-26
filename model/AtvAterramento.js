@@ -6,33 +6,35 @@ const AtvAterramento = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'proposta',
         require: true
-    },    
+    },
     tarefa: {
         type: Schema.Types.ObjectId,
         ref: 'tarefa',
         require: true
-    },        
+    },
     equipe: {
         type: Schema.Types.ObjectId,
         ref: 'equipe',
         require: true
-    },    
+    },
     feito: {
         type: Boolean,
         require: false
     },
-    data:{
+    data: {
         type: String,
         require: false
     },
-    hora:{
+    hora: {
         type: String,
         require: false
     },
-    caminhoFoto:{
-        type: Array,
-        require: false,
-    },
+    caminhoFoto: [{
+        desc: {
+            type: String,
+            require: false,
+        }
+    }],
     aprova: {
         type: Boolean,
         require: false,

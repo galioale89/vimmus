@@ -18,7 +18,7 @@ require('../model/Fornecedor')
 require('../model/AtvTelhado')
 require('../model/AtvAterramento')
 require('../model/AtvInversor')
-require('../model/Atividade')
+require('../model/Servico')
 require('../model/Tarefas')
 
 const { ehAdmin } = require('../helpers/ehAdmin')
@@ -56,7 +56,7 @@ const Fornecedor = mongoose.model('fornecedor')
 const AtvTelhado = mongoose.model('atvTelhado')
 const AtvInversor = mongoose.model('atvInversor')
 const AtvAterramento = mongoose.model('atvAterramento')
-const Atividade = mongoose.model('atividade')
+const Servico = mongoose.model('servico')
 const Tarefa = mongoose.model('tarefas')
 
 const comparaDatas = require('../resources/comparaDatas')
@@ -1262,7 +1262,7 @@ router.get('/realizar/:id', ehAdmin, (req, res) => {
     })
 })
 
-router.get('/servicosAtvt/:id', ehAdmin, (req, res) => {
+router.get('/atvt/:id', ehAdmin, (req, res) => {
     var check = false
     var lista_imagens = []
     var img = []
@@ -1273,13 +1273,13 @@ router.get('/servicosAtvt/:id', ehAdmin, (req, res) => {
             img = atvt.caminhoFoto
             img.forEach((e) => {
                 //console.log(e)
-                lista_imagens.push({ seq: 'Foto' + q, imagem: e })
+                lista_imagens.push({ seq: 'Foto' + q, imagem: e, atv: 'telhado' })
                 q++
             })
             if (atvt.aprova == true) {
                 check = 'checked'
             }
-            res.render('principal/servicos', { atvt, check, lista_imagens, proposta })
+            res.render('principal/atividades', { atvt, check, lista_imagens, proposta })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar a proposta.')
             res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
@@ -1290,7 +1290,7 @@ router.get('/servicosAtvt/:id', ehAdmin, (req, res) => {
     })
 })
 
-router.get('/servicosAtva/:id', ehAdmin, (req, res) => {
+router.get('/atva/:id', ehAdmin, (req, res) => {
     var check = false
     var img = []
     var lista_imagens = []
@@ -1301,13 +1301,13 @@ router.get('/servicosAtva/:id', ehAdmin, (req, res) => {
             img = atva.caminhoFoto
             img.forEach((e) => {
                 //console.log(e)
-                lista_imagens.push({ seq: 'Foto' + q, imagem: e })
+                lista_imagens.push({ seq: 'Foto' + q, imagem: e, atv: 'atva' })
                 q++
             })
             if (atva.aprova == true) {
                 check = 'checked'
             }
-            res.render('principal/servicos', { atva, check, lista_imagens, proposta })
+            res.render('principal/atividades', { atva, check, lista_imagens, proposta })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar a proposta.')
             res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
@@ -1318,7 +1318,7 @@ router.get('/servicosAtva/:id', ehAdmin, (req, res) => {
     })
 })
 
-router.get('/servicosAtvi/:id', ehAdmin, (req, res) => {
+router.get('/atvi/:id', ehAdmin, (req, res) => {
     var check = false
     var img = []
     var lista_imagens = []
@@ -1329,13 +1329,13 @@ router.get('/servicosAtvi/:id', ehAdmin, (req, res) => {
             img = atvi.caminhoFoto
             img.forEach((e) => {
                 //console.log(e)
-                lista_imagens.push({ seq: 'Foto' + q, imagem: e })
+                lista_imagens.push({ seq: 'Foto' + q, imagem: e, atv: 'atvi' })
                 q++
             })
             if (atvi.aprova == true) {
                 check = 'checked'
             }
-            res.render('principal/servicos', { atvi, check, lista_imagens, proposta })
+            res.render('principal/atividades', { atvi, check, lista_imagens, proposta })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar a proposta.')
             res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
@@ -2078,28 +2078,31 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                             // if (validaLivre == 0 && ins_dif == 0 && q == equipe.length) {
                             //     validaLivre = 1
                             Equipe.findOne({ _id: proposta.equipe }).lean().then((equipeins) => {
+                                console.log(equipeins)
                                 if (naoVazio(equipeins)) {
-                                    //console.log('entrou diferença')
+                                    console.log('entrou diferença')
                                     Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((instalacao) => {
                                         //console.log('equipeins.ins0=>' + equipeins.ins0)
-                                        if (typeof equipeins.ins0 != 'undefined') {
+                                        if (naoVazio(equipeins.ins0)) {
                                             ins0 = equipeins.ins0
                                         }
-                                        if (typeof equipeins.ins1 != 'undefined') {
+                                        if (naoVazio(equipeins.ins1)) {
                                             ins1 = equipeins.ins1
                                         }
-                                        if (typeof equipeins.ins2 != 'undefined') {
+                                        if (naoVazio(equipeins.ins2)) {
                                             ins2 = equipeins.ins2
                                         }
-                                        if (typeof equipeins.ins3 != 'undefined') {
+                                        if (naoVazio(equipeins.ins3)) {
                                             ins3 = equipeins.ins3
                                         }
-                                        if (typeof equipeins.ins4 != 'undefined') {
+                                        if (naoVazio(equipeins.ins4)) {
                                             ins4 = equipeins.ins4
                                         }
-                                        if (typeof equipeins.ins5 != 'undefined') {
+                                        if (naoVazio(equipeins.ins5)) {
                                             ins5 = equipeins.ins5
                                         }
+
+                                        console.log('ins0=>' + ins0)
 
                                         instalacao.forEach((pesins) => {
 
@@ -2145,8 +2148,8 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                 }
                                             }
                                         })
-                                        //console.log('ins_dentro_dif=>' + ins_dentro)
-                                        //console.log('ins_fora_dif=>' + ins_fora)
+                                        console.log('ins_dentro_dif=>' + ins_dentro)
+                                        console.log('ins_fora_dif=>' + ins_fora)
 
                                         Equipe.find({ user: id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
                                             //Verificando os responsáveis alocados na equipe
@@ -2319,32 +2322,37 @@ router.get('/aceite/:id', ehAdmin, (req, res) => {
                     Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
                         Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
                             Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
-                                AtvAterramento.findOne({ proposta: proposta._id }).lean().then((atvate) => {
-                                    AtvInversor.findOne({ proposta: proposta._id }).lean().then((atvinv) => {
-                                        AtvTelhado.findOne({ proposta: proposta._id }).lean().then((atvtel) => {
-                                            //console.log('documento.protocolado=>' + documento.protocolado)
-                                            if (atvate.aprova == true) {
-                                                checkAte = 'checked'
-                                            }
-                                            if (atvinv.aprova == true) {
-                                                checkInv = 'checked'
-                                            }
-                                            if (atvtel.aprova == true) {
-                                                checkMod = 'checked'
-                                            }
-                                            res.render('principal/aceite', { cliente_proposta, documento, proposta, compra, vistoria, lista_equipe, posvenda, checkAte, checkInv, checkMod, atvate, atvinv, atvtel })
+                                if (lista_equipe.liberar) {
+                                    AtvAterramento.findOne({ proposta: proposta._id }).lean().then((atvate) => {
+                                        AtvInversor.findOne({ proposta: proposta._id }).lean().then((atvinv) => {
+                                            AtvTelhado.findOne({ proposta: proposta._id }).lean().then((atvtel) => {
+
+                                                if (atvate.aprova == true) {
+                                                    checkAte = 'checked'
+                                                }
+                                                if (atvinv.aprova == true) {
+                                                    checkInv = 'checked'
+                                                }
+                                                if (atvtel.aprova == true) {
+                                                    checkMod = 'checked'
+                                                }
+                                                res.render('principal/aceite', { cliente_proposta, documento, proposta, compra, vistoria, lista_equipe, posvenda, checkAte, checkInv, checkMod, atvate, atvinv, atvtel })
+                                            }).catch((err) => {
+                                                req.flash('error_msg', 'Não foi possível encontrar a atividade do telhado.')
+                                                res.redirect('/menu')
+                                            })
                                         }).catch((err) => {
-                                            req.flash('error_msg', 'Não foi possível encontrar a atividade do telhado.')
+                                            req.flash('error_msg', 'Não foi possível encontrar a atividade do inversor.')
                                             res.redirect('/menu')
                                         })
                                     }).catch((err) => {
-                                        req.flash('error_msg', 'Não foi possível encontrar a atividade do inversor.')
+                                        req.flash('error_msg', 'Não foi possível encontrar a atividade do aterramento.')
                                         res.redirect('/menu')
                                     })
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Não foi possível encontrar a atividade do aterramento.')
-                                    res.redirect('/menu')
-                                })
+                                } else {
+                                    req.flash('aviso_msg', 'Será possível acessar a página de aceite após a liberação da equipe para o serviço.')
+                                    res.redirect('/gerenciamento/proposta/' + proposta._id)
+                                }
                             }).catch((err) => {
                                 req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
                                 res.redirect('/menu')
@@ -2891,7 +2899,7 @@ router.get('/agenda/', ehAdmin, (req, res) => {
                     //console.log('e.cliente=>'+e.cliente)
                     Cliente.findOne({ _id: e.cliente }).then((cliente) => {
                         //console.log('cliente=>' + cliente)
-                        Atividade.findOne({ _id: e.servico }).then((atv) => {
+                        Servico.findOne({ _id: e.servico }).then((ser) => {
                             var dias = []
                             var feito = false
                             dias = e.dias
@@ -2967,7 +2975,7 @@ router.get('/agenda/', ehAdmin, (req, res) => {
                             //console.log('dataini=>' + dataini)
                             //console.log('mes_busca=>' + mes_busca)
                             //console.log('mes=>' + mes)
-                            tarefa = atv.descricao
+                            tarefa = ser.descricao
                             for (i = 0; i < dif; i++) {
                                 //console.log('dia=>' + dia)
                                 //console.log('entrou laço')
@@ -3114,7 +3122,7 @@ router.get('/agenda/', ehAdmin, (req, res) => {
     })
 })
 
-router.get('/atividades/', ehAdmin, (req, res) => {
+router.get('/servicos/', ehAdmin, (req, res) => {
     const { _id } = req.user
     const { user } = req.user
     var id
@@ -3124,10 +3132,10 @@ router.get('/atividades/', ehAdmin, (req, res) => {
     } else {
         id = user
     }
-    Atividade.find({ user: id }).lean().then((atividades) => {
-        res.render('projeto/gerenciamento/atividades', { atividades })
+    Servico.find({ user: id }).lean().then((servicos) => {
+        res.render('projeto/gerenciamento/servicos', { servicos })
     }).catch((err) => {
-        req.flash('error_msg', 'Falha ao encontrar as atividades.')
+        req.flash('error_msg', 'Falha ao encontrar os serviços.')
         res.redirect('/menu')
     })
 })
@@ -3677,8 +3685,8 @@ router.get('/vermaistarefas/:id', ehAdmin, (req, res) => {
                         Cliente.findOne({ _id: e.cliente }).then((cliente) => {
                             //console.log('cli.nome=>'+cli.nome)
                             //console.log('e.servico=>'+e.servico)
-                            Atividade.findOne({ _id: e.servico }).then((atv) => {
-                                //console.log('atv.descricao=>'+atv.descricao)
+                            Servico.findOne({ _id: e.servico }).then((ser) => {
+                                //console.log('ser.descricao=>'+ser.descricao)
                                 var dias = []
                                 var feito = false
                                 dias = e.dias
@@ -3771,7 +3779,7 @@ router.get('/vermaistarefas/:id', ehAdmin, (req, res) => {
                                 //console.log('dataini=>' + dataini)
                                 //console.log('mes_busca=>' + mes_busca)
                                 //console.log('mes=>' + mes)
-                                tarefa = atv.descricao
+                                tarefa = ser.descricao
                                 for (i = 0; i < dif; i++) {
                                     //console.log('dia=>' + dia)
                                     //console.log('entrou laço')
@@ -3891,7 +3899,7 @@ router.get('/vermaistarefas/:id', ehAdmin, (req, res) => {
                                     })
                                 }
                             }).catch((err) => {
-                                req.flash('error_msg', 'Falha ao encontrar a atividade.')
+                                req.flash('error_msg', 'Falha ao encontrar o tipos de serviço.')
                                 res.redirect('/gerenciamento/agenda')
                             })
                         }).catch((err) => {
@@ -3905,7 +3913,7 @@ router.get('/vermaistarefas/:id', ehAdmin, (req, res) => {
                 })
             } else {
                 var erro = []
-                erro.push({ texto: 'Pessoa sem atividades para este período.' })
+                erro.push({ texto: 'Pessoa sem tarefas para este período.' })
                 res.render('projeto/gerenciamento/agenda', {
                     mes, ano, mestitulo, messel, janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro,
                     novembro, dezembro, pessoa, trintaeum, bisexto, ehManutencao: true, toda_agenda: false, erro
@@ -3932,10 +3940,11 @@ router.get('/tarefas/:id', ehAdmin, (req, res) => {
         id = user
     }
 
+    var dia
     var parametro = req.params.id
     var parametro = parametro.split('-')
     var tarefa = parametro[0]
-    var dia = parametro[1]
+    dia = parametro[1]
 
     //console.log('tarefa=>' + tarefa)
     //console.log('dia=>' + dia)
@@ -3950,20 +3959,19 @@ router.get('/tarefas/:id', ehAdmin, (req, res) => {
     Tarefas.find({ user: id }).sort({ 'concluido': 'asc' }).then((tarefas) => {
         tarefas.forEach((e) => {
             //console.log('e.usina=>' + e.usina)
-
             //console.log('usi.cliente=>'+usi.cliente)
             Cliente.findOne({ _id: e.cliente }).then((cli) => {
                 //console.log('cli.nome=>'+cli.nome)
                 //console.log('e.servico=>'+e.servico)
-                Atividade.findOne({ _id: e.servico }).then((atv) => {
-                    //console.log('atv.descricao=>'+atv.descricao)
+                Servico.findOne({ _id: e.servico }).then((ser) => {
+                    //console.log('ser.descricao=>'+ser.descricao)
                     q++
 
                     //console.log('e.concluido=>' + e.concluido)
                     if (e.concluido == true) {
-                        tarefa_concluida.push({ id: e._id, nome: cli.nome, servico: atv.descricao, dataini: dataMensagem(e.dataini), datafim: dataMensagem(e.datafim) })
+                        tarefa_concluida.push({ id: e._id, nome: cli.nome, servico: ser.descricao, dataini: dataMensagem(e.dataini), datafim: dataMensagem(e.datafim) })
                     } else {
-                        tarefa_naoconcluida.push({ id: e._id, nome: cli.nome, servico: atv.descricao, dataini: dataMensagem(e.dataini), datafim: dataMensagem(e.datafim) })
+                        tarefa_naoconcluida.push({ id: e._id, nome: cli.nome, servico: ser.descricao, dataini: dataMensagem(e.dataini), datafim: dataMensagem(e.datafim) })
                     }
 
                     //console.log("q=>" + q)
@@ -3972,7 +3980,7 @@ router.get('/tarefas/:id', ehAdmin, (req, res) => {
                         //console.log('req.params.id=>' + req.params.id)
                         Tarefas.findOne({ _id: tarefa }).sort({ 'concluido': 'asc' }).then((tarefa) => {
                             Cliente.findOne({ _id: tarefa.cliente }).then((cliente) => {
-                                Atividade.findOne({ _id: tarefa.servico }).then((atv) => {
+                                Servico.findOne({ _id: tarefa.servico }).then((ser) => {
                                     Equipe.findOne({ _id: tarefa.equipe }).then((equipe) => {
                                         var dataini = dataMensagem(tarefa.dataini)
                                         var datafim = dataMensagem(tarefa.datafim)
@@ -3983,10 +3991,15 @@ router.get('/tarefas/:id', ehAdmin, (req, res) => {
                                             concluido = 'Não'
                                         }
 
+                                        if (naoVazio(dia) == false) {
+                                            dia = tarefa.dataini
+                                            dia = dia.substring(9, 11)
+                                        }
+
                                         if (naoVazio(equipe)) {
-                                            lista_tarefa = { concluido, id: tarefa._id, nome: cliente.nome, servico: atv.descricao, dataini, datafim, ins0: equipe.ins0, ins1: equipe.ins1, ins2: equipe.ins2, ins3: equipe.ins3, ins4: equipe.ins4, ins5: equipe.ins5 }
+                                            lista_tarefa = { concluido, id: tarefa._id, nome: cliente.nome, servico: ser.descricao, dataini, datafim, ins0: equipe.ins0, ins1: equipe.ins1, ins2: equipe.ins2, ins3: equipe.ins3, ins4: equipe.ins4, ins5: equipe.ins5 }
                                         } else {
-                                            lista_tarefa = { concluido, id: tarefa._id, nome: cliente.nome, servico: atv.descricao, dataini, datafim }
+                                            lista_tarefa = { concluido, id: tarefa._id, nome: cliente.nome, servico: ser.descricao, dataini, datafim }
                                         }
                                         //console.log('lista_tarefa=>'+lista_tarefa)                                                
                                         res.render('projeto/gerenciamento/vertarefas', { lista_tarefa, tarefa_concluida, tarefa_naoconcluida, dia })
@@ -3995,7 +4008,7 @@ router.get('/tarefas/:id', ehAdmin, (req, res) => {
                                         res.redirect('/gerenciamento/agenda')
                                     })
                                 }).catch((err) => {
-                                    req.flash('error_msg', 'Falha ao encontrar a atividade.')
+                                    req.flash('error_msg', 'Falha ao encontrar o tipo de serviço.')
                                     res.redirect('/gerenciamento/agenda')
                                 })
                             }).catch((err) => {
@@ -4008,7 +4021,7 @@ router.get('/tarefas/:id', ehAdmin, (req, res) => {
                         })
                     }
                 }).catch((err) => {
-                    req.flash('error_msg', 'Falha ao encontrar a atividade.')
+                    req.flash('error_msg', 'Falha ao encontrar o tipo de serviço.')
                     res.redirect('/gerenciamento/agenda')
                 })
             }).catch((err) => {
@@ -5468,15 +5481,18 @@ router.post("/salvarequipe", ehAdmin, (req, res) => {
                     //console.log('custoins[i]' + custoins[i])
                     custototal = parseFloat(custototal) + parseFloat(custoins[i])
                 }
+                console.log('custototal=>' + custototal)
                 equipe.custoins = custototal
             }
             if (naoVazio(email)) {
-                arroba = email.split('@')
-                console.log('arroba=>' + arroba.length)
+                console.log('entrou')
+                arroba = String(email).split('@')
+                console.log('arroba=>' + arroba)
                 if (arroba.length > 2) {
                     for (i = 0; i < email.length; i++) {
                         todos_emails = todos_emails + email[i] + ';'
                     }
+                    console.log('todos_emails')
                     equipe.email = todos_emails
                 } else {
                     equipe.email = email
@@ -5568,6 +5584,7 @@ router.get('/enviarequipe/:id', ehAdmin, (req, res) => {
             Equipe.findOne({ _id: proposta.equipe }).then((equipe) => {
                 if (naoVazio(equipe.insres)) {
                     const corpo = {
+                        user: id,
                         proposta: req.params.id,
                         equipe: equipe,
                         data: dataHoje()
@@ -5815,63 +5832,96 @@ router.post('/caminhoAte', ehAdmin, upload.array('fileate', 10), (req, res) => {
 
     var arquivos = req.files
     var q = 0
+    var ult = 0
+    var imagem
     //console.log('arquivos=>' + arquivos)
-    var unset = []
+    var fotosAtuais = []
 
     if (naoVazio(arquivos)) {
         unset = { proposta: req.body.id, $unset: { caminhoFoto: 1 } }
     } else {
         unset = { proposta: req.body.id }
     }
+
     Proposta.findOne({ _id: req.body.id }).then((proposta) => {
         if (naoVazio(proposta)) {
-            Equipe.findOne({ _id: proposta.equipe }).then((equipe) => {
-                AtvAterramento.findOneAndUpdate(unset).then(() => {
-                    AtvAterramento.findOne({ proposta: proposta._id }).then((atva) => {
-                        if (naoVazio(arquivos)) {
-                            arquivos.forEach((e) => {
-                                //console.log(e.originalname)
-                                atva.caminhoFoto[q] = e.originalname
-                                q++
-                            })
-                        }
-
-                        //console.log('req.body.check=>' + req.body.check)
-                        if (req.body.check == 'on') {
-                            atva.aprova = true
-                        } else {
-                            atva.aprova = false
-                        }
-
-                        atva.save().then(() => {
+                //AtvAterramento.findOneAndUpdate(unset).then(() => {
+                if (naoVazio(arquivos)) {
+                    arquivos.forEach((e) => {
+                        imagem = { "desc": e.originalname }
+                        console.log('imagem=>'+JSON.stringify(imagem))
+                        console.log("req.body.id=>"+req.body.id)
+                        AtvAterramento.findOneAndUpdate({ proposta: req.body.id }, { $push: { caminhoFoto: imagem }}).then((e)=>{
                             req.flash('success_msg', 'Foto(s) do aterramento salva(s) com sucesso.')
-                            if (naoVazio(req.body.aceite)) {
-                                res.redirect('/gerenciamento/aceite/' + req.body.id)
-                            } else {
-                                res.redirect('/gerenciamento/servicosAtva/' + req.body.id)
-                            }
-                        }).catch(() => {
-                            req.flash('error_msg', 'Falha ao salvar as imagens do aterramento.')
-                            res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
                         })
-                    }).catch(() => {
-                        req.flash('error_msg', 'Falha ao encontrar a atividade de aterramento.')
-                        res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
                     })
-                }).catch(() => {
-                    req.flash('error_msg', 'Falha ao atualizar o aterramento.')
-                    res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
-                })
+                }
+                
+                // AtvAterramento.findOneAndUpdate({ proposta: req.body.id }, { $push: { caminhoFoto: imagem } }).then((e) => { 
+                        
+                        if (naoVazio(req.body.aceite)) {
+                            res.redirect('/gerenciamento/aceite/' + req.body.id)
+                        } else {
+                            res.redirect('/gerenciamento/atva/' + req.body.id)
+                        }
+                    // }).catch(() => {
+                    //     req.flash('error_msg', 'Falha ao salvar as imagens do aterramento.')
+                    //     res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
+                    // })
+                /*
+                AtvAterramento.findOneAndUpdate({ _id: req.body.id }, { $push: { caminhoFoto: imagem } }).then((e) => {                    
+                // AtvAterramento.findOne({ proposta: proposta._id }).then((atva) => {
+                //     if (naoVazio(arquivos)) {
+                //         fotosAtuais = atva.caminhoFoto
+                //         console.log('fotosAtuais=>'+fotosAtuais)
+                //         if (naoVazio(fotosAtuais)){
+                //             q = fotosAtuais.length
+                //             console.log('q=>'+q)
+                //             arquivos.forEach((e) => {
+                //                 //console.log(e.originalname)
+                //                 atva.caminhoFoto[q] = e.originalname
+                //                 q++
+                //             })
+                //         }else{
+                //         arquivos.forEach((e) => {
+                //             //console.log(e.originalname)
+                //             atva.caminhoFoto[q] = e.originalname
+                //             q++
+                //         })
+                //     }
+                //     }
+                //     //console.log('req.body.check=>' + req.body.check)
+                //     if (req.body.check == 'on') {
+                //         atva.aprova = true
+                //     } else {
+                //         atva.aprova = false
+                //     }
+
+                    atva.save().then(() => {
+                        req.flash('success_msg', 'Foto(s) do aterramento salva(s) com sucesso.')
+                        if (naoVazio(req.body.aceite)) {
+                            res.redirect('/gerenciamento/aceite/' + req.body.id)
+                        } else {
+                            res.redirect('/gerenciamento/atva/' + req.body.id)
+                        }
+                     }).catch(() => {
+                         req.flash('error_msg', 'Falha ao salvar as imagens do aterramento.')
+                         res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
+                     })
+                // }).catch(() => {
+                //     req.flash('error_msg', 'Falha ao encontrar a atividade de aterramento.')
+                //     res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
+                // })
             }).catch(() => {
-                req.flash('error_msg', 'Falha ao encontrar a equipe.')
-                res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
+                 req.flash('error_msg', 'Falha ao atualizar o aterramento.')
+                 res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
             })
+            */
         }
     }).catch(() => {
         req.flash('error_msg', 'Falha ao encontrar a proposta.')
         res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
     })
-
 })
 
 router.post('/caminhoInv', ehAdmin, upload.array('fileinv', 10), (req, res) => {
@@ -5908,7 +5958,7 @@ router.post('/caminhoInv', ehAdmin, upload.array('fileinv', 10), (req, res) => {
                             if (naoVazio(req.body.aceite)) {
                                 res.redirect('/gerenciamento/aceite/' + req.body.id)
                             } else {
-                                res.redirect('/gerenciamento/servicosAtvi/' + req.body.id)
+                                res.redirect('/gerenciamento/atvi/' + req.body.id)
                             }
                         }).catch(() => {
                             req.flash('error_msg', 'Falha ao salvar a vistoria.')
@@ -5996,7 +6046,7 @@ router.post('/caminhoMod', ehAdmin, upload.array('filemod', 10), (req, res) => {
                             if (naoVazio(req.body.aceite)) {
                                 res.redirect('/gerenciamento/aceite/' + req.body.id)
                             } else {
-                                res.redirect('/gerenciamento/servicosAtvt/' + req.body.id)
+                                res.redirect('/gerenciamento/atvt/' + req.body.id)
                             }
                         }).catch(() => {
                             req.flash('error_msg', 'Falha ao salvar as iamgens do telhado.')
@@ -6130,7 +6180,7 @@ router.post('/caminhoInsi', ehAdmin, upload.array('fileinsi', 10), (req, res) =>
                 res.redirect('/gerenciamento/visita/' + req.body.id)
             })
         }).catch(() => {
-            req.flash('error_msg', 'Falha ao encontrar a atividade de aterramento.')
+            req.flash('error_msg', 'Falha ao encontrar a vistoria.')
             res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
         })
     }).catch(() => {
@@ -6171,7 +6221,7 @@ router.post('/caminhoInsa', ehAdmin, upload.array('fileinsa', 10), (req, res) =>
                 res.redirect('/gerenciamento/visita/' + req.body.id)
             })
         }).catch(() => {
-            req.flash('error_msg', 'Falha ao encontrar a atividade de aterramento.')
+            req.flash('error_msg', 'Falha ao encontrar a vistoria.')
             res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
         })
     }).catch(() => {
@@ -6196,7 +6246,7 @@ router.get('/mostrarInv/:id', ehAdmin, (req, res) => {
                                     img = atvinv.caminhoFoto
                                     img.forEach((e) => {
                                         //console.log(e)
-                                        lista_imagens.push({ seq: 'Foto' + q, imagem: e })
+                                        lista_imagens.push({ seq: 'Foto' + q, imagem: e, atv: 'inversor', id: proposta._id })
                                         q++
                                     })
 
@@ -6251,7 +6301,7 @@ router.get('/mostrarAte/:id', ehAdmin, (req, res) => {
                                     img = atvate.caminhoFoto
                                     img.forEach((e) => {
                                         //console.log(e)
-                                        lista_imagens.push({ seq: 'Foto' + q, imagem: e })
+                                        lista_imagens.push({ seq: 'Foto' + q, imagem: e.desc, atv: 'aterramento', id: proposta._id  })
                                         q++
                                     })
 
@@ -6305,7 +6355,7 @@ router.get('/mostrarStb/:id', ehAdmin, (req, res) => {
                                 img = vistoria.caminhoStb
                                 img.forEach((e) => {
                                     //console.log(e)
-                                    lista_imagens.push({ seq: 'Foto' + q, imagem: e })
+                                    lista_imagens.push({ seq: 'Foto' + q, imagem: e, atv: 'stringbox' })
                                     q++
                                 })
 
@@ -6357,11 +6407,11 @@ router.get('/mostrarMod/:id', ehAdmin, (req, res) => {
                                     img = atvtel.caminhoFoto
                                     img.forEach((e) => {
                                         //console.log(e)
-                                        lista_imagens.push({ seq: 'Foto' + q, imagem: e })
+                                        lista_imagens.push({ seq: 'Foto' + q, imagem: e, atv: 'telhado', id: propostas._id })
                                         q++
                                     })
 
-                                    res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens de Estruturas e Módulos', aceite: 'ativo' })
+                                    res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens de Estruturas e Módulos', atv: 'telhado', aceite: 'ativo' })
                                 }).catch(() => {
                                     req.flash('error_msg', 'Falha ao encontrar as imagens do telhado.')
                                     res.redirect('/gerenciamento/aceite/' + req.body.id)
@@ -6412,13 +6462,13 @@ router.get('/mostrarSomb/:id', ehAdmin, (req, res) => {
                                 img = vistoria.caminhoSomb
                                 img.forEach((e) => {
                                     //console.log(e)
-                                    lista_imagens.push({ seq: 'Foto' + q, imagem: e })
+                                    lista_imagens.push({ seq: 'Foto' + q, imagem: e, atv: 'sombreamento' })
                                     q++
                                 })
                                 if (proposta.encerrado) {
                                     esconde = true
                                 }
-                                res.render('principal/mostrarFotos', { lista_imagens, esconde, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens de Sombreamento', visita: 'ativo' })
+                                res.render('principal/mostrarFotos', { lista_imagens, esconde, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens de Sombreamento', atv: 'sombreamento', visita: 'ativo' })
                             }).catch(() => {
                                 req.flash('error_msg', 'Falha ao encontrar o pós venda.')
                                 res.redirect('/gerenciamento/aceite/' + req.body.id)
@@ -6466,11 +6516,11 @@ router.get('/mostrarArea/:id', ehAdmin, (req, res) => {
                                 //console.log('img=>' + img)
                                 img.forEach((e) => {
                                     //console.log(e)
-                                    lista_imagens.push({ seq: 'Foto' + q, imagem: e })
+                                    lista_imagens.push({ seq: 'Foto' + q, imagem: e, atv: 'area' })
                                     q++
                                 })
 
-                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens da Área de Instalação', visita: 'ativo' })
+                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens da Área de Instalação', atv: 'area', visita: 'ativo' })
                             }).catch(() => {
                                 req.flash('error_msg', 'Falha ao encontrar o pós venda.')
                                 res.redirect('/gerenciamento/aceite/' + req.body.id)
@@ -6516,11 +6566,11 @@ router.get('/mostrarInsi/:id', ehAdmin, (req, res) => {
                                 img = vistoria.caminhoInsi
                                 img.forEach((e) => {
                                     //console.log(e)
-                                    lista_imagens.push({ seq: 'Foto' + q, imagem: e })
+                                    lista_imagens.push({ seq: 'Foto' + q, imagem: e, atv: 'insi' })
                                     q++
                                 })
 
-                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens do Local de Instalação do Inversor e String Box', visita: 'ativo' })
+                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens do Local de Instalação do Inversor e String Box', atv: 'stringbox', visita: 'ativo' })
                             }).catch(() => {
                                 req.flash('error_msg', 'Falha ao encontrar o pós venda.')
                                 res.redirect('/gerenciamento/aceite/' + req.body.id)
@@ -6566,11 +6616,11 @@ router.get('/mostrarInsa/:id', ehAdmin, (req, res) => {
                                 img = vistoria.caminhoInsa
                                 img.forEach((e) => {
                                     //console.log(e)
-                                    lista_imagens.push({ seq: 'Foto' + q, imagem: e })
+                                    lista_imagens.push({ seq: 'Foto' + q, imagem: e, atv: 'insa' })
                                     q++
                                 })
 
-                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens do Local de Instalação do Aterramento', visita: 'ativo' })
+                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Imagens do Local de Instalação do Aterramento', atv: 'localate', visita: 'ativo' })
                             }).catch(() => {
                                 req.flash('error_msg', 'Falha ao encontrar o pós venda.')
                                 res.redirect('/gerenciamento/aceite/' + req.body.id)
@@ -6632,6 +6682,24 @@ router.get('/mostrarClins/:id', ehAdmin, (req, res) => {
         req.flash('error_msg', 'Falha ao encontrar o documento.')
         res.redirect('/gerenciamento/aceite/' + req.body.id)
     })
+})
+
+router.get('/deletaImagem/:msg', ehAdmin, (req, res) => {
+    var params = []
+    params = req.params.msg
+    params = params.split('delmsg')
+    console.log(params[0])
+    console.log(params[1])
+    console.log(params[2])
+    if (params[2] == 'aterramento') {
+        AtvAterramento.findOneAndUpdate({ proposta: params[1] }, { $pull: { 'caminhoFoto': { 'desc': params[0] }}}).then((e) => {
+            req.flash('aviso_msg','Imagem removida com sucesso')
+            res.redirect('/gerenciamento/mostrarAte/' + params[1])
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha ao remover a imagem.')
+            res.redirect('/gerenciamento/mostrarAte/' + params[2])
+        })
+    }
 })
 
 router.post('/almoxarifado', upload.single('almoxarifado'), ehAdmin, (req, res) => {
@@ -7557,8 +7625,8 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                             Cliente.findOne({ _id: e.cliente }).then((cliente) => {
                                 //console.log('cliente.nome=>' + cliente.nome)
                                 //console.log('e.servico=>'+e.servico)
-                                Atividade.findOne({ _id: e.servico }).then((atv) => {
-                                    //console.log('atv.descricao=>' + atv.descricao)
+                                Servico.findOne({ _id: e.servico }).then((ser) => {
+                                    //console.log('ser.descricao=>' + ser.descricao)
                                     var dias = []
                                     var feito = false
                                     dias = e.dias
@@ -7648,7 +7716,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
 
                                     //console.log('dataini=>' + dataini)
                                     //console.log('mes=>' + mes)
-                                    tarefa = atv.descricao
+                                    tarefa = ser.descricao
                                     for (i = 0; i < dif; i++) {
                                         //console.log('dia=>' + dia)
                                         //console.log('entrou laço')
@@ -7768,7 +7836,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                                         })
                                     }
                                 }).catch((err) => {
-                                    req.flash('error_msg', 'Falha ao encontrar a atividade.')
+                                    req.flash('error_msg', 'Falha ao encontrar o tipo de serviço.')
                                     res.redirect('/gerenciamento/agenda')
                                 })
                             }).catch((err) => {
@@ -7782,7 +7850,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                     })
                 } else {
                     var erro = []
-                    erro.push({ texto: 'Pessoa sem atividades para este período.' })
+                    erro.push({ texto: 'Pessoa sem tarefas para este período.' })
                     res.render('projeto/gerenciamento/agenda', {
                         mes, ano, mestitulo, messel, janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro,
                         novembro, dezembro, pessoa, trintaeum, bisexto, ehManutencao: true, toda_agenda: false, erro
@@ -7808,7 +7876,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                         //console.log('e.cliente=>'+e.cliente)
                         Cliente.findOne({ _id: e.cliente }).then((cliente) => {
                             //console.log('cliente=>' + cliente)
-                            Atividade.findOne({ _id: e.servico }).then((atv) => {
+                            Servico.findOne({ _id: e.servico }).then((ser) => {
                                 var dias = []
                                 var feito = false
                                 dias = e.dias
@@ -7901,7 +7969,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                                 //console.log('dataini=>' + dataini)
                                 //console.log('mes_busca=>' + mes_busca)
                                 //console.log('mes=>' + mes)
-                                tarefa = atv.descricao
+                                tarefa = ser.descricao
                                 for (i = 0; i < dif; i++) {
                                     //console.log('dia=>' + dia)
                                     //console.log('entrou laço')
@@ -8045,7 +8113,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
     }
 })
 
-router.post('/salvarAtividade', ehAdmin, (req, res) => {
+router.post('/salvarsrv', ehAdmin, (req, res) => {
     const { _id } = req.user
     const { user } = req.user
     var id
@@ -8056,35 +8124,35 @@ router.post('/salvarAtividade', ehAdmin, (req, res) => {
         id = user
     }
     if (req.body.id == '') {
-        new Atividade({
+        new Servico({
             user: id,
             descricao: req.body.descricao,
             classe: req.body.classe,
             data: dataHoje()
         }).save().then(() => {
-            req.flash('success_msg', 'Atividade criada com sucesso.')
-            res.redirect('/gerenciamento/atividades')
+            req.flash('success_msg', 'Serviço criado com sucesso.')
+            res.redirect('/gerenciamento/servicos')
         }).catch((err) => {
-            req.flash('error_msg', 'Falha ao salvar a atividade.')
+            req.flash('error_msg', 'Falha ao salvar o tipo de serviço.')
         })
     } else {
-        Atividade.findOne({ _id: req.body.id }).then((atividade) => {
-            atividade.descricao = req.body.descricao
-            atividade.classe = req.body.classe
-            atividade.save().then(() => {
-                req.flash('success_msg', 'Atividade salva com sucesso.')
-                res.redirect('/gerenciamento/atividades')
+        Servico.findOne({ _id: req.body.id }).then((servico) => {
+            servico.descricao = req.body.descricao
+            servico.classe = req.body.classe
+            servico.save().then(() => {
+                req.flash('success_msg', 'Serviço salvo com sucesso.')
+                res.redirect('/gerenciamento/servicos')
             }).catch((err) => {
-                req.flash('error_msg', 'Falha ao salvar a atividade.')
+                req.flash('error_msg', 'Falha ao salvar o tipo de serviço.')
             })
         }).catch((err) => {
-            req.flash('error_msg', 'Falha ao encontrar a atividade.')
+            req.flash('error_msg', 'Falha ao encontrar o tipo de serviço.')
         })
 
     }
 })
 
-router.get('/editarAtividade/:id', ehAdmin, (req, res) => {
+router.get('/editarsrv/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
     const { user } = req.user
     var id
@@ -8094,14 +8162,17 @@ router.get('/editarAtividade/:id', ehAdmin, (req, res) => {
     } else {
         id = user
     }
-    Atividade.find({ user: id }).lean().then((atividades) => {
-        Atividade.findOne({ user: id, _id: req.params.id }).lean().then((atividade) => {
-            res.render('projeto/gerenciamento/atividades', { atividade, atividades })
+    Servico.find({ user: id }).lean().then((servicos) => {
+        Servico.findOne({ _id: req.params.id }).lean().then((servico) => {
+            //     console.log(servico)
+            res.render('projeto/gerenciamento/servicos', { servicos, servico })
         }).catch((err) => {
-            req.flash('error_msg', 'Falha ao encontrar a atividade.')
+            req.flash('error_msg', 'Falha ao encontrar o tipo de serviço.')
+            res.redirect('/gerenciamento/servicos')
         })
     }).catch((err) => {
-        req.flash('error_msg', 'Falha ao encontrar todas atividades.')
+        req.flash('error_msg', 'Falha ao encontrar todos os tipos de serviço.')
+        res.redirect('/gerenciamento/servicos')
     })
 })
 
@@ -8124,98 +8195,175 @@ router.get('/equipetarefa/:id', ehAdmin, (req, res) => {
     var ins4
     var ins5
 
+    var trf_empresa
+    var trf_empid
+    var trf_gestor
+    var trf_gesid
+    var trf_servico
+    var trf_srvid
+    var trf_dataini
+    var trf_datafim
+    var trf_tecnico
+    var trf_tecid
+
     var custoins
     var q = 0
 
     //console.log('req.params.id=>' + req.params.id)
     Tarefa.findOne({ _id: req.params.id }).lean().then((tarefa) => {
         //console.log(usina)
-        Equipe.findOne({ _id: tarefa.equipe }).then((equipeins) => {
-            //console.log('equipeins=>' + equipeins)
-            if (naoVazio(equipeins)) {
-                Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((instalacao) => {
-                    //console.log('entrou')
-                    if (typeof equipeins.ins0 != 'undefined') {
-                        ins0 = equipeins.ins0
-                    }
-                    if (typeof equipeins.ins1 != 'undefined') {
-                        ins1 = equipeins.ins1
-                    }
-                    if (typeof equipeins.ins2 != 'undefined') {
-                        ins2 = equipeins.ins2
-                    }
-                    if (typeof equipeins.ins3 != 'undefined') {
-                        ins3 = equipeins.ins3
-                    }
-                    if (typeof equipeins.ins4 != 'undefined') {
-                        ins4 = equipeins.ins4
-                    }
-                    if (typeof equipeins.ins5 != 'undefined') {
-                        ins5 = equipeins.ins5
-                    }
+        console.log('tarefa=>' + tarefa)
+        trf_dataini = dataMensagem(tarefa.dataini)
+        trf_datafim = dataMensagem(tarefa.datafim)
+        Empresa.findOne({ _id: tarefa.empresa }).then((trfemp) => {
+            console.log('trfemp=>' + trfemp)
+            trf_empresa = trfemp.nome
+            trf_empid = trfemp._id
+            Pessoa.findOne({ _id: tarefa.responsavel }).then((trfres) => {
+                console.log('trfres=>' + trfres)
+                trf_gestor = trfres.nome
+                trf_gesid = trfres._id
+                Servico.findOne({ _id: tarefa.servico }).then((trfsrv) => {
+                    console.log('trfsrv=>' + trfsrv)
+                    trf_servico = trfsrv.descricao
+                    trf_srvid = trfsrv._id
+                    Equipe.findOne({ _id: tarefa.equipe }).then((equipeins) => {
+                        console.log('equipeins=>' + equipeins)
+                        Pessoa.findOne({ _id: equipeins.insres }).then((trftec) => {
+                            console.log('trftec=>' + trftec)
+                            trf_tecnico = trftec.nome
+                            trf_tecid = trftec._id
+                            console.log('equipeins=>' + equipeins)
+                            if (naoVazio(equipeins)) {
+                                Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((instalacao) => {
+                                    console.log('entrou')
+                                    if (typeof equipeins.ins0 != 'undefined') {
+                                        ins0 = equipeins.ins0
+                                    }
+                                    if (typeof equipeins.ins1 != 'undefined') {
+                                        ins1 = equipeins.ins1
+                                    }
+                                    if (typeof equipeins.ins2 != 'undefined') {
+                                        ins2 = equipeins.ins2
+                                    }
+                                    if (typeof equipeins.ins3 != 'undefined') {
+                                        ins3 = equipeins.ins3
+                                    }
+                                    if (typeof equipeins.ins4 != 'undefined') {
+                                        ins4 = equipeins.ins4
+                                    }
+                                    if (typeof equipeins.ins5 != 'undefined') {
+                                        ins5 = equipeins.ins5
+                                    }
 
-                    instalacao.forEach((pesins) => {
-                        q++
-                        var nome = pesins.nome
-                        var id = pesins._id
-                        //console.log('pesins.custo=>' + pesins.custo)
-                        // if (pesins.custo == null || pesins.custo == '' || typeof pesins.custo == 'undefined') {
-                        //     custoins = 0
-                        // } else {
-                        //     custoins = pesins.custo
-                        // }
+                                    instalacao.forEach((pesins) => {
+                                        q++
+                                        var nome = pesins.nome
+                                        var id = pesins._id
 
-                        if (naoVazio(pesins.email)) {
-                            email = pesins.email
-                        } else {
-                            email = ''
-                        }
+                                        if (naoVazio(pesins.email)) {
+                                            email = pesins.email
+                                        } else {
+                                            email = ''
+                                        }
 
-                        if (nome == ins0) {
-                            ins_dentro.push({ id, nome, email })
-                        } else {
-                            if (nome == ins1) {
-                                ins_dentro.push({ id, nome, email })
-                            } else {
-                                if (nome == ins2) {
-                                    ins_dentro.push({ id, nome, email })
-                                } else {
-                                    if (nome == ins3) {
-                                        ins_dentro.push({ id, nome, email })
-                                    } else {
-                                        if (nome == ins4) {
+                                        if (nome == ins0) {
                                             ins_dentro.push({ id, nome, email })
                                         } else {
-                                            if (nome == ins5) {
+                                            if (nome == ins1) {
                                                 ins_dentro.push({ id, nome, email })
                                             } else {
-                                                ins_fora.push({ id, nome, email })
+                                                if (nome == ins2) {
+                                                    ins_dentro.push({ id, nome, email })
+                                                } else {
+                                                    if (nome == ins3) {
+                                                        ins_dentro.push({ id, nome, email })
+                                                    } else {
+                                                        if (nome == ins4) {
+                                                            ins_dentro.push({ id, nome, email })
+                                                        } else {
+                                                            if (nome == ins5) {
+                                                                ins_dentro.push({ id, nome, email })
+                                                            } else {
+                                                                ins_fora.push({ id, nome, email })
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
+                                    })
+                                    console.log('q=>' + q)
+                                    if (q == instalacao.length) {
+                                        Empresa.find({ user: id }).lean().then((empresa) => {
+                                            Pessoa.find({ user: id, $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }] }).sort({ 'nome': 'asc' }).lean().then((instalacao) => {
+                                                Pessoa.find({ user: id, 'funges': 'checked' }).sort({ 'nome': 'asc' }).lean().then((gestor) => {
+                                                    //console.log('req.body.cliente=>' + req.body.cliente)
+                                                    Servico.find({ user: id }).lean().then((servicos) => {
+                                                        console.log('tarefa.cliente=>' + tarefa.cliente)
+                                                        Usina.find({ cliente: tarefa.cliente }).lean().then((usina) => {
+                                                            console.log('ins_dentro=>' + ins_dentro)
+                                                            console.log('ins_fora=>>' + ins_fora)
+                                                            console.log('usina=>' + usina)
+                                                            console.log('instalacao=>' + instalacao)
+                                                            console.log('gestor=>' + gestor)
+                                                            console.log('tarefa=>' + tarefa)
+                                                            console.log('empresa=>' + empresa)
+                                                            console.log('servicos=>' + servicos)
+                                                            if (naoVazio(usina)) {
+                                                                res.render('projeto/gerenciamento/tarefas', { usina, trf_empresa, trf_empid, trf_gestor, trf_gesid, trf_servico, trf_srvid, tarefa, servicos, ins_fora, ins_dentro, instalacao, gestor, empresa })
+                                                            } else {
+                                                                res.render('projeto/gerenciamento/tarefas', { tarefa, trf_empresa, trf_empid, trf_gestor, trf_gesid, trf_servico, trf_srvid, servicos, ins_fora, ins_dentro, instalacao, gestor, empresa })
+                                                            }
+                                                        }).catch((err) => {
+                                                            req.flash('error_msg', 'Nenhuma usina cadastrada.')
+                                                            res.redirect('/gerenciamento/agenda')
+                                                        })
+                                                    }).catch((err) => {
+                                                        req.flash('error_msg', 'Nehuma tipo de serviço cadastrado.')
+                                                        res.redirect('/gerenciamento/agenda')
+                                                    })
+                                                }).catch((err) => {
+                                                    req.flash('error_msg', 'Nehum técnico cadastrada.')
+                                                    res.redirect('/confguracao/addempresa')
+                                                })
+                                            }).catch((err) => {
+                                                req.flash('error_msg', 'Falha ao encontrar os gestores.')
+                                                res.redirect('/gerenciamento/agenda')
+                                            })
+                                        }).catch((err) => {
+                                            req.flash('error_msg', 'Nehuam empresa cadastrada.')
+                                            res.redirect('/confguracao/addempresa')
+                                        })
                                     }
-                                }
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Falha ao encontrar os técnicos instaladores.')
+                                    res.redirect('/gerenciamento/equipe/' + req.params.id)
+                                })
                             }
-                        }
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Falha ao encontrar o técnico responsável.')
+                            res.redirect('/gerenciamento/equipe/' + req.params.id)
+                        })
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Falha ao encontrar o equipe.')
+                        res.redirect('/gerenciamento/equipe/' + req.params.id)
                     })
-                    //console.log('q=>' + q)
-                    if (q == instalacao.length) {
-                        res.render('projeto/gerenciamento/tarefas', { tarefa, ins_fora, ins_dentro, equipe: true })
-                    }
                 }).catch((err) => {
-                    req.flash('error_msg', 'Falha ao encontrar os instaladores.')
-                    res.redirect('/gerenciamento/equipe/' + req.params.id)
+                    req.flash('error_msg', 'Nehum tipo de serviço encontrado.')
+                    res.redirect('/cliente/consulta')
                 })
-            } else {
-                Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).lean().then((instalacao) => {
-                    res.render('projeto/gerenciamento/tarefas', { tarefa, ins_fora: instalacao, equipe: true })
-                })
-            }
+            }).catch((err) => {
+                req.flash('error_msg', 'Nenhum gestor responsável encontrado.')
+                res.redirect('/cliente/consulta')
+            })
         }).catch((err) => {
-            req.flash('error_msg', 'Falha ao encontrar o equipe.')
-            res.redirect('/gerenciamento/equipe/' + req.params.id)
+            req.flash('error_msg', 'Nenhuma empresa encontrada.')
+            res.redirect('/cliente/consulta')
         })
+
     }).catch((err) => {
-        req.flash('error_msg', 'Nehuma tarefa encontrada.')
+        req.flash('error_msg', 'Nenhuma tarefa encontrada.')
         res.redirect('/cliente/consulta')
     })
 })
@@ -8283,8 +8431,8 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
     Empresa.find({ user: id }).lean().then((empresa) => {
         if (naoVazio(empresa)) {
             //console.log('req.body.cliente=>' + req.body.cliente)
-            Atividade.find({ user: id }).lean().then((atividades) => {
-                if (naoVazio(atividades)) {
+            Servico.find({ user: id }).lean().then((servicos) => {
+                if (naoVazio(servicos)) {
                     //console.log('check=>' + req.body.check)
                     if (req.body.check != 'on') {
                         idcliente = '111111111111111111111111'
@@ -8305,7 +8453,7 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
                                         if (q == instalacao.length) {
                                             Pessoa.find({ user: id, 'funges': 'checked' }).sort({ 'nome': 'asc' }).lean().then((gestor) => {
                                                 //console.log('gestor=>' + gestor)
-                                                res.render('projeto/gerenciamento/tarefas', { data, usina, ins_fora, ehSelecao, atividades, cliente: idcliente, instalacao, gestor, empresa })
+                                                res.render('projeto/gerenciamento/tarefas', { data, usina, ins_fora, ehSelecao, servicos, cliente: idcliente, instalacao, gestor, empresa })
                                             }).catch((err) => {
                                                 req.flash('error_msg', 'Falha ao encontrar os gestores.')
                                                 res.redirect('/gerenciamento/agenda')
@@ -8331,7 +8479,7 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
                                             //console.log('id=>' + id)
                                             Pessoa.find({ user: id, 'funges': 'checked' }).sort({ 'nome': 'asc' }).lean().then((gestor) => {
                                                 //console.log('gestor=>' + gestor)
-                                                res.render('projeto/gerenciamento/tarefas', { data, ins_fora, ehSelecao, atividades, cliente: req.body.cliente, instalacao, gestor, empresa })
+                                                res.render('projeto/gerenciamento/tarefas', { data, ins_fora, ehSelecao, servico, cliente: req.body.cliente, instalacao, gestor, empresa })
                                             }).catch((err) => {
                                                 req.flash('error_msg', 'Falha ao encontrar os gestores.')
                                                 res.redirect('/gerenciamento/agenda')
@@ -8352,11 +8500,11 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
                         res.redirect('/gerenciamento/agenda')
                     })
                 } else {
-                    req.flash('error_msg', 'Não existem atividades cadastradas.')
+                    req.flash('error_msg', 'Não existem serviços cadastradas.')
                     res.redirect('/gerenciamento/agenda')
                 }
             }).catch((err) => {
-                req.flash('error_msg', 'Nehuma atividade cadastrada.')
+                req.flash('error_msg', 'Nehuma tipo de serviço cadastrado.')
                 res.redirect('/gerenciamento/agenda')
             })
         } else {
@@ -8575,6 +8723,9 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                             responsavel: req.body.responsavel,
                             empresa: req.body.empresa,
                             seq: seq,
+                            endereco: req.body.endereco,
+                            cidade: req.body.cidade,
+                            uf: req.body.uf,
                             gestor: req.body.gestor,
                             servico: req.body.manutencao,
                             dataini: dataini,
@@ -8594,11 +8745,12 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                         }
                         //console.log('adiciona=>' + JSON.stringify(adiciona))
                         new Tarefas(adiciona).save().then(() => {
-                            //console.log("salvou tarefa")
+                            console.log("salvou tarefa")
                             Tarefas.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((tarefa) => {
                                 emp_tarefa.save().then(() => {
                                     //console.log('novaequipe._id=>' + novaequipe._id)
                                     corpo = {
+                                        user: id,
                                         tarefa: tarefa._id,
                                         equipe: novaequipe._id,
                                         data: dataHoje()
@@ -8606,20 +8758,17 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                                     new AtvTelhado(corpo).save().then(() => {
                                         new AtvAterramento(corpo).save().then(() => {
                                             new AtvInversor(corpo).save().then(() => {
-                                                //console.log('req.body.ins0=>' + req.body.ins0)
-                                                //console.log('req.body.ins1=>' + req.body.ins1)
-                                                //console.log('req.body.ins2=>' + req.body.ins2)
-                                                //console.log('req.body.ins3=>' + req.body.ins3)
-                                                //console.log('req.body.ins4=>' + req.body.ins4)
-                                                //console.log('req.body.ins5=>' + req.body.ins5)
+                                                console.log('salvou atividades')
                                                 Pessoa.find({ $or: [{ nome: req.body.ins0 }, { nome: req.body.ins1 }, { nome: req.body.ins2 }, { nome: req.body.ins3 }, { nome: req.body.ins4 }, { nome: req.body.ins5 }] }).then((pessoas) => {
                                                     pessoas.forEach((p) => {
-                                                        //console.log('p.email=>' + p.email)
+                                                        q++
+                                                        console.log('p.email=>' + p.email)
                                                         email = email + p.email
+                                                        console.log('q=>' + q)
+                                                        console.log('pessoas=>' + pessoas.length)
                                                         if (q == pessoas.length) {
                                                             novaequipe.tarefa = tarefa._id
                                                             novaequipe.save().then(() => {
-                                                                //console.log("salvou atividades")
                                                                 req.flash('success_msg', 'Tarefa gerada com sucesso.')
                                                                 res.redirect('/gerenciamento/tarefas/' + tarefa._id)
                                                             })
@@ -12550,10 +12699,10 @@ router.post('/filtrodash', ehAdmin, (req, res) => {
                     //console.log('sql>' + JSON.stringify(sql))
                     Tarefa.findOne(sql).then((tarefas) => {
                         //console.log('tarefas=>' + tarefas._id)
-                        Atividade.findOne({ _id: tarefas.servico }).then((atividade) => {
+                        Servico.findOne({ _id: tarefas.servico }).then((servico) => {
                             Cliente.findOne({ _id: tarefas.cliente }).then((cliente) => {
                                 Pessoa.findOne({ _id: tarefas.responsavel }).then((pessoa_res) => {
-                                    lista_tarefas.push({ id: tarefas._id, seq: tarefas.seq, liberado: e.liberar, feito: e.feito, nome_cli: cliente.nome, servico: atividade.descricao, nome_res: pessoa_res.nome, id_equipe: e._id, dtini: dataMensagem(e.dtinicio), dtfim: dataMensagem(e.dtfim) })
+                                    lista_tarefas.push({ id: tarefas._id, seq: tarefas.seq, liberado: e.liberar, feito: e.feito, nome_cli: cliente.nome, servico: servico.descricao, nome_res: pessoa_res.nome, id_equipe: e._id, dtini: dataMensagem(e.dtinicio), dtfim: dataMensagem(e.dtfim) })
                                     q++
                                     if (q == equipe.length) {
                                         numtrf = equipe.length
@@ -12598,7 +12747,7 @@ router.post('/filtrodash', ehAdmin, (req, res) => {
                             res.redirect("/")
                         })
                     }).catch((err) => {
-                        req.flash("error_msg", "Ocorreu uma falha interna para encontrar a atividade<s>.")
+                        req.flash("error_msg", "Ocorreu uma falha interna para encontrar a tarefa<s>.")
                         res.redirect("/")
                     })
                 })
@@ -12632,6 +12781,5 @@ router.post('/filtrodash', ehAdmin, (req, res) => {
         res.redirect('/')
     })
 })
-
 
 module.exports = router

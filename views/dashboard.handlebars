@@ -202,8 +202,8 @@
                         {{else}}
                         <div class="row mb-2">
                             <div class="text-start">
-                                <a href='/gerenciamento/atividades' class="contorno-menu"><i
-                                        class='bi bi-file-arrow-up'></i>Atividades</a>
+                                <a href='/gerenciamento/servicos' class="contorno-menu"><i
+                                        class='bi bi-file-arrow-up'></i>Tipo de Serviço</a>
                             </div>
                         </div>
                         {{/if}}
@@ -286,12 +286,12 @@
                 a Vencer
             </a>
             {{/if}}
-            {{#if lista_tarefas}}
+            {{#if crm}}
+            <a href='/gerenciamento/emandamento/lista' class="btn btn-sm btn-primary mb-1"> Serviços em Andamento</a>            
+            {{else}}
             <a href='/gerenciamento/agenda' class="btn btn-sm btn-primary mb-1"> Agenda de Serviços</a>
             <button onclick='manutencao()' class="btn btn-sm btn-primary mb-1" style="max-width: 50px;"
-                title='Adicionar Tarefa'><i class='bi bi-calendar-plus d-flex justify-content-center'></i></button>
-            {{else}}
-            <a href='/gerenciamento/emandamento/lista' class="btn btn-sm btn-primary mb-1"> Serviços em Andamento</a>
+                title='Adicionar Tarefa'><i class='bi bi-calendar-plus d-flex justify-content-center'></i></button>            
             {{/if}}
         </div>
     </div>
@@ -425,11 +425,11 @@
         </div>
         {{else}}
         <form action="/gerenciamento/filtrodash" method="post" class='mb-3'>
-            <div class="row">
+            <div class="row mt-2">
                 <div class="col text-end">
                     <label class='col-form-label col-form-label-sm'>Data:</label>
                 </div>
-                <div class="col-md-2 text-start">
+                <div class="text-start" style="max-width: 150px;">
                     <select name='mes' class='form-select form-select-sm'>
                         {{#if mes}}
                         <option>{{mes}}</option>
@@ -449,7 +449,7 @@
                         <option>Dezembro</option>
                     </select>
                 </div>
-                <div class="col-md-1 text-start">
+                <div class="col text-start">
                     <input type="number" name='ano' class='form-control form-control-sm' value='{{ano}}'>
                 </div>
                 <div class="col text-end">
@@ -500,9 +500,9 @@
                     </div>
                 </div>
                 <input type='hidden' id='ordem' name='ordem' value="{{ordem}}">
-                <div class="col d-flex align-items-center">
-                    <button type="submit" class="btn btn-sm btn-success"><i
-                            class='bi bi-check d-flex align-items-center'></i></button>
+                <div class="col">
+                    <button type="submit" class="btn"><i
+                            class='bi bi-search botao-filtrar d-flex align-items-center'></i></button>
                 </div>
             </div>
         </form>
@@ -676,7 +676,7 @@
         html = htmliniform + htmlabresel + htmloption + htmlfechsel + htmlcliente + htmlmeio + htmlsubmit + htmlfimform
         if (clinome.length > 0) {
             Swal.fire({
-                title: '<strong style="font-size: 25px">Adicionar Nova Atividade</strong>' + '\n' +
+                title: '<strong style="font-size: 25px">Adicionar Nova Tarefa</strong>' + '\n' +
                     '<label style="font-size: 15px">Selecione o cliente para a nova instalação, manutenção ou tarefa.</label>',
                 width: 800,
                 icon: 'success',

@@ -48,7 +48,7 @@ require('./model/Posvenda')
 
 const Usuario = mongoose.model('usuario')
 const Tarefa = mongoose.model('tarefas')
-const Atividade = mongoose.model('atividade')
+const Servico = mongoose.model('servico')
 const Proposta = mongoose.model('proposta')
 const Cliente = mongoose.model('cliente')
 const Pessoa = mongoose.model('pessoa')
@@ -166,7 +166,7 @@ app.get('/menu', ehAdmin, (req, res) => {
     var data2 = 0
     var days = 0
     var dif = 0
-    var ano = hoje.substring(0,4)
+    var ano = hoje.substring(0, 4)
     var nome_lista
 
     var numprj = 0
@@ -293,7 +293,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                         // //console.log('compra.feitopedido=>'+ compra.feitopedido)
                                                         // //console.log('e.assinado=>'+ e.assinado)
                                                         // //console.log('vistoria.feito=>'+ vistoria.feito)
-                                                        
+
                                                         if (e.ganho == true) {
                                                             if (e.encerrado == true) {
                                                                 status = 'Encerrado'
@@ -392,7 +392,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                                 qtdbaixado++
                                                             }
                                                         }
-                                                        
+
                                                         // //console.log('e.ganho=>'+e.ganho)
                                                         // //console.log('e.baixada=>'+e.baixada)
                                                         // //console.log('dtvalidade=>'+dtvalidade)
@@ -441,7 +441,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                                 }
                                                             }
                                                         }
-                                                        
+
 
                                                         q++
                                                         //console.log('q=>'+q)
@@ -735,29 +735,29 @@ app.get('/menu', ehAdmin, (req, res) => {
             var ordem = -1
             var numtrf = 0
             Empresa.find({ user: id }).lean().then((todas_empresas) => {
-                Tarefa.find({ user: id }).sort({ buscadataini: ordem }).then((tarefas) => {
+                Tarefa.find({ user: id }).sort({ buscadataini: ordem, parado: -1, liberar: -1 }).then((tarefas) => {
                     if (naoVazio(tarefas)) {
                         tarefas.forEach((e) => {
-                            Atividade.findOne({ _id: e.servico }).then((atividade) => {
+                            Servico.findOne({ _id: e.servico }).then((servico) => {
                                 Equipe.findOne({ tarefa: e._id }).then((equipe) => {
-                                     if (equipe.feito == false && equipe.parado == false && equipe.liberar == false){
-                                         qtdagua++
-                                     }else{
-                                         if (equipe.feito == false && equipe.parado == false && equipe.liberar == true) {
-                                             qtdexec++
-                                         }else{
-                                             if (equipe.feito == false && equipe.parado == true && equipe.liberar == true) {
-                                                 qtdpara++
-                                             }else{
-                                                 if (equipe.feito == true && equipe.parado == false && equipe.liberar == true) {
-                                                     qtdreal++
-                                                 }
-                                             }
-                                         }
-                                     }
+                                    if (equipe.feito == false && equipe.parado == false && equipe.liberar == false) {
+                                        qtdagua++
+                                    } else {
+                                        if (equipe.feito == false && equipe.parado == false && equipe.liberar == true) {
+                                            qtdexec++
+                                        } else {
+                                            if (equipe.feito == false && equipe.parado == true && equipe.liberar == true) {
+                                                qtdpara++
+                                            } else {
+                                                if (equipe.feito == true && equipe.parado == false && equipe.liberar == true) {
+                                                    qtdreal++
+                                                }
+                                            }
+                                        }
+                                    }
                                     Cliente.findOne({ _id: e.cliente }).then((cliente) => {
                                         Pessoa.findOne({ _id: e.responsavel }).then((pessoa_res) => {
-                                            lista_tarefas.push({ id: e._id, seq: e.seq, liberado: equipe.liberar, feito: equipe.feito, nome_cli: cliente.nome, servico: atividade.descricao, nome_res: pessoa_res.nome, id_equipe: equipe._id, dtini: dataMensagem(equipe.dtinicio), dtfim: dataMensagem(equipe.dtfim) })
+                                            lista_tarefas.push({ id: e._id, seq: e.seq, liberado: equipe.liberar, feito: equipe.feito, nome_cli: cliente.nome, servico: servico.descricao, nome_res: pessoa_res.nome, id_equipe: equipe._id, dtini: dataMensagem(equipe.dtinicio), dtfim: dataMensagem(equipe.dtfim) })
                                             q++
                                             if (q == tarefas.length) {
                                                 numtrf = tarefas.length
@@ -803,13 +803,18 @@ app.get('/menu', ehAdmin, (req, res) => {
                         if (typeof pessoa == 'undefined') {
                             esta_pessoa = '111111111111111111111111'
                         }
-                        Pessoa.findOne({ _id: pessoa }).lean().then((nome_pessoa) => {
-                            if (naoVazio(nome_pessoa)) {
-                                nome_lista = nome_pessoa.nome
-                            } else {
-                                nome_lista = nome
-                            }
-                            res.render('dashboard', { ano, crm: false, id: _id, owner: owner, saudacao, nome_lista, asc, desc, ordem, todas_empresas })
+                        Cliente.find({ user: id }).lean().then((todos_clientes) => {
+                            Pessoa.findOne({ _id: pessoa }).lean().then((nome_pessoa) => {
+                                if (naoVazio(nome_pessoa)) {
+                                    nome_lista = nome_pessoa.nome
+                                } else {
+                                    nome_lista = nome
+                                }
+                                res.render('dashboard', { ano, crm: false, id: _id, owner: owner, saudacao, nome_lista, asc, desc, ordem, todas_empresas, todos_clientes })
+                            })
+                        }).catch((err) => {
+                            req.flash("error_msg", "Ocorreu uma falha interna para encontrar os clientes<s>.")
+                            res.redirect("/")
                         })
                     }
                 }).catch((err) => {
