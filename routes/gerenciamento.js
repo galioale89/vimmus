@@ -5879,8 +5879,9 @@ router.post('/salvarImagem', ehAdmin, upload.array('files', 10), (req, res) => {
 
     var arquivos = req.files
     var imagem
-    console.log('arquivos=>' + arquivos)
-    console.log('req.body.caminho=>' + req.body.caminho)
+    // console.log('arquivos=>' + arquivos)
+    // console.log('req.body.caminho=>' + req.body.caminho)
+    var ativo = false
 
     Proposta.findOne({ _id: req.body.id }).then((proposta) => {
         if (naoVazio(proposta)) {
@@ -5894,7 +5895,7 @@ router.post('/salvarImagem', ehAdmin, upload.array('files', 10), (req, res) => {
                     console.log('imagem=>' + JSON.stringify(imagem))
                     console.log("req.body.id=>" + req.body.id)
                     if (req.body.caminho == 'aterramento') {
-                        AtvAterramento.findOneAndUpdate({ proposta: req.body.id }, { $push: { caminhoFoto: imagem } }).then((e) => {
+                        AtvAterramento.findOneAndUpdate({ proposta: req.body.id }, { aprova: ativo, $push: { caminhoFoto: imagem } }).then((e) => {
                             req.flash('success_msg', 'Foto(s) do aterramento salva(s) com sucesso.')
                         })
                     } else {
@@ -5937,6 +5938,27 @@ router.post('/salvarImagem', ehAdmin, upload.array('files', 10), (req, res) => {
                             }
                         }
                     }
+                })
+            }
+            console.log('req.body.check=>' + req.body.check)
+            if (req.body.check == 'on') {
+                ativo = true
+            } else {
+                ativo = false
+            }
+            if (req.body.caminho == 'aterramento') {
+                AtvAterramento.findOneAndUpdate({ proposta: req.body.id }, { aprova: ativo }).then((e) => {
+                    req.flash('success_msg', 'Imagem(ns) do aterramento aprovadas.')
+                })
+            }
+            if (req.body.caminho == 'inversor') {
+                AtvInversor.findOneAndUpdate({ proposta: req.body.id }, { aprova: ativo }).then((e) => {
+                    req.flash('success_msg', 'Imagem(ns) do aterramento aprovadas.')
+                })
+            }
+            if (req.body.caminho == 'telhado') {
+                AtvTelhado.findOneAndUpdate({ proposta: req.body.id }, { aprova: ativo }).then((e) => {
+                    req.flash('success_msg', 'Imagem(ns) do aterramento aprovadas.')
                 })
             }
             if (naoVazio(req.body.aceite)) {
@@ -5990,7 +6012,7 @@ router.get('/mostrarGaleria/:id', ehAdmin, (req, res) => {
                                                 lista_imagens.push({ seq: 'Foto' + q, imagem: e.desc, atv: 'inversor', id: params[0] })
                                                 q++
                                             })
-                                            res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Inversor', aceite: 'ativo' })
+                                            res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Inversor e String Box', aceite: 'ativo' })
                                         }).catch(() => {
                                             req.flash('error_msg', 'Falha ao encontrar as imagens do inversor.')
                                             res.redirect('/gerenciamento/aceite/' + params[0])
@@ -6003,7 +6025,7 @@ router.get('/mostrarGaleria/:id', ehAdmin, (req, res) => {
                                                     lista_imagens.push({ seq: 'Foto' + q, imagem: e.desc, atv: 'telhado', id: params[0] })
                                                     q++
                                                 })
-                                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Telhado', aceite: 'ativo' })
+                                                res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Estruturas e Módulos', aceite: 'ativo' })
                                             }).catch(() => {
                                                 req.flash('error_msg', 'Falha ao encontrar as imagens do tellhado.')
                                                 res.redirect('/gerenciamento/aceite/' + params[0])
