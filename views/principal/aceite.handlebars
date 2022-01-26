@@ -84,16 +84,10 @@
         <div class="row mt-2">
             <label class='col-form-label fw-bold'>Fotos</label>
             <div class="row">
-                {{!-- <div class="col">
-                    <div class="row" style="height: 380px;">
-                        <object data="/gerenciamento/mostrarAceite/{{proposta._id}}" type="application/pdf">
-                            <p>Seu navegador não tem um plugin pra PDF</p>
-                        </object>
-                    </div>
-                </div> --}}
-                <form action="/gerenciamento/caminhoAte" method="post" enctype="multipart/form-data">
+                <form action="/gerenciamento/salvarImagem" method="post" enctype="multipart/form-data">
                     <div class='row'>
                         <input type='hidden' name='id' value='{{proposta._id}}'>
+                        <input type='hidden' name='caminho' value='aterramento'>
                         <input type='hidden' name='aceite' value='true'>
                         <div class='col-md-3 text-end'>
                             <label class='col-form-label fw-bold'>Aterramento:</label>
@@ -101,11 +95,11 @@
                         <div class='col-md-9'>
                             <div class="row">
                                 <div class="col">
-                                    <input type='file' multiple name='fileate' class='form-control'>
+                                    <input type='file' multiple name='files' class='form-control'>
                                 </div>
                                 {{#if atvate.caminhoFoto}}
                                 <div class="col-md-1">
-                                    <a href='/gerenciamento/mostrarAte/{{proposta._id}}' class='btn  btn-primary'><i
+                                    <a href='/gerenciamento/mostrarGaleria/{{proposta._id}}galeria-aterramento' class='btn  btn-primary'><i
                                             class='bi bi-eye'></i></a>
                                 </div>
                                 {{/if}}
@@ -125,9 +119,10 @@
                         </div>
                     </div>
                 </form>
-                <form action="/gerenciamento/caminhoInv" class='mt-4' method="post" enctype="multipart/form-data">
+                <form action="/gerenciamento/salvarImagem" class='mt-4' method="post" enctype="multipart/form-data">
                     <div class='row'>
                         <input type='hidden' name='id' value='{{proposta._id}}'>
+                        <input type='hidden' name='caminho' value='inversor'>
                         <input type='hidden' name='aceite' value='true'>
                         <div class="col-md-3 text-end">
                             <label class='col-form-label fw-bold'>Inversor e String Box:</label>
@@ -135,11 +130,11 @@
                         <div class="col-md-9">
                             <div class="row">
                                 <div class="col">
-                                    <input type='file' multiple name='fileinv' class='form-control'>
+                                    <input type='file' multiple name='files' class='form-control'>
                                 </div>
                                 {{#if atvinv.caminhoFoto}}
                                 <div class="col-md-1">
-                                    <a href='/gerenciamento/mostrarInv/{{proposta._id}}' class='btn  btn-primary'><i
+                                    <a href='/gerenciamento/mostrarGaleria/{{proposta._id}}galeria-inversor' class='btn  btn-primary'><i
                                             class='bi bi-eye'></i></a>
                                 </div>
                                 {{/if}}
@@ -158,20 +153,22 @@
                         </div>
                     </div>
                 </form>
-                <form action="/gerenciamento/caminhoMod" class='mt-4' method="post" enctype="multipart/form-data">
+                <form action="/gerenciamento/salvarImagem" class='mt-4' method="post" enctype="multipart/form-data">
                     <div class="row">
                         <input type='hidden' name='id' value='{{proposta._id}}'>
+                        <input type='hidden' name='caminho' value='telhado'>
+                        <input type='hidden' name='aceite' value='true'>
                         <div class="col-md-3 text-end">
                             <label class='col-form-label fw-bold'>Estruturas e Módulos:</label>
                         </div>
                         <div class="col-md-9">
                             <div class="row">
                                 <div class="col">
-                                    <input type='file' multiple name='filemod' class='form-control'>
+                                    <input type='file' multiple name='files' class='form-control'>
                                 </div>
                                 {{#if atvtel.caminhoFoto}}
                                 <div class="col-md-1">
-                                    <a href='/gerenciamento/mostrarMod/{{proposta._id}}' class='btn  btn-primary'><i
+                                    <a href='/gerenciamento/mostrarGaleria/{{proposta._id}}galeria-telhado' class='btn  btn-primary'><i
                                             class='bi bi-eye'></i></a>
                                 </div>
                                 {{/if}}

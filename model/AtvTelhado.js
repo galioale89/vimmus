@@ -29,10 +29,12 @@ const AtvTelhado = new Schema({
         type: String,
         require: false
     },    
-    caminhoFoto:{
-        type: Array,
-        require: false,
-    },    
+    caminhoFoto: [{
+        desc: {
+            type: String,
+            require: false,
+        }
+    }], 
     aprova: {
         type: Boolean,
         require: false,
