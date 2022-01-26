@@ -59,6 +59,9 @@ const Equipe = mongoose.model('equipe')
 const Posvenda = mongoose.model('posvenda')
 const Empresa = mongoose.model('empresa')
 
+const mobileService = require('./apiService/manager')
+mobileService.getTeams(mongoose);
+
 //Chamando função de validação de autenticação do usuário pela função passport
 const passport = require("passport")
 require("./config/auth")(passport)
