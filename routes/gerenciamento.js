@@ -101,7 +101,7 @@ const storage = multer.diskStorage({
         cb(null, file.originalname)
     },
 })
-const upload = multer({ storage: storage})
+const upload = multer({ storage: storage })
 
 // router.use(express.static(path.join(__dirname, 'public')))
 
@@ -405,7 +405,7 @@ router.get('/consulta', ehAdmin, (req, res) => {
                                                                                                         if (e.assinado == true) {
                                                                                                             status = 'Contrato'
                                                                                                         } else {
-                                                                                                            if (vistoria.feito == true) {
+                                                                                                            if (e.feito == true) {
                                                                                                                 status = 'Visita'
                                                                                                             } else {
                                                                                                                 status = 'Preparado para a Visita'
@@ -1262,58 +1262,52 @@ router.get('/realizar/:id', ehAdmin, (req, res) => {
     })
 })
 
-router.get('/atvt/:id', ehAdmin, (req, res) => {
-    var check = false
-    var lista_imagens = []
-    var img = []
-    var q = 1
-
-    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
-        AtvTelhado.findOne({ proposta: req.params.id }).lean().then((atvt) => {
-            img = atvt.caminhoFoto
-            img.forEach((e) => {
-                //console.log(e)
-                lista_imagens.push({ seq: 'Foto' + q, imagem: e.desc, atv: 'telhado', id: req.params.id })
-                q++
-            })
-            if (atvt.aprova == true) {
-                check = 'checked'
-            }
-            res.render('principal/atividades', { atvt, check, lista_imagens, proposta })
-        }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível encontrar a proposta.')
-            res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar a atividade de telhado.')
-        res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
-    })
-})
-
 router.get('/atva/:id', ehAdmin, (req, res) => {
     var check = false
     var img = []
     var lista_imagens = []
-    q = 1
 
     Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
-        AtvAterramento.findOne({ proposta: req.params.id }).lean().then((atva) => {
-            img = atva.caminhoFoto
-            img.forEach((e) => {
-                //console.log(e)
-                lista_imagens.push({ seq: 'Foto' + q, imagem: e.desc, atv: 'aterramento', id: req.params.id })
-                q++
+        console.log('proposta=>' + proposta)
+        if (naoVazio(proposta)) {
+            AtvAterramento.findOne({ proposta: req.params.id }).lean().then((atva) => {
+                img = atva.caminhoFoto
+                img.forEach((e) => {
+                    lista_imagens.push({ imagem: e.desc, atv: 'aterramento', id: req.params.id })
+                })
+                if (atva.aprova == true) {
+                    check = 'checked'
+                }
+                res.render('principal/atividades', { atva, check, lista_imagens, proposta })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar a atividade de aterramento.')
+
+                res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
             })
-            if (atva.aprova == true) {
-                check = 'checked'
-            }
-            res.render('principal/atividades', { atva, check, lista_imagens, proposta })
-        }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível encontrar a proposta.')
-            res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
-        })
+        } else {
+            console.log('req.params.id=>' + req.params.id)
+            Tarefa.findOne({ _id: req.params.id }).lean().then((tarefa) => {
+                AtvAterramento.findOne({ tarefa: req.params.id }).lean().then((atva) => {
+                    img = atva.caminhoFoto
+                    img.forEach((e) => {
+                        lista_imagens.push({ imagem: e.desc, atv: 'aterramento', id: req.params.id })
+                    })
+                    if (atva.aprova == true) {
+                        check = 'checked'
+                    }
+                    res.render('principal/atividades', { atva, check, lista_imagens, tarefa })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi possível encontrar a atividade de aterramento.')
+
+                    res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar a tarefa.')
+                res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
+            })
+        }
     }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar a atividade de aterramento.')
+        req.flash('error_msg', 'Não foi possível encontrar a proposta.')
         res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
     })
 })
@@ -1322,27 +1316,99 @@ router.get('/atvi/:id', ehAdmin, (req, res) => {
     var check = false
     var img = []
     var lista_imagens = []
-    q = 1
 
     Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
-        AtvInversor.findOne({ proposta: req.params.id }).lean().then((atvi) => {
-            img = atvi.caminhoFoto
-            img.forEach((e) => {
-                //console.log(e)
-                lista_imagens.push({ seq: 'Foto' + q, imagem: e.desc, atv: 'inversor', id: req.params.id })
-                q++
+        console.log('proposta=>' + proposta)
+        if (naoVazio(proposta)) {
+            AtvInversor.findOne({ proposta: req.params.id }).lean().then((atvi) => {
+                img = atvi.caminhoFoto
+                img.forEach((e) => {
+                    lista_imagens.push({ imagem: e.desc, atv: 'inversor', id: req.params.id })
+                })
+                if (atvi.aprova == true) {
+                    check = 'checked'
+                }
+                res.render('principal/atividades', { atvi, check, lista_imagens, proposta })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar a atividade de instalação do inversor.')
+
+                res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
             })
-            if (atvi.aprova == true) {
-                check = 'checked'
-            }
-            res.render('principal/atividades', { atvi, check, lista_imagens, proposta })
-        }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível encontrar a proposta.')
-            res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
-        })
+        } else {
+            console.log('req.params.id=>' + req.params.id)
+            Tarefa.findOne({ _id: req.params.id }).lean().then((tarefa) => {
+                AtvInversor.findOne({ tarefa: req.params.id }).lean().then((atvi) => {
+                    img = atvi.caminhoFoto
+                    img.forEach((e) => {
+                        lista_imagens.push({ imagem: e.desc, atv: 'inversor', id: req.params.id })
+                    })
+                    if (atvi.aprova == true) {
+                        check = 'checked'
+                    }
+                    res.render('principal/atividades', { atvi, check, lista_imagens, tarefa })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi possível encontrar a atividade de instalação do inversor.')
+
+                    res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar a tarefa.')
+                res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
+            })
+        }
     }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar a atividade de inversor.')
-        res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
+        req.flash('error_msg', 'Não foi possível encontrar a proposta.')
+        res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
+    })
+})
+
+router.get('/atvt/:id', ehAdmin, (req, res) => {
+    var check = false
+    var img = []
+    var lista_imagens = []
+
+    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
+        console.log('proposta=>' + proposta)
+        if (naoVazio(proposta)) {
+            AtvTelhado.findOne({ proposta: req.params.id }).lean().then((atvt) => {
+                img = atvt.caminhoFoto
+                img.forEach((e) => {
+                    lista_imagens.push({ imagem: e.desc, atv: 'telhado', id: req.params.id })
+                })
+                if (atvt.aprova == true) {
+                    check = 'checked'
+                }
+                res.render('principal/atividades', { atvt, check, lista_imagens, proposta })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar a atividade de instalação das estrurturas e módulos no telhado.')
+
+                res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
+            })
+        } else {
+            console.log('req.params.id=>' + req.params.id)
+            Tarefa.findOne({ _id: req.params.id }).lean().then((tarefa) => {
+                AtvTelhado.findOne({ tarefa: req.params.id }).lean().then((atvt) => {
+                    img = atvt.caminhoFoto
+                    img.forEach((e) => {
+                        lista_imagens.push({ imagem: e.desc, atv: 'telhado', id: req.params.id })
+                    })
+                    if (atvt.aprova == true) {
+                        check = 'checked'
+                    }
+                    res.render('principal/atividades', { atvt, check, lista_imagens, tarefa })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi possível encontrar a atividade de instalação das estrurturas e módulos no telhado.')
+
+                    res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar a tarefa.')
+                res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
+            })
+        }
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar a proposta.')
+        res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
     })
 })
 
@@ -2403,7 +2469,7 @@ router.get('/aceite/:id', ehAdmin, (req, res) => {
                                                         imgtel = imgtel + e.desc + ' | '
                                                     })
                                                 }
-                                                res.render('principal/aceite', { imgate, imginv, imgtel ,cliente_proposta, documento, proposta, compra, vistoria, lista_equipe, posvenda, checkAte, checkInv, checkMod, atvate, atvinv, atvtel })
+                                                res.render('principal/aceite', { imgate, imginv, imgtel, cliente_proposta, documento, proposta, compra, vistoria, lista_equipe, posvenda, checkAte, checkInv, checkMod, atvate, atvinv, atvtel })
                                             }).catch((err) => {
                                                 req.flash('error_msg', 'Não foi possível encontrar a atividade do telhado.')
                                                 res.redirect('/menu')
@@ -4060,7 +4126,7 @@ router.get('/tarefas/:id', ehAdmin, (req, res) => {
 
                                         if (naoVazio(dia) == false) {
                                             dia = tarefa.dataini
-                                            dia = dia.substring(9, 11)
+                                            dia = dia.substring(8, 11)
                                         }
 
                                         if (naoVazio(equipe)) {
@@ -5855,12 +5921,12 @@ router.post('/aceite', upload.single('aceite'), ehAdmin, (req, res) => {
         if (file != '') {
             documento.aceite = file
         }
-        AtvAterramento.findOne({proposta: req.body.id}).then((atva)=>{
-            AtvTelhado.findOne({proposta: req.body.id}).then((atvt)=>{
-                AtvInversor.findOne({proposta: req.body.id}).then((atvi)=>{
-                    if (atva.aprova == true && atvt.aprova == true && atvi.aprova == true ){
+        AtvAterramento.findOne({ proposta: req.body.id }).then((atva) => {
+            AtvTelhado.findOne({ proposta: req.body.id }).then((atvt) => {
+                AtvInversor.findOne({ proposta: req.body.id }).then((atvi) => {
+                    if (atva.aprova == true && atvt.aprova == true && atvi.aprova == true) {
                         documento.feitoaceite = true
-                    }else{
+                    } else {
                         documento.feitoaceite = false
                     }
                     documento.dtaceite = String(req.body.dtaceite)
@@ -5870,10 +5936,10 @@ router.post('/aceite', upload.single('aceite'), ehAdmin, (req, res) => {
                     }).catch(() => {
                         req.flash('error_msg', 'Falha ao encontrar o documento.')
                         res.redirect('/gerenciamento/aceite/' + req.body.id)
-                    })                    
+                    })
                 })
             })
-        })        
+        })
     }).catch(() => {
         req.flash('error_msg', 'Falha ao encontrar o documento.')
         res.redirect('/gerenciamento/aceite/' + req.body.id)
@@ -5909,111 +5975,146 @@ router.post('/salvarImagem', ehAdmin, upload.array('files', 10), (req, res) => {
 
     var arquivos = req.files
     var imagem
-    // console.log('arquivos=>' + arquivos)
-    // console.log('req.body.caminho=>' + req.body.caminho)
     var ativo = false
 
-    Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-        if (naoVazio(proposta)) {
-            if (naoVazio(arquivos)) {
-                arquivos.forEach((e) => {
-                    if (req.body.caminho == 'sombreamento' || req.body.caminho == 'area' || req.body.caminho == 'insi' || req.body.caminho == 'insa') {
-                        imagem = { "desc": e.originalname, "data": req.body.data }
-                    } else {
-                        imagem = { "desc": e.originalname }
-                    }
-                    console.log('imagem=>' + JSON.stringify(imagem))
-                    console.log("req.body.id=>" + req.body.id)
-                    if (req.body.caminho == 'aterramento') {
-                        AtvAterramento.findOneAndUpdate({ proposta: req.body.id }, { aprova: ativo, $push: { caminhoFoto: imagem } }).then((e) => {
-                            req.flash('success_msg', 'Foto(s) do aterramento salva(s) com sucesso.')
+    var sql = []
+    console.log("tipo=>" + req.body.tipo)
+    if (req.body.tipo == 'proposta') {
+        sql = { proposta: req.body.id }
+    } else {
+        sql = { tarefa: req.body.id }
+    }
+
+    if (naoVazio(arquivos)) {
+        arquivos.forEach((e) => {
+            if (req.body.caminho == 'sombreamento' || req.body.caminho == 'area' || req.body.caminho == 'insi' || req.body.caminho == 'insa') {
+                imagem = { "desc": e.originalname, "data": req.body.data }
+            } else {
+                imagem = { "desc": e.originalname }
+            }
+            console.log('imagem=>' + JSON.stringify(imagem))
+            console.log("req.body.id=>" + req.body.id)
+            if (req.body.caminho == 'aterramento') {
+                console.log('sql=>' + JSON.stringify(sql))
+                AtvAterramento.findOneAndUpdate(sql, { $push: { caminhoFoto: imagem } }).then((e) => {
+                    req.flash('success_msg', 'Foto(s) do aterramento salva(s) com sucesso.')
+                })
+            } else {
+                if (req.body.caminho == 'inversor') {
+                    AtvInversor.findOneAndUpdate(sql, { $push: { caminhoFoto: imagem } }).then((e) => {
+                        req.flash('success_msg', 'Foto(s) do inversor salva(s) com sucesso.')
+                    })
+                } else {
+                    if (req.body.caminho == 'telhado') {
+                        AtvTelhado.findOneAndUpdate(sql, { $push: { caminhoFoto: imagem } }).then((e) => {
+                            req.flash('success_msg', 'Foto(s) das estruturar e módulos salva(s) com sucesso.')
                         })
                     } else {
-                        if (req.body.caminho == 'inversor') {
-                            AtvInversor.findOneAndUpdate({ proposta: req.body.id }, { $push: { caminhoFoto: imagem } }).then((e) => {
-                                req.flash('success_msg', 'Foto(s) do inversor salva(s) com sucesso.')
+                        if (req.body.caminho == 'area') {
+                            Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $push: { caminhoArea: imagem } }).then((e) => {
+                                req.flash('success_msg', 'Foto(s) da area de instalação salva(s) com sucesso.')
                             })
+
                         } else {
-                            if (req.body.caminho == 'telhado') {
-                                AtvTelhado.findOneAndUpdate({ proposta: req.body.id }, { $push: { caminhoFoto: imagem } }).then((e) => {
-                                    req.flash('success_msg', 'Foto(s) das estruturar e módulos salva(s) com sucesso.')
+                            if (req.body.caminho == 'sombreamento') {
+                                Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $push: { caminhoSomb: imagem } }).then((e) => {
+                                    req.flash('success_msg', 'Foto(s) do sombreamento salvo(s) com sucesso.')
                                 })
                             } else {
-                                if (req.body.caminho == 'area') {
-                                    Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $push: { caminhoArea: imagem } }).then((e) => {
-                                        req.flash('success_msg', 'Foto(s) da area de instalação salva(s) com sucesso.')
+                                if (req.body.caminho == 'insi') {
+                                    Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $push: { caminhoInsi: imagem } }).then((e) => {
+                                        req.flash('success_msg', 'Foto(s) do local do inveror salvo(s) com sucesso.')
                                     })
-
                                 } else {
-                                    if (req.body.caminho == 'sombreamento') {
-                                        Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $push: { caminhoSomb: imagem } }).then((e) => {
-                                            req.flash('success_msg', 'Foto(s) do sombreamento salvo(s) com sucesso.')
+                                    if (req.body.caminho == 'insa') {
+                                        Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $push: { caminhoInsa: imagem } }).then((e) => {
+                                            req.flash('success_msg', 'Foto(s) do local do aterramento salvo(s) com sucesso.')
                                         })
-                                    } else {
-                                        if (req.body.caminho == 'insi') {
-                                            Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $push: { caminhoInsi: imagem } }).then((e) => {
-                                                req.flash('success_msg', 'Foto(s) do local do inveror salvo(s) com sucesso.')
-                                            })
 
-                                        } else {
-                                            if (req.body.caminho == 'insa') {
-                                                Vistoria.findOneAndUpdate({ proposta: req.body.id }, { $push: { caminhoInsa: imagem } }).then((e) => {
-                                                    req.flash('success_msg', 'Foto(s) do local do aterramento salvo(s) com sucesso.')
-                                                })
-
-                                            }
-                                        }
                                     }
                                 }
                             }
                         }
                     }
-                })
-            }
-            console.log('req.body.check=>' + req.body.check)
-            if (req.body.check == 'on') {
-                ativo = true
-            } else {
-                ativo = false
-            }
-            if (req.body.caminho == 'aterramento') {
-                AtvAterramento.findOneAndUpdate({ proposta: req.body.id }, { aprova: ativo }).then((e) => {
-                    req.flash('success_msg', 'Imagem(ns) do aterramento aprovadas.')
-                })
-            }
-            if (req.body.caminho == 'inversor') {
-                AtvInversor.findOneAndUpdate({ proposta: req.body.id }, { aprova: ativo }).then((e) => {
-                    req.flash('success_msg', 'Imagem(ns) do aterramento aprovadas.')
-                })
-            }
-            if (req.body.caminho == 'telhado') {
-                AtvTelhado.findOneAndUpdate({ proposta: req.body.id }, { aprova: ativo }).then((e) => {
-                    req.flash('success_msg', 'Imagem(ns) do aterramento aprovadas.')
-                })
-            }
-
-            if (naoVazio(req.body.aceite)) {
-                res.redirect('/gerenciamento/aceite/' + req.body.id)
-            } else {
-                if (naoVazio(req.body.idi)) {
-                    res.redirect('/gerenciamento/atvi/' + req.body.id)
-                } else {
-                    if (naoVazio(req.body.ida)) {
-                        res.redirect('/gerenciamento/atva/' + req.body.id)
-                    } else {
-                        if (naoVazio(req.body.idt)) {
-                            res.redirect('/gerenciamento/atvt/' + req.body.id)
-                        } else {
-                            res.redirect('/gerenciamento/visita/' + req.body.id)
-                        }
-                    }
                 }
             }
-        }
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao encontrar a proposta.')
-        res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
-    })
+        })
+    }
+    console.log('req.body.check=>' + req.body.check)
+    if (req.body.check == 'on') {
+        ativo = true
+    } else {
+        ativo = false
+    }
+
+    if (req.body.caminho == 'aterramento') {
+        AtvAterramento.findOneAndUpdate(sql, { aprova: ativo }).then((e) => {
+            req.flash('success_msg', 'Imagem(ns) do aterramento aprovadas.')
+        })
+    }
+    if (req.body.caminho == 'inversor') {
+        AtvInversor.findOneAndUpdate(sql, { aprova: ativo }).then((e) => {
+            req.flash('success_msg', 'Imagem(ns) do aterramento aprovadas.')
+        })
+    }
+    if (req.body.caminho == 'telhado') {
+        AtvTelhado.findOneAndUpdate(sql, { aprova: ativo }).then((e) => {
+            req.flash('success_msg', 'Imagem(ns) do aterramento aprovadas.')
+        })
+    }
+        
+            Vistoria.findOne({proposta: req.body.id}).then((vistoria) => {
+                if (naoVazio(vistoria)) {
+                        if (naoVazio(vistoria.caminhoSomb) && (naoVazio(vistoria.caminhoArea)) && (naoVazio(vistoria.caminhoInsa)) && (naoVazio(vistoria.caminhoInsi))) {
+                            vistoria.feito = true
+                        } else {
+                            vistoria.feito = false
+                        }
+                        vistoria.dtvisita = dataHoje()
+                        vistoria.save().then(() => {
+                            req.flash('success_msg', 'Documento salvo com sucesso.')
+                            if (naoVazio(req.body.aceite)) {
+                                res.redirect('/gerenciamento/aceite/' + req.body.id)
+                            } else {
+                                if (naoVazio(req.body.idi)) {
+                                    res.redirect('/gerenciamento/atvi/' + req.body.id)
+                                } else {
+                                    if (naoVazio(req.body.ida)) {
+                                        res.redirect('/gerenciamento/atva/' + req.body.id)
+                                    } else {
+                                        if (naoVazio(req.body.idt)) {
+                                            res.redirect('/gerenciamento/atvt/' + req.body.id)
+                                        } else {
+                                            res.redirect('/gerenciamento/visita/' + req.body.id)
+                                        }
+                                    }
+                                }
+                            }
+                        }).catch(() => {
+                            req.flash('error_msg', 'Falha ao encontrar o documento.')
+                            res.redirect('/gerenciamento/aceite/' + req.body.id)
+                        })
+                    } else {
+                        if (naoVazio(req.body.aceite)) {
+                            res.redirect('/gerenciamento/aceite/' + req.body.id)
+                        } else {
+                            if (naoVazio(req.body.idi)) {
+                                res.redirect('/gerenciamento/atvi/' + req.body.id)
+                            } else {
+                                if (naoVazio(req.body.ida)) {
+                                    res.redirect('/gerenciamento/atva/' + req.body.id)
+                                } else {
+                                    if (naoVazio(req.body.idt)) {
+                                        res.redirect('/gerenciamento/atvt/' + req.body.id)
+                                    } else {
+                                        res.redirect('/gerenciamento/visita/' + req.body.id)
+                                    }
+                                }
+                            }
+                        }
+                    }
+            })
+
 })
 
 router.get('/mostrarGaleria/:id', ehAdmin, (req, res) => {
@@ -6153,9 +6254,18 @@ router.get('/deletaImagem/:msg', ehAdmin, (req, res) => {
     console.log(params[1])
     console.log(params[2])
     console.log(params[3])
+
+    var sql = []
+    console.log("tipo=>" + req.body.tipo)
+    if (req.body.tipo == 'proposta') {
+        sql = { proposta: params[1] }
+    } else {
+        sql = { tarefa: params[1] }
+    }
+
     console.log('params[3]=>' + params[3])
     if (params[2] == 'aterramento') {
-        AtvAterramento.findOneAndUpdate({ proposta: params[1] }, { $pull: { 'caminhoFoto': { 'desc': params[0] } } }).then((e) => {
+        AtvAterramento.findOneAndUpdate(sql, { $pull: { 'caminhoFoto': { 'desc': params[0] } } }).then((e) => {
             req.flash('aviso_msg', 'Imagem removida com sucesso')
             if (naoVazio(params[3])) {
                 res.redirect('/gerenciamento/atva/' + params[1])
@@ -6169,7 +6279,7 @@ router.get('/deletaImagem/:msg', ehAdmin, (req, res) => {
     } else {
         if (params[2] == 'inversor') {
 
-            AtvInversor.findOneAndUpdate({ proposta: params[1] }, { $pull: { 'caminhoFoto': { 'desc': params[0] } } }).then((e) => {
+            AtvInversor.findOneAndUpdate(sql, { $pull: { 'caminhoFoto': { 'desc': params[0] } } }).then((e) => {
                 req.flash('aviso_msg', 'Imagem removida com sucesso')
                 if (naoVazio(params[3])) {
                     res.redirect('/gerenciamento/atvi/' + params[1])
@@ -6182,7 +6292,7 @@ router.get('/deletaImagem/:msg', ehAdmin, (req, res) => {
             })
         } else {
             if (params[2] == 'telhado') {
-                AtvTelhado.findOneAndUpdate({ proposta: params[1] }, { $pull: { 'caminhoFoto': { 'desc': params[0] } } }).then((e) => {
+                AtvTelhado.findOneAndUpdate(sql, { $pull: { 'caminhoFoto': { 'desc': params[0] } } }).then((e) => {
                     req.flash('aviso_msg', 'Imagem removida com sucesso')
                     if (naoVazio(params[3])) {
                         res.redirect('/gerenciamento/atvt/' + params[1])

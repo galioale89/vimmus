@@ -82,6 +82,10 @@ const Vistoria = new Schema({
         type: Boolean,
         require: false
     },
+    dtvisita: {
+        type: String,
+        require: false
+    },    
 })
 
 Mongoose.model('vistoria', Vistoria)

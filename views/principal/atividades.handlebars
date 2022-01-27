@@ -4,8 +4,9 @@
     <h1>Aterramento</h1>
     <form action="/gerenciamento/salvarImagem" method="post" enctype="multipart/form-data">
         <input type="hidden" name="ida" value='{{atva._id}}'>
-        <input type="hidden" name="id" value='{{proposta._id}}'>
+        <input type="hidden" name="id" value='{{proposta._id}}{{tarefa._id}}'>
         <input type='hidden' name='caminho' value='aterramento'>
+        <input type='hidden' name='tipo' value='{{#if proposta}}proposta{{else}}tarefa{{/if}}'>
         <div class="row">
             <div class="col-md-9">
                 <input type='file' multiple name='files' class='form-control'>
@@ -22,7 +23,7 @@
                 <button type='submit' class='btn  btn-success'><i class='bi bi-save'></i></button>
             </div>
             <div class="col-md-1">
-                <a href='/gerenciamento/mostraEquipe/{{proposta._id}}' class='btn btn-primary'><i
+                <a href='/gerenciamento/mostraEquipe/{{proposta._id}}{{tarefa._id}}' class='btn btn-primary'><i
                         class='bi bi-arrow-left'></i></a>
             </div>
         </div>
@@ -32,7 +33,7 @@
     <h2>Estruturas e Módulos</h2>
     <form action="/gerenciamento/salvarImagem" method="post" enctype="multipart/form-data">
         <input type="hidden" name="idt" value='{{atvt._id}}'>
-        <input type="hidden" name="id" value='{{proposta._id}}'>
+        <input type="hidden" name="id" value='{{proposta._id}}{{tarefa._id}}'>
         <input type='hidden' name='caminho' value='telhado'>
         <div class="row">
             <div class="col-md-9">
@@ -50,7 +51,7 @@
                 <button type='submit' class='btn  btn-success'><i class='bi bi-save'></i></button>
             </div>
             <div class="col-md-1">
-                <a href='/gerenciamento/mostraEquipe/{{proposta._id}}' class='btn btn-primary'><i
+                <a href='/gerenciamento/mostraEquipe/{{proposta._id}}{{tarefa._id}}' class='btn btn-primary'><i
                         class='bi bi-arrow-left'></i></a>
             </div>
         </div>
@@ -60,7 +61,7 @@
     <h2>Inversor e String Box</h2>
     <form action="/gerenciamento/salvarImagem" method="post" enctype="multipart/form-data">
         <input type="hidden" name="idi" value='{{atvi._id}}'>
-        <input type="hidden" name="id" value='{{proposta._id}}'>
+        <input type="hidden" name="id" value='{{proposta._id}}{{tarefa._id}}'>
         <input type='hidden' name='caminho' value='inversor'>
         <div class="row">
             <div class="col-md-9">
@@ -78,7 +79,7 @@
                 <button type='submit' class='btn  btn-success'><i class='bi bi-save'></i></button>
             </div>
             <div class="col-md-1">
-                <a href='/gerenciamento/mostraEquipe/{{proposta._id}}' class='btn btn-primary'><i
+                <a href='/gerenciamento/mostraEquipe/{{proposta._id}}{{tarefa._id}}' class='btn btn-primary'><i
                         class='bi bi-arrow-left'></i></a>
             </div>
         </div>

@@ -59,9 +59,6 @@ const Equipe = mongoose.model('equipe')
 const Posvenda = mongoose.model('posvenda')
 const Empresa = mongoose.model('empresa')
 
-const mobileService = require('./apiService/manager')
-mobileService.getTeams(mongoose);
-
 //Chamando função de validação de autenticação do usuário pela função passport
 const passport = require("passport")
 require("./config/auth")(passport)
@@ -738,7 +735,7 @@ app.get('/menu', ehAdmin, (req, res) => {
             var ordem = -1
             var numtrf = 0
             Empresa.find({ user: id }).lean().then((todas_empresas) => {
-                Tarefa.find({ user: id }).sort({ buscadataini: ordem, parado: -1, liberar: -1 }).then((tarefas) => {
+                Tarefa.find({ user: id }).sort({ buscadataini: ordem, parado: -1, liberar: -1}).then((tarefas) => {
                     if (naoVazio(tarefas)) {
                         tarefas.forEach((e) => {
                             Servico.findOne({ _id: e.servico }).then((servico) => {
