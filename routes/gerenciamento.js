@@ -1268,7 +1268,7 @@ router.get('/atva/:id', ehAdmin, (req, res) => {
     var lista_imagens = []
 
     Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
-        console.log('proposta=>' + proposta)
+        //console.log('proposta=>' + proposta)
         if (naoVazio(proposta)) {
             AtvAterramento.findOne({ proposta: req.params.id }).lean().then((atva) => {
                 img = atva.caminhoFoto
@@ -1285,7 +1285,7 @@ router.get('/atva/:id', ehAdmin, (req, res) => {
                 res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
             })
         } else {
-            console.log('req.params.id=>' + req.params.id)
+            //console.log('req.params.id=>' + req.params.id)
             Tarefa.findOne({ _id: req.params.id }).lean().then((tarefa) => {
                 AtvAterramento.findOne({ tarefa: req.params.id }).lean().then((atva) => {
                     img = atva.caminhoFoto
@@ -1318,7 +1318,7 @@ router.get('/atvi/:id', ehAdmin, (req, res) => {
     var lista_imagens = []
 
     Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
-        console.log('proposta=>' + proposta)
+        //console.log('proposta=>' + proposta)
         if (naoVazio(proposta)) {
             AtvInversor.findOne({ proposta: req.params.id }).lean().then((atvi) => {
                 img = atvi.caminhoFoto
@@ -1335,7 +1335,7 @@ router.get('/atvi/:id', ehAdmin, (req, res) => {
                 res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
             })
         } else {
-            console.log('req.params.id=>' + req.params.id)
+            //console.log('req.params.id=>' + req.params.id)
             Tarefa.findOne({ _id: req.params.id }).lean().then((tarefa) => {
                 AtvInversor.findOne({ tarefa: req.params.id }).lean().then((atvi) => {
                     img = atvi.caminhoFoto
@@ -1368,7 +1368,7 @@ router.get('/atvt/:id', ehAdmin, (req, res) => {
     var lista_imagens = []
 
     Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
-        console.log('proposta=>' + proposta)
+        //console.log('proposta=>' + proposta)
         if (naoVazio(proposta)) {
             AtvTelhado.findOne({ proposta: req.params.id }).lean().then((atvt) => {
                 img = atvt.caminhoFoto
@@ -1385,7 +1385,7 @@ router.get('/atvt/:id', ehAdmin, (req, res) => {
                 res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
             })
         } else {
-            console.log('req.params.id=>' + req.params.id)
+            //console.log('req.params.id=>' + req.params.id)
             Tarefa.findOne({ _id: req.params.id }).lean().then((tarefa) => {
                 AtvTelhado.findOne({ tarefa: req.params.id }).lean().then((atvt) => {
                     img = atvt.caminhoFoto
@@ -1861,7 +1861,7 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                             // Equipe.find({ 'nome_projeto': { $exists: true }, $and: [{ 'dtinicio': { $ne: '0000-00-00' } }, { 'dtinicio': { $ne: '' } }] }).then((equipe) => {
                             //     if (naoVazio(equipe)) {
                             //equipe.forEach((e) => {
-                            // console.log('e._id=>' + e._id)
+                            // //console.log('e._id=>' + e._id)
                             // dataini = e.dtinibusca
                             // q++
                             // diferenca = e.dtfimbusca - e.dtinibusca
@@ -1893,14 +1893,14 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                         dtini = dataini
                                     }
 
-                                    console.log('nova_data=>'+nova_data)
-                                    console.log('dtini=>'+dtini)
-                                    console.log('dataini=>'+dataini)
-                                    console.log('date=>'+date)
+                                    //console.log('nova_data=>'+nova_data)
+                                    //console.log('dtini=>'+dtini)
+                                    //console.log('dataini=>'+dataini)
+                                    //console.log('date=>'+date)
 
                                     if (nova_data == dtini && dataini >= dtini && parseFloat(date) <= dataini) {
                                         ins_dif = 1
-                                        console.log('entrou')
+                                        //console.log('entrou')
                                         Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((todos_instaladores) => {
                                             todos_instaladores.forEach((ins) => {
                                                 numprj++
@@ -1925,7 +1925,7 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                     //console.log('numprj=>' + numprj)
                                                     //console.log('qe=>' + qe)
                                                     if (numprj == qe) {
-                                                        console.log('É o último!')
+                                                        //console.log('É o último!')
                                                         Equipe.findOne({ _id: proposta.equipe }).then((edit_equipe) => {
 
                                                             //console.log('edit_equipe.ins0=>' + edit_equipe.ins0)
@@ -1960,8 +1960,8 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                                 // }
                                                                 //console.log('instaladores=>' + instaladores)
                                                                 instalacao.forEach((pesins) => {
-                                                                    console.log('instalador_alocado.length=>' + instalador_alocado.length)
-                                                                    console.log('pesins.nome=>' + pesins.nome)
+                                                                    //console.log('instalador_alocado.length=>' + instalador_alocado.length)
+                                                                    //console.log('pesins.nome=>' + pesins.nome)
                                                                     if (instalador_alocado.length == '') {
                                                                         //console.log('não tem instalador alocado')
                                                                         var nome = pesins.nome
@@ -2005,11 +2005,11 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                                         }
                                                                     } else {
                                                                         const encontrou_ins = instalador_alocado.find((user) => user.nome === pesins.nome)
-                                                                        console.log('encontrou recurso alocado=>' + encontrou_ins)
+                                                                        //console.log('encontrou recurso alocado=>' + encontrou_ins)
                                                                         if (typeof encontrou_ins == 'undefined') {
                                                                             var nome = pesins.nome
                                                                             var id = pesins._id
-                                                                            console.log(nome + ' não está alocado.')
+                                                                            //console.log(nome + ' não está alocado.')
                                                                             if (nome == ins0) {
                                                                                 ins_dentro.push({ id, nome, custo: custoins, email })
                                                                             } else {
@@ -2038,7 +2038,7 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                                         } else {
                                                                             var nome = pesins.nome
                                                                             var id = pesins._id
-                                                                            console.log(nome + ' está alocado.')
+                                                                            //console.log(nome + ' está alocado.')
                                                                             if (nome == ins0) {
                                                                                 ins_dentro.push({ id, nome, custo: custoins, email })
                                                                             } else {
@@ -2066,13 +2066,13 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                                     }
                                                                 })
 
-                                                                console.log('ins_dentro_ultimo=>' + ins_dentro)
-                                                                console.log('ins_fora_ultimo=>' + ins_fora)
+                                                                //console.log('ins_dentro_ultimo=>' + ins_dentro)
+                                                                //console.log('ins_fora_ultimo=>' + ins_fora)
                                                                 Equipe.find({ user: id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
                                                                     //Verificando os responsáveis alocados na equipe
                                                                     //Verificando as pessoas em cada equipe
                                                                     Equipe.findOne({ _id: proposta.equipe }).then((nomes) => {
-                                                                        console.log('nomes=>' + nomes._id)
+                                                                        //console.log('nomes=>' + nomes._id)
                                                                         if (nomes != '' && nomes != null && typeof nomes != 'undefined') {
                                                                             for (var x = 0; x < 6; x++) {
                                                                                 if (x == 0) {
@@ -2191,9 +2191,9 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                             // if (validaLivre == 0 && ins_dif == 0 && q == equipe.length) {
                             //     validaLivre = 1
                             Equipe.findOne({ _id: proposta.equipe }).lean().then((equipeins) => {
-                                console.log(equipeins)
+                                //console.log(equipeins)
                                 if (naoVazio(equipeins)) {
-                                    console.log('entrou diferença')
+                                    //console.log('entrou diferença')
                                     Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((instalacao) => {
                                         //console.log('equipeins.ins0=>' + equipeins.ins0)
                                         if (naoVazio(equipeins.ins0)) {
@@ -2215,7 +2215,7 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                             ins5 = equipeins.ins5
                                         }
 
-                                        console.log('ins0=>' + ins0)
+                                        //console.log('ins0=>' + ins0)
 
                                         instalacao.forEach((pesins) => {
 
@@ -2261,8 +2261,8 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                 }
                                             }
                                         })
-                                        console.log('ins_dentro_dif=>' + ins_dentro)
-                                        console.log('ins_fora_dif=>' + ins_fora)
+                                        //console.log('ins_dentro_dif=>' + ins_dentro)
+                                        //console.log('ins_fora_dif=>' + ins_fora)
 
                                         Equipe.find({ user: id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
                                             //Verificando os responsáveis alocados na equipe
@@ -4279,8 +4279,8 @@ router.post('/proposta/', ehAdmin, (req, res) => {
             }
 
             proposta.endereco = req.body.endereco
-            console.log('req.body.cidade=>' + req.body.cidade)
-            console.log('req.body.cidadeh=>' + req.body.cidadeh)
+            //console.log('req.body.cidade=>' + req.body.cidade)
+            //console.log('req.body.cidadeh=>' + req.body.cidadeh)
             if (naoVazio(req.body.cidade)) {
                 proposta.cidade = req.body.cidade
             } else {
@@ -5608,24 +5608,24 @@ router.post("/salvarequipe", ehAdmin, (req, res) => {
             //Adicionar custo por instalador
             custoins = req.body.custo
             email = req.body.email
-            console.log('email=>' + email)
+            //console.log('email=>' + email)
             if (naoVazio(custoins)) {
                 for (i = 0; i < custoins.length; i++) {
                     //console.log('custoins[i]' + custoins[i])
                     custototal = parseFloat(custototal) + parseFloat(custoins[i])
                 }
-                console.log('custototal=>' + custototal)
+                //console.log('custototal=>' + custototal)
                 equipe.custoins = custototal
             }
             if (naoVazio(email)) {
-                console.log('entrou')
+                //console.log('entrou')
                 arroba = String(email).split('@')
-                console.log('arroba=>' + arroba)
+                //console.log('arroba=>' + arroba)
                 if (arroba.length > 2) {
                     for (i = 0; i < email.length; i++) {
                         todos_emails = todos_emails + email[i] + ';'
                     }
-                    console.log('todos_emails')
+                    //console.log('todos_emails')
                     equipe.email = todos_emails
                 } else {
                     equipe.email = email
@@ -5978,7 +5978,7 @@ router.post('/salvarImagem', ehAdmin, upload.array('files', 10), (req, res) => {
     var ativo = false
 
     var sql = []
-    console.log("tipo=>" + req.body.tipo)
+    //console.log("tipo=>" + req.body.tipo)
     if (req.body.tipo == 'proposta') {
         sql = { proposta: req.body.id }
     } else {
@@ -5992,10 +5992,10 @@ router.post('/salvarImagem', ehAdmin, upload.array('files', 10), (req, res) => {
             } else {
                 imagem = { "desc": e.originalname }
             }
-            console.log('imagem=>' + JSON.stringify(imagem))
-            console.log("req.body.id=>" + req.body.id)
+            //console.log('imagem=>' + JSON.stringify(imagem))
+            //console.log("req.body.id=>" + req.body.id)
             if (req.body.caminho == 'aterramento') {
-                console.log('sql=>' + JSON.stringify(sql))
+                //console.log('sql=>' + JSON.stringify(sql))
                 AtvAterramento.findOneAndUpdate(sql, { $push: { caminhoFoto: imagem } }).then((e) => {
                     req.flash('success_msg', 'Foto(s) do aterramento salva(s) com sucesso.')
                 })
@@ -6040,13 +6040,14 @@ router.post('/salvarImagem', ehAdmin, upload.array('files', 10), (req, res) => {
             }
         })
     }
-    console.log('req.body.check=>' + req.body.check)
+    //console.log('req.body.check=>' + req.body.check)
     if (req.body.check == 'on') {
         ativo = true
     } else {
         ativo = false
     }
 
+    //console.log("caminho=>" + req.body.caminho)
     if (req.body.caminho == 'aterramento') {
         AtvAterramento.findOneAndUpdate(sql, { aprova: ativo }).then((e) => {
             req.flash('success_msg', 'Imagem(ns) do aterramento aprovadas.')
@@ -6062,58 +6063,58 @@ router.post('/salvarImagem', ehAdmin, upload.array('files', 10), (req, res) => {
             req.flash('success_msg', 'Imagem(ns) do aterramento aprovadas.')
         })
     }
-        
-            Vistoria.findOne({proposta: req.body.id}).then((vistoria) => {
-                if (naoVazio(vistoria)) {
-                        if (naoVazio(vistoria.caminhoSomb) && (naoVazio(vistoria.caminhoArea)) && (naoVazio(vistoria.caminhoInsa)) && (naoVazio(vistoria.caminhoInsi))) {
-                            vistoria.feito = true
-                        } else {
-                            vistoria.feito = false
-                        }
-                        vistoria.dtvisita = dataHoje()
-                        vistoria.save().then(() => {
-                            req.flash('success_msg', 'Documento salvo com sucesso.')
-                            if (naoVazio(req.body.aceite)) {
-                                res.redirect('/gerenciamento/aceite/' + req.body.id)
-                            } else {
-                                if (naoVazio(req.body.idi)) {
-                                    res.redirect('/gerenciamento/atvi/' + req.body.id)
-                                } else {
-                                    if (naoVazio(req.body.ida)) {
-                                        res.redirect('/gerenciamento/atva/' + req.body.id)
-                                    } else {
-                                        if (naoVazio(req.body.idt)) {
-                                            res.redirect('/gerenciamento/atvt/' + req.body.id)
-                                        } else {
-                                            res.redirect('/gerenciamento/visita/' + req.body.id)
-                                        }
-                                    }
-                                }
-                            }
-                        }).catch(() => {
-                            req.flash('error_msg', 'Falha ao encontrar o documento.')
-                            res.redirect('/gerenciamento/aceite/' + req.body.id)
-                        })
+
+    Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
+        if (naoVazio(vistoria)) {
+            if (naoVazio(vistoria.caminhoSomb) && (naoVazio(vistoria.caminhoArea)) && (naoVazio(vistoria.caminhoInsa)) && (naoVazio(vistoria.caminhoInsi))) {
+                vistoria.feito = true
+            } else {
+                vistoria.feito = false
+            }
+            vistoria.dtvisita = dataHoje()
+            vistoria.save().then(() => {
+                req.flash('success_msg', 'Documento salvo com sucesso.')
+                if (naoVazio(req.body.aceite)) {
+                    res.redirect('/gerenciamento/aceite/' + req.body.id)
+                } else {
+                    if (naoVazio(req.body.idi)) {
+                        res.redirect('/gerenciamento/atvi/' + req.body.id)
                     } else {
-                        if (naoVazio(req.body.aceite)) {
-                            res.redirect('/gerenciamento/aceite/' + req.body.id)
+                        if (naoVazio(req.body.ida)) {
+                            res.redirect('/gerenciamento/atva/' + req.body.id)
                         } else {
-                            if (naoVazio(req.body.idi)) {
-                                res.redirect('/gerenciamento/atvi/' + req.body.id)
+                            if (naoVazio(req.body.idt)) {
+                                res.redirect('/gerenciamento/atvt/' + req.body.id)
                             } else {
-                                if (naoVazio(req.body.ida)) {
-                                    res.redirect('/gerenciamento/atva/' + req.body.id)
-                                } else {
-                                    if (naoVazio(req.body.idt)) {
-                                        res.redirect('/gerenciamento/atvt/' + req.body.id)
-                                    } else {
-                                        res.redirect('/gerenciamento/visita/' + req.body.id)
-                                    }
-                                }
+                                res.redirect('/gerenciamento/visita/' + req.body.id)
                             }
                         }
                     }
+                }
+            }).catch(() => {
+                req.flash('error_msg', 'Falha ao encontrar o documento.')
+                res.redirect('/gerenciamento/aceite/' + req.body.id)
             })
+        } else {
+            if (naoVazio(req.body.aceite)) {
+                res.redirect('/gerenciamento/aceite/' + req.body.id)
+            } else {
+                if (naoVazio(req.body.idi)) {
+                    res.redirect('/gerenciamento/atvi/' + req.body.id)
+                } else {
+                    if (naoVazio(req.body.ida)) {
+                        res.redirect('/gerenciamento/atva/' + req.body.id)
+                    } else {
+                        if (naoVazio(req.body.idt)) {
+                            res.redirect('/gerenciamento/atvt/' + req.body.id)
+                        } else {
+                            res.redirect('/gerenciamento/visita/' + req.body.id)
+                        }
+                    }
+                }
+            }
+        }
+    })
 
 })
 
@@ -6124,8 +6125,8 @@ router.get('/mostrarGaleria/:id', ehAdmin, (req, res) => {
     var lista_imagens = []
     var img
     var q = 1
-    console.log('id=>' + params[0])
-    console.log('caminho=>' + params[1])
+    //console.log('id=>' + params[0])
+    //console.log('caminho=>' + params[1])
     Proposta.findOne({ _id: params[0] }).lean().then((proposta) => {
         Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
             Documento.findOne({ proposta: params[0] }).lean().then((documento) => {
@@ -6135,14 +6136,14 @@ router.get('/mostrarGaleria/:id', ehAdmin, (req, res) => {
                             Posvenda.findOne({ proposta: params[0] }).lean().then((posvenda) => {
                                 if (params[1] == 'aterramento') {
                                     AtvAterramento.findOne({ proposta: params[0] }).then((atv) => {
-                                        console.log('encontrou')
+                                        //console.log('encontrou')
                                         img = atv.caminhoFoto
-                                        console.log('img=>' + img)
+                                        //console.log('img=>' + img)
                                         img.forEach((e) => {
                                             lista_imagens.push({ seq: 'Foto' + q, imagem: e.desc, atv: 'aterramento', id: params[0] })
                                             q++
                                         })
-                                        console.log('lista_imagens=>' + lista_imagens)
+                                        //console.log('lista_imagens=>' + lista_imagens)
                                         res.render('principal/mostrarFotos', { lista_imagens, proposta, cliente_proposta, documento, compra, vistoria, lista_equipe, posvenda, titulo: 'Aterramento', aceite: 'ativo' })
                                     }).catch(() => {
                                         req.flash('error_msg', 'Falha ao encontrar as imagens do aterramento.')
@@ -6250,24 +6251,28 @@ router.get('/deletaImagem/:msg', ehAdmin, (req, res) => {
     var params = []
     params = req.params.msg
     params = params.split('delimg')
-    console.log(params[0])
-    console.log(params[1])
-    console.log(params[2])
+    //console.log(params[0])
+    //console.log(params[1])
+    //console.log(params[2])
     console.log(params[3])
+    console.log(params[4])
 
     var sql = []
-    console.log("tipo=>" + req.body.tipo)
-    if (req.body.tipo == 'proposta') {
+    console.log("params[3]=>" + params[3])
+    if (params[3]== 'proposta') {
         sql = { proposta: params[1] }
     } else {
         sql = { tarefa: params[1] }
     }
 
-    console.log('params[3]=>' + params[3])
+    console.log('params[2]=>' + params[2])
+    console.log('sql=>' + JSON.stringify(sql))
     if (params[2] == 'aterramento') {
-        AtvAterramento.findOneAndUpdate(sql, { $pull: { 'caminhoFoto': { 'desc': params[0] } } }).then((e) => {
+        console.log('entrou')
+        AtvAterramento.findOneAndUpdate(sql, { $pull: { 'caminhoFoto': { 'desc': params[0] }}}).then((e) => {
             req.flash('aviso_msg', 'Imagem removida com sucesso')
-            if (naoVazio(params[3])) {
+            console.log('params[3]=>' + params[3])
+            if (naoVazio(params[4])) {
                 res.redirect('/gerenciamento/atva/' + params[1])
             } else {
                 res.redirect('/gerenciamento/mostrarGaleria/' + params[1] + 'galeria-' + params[2])
@@ -7842,7 +7847,7 @@ router.get('/editarsrv/:id', ehAdmin, (req, res) => {
     }
     Servico.find({ user: id }).lean().then((servicos) => {
         Servico.findOne({ _id: req.params.id }).lean().then((servico) => {
-            //     console.log(servico)
+            //     //console.log(servico)
             res.render('projeto/gerenciamento/servicos', { servicos, servico })
         }).catch((err) => {
             req.flash('error_msg', 'Falha ao encontrar o tipo de serviço.')
@@ -7890,31 +7895,31 @@ router.get('/equipetarefa/:id', ehAdmin, (req, res) => {
     //console.log('req.params.id=>' + req.params.id)
     Tarefa.findOne({ _id: req.params.id }).lean().then((tarefa) => {
         //console.log(usina)
-        console.log('tarefa=>' + tarefa)
+        //console.log('tarefa=>' + tarefa)
         trf_dataini = dataMensagem(tarefa.dataini)
         trf_datafim = dataMensagem(tarefa.datafim)
         Empresa.findOne({ _id: tarefa.empresa }).then((trfemp) => {
-            console.log('trfemp=>' + trfemp)
+            //console.log('trfemp=>' + trfemp)
             trf_empresa = trfemp.nome
             trf_empid = trfemp._id
             Pessoa.findOne({ _id: tarefa.responsavel }).then((trfres) => {
-                console.log('trfres=>' + trfres)
+                //console.log('trfres=>' + trfres)
                 trf_gestor = trfres.nome
                 trf_gesid = trfres._id
                 Servico.findOne({ _id: tarefa.servico }).then((trfsrv) => {
-                    console.log('trfsrv=>' + trfsrv)
+                    //console.log('trfsrv=>' + trfsrv)
                     trf_servico = trfsrv.descricao
                     trf_srvid = trfsrv._id
                     Equipe.findOne({ _id: tarefa.equipe }).then((equipeins) => {
-                        console.log('equipeins=>' + equipeins)
+                        //console.log('equipeins=>' + equipeins)
                         Pessoa.findOne({ _id: equipeins.insres }).then((trftec) => {
-                            console.log('trftec=>' + trftec)
+                            //console.log('trftec=>' + trftec)
                             trf_tecnico = trftec.nome
                             trf_tecid = trftec._id
-                            console.log('equipeins=>' + equipeins)
+                            //console.log('equipeins=>' + equipeins)
                             if (naoVazio(equipeins)) {
                                 Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((instalacao) => {
-                                    console.log('entrou')
+                                    //console.log('entrou')
                                     if (typeof equipeins.ins0 != 'undefined') {
                                         ins0 = equipeins.ins0
                                     }
@@ -7971,23 +7976,23 @@ router.get('/equipetarefa/:id', ehAdmin, (req, res) => {
                                             }
                                         }
                                     })
-                                    console.log('q=>' + q)
+                                    //console.log('q=>' + q)
                                     if (q == instalacao.length) {
                                         Empresa.find({ user: id }).lean().then((empresa) => {
                                             Pessoa.find({ user: id, $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }] }).sort({ 'nome': 'asc' }).lean().then((instalacao) => {
                                                 Pessoa.find({ user: id, 'funges': 'checked' }).sort({ 'nome': 'asc' }).lean().then((gestor) => {
                                                     //console.log('req.body.cliente=>' + req.body.cliente)
                                                     Servico.find({ user: id }).lean().then((servicos) => {
-                                                        console.log('tarefa.cliente=>' + tarefa.cliente)
+                                                        //console.log('tarefa.cliente=>' + tarefa.cliente)
                                                         Usina.find({ cliente: tarefa.cliente }).lean().then((usina) => {
-                                                            console.log('ins_dentro=>' + ins_dentro)
-                                                            console.log('ins_fora=>>' + ins_fora)
-                                                            console.log('usina=>' + usina)
-                                                            console.log('instalacao=>' + instalacao)
-                                                            console.log('gestor=>' + gestor)
-                                                            console.log('tarefa=>' + tarefa)
-                                                            console.log('empresa=>' + empresa)
-                                                            console.log('servicos=>' + servicos)
+                                                            //console.log('ins_dentro=>' + ins_dentro)
+                                                            //console.log('ins_fora=>>' + ins_fora)
+                                                            //console.log('usina=>' + usina)
+                                                            //console.log('instalacao=>' + instalacao)
+                                                            //console.log('gestor=>' + gestor)
+                                                            //console.log('tarefa=>' + tarefa)
+                                                            //console.log('empresa=>' + empresa)
+                                                            //console.log('servicos=>' + servicos)
                                                             if (naoVazio(usina)) {
                                                                 res.render('projeto/gerenciamento/tarefas', { usina, trf_empresa, trf_empid, trf_gestor, trf_gesid, trf_servico, trf_srvid, tarefa, servicos, ins_fora, ins_dentro, instalacao, gestor, empresa })
                                                             } else {
@@ -8423,7 +8428,7 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                         }
                         //console.log('adiciona=>' + JSON.stringify(adiciona))
                         new Tarefas(adiciona).save().then(() => {
-                            console.log("salvou tarefa")
+                            //console.log("salvou tarefa")
                             Tarefas.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((tarefa) => {
                                 emp_tarefa.save().then(() => {
                                     //console.log('novaequipe._id=>' + novaequipe._id)
@@ -8436,14 +8441,14 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                                     new AtvTelhado(corpo).save().then(() => {
                                         new AtvAterramento(corpo).save().then(() => {
                                             new AtvInversor(corpo).save().then(() => {
-                                                console.log('salvou atividades')
+                                                //console.log('salvou atividades')
                                                 Pessoa.find({ $or: [{ nome: req.body.ins0 }, { nome: req.body.ins1 }, { nome: req.body.ins2 }, { nome: req.body.ins3 }, { nome: req.body.ins4 }, { nome: req.body.ins5 }] }).then((pessoas) => {
                                                     pessoas.forEach((p) => {
                                                         q++
-                                                        console.log('p.email=>' + p.email)
+                                                        //console.log('p.email=>' + p.email)
                                                         email = email + p.email
-                                                        console.log('q=>' + q)
-                                                        console.log('pessoas=>' + pessoas.length)
+                                                        //console.log('q=>' + q)
+                                                        //console.log('pessoas=>' + pessoas.length)
                                                         if (q == pessoas.length) {
                                                             novaequipe.tarefa = tarefa._id
                                                             novaequipe.save().then(() => {
