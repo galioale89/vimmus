@@ -175,13 +175,17 @@ router.get('/selecao', ehAdmin, (req, res) => {
     var baixado = []
     var ganho = []
     var hoje = dataHoje()
-    var mes = hoje.substring(5,)
+    var mes = hoje.substring(5,7)
     var ano = hoje.substring(0, 4)
     var dataini = String(ano) + String(mes) + '01'
     var datafim = String(ano) + String(mes) + '31'
     var cliente
     var q = 0
 
+    var trintaeum = false
+    var bisexto = false
+    var mestitulo
+    var ano
     var janeiro
     var fevereiro
     var marco
@@ -276,16 +280,21 @@ router.get('/selecao', ehAdmin, (req, res) => {
                             if (e.baixada == true) {
                                 baixado.push({ id: e._id, cliente, seq: e.seq, status: e.status, motivo: e.motivo })
                             } else {
-
                                 if (e.status == 'Negociando' || e.status == 'Analisando Financiamento' || e.status == 'Comparando Propostas' || e.status == 'Aguardando redução de preço') {
                                     negociando.push({ id: e._id, cliente, seq: e.seq, status: e.status })
                                 }
 
                             }
                         }
-
                     }
 
+                    // console.log('enviado=>'+JSON.stringify(enviado))
+                    // console.log('baixado=>'+JSON.stringify(baixado))
+                    // console.log('negociando=>'+JSON.stringify(negociando))
+                    // console.log('ganho=>'+JSON.stringify(ganho))
+
+                    // console.log("q=>"+q)
+                    // console.log("proposta.length=>"+proposta.length)
                     if (q == proposta.length) {
                         res.render('principal/selecao', {
                             enviado, negociando, ganho, baixado, mestitulo, ano,
