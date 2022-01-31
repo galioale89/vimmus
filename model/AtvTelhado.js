@@ -33,6 +33,10 @@ const AtvTelhado = new Schema({
         desc: {
             type: String,
             require: false,
+        },
+        seq: {
+            type: String,
+            require: false,
         }
     }], 
     aprova: {
