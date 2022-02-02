@@ -1,11 +1,11 @@
 const express = require('express')
 const app = express()
 
-var AWS = require('aws-sdk');
-// import AWS object without services
-var AWS = require('aws-sdk/global');
-// import individual service
-var S3 = require('aws-sdk/clients/s3');
+//var AWS = require('aws-sdk');
+//import AWS object without services
+//var AWS = require('aws-sdk/global');
+//import individual service
+//var S3 = require('aws-sdk/clients/s3');
 
 // // Enable CORS
 // app.use(function(req, res, next) {
@@ -59,6 +59,9 @@ const Equipe = mongoose.model('equipe')
 const Posvenda = mongoose.model('posvenda')
 const Empresa = mongoose.model('empresa')
 
+const MobileService = require('./apiService/manager')
+const mobileService = new MobileService(mongoose);
+mobileService.run();
 //Chamando função de validação de autenticação do usuário pela função passport
 const passport = require("passport")
 require("./config/auth")(passport)
