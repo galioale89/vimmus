@@ -6,9 +6,10 @@ const { fromIni } = require("@aws-sdk/credential-provider-ini");
 const formidable = require('formidable')
 
 class mobileService {
-    constructor(mongoose) {
+    constructor(mongoose, app) {
+        this.app = app;
         console.log('process.env.PORT: ', process.env.PORT);
-        server.listen(21180, () => { console.log('Ready in 21180') })
+        //server.listen(21180, () => { console.log('Ready in 21180') })
         this.mongoose = mongoose;
     }
 
@@ -20,7 +21,7 @@ class mobileService {
     async sendTeams() {
         const teamsDb = this.mongoose.model('equipe');
         const proposalDb = this.mongoose.model('proposta');
-        server.get('/teamsData', async (req, res) => {
+        this.app.get('/teamsData', async (req, res) => {
             let teams = await teamsDb.find({
                 feito: true,
                 nome_projeto: { $gt: '' }
@@ -42,7 +43,7 @@ class mobileService {
     }
 
     getImagesTeam() {
-        server.post('/teamImages', (req, res) => {
+        this.app.post('/teamImages', (req, res) => {
             const form = formidable({ multiples: true, uploadDir: './uploads' });
             form.parse(req, async (err, fields, files) => {
                 res.end('OK');

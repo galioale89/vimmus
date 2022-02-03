@@ -60,7 +60,7 @@ const Posvenda = mongoose.model('posvenda')
 const Empresa = mongoose.model('empresa')
 
 const MobileService = require('./apiService/manager')
-const mobileService = new MobileService(mongoose);
+const mobileService = new MobileService(mongoose, app);
 mobileService.run();
 //Chamando função de validação de autenticação do usuário pela função passport
 const passport = require("passport")
