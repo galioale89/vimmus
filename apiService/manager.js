@@ -92,10 +92,10 @@ class mobileService {
         const s3Config = {
             region: 'sa-east-1',
             /* credentials: fromIni({ profile: 'vimmusimg' }) */
-            credentials: {
-                accessKeyId: 'AKIAV7ZMQ66NULT346DG', //process.env.AWS_ACCESS_KEY,
-                secretAccessKey: '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' //process.env.AWS_SECRET_ACCESS
-            }
+            // credentials: {
+            //     accessKeyId: 'AKIAV7ZMQ66NULT346DG', //process.env.AWS_ACCESS_KEY,
+            //     secretAccessKey: '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' //process.env.AWS_SECRET_ACCESS
+            // }
         };
         const file = readFileSync(`./uploads/${fileName}`);
         const putData = {
