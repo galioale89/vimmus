@@ -6481,12 +6481,13 @@ router.get('/deletaImagem/:msg', ehAdmin, (req, res) => {
         })
     } else {
         if (params[2] == 'inversor') {
-
             AtvInversor.findOneAndUpdate(sql, { $pull: { 'caminhoFoto': { 'desc': params[0] } } }).then((e) => {
                 req.flash('aviso_msg', 'Imagem removida com sucesso')
-                if (params[4] == 'false') {
+                console.log('params[4]=>'+params[4])
+                if (params[4] == 'true') {
                     res.redirect('/gerenciamento/atvi/' + params[1])
                 } else {
+                    console.log('mostrar galeria')
                     res.redirect('/gerenciamento/mostrarGaleria/' + params[1] + 'galeria-' + params[2])
                 }
             }).catch((err) => {
