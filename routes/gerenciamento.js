@@ -6470,7 +6470,7 @@ router.get('/deletaImagem/:msg', ehAdmin, (req, res) => {
         AtvAterramento.findOneAndUpdate(sql, { $pull: { 'caminhoFoto': { 'desc': params[0] } } }).then((e) => {
             req.flash('aviso_msg', 'Imagem removida com sucesso')
             console.log('params[3]=>' + params[3])
-            if (params[4] == 'false') {
+            if (params[4] == 'true') {
                 res.redirect('/gerenciamento/atva/' + params[1])
             } else {
                 res.redirect('/gerenciamento/mostrarGaleria/' + params[1] + 'galeria-' + params[2])
@@ -6498,7 +6498,7 @@ router.get('/deletaImagem/:msg', ehAdmin, (req, res) => {
             if (params[2] == 'telhado') {
                 AtvTelhado.findOneAndUpdate(sql, { $pull: { 'caminhoFoto': { 'desc': params[0] } } }).then((e) => {
                     req.flash('aviso_msg', 'Imagem removida com sucesso')
-                    if (params[4] == 'false') {
+                    if (params[4] == 'true') {
                         res.redirect('/gerenciamento/atvt/' + params[1])
                     } else {
                         res.redirect('/gerenciamento/mostrarGaleria/' + params[1] + 'galeria-' + params[2])
