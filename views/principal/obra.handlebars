@@ -1,0 +1,318 @@
+<style>
+    .disabledbutton {
+        pointer-events: none;
+        opacity: 0.4;
+    }
+
+    .lists {
+        display: flex;
+        flex: 1;
+        width: 100%;
+    }
+
+    .lists .list {
+        display: flex;
+        flex-flow: column;
+        flex: 1;
+
+        width: 400px;
+        border-radius: 20px;
+        min-height: 75px;
+        max-height: 250px;
+
+        background-color: #001263e5;
+        margin: 0 5px;
+        padding: 8px;
+        transition: all 0.2s linear;
+    }
+
+    .lists .list .list-item {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+
+    .lists .list .item-instalacao {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+
+    .lists .list .item {
+        background-color: #F3F3F3;
+        border-radius: 8px;
+        text-align: center;
+        margin: 4px 0px;
+        cursor: pointer;
+    }
+</style>
+<script>
+    function editarLocal() {
+        var labelCidade = document.getElementById('labelCidade')
+        var labelUf = document.getElementById('labelUf')
+        var cidade = document.getElementById('cidade')
+        var estado = document.getElementById('estado')
+        var br0 = document.getElementById('br0')
+        var br1 = document.getElementById('br1')
+        var checkLocal = document.getElementById('checkLocal')
+
+        if (checkLocal.checked) {
+            labelCidade.style.display = 'none'
+            labelUf.style.display = 'none'
+            br0.style.display = 'none'
+            br1.style.display = 'none'
+            cidade.style.display = 'flex'
+            estado.style.display = 'flex'
+        } else {
+            labelCidade.style.display = ''
+            labelUf.style.display = ''
+            br0.style.display = ''
+            br1.style.display = ''
+            cidade.style.display = 'none'
+            estado.style.display = 'none'
+        }
+    }
+
+    window.onload = function () {
+
+        var bloquear = document.getElementById('bloquear')
+
+        if (bloquear.className == 'true') {
+            bloquear.className = 'disabledbutton'
+        }
+
+        var estados = document.getElementById('estado');
+        var cidades = document.getElementById('cidade');
+
+        new dgCidadesEstados({
+            estado: estados,
+            cidade: cidades,
+            estadoVal: '<%=Request("estado") %>',
+            cidadeVal: '<%=Request("cidade") %>'
+        });
+    };
+</script>
+<div style="width: 98%;padding-left: 2%;padding-top: 0.5%;height: auto">
+    <div style='text-align: center'>
+        <label class='col-form-label fw-bold' style="font-size: 20px;">
+            Obra {{obra.seq}} ({{obra.status}})
+        </label>
+    </div>
+    <form method="post" action='/gerenciamento/obra'>
+        <input type='hidden' name='id' value='{{obra._id}}'>
+        <div class='row'>
+            <div class='col-md-11'>
+                <div class="row justify-content-center">
+                    <div class='col-md-2 text-end'>
+                        <label class='col-form-label fw-bold m-1 mb-3'>Empresa: </label>
+                    </div>
+                    <div class='col-md-4'>
+                        <select class='form-select mt-1' name='empresa'>
+                            {{#if empresa._id}}
+                            <option class='fw-bold' value='{{empresa._id}}'>{{empresa.nome}}</option>
+                            {{/if}}
+                            {{#each todas_empresas}}
+                            <option value='{{_id}}'>{{nome}}</option>
+                            {{else}}
+                            <option>Sem empresas cadastradas</option>
+                            {{/each}}
+                        </select><br>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2 text-end">
+                        <label class='col-form-label fw-bold mb-1'>Cliente: </label><br>
+                    </div>
+                    <div class="col-md-4 text-start">
+                        <input type='hidden' name="id" value='{{obras._id}}'>
+                        <select class='form-select' name='cliente'>
+                            {{#if cliente._id}}
+                            <option class='fw-bold' value='{{cliente._id}}'>{{cliente.nome}}</option>
+                            {{/if}}
+                            {{#each todos_clientes}}
+                            <option value='{{_id}}'>{{nome}}</option>
+                            {{else}}
+                            <option>Sem clientes cadastrados</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class='col-md-2 text-end'>
+                        <label class='col-form-label fw-bold m-1'>Gestor Responsável: </label><br>
+                    </div>
+                    <div class='col-md-4'>
+                        <select class='form-select mt-1' name='responsavel'>
+                            {{#if responsavel._id}}
+                            <option class='fw-bold' value='{{responsavel._id}}'>{{responsavel.nome}}</option>
+                            {{/if}}
+                            {{#each todos_responsaveis}}
+                            <option value='{{_id}}'>{{nome}}</option>
+                            {{else}}
+                            <option>Sem responsáveis cadastrados</option>
+                            {{/each}}
+                        </select><br>
+                    </div>
+                </div>
+                {{#if obra._id}}
+                <div class='row'>
+                    <div class='col-md-2 text-end'>
+                        <label class='col-form-label col-form-label-sm fw-bold mt-3'>Local: </label>
+                    </div>
+                    <div class='col-md-10'>
+                        <div class='row'>
+                            <div class='col-md-4'>
+                                <label>Endereço</label>
+                                <input class='form-control form-control-sm' type='text' name='endereco' {{#if
+                                    obra.endereco}} value='{{obra.endereco}}' {{else}} value='{{cliente.endereco}}'
+                                    {{/if}}>
+                            </div>
+                            <div class='col'>
+                                <label>Estado</label>
+                                <div id='br0' style="display: {{mostraLabel}}"></div>
+                                <label style='display: {{mostraLabel}}' id='labelUf'
+                                    class='col-form-label col-form-label-sm mb-1'>
+                                    {{#if obra.uf }}{{obra.uf}}{{else}}{{cliente.uf}}{{/if}}
+                                </label><br>
+                                <select style='display: {{mostraSelect}}' id="estado" name='uf'
+                                    class='form-select form-select-sm mb-1'></select>
+                                <input type='hidden' name='ufh' value='{{cliente.uf}}'>
+                            </div>
+                            <div class='col'>
+                                <label>Cidade</label>
+                                <div id='br1' style="display: {{mostraLabel}}"></div>
+                                <label style='display: {{mostraLabel}}' id='labelCidade'
+                                    class='col-form-label col-form-label-sm mb-1'>
+                                    {{#if obra.cidade}}{{obra.cidade}}{{else}}{{cliente.cidade}}{{/if}}
+                                </label><br>
+                                <select style='display: {{mostraSelect}}' id="cidade" name='cidade'
+                                    class='form-select form-select-sm mb-1'></select>
+                                <input type='hidden' name='cidadeh' value='{{cliente.cidade}}'>
+                            </div>
+                            <div class='col-md-1 mt-1'>
+                                <div class="form-check form-switch mt-3" onchange="editarLocal()">
+                                    <input class="form-check-input" type="checkbox" id='checkLocal'>
+                                    <label class="form-check-label" style="padding-top: 6px;">Editar</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+            <div class='col-md-1'>
+                <button type='submit' class="setaproximo">
+                    <i style="font-size: 38px" class='bi bi-arrow-right-circle'></i>
+                </button>
+            </div>
+        </div>
+    </form>
+    {{#if obra._id}}
+    <br>
+    <form method="post" name='tarefa' action='/gerenciamento/addtarefa' style="text-align: center;">
+        <div class="row">
+            <div class="col-md-2 text-end">
+                <label class="col-form-label col-form-label-sm fw-bold">Custo:</label>
+            </div>
+            <div class="col-md-2 text-end">
+                <input class="form-control form-control-sm" type="number" step='0.010' name='preco' id='preco'
+                    placeholder="R$" value='{{tarefa.preco}}'>
+            </div>
+            <div class="col-md-2 text-end">
+                <label class="col-form-label col-form-label-sm fw-bold">Período da Atividade:</label>
+            </div>
+            <div class="col-md-2">
+                <input class='form-control form-control-sm' type='date' name='dataini' value='{{tarefa.dataini}}'>
+            </div>
+            <div style="width: 10px;">
+                <label class='col-form-label col-form-label-sm'>a</label>
+            </div>
+            <div class="col-md-2">
+                <input class='form-control form-control-sm' type='date' name='datafim' value='{{tarefa.datafim}}'>
+            </div>
+        </div>
+        <hr>
+        <label class='col-form-label col-form-label-sm'>Lembre-se de verificar a disponibilidade da pessoa para realizar
+            a manutenção!</label>
+        <div class="row">
+            <div class="col-md-3 text-end">
+                <label class="col-form-label col-form-label-sm fw-bold">Técnico Responsável:</label>
+            </div>
+            <div class="col-md-6">
+                <select class='form-select form-select-sm' name='responsavel'>
+                    {{#if trf_tecnico}}
+                    <option value='{{trf_tecid}}'>{{trf_tecnico}}</option>
+                    {{/if}}
+                    {{#each instalacao}}
+                    <option value='{{_id}}'>{{nome}}</option>
+                    {{else}}
+                    <option>Cadastrar técnicos =></option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="col-md-1">
+                <a href='/pessoa/novo' class="contorno-menu"><i class='bi bi-person-plus'></i></a>
+            </div>
+        </div><br>
+
+        <div class="row">
+            <div class="lists">
+                <div class="list">
+                    <label class="col-form-label col-form-label-sm fw-bold text-center"
+                        style="color: white">Instaladores
+                        Disponíveis</label>
+                    <div style="overflow-y: scroll;height: fit-content">
+                        {{#each ins_fora}}
+                        <div class="list-item" style='color: black;' draggable="true" name='{{id}}'>
+                            {{nome}}<a href='/gerenciamento/vermaistarefas/{{id}}' style="padding-left: 5px;"><i
+                                    class='bi bi-eye'></i></a>
+                        </div>
+                        <input type='hidden' name='email' value='{{email}}'>
+                        {{/each}}
+                    </div>
+                </div>
+                <div class="list">
+                    <label class="col-form-label col-form-label-sm fw-bold text-center"
+                        style="color: white">Instaladores
+                        Alocados</label>
+                    {{#each ins_dentro}}
+                    <div class="item-instalacao" style='color: black;' draggable="true" name='{{id}}'>
+                        {{nome}}<a href='/gerenciamento/vermaistarefas/{{id}}' style="padding-left: 5px;"><i
+                                class='bi bi-eye'></i></a>
+                        <input type='hidden' name='email' value='{{email}}'>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+
+        <input type='hidden' class='ins0' name='ins0' id='ins0' value=''>
+        <input type='hidden' class='ins1' name='ins1' id='ins1' value=''>
+        <input type='hidden' class='ins2' name='ins2' id='ins2' value=''>
+        <input type='hidden' class='ins3' name='ins3' id='ins3' value=''>
+        <input type='hidden' class='ins4' name='ins4' id='ins4' value=''>
+        <input type='hidden' class='ins5' name='ins5' id='ins5' value=''>
+        <input type='hidden' name='idins0' id='idins0' value=''>
+        <input type='hidden' name='idins1' id='idins1' value=''>
+        <input type='hidden' name='idins2' id='idins2' value=''>
+        <input type='hidden' name='idins3' id='idins3' value=''>
+        <input type='hidden' name='idins4' id='idins4' value=''>
+        <input type='hidden' name='idins5' id='idins5' value=''>
+        <div class='btn-group gap-2 col-6 mt-2'>
+            <input type='button' id='salvar' style="width: 30px;" class="btn btn-sm btn-success" value="Salvar">
+            {{#if tarefa.programacao}}
+            <a href='/cliente/programacao/{{tarefa.usina}}' class='btn btn-sm btn-primary'><i
+                    class='bi bi-arrow-left'>Voltar
+                    Programação</i></a>
+            {{/if}}
+            {{#if tarefa._id}}
+            <a href='/gerenciamento/tarefas/{{tarefa._id}}' class='btn btn-sm btn-primary'><i
+                    class='bi bi-arrow-left'>Voltar
+                    Tarefas</i></a>
+            {{/if}}
+        </div>
+    </form>
+    {{/if}}
+</div>

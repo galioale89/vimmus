@@ -47,14 +47,14 @@
     </div>
     <div style="width: 100%;">
         <h5 class="header">{{cliente.nome}} </h5>
-
     </div>
     <div class='row'>
         <div class='col-md-7'>
             <div class="row">
                 <div class="col">
                     <label class="col-form-label">Responsáveis</label><br>
-                    <label class="col-form-label col-form-label-sm">Gestor: {{gestor.nome}} {{responsavel.nome}}</label><br>
+                    <label class="col-form-label col-form-label-sm">Gestor: {{gestor.nome}}
+                        {{responsavel.nome}}</label><br>
                     <label class="col-form-label col-form-label-sm">Técnico: {{tecnico.nome}} {{insres.nome}} </label>
                 </div>
                 {{#if tarefa}}
@@ -76,7 +76,7 @@
                             Equipe</a>
                         {{/if}}
                         <a href='/gerenciamento/tarefas/{{tarefa._id}}' class='btn btn-sm btn-primary'><i
-                                class='bi bi-arrow'></i>Tarefa</a>                            
+                                class='bi bi-arrow'></i>Tarefa</a>
                     </div>
                 </div>
                 {{else}}
@@ -115,17 +115,18 @@
                 </div>
             </div>
             <hr>
+            {{#if proposta}}
             <div class="row">
                 <label class="col-form-label fw-bold text-center mt-1">Atividades</label>
                 <div class="btn-group gap-4">
-                    <a class='btn btn-primary'
-                        href='/gerenciamento/atvt/{{proposta._id}}{{tarefa._id}}'>Telhado</a>
-                    <a class='btn btn-primary'
-                        href='/gerenciamento/atvi/{{proposta._id}}{{tarefa._id}}'>Inversor</a>
-                    <a class='btn btn-primary'
-                        href='/gerenciamento/atva/{{proposta._id}}{{tarefa._id}}'>Aterramento</a>
+                    <a class='btn btn-primary' href='/gerenciamento/atvt/{{proposta._id}}'>Telhado</a>
+                    <a class='btn btn-primary' href='/gerenciamento/atvi/{{proposta._id}}'>Inversor</a>
+                    <a class='btn btn-primary' href='/gerenciamento/atva/{{proposta._id}}'>Aterramento</a>
                 </div>
             </div>
+            {{else}}
+            <a class='btn btn-primary' href='/gerenciamento/mostrarGaleria/{{tarefa._id}}galeria-tarefa'>Fotos</a>
+            {{/if}}
             <div class="row mt-2">
                 <div class="col">
                     <label class="col-form-label">Previsão Inicio: </label>

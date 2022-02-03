@@ -1,5 +1,4 @@
 <div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
-
     {{#if atva}}
     <h1>Aterramento</h1>
     <form action="/gerenciamento/salvarImagem" method="post" enctype="multipart/form-data">
@@ -89,7 +88,12 @@
     {{/if}}
 
     <div class="row text-center text-center justify-content-center" style="margin-bottom: 50px;margin-top: 40px">
+        {{#if proposta}}
+        <label style="font-size: 35px;font-weight: 700;margin-bottom: 10px;">{{titulo}}</label>
+        <div class="row text-center text-center justify-content-center" style="margin-bottom: 50px;margin-top: 40px">        
+        {{else}}
         <div class="row">
+            {{/if}}
             {{#each lista_imagens}}
             <div class="col-md-4">
                 <div style="width: 5px;">

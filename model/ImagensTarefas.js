@@ -1,25 +1,21 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const AtvAterramento = new Schema({
+const ImagensTarefa = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: 'usuario',
         require: true
-    },       
-    proposta: {
+    },    
+    tarefa: {
         type: Schema.Types.ObjectId,
-        ref: 'proposta',
+        ref: 'tarefa',
         require: true
     },
     equipe: {
         type: Schema.Types.ObjectId,
         ref: 'equipe',
         require: true
-    },
-    feito: {
-        type: Boolean,
-        require: false
     },
     data: {
         type: String,
@@ -46,4 +42,4 @@ const AtvAterramento = new Schema({
 
 })
 
-mongoose.model('atvAterramento', AtvAterramento)
+mongoose.model('imgTarefa', ImagensTarefa)

@@ -178,7 +178,7 @@ const Proposta = new Schema({
     },
     data:{
         type: Number,
-        require:false   
+        require: false   
     }       
 })
 

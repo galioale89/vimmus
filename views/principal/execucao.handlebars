@@ -119,8 +119,9 @@
                     <label class='col-form-label'>Ver</label>
                 </div>
             </div>
-            <form action='/gerenciamento/salvarMemorial' enctype="multipart/form-data" method="post">
+            <form action='/gerenciamento/salvarDocumento' enctype="multipart/form-data" method="post">
                 <input type='hidden' name='id' value='{{proposta._id}}'>
+                <input type='hidden' name='tipo' value='memorial'>
                 <div class="row">
                     <div class="row">
                         <div class='col-md-2'>
@@ -131,7 +132,7 @@
                         </div>
                     </div>
                     <div class='col-md-6'>
-                        <input class="form-control" type="file" name='memorial'>
+                        <input class="form-control" type="file" name='files'>
                     </div>
                     <div class='col-md-2'>
                         <input type="date" class='form-control' name='dtmemorial' value='{{documento.dtmemorial}}'>
@@ -140,14 +141,15 @@
                         <button type='submit' class="btn btn-success" name='aplicar'><i class='bi bi-save'></i></button>
                     </div>
                     <div style="width: 70px;">
-                        <a class="btn btn-primary" href='/gerenciamento/mostrarMemorial/{{proposta._id}}'
+                        <a class="btn btn-primary" href='/gerenciamento/mostrarDocumentos/{{documento.memorial}}'
                             target="_blank"><i class='bi bi-eye'></i></a>
                     </div>
                 </div>
             </form>
 
-            <form action='/gerenciamento/salvarSituacao' enctype="multipart/form-data" method="post">
+            <form action='/gerenciamento/salvarDocumento' enctype="multipart/form-data" method="post">
                 <input type='hidden' name='id' value='{{proposta._id}}'>
+                <input type='hidden' name='tipo' value='situacao'>
                 <div class="row">
                     <div class="row">
                         <div class='col-md-2'>
@@ -158,7 +160,7 @@
                         </div>
                     </div>
                     <div class='col-md-6'>
-                        <input class="form-control" type="file" name='situacao'>
+                        <input class="form-control" type="file" name='files'>
                     </div>
                     <div class='col-md-2'>
                         <input type="date" class='form-control' name='dtsituacao' value='{{documento.dtsituacao}}'>
@@ -167,14 +169,15 @@
                         <button type='submit' class="btn btn-success" name='aplicar'><i class='bi bi-save'></i></button>
                     </div>
                     <div style="width: 70px;">
-                        <a class="btn btn-primary" href='/gerenciamento/mostrarSituacao/{{proposta._id}}'
+                        <a class="btn btn-primary" href='/gerenciamento/mostrarDocumentos/{{documento.situacao}}'
                             target="_blank"><i class='bi bi-eye'></i></a>
                     </div>
                 </div>
             </form>
 
-            <form action='/gerenciamento/salvarUnifilar' enctype="multipart/form-data" method="post">
+            <form action='/gerenciamento/salvarDocumento' enctype="multipart/form-data" method="post">
                 <input type='hidden' name='id' value='{{proposta._id}}'>
+                <input type='hidden' name='tipo' value='unifilar'>
                 <div class="row">
                     <div class="row">
                         <div class='col-md-2'>
@@ -185,7 +188,7 @@
                         </div>
                     </div>
                     <div class='col-md-6'>
-                        <input class="form-control" type="file" name='unifilar'>
+                        <input class="form-control" type="file" name='files'>
                     </div>
                     <div class='col-md-2'>
                         <input type="date" class='form-control' name='dtunifilar' value='{{documento.dtunifilar}}'>
@@ -194,14 +197,15 @@
                         <button type='submit' class="btn btn-success" name='aplicar'><i class='bi bi-save'></i></button>
                     </div>
                     <div style="width: 70px;">
-                        <a class="btn btn-primary" href='/gerenciamento/mostrarUnifilar/{{proposta._id}}'
+                        <a class="btn btn-primary" href='/gerenciamento/mostrarDocumentos/{{documento.unifilar}}'
                             target="_blank"><i class='bi bi-eye'></i></a>
                     </div>
                 </div>
             </form>
 
-            <form action='/gerenciamento/salvarTrifilar' enctype="multipart/form-data" method="post">
+            <form action='/gerenciamento/salvarDocumento' enctype="multipart/form-data" method="post">
                 <input type='hidden' name='id' value='{{proposta._id}}'>
+                <input type='hidden' name='tipo' value='trifilar'>
                 <div class="row">
                     <div class="row">
                         <div class='col-md-2'>
@@ -212,7 +216,7 @@
                         </div>
                     </div>
                     <div class='col-md-6'>
-                        <input class="form-control" type="file" name='trifilar'>
+                        <input class="form-control" type="file" name='files'>
                     </div>
                     <div class='col-md-2'>
                         <input type="date" class='form-control' name='dttrifilar' value='{{documento.dttrifilar}}'>
@@ -221,7 +225,7 @@
                         <button type='submit' class="btn btn-success" name='aplicar'><i class='bi bi-save'></i></button>
                     </div>
                     <div style="width: 70px;">
-                        <a class="btn btn-primary" href='/gerenciamento/mostrarTrifilar/{{proposta._id}}'
+                        <a class="btn btn-primary" href='/gerenciamento/mostrarDocumentos/{{documento.trifilar}}'
                             target="_blank"><i class='bi bi-eye'></i></a>
                     </div>
                 </div>
@@ -255,15 +259,16 @@
                     </form>
                 </div>
                 <div class="col">
-                    <form action='/gerenciamento/salvarParecer' enctype="multipart/form-data" method="post">
+                    <form action='/gerenciamento/salvarDocumento' enctype="multipart/form-data" method="post">
                         <input type='hidden' name='id' value='{{proposta._id}}'>
+                        <input type='hidden' name='tipo' value='parecer'>
                         <div class="row" style="margin-top: 40px;">
                             <div class='col'>
-                                <input class="form-control" type="file" name='parecer'>
+                                <input class="form-control" type="file" name='files'>
                             </div>
                             {{#if documento.parecer}}
                             <div style="width: 70px;">
-                                <a class="btn btn-primary" href='/gerenciamento/mostrarParecer/{{proposta._id}}'
+                                <a class="btn btn-primary" href='/gerenciamento/mostrarDocumentos/{{documento.parecer}}'
                                     target="_blank"><i class='bi bi-eye'></i></a>
                             </div>
                             {{/if}}                            

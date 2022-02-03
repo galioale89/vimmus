@@ -2,16 +2,16 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const AtvTelhado = new Schema({
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'usuario',
+        require: true
+    },       
     proposta: {
         type: Schema.Types.ObjectId,
         ref: 'proposta',
         require: true
-    },    
-    tarefa: {
-        type: Schema.Types.ObjectId,
-        ref: 'tarefa',
-        require: true
-    },        
+    },           
     equipe: {
         type: Schema.Types.ObjectId,
         ref: 'equipe',
