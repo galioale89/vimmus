@@ -6223,6 +6223,7 @@ router.post('/salvarImagem', ehAdmin, upload.array('files', 10), (req, res) => {
         })
     }
 
+    
     console.log('req.body.caminho=>' + req.body.caminho)
     console.log('req.body.id=>' + req.body.id)
     Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
