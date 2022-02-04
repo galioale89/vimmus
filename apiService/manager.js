@@ -1,7 +1,7 @@
 const Express = require('express');
 const server = Express();
 const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
-const { readFileSync, createWriteStream } = require('fs');
+const { readFileSync, writeFileSync, createWriteStream } = require('fs');
 const { fromIni } = require("@aws-sdk/credential-provider-ini");
 const formidable = require('formidable')
 var im = require('imagemagick');
@@ -97,16 +97,15 @@ class mobileService {
             region: 'sa-east-1',
             credentials: fromIni({ profile: 'vimmusimg' })
         };
-        const file = readFileSync(`./uploads/${fileName}`);
-        // const file
-        // im.resize({
-        //     srcData: fs.readFileSync(`./uploads/${fileName}`, 'binary'),
-        //     width: 256
-        // }, function (err, stdout, stderr) {
-        //     if (err) throw err
-        //     file = fs.writeFileSync(`./uploads/${fileName}`, stdout, 'binary');
-        //     console.log('resized kittens.jpg to fit within 256x256px')
-        // });
+        const file = readFileSync(`./uploads/${fileName}`, 'binary');
+        im.resize({
+            srcData: file,
+            width: 256
+        }, function (err, stdout, stderr) {
+            if (err) throw err
+            file = writeFileSync(`./uploads/${fileName}`, stdout, 'binary');
+            console.log('resized kittens.jpg to fit within 256x256px')
+        });
 
         const putData = {
             Bucket: 'vimmusimg', //process.env.IMAGES_BUCKET
