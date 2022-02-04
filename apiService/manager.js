@@ -68,6 +68,7 @@ class mobileService {
                     console.log('name.includes(originalName.substring(0, 6))', name.toLowerCase().includes(originalName.substring(0, 6)));
                     if (name.toLowerCase().includes(originalName.substring(0, 6))) model = name;
                 });
+                if (model.includes('atvInfAterramento')) model = 'atvAterramento';
                 console.log('model: ', model);
                 const imageDate = new Date(Number(originalName.match(/\d{1,}/)[0])).toLocaleString();
                 console.log('imageDate: ', imageDate);
