@@ -98,19 +98,19 @@ class mobileService {
         };
         const file = readFileSync(`./uploads/${fileName}`);
         resizeImg(file, { width: 128, height: 128 }).then(buf => {
-            writeFileSync(newName, buf);
-            const putData = {
-                Bucket: 'vimmusimg', //process.env.IMAGES_BUCKET
-                Key: newName,
-                StorageClass: 'STANDARD',
-                Body: file                
-            }        
-            const s3Client = new S3Client(s3Config);
-            console.log('EnviandoImagem')
-            let response = await s3Client.send(new PutObjectCommand(putData));
-            console.log('awsResponse: ', response);
-            return response            
-        })    
+            writeFileSync(newName, buf);           
+        })  
+        const putData = {
+            Bucket: 'vimmusimg', //process.env.IMAGES_BUCKET
+            Key: newName,
+            StorageClass: 'STANDARD',
+            Body: file                
+        }            
+        const s3Client = new S3Client(s3Config);
+        console.log('EnviandoImagem')
+        let response = await s3Client.send(new PutObjectCommand(putData));
+        console.log('awsResponse: ', response);
+        return response             
         
         // const putData = {
         //     Bucket: 'vimmusimg', //process.env.IMAGES_BUCKET
