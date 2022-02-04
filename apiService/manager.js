@@ -54,7 +54,8 @@ class mobileService {
                 const originalName = files.image.originalFilename;
                 const postedNameFile = `${originalName}-${filename}.jpg`;
                 const response = await this.setImageInAWS(filename, postedNameFile);
-                if (response['$metadata'].httpStatusCode !== 200){
+                if ((response && !response.hasOwnProperty('$metadata'))
+                    || response['$metadata'].httpStatusCode !== 200){
                     res.end('NOK');
                     console.error('Não foi possível enviar documento ao Bucket S3');
                 }
