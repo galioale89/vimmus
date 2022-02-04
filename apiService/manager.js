@@ -54,18 +54,21 @@ class mobileService {
                 const originalName = files.image.originalFilename;
                 const postedNameFile = `${originalName}-${filename}.jpg`;
                 const response = await this.setImageInAWS(filename, postedNameFile);
-                if (response['$metadata'].httpStatusCode !== 200){
+                if ((response && !response.hasOwnProperty('$metadata'))
+                    || response['$metadata'].httpStatusCode !== 200){
                     res.end('NOK');
                     console.error('Não foi possível enviar documento ao Bucket S3');
                 }
                 console.log(`Enviado: ${postedNameFile}`);
-                const modelsName = ['atvTelhado', 'atvInversor', 'atvAterramento'];
+                // lembrar de alterar no app atvInfAterramento
+                const modelsName = ['atvTelhado', 'atvInversor', 'atvInfAterramento'];
                 let model = '';
                 modelsName.forEach((name) => {
                     console.log('name', name);
                     console.log('name.includes(originalName.substring(0, 6))', name.toLowerCase().includes(originalName.substring(0, 6)));
                     if (name.toLowerCase().includes(originalName.substring(0, 6))) model = name;
                 });
+                if (model.includes('atvInfAterramento')) model = 'atvAterramento';
                 console.log('model: ', model);
                 const imageDate = new Date(Number(originalName.match(/\d{1,}/)[0])).toLocaleString();
                 console.log('imageDate: ', imageDate);
