@@ -4,6 +4,7 @@ const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/clien
 const { readFileSync, createWriteStream, writeFileSync } = require('fs');
 const { fromIni } = require("@aws-sdk/credential-provider-ini");
 const formidable = require('formidable')
+const resizeImg = require("resize-img")
 
 class mobileService {
     constructor(mongoose, app) {
