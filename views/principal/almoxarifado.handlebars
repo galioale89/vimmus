@@ -105,7 +105,7 @@
                             </div>
                         </div>
                         <div class="col-md-1 mt-3">
-                            <a class="btn btn-primary" href='/gerenciamento/mostrarAlmoxarifado/{{proposta._id}}'
+                            <a class="btn btn-primary" href='/gerenciamento/mostrarBucket/{{proposta._id}}'
                                 target="_blank"><i class='bi bi-eye'></i></a>
                         </div>                        
                         <div class="col-md-2 mt-3">
@@ -135,7 +135,7 @@
             </div>
             {{/if}}
             <div class="row" style="height: 380px;">
-                <object data="/gerenciamento/mostrarAlmoxarifado/{{proposta._id}}" type="application/pdf">
+                <object data="/gerenciamento/mostrarBucket/{{document.almoxarifado}}" type="application/pdf">
                     <p>Seu navegador não tem um plugin pra PDF</p>
                 </object>
             </div>

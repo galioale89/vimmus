@@ -90,14 +90,14 @@
 
                     <div class='row text-center'>
                         <label class='fw-bold' style="font-size: 20px;">Proposta Assinada</label>
-                        <a href='/gerenciamento/mostrarDocumentos/{{documento.assinatura}}' target="_blank"
+                        <a href='/gerenciamento/mostrarBucket/{{documento.assinatura}}' target="_blank"
                             style="font-size: 20px;line-height: 30px;">{{documento.assinatura}}</a>
                         <br>
                     </div>
                     <div class="row justify-content-center">
-                        <div class="text-start mt-3" style="width: 200px;">
+                        <div class="text-start mt-3" style="width: 170px;">
                             <input type='file' class='form-control' name='assinado'
-                                style='max-width: 152px;font-size: 15px;' value='{{documento.assinatura}}'>
+                                style='font-size: 15px;' value='{{documento.assinatura}}'>
                         </div>
                         <div style="width: 190px;">
                             <label>Emissão:</label>
@@ -119,14 +119,14 @@
 
                     <div class='row text-center'>
                         <label class='fw-bold' style="font-size: 20px;">Contrato</label>
-                        <a href='/gerenciamento/mostrarDocumentos/{{documento.contrato}}' target="_blank"
+                        <a href='/gerenciamento/mostrarBucket/{{documento.contrato}}' target="_blank"
                             style="font-size: 20px;line-height: 30px;">{{documento.contrato}}</a>
                         <br>
                     </div>
                     <div class="row justify-content-center">
-                        <div class="text-start mt-3" style="width: 200px;">
+                        <div class="text-start mt-3" style="width: 170px;">
                             <input type='file' class='form-control' name='contrato'
-                                style='max-width: 152px;font-size: 15px;' value='{{documento.contrato}}'>
+                                style='font-size: 15px;' value='{{documento.contrato}}'>
                         </div>
                         <div style="width: 190px;">
                             <label>Emissão:</label>
@@ -141,13 +141,13 @@
         </div>
         <div class="row mt-1">
             <div class="col">
-                <object data="/gerenciamento/mostrarDocumentos/{{documento.assinatura}}" type="application/pdf" width="100%"
+                <object data="/gerenciamento/mostrarBucket/{{documento.assinatura}}" type="application/pdf" width="100%"
                     height="370px">
                     <p>Seu navegador não tem um plugin pra PDF</p>
                 </object>
             </div>
             <div class="col">
-                <object data="/gerenciamento/mostrarDocumentos/{{documento.contrato}}" type="application/pdf" width="100%"
+                <object data="/gerenciamento/mostrarBucket/{{documento.contrato}}" type="application/pdf" width="100%"
                     height="370px">
                     <p>Seu navegador não tem um plugin pra PDF</p>
                 </object>

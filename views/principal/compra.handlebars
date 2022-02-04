@@ -110,7 +110,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href='/gerenciamento/mostrarDocumentos/{{compra.pedido}}' target="_blank"
+                        <a href='/gerenciamento/mostrarBucket/{{compra.pedido}}' target="_blank"
                            style="font-size: 20px;line-height: 30px;">{{compra.pedido}}</a>
                         <br>
                     </div>
@@ -140,7 +140,7 @@
                         Fornecedor
                     </label>
                     <br>
-                    <a href='/gerenciamento/mostrarDocumentos/{{compra.nota}}' target="_blank"
+                    <a href='/gerenciamento/mostrarBucket/{{compra.nota}}' target="_blank"
                        style="font-size: 20px;line-height: 43px;">{{compra.nota}}</a>
                     <br>
                 </div>
@@ -166,13 +166,13 @@
             </div>
             <div class="row mt-1">
                 <div class="col">
-                    <object data="/gerenciamento/mostrarDocumentos/{{compra.pedido}}" type="application/pdf"
+                    <object data="/gerenciamento/mostrarBucket/{{compra.pedido}}" type="application/pdf"
                             width="100%" height="330px">
                         <p>Seu navegador não tem um plugin pra PDF</p>
                     </object>
                 </div>
                 <div class="col">
-                    <object data="/gerenciamento/mostrarDocumentos/{{compra.nota}}" type="application/pdf" width="100%"
+                    <object data="/gerenciamento/mostrarBucket/{{compra.nota}}" type="application/pdf" width="100%"
                             height="330px">
                         <p>Seu navegador não tem um plugin pra PDF</p>
                     </object>

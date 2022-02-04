@@ -4,6 +4,7 @@ const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/clien
 const { readFileSync, createWriteStream } = require('fs');
 const { fromIni } = require("@aws-sdk/credential-provider-ini");
 const formidable = require('formidable')
+var im = require('imagemagick');
 
 class mobileService {
     constructor(mongoose, app) {
@@ -34,10 +35,10 @@ class mobileService {
                 });
                 parsedTeam.team = team;
                 parsedTeam.proposal = proposal;
-                console.log('proposal: ', proposal)
+                //console.log('proposal: ', proposal)
                 responseObject.push(parsedTeam);
             }
-            console.log('responseObject: ', responseObject);
+            //console.log('responseObject: ', responseObject);
             res.send(responseObject);
         });
     }
@@ -48,14 +49,14 @@ class mobileService {
             form.parse(req, async (err, fields, files) => {
                 res.end('OK');
                 const fieldData = JSON.parse(fields.json);
-                console.log('fieldData: ', fieldData);
+                //console.log('fieldData: ', fieldData);
                 const proposeId = fieldData.proposeId;
                 const filename = files.image.newFilename;
                 const originalName = files.image.originalFilename;
                 const postedNameFile = `${originalName}-${filename}.jpg`;
                 const response = await this.setImageInAWS(filename, postedNameFile);
                 if ((response && !response.hasOwnProperty('$metadata'))
-                    || response['$metadata'].httpStatusCode !== 200){
+                    || response['$metadata'].httpStatusCode !== 200) {
                     res.end('NOK');
                     console.error('Não foi possível enviar documento ao Bucket S3');
                 }
@@ -64,17 +65,17 @@ class mobileService {
                 const modelsName = ['atvTelhado', 'atvInversor', 'atvInfAterramento'];
                 let model = '';
                 modelsName.forEach((name) => {
-                    console.log('name', name);
-                    console.log('name.includes(originalName.substring(0, 6))', name.toLowerCase().includes(originalName.substring(0, 6)));
+                    //console.log('name', name);
+                    //console.log('name.includes(originalName.substring(0, 6))', name.toLowerCase().includes(originalName.substring(0, 6)));
                     if (name.toLowerCase().includes(originalName.substring(0, 6))) model = name;
                 });
                 if (model.includes('atvInfAterramento')) model = 'atvAterramento';
-                console.log('model: ', model);
+                //console.log('model: ', model);
                 const imageDate = new Date(Number(originalName.match(/\d{1,}/)[0])).toLocaleString();
-                console.log('imageDate: ', imageDate);
+                //console.log('imageDate: ', imageDate);
                 const DbImage = {
-                    desc: `${model} - ${imageDate} - ${filename}`,
-                    seq: postedNameFile
+                    desc: postedNameFile,
+                    seq: `${model} - ${imageDate} - ${filename}`,
                 }
                 console.log();
                 const Activity = this.mongoose.model(model);
@@ -96,7 +97,18 @@ class mobileService {
             region: 'sa-east-1',
             credentials: fromIni({ profile: 'vimmusimg' })
         };
-        const file = readFileSync(`./uploads/${fileName}`);
+        //const file = readFileSync(`./uploads/${fileName}`);
+        const file
+        im.resize({
+            srcData: fs.readFileSync(`./uploads/${fileName}`, 'binary'),
+            width: 256
+        }, function (err, stdout, stderr) {
+            if (err) throw err
+            file = fs.writeFileSync(`./uploads/${fileName}`, stdout, 'binary');
+            console.log('resized kittens.jpg to fit within 256x256px')
+        });
+
+
         const putData = {
             Bucket: 'vimmusimg', //process.env.IMAGES_BUCKET
             Key: newName,

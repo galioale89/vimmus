@@ -28,10 +28,11 @@ const { ehAdmin } = require('../helpers/ehAdmin')
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
+const aws = require("aws-sdk");
 const path = require('path')
 const multer = require('multer')
+const multerS3 = require("multer-s3")
 const nodemailer = require('nodemailer')
-const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3")
 const { fromIni } = require("@aws-sdk/credential-provider-ini")
 
 
@@ -73,6 +74,7 @@ const validaCronograma = require('../resources/validaCronograma')
 const dataHoje = require('../resources/dataHoje')
 const filtrarProposta = require('../resources/filtrar')
 const naoVazio = require('../resources/naoVazio')
+const setImagemAWS = require('../resources/setImagemAWS')
 
 // const TextMessageService = require('comtele-sdk').TextMessageService
 // const e = require('connect-flash')
@@ -91,23 +93,26 @@ const transporter = nodemailer.createTransport({ // Configura os parâmetros de 
         rejectUnauthorized: false
     }
 })
+aws.config.update({
+    region: 'us-east-1',
+    secretAccessKey: AWS_SECRET_ACCESS_KEY,
+    accessKeyId: AWS_ACCESS_KEY_ID,
+    //secretAccessKey: 'fVcP/qf7BggNuk029PF+lTEJQGmNBE9x6zXQc4MQ',
+    //accessKeyId: 'AKIAV7ZMQ66NULT346DG',    
+}) 
 
-// var caminho = __dirname
-// caminho = caminho.replace('routes', '')
-//console.log('caminho=>'+caminho)
-// caminho = caminho + 'public/arquivos/'
-// router.use('/public/arquivos', express.static(caminho))
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'public/arquivos')
-    },
-    filename: (req, file, cb) => {
-        cb(null, file.originalname)
-    },
+var s3 = new aws.S3()
+
+const upload = multer({ 
+    storage: multerS3({
+        s3: s3,
+        bucket: 'vimmusimg',
+        key: function (req,file,cb){
+            console.log(file)
+            cb(null, file.originalname)
+        }
+    }) 
 })
-const upload = multer({ storage: storage })
-
-// router.use(express.static(path.join(__dirname, 'public')))
 
 
 router.get('/confirmaexclusao/:id', ehAdmin, (req, res) => {
@@ -1537,51 +1542,51 @@ router.get('/obra/:id', ehAdmin, (req, res) => {
     }
     Obra.findOne({ _id: req.params.id }).lean().then((obra) => {
         Cliente.find({ user: id }).lean().then((todos_clientes) => {
-                Empresa.find({ user: id }).lean().then((todas_empresas) => {
-                    Cliente.findOne({ _id: obra.cliente }).lean().then((cliente) => {
-                        Pessoa.findOne({ _id: obra.responsavel }).lean().then((responsavel) => {
-                            Empresa.findOne({ _id: obra.responsavel }).lean().then((empresa) => {
-                                Pessoa.find({ user: id, $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }] }).sort({ 'nome': 'asc' }).lean().then((instalacao) => {
-                                    if (naoVazio(instalacao)) {
-                                        instalacao.forEach((pesins) => {
-                                            q++
-                                            nome = pesins.nome
-                                            ins_fora.push({ id: pesins._id, nome })
-                                            if (q == instalacao.length) {
-                                                Pessoa.find({ user: id, 'funges': 'checked' }).sort({ 'nome': 'asc' }).lean().then((todos_responsaveis) => {
-                                                    //console.log('gestor=>' + gestor)
-                                                    res.render('principal/obra', { todos_clientes, todos_responsaveis, todas_empresas, instalacao, obra, cliente, responsavel, empresa, tipo: false, mostraLabel, mostraSelect })
-                                                }).catch((err) => {
-                                                    req.flash('error_msg', 'Falha ao encontrar os gestores.')
-                                                    res.redirect('/gerenciamento/agenda')
-                                                })
-                                            }
-                                        })
-                                    } else {
-                                        req.flash('error_msg', 'Não existem técnicos cadastrados.')
-                                        res.redirect('/gerenciamento/agenda')
-                                    }
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Falha ao encontrar os técnicos.')
+            Empresa.find({ user: id }).lean().then((todas_empresas) => {
+                Cliente.findOne({ _id: obra.cliente }).lean().then((cliente) => {
+                    Pessoa.findOne({ _id: obra.responsavel }).lean().then((responsavel) => {
+                        Empresa.findOne({ _id: obra.responsavel }).lean().then((empresa) => {
+                            Pessoa.find({ user: id, $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }] }).sort({ 'nome': 'asc' }).lean().then((instalacao) => {
+                                if (naoVazio(instalacao)) {
+                                    instalacao.forEach((pesins) => {
+                                        q++
+                                        nome = pesins.nome
+                                        ins_fora.push({ id: pesins._id, nome })
+                                        if (q == instalacao.length) {
+                                            Pessoa.find({ user: id, 'funges': 'checked' }).sort({ 'nome': 'asc' }).lean().then((todos_responsaveis) => {
+                                                //console.log('gestor=>' + gestor)
+                                                res.render('principal/obra', { todos_clientes, todos_responsaveis, todas_empresas, instalacao, obra, cliente, responsavel, empresa, tipo: false, mostraLabel, mostraSelect })
+                                            }).catch((err) => {
+                                                req.flash('error_msg', 'Falha ao encontrar os gestores.')
+                                                res.redirect('/gerenciamento/agenda')
+                                            })
+                                        }
+                                    })
+                                } else {
+                                    req.flash('error_msg', 'Não existem técnicos cadastrados.')
                                     res.redirect('/gerenciamento/agenda')
-                                })                                
-                                
+                                }
                             }).catch((err) => {
-                                req.flash('error_msg', 'Não foi possível encontrar a empresa da obra.')
-                                res.redirect('/menu')
+                                req.flash('error_msg', 'Falha ao encontrar os técnicos.')
+                                res.redirect('/gerenciamento/agenda')
                             })
+
                         }).catch((err) => {
-                            req.flash('error_msg', 'Não foi possível encontrar o responsável da obra.')
+                            req.flash('error_msg', 'Não foi possível encontrar a empresa da obra.')
                             res.redirect('/menu')
                         })
                     }).catch((err) => {
-                        req.flash('error_msg', 'Não foi possível encontrar o cliene da obra.')
+                        req.flash('error_msg', 'Não foi possível encontrar o responsável da obra.')
                         res.redirect('/menu')
                     })
                 }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possível encontrar a empresa.')
+                    req.flash('error_msg', 'Não foi possível encontrar o cliene da obra.')
                     res.redirect('/menu')
                 })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar a empresa.')
+                res.redirect('/menu')
+            })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar clientes cadastrados.')
             res.redirect('/menu')
@@ -4292,16 +4297,6 @@ router.post('/trt', upload.single('trt'), ehAdmin, (req, res) => {
     })
 })
 
-router.get('/mostrarTrt/:id', ehAdmin, (req, res) => {
-    Documento.findOne({ proposta: req.params.id }).then((documento) => {
-        var doc = documento.trt
-        var path = __dirname
-        //console.log(path)
-        path = path.replace('routes', '')
-        res.sendFile(path + '/public/arquivos/' + doc)
-    })
-})
-
 router.post('/obra', ehAdmin, (req, res) => {
     const { _id } = req.user
     const { user } = req.user
@@ -4312,7 +4307,7 @@ router.post('/obra', ehAdmin, (req, res) => {
     } else {
         id = user
     }
-    console.log('req.body.id=>'+req.body.id)
+    console.log('req.body.id=>' + req.body.id)
     if (naoVazio(req.body.id) && req.body.id != ',') {
         Obra.findOne({ _id: req.body.id }).then((obra) => {
             if (naoVazio(req.body.cliente)) {
@@ -4353,38 +4348,38 @@ router.post('/obra', ehAdmin, (req, res) => {
     } else {
         console.log('nova obra')
         var seq
-            Obra.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((obraseq) => {
-                console.log('obraseq=>'+obraseq)
-                if (naoVazio(obraseq)) {
-                    seq = parseFloat(obraseq.seq) + 1
-                } else {
-                    seq = 1
-                }
-                const obra = {
-                    user: id,
-                    cliente: req.body.cliente,
-                    responsavel: req.body.responsavel,
-                    endereco: req.body.endereco,
-                    empresa: req.body.empresa,
-                    data: dataBusca(dataHoje()),
-                    datacad: dataBusca(dataHoje()),
-                    feito: false,
-                    encerrado: false,
-                    seq: seq,
-                    status: 'Aguardando',
-                }
-                new Obra(obra).save().then(() => {
-                    Obra.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((nova_obra) => {
-                        res.redirect('/gerenciamento/obra/' + nova_obra._id)
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Houve um erro ao encontrar a proposta.')
-                        res.redirect('/menu')
-                    })
+        Obra.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((obraseq) => {
+            console.log('obraseq=>' + obraseq)
+            if (naoVazio(obraseq)) {
+                seq = parseFloat(obraseq.seq) + 1
+            } else {
+                seq = 1
+            }
+            const obra = {
+                user: id,
+                cliente: req.body.cliente,
+                responsavel: req.body.responsavel,
+                endereco: req.body.endereco,
+                empresa: req.body.empresa,
+                data: dataBusca(dataHoje()),
+                datacad: dataBusca(dataHoje()),
+                feito: false,
+                encerrado: false,
+                seq: seq,
+                status: 'Aguardando',
+            }
+            new Obra(obra).save().then(() => {
+                Obra.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((nova_obra) => {
+                    res.redirect('/gerenciamento/obra/' + nova_obra._id)
                 }).catch((err) => {
-                    req.flash('error_msg', 'Houve um erro ao salvar a proposta.')
+                    req.flash('error_msg', 'Houve um erro ao encontrar a proposta.')
                     res.redirect('/menu')
                 })
+            }).catch((err) => {
+                req.flash('error_msg', 'Houve um erro ao salvar a proposta.')
+                res.redirect('/menu')
             })
+        })
     }
 })
 
@@ -4762,16 +4757,6 @@ router.post('/proposta1', upload.single('proposta1'), ehAdmin, (req, res) => {
     })
 })
 
-router.get('/mostrarProposta1/:id', ehAdmin, (req, res) => {
-    Proposta.findOne({ _id: req.params.id }).then((proposta) => {
-        var doc = proposta.proposta1
-        var path = __dirname
-        //console.log(path)
-        path = path.replace('routes', '')
-        res.sendFile(path + '/public/arquivos/' + doc)
-    })
-})
-
 router.post('/proposta2', upload.single('proposta2'), ehAdmin, (req, res) => {
     var file
     if (req.file != null) {
@@ -4791,16 +4776,6 @@ router.post('/proposta2', upload.single('proposta2'), ehAdmin, (req, res) => {
             req.flash('success_msg', 'Proposta salva com sucesso')
             res.redirect('/gerenciamento/proposta/' + req.body.id)
         })
-    })
-})
-
-router.get('/mostrarProposta2/:id', ehAdmin, (req, res) => {
-    Proposta.findOne({ _id: req.params.id }).then((proposta) => {
-        var doc = proposta.proposta2
-        var path = __dirname
-        //console.log(path)
-        path = path.replace('routes', '')
-        res.sendFile(path + '/public/arquivos/' + doc)
     })
 })
 
@@ -4825,16 +4800,6 @@ router.post('/proposta3', upload.single('proposta3'), ehAdmin, (req, res) => {
     })
 })
 
-router.get('/mostrarProposta3/:id', ehAdmin, (req, res) => {
-    Proposta.findOne({ _id: req.params.id }).then((proposta) => {
-        var doc = proposta.proposta3
-        var path = __dirname
-        //console.log(path)
-        path = path.replace('routes', '')
-        res.sendFile(path + '/public/arquivos/' + doc)
-    })
-})
-
 router.post('/proposta4', upload.single('proposta4'), ehAdmin, (req, res) => {
     var file
     if (req.file != null) {
@@ -4853,16 +4818,6 @@ router.post('/proposta4', upload.single('proposta4'), ehAdmin, (req, res) => {
             req.flash('success_msg', 'Proposta salva com sucesso')
             res.redirect('/gerenciamento/proposta/' + req.body.id)
         })
-    })
-})
-
-router.get('/mostrarProposta4/:id', ehAdmin, (req, res) => {
-    Proposta.findOne({ _id: req.params.id }).then((proposta) => {
-        var doc = proposta.proposta4
-        var path = __dirname
-        //console.log(path)
-        path = path.replace('routes', '')
-        res.sendFile(path + '/public/arquivos/' + doc)
     })
 })
 
@@ -4888,16 +4843,6 @@ router.post('/proposta5', upload.single('proposta5'), ehAdmin, (req, res) => {
     })
 })
 
-router.get('/mostrarProposta5/:id', ehAdmin, (req, res) => {
-    Proposta.findOne({ _id: req.params.id }).then((proposta) => {
-        var doc = proposta.proposta5
-        var path = __dirname
-        //console.log(path)
-        path = path.replace('routes', '')
-        res.sendFile(path + '/public/arquivos/' + doc)
-    })
-})
-
 router.post('/proposta6', upload.single('proposta6'), ehAdmin, (req, res) => {
     var file
     if (req.file != null) {
@@ -4916,36 +4861,6 @@ router.post('/proposta6', upload.single('proposta6'), ehAdmin, (req, res) => {
             req.flash('success_msg', 'Proposta salva com sucesso')
             res.redirect('/gerenciamento/proposta/' + req.body.id)
         })
-    })
-})
-
-router.get('/mostrarProposta6/:id', ehAdmin, (req, res) => {
-    Proposta.findOne({ _id: req.params.id }).then((proposta) => {
-        var doc = proposta.proposta6
-        var path = __dirname
-        //console.log(path)
-        path = path.replace('routes', '')
-        res.sendFile(path + '/public/arquivos/' + doc)
-    })
-})
-
-router.get('/mostrarProposta/:id', ehAdmin, (req, res) => {
-
-    Proposta.findOne({ _id: req.params.id }).then((proposta) => {
-        var doc = proposta.assinatura
-        var path = __dirname
-        path = path.replace('routes', '')
-        res.sendFile(path + '/public/arquivos/' + doc)
-    })
-})
-
-router.get('/mostrarContrato/:id', ehAdmin, (req, res) => {
-
-    Proposta.findOne({ _id: req.params.id }).then((proposta) => {
-        var doc = proposta.contrato
-        var path = __dirname
-        path = path.replace('routes', '')
-        res.sendFile(path + '/public/arquivos/' + doc)
     })
 })
 
@@ -5152,19 +5067,6 @@ router.post('/pedido', upload.single('pedido'), ehAdmin, (req, res) => {
     })
 })
 
-router.get('/mostrarPedido/:id', ehAdmin, (req, res) => {
-    Compra.findOne({ proposta: req.params.id }).then((compra) => {
-        var doc = compra.pedido
-        var path = __dirname
-        //console.log(path)
-        path = path.replace('routes', '')
-        res.sendFile(path + '/public/arquivos/' + doc)
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao encontrar a compra.')
-        res.redirect('/gerenciamento/compra/' + req.body.id)
-    })
-})
-
 router.post('/nota', upload.single('nota'), ehAdmin, (req, res) => {
     var file
     if (req.file != null) {
@@ -5185,19 +5087,6 @@ router.post('/nota', upload.single('nota'), ehAdmin, (req, res) => {
             req.flash('error_msg', 'Falha ao salvar a nota.')
             res.redirect('/gerenciamento/compra/' + req.body.id)
         })
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao encontrar a compra.')
-        res.redirect('/gerenciamento/compra/' + req.body.id)
-    })
-})
-
-router.get('/mostrarNota/:id', ehAdmin, (req, res) => {
-    Compra.findOne({ proposta: req.params.id }).then((compra) => {
-        var doc = compra.nota
-        var path = __dirname
-        //console.log(path)
-        path = path.replace('routes', '')
-        res.sendFile(path + '/public/arquivos/' + doc)
     }).catch(() => {
         req.flash('error_msg', 'Falha ao encontrar a compra.')
         res.redirect('/gerenciamento/compra/' + req.body.id)
@@ -6112,6 +6001,7 @@ router.post('/checklist', upload.single('clins'), ehAdmin, (req, res) => {
 router.post('/salvarImagem', ehAdmin, upload.array('files', 10), (req, res) => {
 
     var arquivos = req.files
+    console.log('req.files=>'+req.files)
     var imagem
     var ativo
 
@@ -6483,7 +6373,7 @@ router.get('/deletaImagem/:msg', ehAdmin, (req, res) => {
         if (params[2] == 'inversor') {
             AtvInversor.findOneAndUpdate(sql, { $pull: { 'caminhoFoto': { 'desc': params[0] } } }).then((e) => {
                 req.flash('aviso_msg', 'Imagem removida com sucesso')
-                console.log('params[4]=>'+params[4])
+                console.log('params[4]=>' + params[4])
                 if (params[4] == 'true') {
                     res.redirect('/gerenciamento/atvi/' + params[1])
                 } else {
@@ -6561,36 +6451,19 @@ router.get('/deletaImagem/:msg', ehAdmin, (req, res) => {
     }
 })
 
-router.get('/mostrarImagens/:foto', ehAdmin, (req, res) => {
-    var path = __dirname
-    path = path.replace('routes', '')
-    res.sendFile('/public/arquivos/' + req.params.foto, { root: path })
-})
-
-router.get('/mostrarAceite/:id', ehAdmin, (req, res) => {
-    Documento.findOne({ proposta: req.params.id }).then((documento) => {
-        var doc = documento.aceite
-        var path = __dirname
-        //console.log(path)
-        path = path.replace('routes', '')
-        res.sendFile(path + '/public/arquivos/' + doc)
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao encontrar o documento.')
-        res.redirect('/gerenciamento/aceite/' + req.body.id)
-    })
-})
-
-router.get('/mostrarClins/:id', ehAdmin, (req, res) => {
-    Documento.findOne({ proposta: req.params.id }).then((documento) => {
-        var doc = documento.clins
-        var path = __dirname
-        //console.log(path)
-        path = path.replace('routes', '')
-        res.sendFile(path + '/public/arquivos/' + doc)
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao encontrar o documento.')
-        res.redirect('/gerenciamento/aceite/' + req.body.id)
-    })
+router.get('/mostrarBucket/:docimg', ehAdmin, (req, res) => {
+    console.log("req.params.docimg=>"+req.params.docimg)
+    s3.getObject(
+        { Bucket: "vimmusimg", Key: req.params.docimg },
+        function (error, data) {
+          if (error != null) {
+            console.log("Failed to retrieve an object: " + error);
+          } else {
+            console.log(data.ContentLength)
+            res.send(data.Body)
+          }
+        }
+      )
 })
 
 router.post('/almoxarifado', upload.single('almoxarifado'), ehAdmin, (req, res) => {
@@ -6648,18 +6521,6 @@ router.get('/cancelaalmox/:id', ehAdmin, (req, res) => {
     })
 })
 
-router.get('/mostrarAlmoxarifado/:id', ehAdmin, (req, res) => {
-    Documento.findOne({ proposta: req.params.id }).then((documento) => {
-        var doc = documento.almoxarifado
-        var path = __dirname
-        //console.log(path)
-        path = path.replace('routes', '')
-        res.sendFile(path + '/public/arquivos/' + doc)
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao encontrar o documento.')
-        res.redirect('/gerenciamento/almoxarifado/' + req.body.id)
-    })
-})
 
 router.post('/financeiro', upload.single('financeiro'), ehAdmin, (req, res) => {
     var financeirofile
@@ -6748,12 +6609,6 @@ router.post('/comprovante', upload.single('comprovante'), ehAdmin, (req, res) =>
         req.flash('error_msg', 'Falha ao excluir o comprovante.')
         res.redirect('/gerenciamento/financeiro/' + req.body.id)
     })
-})
-
-router.get('/mostrarDocumentos/:doc', ehAdmin, (req, res) => {
-    var path = __dirname
-    path = path.replace('routes', '')
-    res.sendFile('/public/arquivos/' + req.params.doc, { root: path })
 })
 
 router.post('/posvenda', upload.single('posvenda'), ehAdmin, (req, res) => {
@@ -6975,19 +6830,6 @@ router.post('/checkposvenda', ehAdmin, (req, res) => {
     })
 })
 
-router.get('/mostrarPosvenda/:id', ehAdmin, (req, res) => {
-    Posvenda.findOne({ proposta: req.params.id }).then((posvenda) => {
-        var doc = posvenda.laudo
-        var path = __dirname
-        //console.log(path)
-        path = path.replace('routes', '')
-        res.sendFile(path + '/public/arquivos/' + doc)
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao encontrar o pós venda.')
-        res.redirect('/gerenciamento/posvenda/' + req.params.id)
-    })
-})
-
 router.post('/salvarDocumento', upload.single('files'), ehAdmin, (req, res) => {
     var files
     var tipo = req.body.tipo
@@ -6997,7 +6839,6 @@ router.post('/salvarDocumento', upload.single('files'), ehAdmin, (req, res) => {
         files = ''
     }
     Documento.findOne({ proposta: req.body.id }).then((documento) => {
-
         if (tipo == 'memorial') {
             if (naoVazio(files)) {
                 documento.memorial = files
