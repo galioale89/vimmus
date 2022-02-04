@@ -91,7 +91,7 @@ class mobileService {
     async setImageInAWS(fileName, newName) {
         const s3Config = {
             region: 'sa-east-1',
-            credentials: fromIni({ profile: 'default' })
+            credentials: fromIni({ profile: 'vimmusimg' })
         };
         const file = readFileSync(`./uploads/${fileName}`);
         const putData = {
