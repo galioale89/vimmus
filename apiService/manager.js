@@ -1,16 +1,15 @@
 const Express = require('express');
 const server = Express();
 const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
-const { readFileSync, writeFileSync, createWriteStream } = require('fs');
+const { readFileSync, createWriteStream, writeFileSync } = require('fs');
 const { fromIni } = require("@aws-sdk/credential-provider-ini");
 const formidable = require('formidable')
-const sharp = require('sharp')
 
 class mobileService {
     constructor(mongoose, app) {
         this.app = app;
-        //console.log('process.env.PORT: ', process.env.PORT);
-        //server.listen(21180, () => { //console.log('Ready in 21180') })
+        console.log('process.env.PORT: ', process.env.PORT);
+        //server.listen(21180, () => { console.log('Ready in 21180') })
         this.mongoose = mongoose;
     }
 
@@ -56,11 +55,11 @@ class mobileService {
                 const postedNameFile = `${originalName}-${filename}.jpg`;
                 const response = await this.setImageInAWS(filename, postedNameFile);
                 if ((response && !response.hasOwnProperty('$metadata'))
-                    || response['$metadata'].httpStatusCode !== 200) {
+                    || response['$metadata'].httpStatusCode !== 200){
                     res.end('NOK');
-                    //console.error('Não foi possível enviar documento ao Bucket S3');
+                    console.error('Não foi possível enviar documento ao Bucket S3');
                 }
-                //console.log(`Enviado: ${postedNameFile}`);
+                console.log(`Enviado: ${postedNameFile}`);
                 // lembrar de alterar no app atvInfAterramento
                 const modelsName = ['atvTelhado', 'atvInversor', 'atvInfAterramento'];
                 let model = '';
@@ -74,10 +73,10 @@ class mobileService {
                 const imageDate = new Date(Number(originalName.match(/\d{1,}/)[0])).toLocaleString();
                 //console.log('imageDate: ', imageDate);
                 const DbImage = {
-                    desc: postedNameFile,
-                    seq: `${model} - ${imageDate} - ${filename}`,
+                    desc: `${model} - ${imageDate} - ${filename}`,
+                    seq: postedNameFile
                 }
-                //console.log();
+                console.log();
                 const Activity = this.mongoose.model(model);
                 const activity = await Activity.findOneAndUpdate(
                     {
@@ -87,7 +86,7 @@ class mobileService {
                         $push: { caminhoFoto: DbImage }
                     }
                 );
-                //console.log('activity', JSON.stringify(activity));
+                console.log('activity', JSON.stringify(activity));
             });
         });
     }
@@ -97,30 +96,33 @@ class mobileService {
             region: 'sa-east-1',
             credentials: fromIni({ profile: 'vimmusimg' })
         };
-
-        const file = readFileSync(`./uploads/${fileName}`)
-        console.log('file=>'+file)
-        sharp(file).resize({ height: 780 }).toFile(file)
-            .then(function (newFileInfo) {
-                // newFileInfo holds the output file properties
-                console.log("Success")
-                const putData = {
-                    Bucket: 'vimmusimg', //process.env.IMAGES_BUCKET
-                    Key: newName,
-                    StorageClass: 'STANDARD',
-                    Body: file
-                }                
-            })
-            .catch(function (err) {
-                console.log("Error occured");
-            });
-
-
-        const s3Client = new S3Client(s3Config);
-        //console.log('EnviandoImagem')
-        let response = await s3Client.send(new PutObjectCommand(putData));
-        //console.log('awsResponse: ', response);
-        return response;
+        const file = readFileSync(`./uploads/${fileName}`);
+        resizeImg(file, { width: 128, height: 128 }).then(buf => {
+            writeFileSync(newName, buf);
+            const putData = {
+                Bucket: 'vimmusimg', //process.env.IMAGES_BUCKET
+                Key: newName,
+                StorageClass: 'STANDARD',
+                Body: file                
+            }        
+            const s3Client = new S3Client(s3Config);
+            console.log('EnviandoImagem')
+            let response = await s3Client.send(new PutObjectCommand(putData));
+            console.log('awsResponse: ', response);
+            return response            
+        })    
+        
+        // const putData = {
+        //     Bucket: 'vimmusimg', //process.env.IMAGES_BUCKET
+        //     Key: newName,
+        //     StorageClass: 'STANDARD',
+        //     Body: file
+        // };
+        // const s3Client = new S3Client(s3Config);
+        // console.log('EnviandoImagem')
+        // let response = await s3Client.send(new PutObjectCommand(putData));
+        // console.log('awsResponse: ', response);
+        // return response;
     }
 }
 
