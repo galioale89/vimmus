@@ -28,11 +28,11 @@ const { ehAdmin } = require('../helpers/ehAdmin')
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
-// const fs = require('fs')
 const path = require('path')
 const multer = require('multer')
 const nodemailer = require('nodemailer')
-// const PromiseFtp = require('promise-ftp')
+const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3")
+const { fromIni } = require("@aws-sdk/credential-provider-ini")
 
 
 const Usuario = mongoose.model('usuario')
