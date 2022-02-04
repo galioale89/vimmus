@@ -99,7 +99,7 @@ class mobileService {
         };
         const file = readFileSync(`./uploads/${fileName}`);
         resizeImg(file, { width: 128, height: 128 }).then(buf => {
-            writeFileSync(newName, buf);           
+            writeFileSync(file, buf);           
         })  
         const putData = {
             Bucket: 'vimmusimg', //process.env.IMAGES_BUCKET
