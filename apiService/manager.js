@@ -91,7 +91,11 @@ class mobileService {
     async setImageInAWS(fileName, newName) {
         const s3Config = {
             region: 'sa-east-1',
-             credentials: fromIni({ profile: 'default' }) 
+            //  credentials: fromIni({ profile: 'default' }) 
+            credentials: {
+                accessKeyId: process.env.AWS_ACCESS_KEY,
+                 secretAccessKey: process.env.AWS_SECRET_ACCESS
+            }            
         };
         const file = readFileSync(`./uploads/${fileName}`);
         const putData = {
