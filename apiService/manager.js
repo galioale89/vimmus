@@ -60,7 +60,8 @@ class mobileService {
                     console.error('Não foi possível enviar documento ao Bucket S3');
                 }
                 console.log(`Enviado: ${postedNameFile}`);
-                const modelsName = ['atvTelhado', 'atvInversor', 'atvAterramento'];
+                // lembrar de alterar no app atvInfAterramento
+                const modelsName = ['atvTelhado', 'atvInversor', 'atvInfAterramento'];
                 let model = '';
                 modelsName.forEach((name) => {
                     console.log('name', name);
