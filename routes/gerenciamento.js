@@ -98,7 +98,8 @@ const transporter = nodemailer.createTransport({ // Configura os parâmetros de 
 //     accessKeyId: 'AKIAV7ZMQ66NULT346DG',    
 // })
 
-aws.config.credentials = fromIni({ profile: 'vimmusimg' })
+var credentials = new aws.SharedIniFileCredentials({profile: 'vimmusimg'})
+aws.config.credentials = credentials
 
 var s3 = new aws.S3()
 
