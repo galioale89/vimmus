@@ -11,16 +11,16 @@ const Equipe = new Schema({
     type: Boolean,
     require: false,
   },
-  projeto: {
-    type: Schema.Types.ObjectId,
-    ref: 'projeto',
-    require: false
-  },
   tarefa: {
     type: Schema.Types.ObjectId,
     ref: 'tarefas',
     require: false
   },
+  obra: {
+    type: Schema.Types.ObjectId,
+    ref: 'tarefas',
+    require: false
+  },  
   insres: {
     type: Schema.Types.ObjectId,
     ref: 'pessoa',
@@ -116,198 +116,6 @@ const Equipe = new Schema({
     require: false
   },  
   email: {
-    type: String,
-    require: false
-  },
-  ele0: {
-    type: String,
-    require: false
-  },
-  ele1: {
-    type: String,
-    require: false
-  },
-  ele2: {
-    type: String,
-    require: false
-  },
-  ele3: {
-    type: String,
-    require: false
-  },
-  ele4: {
-    type: String,
-    require: false
-  },
-  ele5: {
-    type: String,
-    require: false
-  },
-  pla0: {
-    type: String,
-    require: false
-  },
-  pla1: {
-    type: String,
-    require: false
-  },
-  pla2: {
-    type: String,
-    require: false
-  },
-  pla3: {
-    type: String,
-    require: false
-  },
-  pla4: {
-    type: String,
-    require: false
-  },
-  pla5: {
-    type: String,
-    require: false
-  },
-  pro0: {
-    type: String,
-    require: false
-  },
-  pro1: {
-    type: String,
-    require: false
-  },
-  pro2: {
-    type: String,
-    require: false
-  },
-  pro3: {
-    type: String,
-    require: false
-  },
-  pro4: {
-    type: String,
-    require: false
-  },
-  pro5: {
-    type: String,
-    require: false
-  },
-  ate0: {
-    type: String,
-    require: false
-  },
-  ate1: {
-    type: String,
-    require: false
-  },
-  ate2: {
-    type: String,
-    require: false
-  },
-  ate3: {
-    type: String,
-    require: false
-  },
-  ate4: {
-    type: String,
-    require: false
-  },
-  ate5: {
-    type: String,
-    require: false
-  },
-  inv0: {
-    type: String,
-    require: false
-  },
-  inv1: {
-    type: String,
-    require: false
-  },
-  inv2: {
-    type: String,
-    require: false
-  },
-  inv3: {
-    type: String,
-    require: false
-  },
-  inv4: {
-    type: String,
-    require: false
-  },
-  inv5: {
-    type: String,
-    require: false
-  },
-  eae0: {
-    type: String,
-    require: false
-  },
-  eae1: {
-    type: String,
-    require: false
-  },
-  eae2: {
-    type: String,
-    require: false
-  },
-  eae3: {
-    type: String,
-    require: false
-  },
-  eae4: {
-    type: String,
-    require: false
-  },
-  eae5: {
-    type: String,
-    require: false
-  },
-  pnl0: {
-    type: String,
-    require: false
-  },
-  pnl1: {
-    type: String,
-    require: false
-  },
-  pnl2: {
-    type: String,
-    require: false
-  },
-  pnl3: {
-    type: String,
-    require: false
-  },
-  pnl4: {
-    type: String,
-    require: false
-  },
-  pnl5: {
-    type: String,
-    require: false
-  },
-  vis0: {
-    type: String,
-    require: false
-  },
-  vis1: {
-    type: String,
-    require: false
-  },
-  vis2: {
-    type: String,
-    require: false
-  },
-  vis3: {
-    type: String,
-    require: false
-  },
-  vis4: {
-    type: String,
-    require: false
-  },
-  vis5: {
     type: String,
     require: false
   },

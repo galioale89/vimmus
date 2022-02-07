@@ -27,12 +27,7 @@ const Obra = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'pessoa',
         require: false,
-    },          
-    equipe: {
-        type: Schema.Types.ObjectId,
-        ref: 'equipe',
-        require: false,
-    },    
+    },             
     empresa: {
         type: Schema.Types.ObjectId,
         ref: 'empresa',
@@ -50,10 +45,6 @@ const Obra = new Schema({
         type: String,
         require: false
     },     
-    feito:{
-        type: Boolean,
-        require:false
-    },
     encerrado:{
         type: Boolean,
         require:false        
@@ -65,7 +56,15 @@ const Obra = new Schema({
     datacad:{
         type: Number,
         require: false   
-    },  
+    },
+    dtini:{
+        type: String,
+        require:false   
+    },
+    dtfim:{
+        type: String,
+        require:false   
+    },        
     data:{
         type: Number,
         require:false   

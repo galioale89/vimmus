@@ -738,9 +738,13 @@ app.get('/menu', ehAdmin, (req, res) => {
             var ordem = -1
             var numtrf = 0
             Empresa.find({ user: id }).lean().then((todas_empresas) => {
-                Tarefa.find({ user: id }).sort({ buscadataini: ordem, parado: -1, liberar: -1}).then((tarefas) => {
+                Tarefa.find({ user: id }).sort({ buscadataini: ordem, parado: -1, liberar: -1 }).then((tarefas) => {
                     if (naoVazio(tarefas)) {
                         tarefas.forEach((e) => {
+                            // console.log('e._id=>' + e._id)
+                            // console.log('e.servico=>' + e.servico)
+                            // console.log('e.cliente=>' + e.cliente)
+                            // console.log('e.responsavel=>' + e.responsavel)
                             Servico.findOne({ _id: e.servico }).then((servico) => {
                                 Equipe.findOne({ tarefa: e._id }).then((equipe) => {
                                     if (equipe.feito == false && equipe.parado == false && equipe.liberar == false) {
@@ -758,11 +762,16 @@ app.get('/menu', ehAdmin, (req, res) => {
                                             }
                                         }
                                     }
+                                    // console.log(qtdagua)
+                                    // console.log(qtdexec)
+                                    // console.log(qtdpara)
+                                    // console.log(qtdreal)
                                     Cliente.findOne({ _id: e.cliente }).then((cliente) => {
                                         Pessoa.findOne({ _id: e.responsavel }).then((pessoa_res) => {
-                                            lista_tarefas.push({ id: e._id, seq: e.seq, liberado: equipe.liberar, feito: equipe.feito, nome_cli: cliente.nome, servico: servico.descricao, nome_res: pessoa_res.nome, id_equipe: equipe._id, dtini: dataMensagem(equipe.dtinicio), dtfim: dataMensagem(equipe.dtfim) })
+                                            lista_tarefas.push({ id: e._id, liberado: equipe.liberar, feito: equipe.feito, nome_cli: cliente.nome, servico: servico.descricao, nome_res: pessoa_res.nome, id_equipe: equipe._id, dtini: dataMensagem(equipe.dtinicio), dtfim: dataMensagem(equipe.dtfim) })
                                             q++
                                             if (q == tarefas.length) {
+                                                console.log('entrou lista tarefas')
                                                 numtrf = tarefas.length
                                                 Cliente.find({ user: id }).lean().then((todos_clientes) => {
                                                     Pessoa.findOne({ _id: esta_pessoa }).lean().then((nome_pessoa) => {
@@ -771,13 +780,10 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                         } else {
                                                             nome_lista = nome
                                                         }
-                                                        //console.log(qtdagua)
-                                                        //console.log(qtdexec)
-                                                        //console.log(qtdpara)
-                                                        //console.log(qtdreal)
+
                                                         res.render('dashboard', { ano, numtrf, qtdagua, qtdexec, qtdpara, qtdreal, crm: false, lista_tarefas, nome_lista, saudacao, todos_clientes, asc, desc, ordem, todas_empresas })
                                                     }).catch((err) => {
-                                                        req.flash("error_msg", "Ocorreu uma falha interna para encontrar a pessoa<s>.")
+                                                        req.flash("error_msg", "Ocorreu uma falha interna para encontrar esta pessoa<s>.")
                                                         res.redirect("/")
                                                     })
                                                 }).catch((err) => {
@@ -786,7 +792,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                                 })
                                             }
                                         }).catch((err) => {
-                                            req.flash("error_msg", "Ocorreu uma falha interna para encontrar a pessoa<s>.")
+                                            req.flash("error_msg", "Ocorreu uma falha interna para encontrar a pessoa responsável<s>.")
                                             res.redirect("/")
                                         })
                                     }).catch((err) => {
@@ -798,7 +804,7 @@ app.get('/menu', ehAdmin, (req, res) => {
                                     res.redirect("/")
                                 })
                             }).catch((err) => {
-                                req.flash("error_msg", "Ocorreu uma falha interna para encontrar a pessoa<s>.")
+                                req.flash("error_msg", "Ocorreu uma falha interna para encontrar o serviço<s>.")
                                 res.redirect("/")
                             })
                         })

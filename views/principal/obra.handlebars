@@ -1,9 +1,4 @@
 <style>
-    .disabledbutton {
-        pointer-events: none;
-        opacity: 0.4;
-    }
-
     .lists {
         display: flex;
         flex: 1;
@@ -79,12 +74,6 @@
 
     window.onload = function () {
 
-        var bloquear = document.getElementById('bloquear')
-
-        if (bloquear.className == 'true') {
-            bloquear.className = 'disabledbutton'
-        }
-
         var estados = document.getElementById('estado');
         var cidades = document.getElementById('cidade');
 
@@ -108,10 +97,10 @@
             <div class='col-md-11'>
                 <div class="row justify-content-center">
                     <div class='col-md-2 text-end'>
-                        <label class='col-form-label fw-bold m-1 mb-3'>Empresa: </label>
+                        <label class='col-form-label col-form-label-sm fw-bold m-1 mb-3'>Empresa: </label>
                     </div>
                     <div class='col-md-4'>
-                        <select class='form-select mt-1' name='empresa'>
+                        <select class='form-select form-select-sm mt-1' name='empresa'>
                             {{#if empresa._id}}
                             <option class='fw-bold' value='{{empresa._id}}'>{{empresa.nome}}</option>
                             {{/if}}
@@ -125,11 +114,11 @@
                 </div>
                 <div class="row">
                     <div class="col-md-2 text-end">
-                        <label class='col-form-label fw-bold mb-1'>Cliente: </label><br>
+                        <label class='col-form-label col-form-label-sm fw-bold mb-1'>Cliente: </label><br>
                     </div>
                     <div class="col-md-4 text-start">
                         <input type='hidden' name="id" value='{{obras._id}}'>
-                        <select class='form-select' name='cliente'>
+                        <select class='form-select form-select-sm' name='cliente'>
                             {{#if cliente._id}}
                             <option class='fw-bold' value='{{cliente._id}}'>{{cliente.nome}}</option>
                             {{/if}}
@@ -141,10 +130,10 @@
                         </select>
                     </div>
                     <div class='col-md-2 text-end'>
-                        <label class='col-form-label fw-bold m-1'>Gestor Responsável: </label><br>
+                        <label class='col-form-label col-form-label-sm fw-bold m-1'>Gestor Responsável: </label><br>
                     </div>
                     <div class='col-md-4'>
-                        <select class='form-select mt-1' name='responsavel'>
+                        <select class='form-select form-select-sm mt-1' name='responsavel'>
                             {{#if responsavel._id}}
                             <option class='fw-bold' value='{{responsavel._id}}'>{{responsavel.nome}}</option>
                             {{/if}}
@@ -211,25 +200,55 @@
     </form>
     {{#if obra._id}}
     <br>
-    <form method="post" name='tarefa' action='/gerenciamento/addtarefa' style="text-align: center;">
+    <ul class="nav nav-tabs mb-2">
+        <li class="nav-item">
+            <a class="nav-link titulo-inicio active" aria-current="page" style="color: black;"
+                href='/gerenciamento/obra/{{obra._id}}abaadicionar' ><label class="col-form-label titulo-inicio">Adicionar Tarefa</label></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link titulo-inicio" aria-current="page" style="color: black;"
+                href="/gerenciamento/obra/{{obra._id}}abalista"><label class="col-form-label titulo-inicio">Lista de Tarefas</label></a>
+        </li>
+    </ul>
+    <form method="post" name='tarefa' action='/gerenciamento/addtarefa' style="text-align: center;margin-bottom: 20px;">
+        <input type='hidden' name='tipo' value='obra'>
+        <input type='hidden' name='id' value='{{obra._id}}'>
+        <input type='hidden' id='endereco' name='endereco' value='{{obra.endereco}}'>
+        <input type='hidden' name='cliente' value='{{obra.cliente}}'>
+        <input type='hidden' name='empresa' value='{{obra.empresa}}'>
+        <input type='hidden' name='cidade' value='{{obra.cidade}}'>
+        <input type='hidden' name='uf' value='{{obra.uf}}'>
         <div class="row">
-            <div class="col-md-2 text-end">
+            <div class="col-md-1 text-end">
                 <label class="col-form-label col-form-label-sm fw-bold">Custo:</label>
             </div>
-            <div class="col-md-2 text-end">
+            <div class="col-md-1 text-end">
                 <input class="form-control form-control-sm" type="number" step='0.010' name='preco' id='preco'
                     placeholder="R$" value='{{tarefa.preco}}'>
             </div>
+            <div class="col-md-1 text-end">
+                <label class="col-form-label col-form-label-sm fw-bold">Serviço:</label>
+            </div>
+            <div class="col-md-3">
+                <select class='form-select form-select-sm' name='servico'>
+                    {{#if trf_servico}}
+                    <option value='{{trf_srvid}}'>{{trf_servico}}</option>
+                    {{/if}}
+                    {{#each servicos}}
+                    <option value='{{_id}}'>{{descricao}}</option>
+                    {{/each}}
+                </select>
+            </div>         
             <div class="col-md-2 text-end">
                 <label class="col-form-label col-form-label-sm fw-bold">Período da Atividade:</label>
             </div>
-            <div class="col-md-2">
+            <div style="width: 200px;">
                 <input class='form-control form-control-sm' type='date' name='dataini' value='{{tarefa.dataini}}'>
             </div>
             <div style="width: 10px;">
                 <label class='col-form-label col-form-label-sm'>a</label>
             </div>
-            <div class="col-md-2">
+            <div style="width: 200px;">
                 <input class='form-control form-control-sm' type='date' name='datafim' value='{{tarefa.datafim}}'>
             </div>
         </div>
@@ -261,8 +280,7 @@
             <div class="lists">
                 <div class="list">
                     <label class="col-form-label col-form-label-sm fw-bold text-center"
-                        style="color: white">Instaladores
-                        Disponíveis</label>
+                        style="color: white">Instaladores Disponíveis</label>
                     <div style="overflow-y: scroll;height: fit-content">
                         {{#each ins_fora}}
                         <div class="list-item" style='color: black;' draggable="true" name='{{id}}'>
@@ -275,8 +293,7 @@
                 </div>
                 <div class="list">
                     <label class="col-form-label col-form-label-sm fw-bold text-center"
-                        style="color: white">Instaladores
-                        Alocados</label>
+                        style="color: white">Instaladores Alocados</label>
                     {{#each ins_dentro}}
                     <div class="item-instalacao" style='color: black;' draggable="true" name='{{id}}'>
                         {{nome}}<a href='/gerenciamento/vermaistarefas/{{id}}' style="padding-left: 5px;"><i
@@ -301,18 +318,176 @@
         <input type='hidden' name='idins4' id='idins4' value=''>
         <input type='hidden' name='idins5' id='idins5' value=''>
         <div class='btn-group gap-2 col-6 mt-2'>
-            <input type='button' id='salvar' style="width: 30px;" class="btn btn-sm btn-success" value="Salvar">
-            {{#if tarefa.programacao}}
-            <a href='/cliente/programacao/{{tarefa.usina}}' class='btn btn-sm btn-primary'><i
-                    class='bi bi-arrow-left'>Voltar
-                    Programação</i></a>
-            {{/if}}
-            {{#if tarefa._id}}
-            <a href='/gerenciamento/tarefas/{{tarefa._id}}' class='btn btn-sm btn-primary'><i
-                    class='bi bi-arrow-left'>Voltar
-                    Tarefas</i></a>
-            {{/if}}
-        </div>
+        <input type="button" id='salvar' style="width: 30px;" class="btn btn-sm btn-success" value="Salvar">
     </form>
     {{/if}}
 </div>
+<script>
+    const list_items = document.querySelectorAll('.list-item');
+    const lists = document.querySelectorAll('.list');
+    const list_instalacao = document.querySelectorAll('.item-instalacao');
+
+    let draggedItem = null;
+
+    for (let i = 0; i < list_items.length; i++) {
+        const item = list_items[i];
+
+        item.addEventListener('dragstart', function () {
+            draggedItem = item;
+            setTimeout(function () {
+                item.style.display = 'none';
+            }, 0)
+        });
+
+        item.addEventListener('dragend', function () {
+            this.className = 'item-instalacao';
+            setTimeout(function () {
+                draggedItem.style.display = 'block';
+                draggedItem = null;
+            }, 0);
+        })
+
+        for (let j = 0; j < lists.length; j++) {
+            const list = lists[j];
+
+            list.addEventListener('dragover', function (e) {
+                e.preventDefault();
+            });
+
+            list.addEventListener('dragenter', function (e) {
+                e.preventDefault();
+                this.style.backgroundColor = 'rgba(40, 55, 89, 1)';
+            });
+
+            list.addEventListener('dragleave', function (e) {
+                this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+            });
+
+            list.addEventListener('drop', function (e) {
+                console.log('drop');
+                this.append(draggedItem);
+                this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+            });
+        }
+    }
+
+    if (list_instalacao.length > 0 || list_instalacao.length != '') {
+
+        for (let x = 0; x < list_instalacao.length; x++) {
+            const instalacao = list_instalacao[x];
+
+            instalacao.addEventListener('dragstart', function () {
+                draggedItem = instalacao;
+                setTimeout(function () {
+                    item.style.display = 'none';
+                }, 0)
+            });
+
+            instalacao.addEventListener('dragend', function () {
+                this.className = 'item';
+                setTimeout(function () {
+                    draggedItem.style.display = 'block';
+                    draggedItem = null;
+                }, 0);
+            })
+
+            for (let y = 0; y < lists.length; y++) {
+                const list = lists[y];
+
+                list.addEventListener('dragover', function (e) {
+                    e.preventDefault();
+                });
+
+                list.addEventListener('dragenter', function (e) {
+                    e.preventDefault();
+                    this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+                });
+
+                list.addEventListener('dragleave', function (e) {
+                    this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+                });
+
+                list.addEventListener('drop', function (e) {
+                    console.log('drop');
+                    this.append(draggedItem);
+                    this.style.backgroundColor = 'rgba(40, 55, 86, 1)';
+                });
+            }
+        }
+    }
+
+    function stopDefAction(evt) {
+        getItemValue()
+        var endereco = document.getElementById('endereco')
+        var ins0 = document.getElementById('ins0')
+        var msg = ''
+        if (endereco.value == '') {
+            msg = msg + ' ☻ O endereço da instalação é obrigatório.' + '\n'
+        }
+        if (ins0.value == '') {
+            msg = msg + ' ☻ É necessário cadastrar ao menos um técnico para prestar o serviço.'
+        }
+        if (msg.length > 0) {
+            document.getElementById('endereco').focus()
+            evt.preventDefault();
+            Swal.fire({
+                icon: 'error',
+                title: 'Ops...',
+                text: msg,
+                showConfirmButton: false,
+                showCloseButton: true
+            })
+        } else {
+            document.tarefa.submit()
+        }
+    }
+
+    document.getElementById('salvar').addEventListener('click', stopDefAction, false);
+
+    function getItemValue() {
+        const item = document.querySelectorAll('.item-instalacao');
+        for (i = 0; i < item.length; i++) {
+            const insitem = document.getElementsByClassName(item[i].getAttribute('class'));
+            var element = insitem[i].innerText
+            var ins = insitem[i].getAttribute('name')
+            switch (i) {
+                case 0:
+                    var insdes = document.getElementById('ins0')
+                    var idins = document.getElementById('idins0')
+                    insdes.value = element
+                    idins.value = ins
+                    break;
+                case 1:
+                    var insdes = document.getElementById('ins1')
+                    var idins = document.getElementById('idins1')
+                    insdes.value = element
+                    idins.value = ins
+                    break;
+                case 2:
+                    var insdes = document.getElementById('ins2')
+                    var idins = document.getElementById('idins2')
+                    insdes.value = element
+                    idins.value = ins
+                    break;
+                case 3:
+                    var insdes = document.getElementById('ins3')
+                    var idins = document.getElementById('idins3')
+                    insdes.value = element
+                    idins.value = ins
+                    break;
+                case 4:
+                    var insdes = document.getElementById('ins4')
+                    var idins = document.getElementById('idins4')
+                    insdes.value = element
+                    idins.value = ins
+                    break;
+                case 5:
+                    var insdes = document.getElementById('ins5')
+                    var idins = document.getElementById('idins5')
+                    insdes.value = element
+                    idins.value = ins
+                    break;
+            }
+        }
+    }
+</script>
