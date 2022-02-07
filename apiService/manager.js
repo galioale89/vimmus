@@ -74,10 +74,9 @@ class mobileService {
                 const imageDate = new Date(Number(originalName.match(/\d{1,}/)[0])).toLocaleString();
                 //console.log('imageDate: ', imageDate);
                 const DbImage = {
-                    desc: `${model} - ${imageDate} - ${filename}`,
-                    seq: postedNameFile
+                    desc: postedNameFile,
+                    seq: `${model} - ${imageDate} - ${filename}`
                 }
-                console.log();
                 const Activity = this.mongoose.model(model);
                 const activity = await Activity.findOneAndUpdate(
                     {
@@ -97,10 +96,7 @@ class mobileService {
             region: 'sa-east-1',
             credentials: fromIni({ profile: 'vimmusimg' })
         };
-        const file = readFileSync(`./uploads/${fileName}`);
-        resizeImg(file, { width: 128, height: 128 }).then(buf => {
-            writeFileSync(file, buf);           
-        })  
+        const file = readFileSync(`./uploads/${fileName}`); 
         const putData = {
             Bucket: 'vimmusimg', //process.env.IMAGES_BUCKET
             Key: newName,

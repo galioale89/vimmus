@@ -94,10 +94,10 @@ const transporter = nodemailer.createTransport({ // Configura os parâmetros de 
 })
 aws.config.update({
     region: 'us-east-1',
-    secretAccessKey: AWS_SECRET_ACCESS_KEY,
-    accessKeyId: AWS_ACCESS_KEY_ID,
-    //secretAccessKey: 'fVcP/qf7BggNuk029PF+lTEJQGmNBE9x6zXQc4MQ',
-    //accessKeyId: 'AKIAV7ZMQ66NULT346DG',
+    //secretAccessKey: AWS_SECRET_ACCESS_KEY,
+    //accessKeyId: AWS_ACCESS_KEY_ID,
+    secretAccessKey: 'fVcP/qf7BggNuk029PF+lTEJQGmNBE9x6zXQc4MQ',
+    accessKeyId: 'AKIAV7ZMQ66NULT346DG',
 })
 
 var s3 = new aws.S3()
@@ -8731,6 +8731,7 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                         cliente: req.body.cliente,
                         obra: req.body.id,
                         responsavel: req.body.responsavel,
+                        gestor: req.body.gestor,
                         empresa: req.body.empresa,
                         seq: seq,
                         endereco: req.body.endereco,
