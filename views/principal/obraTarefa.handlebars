@@ -218,33 +218,52 @@
     <ul class="nav nav-tabs mb-2">
         <li class="nav-item">
             <a class="nav-link titulo-inicio" aria-current="page" style="color: black;"
-                href='/gerenciamento/obra/{{obra._id}}abaadicionar'><label class="col-form-label titulo-inicio">Adicionar Tarefa</label></a>
+                href='/gerenciamento/obra/{{obra._id}}abaadicionar'><label
+                    class="col-form-label titulo-inicio">Adicionar Tarefa</label></a>
         </li>
         <li class="nav-item">
             <a class="nav-link titulo-inicio active" aria-current="page" style="color: black;"
-                href="/gerenciamento/obra/{{obra._id}}abalista"><label class="col-form-label titulo-inicio">Lista de Tarefas</label></a>
+                href="/gerenciamento/obra/{{obra._id}}abalista"><label class="col-form-label titulo-inicio">Lista de
+                    Tarefas</label></a>
         </li>
     </ul>
     {{#if lista_tarefas}}
-    <table>
-        <tr>
-            <th style="width: 50%;">Descrição</th>
-            <th style="width: 30%;">Início</th>
-            <th style="width: 30%;">Fim</th>
-        </tr>
-        {{#each lista_tarefas}}
-        <tr>
-            <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{desc}}</a></th>
-            <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{dtini}}</a></th>
-            <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{dtfim}}</a></th>
-        </tr>
-        {{/each}}
-    </table>
+    <div class="row">
+        <div class="col-md-8">
+            <table>
+                <tr>
+                    <th style="width: 20%;">Descrição</th>
+                    <th style="width: 10%;">Início</th>
+                    <th style="width: 10%;">Fim</th>
+                    <th style="width: 15%;">Responsável</th>
+                    <th style="width: 10%;">Custo(R$)</th>
+                </tr>
+                {{#each lista_tarefas}}
+                <tr>
+                    <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{desc}}</a></th>
+                    <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{dtini}}</a></th>
+                    <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{dtfim}}</a></th>
+                    <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{nome_tec}}</a></th>
+                    <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{custo}}</a></th>
+                </tr>
+                {{/each}}
+            </table>
+        </div>
+        <div class="col">
+            <div class="card">
+            <div class="container text-center">
+                <label style='font-size: 20px;padding-top: 70px;'>Custo Total da Obra</label><br>
+                <label style="padding-bottom: 80px;font-size: 30px;font-weight: bold">R$ {{custo_total}}</label>
+            </div>
+            </div>
+        </div>
+    </div>
     {{else}}
     <div class="card">
         <div class="container text-center">
             <label style='font-size: 30px;padding-top: 100px;font-weight: bold;'>Obra sem tarefas</label><br>
-            <label style="padding-bottom: 80px;font-size: 20px;">Clique na aba "Adicionar Tarefa" e inicie o planejamento da obra! </label>
+            <label style="padding-bottom: 80px;font-size: 20px;">Clique na aba "Adicionar Tarefa" e inicie o
+                planejamento da obra! </label>
         </div>
     </div>
     {{/if}}

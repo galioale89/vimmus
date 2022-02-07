@@ -1934,6 +1934,7 @@ router.get('/obra/:id', ehAdmin, (req, res) => {
                                             ins_fora.push({ id: pesins._id, nome })
                                             if (q == instalacao.length) {
                                                 q = 0
+                                                var custo_total = 0
                                                 Pessoa.find({ user: id, 'funges': 'checked' }).sort({ 'nome': 'asc' }).lean().then((todos_responsaveis) => {
                                                     Equipe.find({ obra: params[0] }).lean().then((equipe) => {
                                                         // console.log('equipe=>' + equipe)
@@ -1942,20 +1943,27 @@ router.get('/obra/:id', ehAdmin, (req, res) => {
                                                                 console.log('e.tarefa=>' + e.tarefa)
                                                                 Tarefa.findOne({ _id: e.tarefa }).then((tarefa) => {
                                                                     console.log('tarefa.servico=>' + tarefa.servico)
+                                                                    Pessoa.findOne({_id: tarefa.responsavel}).then((tecnico)=> {
                                                                     Servico.findOne({ _id: tarefa.servico }).then((trf_servico) => {
                                                                         console.log('trf_servico.descricao=>' + trf_servico.descricao)
                                                                         q++
-                                                                        lista_tarefas.push({ idoferta: e.oferta, idtarefa: tarefa._id, desc: trf_servico.descricao, dtini: dataMensagem(e.dtinicio), dtfim: dataMensagem(e.dtfim) })
+                                                                        if (naoVazio(tarefa.preco)){
+                                                                        custo_total = custo_total + tarefa.preco
+                                                                        }else{
+                                                                            custo_total = custo_total + 0
+                                                                        }
+                                                                        lista_tarefas.push({ idoferta: e.oferta, idtarefa: tarefa._id, desc: trf_servico.descricao, nome_tec: tecnico.nome, custo: tarefa.preco, dtini: dataMensagem(e.dtinicio), dtfim: dataMensagem(e.dtfim)})
                                                                         console.log('lista_tarefas=>' + lista_tarefas)
                                                                         if (q == equipe.length) {
                                                                             console.log('ins_fora=>' + ins_fora)
                                                                             if (params[1] == 'adicionar') {
-                                                                                res.render('principal/obra', { lista_tarefas, ins_fora, servicos, todos_clientes, todos_responsaveis, todas_empresas, instalacao, obra, cliente, responsavel, empresa, tipo: false, mostraLabel, mostraSelect })
+                                                                                res.render('principal/obra', { lista_tarefas, ins_fora, custo_total, servicos, todos_clientes, todos_responsaveis, todas_empresas, instalacao, obra, cliente, responsavel, empresa, tipo: false, mostraLabel, mostraSelect })
                                                                             } else {
-                                                                                res.render('principal/obraTarefa', { lista_tarefas, ins_fora, servicos, todos_clientes, todos_responsaveis, todas_empresas, instalacao, obra, cliente, responsavel, empresa, tipo: false, mostraLabel, mostraSelect })
+                                                                                res.render('principal/obraTarefa', { lista_tarefas, ins_fora, custo_total, servicos, todos_clientes, todos_responsaveis, todas_empresas, instalacao, obra, cliente, responsavel, empresa, tipo: false, mostraLabel, mostraSelect })
                                                                             }
                                                                         }
                                                                     })
+                                                                })
                                                                 })
                                                             })
                                                         } else {
