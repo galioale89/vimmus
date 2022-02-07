@@ -92,13 +92,13 @@ const transporter = nodemailer.createTransport({ // Configura os parâmetros de 
         rejectUnauthorized: false
     }
 })
-aws.config.update({
-    region: 'us-east-1',
-    //secretAccessKey: AWS_SECRET_ACCESS_KEY,
-    //accessKeyId: AWS_ACCESS_KEY_ID,
-    secretAccessKey: 'fVcP/qf7BggNuk029PF+lTEJQGmNBE9x6zXQc4MQ',
-    accessKeyId: 'AKIAV7ZMQ66NULT346DG',
-})
+// aws.config.update({
+//     region: 'us-east-1',
+//     secretAccessKey: 'fVcP/qf7BggNuk029PF+lTEJQGmNBE9x6zXQc4MQ',
+//     accessKeyId: 'AKIAV7ZMQ66NULT346DG',    
+// })
+
+aws.config.credentials = fromIni({ profile: 'vimmusimg' })
 
 var s3 = new aws.S3()
 
