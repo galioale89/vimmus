@@ -90,14 +90,14 @@ const transporter = nodemailer.createTransport({ // Configura os parâmetros de 
         rejectUnauthorized: false
     }
 })
-aws.config.update({
-    region: 'us-east-1',
-    secretAccessKey: 'fVcP/qf7BggNuk029PF+lTEJQGmNBE9x6zXQc4MQ',
-    accessKeyId: 'AKIAV7ZMQ66NULT346DG',    
-})
+// aws.config.update({
+//     region: 'us-east-1',
+//     secretAccessKey: 'fVcP/qf7BggNuk029PF+lTEJQGmNBE9x6zXQc4MQ',
+//     accessKeyId: 'AKIAV7ZMQ66NULT346DG',    
+// })
 
-// var credentials = new aws.SharedIniFileCredentials({profile: 'vimmusimg'})
-// aws.config.credentials = credentials
+var credentials = new aws.SharedIniFileCredentials({profile: 'vimmusimg'})
+aws.config.credentials = credentials
 
 var s3 = new aws.S3()
 
@@ -8359,11 +8359,11 @@ router.get('/equipetarefa/:id', ehAdmin, (req, res) => {
                                                             //console.log('tarefa=>' + tarefa)
                                                             //console.log('empresa=>' + empresa)
                                                             //console.log('servicos=>' + servicos)
-                                                            if (naoVazio(usina)) {
-                                                                res.render('projeto/gerenciamento/tarefas', { usina, trf_empresa, trf_empid, trf_gestor, trf_gesid, trf_servico, trf_srvid, tarefa, servicos, ins_fora, ins_dentro, instalacao, gestor, empresa, equipe: true })
-                                                            } else {
+                                                            // if (naoVazio(usina)) {
+                                                            //     res.render('projeto/gerenciamento/tarefas', { usina, trf_empresa, trf_empid, trf_gestor, trf_gesid, trf_servico, trf_srvid, tarefa, servicos, ins_fora, ins_dentro, instalacao, gestor, empresa, equipe: true })
+                                                            // } else {
                                                                 res.render('projeto/gerenciamento/tarefas', { tarefa, trf_empresa, trf_empid, trf_gestor, trf_gesid, trf_servico, trf_srvid, servicos, ins_fora, ins_dentro, instalacao, gestor, empresa, equipe: true })
-                                                            }
+                                                            // }
                                                         }).catch((err) => {
                                                             req.flash('error_msg', 'Nenhuma usina cadastrada.')
                                                             res.redirect('/gerenciamento/agenda')
