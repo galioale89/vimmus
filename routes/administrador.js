@@ -40,10 +40,14 @@ router.get('/acesso', ehMaster, (req, res) => {
         if (acesso.length > 0) {
             acesso.forEach((element) => {
                 Pessoa.findOne({ _id: element.pessoa }).then((pessoa) => {
-                    if (element.funges == true) {
+                    if (pessoa.funges == true) {
                         funcao = 'Gestão'
                     } else {
-                        funcao = 'Técnico'
+                        if (pessoa.ehVendedor == true) {
+                            funcao = 'Vendedor'
+                        } else {
+                            funcao = 'Técnico'
+                        }
                     }
                     lista.push({ id: element._id, usuario: element.usuario, nome: pessoa.nome, email: pessoa.email, celular: pessoa.celular, endereco: pessoa.endereco, cidade: pessoa.cidade, uf: pessoa.uf, ehAdmin: element.ehAdmin, funcao })
                     q++
@@ -303,10 +307,10 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                             if (req.body.uf != '') {
                                 usuario.uf = uf
                             }
-                            console.log('email=>'+req.body.email)
+                            console.log('email=>' + req.body.email)
                             if (naoVazio(req.body.email)) {
                                 usuario.email = req.body.email
-                            }                            
+                            }
                             usuario.telefone = telefone
                             usuario.usuario = req.body.usuario
                             usuario.ehAdmin = req.body.tipo
@@ -353,7 +357,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                     Usuarios.find().sort({ data: 'desc' }).lean().then((usuarios) => {
                                         if (owner) {
                                             req.flash('success_msg', "Alterações do usuário realizadas com sucesso!")
-                                            res.redirect('/usuario/editar/'+req.body.id)
+                                            res.redirect('/usuario/editar/' + req.body.id)
                                         } else {
                                             req.flash('success_msg', "Alterações do usuário realizadas com sucesso!")
                                             res.redirect('/menu')
@@ -500,7 +504,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                                 res.render("usuario/administrador/", { usuarios, sucesso, owner })
                                             }).catch((err) => {
                                                 req.flash("error_msg", "Ocorreu uma falha interna.")
-                                                res.redirect("/usuario/editar/"+req.body.id)
+                                                res.redirect("/usuario/editar/" + req.body.id)
                                             })
                                         }).catch((err) => {
                                             req.flash("error_msg", "Não foi possível salvar o registro.")
@@ -516,7 +520,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                         res.render("usuario/menu/", { usuarios, sucesso, owner })
                                     }).catch((err) => {
                                         req.flash("error_msg", "Ocorreu uma falha interna.")
-                                        res.redirect("/usuario/editar/"+req.body.id)
+                                        res.redirect("/usuario/editar/" + req.body.id)
                                     })
                                 }).catch((err) => {
                                     req.flash("error_msg", "Não foi possível salvar o registro.")
@@ -537,7 +541,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                             if (naoVazio(req.body.nome)) {
                                 console.log("tem nome")
                                 pessoa.nome = req.body.nome
-                            }else {
+                            } else {
                                 console.log("nome 0")
                                 pessoa.nome = 0
                             }
@@ -558,7 +562,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                 pessoa.uf = req.body.uf
                             }
                         }
-                        console.log('req.body.email=>'+req.body.email)
+                        console.log('req.body.email=>' + req.body.email)
                         if (naoVazio(req.body.email)) {
                             pessoa.email = req.body.email
                         } else {
