@@ -1,5 +1,3 @@
-const { TextEncoder, TextDecoder } = require("util");
-
 // require('../app')
 require('../model/Usuario')
 require('../model/Proposta')
@@ -27,13 +25,13 @@ const { ehAdmin } = require('../helpers/ehAdmin')
 
 const express = require('express')
 const router = express.Router()
+
 const mongoose = require('mongoose')
 const aws = require("aws-sdk");
 const path = require('path')
 const multer = require('multer')
 const multerS3 = require("multer-s3")
 const nodemailer = require('nodemailer')
-const { fromIni } = require("@aws-sdk/credential-provider-ini")
 
 
 const Usuario = mongoose.model('usuario')
@@ -92,14 +90,14 @@ const transporter = nodemailer.createTransport({ // Configura os parâmetros de 
         rejectUnauthorized: false
     }
 })
-// aws.config.update({
-//     region: 'us-east-1',
-//     secretAccessKey: 'fVcP/qf7BggNuk029PF+lTEJQGmNBE9x6zXQc4MQ',
-//     accessKeyId: 'AKIAV7ZMQ66NULT346DG',    
-// })
+aws.config.update({
+    region: 'us-east-1',
+    secretAccessKey: 'fVcP/qf7BggNuk029PF+lTEJQGmNBE9x6zXQc4MQ',
+    accessKeyId: 'AKIAV7ZMQ66NULT346DG',    
+})
 
-var credentials = new aws.SharedIniFileCredentials({profile: 'vimmusimg'})
-aws.config.credentials = credentials
+// var credentials = new aws.SharedIniFileCredentials({profile: 'vimmusimg'})
+// aws.config.credentials = credentials
 
 var s3 = new aws.S3()
 
@@ -108,7 +106,7 @@ const upload = multer({
         s3: s3,
         bucket: 'vimmusimg',
         key: function (req, file, cb) {
-            console.log(file)
+            //console.log(file)
             cb(null, file.originalname)
         }
     })
@@ -297,13 +295,13 @@ router.get('/selecao', ehAdmin, (req, res) => {
                         }
                     }
 
-                    // console.log('enviado=>'+JSON.stringify(enviado))
-                    // console.log('baixado=>'+JSON.stringify(baixado))
-                    // console.log('negociando=>'+JSON.stringify(negociando))
-                    // console.log('ganho=>'+JSON.stringify(ganho))
+                    //console.log('enviado=>'+JSON.stringify(enviado))
+                    //console.log('baixado=>'+JSON.stringify(baixado))
+                    //console.log('negociando=>'+JSON.stringify(negociando))
+                    //console.log('ganho=>'+JSON.stringify(ganho))
 
-                    // console.log("q=>"+q)
-                    // console.log("proposta.length=>"+proposta.length)
+                    //console.log("q=>"+q)
+                    //console.log("proposta.length=>"+proposta.length)
                     if (q == proposta.length) {
                         res.render('principal/selecao', {
                             enviado, negociando, ganho, baixado, mestitulo, ano,
@@ -559,13 +557,13 @@ router.get('/consultaobra', ehAdmin, (req, res) => {
                             Cliente.findOne({ _id: e.cliente }).then((lista_cliente) => {
                                 Pessoa.findOne({ _id: e.responsavel }).then((gestor) => {
                                     q++
-                                    // console.log('e.dtini=>' + e.dtini)
+                                    //console.log('e.dtini=>' + e.dtini)
                                     if (naoVazio(e.dtini)) {
                                         dtini = dataMensagem(e.dtini)
                                     } else {
                                         dtini = 'Aguardando Tarefas'
                                     }
-                                    // console.log('e.dtfim=>' + e.dtfim)
+                                    //console.log('e.dtfim=>' + e.dtfim)
                                     if (naoVazio(e.dtfim)) {
                                         dtfim = dataMensagem(e.dtfim)
                                     } else {
@@ -578,9 +576,9 @@ router.get('/consultaobra', ehAdmin, (req, res) => {
                                         nome_ges = ''
                                     }
 
-                                    //    console.log('dtini=>'+dtini)
-                                    //    console.log('dtfim=>'+dtfim)
-                                    //    console.log('nome_ges=>'+nome_ges)
+                                    //    //console.log('dtini=>'+dtini)
+                                    //    //console.log('dtfim=>'+dtfim)
+                                    //    //console.log('nome_ges=>'+nome_ges)
 
                                     listaObra.push({ s: e.status, id: e._id, seq: e.seq, cliente: lista_cliente.nome, nome_ges, cadastro: dataMsgNum(e.datacad), dtini, dtfim })
                                     if (q == obra.length) {
@@ -907,7 +905,7 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
     var dezembro
 
     var hoje = dataHoje()
-    var meshoje = hoje.substring(5,)
+    var meshoje = hoje.substring(5,7)
     var anotitulo = hoje.substring(0, 4)
 
     //console.log('meshoje=>' + meshoje)
@@ -958,12 +956,15 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
             trintaeum = true
             break;
     }
-    console.log('params[1]=>' + params[1])
+    var dataini = anotitulo + '-' + meshoje + '-' + '01'
+    var datafim = anotitulo + '-' + meshoje + '-' + '31'
+
+    //console.log('params[1]=>' + params[1])
     var sql = []
     if (params[1] == 'obra') {
         sql = { user: id, feito: true, prjfeito: false, obra: { $ne: '' }, $and: [{ 'dtinicio': { $ne: '' } }, { 'dtinicio': { $ne: '0000-00-00' } }] }
     } else {
-        sql = { user: id, feito: true, liberar: true, prjfeito: false, nome_projeto: { $ne: '' }, $and: [{ 'dtinicio': { $ne: '' } }, { 'dtinicio': { $ne: '0000-00-00' } }] }
+        sql = { user: id, feito: true, liberar: true, prjfeito: false, nome_projeto: { $exists: true }, $and: [{ 'dtinicio': { $ne: '' } }, { 'dtinicio': { $ne: '0000-00-00' } }] }
     }
 
     Cliente.find({ user: id }).lean().then((todos_clientes) => {
@@ -972,12 +973,12 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
                 Equipe.find(sql).then((conta_equipe) => {
                     if (naoVazio(conta_equipe)) {
                         conta_equipe.forEach((e) => {
-                            console.log('params[1]=>' + params[1])
+                            //console.log('params[1]=>' + params[1])
                             if (params[1] == 'obra') {
                                 Tarefa.findOne({ user: id, equipe: e._id }).then((tarefa) => {
-                                    console.log('tarefa._id=>' + tarefa._id)
+                                    //console.log('tarefa._id=>' + tarefa._id)
                                     Obra.findOne({ _id: e.obra, "caminhoFoto._id": tarefa._id }).then((obra) => {
-                                        console.log('obra._id=>' + obra._id)
+                                        //console.log('obra._id=>' + obra._id)
                                         Cliente.findOne({ _id: obra.cliente }).then((cliente) => {
                                             //console.log('tarefa.responsavel=>' + tarefa.responsavel)
                                             Pessoa.findOne({ _id: tarefa.responsavel }).then((responsavel) => {
@@ -1007,8 +1008,8 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
                                                     dtfim = e.dtfim
                                                     anoinicio = dtinicio.substring(0, 4)
                                                     anofim = dtfim.substring(0, 4)
-                                                    mesinicio = dtinicio.substring(5,)
-                                                    mesfim = dtfim.substring(5,)
+                                                    mesinicio = dtinicio.substring(5,7)
+                                                    mesfim = dtfim.substring(5,7)
                                                     diainicio = dtinicio.substring(8, 11)
                                                     diafim = dtfim.substring(8, 11)
                                                     //console.log('dif1=>' + dif1)
@@ -1228,7 +1229,7 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
                                                             dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
                                                             mestitulo, anotitulo, trintaeum, bisexto, todasCores, listaAndamento,
                                                             janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro,
-                                                            todos_responsaveis, todos_clientes, todas_empresas, anotitulo
+                                                            todos_responsaveis, todos_clientes, todas_empresas, anotitulo, dataini, datafim
                                                         })
 
                                                     }
@@ -1286,8 +1287,8 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
                                                 dtfim = e.dtfim
                                                 anoinicio = dtinicio.substring(0, 4)
                                                 anofim = dtfim.substring(0, 4)
-                                                mesinicio = dtinicio.substring(5,)
-                                                mesfim = dtfim.substring(5,)
+                                                mesinicio = dtinicio.substring(5,7)
+                                                mesfim = dtfim.substring(5,7)
                                                 diainicio = dtinicio.substring(8, 11)
                                                 diafim = dtfim.substring(8, 11)
                                                 //console.log('dif1=>' + dif1)
@@ -1512,6 +1513,8 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
                                                     }
 
                                                     //console.log('caminho=>' + caminho)
+                                                    //console.log('dataini=>'+dataini)
+                                                    //console.log('datafim=>'+datafim)
 
                                                     res.render(caminho, {
                                                         dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
@@ -1519,7 +1522,7 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
                                                         dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
                                                         mestitulo, anotitulo, trintaeum, bisexto, todasCores, listaAndamento,
                                                         janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro,
-                                                        todos_responsaveis, todos_clientes, todas_empresas, anotitulo
+                                                        todos_responsaveis, todos_clientes, todas_empresas, dataini, datafim
                                                     })
 
                                                 }
@@ -1589,7 +1592,7 @@ router.get('/mostraEquipe/:id', ehAdmin, (req, res) => {
             })
         } else {
             var realizar
-            console.log('mostrar tarefa')
+            //console.log('mostrar tarefa')
             Tarefa.findOne({ _id: req.params.id }).lean().then((tarefa) => {
                 //console.log(tarefa)
                 if (naoVazio(tarefa)) {
@@ -1723,7 +1726,7 @@ router.get('/atvt/:id', ehAdmin, (req, res) => {
             img.forEach((e) => {
                 lista_imagens.push({ imagem: e.desc, atv: 'telhado', id: req.params.id, atv: 'telhado', proposta: true, ehatv: false })
             })
-            console.log('aprova=>' + atvt.aprova)
+            //console.log('aprova=>' + atvt.aprova)
             if (atvt.aprova == true) {
                 check = 'checked'
             }
@@ -1919,7 +1922,7 @@ router.get('/obra/:id', ehAdmin, (req, res) => {
     } else {
         id = user
     }
-    // console.log('params[0]=>'+params[0])
+    //console.log('params[0]=>'+params[0])
     Obra.findOne({ _id: params[0] }).lean().then((obra) => {
         Cliente.find({ user: id }).lean().then((todos_clientes) => {
             Empresa.find({ user: id }).lean().then((todas_empresas) => {
@@ -1938,15 +1941,15 @@ router.get('/obra/:id', ehAdmin, (req, res) => {
                                                 var custo_total = 0
                                                 Pessoa.find({ user: id, 'funges': 'checked' }).sort({ 'nome': 'asc' }).lean().then((todos_responsaveis) => {
                                                     Equipe.find({ obra: params[0] }).lean().then((equipe) => {
-                                                        // console.log('equipe=>' + equipe)
+                                                        //console.log('equipe=>' + equipe)
                                                         if (naoVazio(equipe)) {
                                                             equipe.forEach((e) => {
-                                                                console.log('e.tarefa=>' + e.tarefa)
+                                                                //console.log('e.tarefa=>' + e.tarefa)
                                                                 Tarefa.findOne({ _id: e.tarefa }).then((tarefa) => {
-                                                                    console.log('tarefa.servico=>' + tarefa.servico)
+                                                                    //console.log('tarefa.servico=>' + tarefa.servico)
                                                                     Pessoa.findOne({_id: tarefa.responsavel}).then((tecnico)=> {
                                                                     Servico.findOne({ _id: tarefa.servico }).then((trf_servico) => {
-                                                                        console.log('trf_servico.descricao=>' + trf_servico.descricao)
+                                                                        //console.log('trf_servico.descricao=>' + trf_servico.descricao)
                                                                         q++
                                                                         if (naoVazio(tarefa.preco)){
                                                                         custo_total = custo_total + tarefa.preco
@@ -1954,9 +1957,9 @@ router.get('/obra/:id', ehAdmin, (req, res) => {
                                                                             custo_total = custo_total + 0
                                                                         }
                                                                         lista_tarefas.push({ idoferta: e.oferta, idtarefa: tarefa._id, desc: trf_servico.descricao, nome_tec: tecnico.nome, custo: tarefa.preco, dtini: dataMensagem(e.dtinicio), dtfim: dataMensagem(e.dtfim)})
-                                                                        console.log('lista_tarefas=>' + lista_tarefas)
+                                                                        //console.log('lista_tarefas=>' + lista_tarefas)
                                                                         if (q == equipe.length) {
-                                                                            console.log('ins_fora=>' + ins_fora)
+                                                                            //console.log('ins_fora=>' + ins_fora)
                                                                             if (params[1] == 'adicionar') {
                                                                                 res.render('principal/obra', { lista_tarefas, ins_fora, custo_total, servicos, todos_clientes, todos_responsaveis, todas_empresas, instalacao, obra, cliente, responsavel, empresa, tipo: false, mostraLabel, mostraSelect })
                                                                             } else {
@@ -2341,7 +2344,7 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                             // Equipe.find({ 'nome_projeto': { $exists: true }, $and: [{ 'dtinicio': { $ne: '0000-00-00' } }, { 'dtinicio': { $ne: '' } }] }).then((equipe) => {
                             //     if (naoVazio(equipe)) {
                             //equipe.forEach((e) => {
-                            // //console.log('e._id=>' + e._id)
+                            //console.log('e._id=>' + e._id)
                             // dataini = e.dtinibusca
                             // q++
                             // diferenca = e.dtfimbusca - e.dtinibusca
@@ -3381,7 +3384,7 @@ router.get('/agenda/', ehAdmin, (req, res) => {
     var dia
     var hoje = dataHoje()
     var ano = hoje.substring(0, 4)
-    var meshoje = hoje.substring(5,)
+    var meshoje = hoje.substring(5,7)
 
     if (meshoje < 10) {
         mes = '0' + meshoje
@@ -3521,8 +3524,8 @@ router.get('/agenda/', ehAdmin, (req, res) => {
                             dtfim = e.datafim
                             anoinicio = dtinicio.substring(0, 4)
                             anofim = dtfim.substring(0, 4)
-                            mesinicio = dtinicio.substring(5,)
-                            mesfim = dtfim.substring(5,)
+                            mesinicio = dtinicio.substring(5,7)
+                            mesfim = dtfim.substring(5,7)
                             diainicio = dtinicio.substring(8, 11)
                             diafim = dtfim.substring(8, 11)
                             //console.log("meshoje=>" + meshoje)
@@ -3587,13 +3590,13 @@ router.get('/agenda/', ehAdmin, (req, res) => {
                             const { dataini } = e
                             //console.log('dataini=>' + dataini)
                             //console.log('mes_busca=>' + mes_busca)
-                            //console.log('mes=>' + mes)
                             tarefa = ser.descricao
                             for (i = 0; i < dif; i++) {
                                 //console.log('dia=>' + dia)
                                 //console.log('entrou laço')
+                                //console.log("meshoje=>" + meshoje)
+                                //console.log("mes=>" + mes)
                                 if (meshoje == mes) {
-
                                     //console.log("dias=>" + dias)
                                     if (naoVazio(dias)) {
                                         //console.log('d=>' + d)
@@ -3834,7 +3837,7 @@ router.get('/vermais/:id/', ehAdmin, (req, res) => {
 
     var hoje = dataHoje()
     //console.log('hoje=>' + hoje)
-    var meshoje = hoje.substring(5,)
+    var meshoje = hoje.substring(5,7)
     var anotitulo = hoje.substring(0, 4)
 
     //console.log('meshoje=>' + meshoje)
@@ -3917,8 +3920,8 @@ router.get('/vermais/:id/', ehAdmin, (req, res) => {
                         //console.log('inicio=>' + inicio)
                         anoinicio = inicio.substring(0, 4)
                         anofim = fim.substring(0, 4)
-                        mesinicio = inicio.substring(5,)
-                        mesfim = fim.substring(5,)
+                        mesinicio = inicio.substring(5,7)
+                        mesfim = fim.substring(5,7)
                         diainicio = inicio.substring(8, 11)
                         diafim = fim.substring(8, 11)
                         con1 = String(mesinicio) + String(diainicio)
@@ -4144,7 +4147,7 @@ router.get('/vermaistarefas/:id', ehAdmin, (req, res) => {
     var dia
     var hoje = dataHoje()
     var ano = hoje.substring(0, 4)
-    var meshoje = hoje.substring(5,)
+    var meshoje = hoje.substring(5,7)
 
     if (meshoje < 10) {
         mes = '0' + meshoje
@@ -4308,8 +4311,8 @@ router.get('/vermaistarefas/:id', ehAdmin, (req, res) => {
                                 dtfim = e.datafim
                                 anoinicio = dtinicio.substring(0, 4)
                                 anofim = dtfim.substring(0, 4)
-                                mesinicio = dtinicio.substring(5,)
-                                mesfim = dtfim.substring(5,)
+                                mesinicio = dtinicio.substring(5,7)
+                                mesfim = dtfim.substring(5,7)
                                 diainicio = dtinicio.substring(8, 11)
                                 diafim = dtfim.substring(8, 11)
                                 //console.log("messel=>" + messel)
@@ -4733,10 +4736,10 @@ router.post('/obra', ehAdmin, (req, res) => {
 
     var idobra = req.body.id
     idobra = String(idobra).replace(',', '')
-    console.log('idobra=>' + idobra)
+    //console.log('idobra=>' + idobra)
     if (naoVazio(idobra)) {
         Obra.findOne({ _id: idobra }).then((obra) => {
-            console.log('obra=>' + obra)
+            //console.log('obra=>' + obra)
             if (naoVazio(req.body.cliente)) {
                 obra.cliente = req.body.cliente
             }
@@ -4746,7 +4749,7 @@ router.post('/obra', ehAdmin, (req, res) => {
             if (naoVazio(req.body.empresa)) {
                 obra.empresa = req.body.empresa
             }
-            console.log('req.body.endereco=>' + req.body.endereco)
+            //console.log('req.body.endereco=>' + req.body.endereco)
             obra.endereco = req.body.endereco
             if (naoVazio(req.body.cidade)) {
                 obra.cidade = req.body.cidade
@@ -4772,10 +4775,10 @@ router.post('/obra', ehAdmin, (req, res) => {
             res.redirect('/gerenciamento/obra/' + req.body.id)
         })
     } else {
-        console.log('nova obra')
+        //console.log('nova obra')
         var seq
         Obra.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((obraseq) => {
-            console.log('obraseq=>' + obraseq)
+            //console.log('obraseq=>' + obraseq)
             if (naoVazio(obraseq)) {
                 seq = parseFloat(obraseq.seq) + 1
             } else {
@@ -6426,12 +6429,12 @@ router.post('/checklist', upload.single('clins'), ehAdmin, (req, res) => {
 router.post('/salvarImagem', ehAdmin, upload.array('files', 10), (req, res) => {
 
     var arquivos = req.files
-    console.log('req.files=>' + req.files)
+    //console.log('req.files=>' + req.files)
     var imagem
     var ativo
 
     var sql = []
-    // console.log("tipo=>" + req.body.tipo)
+    //console.log("tipo=>" + req.body.tipo)
     if (req.body.tipo == 'proposta') {
         sql = { proposta: req.body.id }
     } else {
@@ -6494,21 +6497,21 @@ router.post('/salvarImagem', ehAdmin, upload.array('files', 10), (req, res) => {
                 }
             } else {
                 imagem = { "desc": e.originalname }
-                // console.log('imagem=>' + JSON.stringify(imagem))
+                //console.log('imagem=>' + JSON.stringify(imagem))
                 ImgTarefa.findOneAndUpdate(sql, { $push: { caminhoFoto: imagem } }).then((e) => {
                     req.flash('success_msg', 'Foto(s) do serviço salva(s) com sucesso.')
                 })
             }
         })
     }
-    // console.log('req.body.check=>' + req.body.check)
+    //console.log('req.body.check=>' + req.body.check)
     if (req.body.check == 'on') {
         ativo = true
     } else {
         ativo = false
     }
 
-    // console.log("caminho=>" + req.body.caminho)
+    //console.log("caminho=>" + req.body.caminho)
     if (req.body.caminho == 'aterramento') {
         AtvAterramento.findOneAndUpdate(sql, { aprova: ativo }).then((e) => {
             if (ativo == true) {
@@ -6538,8 +6541,8 @@ router.post('/salvarImagem', ehAdmin, upload.array('files', 10), (req, res) => {
         })
     }
 
-    console.log('req.body.caminho=>' + req.body.caminho)
-    console.log('req.body.id=>' + req.body.id)
+    //console.log('req.body.caminho=>' + req.body.caminho)
+    //console.log('req.body.id=>' + req.body.id)
     Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
         if (naoVazio(vistoria)) {
             if (naoVazio(vistoria.caminhoSomb) && (naoVazio(vistoria.caminhoArea)) && (naoVazio(vistoria.caminhoInsa)) && (naoVazio(vistoria.caminhoInsi))) {
@@ -6585,7 +6588,7 @@ router.post('/salvarImagem', ehAdmin, upload.array('files', 10), (req, res) => {
                             res.redirect('/gerenciamento/atvt/' + req.body.id)
                         } else {
                             if (req.body.caminho == 'tarefa') {
-                                console.log('entrou')
+                                //console.log('entrou')
                                 res.redirect('/gerenciamento/mostrarGaleria/' + req.body.id + 'galeria-tarefa')
                             } else {
                                 res.redirect('/gerenciamento/visita/' + req.body.id)
@@ -6609,8 +6612,8 @@ router.get('/mostrarGaleria/:id', ehAdmin, (req, res) => {
     var lista_imagens = []
     var img
     var q = 1
-    console.log('id=>' + params[0])
-    console.log('caminho=>' + params[1])
+    //console.log('id=>' + params[0])
+    //console.log('caminho=>' + params[1])
     Proposta.findOne({ _id: params[0] }).lean().then((proposta) => {
         if (naoVazio(proposta)) {
             Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
@@ -6649,7 +6652,7 @@ router.get('/mostrarGaleria/:id', ehAdmin, (req, res) => {
                                             })
                                         } else {
                                             if (params[1] == 'telhado') {
-                                                console.log("telhado")
+                                                //console.log("telhado")
                                                 AtvTelhado.findOne({ proposta: params[0] }).then((atv) => {
                                                     img = atv.caminhoFoto
                                                     img.forEach((e) => {
@@ -6730,7 +6733,7 @@ router.get('/mostrarGaleria/:id', ehAdmin, (req, res) => {
             })
         } else {
             var check = 'unchecked'
-            console.log('proposta vazio')
+            //console.log('proposta vazio')
             if (params[1] == 'tarefa') {
                 Tarefa.findOne({ _id: params[0] }).lean().then((tarefa) => {
                     ImgTarefa.findOne({ tarefa: params[0] }).lean().then((imgtarefa) => {
@@ -6741,7 +6744,7 @@ router.get('/mostrarGaleria/:id', ehAdmin, (req, res) => {
                         if (imgtarefa.aprova == true) {
                             check = 'checked'
                         }
-                        console.log('lista_imagens=>' + lista_imagens)
+                        //console.log('lista_imagens=>' + lista_imagens)
                         res.render('principal/mostrarFotos', { imgtarefa, check, lista_imagens, tarefa, titulo: "Imagens do serviço", esconde: true, ehatv: false })
                     }).catch((err) => {
                         req.flash('error_msg', 'Não foi possível encontrar a atividade de instalação das estrurturas e módulos no telhado.')
@@ -6767,24 +6770,24 @@ router.get('/deletaImagem/:msg', ehAdmin, (req, res) => {
     //console.log(params[0])
     //console.log(params[1])
     //console.log(params[2])
-    console.log('params[3]=>' + params[3])
-    console.log('params[4]=>' + params[4])
+    //console.log('params[3]=>' + params[3])
+    //console.log('params[4]=>' + params[4])
 
     var sql = []
-    console.log("params[3]=>" + params[3])
+    //console.log("params[3]=>" + params[3])
     if (params[3] == 'true') {
         sql = { proposta: params[1] }
     } else {
         sql = { tarefa: params[1] }
     }
 
-    console.log('params[2]=>' + params[2])
-    console.log('sql=>' + JSON.stringify(sql))
+    //console.log('params[2]=>' + params[2])
+    //console.log('sql=>' + JSON.stringify(sql))
     if (params[2] == 'aterramento') {
-        console.log('entrou')
+        //console.log('entrou')
         AtvAterramento.findOneAndUpdate(sql, { $pull: { 'caminhoFoto': { 'desc': params[0] } } }).then((e) => {
             req.flash('aviso_msg', 'Imagem removida com sucesso')
-            console.log('params[3]=>' + params[3])
+            //console.log('params[3]=>' + params[3])
             if (params[4] == 'true') {
                 res.redirect('/gerenciamento/atva/' + params[1])
             } else {
@@ -6798,11 +6801,11 @@ router.get('/deletaImagem/:msg', ehAdmin, (req, res) => {
         if (params[2] == 'inversor') {
             AtvInversor.findOneAndUpdate(sql, { $pull: { 'caminhoFoto': { 'desc': params[0] } } }).then((e) => {
                 req.flash('aviso_msg', 'Imagem removida com sucesso')
-                console.log('params[4]=>' + params[4])
+                //console.log('params[4]=>' + params[4])
                 if (params[4] == 'true') {
                     res.redirect('/gerenciamento/atvi/' + params[1])
                 } else {
-                    console.log('mostrar galeria')
+                    //console.log('mostrar galeria')
                     res.redirect('/gerenciamento/mostrarGaleria/' + params[1] + 'galeria-' + params[2])
                 }
             }).catch((err) => {
@@ -6877,14 +6880,14 @@ router.get('/deletaImagem/:msg', ehAdmin, (req, res) => {
 })
 
 router.get('/mostrarBucket/:docimg', ehAdmin, (req, res) => {
-    console.log("req.params.docimg=>" + req.params.docimg)
+    //console.log("req.params.docimg=>" + req.params.docimg)
     s3.getObject(
         { Bucket: "vimmusimg", Key: req.params.docimg },
         function (error, data) {
             if (error != null) {
-                console.log("Failed to retrieve an object: " + error);
+                //console.log("Failed to retrieve an object: " + error);
             } else {
-                console.log(data.ContentLength)
+                //console.log(data.ContentLength)
                 res.send(data.Body)
             }
         }
@@ -7574,6 +7577,8 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
     var q = 0
     var ano = req.body.ano
 
+    //console.log('req.body.messel=>'+req.body.messel)
+
     switch (String(req.body.messel)) {
         case 'Janeiro':
             janeiro = 'active'
@@ -7674,8 +7679,8 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                                     dtfim = e.datafim
                                     anoinicio = dtinicio.substring(0, 4)
                                     anofim = dtfim.substring(0, 4)
-                                    mesinicio = dtinicio.substring(5,)
-                                    mesfim = dtfim.substring(5,)
+                                    mesinicio = dtinicio.substring(5,7)
+                                    mesfim = dtfim.substring(5,7)
                                     diainicio = dtinicio.substring(8, 11)
                                     diafim = dtfim.substring(8, 11)
                                     //console.log("messel=>" + messel)
@@ -7861,9 +7866,11 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                                         }
                                         dia++
                                     }
-                                    //console.log('q=>' + q)
                                     //console.log('tarefas.length=>' + tarefas.length)
                                     if (q == tarefas.length) {
+                                        //console.log('messel=>' + messel)
+                                        //console.log('ano=>' + ano)
+                                        //console.log('mestitulo=>' + mestitulo)                                        
                                         res.render('projeto/gerenciamento/agenda', {
                                             tarefas01, tarefas02, tarefas03, tarefas04, tarefas05, tarefas06, tarefas07,
                                             tarefas08, tarefas09, tarefas10, tarefas11, tarefas12, tarefas13, tarefas14,
@@ -7924,12 +7931,13 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                                 dtfim = e.datafim
                                 anoinicio = dtinicio.substring(0, 4)
                                 anofim = dtfim.substring(0, 4)
-                                mesinicio = dtinicio.substring(5,)
-                                mesfim = dtfim.substring(5,)
+                                mesinicio = dtinicio.substring(5,7)
+                                mesfim = dtfim.substring(5,7)
                                 diainicio = dtinicio.substring(8, 11)
                                 diafim = dtfim.substring(8, 11)
-                                //console.log("messel=>" + messel)
-                                //console.log("mesinicio=>" + mesinicio)
+                                console.log('e._id=>'+e._id)
+                                console.log("messel=>" + messel)
+                                console.log("mesinicio=>" + mesinicio)
 
                                 if (messel == mesinicio) {
                                     mes = mesinicio
@@ -7962,13 +7970,14 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                                     }
                                 } else {
                                     //console.log('diferente')
+                                    mes = 0
                                     if (naoVazio(e.programacao)) {
                                         dia = diainicio
                                         dif = 1
                                     } else {
                                         difmes = parseFloat(mesfim) - parseFloat(mesinicio)
+                                        console.log('difmes=>' + difmes)
                                         if (difmes != 0) {
-                                            //console.log('difmes=>' + difmes)
                                             if (difmes < 0) {
                                                 difmes = difmes + 12
                                             }
@@ -7978,7 +7987,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                                                 if (mes > 12) {
                                                     mes = mes - 12
                                                 }
-                                                //console.log('mes=>' + mes)
+                                                console.log('mes=>' + mes)
                                                 //console.log('meshoje=>' + meshoje)
                                                 if (mes == messel) {
                                                     break;
@@ -7991,7 +8000,6 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                                                 } else {
                                                     dif = 30
                                                 }
-
                                             } else {
                                                 dia = diainicio
                                                 if (naoVazio(e.programacao)) {
@@ -8006,12 +8014,11 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
 
                                 const { dataini } = e
                                 //console.log('dataini=>' + dataini)
-                                //console.log('mes_busca=>' + mes_busca)
-                                //console.log('mes=>' + mes)
+                                console.log('mes=>' + mes)
                                 tarefa = ser.descricao
                                 for (i = 0; i < dif; i++) {
                                     //console.log('dia=>' + dia)
-                                    //console.log('entrou laço')
+                                    console.log('entrou laço')
                                     if (messel == mes) {
                                         if (naoVazio(dias)) {
                                             //console.log('d=>' + d)
@@ -8114,16 +8121,18 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                                     }
                                     dia++
                                 }
-                                //console.log('q=>' + q)
                                 //console.log('lista_tarefas.length=>' + lista_tarefas.length)
                                 if (q == lista_tarefas.length) {
+                                    //console.log('messel=>' + messel)
+                                    //console.log('ano=>' + ano)
+                                    //console.log('mestitulo=>' + mestitulo)                                    
                                     res.render('projeto/gerenciamento/agenda', {
                                         tarefas01, tarefas02, tarefas03, tarefas04, tarefas05, tarefas06, tarefas07,
                                         tarefas08, tarefas09, tarefas10, tarefas11, tarefas12, tarefas13, tarefas14,
                                         tarefas15, tarefas16, tarefas17, tarefas18, tarefas19, tarefas20, tarefas21,
                                         tarefas22, tarefas23, tarefas24, tarefas25, tarefas26, tarefas27, tarefas28,
                                         tarefas29, tarefas30, tarefas31, checkTesk: 'checked', checkInst: 'unchecked',
-                                        mes, ano, todos_clientes, mestitulo, janeiro, fevereiro, marco, abril, maio, junho,
+                                        mes, messel, ano, todos_clientes, mestitulo, janeiro, fevereiro, marco, abril, maio, junho,
                                         julho, agosto, setembro, outubro, novembro, dezembro, ehManutencao: true, trintaeum, bisexto, toda_agenda: true
                                     })
                                 }
@@ -8132,6 +8141,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                     })
                 } else {
                     if (q == lista_tarefas.length) {
+                        //console.log('mestitulo=>' + mestitulo)
                         res.render('projeto/gerenciamento/agenda', {
                             tarefas01, tarefas02, tarefas03, tarefas04, tarefas05, tarefas06, tarefas07,
                             tarefas08, tarefas09, tarefas10, tarefas11, tarefas12, tarefas13, tarefas14,
@@ -8464,8 +8474,7 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
     var nome
     var id
     var idcliente
-    //console.log('dia=>' + dia)
-    data = (String(ano) + '-' + String(mes) + '-' + String(dia)).toString()
+    data = req.body.data
     //console.log('data=>' + data)
     Empresa.find({ user: id }).lean().then((empresa) => {
         if (naoVazio(empresa)) {
@@ -8508,7 +8517,7 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
                                 res.redirect('/gerenciamento/agenda')
                             })
                         } else {
-                            console.log('sem usina')
+                            //console.log('sem usina')
                             Pessoa.find({ user: id, $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }] }).sort({ 'nome': 'asc' }).lean().then((instalacao) => {
                                 if (naoVazio(instalacao)) {
                                     instalacao.forEach((pesins) => {
@@ -8516,7 +8525,7 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
                                         nome = pesins.nome
                                         ins_fora.push({ id: pesins._id, nome })
                                         if (q == instalacao.length) {
-                                            console.log('id=>' + id)
+                                            //console.log('id=>' + id)
                                             Pessoa.find({ user: id, 'funges': 'checked' }).sort({ 'nome': 'asc' }).lean().then((gestor) => {
                                                 //console.log('gestor=>' + gestor)
                                                 res.render('projeto/gerenciamento/tarefas', { data, ins_fora, servicos, cliente: req.body.cliente, instalacao, gestor, empresa })
@@ -8716,7 +8725,7 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
         } else {
             idins = idins + { idins5: null }
         }
-        console.log('idins=>' + JSON.stringify(idins))
+        //console.log('idins=>' + JSON.stringify(idins))
         if (naoVazio(idins)) {
             equipe = Object.assign(idins, corpo)
         } else {
@@ -8725,7 +8734,7 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
         new Equipe(equipe).save().then(() => {
             Equipe.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((novaequipe) => {
                 if (req.body.tipo == 'obra') {
-                    console.log('novaequipe=>' + novaequipe._id)
+                    //console.log('novaequipe=>' + novaequipe._id)
                     const tarefa = {
                         user: id,
                         equipe: novaequipe._id,
@@ -8758,14 +8767,14 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                                 data: dataHoje()
                             }
                             new ImgTarefa(corpo).save().then(() => {                            
-                            console.log('salvou tarefa')
-                            console.log('req.body.id=>' + req.body.id)
+                            //console.log('salvou tarefa')
+                            //console.log('req.body.id=>' + req.body.id)
                             Equipe.find({ obra: req.body.id }).then((conta_obras) => {
-                                console.log('conta_obras=>' + conta_obras)
+                                //console.log('conta_obras=>' + conta_obras)
                                 if (conta_obras.length > 0) {
                                     Obra.findOneAndUpdate({ _id: req.body.id }, { $push: { tarefa: { "idtarefa": tarefa._id } } }).then(() => {
                                         Obra.findOneAndUpdate({ _id: req.body.id }, { $set: { 'dtini': tarefa.dataini, 'dtfim': tarefa.dtfim } }).then(() => {
-                                            console.log('update')
+                                            //console.log('update')
                                             novaequipe.tarefa = tarefa._id
                                             novaequipe.obra = req.body.id
                                             novaequipe.save().then(() => {
@@ -10292,7 +10301,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                             } else {
                                 dataEntregaReal = req.body.dateEntregaReal
                                 ano = dataEntregaReal.substring(0, 4)
-                                mes = dataEntregaReal.substring(5,)
+                                mes = dataEntregaReal.substring(5,7)
                                 dia = dataEntregaReal.substring(8, 11)
                                 dataEntregaReal = dia + '/' + mes + '/' + ano
                                 prj_entrega.datafim = dataEntregaReal
@@ -10322,7 +10331,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                         if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && comparaDatas(req.body.dateentrega, req.body.datevisfim) == false) {
                             dataentrega = req.body.dateentrega
                             ano = dataentrega.substring(0, 4)
-                            mes = dataentrega.substring(5,)
+                            mes = dataentrega.substring(5,7)
                             dia = dataentrega.substring(8, 11)
                             dataentrega = dia + '/' + mes + '/' + ano
                             prj_entrega.dataprev = dataentrega
@@ -10988,8 +10997,8 @@ router.post('/vermais/', ehAdmin, (req, res) => {
                         //console.log('cliente.nome=>' + cliente.nome)
                         anoinicio = inicio.substring(0, 4)
                         anofim = fim.substring(0, 4)
-                        mesinicio = inicio.substring(5,)
-                        mesfim = fim.substring(5,)
+                        mesinicio = inicio.substring(5,7)
+                        mesfim = fim.substring(5,7)
                         diainicio = inicio.substring(8, 11)
                         diafim = fim.substring(8, 11)
                         con1 = String(mesinicio) + String(diainicio)
@@ -11570,16 +11579,6 @@ router.post('/filtrar', ehAdmin, (req, res) => {
     var encerrado = false
     var assinado = false
     var baixado = false
-    var posvenda = false
-    var vistoria = false
-    var pedido = false
-    var nota = false
-    var trt = false
-    var protocolo = false
-    var execucao = false
-    var almoxarifado = false
-    var enviaalmoxarifado = false
-    var faturado = false
 
     var lista = []
     var listaOrcado = []
@@ -11593,18 +11592,17 @@ router.post('/filtrar', ehAdmin, (req, res) => {
     var idemp
     var idres
     var idcli
-    // var equipe_insres 
 
     var dtcadastro = '0000-00-00'
     var dtinicio = '0000-00-00'
     var dtfim = '0000-00-00'
     var dataini = 0
     var datafim = 0
-    var data = []
-    var sql = []
-    var tipo = []
+    var data = {}
+    var sql = {}
+    var tipo = {}
     var busca_equipe = []
-    var busca = []
+    var busca = {}
 
     var respons
     var cliente
@@ -11640,40 +11638,30 @@ router.post('/filtrar', ehAdmin, (req, res) => {
 
                 dataini = dataBusca(req.body.dataini)
                 datafim = dataBusca(req.body.datafim)
-
+                //console.log('req.body.tipo=>'+req.body.tipo)
                 if (req.body.tipo != '') {
-                    Equipe.find({ feito: true, liberar: true, $and: [{ 'dtinicio': { $ne: '' } }, { 'dtinicio': { $ne: '0000-00-00' } }] }).then((equipe) => {
+                    Equipe.find({ user: id, feito: true, liberar: true, prj_feito: false, nome_projeto: {$exists: true}, 'dtinibusca':{ $lte:datafim,$gte:dataini}}).then((equipe) => {
                         //console.log('req.body.tipo=>' + req.body.tipo)
-                        var idequipe = []
                         equipe.forEach((e) => {
-                            //console.log('e._id=>' + e._id)
-                            idequipe = { equipe: e._id }
-                            data = { 'datacad': { $lte: datafim, $gte: dataini } }
-
                             if (req.body.tipo == 'emandamento') {
                                 sql = filtrarProposta(2, id, stats, motivo, respons, empresa, cliente, enviado, ganho, assinado, encerrado)
-                                tipo = { ganho: true, encerrado: false }
-                                busca = Object.assign(sql, data, tipo, idequipe)
+                                busca = Object.assign(sql,  { equipe: e._id })
                             } else {
                                 if (req.body.tipo == 'baixado') {
                                     sql = filtrarProposta(3, id, stats, motivo, respons, empresa, cliente, enviado, ganho, assinado, encerrado)
                                     tipo = { baixada: true, motivo: { $exists: true } }
-                                    busca = Object.assign(sql, data, tipo, idequipe)
+                                    busca = Object.assign(sql, tipo,  { equipe: e._id })
                                 } else {
                                     sql = filtrarProposta(2, id, stats, motivo, respons, empresa, cliente, enviado, ganho, assinado, encerrado)
-                                    busca = Object.assign(sql, data, idequipe)
+                                    busca = Object.assign(sql,  { equipe: e._id })
                                 }
                             }
-                            Proposta.findOne(busca).sort({ 'datacad': 'asc' }).then((proposta) => {
+                            //console.log('busca=>'+JSON.stringify(busca))
+                            Proposta.findOne(busca).sort({'datacad': 1}).then((proposta) => {
+                                //console.log('proposta.cliente=>'+proposta.cliente)
                                 Cliente.findOne({ _id: proposta.cliente }).then((lista_cliente) => {
-                                    //console.log('equipe=>'+equipe)
                                     Pessoa.findOne({ _id: proposta.responsavel }).then((lista_responsavel) => {
-                                        //console.log('equipe.insres=>' + equipe.insres)
-                                        //    if (typeof equipe.insres == 'undefined') {
-                                        //         equipe_insres = '111111111111111111111111'
-                                        //     }else{
-                                        //         equipe_insres = equipe.insres
-                                        //     }
+                                        //console.log('lista_responsavel=>' + lista_responsavel)
                                         Pessoa.findOne({ _id: e.insres }).then((insres) => {
                                             //console.log('equipe=>' + equipe)
                                             //console.log('insres=>' + insres)
@@ -11823,16 +11811,16 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                     res.redirect('/gerenciamento/consulta/' + req.body.tipo)
                                 })
                             }).catch((err) => {
-                                //console.log('req.body.tipo=>' + req.body.tipo)
+                                //console.log('senão')
+                                var caminho
                                 req.flash('error_msg', 'Nenhuma proposta encontrada.')
                                 if (req.body.tipo == 'emandamento') {
-                                    caminho = '/gerenciamento/emandamento/lista'
+                                    caminho = '/gerenciamento/emandamento/propostatipolista'
                                 } else {
                                     caminho = '/gerenciamento/consulta/' + req.body.tipo
                                 }
                                 //console.log('emandamento')
                                 res.redirect(caminho)
-
                             })
                         })
                     }).catch((err) => {
@@ -12203,7 +12191,7 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
     var dezembro
 
     var hoje = dataHoje()
-    var meshoje = hoje.substring(5,)
+    var meshoje = hoje.substring(5,7)
     var anotitulo = req.body.ano
 
     var mestitulo = req.body.mes
@@ -12286,14 +12274,15 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
                             fim = equipe.dtfim
                             anoinicio = inicio.substring(0, 4)
                             anofim = fim.substring(0, 4)
-                            mesinicio = inicio.substring(5,)
-                            mesfim = fim.substring(5,)
+                            mesinicio = inicio.substring(5,7)
+                            mesfim = fim.substring(5,7)
                             diainicio = inicio.substring(8, 11)
                             diafim = fim.substring(8, 11)
                             con1 = String(mesinicio) + String(diainicio)
                             con2 = String(mesfim) + String(diafim)
                             dif1 = parseFloat(con2) - parseFloat(con1) + 1
-                            // compara = mesfim - mesinicio
+                            compara = mesfim - mesinicio
+                            //console.log('proposta._id=>'+e._id)
                             //console.log("meshoje=>" + meshoje)
                             //console.log("mesinicio=>" + mesinicio)
                             //console.log("anotitulo=>" + anotitulo)
@@ -12311,8 +12300,21 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
                                             dif = 30
                                         }
                                     } else {
+                                        if (mesfim > mesinicio){
+                                            data1 = new Date(anofim + '-'+ mesfim + '-' + '31')
+                                            data2 = new Date(inicio)
+                                            dif = Math.abs(data1.getTime() - data2.getTime())
+                                            days = Math.ceil(dif / (1000 * 60 * 60 * 24))
+                                            if (data1.getTime() < data2.getTime()) {
+                                                days = days * -1
+                                            }    
+                                            //console.log('days=>'+days)                                        
+                                            dia = diainicio
+                                            dif = days+1
+                                        }else{
                                         dia = diainicio
                                         dif = parseFloat(diafim) - parseFloat(diainicio) + 1
+                                        }
                                     }
                                 } else {
                                     //console.log('anos diferente')

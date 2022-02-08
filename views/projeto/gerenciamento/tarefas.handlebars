@@ -203,13 +203,13 @@
                 <label class="col-form-label col-form-label-sm fw-bold">Período da Atividade:</label>
             </div>
             <div class="col-md-3">
-                <input class='form-control form-control-sm' type='date' name='dataini' value='{{tarefa.dataini}}'>
+                <input class='form-control form-control-sm' type='date' name='dataini' value='{{#if tarefa.dataini}}{{tarefa.dataini}}{{else}}{{data}}{{/if}}'>
             </div>
             <div class="col-md-1">
                 <label class='col-form-label col-form-label-sm'>a</label>
             </div>
             <div class="col-md-3">
-                <input class='form-control form-control-sm' type='date' name='datafim' value='{{tarefa.datafim}}'>
+                <input class='form-control form-control-sm' type='date' name='datafim' value='{{#if tarefa.datafim}}{{tarefa.datafim}}{{else}}{{data}}{{/if}}'>
             </div>
         </div><br>
         <hr>

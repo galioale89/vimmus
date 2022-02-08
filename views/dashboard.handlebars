@@ -37,6 +37,40 @@
             ordem.value = -1
         }
     }
+function manutencao() {
+        var hoje = new Date()
+        var ano = hoje.getFullYear()
+        var dia = hoje.getDay()
+        if (parseFloat(dia) < 10) {
+            dia = '0' + dia
+        }
+        var html = ''
+        var htmloption = ''
+        var htmlabresel = '<div class="row" style="width: 100%"><div class="col"><select name="cliente" class="form-select mt-2">'
+        var htmlfechsel = '</select></div>'
+        var htmlcliente = '<div class="col-md-1"><a href="/cliente/novo/voltar" style="font-size: 35px;color: rgb(44,55,89)"> + </a></div></div>'
+        var htmliniform = '<form action="/gerenciamento/addmanutencao" method="post">'
+        var htmlmeio = '<input type="hidden" name="dia" value="' + String(dia) + '"><input type="hidden" name="ano" value="' + String(ano) + '">'
+        var htmlsubmit = '<div class="row" style="width: 100%"><div class="col-md-5 text-start" style="padding-left: 20px"><div class="form-check mt-2"><input class="form-check-input" name="check" type="checkbox""><label class="form-check-label mt-1" style="font-size: 15px;">Sem Cliente</label></div></div><div class="col text-start"><button type="submit" style="border: white 1px solid;margin-top: 10px;margin-bottom: 10px;background-color: green;color: white">Próximo</button></div></div>'
+        var htmlfimform = '</form>'
+        var clinome = document.getElementsByName('clinome[]')
+        var cliid = document.getElementsByName('cliid[]')
+        for (i = 0; i < clinome.length; i++) {
+            htmloption = htmloption + '<option value="' + cliid[i].value + '">' + clinome[i].value + '</option>'
+        }
+        html = htmliniform + htmlabresel + htmloption + htmlfechsel + htmlcliente + htmlmeio + htmlsubmit + htmlfimform
+        if (clinome.length > 0) {
+            Swal.fire({
+                title: '<strong style="font-size: 25px">Adicionar Nova Tarefa</strong>' + '\n' +
+                    '<label style="font-size: 15px">Selecione o cliente para a nova instalação, manutenção ou tarefa.</label>',
+                width: 800,
+                icon: 'success',
+                html: html,
+                showCloseButton: true,
+                showConfirmButton: false,
+            })
+        }
+    }
 </script>
 
 <div class="modal fade" id="atrasados" tabindex="-1" aria-hidden="true">
@@ -274,7 +308,7 @@
                     Nova Proposta
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <a href='/gerenciamento/proposta/selecao/com' class='contorno-menu'>Completa</a>
+                    <a href='/gerenciamento/proposta/selecao/com' class='contorno-menu'>Compvara</a>
                     <div class='mt-2'>
                         <a href='/gerenciamento/proposta/selecao/ref' class="contorno-menu">Simples</a>
                     </div>
@@ -287,7 +321,7 @@
             </a>
             {{/if}}
             {{#if crm}}
-            <a href='/gerenciamento/emandamento/lista' class="btn btn-sm btn-primary mb-1"> Serviços em Andamento</a>            
+            <a href='/gerenciamento/emandamento/listatipoproposta' class="btn btn-sm btn-primary mb-1"> Serviços em Andamento</a>            
             {{else}}
             <a href='/gerenciamento/obra' class="btn btn-sm btn-primary mb-1">Nova Obra</a>    
             <a href='/gerenciamento/consultaobra' class="btn btn-sm btn-primary mb-1">Todas as Obras</a>               
@@ -611,7 +645,55 @@
 <input type='hidden' id='qtdpara' value='{{qtdpara}}'>
 <input type='hidden' id='qtdreal' value='{{qtdreal}}'>
 </div>
-<script>
+<script>    
+ //popup vencidos    
+    var txt = ''
+    var txtins = ''
+    var cliav = document.getElementsByName('cliav[]')
+    var proav = document.getElementsByName('proav[]')
+    var statav = document.getElementsByName('statav[]')
+    var valav = document.getElementsByName('valav[]')
+    var idav = document.getElementsByName('idav[]')
+    var idins = document.getElementsByName('idins[]')
+    var proins = document.getElementsByName('proins[]')
+    var cliins = document.getElementsByName('cliins[]')
+    var cadins = document.getElementsByName('cadins[]')
+    var dtiass = document.getElementsByName('dtiass[]')
+    var dliins = document.getElementsByName('dliins[]')
+    
+    var crm = document.getElementById('crm')
+    if (crm.value == 'true') {
+        const wrapperini = document.createElement('div');
+        var htmlpro = ''
+        if (cliav.length > 0) {
+            htmlpro = '<div style="font-size: 16px">Propostas a menos de 1 (um) dia de vencer </div><br><table style="font-size:15px"><tr><th style="width: 10%;text-align:center">Proposta</th><th style="width: 10%;text-align:center">Cliente</th><th style="width: 10%;text-align:center">Status</th><th style="width: 10%;text-align:center">Data Validade</th><th style="width: 1%;text-align:center">Ações</th></tr><tr>'
+        }
+        var htmlfim = '</table>'
+        for (var i = 0; i < cliav.length; i++) {
+            txt = txt + '<tr><td>' + proav[i].value + '</td><td>' + cliav[i].value + '</td><td>' + statav[i].value + '</td><td>' + valav[i].value + '</td><td><div class="btn-group gap-2 col-12"><a href="/gerenciamento/proposta/' + idav[i].value + '"><i style="color: rgb(44,55,89)" class="bi bi-pen icone-tabela"></i></a><a href="/gerenciamento/confirmastatus/' + idav[i].value + '"><i style="color:rgba(44,55,89)" class="bi bi-front icone-tabela"></i></a><a href="/gerenciamento/ganho/' + idav[i].value + '"><i style="color:rgba(44,55,89);title:"Ganho"" class="bi bi-file-earmark-check icone-tabela"></i></a></div></td></tr>'
+        }
+        var htmlins = '<div style="font-size: 16px">Instalação Agendada</div><br><table style="font-size:15px"><tr><th style="width: 5%;text-align:center">Proposta</th><th style="width: 20%;text-align:center">Cliente</th><th style="width: 10%;text-align:center">Início</th><th style="width: 10%;text-align:center">Deadline</th><th style="width: 10%;text-align:center">Ações</th></tr><tr>'
+        for (var x = 0; x < cliins.length; x++) {
+            txtins = txtins + '<tr><td>' + proins[x].value + '</td><td>' + cliins[x].value + '</td><td>' + dtiass[x].value + '</td><td>' + dliins[x].value + '</td><td><a href="/gerenciamento/proposta/' + idins[x].value + '"><i style="color: rgb(44,55,89)" class="bi bi-pen icone-tabela"></i></a></td></tr>'
+        }
+
+        if (cliav.length > 0) {
+            wrapperini.innerHTML = htmlpro + txt + htmlfim + '<hr>' + htmlins + txtins + htmlfim
+        } else {
+            wrapperini.innerHTML = htmlins + txtins + htmlfim
+        }
+
+        if (cliav.length > 0 || cliins.length > 0) {
+            Swal.fire({
+                title: '<strong style="font-size: 25px">Controle de Projetos e Propostas</strong>',
+                width: 800,
+                html: wrapperini,
+                showCloseButton: true,
+                showConfirmButton: false
+            })
+        }
+    }    
+        
     //grafico tarefas
     var qtdagua = document.getElementById('qtdagua')
     var qtdexec = document.getElementById('qtdexec')
@@ -653,87 +735,5 @@
                 }
             }
         }
-    })
-
-    function manutencao() {
-        let hoje = new Date()
-        let ano = hoje.getFullYear()
-        let dia = hoje.getDay()
-        if (parseFloat(dia) < 10) {
-            dia = '0' + dia
-        }
-        let html = ''
-        let htmloption = ''
-        let htmlabresel = '<div class="row" style="width: 100%"><div class="col"><select name="cliente" class="form-select mt-2">'
-        let htmlfechsel = '</select></div>'
-        let htmlcliente = '<div class="col-md-1"><a href="/cliente/novo/voltar" style="font-size: 35px;color: rgb(44,55,89)"> + </a></div></div>'
-        let htmliniform = '<form action="/gerenciamento/addmanutencao" method="post">'
-        let htmlmeio = '<input type="hidden" name="dia" value="' + String(dia) + '"><input type="hidden" name="ano" value="' + String(ano) + '">'
-        let htmlsubmit = '<div class="row" style="width: 100%"><div class="col-md-5 text-start" style="padding-left: 20px"><div class="form-check mt-2"><input class="form-check-input" name="check" type="checkbox""><label class="form-check-label mt-1" style="font-size: 15px;">Sem Cliente</label></div></div><div class="col text-start"><button type="submit" style="border: white 1px solid;margin-top: 10px;margin-bottom: 10px;background-color: green;color: white">Próximo</button></div></div>'
-        let htmlfimform = '</form>'
-        let clinome = document.getElementsByName('clinome[]')
-        let cliid = document.getElementsByName('cliid[]')
-        for (i = 0; i < clinome.length; i++) {
-            htmloption = htmloption + '<option value="' + cliid[i].value + '">' + clinome[i].value + '</option>'
-        }
-        html = htmliniform + htmlabresel + htmloption + htmlfechsel + htmlcliente + htmlmeio + htmlsubmit + htmlfimform
-        if (clinome.length > 0) {
-            Swal.fire({
-                title: '<strong style="font-size: 25px">Adicionar Nova Tarefa</strong>' + '\n' +
-                    '<label style="font-size: 15px">Selecione o cliente para a nova instalação, manutenção ou tarefa.</label>',
-                width: 800,
-                icon: 'success',
-                html: html,
-                showCloseButton: true,
-                showConfirmButton: false,
-            })
-        }
-    }
-    //popup vencidos
-    let txt = ''
-    let txtins = ''
-    let cliav = document.getElementsByName('cliav[]')
-    let proav = document.getElementsByName('proav[]')
-    let statav = document.getElementsByName('statav[]')
-    let valav = document.getElementsByName('valav[]')
-    let idav = document.getElementsByName('idav[]')
-    let idins = document.getElementsByName('idins[]')
-    let proins = document.getElementsByName('proins[]')
-    let cliins = document.getElementsByName('cliins[]')
-    let cadins = document.getElementsByName('cadins[]')
-    let dtiass = document.getElementsByName('dtiass[]')
-    let dliins = document.getElementsByName('dliins[]')
-
-    let crm = document.getElementById('crm')
-    if (crm.value == 'true') {
-        const wrapperini = document.createElement('div');
-        let htmlpro = ''
-        if (cliav.length > 0) {
-            htmlpro = '<div style="font-size: 16px">Propostas a menos de 1 (um) dia de vencer </div><br><table style="font-size:15px"><tr><th style="width: 10%;text-align:center">Proposta</th><th style="width: 10%;text-align:center">Cliente</th><th style="width: 10%;text-align:center">Status</th><th style="width: 10%;text-align:center">Data Validade</th><th style="width: 1%;text-align:center">Ações</th></tr><tr>'
-        }
-        let htmlfim = '</table>'
-        for (let i = 0; i < cliav.length; i++) {
-            txt = txt + '<tr><td>' + proav[i].value + '</td><td>' + cliav[i].value + '</td><td>' + statav[i].value + '</td><td>' + valav[i].value + '</td><td><div class="btn-group gap-2 col-12"><a href="/gerenciamento/proposta/' + idav[i].value + '"><i style="color: rgb(44,55,89)" class="bi bi-pen icone-tabela"></i></a><a href="/gerenciamento/confirmastatus/' + idav[i].value + '"><i style="color:rgba(44,55,89)" class="bi bi-front icone-tabela"></i></a><a href="/gerenciamento/ganho/' + idav[i].value + '"><i style="color:rgba(44,55,89);title:"Ganho"" class="bi bi-file-earmark-check icone-tabela"></i></a></div></td></tr>'
-        }
-        let htmlins = '<div style="font-size: 16px">Instalação Agendada</div><br><table style="font-size:15px"><tr><th style="width: 5%;text-align:center">Proposta</th><th style="width: 20%;text-align:center">Cliente</th><th style="width: 10%;text-align:center">Início</th><th style="width: 10%;text-align:center">Deadline</th><th style="width: 10%;text-align:center">Ações</th></tr><tr>'
-        for (let x = 0; x < cliins.length; x++) {
-            txtins = txtins + '<tr><td>' + proins[x].value + '</td><td>' + cliins[x].value + '</td><td>' + dtiass[x].value + '</td><td>' + dliins[x].value + '</td><td><a href="/gerenciamento/proposta/' + idins[x].value + '"><i style="color: rgb(44,55,89)" class="bi bi-pen icone-tabela"></i></a></td></tr>'
-        }
-
-        if (cliav.length > 0) {
-            wrapperini.innerHTML = htmlpro + txt + htmlfim + '<hr>' + htmlins + txtins + htmlfim
-        } else {
-            wrapperini.innerHTML = htmlins + txtins + htmlfim
-        }
-
-        if (cliav.length > 0 || cliins.length > 0) {
-            Swal.fire({
-                title: '<strong style="font-size: 25px">Controle de Projetos e Propostas</strong>',
-                width: 800,
-                html: wrapperini,
-                showCloseButton: true,
-                showConfirmButton: false
-            })
-        }
-    }
+    })    
 </script>
