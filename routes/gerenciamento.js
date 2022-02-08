@@ -11617,8 +11617,8 @@ router.post('/filtrar', ehAdmin, (req, res) => {
 
     if (req.body.dataini == '' || req.body.datafim == '' || (dataBusca(req.body.dataini) > dataBusca(req.body.datafim))) {
         req.flash('error_msg', 'Verificar as datas de busca escolhidas.')
-        if (req.body.tipo != '') {
-            res.redirect('/gerenciamento/consulta/' + req.body.tipo)
+        if (req.body.tipo == 'emandamento') {
+            res.redirect('/gerenciamento/emandamento/listatipoproposta')
         } else {
             res.redirect('/gerenciamento/consulta/')
         }
@@ -11815,7 +11815,7 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                                 var caminho
                                 req.flash('error_msg', 'Nenhuma proposta encontrada.')
                                 if (req.body.tipo == 'emandamento') {
-                                    caminho = '/gerenciamento/emandamento/propostatipolista'
+                                    caminho = '/gerenciamento/emandamento/listatipoproposta'
                                 } else {
                                     caminho = '/gerenciamento/consulta/' + req.body.tipo
                                 }
@@ -12104,8 +12104,11 @@ router.post('/filtrar', ehAdmin, (req, res) => {
             res.redirect('/gerenciamento/consulta')
         })
     }).catch((err) => {
-        req.flash('error_msg', 'Nenhum cliente encontrado.')
-        res.redirect('/gerenciamento/consulta')
+        if (req.body.tipo != 'emandamento') {
+            res.redirect('/gerenciamento/emandamento/listatipoproposta')
+        } else {
+            res.redirect('/gerenciamento/consulta/')
+        }
     })
 })
 
