@@ -68,7 +68,7 @@ require("./config/auth")(passport)
 //Configuração
 //Sessions
 app.use(session({
-    secret: "vimmusapp",
+    secret: "quasat",
     resave: true,
     saveUninitialized: true
 }))
@@ -110,7 +110,7 @@ mongoose.connect('mongodb://vimmus:64l10770@localhost:27017/vimmus?authSource=ad
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
-    console.log("Sucesso ao se conectar no Mongo Admin")
+    console.log("Sucesso ao se conectar no Admin")
 }).catch((errr) => {
     console.log("Falha ao se conectar no Mongo")
 })
