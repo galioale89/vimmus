@@ -110,7 +110,7 @@ mongoose.connect('mongodb://vimmus:64l10770@localhost:27017/vimmus?authSource=ad
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
-    console.log("Sucesso ao se conectar no Mongo")
+    console.log("Sucesso ao se conectar no Mongo Admin")
 }).catch((errr) => {
     console.log("Falha ao se conectar no Mongo")
 })
@@ -138,7 +138,7 @@ app.get('/termo', (req, res) => {
 
 //Direcionando para página principal
 app.get('/menu', ehAdmin, (req, res) => {
-
+    console.log('entrou mongo admin')
     const { _id } = req.user
     const { user } = req.user
     const { ehAdmin } = req.user
@@ -771,7 +771,8 @@ app.get('/menu', ehAdmin, (req, res) => {
                                             lista_tarefas.push({ id: e._id, liberado: equipe.liberar, feito: equipe.feito, nome_cli: cliente.nome, servico: servico.descricao, nome_res: pessoa_res.nome, id_equipe: equipe._id, dtini: dataMensagem(equipe.dtinicio), dtfim: dataMensagem(equipe.dtfim) })
                                             q++
                                             if (q == tarefas.length) {
-                                                console.log('entrou lista tarefas')
+                                                // console.log('entrou lista tarefas')
+                                                
                                                 numtrf = tarefas.length
                                                 Cliente.find({ user: id }).lean().then((todos_clientes) => {
                                                     Pessoa.findOne({ _id: esta_pessoa }).lean().then((nome_pessoa) => {
