@@ -106,7 +106,7 @@ app.use(express.static('public/'))
 
 //Mongoose DB
 mongoose.Promise = global.Promise
-mongoose.connect('mongodb://vimmus01:64l10770@mongo71-farm10.kinghost.net/vimmus01', {
+mongoose.connect('mongodb://localhost/vimmus', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
