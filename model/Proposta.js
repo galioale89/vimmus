@@ -48,6 +48,14 @@ const Proposta = new Schema({
         type: String,
         require: false
     },  
+    fatura:{
+        type: String,
+        require: false
+    },
+    valor:{
+        type: Number,
+        require: false
+    },
     proposta1:{
         type: String,
         require: false
