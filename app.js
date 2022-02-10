@@ -64,7 +64,7 @@ const mobileService = new MobileService(mongoose, app);
 mobileService.run();
 //Chamando função de validação de autenticação do usuário pela função passport
 const passport = require("passport")
-require("./config/authadminadmin")(passport)
+require("./config/authadmin")(passport)
 //Configuração
 //Sessions
 app.use(session({
