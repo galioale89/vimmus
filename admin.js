@@ -1,5 +1,5 @@
 const express = require('express')
-const app = express()
+const admin = express()
 
 //var AWS = require('aws-sdk');
 //import AWS object without services
@@ -8,7 +8,7 @@ const app = express()
 //var S3 = require('aws-sdk/clients/s3');
 
 // // Enable CORS
-// app.use(function(req, res, next) {
+// admin.use(function(req, res, next) {
 //   res.header('Access-Control-Allow-Origin', '*');
 //   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 //   next();
@@ -60,27 +60,27 @@ const Posvenda = mongoose.model('posvenda')
 const Empresa = mongoose.model('empresa')
 
 const MobileService = require('./apiService/manager')
-const mobileService = new MobileService(mongoose, app);
+const mobileService = new MobileService(mongoose, admin);
 mobileService.run();
 //Chamando função de validação de autenticação do usuário pela função passport
 const passport = require("passport")
 require("./config/authadmin")(passport)
 //Configuração
 //Sessions
-app.use(session({
+admin.use(session({
     secret: "quasat",
     resave: true,
     saveUninitialized: true
 }))
 //Inicializa passport - login
-app.use(passport.initialize())
-app.use(passport.session())
+admin.use(passport.initialize())
+admin.use(passport.session())
 
 //Flash
-app.use(flash())
+admin.use(flash())
 
 //Middleware
-app.use((req, res, next) => {
+admin.use((req, res, next) => {
     res.locals.success_msg = req.flash('success_msg')
     res.locals.error_msg = req.flash('error_msg')
     res.locals.aviso_msg = req.flash('aviso_msg')
@@ -90,19 +90,19 @@ app.use((req, res, next) => {
 })
 
 //Body-Parser
-app.use(express.json())
-app.use(express.urlencoded({
+admin.use(express.json())
+admin.use(express.urlencoded({
     extended: true
 }))
 //Handlebars
-app.disable('x-powered-by')
-app.engine('handlebars', engine({ defaultLayout: 'main' }))
-//app.engine('handlebars', handlebars({ defaulLayout: "main" }))
-app.set('view engine', 'handlebars')
+admin.disable('x-powered-by')
+admin.engine('handlebars', engine({ defaultLayout: 'main' }))
+//admin.engine('handlebars', handlebars({ defaulLayout: "main" }))
+admin.set('view engine', 'handlebars')
 
 
 // Essa linha faz o servidor disponibilizar o acesso às imagens via URL!
-app.use(express.static('public/'))
+admin.use(express.static('public/'))
 
 //Mongoose DB
 mongoose.Promise = global.Promise
@@ -116,28 +116,28 @@ mongoose.connect('mongodb://vimmus:64l10770@localhost:27017/vimmus?authSource=ad
 })
 
 //Public para CSS do bootstrap
-app.use(express.static(path.join(__dirname, 'public')))
+admin.use(express.static(path.join(__dirname, 'public')))
 
 //Função passport para logout
-app.get('/logout', function (req, res) {
+admin.get('/logout', function (req, res) {
     req.logout();
     res.redirect('/');
 })
 
-app.get('/', (req, res) => {
+admin.get('/', (req, res) => {
     res.render('index')
 })
 
-app.get('/politica', (req, res) => {
+admin.get('/politica', (req, res) => {
     res.render('politica')
 })
 
-app.get('/termo', (req, res) => {
+admin.get('/termo', (req, res) => {
     res.render('termo')
 })
 
 //Direcionando para página principal
-app.get('/menu', ehAdmin, (req, res) => {
+admin.get('/admin', ehAdmin, (req, res) => {
     console.log('entrou mongo admin')
     const { _id } = req.user
     const { user } = req.user
@@ -840,22 +840,22 @@ app.get('/menu', ehAdmin, (req, res) => {
 })
 
 //Rotas
-app.use('/customdo', customdo)
-app.use('/configuracao', configuracao)
-app.use('/projeto', projeto)
-app.use('/gerenciamento', gerenciamento)
-app.use('/pessoa', pessoa)
-app.use('/cliente', cliente)
-app.use('/usuario', usuario)
-app.use('/administrador', administrador)
-app.use('/relatorios/', relatorios)
-app.use('/componente/', componente)
-app.use('/fornecedor/', fornecedor)
+admin.use('/customdo', customdo)
+admin.use('/configuracao', configuracao)
+admin.use('/projeto', projeto)
+admin.use('/gerenciamento', gerenciamento)
+admin.use('/pessoa', pessoa)
+admin.use('/cliente', cliente)
+admin.use('/usuario', usuario)
+admin.use('/administrador', administrador)
+admin.use('/relatorios/', relatorios)
+admin.use('/componente/', componente)
+admin.use('/fornecedor/', fornecedor)
 
 //Outros
 
 const APP_PORT = process.env.APP_PORT || 3000
 
-app.listen(APP_PORT, () => {
-    console.log(`Running app at port:${APP_PORT}`)
+admin.listen(APP_PORT, () => {
+    console.log(`Running admin at port:${APP_PORT}`)
 })
