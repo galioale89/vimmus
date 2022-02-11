@@ -554,7 +554,7 @@ router.get("/login", (req, res) => {
 router.post("/login", (req, res, next) => {
     console.log('login admin')
     passport.authenticate("local", {
-        successRedirect: "/admin",
+        successRedirect: "/dashboard",
         failureRedirect: "/usuario/login",
         failureFlash: true
     })(req, res, next)
