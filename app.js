@@ -7,13 +7,6 @@ var AWS = require('aws-sdk/global');
 // import individual service
 var S3 = require('aws-sdk/clients/s3');
 
-// // Enable CORS
-// app.use(function(req, res, next) {
-//   res.header('Access-Control-Allow-Origin', '*');
-//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-//   next();
-// });
-
 //const handlebars = require('express-handlebars')
 const { engine } = require( 'express-handlebars' )
 const bodyParser = require('body-parser')
