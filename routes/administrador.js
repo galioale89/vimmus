@@ -40,10 +40,14 @@ router.get('/acesso', ehMaster, (req, res) => {
         if (acesso.length > 0) {
             acesso.forEach((element) => {
                 Pessoa.findOne({ _id: element.pessoa }).then((pessoa) => {
-                    if (element.funges == true) {
+                    if (pessoa.funges == true) {
                         funcao = 'Gestão'
                     } else {
-                        funcao = 'Técnico'
+                        if (pessoa.ehVendedor == true) {
+                            funcao = 'Vendedor'
+                        } else {
+                            funcao = 'Técnico'
+                        }
                     }
                     lista.push({ id: element._id, usuario: element.usuario, nome: pessoa.nome, email: pessoa.email, celular: pessoa.celular, endereco: pessoa.endereco, cidade: pessoa.cidade, uf: pessoa.uf, ehAdmin: element.ehAdmin, funcao })
                     q++
@@ -303,10 +307,10 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                             if (req.body.uf != '') {
                                 usuario.uf = uf
                             }
-                            console.log('email=>'+req.body.email)
+                            console.log('email=>' + req.body.email)
                             if (naoVazio(req.body.email)) {
                                 usuario.email = req.body.email
-                            }                            
+                            }
                             usuario.telefone = telefone
                             usuario.usuario = req.body.usuario
                             usuario.ehAdmin = req.body.tipo
@@ -352,8 +356,8 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                 usuario.save().then(() => {
                                     Usuarios.find().sort({ data: 'desc' }).lean().then((usuarios) => {
                                         if (owner) {
-                                            sucesso.push({ texto: "Alterações do usuário realizadas com sucesso!" })
-                                            res.render("usuario/administrador", { usuarios, sucesso, owner })
+                                            req.flash('success_msg', "Alterações do usuário realizadas com sucesso!")
+                                            res.redirect('/usuario/editar/' + req.body.id)
                                         } else {
                                             req.flash('success_msg', "Alterações do usuário realizadas com sucesso!")
                                             res.redirect('/menu')
@@ -500,7 +504,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                                 res.render("usuario/administrador/", { usuarios, sucesso, owner })
                                             }).catch((err) => {
                                                 req.flash("error_msg", "Ocorreu uma falha interna.")
-                                                res.redirect("/usuario/editar//+req.body.id")
+                                                res.redirect("/usuario/editar/" + req.body.id)
                                             })
                                         }).catch((err) => {
                                             req.flash("error_msg", "Não foi possível salvar o registro.")
@@ -513,10 +517,10 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                 usuario.save().then(() => {
                                     Usuarios.find().sort({ data: 'desc' }).lean().then((usuarios) => {
                                         sucesso.push({ texto: "Alterações do usuário realizadas com sucesso!" })
-                                        res.render("usuario/administrador/", { usuarios, sucesso, owner })
+                                        res.render("usuario/menu/", { usuarios, sucesso, owner })
                                     }).catch((err) => {
                                         req.flash("error_msg", "Ocorreu uma falha interna.")
-                                        res.redirect("/usuario/editar//+req.body.id")
+                                        res.redirect("/usuario/editar/" + req.body.id)
                                     })
                                 }).catch((err) => {
                                     req.flash("error_msg", "Não foi possível salvar o registro.")
@@ -531,59 +535,45 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                 } else {
                     //console.log('atual: acesso_existe=>' + acesso_existe.usuario)
                     Pessoa.findOne({ _id: acesso_existe.pessoa }).then((pessoa) => {
-                        nome = 0
-                        cpf = 0
-                        endereco = 0
-                        cidade = 0
-                        uf = 0
-                        telefone = 0
-
-                        if (req.body.nome == '') {
-                            nome = 0
-                        } else {
-                            nome = req.body.nome
+                        console.log('entrou acesso')
+                        if (req.body.detalhes != 'true') {
+                            console.log(req.body.nome)
+                            if (naoVazio(req.body.nome)) {
+                                console.log("tem nome")
+                                pessoa.nome = req.body.nome
+                            } else {
+                                console.log("nome 0")
+                                pessoa.nome = 0
+                            }
+                            if (naoVazio(req.body.cpf)) {
+                                pessoa.cpf = req.body.cpf
+                            } else {
+                                pessoa.cpf = 0
+                            }
+                            if (naoVazio(req.body.endereco)) {
+                                pessoa.endereco = req.body.endereco
+                            } else {
+                                pessoa.endereco = 0
+                            }
+                            if (naoVazio(req.body.cidade)) {
+                                pessoa.cidade = req.body.cidade
+                            }
+                            if (naoVazio(req.body.uf)) {
+                                pessoa.uf = req.body.uf
+                            }
                         }
-                        if (req.body.cpf == '') {
-                            cpf = 0
-                        } else {
-                            cpf = req.body.cpf
-                        }
-                        if (req.body.endereco == '') {
-                            endereco = 0
-                        } else {
-                            endereco = req.body.endereco
-                        }
-
-                        if (req.body.cidade == '') {
-                            cidade = 0
-                        } else {
-                            cidade = req.body.cidade
-                        }
-                        if (req.body.uf == '') {
-                            uf = 0
-                        } else {
-                            uf = req.body.uf
-                        }
-
-                        if (req.body.telefone == '') {
-                            telefone = 0
-                        } else {
-                            telefone = req.body.telefone
-                        }
-
-                        pessoa.nome = nome
-                        pessoa.cpf = cpf
-                        pessoa.endereco = endereco
+                        console.log('req.body.email=>' + req.body.email)
                         if (naoVazio(req.body.email)) {
                             pessoa.email = req.body.email
+                        } else {
+                            pessoa.email = pessoa.email
                         }
-                        if (req.body.cidade != '') {
-                            pessoa.cidade = cidade
+                        if (naoVazio(req.body.telefone)) {
+                            pessoa.celular = req.body.telefone
+                        } else {
+                            pessoa.celular = pessoa.celular
                         }
-                        if (req.body.uf != '') {
-                            pessoa.uf = uf
-                        }
-                        pessoa.celular = telefone
+
                         pessoa.save().then(() => {
                             Acesso.findOne({ usuario: acesso_existe.usuario }).lean().then((acesso_atual) => {
                                 //console.log('Acesso existe.')
@@ -620,10 +610,13 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                         // //console.log('atualizou')
                                         Acesso.findOne({ usuario: acesso_existe.usuario }).then((acesso) => {
                                             //console.log('req.body.usuario=>' + req.body.usuario)
-                                            tipo = req.body.tipo
                                             //console.log('req.body.tipo=>' + tipo)
-                                            acesso.usuario = req.body.usuario
-                                            acesso.ehAdmin = tipo
+                                            if (naoVazio(req.body.usuario)) {
+                                                acesso.usuario = req.body.usuario
+                                            }
+                                            if (naoVazio(req.body.tipo)) {
+                                                acesso.ehAdmin = req.body.tipo
+                                            }
 
                                             if (acesso.datalib == '' || acesso.datalib == null) {
                                                 data = new Date()

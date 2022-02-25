@@ -7,7 +7,7 @@ require('../model/Projeto')
 require('../model/Tarefas')
 require('../model/Plano')
 require('../model/Proposta')
-require('../model/Atividade')
+require('../model/Servico')
 require('../model/Programacao')
 require('../model/Pessoa')
 require('../model/Usuario')
@@ -17,7 +17,7 @@ const Usina = mongoose.model('usina')
 const Tarefa = mongoose.model('tarefas')
 const Plano = mongoose.model('plano')
 const Proposta = mongoose.model('proposta')
-const Atividade = mongoose.model('atividade')
+const Servico = mongoose.model('servico')
 const Programacao = mongoose.model('programacao')
 const Usuario = mongoose.model('usuario')
 const Acesso = mongoose.model('acesso')
@@ -56,6 +56,8 @@ router.get('/programacao/:id', ehAdmin, (req, res) => {
     const { nome } = req.user
     var id
 
+    console.log('entrou programação')
+
     if (typeof user == 'undefined') {
         id = _id
     } else {
@@ -64,19 +66,20 @@ router.get('/programacao/:id', ehAdmin, (req, res) => {
 
     var tarefas = []
     var q = 0
-    Atividade.find({ user: id }).lean().then((atividades) => {
+    Servico.find({ user: id }).lean().then((servico) => {
         Usina.findOne({ _id: req.params.id }).lean().then((usina) => {
             Cliente.findOne({ _id: usina.cliente }).lean().then((cliente) => {
-                if (naoVazio(atividades)) {
+                if (naoVazio(servico)) {
                     Tarefa.find({ usina: req.params.id, concluido: false, responsavel: id, programacao: { $exists: true } }).then((t) => {
+                        console.log('t=>' + t)
                         if (naoVazio(t)) {
                             t.forEach((e) => {
-                                Atividade.findOne({ _id: e.servico }).then((atv) => {
+                                Servico.findOne({ _id: e.servico }).then((atv) => {
                                     //console.log('e._id=>' + e._id)
                                     q++
                                     tarefas.push({ id: e._id, usina: usina._id, seq: q, dataini: e.dataini, idser: atv._id, servico: atv.descricao, responsavel: nome })
                                     if (q == t.length) {
-                                        res.render('cliente/programacao', { usina, atividades, tarefas, cliente, tipo: 'auto' })
+                                        res.render('cliente/programacao', { usina, servico, tarefas, cliente, tipo: 'auto' })
                                     }
                                 }).catch((err) => {
                                     req.flash('error_msg', 'Não foi possível encontrar a atividade.')
@@ -84,14 +87,17 @@ router.get('/programacao/:id', ehAdmin, (req, res) => {
                                 })
                             })
                         } else {
-                            res.render('cliente/programacao', { usina, atividades, cliente, tipo: 'auto' })
+                            console.log('usina=>' + usina)
+                            console.log('servico=>' + servico)
+                            console.log('cliente=>' + cliente)
+                            res.render('cliente/programacao', { usina, servico, cliente, tipo: 'auto' })
                         }
                     }).catch((err) => {
                         req.flash('error_msg', 'Não foi possível encontrar a tarefa.')
                         res.redirect('/cliente/novo')
                     })
                 } else {
-                    req.flash('error_msg', 'Não encontramos atividades cadastradas. Acesse o módulo de manutenção e cadastre atividades.')
+                    req.flash('error_msg', 'Não encontramos tipos de serviços cadastradas. Acesse o módulo de manutenção e cadastre um tipo de serviço.')
                     res.redirect('/menu')
                 }
             }).catch((err) => {
@@ -103,7 +109,7 @@ router.get('/programacao/:id', ehAdmin, (req, res) => {
             res.redirect('/cliente/novo')
         })
     }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar as atividades.')
+        req.flash('error_msg', 'Não foi possível encontrar os serviços.')
         res.redirect('/cliente/novo')
     })
 })
@@ -217,63 +223,63 @@ router.get('/historico/:id', ehAdmin, (req, res) => {
     var concluido = []
     var temtarefa = false
     Cliente.findOne({ _id: req.params.id }).lean().then((cliente) => {
-        Tarefa.find({ usina: {$exists: true}}).then((todas_tarefas) => {
-        Usina.find({ cliente: req.params.id }).then((usina) => {
-            //console.log('usina=>'+usina)
-            if (naoVazio(usina)) {
-                usina.forEach((e) => {
-                    Tarefa.find({ usina: e._id }).then((tarefas) => {
-                        //console.log('tarefas=>'+tarefas)
-                        // if (naoVazio(tarefas)) {
-                        tarefas.forEach((et) => {
-                            Atividade.findOne({ _id: et.servico }).then((atv) => {
-                                temtarefa = true
-                                q++
-                                //console.log('et.concluido=>' + et.concluido)
-                                //console.log('e.nome=>' + e.nome)
-                                //console.log('et.servico=>' + et.servico)
-                                if (et.concluido == false) {
-                                    emaberto.push({ id: et._id, usina: e.nome, servico: atv.descricao, dataini: dataMensagem(et.dataini), datafim: dataMensagem(et.datafim), situacao: "Em aberto" })
-                                } else {
-                                    concluido.push({ id: et._id, usina: e.nome, servico: atv.descricao, dataini: dataMensagem(et.dataini), datafim: dataMensagem(et.datafim), situacao: "Realizado" })
-                                }
-                                // qcont = q * usina.length
-                                // total = usina.length * tarefas.length
-                                //console.log('todas_tarefas=>'+todas_tarefas.length)
-                                //console.log('q=>'+q)
-                                if (q == todas_tarefas.length) {
-                                    //console.log('emaberto=>'+emaberto)
-                                    //console.log('concluido=>'+concluido)
-                                    //console.log('entrou')
-                                    res.render('cliente/historico', { emaberto, concluido, cliente })
-                                }
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi possível encontrar a atividade.')
-                                res.redirect('/cliente/edicao/' + req.params.id)
+        Tarefa.find({ usina: { $exists: true } }).then((todas_tarefas) => {
+            Usina.find({ cliente: req.params.id }).then((usina) => {
+                //console.log('usina=>'+usina)
+                if (naoVazio(usina)) {
+                    usina.forEach((e) => {
+                        Tarefa.find({ usina: e._id }).then((tarefas) => {
+                            //console.log('tarefas=>'+tarefas)
+                            // if (naoVazio(tarefas)) {
+                            tarefas.forEach((et) => {
+                                Servico.findOne({ _id: et.servico }).then((atv) => {
+                                    temtarefa = true
+                                    q++
+                                    //console.log('et.concluido=>' + et.concluido)
+                                    //console.log('e.nome=>' + e.nome)
+                                    //console.log('et.servico=>' + et.servico)
+                                    if (et.concluido == false) {
+                                        emaberto.push({ id: et._id, usina: e.nome, servico: atv.descricao, dataini: dataMensagem(et.dataini), datafim: dataMensagem(et.datafim), situacao: "Em aberto" })
+                                    } else {
+                                        concluido.push({ id: et._id, usina: e.nome, servico: atv.descricao, dataini: dataMensagem(et.dataini), datafim: dataMensagem(et.datafim), situacao: "Realizado" })
+                                    }
+                                    // qcont = q * usina.length
+                                    // total = usina.length * tarefas.length
+                                    //console.log('todas_tarefas=>'+todas_tarefas.length)
+                                    //console.log('q=>'+q)
+                                    if (q == todas_tarefas.length) {
+                                        //console.log('emaberto=>'+emaberto)
+                                        //console.log('concluido=>'+concluido)
+                                        //console.log('entrou')
+                                        res.render('cliente/historico', { emaberto, concluido, cliente })
+                                    }
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Não foi possível encontrar a atividade.')
+                                    res.redirect('/cliente/edicao/' + req.params.id)
+                                })
                             })
+                            // if (temtarefa == false) {
+                            //     res.render('cliente/historico', { emaberto, concluido, cliente })
+                            // }
+                            // } else {
+                            //     res.render('cliente/historico', { cliente })
+                            // }
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Não foi possível encontrar a tarefa.')
+                            res.redirect('/cliente/edicao/' + req.params.id)
                         })
-                        // if (temtarefa == false) {
-                        //     res.render('cliente/historico', { emaberto, concluido, cliente })
-                        // }
-                        // } else {
-                        //     res.render('cliente/historico', { cliente })
-                        // }
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Não foi possível encontrar a tarefa.')
-                        res.redirect('/cliente/edicao/' + req.params.id)
                     })
-                })
-            } else {
-                res.render('cliente/historico', { cliente })
-            }
+                } else {
+                    res.render('cliente/historico', { cliente })
+                }
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar a usina.')
+                res.redirect('/cliente/edicao/' + req.params.id)
+            })
         }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível encontrar a usina.')
+            req.flash('error_msg', 'Não foi possível encontrar as tarefas.')
             res.redirect('/cliente/edicao/' + req.params.id)
         })
-    }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar as tarefas.')
-        res.redirect('/cliente/edicao/' + req.params.id)
-    })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar o cliente.')
         res.redirect('/cliente/edicao/' + req.params.id)
@@ -313,41 +319,36 @@ router.get('/usinas/:id', ehAdmin, (req, res) => {
     const { _id } = req.user
     const { user } = req.user
     var id
-
-    if (typeof user == 'undefined') {
-        id = _id
-    } else {
+    if (naoVazio(user)) {
         id = user
+    } else {
+        id = _id
     }
+
     var lista_usina = []
-    var qu = 0
+    var q = 0
     var nome_plano
     var mensalidade
-    var idplano
-    Plano.find({ user: id }).lean().then((lista_plano) => {
-        Cliente.findOne({ user: id, _id: req.params.id }).lean().then((cliente) => {
-            Usina.find({ user: id, cliente: req.params.id }).then((usina) => {
-                ////console.log('usina=>' + usina)
+
+    console.log('req.params.id=>'+req.params.id)
+    Cliente.findOne({_id: req.params.id }).lean().then((cliente) => {
+        Plano.find({ user: id }).lean().then((plano) => {
+            Usina.find({ cliente: req.params.id }).then((usina) => {
+                //console.log('usina=>' + usina)
                 if (naoVazio(usina)) {
-                    usina.forEach((element) => {
-                        //console.log('element.plano=>' + element.plano)
-                        Plano.findOne({ _id: element.plano }).then((plano) => {
-                            //console.log('plano=>'+plano)
-                            if (naoVazio(plano)) {
-                                nome_plano = plano.nome
-                                mensalidade = plano.mensalidade
+                    usina.forEach((e) => {
+                        Plano.findOne({ _id: e.plano }).then((lista_plano) => {
+                            q++
+                            if (naoVazio(lista_plano)) {
+                                nome_plano = lista_plano.nome
+                                mensalidade = lista_plano.mensalidade
                             } else {
                                 nome_plano = ''
                                 mensalidade = 0
                             }
-
-                            //console.log('nome_plano=>' + nome_plano)
-                            qu++
-                            lista_usina.push({ _id: element._id, cliente: element.cliente, datalimp: element.datalimp, datarevi: element.datarevi, cadastro: element.cadastro, classificacao: element.classificacao, tipo: element.tipo, nome_plano, mensalidade, nome: element.nome, endereco: element.endereco, area: element.area, qtdmod: element.qtdmod })
-                            ////console.log('qu=>' + qu)
-                            ////console.log('usina.length=>' + usina.length)
-                            if (usina.length == qu) {
-                                res.render('cliente/usina', { cliente, lista_usina, lista_plano })
+                            lista_usina.push({ id: e._id, cliente: e.cliente, datalimp: e.datalimp, datarevi: e.datarevi, cadastro: e.cadastro, classificacao: e.classificacao, tipo: e.tipo, nome_plano, mensalidade, nome: e.nome, endereco: e.endereco, area: e.area, qtdmod: e.qtdmod })
+                            if (usina.length == q) {
+                                res.render('cliente/usina', { lista_usina, plano, cliente })
                             }
                         }).catch((err) => {
                             req.flash('error_msg', 'Houve uma falha ao encontrar o plano.')
@@ -355,19 +356,18 @@ router.get('/usinas/:id', ehAdmin, (req, res) => {
                         })
                     })
                 } else {
-                    res.render('cliente/usina', { cliente, lista_plano })
+                    res.render('cliente/usina', { cliente, plano })
                 }
-
             }).catch((err) => {
                 req.flash('error_msg', 'Houve uma falha ao encontrar a usina.')
                 res.redirect('/cliente/usinas/' + req.params.id)
             })
         }).catch((err) => {
-            req.flash('error_msg', 'Houve uma falha ao encontrar o cliente.')
+            req.flash('error_msg', 'Houve uma falha ao encontrar o plano.')
             res.redirect('/cliente/usinas/' + req.params.id)
         })
     }).catch((err) => {
-        req.flash('error_msg', 'Houve uma falha ao encontrar o plano.')
+        req.flash('error_msg', 'Houve uma falha ao encontrar o cliente.')
         res.redirect('/cliente/usinas/' + req.params.id)
     })
 })

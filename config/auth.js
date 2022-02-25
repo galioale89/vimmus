@@ -32,7 +32,7 @@ module.exports = function (passport) {
                     }
                 })
             } else {
-                // console.log(user)
+                console.log('conexão admin')
                 bcrypt.compare(senha, user.senha, (erro, batem) => {
 
                     if (batem) {

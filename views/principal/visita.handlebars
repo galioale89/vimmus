@@ -20,113 +20,123 @@
         <h5 class="header">{{cliente_proposta.nome}} - {{proposta.seq}}</h5>
     </div>
     {{/if}}
-
     <div class='btn-group col-12'>
         <div class='numero'>1</div>
         <a href='/gerenciamento/proposta/{{proposta._id}}/'
-            class='btn btn-sm{{#if proposta.feito}} check-menu {{else}} botao-menu {{/if}}'
-            style="border-bottom-left-radius: 30px;"> <i class="bi bi-house"></i> Proposta</a>
+            class='btn btn-sm {{#if proposta.feito}} check-menu {{else}} botao-menu {{/if}} d-flex align-items-center'
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-house d-flex align-items-center"></i>&nbspProposta</a>
         <div class='numero ativo'>2</div>
         <a href="/gerenciamento/visita/{{proposta._id}}"
-            class="btn btn-sm {{#if vistoria.feito}} check-menu {{else}} botao-menu ativo{{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-gear"></i>
-            Visita Técnica</a>
-        <div class='numero'>3</div>
+            class="btn btn-sm {{#if vistoria.feito}} check-menu {{else}} botao-menu ativo{{/if}} d-flex align-items-center"
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-gear d-flex align-items-center"></i>&nbspVisita
+            Técnica</a>
+        <div class='numero '>3</div>
         <a href="/gerenciamento/assinatura/{{proposta._id}}"
-            class="btn btn-sm {{#if proposta.assinado}} check-menu {{else}} botao-menu {{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-pencil"></i>
-            Contrato</a>
+            class="btn btn-sm {{#if proposta.assinado}} check-menu {{else}} botao-menu {{/if}} d-flex align-items-center"
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-pencil d-flex align-items-center"></i>&nbspContrato</a>
         <div class='numero'>4</div>
         <a href="/gerenciamento/compra/{{proposta._id}}"
-            class="btn btn-sm {{#if compra.feitonota}} check-menu {{else}} botao-menu {{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-cart-check"></i>
-            Compra Sistema</a>
+            class="btn btn-sm {{#if compra.feitonota}} check-menu {{else}} botao-menu {{/if}} d-flex align-items-center"
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-cart-check d-flex align-items-center"></i>&nbspCompra Sistema</a>
         <div class='numero'>5</div>
         <a href="/gerenciamento/trt/{{proposta._id}}"
-            class="btn btn-sm {{#if documento.feitotrt}} check-menu {{else}} botao-menu {{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-tools"></i>
-            TRT</a>
+            class="btn btn-sm {{#if documento.feitotrt}} check-menu {{else}} botao-menu {{/if}} d-flex align-items-center"
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-tools d-flex align-items-center"></i>&nbspTRT</a>
         <div class='numero'>6</div>
         <a href="/gerenciamento/execucao/{{proposta._id}}"
-            class="btn btn-sm {{#if documento.protocolado}} check-menu {{else}} botao-menu {{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-clock-history"></i>
-            Execução</a>
+            class="btn btn-sm {{#if documento.protocolado}} check-menu {{else}} botao-menu {{/if}} d-flex align-items-center"
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-paperclip d-flex align-items-center"></i>&nbspPlantas</a>
         <div class='numero'>7</div>
         <a href="/gerenciamento/equipe/{{proposta._id}}"
-            class="btn btn-sm {{#if lista_equipe.feito}} check-menu {{else}} botao-menu {{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-people"></i>
-            Equipes</a>
+            class="btn btn-sm {{#if lista_equipe.feito}} check-menu {{else}} botao-menu {{/if}} d-flex align-items-center"
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-people d-flex align-items-center"></i>&nbspExecução</a>
         <div class='numero'>8</div>
         <a href="/gerenciamento/aceite/{{proposta._id}}"
-            class="btn btn-sm {{#if documento.feitoaceite}} check-menu {{else}} botao-menu{{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-check2-square"></i>
-            Aceite Obra</a>
+            class="btn btn-sm {{#if documento.feitoaceite}} check-menu {{else}} botao-menu {{/if}} d-flex align-items-center"
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-check2-square d-flex align-items-center"></i>&nbspAceite Obra</a>
         <div class='numero'>9</div>
         <a href="/gerenciamento/almoxarifado/{{proposta._id}}"
-            class="btn btn-sm {{#if documento.feitoalmox}} check-menu {{else}} botao-menu{{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-layers"></i>
-            Almoxarifado</a>
+            class="btn btn-sm {{#if documento.feitoalmox}} check-menu {{else}} botao-menu {{/if}} d-flex align-items-center"
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-layers d-flex align-items-center"></i>&nbspAlmoxarifado</a>
         <div class='numero'>10</div>
         <a href="/gerenciamento/financeiro/{{proposta._id}}"
-            class="btn btn-sm {{#if documento.feitofaturado}} check-menu {{else}} botao-menu{{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-calculator"></i>
-            Financeiro</a>
+            class="btn btn-sm {{#if documento.feitofaturado}} check-menu {{else}} botao-menu {{/if}} d-flex align-items-center"
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-calculator d-flex align-items-center"></i>&nbspFinanceiro</a>
         <div class='numero'>11</div>
         <a href="/gerenciamento/posvenda/{{proposta._id}}"
-            class="btn btn-sm {{#if posvenda.feito}} check-menu {{else}} botao-menu{{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-door-open"></i>
-            Pós Venda</a>
+            class="btn btn-sm {{#if posvenda.feito}} check-menu {{else}} botao-menu {{/if}} d-flex align-items-center"
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-door-open d-flex align-items-center"></i>&nbspPós
+            Venda</a>
     </div>
 
     <div style="padding: 15px;" id='bloquear' class='{{proposta.encerrado}}'>
         <div class="row mb-4 mt-4">
             <div class="col-md-6">
-                <form action='/gerenciamento/caminhoSomb' method="post" enctype="multipart/form-data">
+                <form action='/gerenciamento/salvarImagem' method="post" enctype="multipart/form-data">
                     <input type='hidden' name='id' value="{{proposta._id}}">
+                    <input type='hidden' name='caminho' value='sombreamento'>
+                    <input type='hidden' name='tipo' value='proposta'>
                     <label class='col-form-label fw-bold'>Sombreamento</label><br>
-                    <label class='col-form-label col-form-label-sm'>{{vistoria.caminhoSomb}}</label>
+                    <label class='col-form-label col-form-label-sm'>{{imgsomb}}</label>
                     <div class="row">
                         <div class='col'>
-                            <input type="file" multiple name='filesomb' id="filesomb"
-                                class='form-control form-control-sm' style="font-size: 12px;">
+                            <input type="file" multiple name='files' id="file" class='form-control form-control-sm'
+                                style="font-size: 12px;">
                         </div>
+                        {{#if vistoria.caminhoSomb}}
+                        <div class='col-md-1'>
+                            <a href='/gerenciamento/mostrarGaleria/{{proposta._id}}galeria-sombreamento'
+                                class='btn btn-sm btn-primary'><i class='bi bi-eye'></i></a>
+                        </div>
+                        {{/if}}
                         <div class="col-md-3">
-                            <input name='dtPlaSombra' value='{{vistoria.dtPlaSombra}}' type="date"
-                                style='font-size: 12px;' class='form-control form-control-sm'>
-                        </div>                        
+                            <input name='data' value='{{datasomb}}' type="date" style='font-size: 12px;'
+                                class='form-control form-control-sm'>
+                        </div>
                         <div class='col-md-1'>
                             <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
                                     class='bi bi-save'></i></button>
-                        </div>
-                        <div class='col-md-1'>
-                            <a href='/gerenciamento/mostrarSomb/{{proposta._id}}' class='btn btn-sm btn-primary'><i
-                                    class='bi bi-eye'></i></a>
                         </div>
                     </div>
                 </form>
             </div>
 
             <div class="col-md-6">
-                <form action='/gerenciamento/caminhoArea' method="post" enctype="multipart/form-data">
+                <form action='/gerenciamento/salvarImagem' method="post" enctype="multipart/form-data">
                     <input type='hidden' name='id' value="{{proposta._id}}">
+                    <input type='hidden' name='caminho' value='area'>
+                    <input type='hidden' name='tipo' value='proposta'>
                     <label class='col-form-label fw-bold'>Área</label><br>
-                    <label class='col-form-label col-form-label-sm'>{{vistoria.caminhoArea}}</label>
+                    <label class='col-form-label col-form-label-sm'>{{imgarea}}</label>
                     <div class="row">
                         <div class='col'>
-                            <input type="file" multiple name='filearea' id="filearea"
-                                class='form-control form-control-sm' style="font-size: 12px;">
+                            <input type="file" multiple name='files' id="file" class='form-control form-control-sm'
+                                style="font-size: 12px;">
                         </div>
-                        <div class="col-md-3">
-                            <input name='dtPlaArea' value='{{vistoria.dtPlaArea}}' type="date" style='font-size: 12px;'
-                                class='form-control form-control-sm'>
+                        {{#if vistoria.caminhoArea}}
+                        <div class='col-md-1'>
+                            <a href='/gerenciamento/mostrarGaleria/{{proposta._id}}galeria-area'
+                                class='btn btn-sm btn-primary'><i class='bi bi-eye'></i></a>
                         </div>                        
+                        {{/if}}
+                        <div class="col-md-3">
+                            <input name='data' value='{{dataarea}}' type="date" style='font-size: 12px;'
+                                class='form-control form-control-sm'>
+                        </div>
                         <div class='col-md-1'>
                             <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
                                     class='bi bi-save'></i></button>
-                        </div>
-                        <div class='col-md-1'>
-                            <a href='/gerenciamento/mostrarArea/{{proposta._id}}' class='btn btn-sm btn-primary'><i
-                                    class='bi bi-eye'></i></a>
                         </div>
                     </div>
                 </form>
@@ -134,52 +144,60 @@
         </div>
         <div class="row mt-4">
             <div class="col-md-6 mt-4">
-                <form action='/gerenciamento/caminhoInsi' method="post" enctype="multipart/form-data">
+                <form action='/gerenciamento/salvarImagem' method="post" enctype="multipart/form-data">
                     <input type='hidden' name='id' value="{{proposta._id}}">
+                    <input type='hidden' name='caminho' value='insi'>
+                    <input type='hidden' name='tipo' value='proposta'>
                     <label class='col-form-label fw-bold'>Local Inversor e StringBox</label><br>
-                    <label class='col-form-label col-form-label-sm'>{{vistoria.caminhoInsi}}</label>
+                    <label class='col-form-label col-form-label-sm'>{{imginsi}}</label>
                     <div class="row">
                         <div class='col'>
-                            <input type="file" multiple name='fileinsi' id="fileinsi"
-                                class='form-control form-control-sm' style="font-size: 12px;">
+                            <input type="file" multiple name='files' id="file" class='form-control form-control-sm'
+                                style="font-size: 12px;">
                         </div>
+                        {{#if vistoria.caminhoInsi}}
+                        <div class='col-md-1'>
+                            <a href='/gerenciamento/mostrarGaleria/{{proposta._id}}galeria-insi'
+                                class='btn btn-sm btn-primary'><i class='bi bi-eye'></i></a>
+                        </div>                        
+                        {{/if}}
                         <div class="col-md-3">
-                            <input name='dtPlaInvStb' value='{{vistoria.dtPlaInvStb}}' type="date"
-                                style='font-size: 12px;' class='form-control form-control-sm'>
+                            <input name='data' value='{{datainsi}}' type="date" style='font-size: 12px;'
+                                class='form-control form-control-sm'>
                         </div>
                         <div class='col-md-1'>
                             <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
                                     class='bi bi-save'></i></button>
-                        </div>                        
-                        <div class='col-md-1'>
-                            <a href='/gerenciamento/mostrarInsi/{{proposta._id}}' class='btn btn-sm btn-primary'><i
-                                    class='bi bi-eye'></i></a>
                         </div>
                     </div>
                 </form>
             </div>
 
             <div class="col-md-6 mt-4">
-                <form action='/gerenciamento/caminhoInsa' method="post" enctype="multipart/form-data">
+                <form action='/gerenciamento/salvarImagem' method="post" enctype="multipart/form-data">
                     <input type='hidden' name='id' value="{{proposta._id}}">
+                    <input type='hidden' name='caminho' value='insa'>
+                    <input type='hidden' name='tipo' value='proposta'>
                     <label class='col-form-label fw-bold'>Local Aterramento</label><br>
-                    <label class='col-form-label col-form-label-sm'>{{vistoria.caminhoInsa}}</label>
+                    <label class='col-form-label col-form-label-sm'>{{imginsa}}</label>
                     <div class="row">
                         <div class='col'>
-                            <input type="file" multiple name='fileinsa' id="fileinsa"
-                                class='form-control form-control-sm' style="font-size: 12px;">
+                            <input type="file" multiple name='files' id="file" class='form-control form-control-sm'
+                                style="font-size: 12px;">
                         </div>
-                        <div class="col-md-3">
-                            <input name='dtPlaAte' value='{{vistoria.dtPlaAte}}' type="date" style='font-size: 12px;'
-                                class='form-control form-control-sm'>
+                        {{#if vistoria.caminhoInsa}}
+                        <div class='col-md-1'>
+                            <a href='/gerenciamento/mostrarGaleria/{{proposta._id}}galeria-insa'
+                                class='btn btn-sm btn-primary'><i class='bi bi-eye'></i></a>
                         </div>                        
+                        {{/if}}
+                        <div class="col-md-3">
+                            <input name='data' value='{{datainsa}}' type="date" style='font-size: 12px;'
+                                class='form-control form-control-sm'>
+                        </div>
                         <div class='col-md-1'>
                             <button type='submit' class="btn btn-sm btn-success" name='aplicar'><i
                                     class='bi bi-save'></i></button>
-                        </div>
-                        <div class='col-md-1'>
-                            <a href='/gerenciamento/mostrarInsa/{{proposta._id}}' class='btn btn-sm btn-primary'><i
-                                    class='bi bi-eye'></i></a>
                         </div>
                     </div>
                 </form>

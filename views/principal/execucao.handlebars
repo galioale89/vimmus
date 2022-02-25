@@ -46,58 +46,61 @@
     <div class='btn-group col-12'>
         <div class='numero'>1</div>
         <a href='/gerenciamento/proposta/{{proposta._id}}/'
-            class='btn btn-sm{{#if proposta.feito}} check-menu {{else}} botao-menu {{/if}}'
-            style="border-bottom-left-radius: 30px;"> <i class="bi bi-house"></i> Proposta</a>
+            class='btn btn-sm {{#if proposta.feito}} check-menu {{else}} botao-menu {{/if}} d-flex align-items-center'
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-house d-flex align-items-center"></i>&nbspProposta</a>
         <div class='numero'>2</div>
         <a href="/gerenciamento/visita/{{proposta._id}}"
-            class="btn btn-sm {{#if vistoria.feito}} check-menu {{else}} botao-menu {{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-gear"></i>
-            Visita Técnica</a>
+            class="btn btn-sm {{#if vistoria.feito}} check-menu {{else}} botao-menu {{/if}} d-flex align-items-center"
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-gear d-flex align-items-center"></i>&nbspVisita
+            Técnica</a>
         <div class='numero '>3</div>
         <a href="/gerenciamento/assinatura/{{proposta._id}}"
-            class="btn btn-sm {{#if proposta.assinado}} check-menu {{else}} botao-menu {{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-pencil"></i>
-            Contrato</a>
+            class="btn btn-sm {{#if proposta.assinado}} check-menu {{else}} botao-menu {{/if}} d-flex align-items-center"
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-pencil d-flex align-items-center"></i>&nbspContrato</a>
         <div class='numero'>4</div>
         <a href="/gerenciamento/compra/{{proposta._id}}"
-            class="btn btn-sm {{#if compra.feitonota}} check-menu {{else}} botao-menu {{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-cart-check"></i>
-            Compra Sistema</a>
+            class="btn btn-sm {{#if compra.feitonota}} check-menu {{else}} botao-menu {{/if}} d-flex align-items-center"
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-cart-check d-flex align-items-center"></i>&nbspCompra Sistema</a>
         <div class='numero'>5</div>
         <a href="/gerenciamento/trt/{{proposta._id}}"
-            class="btn btn-sm {{#if documento.feitotrt}} check-menu {{else}} botao-menu {{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-tools"></i>
-            TRT</a>
+            class="btn btn-sm {{#if documento.feitotrt}} check-menu {{else}} botao-menu {{/if}} d-flex align-items-center"
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-tools d-flex align-items-center"></i>&nbspTRT</a>
         <div class='numero ativo'>6</div>
         <a href="/gerenciamento/execucao/{{proposta._id}}"
-            class="btn btn-sm {{#if documento.protocolado}} check-menu {{else}} botao-menu ativo{{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-clock-history"></i>
-            Execução</a>
+            class="btn btn-sm {{#if documento.protocolado}} check-menu {{else}} botao-menu ativo{{/if}} d-flex align-items-center"
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-paperclip d-flex align-items-center"></i>&nbspPlantas</a>
         <div class='numero'>7</div>
         <a href="/gerenciamento/equipe/{{proposta._id}}"
-            class="btn btn-sm {{#if lista_equipe.feito}} check-menu {{else}} botao-menu {{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-people"></i>
-            Equipes</a>
+            class="btn btn-sm {{#if lista_equipe.feito}} check-menu {{else}} botao-menu {{/if}} d-flex align-items-center"
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-people d-flex align-items-center"></i>&nbspExecução</a>
         <div class='numero'>8</div>
         <a href="/gerenciamento/aceite/{{proposta._id}}"
-            class="btn btn-sm {{#if documento.feitoaceite}} check-menu {{else}} botao-menu{{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-check2-square"></i>
-            Aceite Obra</a>
+            class="btn btn-sm {{#if documento.feitoaceite}} check-menu {{else}} botao-menu {{/if}} d-flex align-items-center"
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-check2-square d-flex align-items-center"></i>&nbspAceite Obra</a>
         <div class='numero'>9</div>
         <a href="/gerenciamento/almoxarifado/{{proposta._id}}"
-            class="btn btn-sm {{#if documento.feitoalmox}} check-menu {{else}} botao-menu{{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-layers"></i>
-            Almoxarifado</a>
+            class="btn btn-sm {{#if documento.feitoalmox}} check-menu {{else}} botao-menu {{/if}} d-flex align-items-center"
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-layers d-flex align-items-center"></i>&nbspAlmoxarifado</a>
         <div class='numero'>10</div>
         <a href="/gerenciamento/financeiro/{{proposta._id}}"
-            class="btn btn-sm {{#if documento.feitofaturado}} check-menu {{else}} botao-menu{{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-calculator"></i>
-            Financeiro</a>
+            class="btn btn-sm {{#if documento.feitofaturado}} check-menu {{else}} botao-menu {{/if}} d-flex align-items-center"
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-calculator d-flex align-items-center"></i>&nbspFinanceiro</a>
         <div class='numero'>11</div>
         <a href="/gerenciamento/posvenda/{{proposta._id}}"
-            class="btn btn-sm {{#if posvenda.feito}} check-menu {{else}} botao-menu{{/if}}"
-            style="border-bottom-left-radius: 30px;"><i class="bi bi-door-open"></i>
-            Pós Venda</a>
+            class="btn btn-sm {{#if posvenda.feito}} check-menu {{else}} botao-menu {{/if}} d-flex align-items-center"
+            style="border-bottom-left-radius: 30px;">&nbsp&nbsp<i
+                class="bi bi-door-open d-flex align-items-center"></i>&nbspPós
+            Venda</a>
     </div>
 
     <div id='bloquear' class='{{proposta.encerrado}}'>
@@ -116,8 +119,9 @@
                     <label class='col-form-label'>Ver</label>
                 </div>
             </div>
-            <form action='/gerenciamento/salvarMemorial' enctype="multipart/form-data" method="post">
+            <form action='/gerenciamento/salvarDocumento' enctype="multipart/form-data" method="post">
                 <input type='hidden' name='id' value='{{proposta._id}}'>
+                <input type='hidden' name='tipo' value='memorial'>
                 <div class="row">
                     <div class="row">
                         <div class='col-md-2'>
@@ -128,7 +132,7 @@
                         </div>
                     </div>
                     <div class='col-md-6'>
-                        <input class="form-control" type="file" name='memorial'>
+                        <input class="form-control" type="file" name='files'>
                     </div>
                     <div class='col-md-2'>
                         <input type="date" class='form-control' name='dtmemorial' value='{{documento.dtmemorial}}'>
@@ -137,14 +141,15 @@
                         <button type='submit' class="btn btn-success" name='aplicar'><i class='bi bi-save'></i></button>
                     </div>
                     <div style="width: 70px;">
-                        <a class="btn btn-primary" href='/gerenciamento/mostrarMemorial/{{proposta._id}}'
+                        <a class="btn btn-primary" href='/gerenciamento/mostrarBucket/{{documento.memorial}}'
                             target="_blank"><i class='bi bi-eye'></i></a>
                     </div>
                 </div>
             </form>
 
-            <form action='/gerenciamento/salvarSituacao' enctype="multipart/form-data" method="post">
+            <form action='/gerenciamento/salvarDocumento' enctype="multipart/form-data" method="post">
                 <input type='hidden' name='id' value='{{proposta._id}}'>
+                <input type='hidden' name='tipo' value='situacao'>
                 <div class="row">
                     <div class="row">
                         <div class='col-md-2'>
@@ -155,7 +160,7 @@
                         </div>
                     </div>
                     <div class='col-md-6'>
-                        <input class="form-control" type="file" name='situacao'>
+                        <input class="form-control" type="file" name='files'>
                     </div>
                     <div class='col-md-2'>
                         <input type="date" class='form-control' name='dtsituacao' value='{{documento.dtsituacao}}'>
@@ -164,14 +169,15 @@
                         <button type='submit' class="btn btn-success" name='aplicar'><i class='bi bi-save'></i></button>
                     </div>
                     <div style="width: 70px;">
-                        <a class="btn btn-primary" href='/gerenciamento/mostrarSituacao/{{proposta._id}}'
+                        <a class="btn btn-primary" href='/gerenciamento/mostrarBucket/{{documento.situacao}}'
                             target="_blank"><i class='bi bi-eye'></i></a>
                     </div>
                 </div>
             </form>
 
-            <form action='/gerenciamento/salvarUnifilar' enctype="multipart/form-data" method="post">
+            <form action='/gerenciamento/salvarDocumento' enctype="multipart/form-data" method="post">
                 <input type='hidden' name='id' value='{{proposta._id}}'>
+                <input type='hidden' name='tipo' value='unifilar'>
                 <div class="row">
                     <div class="row">
                         <div class='col-md-2'>
@@ -182,7 +188,7 @@
                         </div>
                     </div>
                     <div class='col-md-6'>
-                        <input class="form-control" type="file" name='unifilar'>
+                        <input class="form-control" type="file" name='files'>
                     </div>
                     <div class='col-md-2'>
                         <input type="date" class='form-control' name='dtunifilar' value='{{documento.dtunifilar}}'>
@@ -191,14 +197,15 @@
                         <button type='submit' class="btn btn-success" name='aplicar'><i class='bi bi-save'></i></button>
                     </div>
                     <div style="width: 70px;">
-                        <a class="btn btn-primary" href='/gerenciamento/mostrarUnifilar/{{proposta._id}}'
+                        <a class="btn btn-primary" href='/gerenciamento/mostrarBucket/{{documento.unifilar}}'
                             target="_blank"><i class='bi bi-eye'></i></a>
                     </div>
                 </div>
             </form>
 
-            <form action='/gerenciamento/salvarTrifilar' enctype="multipart/form-data" method="post">
+            <form action='/gerenciamento/salvarDocumento' enctype="multipart/form-data" method="post">
                 <input type='hidden' name='id' value='{{proposta._id}}'>
+                <input type='hidden' name='tipo' value='trifilar'>
                 <div class="row">
                     <div class="row">
                         <div class='col-md-2'>
@@ -209,7 +216,7 @@
                         </div>
                     </div>
                     <div class='col-md-6'>
-                        <input class="form-control" type="file" name='trifilar'>
+                        <input class="form-control" type="file" name='files'>
                     </div>
                     <div class='col-md-2'>
                         <input type="date" class='form-control' name='dttrifilar' value='{{documento.dttrifilar}}'>
@@ -218,7 +225,7 @@
                         <button type='submit' class="btn btn-success" name='aplicar'><i class='bi bi-save'></i></button>
                     </div>
                     <div style="width: 70px;">
-                        <a class="btn btn-primary" href='/gerenciamento/mostrarTrifilar/{{proposta._id}}'
+                        <a class="btn btn-primary" href='/gerenciamento/mostrarBucket/{{documento.trifilar}}'
                             target="_blank"><i class='bi bi-eye'></i></a>
                     </div>
                 </div>
@@ -252,15 +259,16 @@
                     </form>
                 </div>
                 <div class="col">
-                    <form action='/gerenciamento/salvarParecer' enctype="multipart/form-data" method="post">
+                    <form action='/gerenciamento/salvarDocumento' enctype="multipart/form-data" method="post">
                         <input type='hidden' name='id' value='{{proposta._id}}'>
+                        <input type='hidden' name='tipo' value='parecer'>
                         <div class="row" style="margin-top: 40px;">
                             <div class='col'>
-                                <input class="form-control" type="file" name='parecer'>
+                                <input class="form-control" type="file" name='files'>
                             </div>
                             {{#if documento.parecer}}
                             <div style="width: 70px;">
-                                <a class="btn btn-primary" href='/gerenciamento/mostrarParecer/{{proposta._id}}'
+                                <a class="btn btn-primary" href='/gerenciamento/mostrarBucket/{{documento.parecer}}'
                                     target="_blank"><i class='bi bi-eye'></i></a>
                             </div>
                             {{/if}}                            

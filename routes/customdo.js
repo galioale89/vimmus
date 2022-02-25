@@ -1,4 +1,4 @@
-require('../app')
+require('../admin')
 var express = require("express")
 var multer = require('multer')
 const router = express.Router()

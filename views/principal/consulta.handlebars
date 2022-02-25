@@ -51,6 +51,106 @@
     }
 </script>
 <div class='row' style="width: 100%;padding-left: 2%;">
+    {{#if obra}}
+    <div id='header'>
+        <div class="row mt-4">
+            <form action='/gerenciamento/filtrar/' method='post'>
+                <div class="col-md-4">
+                    <h5 class="mt-2 titulo-inicio">Lista de Obras {{titulo}}</h5>
+                    <input type="hidden" name='tipo' value='{{tipo}}'>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Status</label>
+                        <select class='form-select form-select-sm' name='stats'>
+                            <option>Todos</option>
+                            <option>Em Andamento</option>
+                            <option>Parado</option>
+                            <option>Concluido</option>
+                        </select>
+                    </div>
+                    <div class='col'>
+                        <label class='col-form-label col-form-label-sm fw-bold'>Empresa</label>
+                        <select name='empresa' class='form-select form-select-sm'>
+                            <option>Todos</option>
+                            {{#each todas_empresas}}
+                            <option value='{{_id}}'>{{nome}}</option>
+                            {{else}}
+                            <option>Nenhuma empresa cadastradas</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class='col'>
+                        <label class='col-form-label col-form-label-sm fw-bold'>Responsável</label>
+                        <select name='responsavel' class='form-select form-select-sm'>
+                            <option>Todos</option>
+                            {{#each todos_responsaveis}}
+                            <option value='{{_id}}'>{{nome}}</option>
+                            {{else}}
+                            <option>Nenhum responsável cadastrado</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class='col'>
+                        <label class='col-form-label col-form-label-sm fw-bold'>Cliente</label>
+                        <select name='cliente' class='form-select form-select-sm'>
+                            <option>Todos</option>
+                            {{#each todos_clientes}}
+                            <option value='{{_id}}'>{{nome}}</option>
+                            {{else}}
+                            <option>Nenhum cliente cadastrado</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div style="width: 160px;">
+                        <label class="col-form-label col-form-label-sm">Data Inicial</label>
+                        <input type='date' class='form-control form-control-sm' input='dataini' name='dataini'
+                            id='dataini' value='{{dataini}}'>
+                    </div>
+                    <div style="width: 160px;">
+                        <label class="col-form-label col-form-label-sm">Data Final</label>
+                        <input type='date' class='form-control form-control-sm' input='datafim' name='datafim'
+                            id='datafim' value='{{datafim}}'>
+                    </div>
+                    <div style="width: 70px;">
+                        <button type='submit' class='mt-3 botaofiltrar'><i
+                                class='bi bi-search iconefiltrar'></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div style="margin-bottom: 4%;margin-top: 1%;">
+            <table>
+                <tr>
+                    <th style="width: 5%;">Obra</th>
+                    <th style="width: 7%;">Status</th>
+                    <th style="width: 10%;">Cliente</th>
+                    <th style="width: 10%;">Gestor</th>
+                    <th style="width: 10%">Cadastro</th>
+                    <th style="width: 10%">Inicio</th>
+                    <th style="width: 6%">Fim</th>
+                </tr>
+                {{#each listaObra}}
+                <tr style="line-height: 20px;">
+                    <td style="text-align: center;"><a href='/gerenciamento/obra/{{id}}abaadicionar'>{{seq}}</a></td>
+                    <td style="text-align: center;"><a href='/gerenciamento/obra/{{id}}abaadicionar'>{{s}}</a></td>
+                    <td style="text-align: center;"><a href='/gerenciamento/obra/{{id}}abaadicionar'>{{cliente}}</a>
+                    </td>
+                    <td style="text-align: center;"><a href='/gerenciamento/obra/{{id}}abaadicionar'>{{nome_ges}}</a>
+                    </td>
+                    <td style="text-align: center;"><a href='/gerenciamento/obra/{{id}}abaadicionar'>{{cadastro}}</a>
+                    </td>
+                    <td style="text-align: center;"><a href='/gerenciamento/obra/{{id}}abaadicionar'>{{dtini}}</a></td>
+                    <td style="text-align: center;"><a href='/gerenciamento/obra/{{id}}abaadicionar'>{{dtfim}}</a></td>
+                </tr>
+                {{/each}}
+                <tr>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    {{else}}
     <div id='header'>
         <div class="row mt-4">
             <form action='/gerenciamento/filtrar/' method='post'>
@@ -60,9 +160,6 @@
                 </div>
                 <div class="row">
                     {{#if lista}}
-                    <div class="col">
-                        
-                    </div>
                     <div class="col">
                         <label class='col-form-label col-form-label-sm fw-bold'>Status</label>
                         <select class='form-select form-select-sm' name='stats'>
@@ -192,15 +289,6 @@
             </form>
             {{/if}}
         </div>
-        {{!-- <div class="row mt-4">
-            <div class='filtro-selecao' style="margin-left: 30px;">Classificação: {{classificacao}}</div>
-            <div class='filtro-selecao'>Realizado: {{filStatus}}</div>
-            {{#if pr.nome}}
-            <div class='filtro-selecao'>Responsável: {{pr.nome}}</div>
-            {{else}}
-            <div class='filtro-selecao'>Responsável: Todos</div>
-            {{/if}}
-        </div> --}}
     </div>
 
     <div style="margin-bottom: 4%;margin-top: 1%;">
@@ -284,4 +372,5 @@
             {{/each}}
         </table>
     </div>
+    {{/if}}
 </div>

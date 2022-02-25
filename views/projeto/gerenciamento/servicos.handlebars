@@ -1,0 +1,63 @@
+<style>
+    th {
+        font-weight: 400;
+        font-size: 15px;
+        width: 20%;
+    }
+
+    td {
+        font-weight: 400;
+        font-size: 15px;
+    }
+</style>
+<div class='row' style="padding: 30px;width: 100%;">
+    <form action="/gerenciamento/salvarsrv/" method="post">
+        <ul class="nav nav-tabs mb-2">
+            <li class="nav-item">
+                <a class="nav-link" aria-current="page" style="color: black;" href='/gerenciamento/agenda'><label
+                        class="col-form-label titulo-inicio">Agenda</label></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" style="color: black;"
+                    href="/gerenciamento/servicos/"><label class="col-form-label titulo-inicio">Tipos de Serviços</label></a>
+            </li>
+        </ul>
+
+        <div style="border: #847AF4 4px solid;border-radius: 20px;padding: 30px;">
+            <label class='col-form-label fw-bold'>Tipos de Serviços Cadastradas</label>
+            <table>
+                <tr>
+                    <th>Descrição</th>
+                    <th>Classe</th>
+                </tr>
+                {{#each servicos}}
+                <tr style="line-height: 20px;">
+                    <td><a href='/gerenciamento/editarsrv/{{_id}}'>{{descricao}}</a></td>
+                    <td><a href='/gerenciamento/editarsrv/{{_id}}'>{{classe}}</a></td>
+                </tr>
+                {{/each}}
+            </table>
+        </div>
+        <br><br>
+        <div class='row text-center'>
+            <label class='col-form-label fw-bold'>Cadastro de Tipos de Serviços</label>
+            <div class='col-md-4 text-end'>
+                <label class='col-form-label mb-2'>Descrição:</label><br>
+                <label class='col-form-label'>Classe:</label><br>
+            </div>
+            <div class='col-md-4 text-start'>
+                <input type='hidden' name='id' value='{{servico._id}}'>
+                <input type='type' class='form-control mb-2' name='descricao' value="{{servico.descricao}}">
+                <select class='form-select' name='classe'>
+                    <option>{{servico.classe}}</option>
+                    <option>Estrutura</option>
+                    <option>Módulos</option>
+                    <option>String Box</option>
+                    <option>Inversor</option>
+                    <option>Aterramento</option>
+                </select>
+            </div>
+            <button type='submit' class='btn btn-sm btn-success mt-3' style="max-width: 60px;max-height: 60px;border-radius: 60px;">Salvar</button>
+        </div>
+    </form>
+</div>

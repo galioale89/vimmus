@@ -48,6 +48,14 @@ const Proposta = new Schema({
         type: String,
         require: false
     },  
+    fatura:{
+        type: String,
+        require: false
+    },
+    valor:{
+        type: Number,
+        require: false
+    },
     proposta1:{
         type: String,
         require: false
@@ -140,6 +148,10 @@ const Proposta = new Schema({
         type: Boolean,
         require:false        
     },   
+    aceite:{
+        type: Boolean,
+        require:false
+    },   
     dtbaixa:{
         type: String,
         require:false        
@@ -174,7 +186,7 @@ const Proposta = new Schema({
     },
     data:{
         type: Number,
-        require:false   
+        require: false   
     }       
 })
 

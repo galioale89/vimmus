@@ -1,7 +1,15 @@
 {
   "ExpandedNodes": [
+<<<<<<< HEAD
     ""
+=======
+    "",
+    "\\routes",
+    "\\views",
+    "\\views\\projeto",
+    "\\views\\projeto\\gerenciamento"
+>>>>>>> f423aec765bb4c4767e0b21e7e3739d3d3c703b2
   ],
-  "SelectedNode": "\\package.json",
+  "SelectedNode": "\\app.js",
   "PreviewInSolutionExplorer": false
 }

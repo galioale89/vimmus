@@ -1,0 +1,739 @@
+<style type="text/css">
+    i {
+        font-size: 16px;
+        vertical-align: text-top;
+    }
+
+    th {
+        border-collapse: collapse;
+        font-size: 12px;
+    }
+
+    td {
+        text-align: center;
+    }
+
+    table {
+        font-size: 12px;
+        margin: auto;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    .swal-wide {
+        width: 850px !important;
+    }
+</style>
+<script>
+    function selecao() {
+        var asc = document.getElementById('asc')
+        var desc = document.getElementById('desc')
+        var ordem = document.getElementById('ordem')
+        if (asc.checked) {
+            ordem.value = 1
+        } else {
+            ordem.value = -1
+        }
+    }
+function manutencao() {
+        var hoje = new Date()
+        var ano = hoje.getFullYear()
+        var dia = hoje.getDay()
+        if (parseFloat(dia) < 10) {
+            dia = '0' + dia
+        }
+        var html = ''
+        var htmloption = ''
+        var htmlabresel = '<div class="row" style="width: 100%"><div class="col"><select name="cliente" class="form-select mt-2">'
+        var htmlfechsel = '</select></div>'
+        var htmlcliente = '<div class="col-md-1"><a href="/cliente/novo/voltar" style="font-size: 35px;color: rgb(44,55,89)"> + </a></div></div>'
+        var htmliniform = '<form action="/gerenciamento/addmanutencao" method="post">'
+        var htmlmeio = '<input type="hidden" name="dia" value="' + String(dia) + '"><input type="hidden" name="ano" value="' + String(ano) + '">'
+        var htmlsubmit = '<div class="row" style="width: 100%"><div class="col-md-5 text-start" style="padding-left: 20px"><div class="form-check mt-2"><input class="form-check-input" name="check" type="checkbox""><label class="form-check-label mt-1" style="font-size: 15px;">Sem Cliente</label></div></div><div class="col text-start"><button type="submit" style="border: white 1px solid;margin-top: 10px;margin-bottom: 10px;background-color: green;color: white">Próximo</button></div></div>'
+        var htmlfimform = '</form>'
+        var clinome = document.getElementsByName('clinome[]')
+        var cliid = document.getElementsByName('cliid[]')
+        for (i = 0; i < clinome.length; i++) {
+            htmloption = htmloption + '<option value="' + cliid[i].value + '">' + clinome[i].value + '</option>'
+        }
+        html = htmliniform + htmlabresel + htmloption + htmlfechsel + htmlcliente + htmlmeio + htmlsubmit + htmlfimform
+        if (clinome.length > 0) {
+            Swal.fire({
+                title: '<strong style="font-size: 25px">Adicionar Nova Tarefa</strong>' + '\n' +
+                    '<label style="font-size: 15px">Selecione o cliente para a nova instalação, manutenção ou tarefa.</label>',
+                width: 800,
+                icon: 'success',
+                html: html,
+                showCloseButton: true,
+                showConfirmButton: false,
+            })
+        }
+    }
+</script>
+
+<div class="modal fade" id="atrasados" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Propostas</h5>
+                <button type="button" class="btn btn-sm btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <label class="col-form-label fw-bold">Propostas a menos de 1(um) dia de Vencer</label>
+                <table>
+                    <tr>
+                        <th style="width: 20%;text-align: center">Cliente</th>
+                        <th style="width: 5%;text-align: center">Proposta</th>
+                        <th style="width: 10%;text-align: center">Status</th>
+                        <th style="width: 10%;text-align: center">Telefone</th>
+                        <th style="width: 10%;text-align: center">Cadastro</th>
+                        <th style="width: 10%;text-align: center">Validade</th>
+                        <th style="width: 10%;text-align: center">Ações</th>
+                    </tr>
+                    {{#each notpro}}
+                    <tr style="font-size: 15px;">
+                        <input type='hidden' name='cliav[]' value='{{cliente}}'>
+                        <input type='hidden' name='proav[]' value='{{proposta}}'>
+                        <input type='hidden' name='statav[]' value='{{status}}'>
+                        <input type='hidden' name='clitel[]' value='{{telefone}}'>
+                        <input type='hidden' name='valav[]' value='{{validade}}'>
+                        <input type='hidden' name='idav[]' value='{{id}}'>
+                        <input type='hidden' name='id' value='{{id}}'>
+                        <td>{{cliente}}</td>
+                        <td>{{proposta}}</td>
+                        <td>{{status}}</td>
+                        <td>{{telefone}}</td>
+                        <td>{{cadastro}}</td>
+                        <td>{{validade}}</td>
+                        <td>
+                            <div class='bt-group col-12 gap-2'>
+                                <a href='/gerenciamento/proposta/{{id}}'>
+                                    <i style='color:rgba(44,55,89)' class="bi bi-pen icone-tabela"></i>
+                                </a>
+                                <a href='/gerenciamento/confirmastatus/{{id}}'>
+                                    <i style='color:rgba(44,55,89)' class="bi bi-front icone-tabela"></i>
+                                </a>
+                                <a href='/gerenciamento/ganho/{{id}}/'>
+                                    <i style='color:rgba(44,55,89)' class="bi bi-file-earmark-check icone-tabela"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </table>
+                <hr>
+                <label class="col-form-label fw-bold">Propostas Vencidas</label>
+                <table>
+                    <tr>
+                        <th style="width: 20%;text-align: center">Cliente</th>
+                        <th style="width: 5%;text-align: center">Proposta</th>
+                        <th style="width: 5%;text-align: center">Telefone</th>
+                        <th style="width: 10%;text-align: center">Cadastro</th>
+                        <th style="width: 10%;text-align: center">Validade</th>
+                        <th style="width: 1%;text-align: center">Ações</th>
+                    </tr>
+                    {{#each atrasado}}
+                    <tr style="font-size: 15px;">
+                        <input type='hidden' name='cliven[]' value='{{cliente}}'>
+                        <input type='hidden' name='proven[]' value='{{proposta}}'>
+                        <input type='hidden' name='clitel[]' value='{{telefone}}'>
+                        <input type='hidden' name='cadven[]' value='{{cadastro}}'>
+                        <input type='hidden' name='valven[]' value='{{validade}}'>
+                        <input type='hidden' name='idven[]' value='{{id}}'>
+                        <td>{{cliente}}</td>
+                        <td>{{proposta}}</td>
+                        <td>{{telefone}}</td>
+                        <td>{{cadastro}}</td>
+                        <td>{{validade}}</td>
+                        <td>
+                            <div class='btn-group gap-2 col-12'>
+                                <a href='/gerenciamento/proposta/{{id}}'>
+                                    <i style='color:rgba(44,55,89)' class="bi bi-pen icone-tabela"></i>
+                                </a>
+
+                                <a href='/gerenciamento/confirmastatus/{{id}}'>
+                                    <i style='color:rgba(44,55,89)' class="bi bi-front icone-tabela"></i>
+                                </a>
+                                <a href='/gerenciamento/confirmabaixa/{{id}}'>
+                                    <i onclick='motivo({{id}})' style='cursor: pointer; color:rgba(44,55,89)'
+                                        class="bi bi-arrow-down-circle icone-tabela"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="width: 99%;">
+    <label class='col-form-label fw-bold'
+        style="line-height: 30px;padding-left: 15px">{{saudacao}}{{nome_lista}}</label>
+    {{#if block}}
+    {{else}}
+    {{#each deadlineIns}}
+    <input type='hidden' name='idins[]' value='{{id}}'>
+    <input type='hidden' name='proins[]' value='{{proposta}}'>
+    <input type='hidden' name='cliins[]' value='{{cliente}}'>
+    <input type='hidden' name='cadins[]' value='{{cadastro}}'>
+    <input type='hidden' name='dtiass[]' value='{{inicio}}'>
+    <input type='hidden' name='dliins[]' value='{{dliins}}'>
+    {{/each}}
+    <div class="row">
+        <input type="hidden" id="crm" value='{{crm}}'>
+        <div class='btn-group gap-2' style="padding-left: 20px;">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle fw-bold" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false" style='font-size: 10px'>
+                    Menu
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <div style='padding-left: 20px;width: 200px;'>
+                        <div class='titulo-inicio text-left'> CADASTROS</div>
+                        <div class="row mb-2">
+                            <div class="text-start">
+                                <a href="/cliente/novo" class="contorno-menu"><i class='bi bi-person-plus'></i>
+                                    Cliente</a>
+                                <a href="/cliente/consulta" class="botaomenu text-start"> <i class='bi bi-search'></i>
+                                </a>
+                            </div>
+                        </div>
+                        {{#if crm}}
+                        <div class="row mb-2">
+                            <div class="text-start">
+                                <a href="/gerenciamento/proposta/selecao/com" class="contorno-menu">
+                                    <i class='bi bi-file-arrow-up'></i>
+                                    Proposta
+                                </a>
+                                <a href="/gerenciamento/consulta" class="botaomenu"> <i class='bi bi-search'></i> </a>
+                            </div>
+                        </div>
+                        {{/if}}
+                        <div class="row mb-2">
+                            <div class="text-start">
+                                <a href='/pessoa/novo' class="contorno-menu"><i class='bi bi-person-plus'></i>
+                                    Pessoas</a>
+                                <a href='/pessoa/consulta' class="botaomenu"><i class='bi bi-search'></i> </a>
+                            </div>
+                        </div>
+                        {{#if crm}}
+                        <div class="row mb-2">
+                            <div class="text-start">
+                                <a href='/fornecedor/novo' class="contorno-menu"><i
+                                        class='bi bi-file-arrow-up'></i>Fornecedor</a>
+                                <a href='/fornecedor/consulta' class="botaomenu"><i class='bi bi-search'></i></a>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 1%;margin-top: 6%;">
+                            <a href='/gerenciamento/plano' class="relatorio titulo-relatorio"
+                                style="padding-right: 20%;">
+                                <i class="bi bi-file-arrow-up"></i> Planos
+                            </a>
+                        </div>
+                        {{else}}
+                        <div class="row mb-2">
+                            <div class="text-start">
+                                <a href='/gerenciamento/servicos' class="contorno-menu"><i
+                                        class='bi bi-file-arrow-up'></i>Tipo de Serviço</a>
+                            </div>
+                        </div>
+                        {{/if}}
+                        <div style="margin-bottom: 1%;margin-top: 6%;">
+                            <a href='/pessoa/consultaequipepadrao/' class="relatorio titulo-relatorio"
+                                style="padding-right: 20%;">
+                                <i class="bi bi-people"></i> Equipe
+                                Padrão
+                            </a>
+                        </div>
+                        <div class='titulo-inicio text-left mt-2'>CONFIGURAÇÕES</div>
+                        <div class="row mb-2">
+                            <div class="text-start">
+                                <a href='/configuracao/addempresa' class="contorno-menu"><i
+                                        class='bi bi-calculator'></i> Empresa </a>
+                                <a href='/configuracao/consultaempresa' class="botaomenu"><i
+                                        class='bi bi-search'></i></a>
+                            </div>
+                        </div>
+
+                        <div class='titulo-inicio mt-2'>FERRAMENTAS</div>
+                        <div style="margin-top: 6%;margin-bottom: 7%;">
+                            <a href='/gerenciamento/agenda' class="relatorio titulo-relatorio">
+                                <i class='bi bi-columns'></i>
+                                Agenda de Serviços
+                            </a><br>
+                        </div>
+                        {{#if crm}}
+                        <div style="margin-top: 6%;margin-bottom: 7%;">
+                            <a href='/gerenciamento/cenarios' class="relatorio titulo-relatorio">
+                                <i class='bi bi-display'></i>
+                                Análise
+                                de
+                                Cenários
+                            </a>
+                        </div>
+                        {{/if}}
+                        <div style="margin-bottom: 7%;">
+                            <a href='/usuario/editar/{{id}}' class="relatorio titulo-relatorio">
+                                <i class="bi bi-house-fill"></i>
+                                Minha
+                                Conta
+                            </a>
+                        </div>
+
+                        {{#if ehMaster}}
+                        <div style="margin-bottom: 7%;margin-top: 8%">
+                            <a href='/administrador/acesso' class="relatorio titulo-relatorio">
+                                <i class='bi bi-people'></i>
+                                Usuários
+                            </a>
+                        </div>
+                        {{/if}}
+                        {{#if owner}}
+                        <div style="margin-bottom: 7%;margin-top: 8%">
+                            <a href='/administrador' class="relatorio titulo-relatorio"> Novos</a>
+                        </div>
+                        {{/if}}
+                    </div>
+                </ul>
+            </div>
+
+            <a href='/cliente/novo/' class='btn btn-sm btn-primary mb-1'>Novo Ciente</a>
+            {{#if crm}}
+            <div class="dropdown">
+                <button class="btn btn-sm btn-primary mb-1' dropdown-toggle" style="font-size: 13px;" type="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    Nova Proposta
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <a href='/gerenciamento/proposta/selecao/com' class='contorno-menu'>Completa</a>
+                    <div class='mt-2'>
+                        <a href='/gerenciamento/proposta/selecao/ref' class="contorno-menu">Simples</a>
+                    </div>
+                </ul>
+            </div>
+            <a href='/gerenciamento/selecao/' class='btn btn-sm btn-primary mb-1'>Qualificação de Propostas</a>
+            <a class="btn btn-sm btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#atrasados">
+                Propostas Vencidas e
+                a Vencer
+            </a>
+            {{/if}}
+            {{#if crm}}
+            <a href='/gerenciamento/emandamento/listatipoproposta' class="btn btn-sm btn-primary mb-1"> Serviços em Andamento</a>            
+            {{else}}
+            <a href='/gerenciamento/obra' class="btn btn-sm btn-primary mb-1">Nova Obra</a>    
+            <a href='/gerenciamento/consultaobra' class="btn btn-sm btn-primary mb-1">Todas as Obras</a>               
+            <a href='/gerenciamento/emandamento/listatipoobra' class="btn btn-sm btn-primary mb-1">Obras em Andamento</a>    
+            <a href='/gerenciamento/agenda' class="btn btn-sm btn-primary mb-1"> Agenda de Serviços</a>
+            <button onclick='manutencao()' class="btn btn-sm btn-primary mb-1" style="max-width: 50px;"
+                title='Adicionar Tarefa'><i class='bi bi-calendar-plus d-flex justify-content-center'></i></button>            
+            {{/if}}
+        </div>
+    </div>
+    {{/if}}
+    <div class="row">
+        {{#if crm}}
+        <div class='col-md-2 mt-3'>
+            <div class="text-center">
+                <label style="font-size: 21px;color:#6557fc{{#if block}}{{else}};margin-top: 10%{{/if}}">
+                    Total de Propostas
+                </label>
+                <label class="mt-2" style="font-size: 50px;">{{numprj}}</label>
+                <div class="row mt-4">
+                    <a href='/gerenciamento/consulta/orcado' class='titulo'>Enviadas</a>
+                    <div style="padding-left: 39%;">
+                        <div class='sessao-status mb-2'>
+                            <label class='mt-2' style="font-size: 20px;font-weight: bold;">{{qtdorcado}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <a href='/gerenciamento/consulta/aberto' class='titulo'>Em Aberto</a>
+                    <div style="padding-left: 39%;">
+                        <div class='sessao-status mb-2'>
+                            <label class='mt-2' style="font-size: 20px; font-weight: bold;">{{qtdaberto}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <a href='/gerenciamento/consulta/encerrado' class='titulo'>Encerradas</a>
+                    <div style="padding-left: 39%;">
+                        <div class='sessao-status mb-2'>
+                            <label class='mt-2' style="font-size: 20px;font-weight: bold;">{{qtdencerrado}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <a href='/gerenciamento/consulta/baixado' class='titulo'>Perdidas</a>
+                    <div style="padding-left: 39%;">
+                        <div class='sessao-status mb-2'>
+                            <label class='mt-2' style="font-size: 20px;font-weight: bold;">{{qtdbaixado}}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='{{#if block}}col-md-10{{else}}col-md-10{{/if}}'>
+            <div class="row">
+                <div class="col">
+                    <div class='quadro-scroll' id='dim' style="padding-left: 5px;">
+                        <div class="text-center mt-1 mb-3" style="position: sticky;">
+                            <a href='/gerenciamento/selecao' style="cursor: pointer;font-size: 15px;font-weight: 600;">
+                                Propostas Enviadas
+                            </a>
+                        </div>
+                        <table style="width: 100%;">
+                            <tr class='contorno-titulo' style='border-bottom: rgba(40,55,89,0.1) solid 1px;'>
+                                <th>Proposta</th>
+                                <th>Cliente</th>
+                                <th>Telefone</th>
+                                <th></th>
+                            </tr>
+                            {{#each listaOrcado}}
+                            <tr>
+                                <td>{{proposta}}</td>
+                                <td>{{cliente}}</td>
+                                <td>{{telefone}}</td>
+                                {{#if block}}
+                                {{else}}
+                                <td style="padding-top: 3px;">
+                                    <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
+
+                                        <a href='/gerenciamento/proposta/{{id}}/' class='botao-tabela d-flex aligns-items-center ativado-tabela'>
+                                            <i class="bi bi-pen icone-tabela"></i>
+                                        </a>
+                                        <a href='/gerenciamento/ganho/{{id}}/' class='botao-tabela d-flex aligns-items-center ativado-tabela'>
+                                            <i class="bi bi-file-earmark-check icone-tabela"></i>
+                                        </a>
+                                        <a href='/gerenciamento/confirmaexclusao/{{id}}/'
+                                            class='botao-tabela d-flex aligns-items-center ativado-tabela'>
+                                            <i class="bi bi-trash icone-tabela"></i>
+                                        </a>
+
+                                    </div>
+                                </td>
+                                {{/if}}
+                            </tr>
+                            {{else}}
+                            {{/each}}
+                        </table>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class='quadro-scroll' id='dim1' style="padding-left: 5px;">
+                        <div class="text-center mt-1 mb-3">
+                            <label style="font-size: 15px;font-weight: 600;">Propostas Aceitas</label>
+                        </div>
+                        <table style="width: 100%;">
+                            <tr class='contorno-titulo' style='border-bottom: rgba(40,55,89,0.1) solid 1px;'>
+                                <th>Proposta</th>
+                                <th>Follow-up</th>
+                                <th>Cliente</th>
+                                <th>Telefone</th>
+                                {{#if block}}
+                                {{else}}
+                                <th></th>
+                                {{/if}}
+                            </tr>
+                            {{#each listaAberto}}
+                            <tr>
+                                <td>{{proposta}}</td>
+                                <td>{{status}}</td>
+                                <td>{{cliente}}</td>
+                                <td>{{telefone}}</td>
+                                <td style="padding-top: 3px;">
+                                    <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
+                                        {{#if block}}
+                                        {{else}}
+                                        <a href='/gerenciamento/proposta/{{id}}/' class='botao-tabela d-flex aligns-items-center ativado-tabela'>
+                                            <i class="bi bi-pen icone-tabela"></i>
+                                        </a>
+                                        {{/if}}
+                                    </div>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{else}}
+        <form action="/gerenciamento/filtrodash" method="post" class='mb-3'>
+            <div class="row mt-2">
+                <div class="col text-end">
+                    <label class='col-form-label col-form-label-sm'>Data:</label>
+                </div>
+                <div class="text-start" style="max-width: 150px;">
+                    <select name='mes' class='form-select form-select-sm'>
+                        {{#if mes}}
+                        <option>{{mes}}</option>
+                        {{/if}}
+                        <option>Todas</option>
+                        <option>Janeiro</option>
+                        <option>Fevereiro</option>
+                        <option>Março</option>
+                        <option>Abril</option>
+                        <option>Maio</option>
+                        <option>Junho</option>
+                        <option>Julho</option>
+                        <option>Agosto</option>
+                        <option>Setembro</option>
+                        <option>Outubro</option>
+                        <option>Novembro</option>
+                        <option>Dezembro</option>
+                    </select>
+                </div>
+                <div class="col text-start">
+                    <input type="number" name='ano' class='form-control form-control-sm' value='{{ano}}'>
+                </div>
+                <div class="col text-end">
+                    <label class='col-form-label col-form-label-sm'>Empresa:</label>
+                </div>
+                <div class="col-md-2 text-start">
+                    <select name='empresa' class='form-select form-select-sm'>
+                        <option value='111111111111111111111111'>Todas</option>
+                        {{#each todas_empresas}}
+                        <option value='{{_id}}'>{{nome}}</option>
+                        {{else}}
+                        <option>Cadastre uma empresa</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="col text-end">
+                    <label class='col-form-label col-form-label-sm'>Status:</label>
+                </div>
+                <div class="col-md-2">
+                    <select name='status' class='form-select form-select-sm'>
+                        {{#if empselect}}
+                        <option>{{empselect}}</option>
+                        {{/if}}
+                        <option>Todos</option>
+                        <option>Aguardando</option>
+                        <option>Em execução</option>
+                        <option>Parado</option>
+                        <option>Realizado</option>
+                    </select>
+                </div>
+                <div class="col text-end">
+                    <label class='col-form-label col-form-label-sm'>Ordem:</label>
+                </div>
+                <div class="col-md-1">
+                    <div class="form-check d-flex align-items-center" onchange="selecao()">
+                        <input class="form-check-input" type="radio" name="check" id="asc" {{asc}}>
+                        <label class="form-check-label mt-1">
+                            Crescente
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div class="form-check d-flex align-items-center" onchange="selecao()">
+                        <input class="form-check-input" type="radio" name="check" id="desc" {{desc}}>
+                        <label class="form-check-label mt-1">
+                            Decrescente
+                        </label>
+                    </div>
+                </div>
+                <input type='hidden' id='ordem' name='ordem' value="{{ordem}}">
+                <div class="col">
+                    <button type="submit" class="btn"><i
+                            class='bi bi-search botao-filtrar d-flex align-items-center'></i></button>
+                </div>
+            </div>
+        </form>
+        {{#if lista_tarefas}}
+        <div class='quadro-scroll' id='tarefa' style="margin-left: 20px;width: 98%;">
+            <div class="text-center">
+                <table style="font-size: 15px;">
+                    <tr>
+                        <th style="font-size: 15px;padding-left: 10px;">
+                            Sequência
+                        </th>
+                        <th style="width: 25%;font-size: 15px;">
+                            Cliente
+                        </th>
+                        <th style="width: 15%;font-size: 15px;">
+                            Serviço
+                        </th>
+                        <th style="width: 25%;font-size: 15px;">
+                            Responsável
+                        </th>
+                        <th style="width: 10%;font-size: 15px;">
+                            Inicio
+                        </th>
+                        <th style="width: 10%;font-size: 15px;">
+                            Fim
+                        </th>
+                        <th style="width: 10%;font-size: 15px;">
+                            Equipe
+                        </th>
+                        <th style="width: 15%;font-size: 15px;">
+                            Execução
+                        </th>
+                    </tr>
+            </div>
+            {{#each lista_tarefas}}
+            <tr>
+                <td>
+                    {{seq}}
+                </td>
+                <td>
+                    {{nome_cli}}
+                </td>
+                <td>
+                    {{servico}}
+                </td>
+                <td>
+                    {{nome_res}}
+                </td>
+                <td>
+                    {{dtini}}
+                </td>
+                <td>
+                    {{dtfim}}
+                </td>
+                <td>
+                    <a href='/gerenciamento/mostraEquipe/{{id}}' class="btn btn-sm btn-primary"><i
+                            class='bi bi-people-fill d-flex' title="Equipe"></i></a>
+                </td>
+                <td>
+                    <div style="padding-left: 20px;display: flex;align-items:center;">
+                        {{#if liberado}}
+                        <div id='execucao' style="position: relative;top: 40%;transform: translateY(30%);"></div>
+                    </div>
+                    {{else}}
+                    {{#if feito}}
+                    <div><i id='realizado' class='bi bi-check d-flex align-items-center mt-1'
+                            style="position: relative;transform: translateY(10%);color: rgb(55,49,89);"></i></div>
+                    {{else}}
+                    <div id='aguardando' style="position: relative;top: 50%;transform: translateY(30%);"></div>
+                    {{/if}}
+                    {{/if}}
+        </div>
+        </td>
+        </tr>
+        {{/each}}
+        </table>
+    </div>
+</div>
+<div class="row mt-4">
+    <label style="font-size: 20px;padding-left: 20px;font-weight: 800;">Visão Geral das Tarefas</label>
+    <div id='grafico' style="width: 95%;padding-left: 50px;">
+        <canvas id='chartGeral' class='mt-1 mb-1'></canvas>
+    </div>
+</div>
+{{else}}
+<div class="container text-center" style="padding-left: 20px">
+    <div class="card">
+        <div class="body-card" style="margin:auto">
+            <label class="col-form-label" style="font-size: 50px;margin-top: 180px;margin-bottom: 180px">Agende seu
+                primeiro serviço.</label>
+        </div>
+    </div>
+</div>
+{{/if}}
+{{/if}}
+</div>
+{{#each todos_clientes}}
+<input type="hidden" name="clinome[]" value="{{nome}}">
+<input type="hidden" name="cliid[]" value="{{_id}}">
+{{/each}}
+<input type='hidden' id='qtdagua' value='{{qtdagua}}'>
+<input type='hidden' id='qtdexec' value='{{qtdexec}}'>
+<input type='hidden' id='qtdpara' value='{{qtdpara}}'>
+<input type='hidden' id='qtdreal' value='{{qtdreal}}'>
+</div>
+<script>    
+ //popup vencidos    
+    var txt = ''
+    var txtins = ''
+    var cliav = document.getElementsByName('cliav[]')
+    var proav = document.getElementsByName('proav[]')
+    var statav = document.getElementsByName('statav[]')
+    var valav = document.getElementsByName('valav[]')
+    var idav = document.getElementsByName('idav[]')
+    var idins = document.getElementsByName('idins[]')
+    var proins = document.getElementsByName('proins[]')
+    var cliins = document.getElementsByName('cliins[]')
+    var cadins = document.getElementsByName('cadins[]')
+    var dtiass = document.getElementsByName('dtiass[]')
+    var dliins = document.getElementsByName('dliins[]')
+    
+    var crm = document.getElementById('crm')
+    if (crm.value == 'true') {
+        const wrapperini = document.createElement('div');
+        var htmlpro = ''
+        if (cliav.length > 0) {
+            htmlpro = '<div style="font-size: 16px">Propostas a menos de 1 (um) dia de vencer </div><br><table style="font-size:15px"><tr><th style="width: 10%;text-align:center">Proposta</th><th style="width: 10%;text-align:center">Cliente</th><th style="width: 10%;text-align:center">Status</th><th style="width: 10%;text-align:center">Data Validade</th><th style="width: 1%;text-align:center">Ações</th></tr><tr>'
+        }
+        var htmlfim = '</table>'
+        for (var i = 0; i < cliav.length; i++) {
+            txt = txt + '<tr><td>' + proav[i].value + '</td><td>' + cliav[i].value + '</td><td>' + statav[i].value + '</td><td>' + valav[i].value + '</td><td><div class="btn-group gap-2 col-12"><a href="/gerenciamento/proposta/' + idav[i].value + '"><i style="color: rgb(44,55,89)" class="bi bi-pen icone-tabela"></i></a><a href="/gerenciamento/confirmastatus/' + idav[i].value + '"><i style="color:rgba(44,55,89)" class="bi bi-front icone-tabela"></i></a><a href="/gerenciamento/ganho/' + idav[i].value + '"><i style="color:rgba(44,55,89);title:"Ganho"" class="bi bi-file-earmark-check icone-tabela"></i></a></div></td></tr>'
+        }
+        var htmlins = '<div style="font-size: 16px">Instalação Agendada</div><br><table style="font-size:15px"><tr><th style="width: 5%;text-align:center">Proposta</th><th style="width: 20%;text-align:center">Cliente</th><th style="width: 10%;text-align:center">Início</th><th style="width: 10%;text-align:center">Deadline</th><th style="width: 10%;text-align:center">Ações</th></tr><tr>'
+        for (var x = 0; x < cliins.length; x++) {
+            txtins = txtins + '<tr><td>' + proins[x].value + '</td><td>' + cliins[x].value + '</td><td>' + dtiass[x].value + '</td><td>' + dliins[x].value + '</td><td><a href="/gerenciamento/proposta/' + idins[x].value + '"><i style="color: rgb(44,55,89)" class="bi bi-pen icone-tabela"></i></a></td></tr>'
+        }
+
+        if (cliav.length > 0) {
+            wrapperini.innerHTML = htmlpro + txt + htmlfim + '<hr>' + htmlins + txtins + htmlfim
+        } else {
+            wrapperini.innerHTML = htmlins + txtins + htmlfim
+        }
+
+        if (cliav.length > 0 || cliins.length > 0) {
+            Swal.fire({
+                title: '<strong style="font-size: 25px">Controle de Projetos e Propostas</strong>',
+                width: 800,
+                html: wrapperini,
+                showCloseButton: true,
+                showConfirmButton: false
+            })
+        }
+    }    
+        
+    //grafico tarefas
+    var qtdagua = document.getElementById('qtdagua')
+    var qtdexec = document.getElementById('qtdexec')
+    var qtdpara = document.getElementById('qtdpara')
+    var qtdreal = document.getElementById('qtdreal')
+
+    var ctxGeral = document.getElementById('chartGeral').getContext('2d')
+    var chartGeral = new Chart(ctxGeral, {
+        type: 'bar',
+        data: {
+            labels: ['Aguardando', 'Em execução', 'Parado', 'Realizado'],
+            datasets: [{
+                data: [qtdagua.value, qtdexec.value, qtdpara.value, qtdreal.value],
+                backgroundColor: [
+                    'rgba(37, 139, 33, 0.2)',
+                    'rgba(50, 140, 230, 0.2)',
+                    'rgba(140, 50, 230, 0.2)',
+                    'rgba(240, 37, 33, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(37, 139, 33, 1)',
+                    'rgba(50, 140, 230, 1)',
+                    'rgba(140, 50, 230, 1)',
+                    'rgba(240, 37, 33, 1)',
+                ],
+                borderWidth: 1,
+            }],
+        },
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+            legend: {
+                display: false,
+                position: 'top',
+                reverse: true,
+                align: 'center',
+                labels: {
+                    usePointStyle: true,
+                }
+            }
+        }
+    })    
+</script>

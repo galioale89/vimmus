@@ -1,0 +1,110 @@
+<div style="width: 98%;padding-left: 2%;padding-top: 0.5%;">
+    {{#if atva}}
+    <h1>Aterramento</h1>
+    <form action="/gerenciamento/salvarImagem" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="ida" value='{{atva._id}}'>
+        <input type="hidden" name="id" value='{{proposta._id}}{{tarefa._id}}'>
+        <input type='hidden' name='caminho' value='aterramento'>
+        <input type='hidden' name='tipo' value='{{#if proposta}}proposta{{else}}tarefa{{/if}}'>
+        <div class="row">
+            <div class="col-md-9">
+                <input type='file' multiple name='files' class='form-control'>
+            </div>
+            <div class="col-md-1">
+                <div class="form-check mt-1">
+                    <input class="form-check-input" name='check' type="checkbox" {{check}}>
+                    <label class="form-check-label mt-1" style="font-size: 15px;" for="flexCheckDefault">
+                        Aprovado
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <button type='submit' class='btn  btn-success'><i class='bi bi-save'></i></button>
+            </div>
+            <div class="col-md-1">
+                <a href='/gerenciamento/mostraEquipe/{{proposta._id}}{{tarefa._id}}' class='btn btn-primary'><i
+                        class='bi bi-arrow-left'></i></a>
+            </div>
+        </div>
+    </form>
+    {{else}}
+    {{#if atvt}}
+    <h2>Estruturas e Módulos</h2>
+    <form action="/gerenciamento/salvarImagem" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="idt" value='{{atvt._id}}'>
+        <input type="hidden" name="id" value='{{proposta._id}}{{tarefa._id}}'>
+        <input type='hidden' name='caminho' value='telhado'>
+        <div class="row">
+            <div class="col-md-9">
+                <input type='file' multiple name='files' class='form-control'>
+            </div>
+            <div class="col-md-1">
+                <div class="form-check mt-1">
+                    <input class="form-check-input" name='check' type="checkbox" {{check}}>
+                    <label class="form-check-label mt-1" style="font-size: 15px;" for="flexCheckDefault">
+                        Aprovado
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <button type='submit' class='btn  btn-success'><i class='bi bi-save'></i></button>
+            </div>
+            <div class="col-md-1">
+                <a href='/gerenciamento/mostraEquipe/{{proposta._id}}{{tarefa._id}}' class='btn btn-primary'><i
+                        class='bi bi-arrow-left'></i></a>
+            </div>
+        </div>
+    </form>
+    {{else}}
+    {{#if atvi}}
+    <h2>Inversor e String Box</h2>
+    <form action="/gerenciamento/salvarImagem" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="idi" value='{{atvi._id}}'>
+        <input type="hidden" name="id" value='{{proposta._id}}{{tarefa._id}}'>
+        <input type='hidden' name='caminho' value='inversor'>
+        <div class="row">
+            <div class="col-md-9">
+                <input type='file' multiple name='files' class='form-control'>
+            </div>
+            <div class="col-md-1">
+                <div class="form-check mt-1">
+                    <input class="form-check-input" name='check' type="checkbox" {{check}}>
+                    <label class="form-check-label mt-1" style="font-size: 15px;" for="flexCheckDefault">
+                        Aprovado
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <button type='submit' class='btn  btn-success'><i class='bi bi-save'></i></button>
+            </div>
+            <div class="col-md-1">
+                <a href='/gerenciamento/mostraEquipe/{{proposta._id}}{{tarefa._id}}' class='btn btn-primary'><i
+                        class='bi bi-arrow-left'></i></a>
+            </div>
+        </div>
+    </form>
+    {{/if}}
+    {{/if}}
+    {{/if}}
+
+    <div class="row text-center text-center justify-content-center" style="margin-bottom: 50px;margin-top: 40px">
+        {{#if proposta}}
+        <label style="font-size: 35px;font-weight: 700;margin-bottom: 10px;">{{titulo}}</label>
+        <div class="row text-center text-center justify-content-center" style="margin-bottom: 50px;margin-top: 40px">        
+        {{else}}
+        <div class="row">
+            {{/if}}
+            {{#each lista_imagens}}
+            <div class="col-md-4">
+                <div style="width: 5px;">
+                    <a href='/gerenciamento/deletaImagem/{{imagem}}delimg{{id}}delimg{{atv}}delimgpropostadelimgatv' class='botao-filter'><i
+                            class='bi bi-x-circle' style="font-size: 20px;color: orangered"></i></a>
+                </div>
+                <a href='/gerenciamento/mostrarImagens/{{imagem}}' target="_blank" style="font-size: 25px;">
+                    <img src='/gerenciamento/mostrarImagens/{{imagem}}' style="width: 80%;" alt='Minha Figura'></a>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+
+</div>

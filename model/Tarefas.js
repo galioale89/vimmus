@@ -7,6 +7,15 @@ const Tarefas = new Schema({
         ref: 'usuario',
         require: false,
     },  
+    empresa: {
+        type: Schema.Types.ObjectId,
+        ref: 'empresa',
+        require: false,
+    },    
+    seq: {
+        type: Number,
+        require: false
+    },
     usina: {
         type: Schema.Types.ObjectId,
         ref: 'usina',
@@ -17,6 +26,18 @@ const Tarefas = new Schema({
         ref: 'cliente',
         require: false,
     },    
+    endereco:{
+        type: String,
+        require: false
+    },
+    uf:{
+        type: String,
+        require: false
+    },
+    cidade:{
+        type: String,
+        require: false
+    },      
     equipe: {
         type: Schema.Types.ObjectId,
         ref: 'equipe',
@@ -25,6 +46,10 @@ const Tarefas = new Schema({
     responsavel: {
         type: Schema.Types.ObjectId,
         ref: 'pessoa',
+        require: false,
+    },
+    gestor: {
+        type: Schema.Types.ObjectId,
         require: false,
     },
     programacao: {
@@ -98,7 +123,11 @@ const Tarefas = new Schema({
     tipo: {
         type: String,
         require:false  
-    }    
+    },
+    dataentrega:{
+        type: Number,
+        require:false
+    }
 })
 
 mongoose.model('tarefas', Tarefas)
