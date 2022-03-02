@@ -32,7 +32,7 @@ const path = require('path')
 const multer = require('multer')
 const multerS3 = require("multer-s3")
 const nodemailer = require('nodemailer')
-
+const fs = require('fs').promises
 
 const Usuario = mongoose.model('usuario')
 const Projeto = mongoose.model('projeto')
@@ -90,14 +90,14 @@ const transporter = nodemailer.createTransport({ // Configura os parâmetros de 
         rejectUnauthorized: false
     }
 })
-// aws.config.update({
-//     region: 'us-east-1',
-//     secretAccessKey: 'fVcP/qf7BggNuk029PF+lTEJQGmNBE9x6zXQc4MQ',
-//     accessKeyId: 'AKIAV7ZMQ66NULT346DG',    
-// })
+aws.config.update({
+    region: 'us-east-1',
+    secretAccessKey: 'fVcP/qf7BggNuk029PF+lTEJQGmNBE9x6zXQc4MQ',
+    accessKeyId: 'AKIAV7ZMQ66NULT346DG',
+})
 
-var credentials = new aws.SharedIniFileCredentials({profile: 'vimmusimg'})
-aws.config.credentials = credentials
+// var credentials = new aws.SharedIniFileCredentials({ profile: 'vimmusimg' })
+// aws.config.credentials = credentials
 
 var s3 = new aws.S3()
 
@@ -135,7 +135,7 @@ router.get('/remover/:id', ehAdmin, (req, res) => {
                                 Equipe.findOneAndRemove({ _id: proposta.equipe }).then(() => {
 
                                     req.flash('success_msg', 'Proposta removida com sucesso.')
-                                    res.redirect('/menu')
+                                    res.redirect('/dashboard')
 
                                 }).catch(() => {
                                     req.flash('error_msg', 'Não foi possível remover a equipe da proposta.')
@@ -586,7 +586,7 @@ router.get('/consultaobra', ehAdmin, (req, res) => {
                                     }
                                 }).catch((err) => {
                                     req.flash('error_msg', 'Nenhum responsável pela gestão encontrado.')
-                                    res.redirect('/menu')
+                                    res.redirect('/dashboard')
                                 })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Nenhum cliente encontrado.')
@@ -598,19 +598,19 @@ router.get('/consultaobra', ehAdmin, (req, res) => {
                     }
                 }).catch((err) => {
                     req.flash('error_msg', 'Nenhuma proposta encontrada.')
-                    res.redirect('/menu')
+                    res.redirect('/dashboard')
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Nenhuma empresa encontrada.')
-                res.redirect('/menu')
+                res.redirect('/dashboard')
             })
         }).catch((err) => {
             req.flash('error_msg', 'Nenhum responsável encontrado.')
-            res.redirect('/menu')
+            res.redirect('/dashboard')
         })
     }).catch((err) => {
         req.flash('error_msg', 'Nenhum cliente encontrada.')
-        res.redirect('/menu')
+        res.redirect('/dashboard')
     })
 })
 
@@ -803,7 +803,7 @@ router.get('/confirmabaixa/:id', ehAdmin, (req, res) => {
         res.render('principal/confirmabaixa', { proposta })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar a proposta.')
-        res.redirect('/menu')
+        res.redirect('/dashboard')
     })
 })
 
@@ -812,7 +812,7 @@ router.get('/confirmastatus/:id', ehAdmin, (req, res) => {
         res.render('principal/confirmastatus', { proposta })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar a proposta.')
-        res.redirect('/menu')
+        res.redirect('/dashboard')
     })
 })
 
@@ -873,9 +873,10 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
     var q = 0
     var anoinicio
     var mesinicio
-    var mesinicio
+    var anofim
+    var mesfim
     var diainicio
-    var diainicio
+    var diafim
     var hoje
     var meshoje
     var mestitulo
@@ -905,7 +906,7 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
     var dezembro
 
     var hoje = dataHoje()
-    var meshoje = hoje.substring(5,7)
+    var meshoje = hoje.substring(5, 7)
     var anotitulo = hoje.substring(0, 4)
 
     //console.log('meshoje=>' + meshoje)
@@ -962,64 +963,69 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
     //console.log('params[1]=>' + params[1])
     var sql = []
     if (params[1] == 'obra') {
-        sql = { user: id, feito: true, prjfeito: false, obra: { $ne: '' }, $and: [{ 'dtinicio': { $ne: '' } }, { 'dtinicio': { $ne: '0000-00-00' } }] }
+        sql = { user: id, feito: true, prjfeito: false, obra: { $exists: true }, $and: [{ 'dtinicio': { $ne: '' } }, { 'dtinicio': { $ne: '0000-00-00' } }] }
     } else {
         sql = { user: id, feito: true, liberar: true, prjfeito: false, nome_projeto: { $exists: true }, $and: [{ 'dtinicio': { $ne: '' } }, { 'dtinicio': { $ne: '0000-00-00' } }] }
     }
 
+    //console.log('sql=>' + JSON.stringify(sql))
     Cliente.find({ user: id }).lean().then((todos_clientes) => {
+        // //console.log('todos_clientes=>' + todos_clientes)
         Pessoa.find({ user: id, funges: 'checked' }).lean().then((todos_responsaveis) => {
+            // //console.log('todos_responsaveis=>' + todos_responsaveis)
             Empresa.find({ user: id }).lean().then((todas_empresas) => {
+                // //console.log('todos_responsaveis=>' + todas_empresas)
                 Equipe.find(sql).then((conta_equipe) => {
+                    // //console.log('conta_equipe=>'+conta_equipe)
                     if (naoVazio(conta_equipe)) {
                         conta_equipe.forEach((e) => {
                             //console.log('params[1]=>' + params[1])
                             if (params[1] == 'obra') {
-                                Tarefa.findOne({ user: id, equipe: e._id }).then((tarefa) => {
+                                var tecnico
+                                var gestor
+                                //console.log('entrou obra')
+                                Tarefa.findOne({ user: id, e: e._id }).then((tarefa) => {
                                     //console.log('tarefa._id=>' + tarefa._id)
-                                    Obra.findOne({ _id: e.obra, "caminhoFoto._id": tarefa._id }).then((obra) => {
+                                    Obra.findOne({ _id: e.obra, "tarefa._idtarefa": tarefa._id }).then((obra) => {
                                         //console.log('obra._id=>' + obra._id)
                                         Cliente.findOne({ _id: obra.cliente }).then((cliente) => {
                                             //console.log('tarefa.responsavel=>' + tarefa.responsavel)
-                                            Pessoa.findOne({ _id: tarefa.responsavel }).then((responsavel) => {
-                                                //console.log('equipe._id=>'+equipe._id)
+                                            Pessoa.findOne({ _id: tarefa.responsavel }).then((pessoa_tecnico) => {
+                                                //console.log('e._id=>' + e._id)
                                                 //console.log('e.insres=>' + e.insres)
-                                                Pessoa.findOne({ _id: obra.responsavel }).then((gestor) => {
+                                                Pessoa.findOne({ _id: obra.responsavel }).then((pessoa_gestor) => {
                                                     q++
-                                                    //console.log('proposta.datacad=>' + proposta.datacad)
                                                     //console.log('e._id=>' + e._id)
-
-                                                    //console.log('pessoa_res=>' + pessoa_res)
-                                                    if (naoVazio(responsavel)) {
-                                                        nome_res = responsavel.nome
+                                                    if (naoVazio(pessoa_tecnico)) {
+                                                        tecnico = pessoa_tecnico.nome
                                                     } else {
-                                                        nome_res = ''
+                                                        tecnico = ''
                                                     }
 
-                                                    if (naoVazio(gestor)) {
-                                                        nome_ges = gestor.nome
+                                                    if (naoVazio(pessoa_gestor)) {
+                                                        gestor = pessoa_gestor.nome
                                                     } else {
-                                                        nome_ges = ''
+                                                        gestor = ''
                                                     }
 
-                                                    //console.log('e.dtinicio=>'+e.dtinicio)
-                                                    //console.log('e.dtfim=>'+e.dtfim)
+                                                    //console.log('e.dtinicio=>' + e.dtinicio)
+                                                    //console.log('e.dtfim=>' + e.dtfim)
                                                     dtinicio = e.dtinicio
                                                     dtfim = e.dtfim
                                                     anoinicio = dtinicio.substring(0, 4)
                                                     anofim = dtfim.substring(0, 4)
-                                                    mesinicio = dtinicio.substring(5,7)
-                                                    mesfim = dtfim.substring(5,7)
+                                                    mesinicio = dtinicio.substring(5, 7)
+                                                    mesfim = dtfim.substring(5, 7)
                                                     diainicio = dtinicio.substring(8, 11)
                                                     diafim = dtfim.substring(8, 11)
                                                     //console.log('dif1=>' + dif1)
-                                                    // compara = mesfim - mesinicio
+
                                                     //console.log('meshoje=>' + meshoje)
                                                     //console.log('mesinicio=>' + mesinicio)
                                                     //console.log('anotitulo=>' + anotitulo)
                                                     //console.log('anoinicio=>' + anoinicio)
-                                                    //console.log('compara')                                          
-                                                    // if (compara > 0) {
+                                                    //console.log('compara')
+
                                                     if (meshoje == mesinicio) {
                                                         if (parseFloat(anotitulo) == parseFloat(anoinicio)) {
                                                             mes = meshoje
@@ -1100,7 +1106,7 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
                                                     //console.log('color=>' + color)
                                                     todasCores.push({ color })
 
-                                                    //console.log('dif=>'+dif)
+                                                    //console.log('dif=>' + dif)
 
                                                     for (i = 0; i < dif; i++) {
                                                         //console.log('dia=>' + dia)
@@ -1209,8 +1215,9 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
                                                         }
                                                     }
 
-
-                                                    listaAndamento.push({ id: obra._id, seq: obra.seq, cliente: cliente.nome, nome_res, nome_ges, dtinicio: dataMensagem(dtinicio), deadline: dataMensagem(dtfim) })
+                                                    //console.log('tecnico=>' + tecnico)
+                                                    //console.log('gestor=>' + gestor)
+                                                    listaAndamento.push({ id: tarefa._id, seq: obra.seq, cliente: cliente.nome, tecnico, gestor, cadastro: dataMsgNum(obra.data), dtinicio: dataMensagem(dtinicio), deadline: dataMensagem(dtfim) })
 
                                                     //console.log('q=>' + q)
                                                     //console.log('conta_equipe.length=>' + conta_equipe.length)
@@ -1227,7 +1234,7 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
                                                             dia01, dia02, dia03, dia04, dia05, dia06, dia07, dia08, dia09, dia10,
                                                             dia11, dia12, dia13, dia14, dia15, dia16, dia17, dia18, dia19, dia20,
                                                             dia21, dia22, dia23, dia24, dia25, dia26, dia27, dia28, dia29, dia30, dia31,
-                                                            mestitulo, anotitulo, trintaeum, bisexto, todasCores, listaAndamento,
+                                                            mestitulo, anotitulo, trintaeum, bisexto, todasCores, listaAndamento, obra: true,
                                                             janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro,
                                                             todos_responsaveis, todos_clientes, todas_empresas, anotitulo, dataini, datafim
                                                         })
@@ -1235,20 +1242,20 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
                                                     }
                                                 }).catch((err) => {
                                                     req.flash('error_msg', 'Falha ao encontrar o técnico responsável.')
-                                                    res.redirect('/menu')
+                                                    res.redirect('/dashboard')
                                                 })
                                             }).catch((err) => {
                                                 req.flash('error_msg', 'Falha ao encontrar o gestor responsável.')
-                                                res.redirect('/menu')
+                                                res.redirect('/dashboard')
                                             })
                                         }).catch((err) => {
                                             req.flash('error_msg', 'Falha ao encontrar o cliente.')
-                                            res.redirect('/menu')
+                                            res.redirect('/dashboard')
                                         })
                                     })
                                 }).catch((err) => {
-                                    req.flash('error_msg', 'Falha ao encontrar a proposta<gea>.')
-                                    res.redirect('/menu')
+                                    req.flash('error_msg', 'Falha ao encontrar a tarefa<gea>.')
+                                    res.redirect('/dashboard')
                                 })
                             } else {
                                 Proposta.findOne({ user: id, equipe: e._id, ganho: true, encerrado: false }).then((proposta) => {
@@ -1287,8 +1294,8 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
                                                 dtfim = e.dtfim
                                                 anoinicio = dtinicio.substring(0, 4)
                                                 anofim = dtfim.substring(0, 4)
-                                                mesinicio = dtinicio.substring(5,7)
-                                                mesfim = dtfim.substring(5,7)
+                                                mesinicio = dtinicio.substring(5, 7)
+                                                mesfim = dtfim.substring(5, 7)
                                                 diainicio = dtinicio.substring(8, 11)
                                                 diafim = dtfim.substring(8, 11)
                                                 //console.log('dif1=>' + dif1)
@@ -1528,29 +1535,29 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
                                                 }
                                             }).catch((err) => {
                                                 req.flash('error_msg', 'Falha ao encontrar o técnico responsável.')
-                                                res.redirect('/menu')
+                                                res.redirect('/dashboard')
                                             })
                                         }).catch((err) => {
                                             req.flash('error_msg', 'Falha ao encontrar o gestor responsável.')
-                                            res.redirect('/menu')
+                                            res.redirect('/dashboard')
                                         })
                                     }).catch((err) => {
                                         req.flash('error_msg', 'Falha ao encontrar o cliente.')
-                                        res.redirect('/menu')
+                                        res.redirect('/dashboard')
                                     })
                                 }).catch((err) => {
                                     req.flash('error_msg', 'Falha ao encontrar a proposta<gea>.')
-                                    res.redirect('/menu')
+                                    res.redirect('/dashboard')
                                 })
                             }
                         })
                     } else {
-                        req.flash('error_msg', 'Não existem projetos com instalação em andamento.')
-                        res.redirect('/menu')
+                        req.flash('error_msg', 'Não existem obras em andamento.')
+                        res.redirect('/dashboard')
                     }
                 }).catch((err) => {
                     req.flash('error_msg', 'Falha ao encontrar a equipe.')
-                    res.redirect('/menu')
+                    res.redirect('/dashboard')
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Nenhuma empresa encontrada.')
@@ -1567,6 +1574,7 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
 })
 
 router.get('/mostraEquipe/:id', ehAdmin, (req, res) => {
+    var idobra
     Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
         if (naoVazio(proposta)) {
             Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente) => {
@@ -1576,87 +1584,100 @@ router.get('/mostraEquipe/:id', ehAdmin, (req, res) => {
                             res.render('principal/mostraEquipe', { proposta, equipe, cliente, responsavel, insres })
                         }).catch((err) => {
                             req.flash('error_msg', 'Falha ao encontrar o instalador responsável.')
-                            res.redirect('/menu')
+                            res.redirect('/dashboard')
                         })
                     }).catch((err) => {
                         req.flash('error_msg', 'Falha ao encontrar o responsável.')
-                        res.redirect('/menu')
+                        res.redirect('/dashboard')
                     })
                 }).catch((err) => {
                     req.flash('error_msg', 'Falha ao encontrar a equipe.')
-                    res.redirect('/menu')
+                    res.redirect('/dashboard')
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Falha ao encontrar o cliente.')
-                res.redirect('/menu')
+                res.redirect('/dashboard')
             })
         } else {
-            var realizar
             //console.log('mostrar tarefa')
             Tarefa.findOne({ _id: req.params.id }).lean().then((tarefa) => {
-                //console.log(tarefa)
                 if (naoVazio(tarefa)) {
                     Cliente.findOne({ _id: tarefa.cliente }).lean().then((cliente) => {
                         Equipe.findOne({ _id: tarefa.equipe }).lean().then((equipe) => {
                             Pessoa.findOne({ _id: tarefa.responsavel }).lean().then((tecnico) => {
-                                realizar = equipe.feito
                                 Pessoa.findOne({ _id: tarefa.gestor }).lean().then((gestor) => {
-                                    res.render('principal/mostraEquipe', { realizar, tarefa, equipe, cliente, tecnico, gestor })
+                                    Obra.findOne({ 'tarefa.idtarefa': req.params.id }).then((obra) => {
+                                        //console.log(obra)
+                                        if (naoVazio(obra)) {
+                                            idobra = obra._id
+                                        } else {
+                                            idobra = false
+                                        }
+                                        res.render('principal/mostraEquipe', { tarefa, equipe, cliente, tecnico, gestor, idobra, realizada: tarefa.concluido })
+                                    }).catch((err) => {
+                                        req.flash('error_msg', 'Falha ao encontrar a obra.')
+                                        res.redirect('/dashboard')
+                                    })
                                 }).catch((err) => {
                                     req.flash('error_msg', 'Falha ao encontrar o gestor responsável.')
-                                    res.redirect('/menu')
+                                    res.redirect('/dashboard')
                                 })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Falha ao encontrar o tecnico responsável.')
-                                res.redirect('/menu')
+                                res.redirect('/dashboard')
                             })
                         }).catch((err) => {
                             req.flash('error_msg', 'Falha ao encontrar a equipe.')
-                            res.redirect('/menu')
+                            res.redirect('/dashboard')
                         })
                     }).catch((err) => {
                         req.flash('error_msg', 'Falha ao encontrar o cliente.')
-                        res.redirect('/menu')
+                        res.redirect('/dashboard')
                     })
                 } else {
                     req.flash('error_msg', 'Equipe não formada.')
-                    res.redirect('/menu')
+                    res.redirect('/dashboard')
                 }
             }).catch((err) => {
-                req.flash('error_msg', 'Falha ao encontrar a tarefa.')
-                res.redirect('/menu')
+                req.flash('error_msg', 'Falha ao encontrar a tarefa<mostrar equipe>.')
+                res.redirect('/dashboard')
             })
         }
     }).catch((err) => {
         req.flash('error_msg', 'Falha ao encontrar a proposta<me>.')
-        res.redirect('/menu')
+        res.redirect('/dashboard')
     })
 })
 
 router.get('/realizar/:id', ehAdmin, (req, res) => {
-    Tarefa.findOne({ _id: req.params.id }).then((tarefa) => {
-        Equipe.findOne({ _id: tarefa.equipe }).then((equipe) => {
-            equipe.feito = true
-            equipe.save().then(() => {
-                tarefa.concluido = true
-                tarefa.dataentrega = dataBusca(dataHoje())
-                tarefa.save().then(() => {
-                    res.redirect('/gerenciamento/mostraEquipe/' + tarefa._id)
+    Obra.findOne({ 'tarefa.idtarefa': req.params.id }).then((obra) => {
+        Tarefa.findOne({ _id: req.params.id }).then((tarefa) => {
+            Equipe.findOne({ _id: tarefa.equipe }).then((equipe) => {
+                equipe.prjfeito = true
+                equipe.save().then(() => {
+                    tarefa.concluido = true
+                    tarefa.dataentrega = dataBusca(dataHoje())
+                    tarefa.save().then(() => {
+                        res.redirect('/gerenciamento/mostraEquipe/' + tarefa._id)
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Falha ao salvar a tarefa.')
+                        res.redirect('/dashboard')
+                    })
                 }).catch((err) => {
-                    req.flash('error_msg', 'Falha ao salvar a tarefa.')
-                    res.redirect('/menu')
+                    req.flash('error_msg', 'Falha ao salvar a equipe.')
+                    res.redirect('/dashboard')
                 })
             }).catch((err) => {
-                req.flash('error_msg', 'Falha ao salvar a equipe.')
-                res.redirect('/menu')
+                req.flash('error_msg', 'Falha ao encontrar a equipe.')
+                res.redirect('/dashboard')
             })
         }).catch((err) => {
-            req.flash('error_msg', 'Falha ao encontrar a equipe.')
-            res.redirect('/menu')
+            req.flash('error_msg', 'Falha ao encontrar a tarefa<realizar.')
+            res.redirect('/dashboard')
         })
     }).catch((err) => {
-        req.flash('error_msg', 'Falha ao encontrar a tarefa.')
-        res.redirect('/menu')
+        req.flash('error_msg', 'Falha ao encontrar a obra<realizar.')
+        res.redirect('/dashboard')
     })
 })
 
@@ -1779,15 +1800,15 @@ router.get('/proposta/selecao/:tipo', ehAdmin, (req, res) => {
                     res.render('principal/proposta', { todos_clientes, todos_responsaveis, todas_empresas, mostraSelect: 'none', tipo: false })
                 }).catch((err) => {
                     req.flash('error_msg', 'Não foi possível encontrar a empresa.')
-                    res.redirect('/menu')
+                    res.redirect('/dashboard')
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar o responsável.')
-                res.redirect('/menu')
+                res.redirect('/dashboard')
             })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar clientes cadastrados.')
-            res.redirect('/menu')
+            res.redirect('/dashboard')
         })
     } else {
         res.render('principal/proposta', { tipo: true })
@@ -1823,56 +1844,56 @@ router.get('/proposta/:id', ehAdmin, (req, res) => {
                                                         res.render('principal/proposta', { todos_clientes, cliente_proposta, todas_empresas, todos_responsaveis, res_proposta, emp_proposta, proposta, vistoria, documento, compra, lista_equipe, posvenda, projeto, mostraLabel, mostraSelect, tipo: proposta.ref })
                                                     }).catch((err) => {
                                                         req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
-                                                        res.redirect('/menu')
+                                                        res.redirect('/dashboard')
                                                     })
                                                 }).catch((err) => {
                                                     req.flash('error_msg', 'Não foi possível encontrar a equipe.')
-                                                    res.redirect('/menu')
+                                                    res.redirect('/dashboard')
                                                 })
                                             }).catch((err) => {
                                                 req.flash('error_msg', 'Não foi possível encontrar a compra.')
-                                                res.redirect('/menu')
+                                                res.redirect('/dashboard')
                                             })
                                         }).catch((err) => {
                                             req.flash('error_msg', 'Não foi possível encontrar o documento.')
-                                            res.redirect('/menu')
+                                            res.redirect('/dashboard')
                                         })
                                     }).catch((err) => {
                                         req.flash('error_msg', 'Não foi possível encontrar a vistoria da proposta.')
-                                        res.redirect('/menu')
+                                        res.redirect('/dashboard')
                                     })
 
                                 }).catch((err) => {
                                     req.flash('error_msg', 'Não foi possível encontrar o responsável da proposta.')
-                                    res.redirect('/menu')
+                                    res.redirect('/dashboard')
                                 })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Não foi possível encontrar a empresa da proposta.')
-                                res.redirect('/menu')
+                                res.redirect('/dashboard')
                             })
                         }).catch((err) => {
                             req.flash('error_msg', 'Não foi possível encontrar o cliente da prosposta.')
-                            res.redirect('/menu')
+                            res.redirect('/dashboard')
                         })
                     }).catch((err) => {
                         req.flash('error_msg', 'Não foi possível encontrar a empresa da proposta.')
-                        res.redirect('/menu')
+                        res.redirect('/dashboard')
                     })
                 }).catch((err) => {
                     req.flash('error_msg', 'Não foi possível encontrar o responsável.')
-                    res.redirect('/menu')
+                    res.redirect('/dashboard')
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar clientes cadastrados.')
-                res.redirect('/menu')
+                res.redirect('/dashboard')
             })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar o projeto.')
-            res.redirect('/menu')
+            res.redirect('/dashboard')
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar a proposta.')
-        res.redirect('/menu')
+        res.redirect('/dashboard')
     })
 })
 
@@ -1892,15 +1913,15 @@ router.get('/obra', ehAdmin, (req, res) => {
                 res.render('principal/obra', { todos_clientes, todos_responsaveis, todas_empresas, mostraSelect: 'none', tipo: false })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar a empresa.')
-                res.redirect('/menu')
+                res.redirect('/dashboard')
             })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar o responsável.')
-            res.redirect('/menu')
+            res.redirect('/dashboard')
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar clientes cadastrados.')
-        res.redirect('/menu')
+        res.redirect('/dashboard')
     })
 })
 
@@ -1946,28 +1967,29 @@ router.get('/obra/:id', ehAdmin, (req, res) => {
                                                             equipe.forEach((e) => {
                                                                 //console.log('e.tarefa=>' + e.tarefa)
                                                                 Tarefa.findOne({ _id: e.tarefa }).then((tarefa) => {
-                                                                    //console.log('tarefa.servico=>' + tarefa.servico)
-                                                                    Pessoa.findOne({_id: tarefa.responsavel}).then((tecnico)=> {
-                                                                    Servico.findOne({ _id: tarefa.servico }).then((trf_servico) => {
-                                                                        //console.log('trf_servico.descricao=>' + trf_servico.descricao)
-                                                                        q++
-                                                                        if (naoVazio(tarefa.preco)){
-                                                                        custo_total = custo_total + tarefa.preco
-                                                                        }else{
-                                                                            custo_total = custo_total + 0
-                                                                        }
-                                                                        lista_tarefas.push({ idoferta: e.oferta, idtarefa: tarefa._id, desc: trf_servico.descricao, nome_tec: tecnico.nome, custo: tarefa.preco, dtini: dataMensagem(e.dtinicio), dtfim: dataMensagem(e.dtfim)})
-                                                                        //console.log('lista_tarefas=>' + lista_tarefas)
-                                                                        if (q == equipe.length) {
-                                                                            //console.log('ins_fora=>' + ins_fora)
-                                                                            if (params[1] == 'adicionar') {
-                                                                                res.render('principal/obra', { lista_tarefas, ins_fora, custo_total, servicos, todos_clientes, todos_responsaveis, todas_empresas, instalacao, obra, cliente, responsavel, empresa, tipo: false, mostraLabel, mostraSelect })
+                                                                    //console.log('tarefa._id=>' + tarefa._id)
+                                                                    //console.log('tarefa.responsavel=>' + tarefa.responsavel)
+                                                                    Pessoa.findOne({ _id: tarefa.responsavel }).then((tecnico) => {
+                                                                        Servico.findOne({ _id: tarefa.servico }).then((trf_servico) => {
+                                                                            //console.log('trf_servico.descricao=>' + trf_servico.descricao)
+                                                                            q++
+                                                                            if (naoVazio(tarefa.preco)) {
+                                                                                custo_total = custo_total + tarefa.preco
                                                                             } else {
-                                                                                res.render('principal/obraTarefa', { lista_tarefas, ins_fora, custo_total, servicos, todos_clientes, todos_responsaveis, todas_empresas, instalacao, obra, cliente, responsavel, empresa, tipo: false, mostraLabel, mostraSelect })
+                                                                                custo_total = custo_total + 0
                                                                             }
-                                                                        }
+                                                                            lista_tarefas.push({ idoferta: e.oferta, idtarefa: tarefa._id, desc: trf_servico.descricao, nome_tec: tecnico.nome, custo: tarefa.preco, dtini: dataMensagem(e.dtinicio), dtfim: dataMensagem(e.dtfim) })
+                                                                            //console.log('lista_tarefas=>' + lista_tarefas)
+                                                                            if (q == equipe.length) {
+                                                                                //console.log('ins_fora=>' + ins_fora)
+                                                                                if (params[1] == 'adicionar') {
+                                                                                    res.render('principal/obra', { lista_tarefas, ins_fora, custo_total, servicos, todos_clientes, todos_responsaveis, todas_empresas, instalacao, obra, cliente, responsavel, empresa, tipo: false, mostraLabel, mostraSelect })
+                                                                                } else {
+                                                                                    res.render('principal/obraTarefa', { lista_tarefas, ins_fora, custo_total, servicos, todos_clientes, todos_responsaveis, todas_empresas, instalacao, obra, cliente, responsavel, empresa, tipo: false, mostraLabel, mostraSelect })
+                                                                                }
+                                                                            }
+                                                                        })
                                                                     })
-                                                                })
                                                                 })
                                                             })
                                                         } else {
@@ -1981,45 +2003,45 @@ router.get('/obra/:id', ehAdmin, (req, res) => {
                                                     //console.log('gestor=>' + gestor)                                                
                                                 }).catch((err) => {
                                                     req.flash('error_msg', 'Falha ao encontrar os gestores.')
-                                                    res.redirect('/gerenciamento/agenda')
+                                                    res.redirect('/dashboard')
                                                 })
                                             }
                                         })
                                     } else {
                                         req.flash('error_msg', 'Não existem técnicos cadastrados.')
-                                        res.redirect('/gerenciamento/agenda')
+                                        res.redirect('/dashboard')
                                     }
                                 }).catch((err) => {
                                     req.flash('error_msg', 'Falha ao encontrar os técnicos.')
-                                    res.redirect('/gerenciamento/agenda')
+                                    res.redirect('/dashboard')
                                 })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Não foi possível encontrar a empresa da obra.')
-                                res.redirect('/menu')
+                                res.redirect('/dashboard')
                             })
                         }).catch((err) => {
                             req.flash('error_msg', 'Não foi possível encontrar o responsável da obra.')
-                            res.redirect('/menu')
+                            res.redirect('/dashboard')
                         })
                     }).catch((err) => {
                         req.flash('error_msg', 'Não foi possível encontrar os serviços.')
-                        res.redirect('/menu')
+                        res.redirect('/dashboard')
                     })
                 }).catch((err) => {
                     req.flash('error_msg', 'Não foi possível encontrar o cliene da obra.')
-                    res.redirect('/menu')
+                    res.redirect('/dashboard')
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar a empresa.')
-                res.redirect('/menu')
+                res.redirect('/dashboard')
             })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar clientes cadastrados.')
-            res.redirect('/menu')
+            res.redirect('/dashboard')
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar a obra cadastrada.')
-        res.redirect('/menu')
+        res.redirect('/dashboard')
     })
 })
 
@@ -2086,31 +2108,31 @@ router.get('/visita/:id', ehAdmin, (req, res) => {
                                 res.render('principal/visita', { imgsomb, imgarea, imginsi, imginsa, datasomb, dataarea, datainsi, datainsa, vistoria, cliente_proposta, proposta, documento, compra, lista_equipe, posvenda })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
-                                res.redirect('/menu')
+                                res.redirect('/dashboard')
                             })
                         }).catch((err) => {
                             req.flash('error_msg', 'Não foi possível encontrar a equipe.')
-                            res.redirect('/menu')
+                            res.redirect('/dashboard')
                         })
                     }).catch((err) => {
                         req.flash('error_msg', 'Não foi possível encontrar a compra.')
-                        res.redirect('/menu')
+                        res.redirect('/dashboard')
                     })
                 }).catch((err) => {
                     req.flash('error_msg', 'Não foi possível encontrar o documento.')
-                    res.redirect('/menu')
+                    res.redirect('/dashboard')
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-                res.redirect('/menu')
+                res.redirect('/dashboard')
             })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar o cliente da prosposta.')
-            res.redirect('/menu')
+            res.redirect('/dashboard')
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar a proposta.')
-        res.redirect('/menu')
+        res.redirect('/dashboard')
     })
 })
 
@@ -2125,31 +2147,31 @@ router.get('/assinatura/:id', ehAdmin, (req, res) => {
                                 res.render('principal/assinatura', { cliente_proposta, proposta, documento, vistoria, compra, lista_equipe, posvenda })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
-                                res.redirect('/menu')
+                                res.redirect('/dashboard')
                             })
                         }).catch((err) => {
                             req.flash('error_msg', 'Não foi possível encontrar a compra.')
-                            res.redirect('/menu')
+                            res.redirect('/dashboard')
                         })
                     }).catch((err) => {
                         req.flash('error_msg', 'Não foi possível encontrar a compra.')
-                        res.redirect('/menu')
+                        res.redirect('/dashboard')
                     })
                 }).catch((err) => {
                     req.flash('error_msg', 'Não foi possível encontrar o documento.')
-                    res.redirect('/menu')
+                    res.redirect('/dashboard')
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-                res.redirect('/menu')
+                res.redirect('/dashboard')
             })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar clientes cadastrados.')
-            res.redirect('/menu')
+            res.redirect('/dashboard')
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar a proposta.')
-        res.redirect('/menu')
+        res.redirect('/dashboard')
     })
 })
 
@@ -2175,39 +2197,39 @@ router.get('/compra/:id', ehAdmin, (req, res) => {
                                         res.render('principal/compra', { cliente_proposta, proposta, for_pro, compra, documento, vistoria, lista_equipe, posvenda, fornecedores })
                                     }).catch((err) => {
                                         req.flash('error_msg', 'Não foi possível encontrar o fornecedor.')
-                                        res.redirect('/menu')
+                                        res.redirect('/dashboard')
                                     })
                                 }).catch((err) => {
                                     req.flash('error_msg', 'Não foi possível encontrar o fornecedor.')
-                                    res.redirect('/menu')
+                                    res.redirect('/dashboard')
                                 })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
-                                res.redirect('/menu')
+                                res.redirect('/dashboard')
                             })
                         }).catch((err) => {
                             req.flash('error_msg', 'Não foi possível encontrar a equipe.')
-                            res.redirect('/menu')
+                            res.redirect('/dashboard')
                         })
                     }).catch((err) => {
                         req.flash('error_msg', 'Não foi possível encontrar o documento.')
-                        res.redirect('/menu')
+                        res.redirect('/dashboard')
                     })
                 }).catch((err) => {
                     req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-                    res.redirect('/menu')
+                    res.redirect('/dashboard')
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar os documentos de compra.')
-                res.redirect('/menu')
+                res.redirect('/dashboard')
             })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar o responsável da proposta.')
-            res.redirect('/menu')
+            res.redirect('/dashboard')
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar a proposta.')
-        res.redirect('/menu')
+        res.redirect('/dashboard')
     })
 })
 
@@ -2223,31 +2245,31 @@ router.get('/trt/:id', ehAdmin, (req, res) => {
                                 res.render('principal/trt', { cliente_proposta, proposta, documento, vistoria, compra, lista_equipe, posvenda })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
-                                res.redirect('/menu')
+                                res.redirect('/dashboard')
                             })
                         }).catch((err) => {
                             req.flash('error_msg', 'Não foi possível encontrar a equipe.')
-                            res.redirect('/menu')
+                            res.redirect('/dashboard')
                         })
                     }).catch((err) => {
                         req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-                        res.redirect('/menu')
+                        res.redirect('/dashboard')
                     })
                 }).catch((err) => {
                     req.flash('error_msg', 'Não foi possível encontrar a compra.')
-                    res.redirect('/menu')
+                    res.redirect('/dashboard')
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar o documento.')
-                res.redirect('/menu')
+                res.redirect('/dashboard')
             })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar o cliente da proposta.')
-            res.redirect('/menu')
+            res.redirect('/dashboard')
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar a prposta.')
-        res.redirect('/menu')
+        res.redirect('/dashboard')
     })
 })
 
@@ -2270,31 +2292,31 @@ router.get('/execucao/:id', ehAdmin, (req, res) => {
                                 res.render('principal/execucao', { cliente_proposta, documento, proposta, check, salva, compra, vistoria, lista_equipe, posvenda })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
-                                res.redirect('/menu')
+                                res.redirect('/dashboard')
                             })
                         }).catch((err) => {
                             req.flash('error_msg', 'Não foi possível encontrar a equipe.')
-                            res.redirect('/menu')
+                            res.redirect('/dashboard')
                         })
                     }).catch((err) => {
                         req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-                        res.redirect('/menu')
+                        res.redirect('/dashboard')
                     })
                 }).catch((err) => {
                     req.flash('error_msg', 'Não foi possível encontrar a compra.')
-                    res.redirect('/menu')
+                    res.redirect('/dashboard')
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar o documento.')
-                res.redirect('/menu')
+                res.redirect('/dashboard')
             })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar o responsável da proposta.')
-            res.redirect('/menu')
+            res.redirect('/dashboard')
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar o responsável.')
-        res.redirect('/menu')
+        res.redirect('/dashboard')
     })
 })
 
@@ -2955,15 +2977,15 @@ router.get('/aceite/:id', ehAdmin, (req, res) => {
                                                 res.render('principal/aceite', { imgate, imginv, imgtel, cliente_proposta, documento, proposta, compra, vistoria, lista_equipe, posvenda, checkAte, checkInv, checkMod, atvate, atvinv, atvtel })
                                             }).catch((err) => {
                                                 req.flash('error_msg', 'Não foi possível encontrar a atividade do telhado.')
-                                                res.redirect('/menu')
+                                                res.redirect('/dashboard')
                                             })
                                         }).catch((err) => {
                                             req.flash('error_msg', 'Não foi possível encontrar a atividade do inversor.')
-                                            res.redirect('/menu')
+                                            res.redirect('/dashboard')
                                         })
                                     }).catch((err) => {
                                         req.flash('error_msg', 'Não foi possível encontrar a atividade do aterramento.')
-                                        res.redirect('/menu')
+                                        res.redirect('/dashboard')
                                     })
                                 } else {
                                     req.flash('aviso_msg', 'Será possível acessar a página de aceite após a liberação da equipe para o serviço.')
@@ -2971,31 +2993,31 @@ router.get('/aceite/:id', ehAdmin, (req, res) => {
                                 }
                             }).catch((err) => {
                                 req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
-                                res.redirect('/menu')
+                                res.redirect('/dashboard')
                             })
                         }).catch((err) => {
                             req.flash('error_msg', 'Não foi possível encontrar a equipe.')
-                            res.redirect('/menu')
+                            res.redirect('/dashboard')
                         })
                     }).catch((err) => {
                         req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-                        res.redirect('/menu')
+                        res.redirect('/dashboard')
                     })
                 }).catch((err) => {
                     req.flash('error_msg', 'Não foi possível encontrar a compra.')
-                    res.redirect('/menu')
+                    res.redirect('/dashboard')
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar o documento.')
-                res.redirect('/menu')
+                res.redirect('/dashboard')
             })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar o responsável da proposta.')
-            res.redirect('/menu')
+            res.redirect('/dashboard')
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar o responsável.')
-        res.redirect('/menu')
+        res.redirect('/dashboard')
     })
 })
 
@@ -3013,31 +3035,31 @@ router.get('/almoxarifado/:id', ehAdmin, (req, res) => {
                                 res.render('principal/almoxarifado', { cliente_proposta, documento, proposta, compra, vistoria, lista_equipe, posvenda })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
-                                res.redirect('/menu')
+                                res.redirect('/dashboard')
                             })
                         }).catch((err) => {
                             req.flash('error_msg', 'Não foi possível encontrar a equipe.')
-                            res.redirect('/menu')
+                            res.redirect('/dashboard')
                         })
                     }).catch((err) => {
                         req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-                        res.redirect('/menu')
+                        res.redirect('/dashboard')
                     })
                 }).catch((err) => {
                     req.flash('error_msg', 'Não foi possível encontrar a compra.')
-                    res.redirect('/menu')
+                    res.redirect('/dashboard')
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar o documento.')
-                res.redirect('/menu')
+                res.redirect('/dashboard')
             })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar o cliente da proposta.')
-            res.redirect('/menu')
+            res.redirect('/dashboard')
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar a proposta.')
-        res.redirect('/menu')
+        res.redirect('/dashboard')
     })
 })
 
@@ -3075,31 +3097,31 @@ router.get('/financeiro/:id', ehAdmin, (req, res) => {
                                 res.render('principal/financeiro', { cliente_proposta, documento, lista_comprovantes, lista_faturados, proposta, compra, vistoria, lista_equipe, posvenda })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
-                                res.redirect('/menu')
+                                res.redirect('/dashboard')
                             })
                         }).catch((err) => {
                             req.flash('error_msg', 'Não foi possível encontrar a equipe.')
-                            res.redirect('/menu')
+                            res.redirect('/dashboard')
                         })
                     }).catch((err) => {
                         req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-                        res.redirect('/menu')
+                        res.redirect('/dashboard')
                     })
                 }).catch((err) => {
                     req.flash('error_msg', 'Não foi possível encontrar a compra.')
-                    res.redirect('/menu')
+                    res.redirect('/dashboard')
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar o documento.')
-                res.redirect('/menu')
+                res.redirect('/dashboard')
             })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar o responsável da proposta.')
-            res.redirect('/menu')
+            res.redirect('/dashboard')
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar o responsável.')
-        res.redirect('/menu')
+        res.redirect('/dashboard')
     })
 })
 
@@ -3116,37 +3138,37 @@ router.get('/posvenda/:id', ehAdmin, (req, res) => {
                                 res.render('principal/posvenda', { cliente_proposta, documento, proposta, compra, vistoria, lista_equipe, posvenda })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
-                                res.redirect('/menu')
+                                res.redirect('/dashboard')
                             })
                         }).catch((err) => {
                             req.flash('error_msg', 'Não foi possível encontrar a equipe.')
-                            res.redirect('/menu')
+                            res.redirect('/dashboard')
                         })
                     }).catch((err) => {
                         req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-                        res.redirect('/menu')
+                        res.redirect('/dashboard')
                     })
                 }).catch((err) => {
                     req.flash('error_msg', 'Não foi possível encontrar a compra.')
-                    res.redirect('/menu')
+                    res.redirect('/dashboard')
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar o documento.')
-                res.redirect('/menu')
+                res.redirect('/dashboard')
             })
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível encontrar o responsável da proposta.')
-            res.redirect('/menu')
+            res.redirect('/dashboard')
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar o responsável.')
-        res.redirect('/menu')
+        res.redirect('/dashboard')
     })
 })
 
 router.get('/dashboard/:id', ehAdmin, (req, res) => {
     Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
-        res.render('projeto/gerenciamento/dashboard', { projeto: projeto })
+        res.render('projeto/dashboard', { projeto: projeto })
     })
 
 })
@@ -3384,7 +3406,7 @@ router.get('/agenda/', ehAdmin, (req, res) => {
     var dia
     var hoje = dataHoje()
     var ano = hoje.substring(0, 4)
-    var meshoje = hoje.substring(5,7)
+    var meshoje = hoje.substring(5, 7)
 
     if (meshoje < 10) {
         mes = '0' + meshoje
@@ -3524,8 +3546,8 @@ router.get('/agenda/', ehAdmin, (req, res) => {
                             dtfim = e.datafim
                             anoinicio = dtinicio.substring(0, 4)
                             anofim = dtfim.substring(0, 4)
-                            mesinicio = dtinicio.substring(5,7)
-                            mesfim = dtfim.substring(5,7)
+                            mesinicio = dtinicio.substring(5, 7)
+                            mesfim = dtfim.substring(5, 7)
                             diainicio = dtinicio.substring(8, 11)
                             diafim = dtfim.substring(8, 11)
                             //console.log("meshoje=>" + meshoje)
@@ -3752,7 +3774,7 @@ router.get('/servicos/', ehAdmin, (req, res) => {
         res.render('projeto/gerenciamento/servicos', { servicos })
     }).catch((err) => {
         req.flash('error_msg', 'Falha ao encontrar os serviços.')
-        res.redirect('/menu')
+        res.redirect('/dashboard')
     })
 })
 
@@ -3837,7 +3859,7 @@ router.get('/vermais/:id/', ehAdmin, (req, res) => {
 
     var hoje = dataHoje()
     //console.log('hoje=>' + hoje)
-    var meshoje = hoje.substring(5,7)
+    var meshoje = hoje.substring(5, 7)
     var anotitulo = hoje.substring(0, 4)
 
     //console.log('meshoje=>' + meshoje)
@@ -3920,8 +3942,8 @@ router.get('/vermais/:id/', ehAdmin, (req, res) => {
                         //console.log('inicio=>' + inicio)
                         anoinicio = inicio.substring(0, 4)
                         anofim = fim.substring(0, 4)
-                        mesinicio = inicio.substring(5,7)
-                        mesfim = fim.substring(5,7)
+                        mesinicio = inicio.substring(5, 7)
+                        mesfim = fim.substring(5, 7)
                         diainicio = inicio.substring(8, 11)
                         diafim = fim.substring(8, 11)
                         con1 = String(mesinicio) + String(diainicio)
@@ -4113,20 +4135,20 @@ router.get('/vermais/:id/', ehAdmin, (req, res) => {
                         }
                     }).catch((err) => {
                         req.flash('error_msg', 'Falha ao encontra o cliente.')
-                        res.redirect('/menu')
+                        res.redirect('/dashboard')
                     })
                 }).catch((err) => {
                     req.flash('error_msg', 'Falha ao encontra a proposta.')
-                    res.redirect('/menu')
+                    res.redirect('/dashboard')
                 })
             })
         }).catch((err) => {
             req.flash('error_msg', 'Falha ao encontra a equipe.')
-            res.redirect('/menu')
+            res.redirect('/dashboard')
         })
     }).catch((err) => {
         req.flash('error_msg', 'Falha ao encontra a pessoa.')
-        res.redirect('/menu')
+        res.redirect('/dashboard')
     })
 })
 
@@ -4147,7 +4169,7 @@ router.get('/vermaistarefas/:id', ehAdmin, (req, res) => {
     var dia
     var hoje = dataHoje()
     var ano = hoje.substring(0, 4)
-    var meshoje = hoje.substring(5,7)
+    var meshoje = hoje.substring(5, 7)
 
     if (meshoje < 10) {
         mes = '0' + meshoje
@@ -4311,8 +4333,8 @@ router.get('/vermaistarefas/:id', ehAdmin, (req, res) => {
                                 dtfim = e.datafim
                                 anoinicio = dtinicio.substring(0, 4)
                                 anofim = dtfim.substring(0, 4)
-                                mesinicio = dtinicio.substring(5,7)
-                                mesfim = dtfim.substring(5,7)
+                                mesinicio = dtinicio.substring(5, 7)
+                                mesfim = dtfim.substring(5, 7)
                                 diainicio = dtinicio.substring(8, 11)
                                 diafim = dtfim.substring(8, 11)
                                 //console.log("messel=>" + messel)
@@ -4594,10 +4616,10 @@ router.get('/tarefas/:id', ehAdmin, (req, res) => {
                     //console.log("tarefas.length=>"+tarefas.length)
                     if (q == tarefas.length) {
                         //console.log('req.params.id=>' + req.params.id)
-                        Tarefas.findOne({ _id: tarefa }).sort({ 'concluido': 'asc' }).then((tarefa) => {
+                        Tarefas.findOne({ _id: tarefa }).sort({ 'concluido': 'asc' }).lean().then((tarefa) => {
                             Cliente.findOne({ _id: tarefa.cliente }).then((cliente) => {
                                 Servico.findOne({ _id: tarefa.servico }).then((ser) => {
-                                    Equipe.findOne({ _id: tarefa.equipe }).then((equipe) => {
+                                    Equipe.findOne({ _id: tarefa.equipe }).lean().then((equipe) => {
                                         var dataini = dataMensagem(tarefa.dataini)
                                         var datafim = dataMensagem(tarefa.datafim)
 
@@ -4618,36 +4640,36 @@ router.get('/tarefas/:id', ehAdmin, (req, res) => {
                                             lista_tarefa = { concluido, id: tarefa._id, nome: cliente.nome, servico: ser.descricao, dataini, datafim }
                                         }
                                         //console.log('lista_tarefa=>'+lista_tarefa)                                                
-                                        res.render('projeto/gerenciamento/vertarefas', { lista_tarefa, tarefa_concluida, tarefa_naoconcluida, dia })
+                                        res.render('projeto/gerenciamento/vertarefas', { lista_tarefa, tarefa_concluida, tarefa_naoconcluida, dia, equipe, tarefa })
                                     }).catch((err) => {
                                         req.flash('error_msg', 'Falha ao encontrar as equipe.')
-                                        res.redirect('/gerenciamento/agenda')
+                                        res.redirect('/dashboard')
                                     })
                                 }).catch((err) => {
                                     req.flash('error_msg', 'Falha ao encontrar o tipo de serviço.')
-                                    res.redirect('/gerenciamento/agenda')
+                                    res.redirect('/dashboard')
                                 })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Falha ao encontrar o cliente.')
-                                res.redirect('/gerenciamento/agenda')
+                                res.redirect('/dashboard')
                             })
                         }).catch((err) => {
-                            req.flash('error_msg', 'Falha ao encontrar a tarefa.')
-                            res.redirect('/gerenciamento/agenda')
+                            req.flash('error_msg', 'Falha ao encontrar a tarefa<tarefas>.')
+                            res.redirect('/dashboard')
                         })
                     }
                 }).catch((err) => {
                     req.flash('error_msg', 'Falha ao encontrar o tipo de serviço.')
-                    res.redirect('/gerenciamento/agenda')
+                    res.redirect('/dashboard')
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Falha ao encontrar o cliente.')
-                res.redirect('/gerenciamento/agenda')
+                res.redirect('/dashboard')
             })
         })
     }).catch((err) => {
         req.flash('error_msg', 'Falha ao encontrar a todas tarefas.')
-        res.redirect('/gerenciamento/agenda')
+        res.redirect('/dashboard')
     })
 
 })
@@ -4661,7 +4683,7 @@ router.get('/plano/:id', ehAdmin, (req, res) => {
         res.render('projeto/gerenciamento/planos', { plano })
     }).catch((err) => {
         req.flash('error_msg', 'Falha ao encontrar o plano.')
-        res.redirect('/gerenciamento/agenda')
+        res.redirect('/dashboard')
     })
 })
 
@@ -4801,11 +4823,11 @@ router.post('/obra', ehAdmin, (req, res) => {
                     res.redirect('/gerenciamento/obra/' + nova_obra._id)
                 }).catch((err) => {
                     req.flash('error_msg', 'Houve um erro ao encontrar a proposta.')
-                    res.redirect('/menu')
+                    res.redirect('/dashboard')
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Houve um erro ao salvar a proposta.')
-                res.redirect('/menu')
+                res.redirect('/dashboard')
             })
         })
     }
@@ -4980,55 +5002,55 @@ router.post('/proposta/', ehAdmin, (req, res) => {
                                                                 })
                                                             }).catch((err) => {
                                                                 req.flash('error_msg', 'Houve um erro ao encontrar o usuário.')
-                                                                res.redirect('/menu')
+                                                                res.redirect('/dashboard')
                                                             })
                                                         }).catch((err) => {
                                                             req.flash('error_msg', 'Houve um erro ao salvar a pessoa.')
-                                                            res.redirect('/menu')
+                                                            res.redirect('/dashboard')
                                                         })
                                                     }).catch((err) => {
                                                         req.flash('error_msg', 'Houve um erro ao salvar o pós-venda.')
-                                                        res.redirect('/menu')
+                                                        res.redirect('/dashboard')
                                                     })
                                                 }).catch((err) => {
                                                     req.flash('error_msg', 'Houve um erro ao salvar o documento.')
-                                                    res.redirect('/menu')
+                                                    res.redirect('/dashboard')
                                                 })
                                             }).catch((err) => {
                                                 req.flash('error_msg', 'Houve um erro ao salvar as compras.')
-                                                res.redirect('/menu')
+                                                res.redirect('/dashboard')
                                             })
                                         }).catch((err) => {
                                             req.flash('error_msg', 'Houve um erro ao salvar a vistoria.')
-                                            res.redirect('/menu')
+                                            res.redirect('/dashboard')
                                         })
                                     }).catch((err) => {
                                         req.flash('error_msg', 'Houve um erro ao salvar a proposta.')
-                                        res.redirect('/menu')
+                                        res.redirect('/dashboard')
                                     })
                                 }).catch((err) => {
                                     req.flash('error_msg', 'Houve um erro ao encontrar a equipe.')
-                                    res.redirect('/menu')
+                                    res.redirect('/dashboard')
                                 })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Houve um erro ao salvar a equipe.')
-                                res.redirect('/menu')
+                                res.redirect('/dashboard')
                             })
                         }).catch((err) => {
                             req.flash('error_msg', 'Houve um erro ao encontrar o cliente.')
-                            res.redirect('/menu')
+                            res.redirect('/dashboard')
                         })
                     }).catch((err) => {
                         req.flash('error_msg', 'Houve um erro ao encontrar a proposta.')
-                        res.redirect('/menu')
+                        res.redirect('/dashboard')
                     })
                 }).catch((err) => {
                     req.flash('error_msg', 'Houve um erro ao salvar a proposta.')
-                    res.redirect('/menu')
+                    res.redirect('/dashboard')
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Houve um erro ao encontrar a pessoa.')
-                res.redirect('/menu')
+                res.redirect('/dashboard')
             })
         } else {
             //console.log('endereco=>' + req.body.endereco)
@@ -5120,43 +5142,43 @@ router.post('/proposta/', ehAdmin, (req, res) => {
                                                     })
                                                 }).catch((err) => {
                                                     req.flash('error_msg', 'Houve um erro ao encontrar o usuário.')
-                                                    res.redirect('/menu')
+                                                    res.redirect('/dashboard')
                                                 })
                                             }).catch((err) => {
                                                 req.flash('error_msg', 'Houve um erro ao salvar o pós-venda.')
-                                                res.redirect('/menu')
+                                                res.redirect('/dashboard')
                                             })
                                         }).catch((err) => {
                                             req.flash('error_msg', 'Houve um erro ao salvar o documento.')
-                                            res.redirect('/menu')
+                                            res.redirect('/dashboard')
                                         })
                                     }).catch((err) => {
                                         req.flash('error_msg', 'Houve um erro ao salvar as compras.')
-                                        res.redirect('/menu')
+                                        res.redirect('/dashboard')
                                     })
                                 }).catch((err) => {
                                     req.flash('error_msg', 'Houve um erro ao salvar a vistoria.')
-                                    res.redirect('/menu')
+                                    res.redirect('/dashboard')
                                 })
                             }).catch((err) => {
                                 req.flash('error_msg', 'Houve um erro ao salvar a proposta.')
-                                res.redirect('/menu')
+                                res.redirect('/dashboard')
                             })
                         }).catch((err) => {
                             req.flash('error_msg', 'Houve um erro ao encontrar a equipe.')
-                            res.redirect('/menu')
+                            res.redirect('/dashboard')
                         })
                     }).catch((err) => {
                         req.flash('error_msg', 'Houve um erro ao salvar a equipe.')
-                        res.redirect('/menu')
+                        res.redirect('/dashboard')
                     })
                 }).catch((err) => {
                     req.flash('error_msg', 'Houve um erro ao encontrar a nova proposta.')
-                    res.redirect('/menu')
+                    res.redirect('/dashboard')
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Houve um erro ao salvar a proposta.')
-                res.redirect('/menu')
+                res.redirect('/dashboard')
             })
         }
     }
@@ -6178,7 +6200,7 @@ router.get('/enviarequipe/:id', ehAdmin, (req, res) => {
                         equipe: equipe,
                         data: dataHoje()
                     }
-                    //console.log('equipe.liberar=>' + equipe.liberar)
+                    // //console.log('equipe.liberar=>' + equipe.liberar)
                     if (equipe.liberar == true) {
                         AtvTelhado.findOneAndDelete({ proposta: req.params.id }).then(() => {
                             AtvAterramento.findOneAndDelete({ proposta: req.params.id }).then(() => {
@@ -6289,36 +6311,45 @@ router.get('/enviarequipe/:id', ehAdmin, (req, res) => {
                         tipo = 'success_msg'
                         equipe.liberar = true
                         equipe.save().then(() => {
-
-                            var email
-                            if (naoVazio(equipe.email)) {
-                                email = equipe.email
-                            } else {
-                                email = ''
-                            }
-                            //console.log('email=>' + email)
-                            Pessoa.findOne({ _id: equipe.insres }).then((insres) => {
-                                //console.log('insres.nome=>' + insres.nome)
-                                var mailOptions = { // Define informações pertinentes ao E-mail que será enviado
-                                    from: '"Nova equipe" <equipe@vimmus.com.br>',
-                                    to: email,
-                                    subject: 'Atividades da equipe',
-                                    text: 'Olá Instalador,' + '\n' +
-                                        'Você esta alocado para a equipe do projeto: ' + tarefa.seq + '/' + equipe.nome_projeto + ', esta instalação está planejada para ser realizada entre os dias: ' + dataMensagem(equipe.dtinicio) + ' e ' + dataMensagem(equipe.dtfim) + '\n' +
-                                        'O endereço para a instalação é: ' + tarefa.endereco + ' município de: ' + tarefa.cidade + '/' + tarefa.uf + '\n' +
-                                        'O técnico responsável pelo serviço será: ' + insres.nome + '\n' +
-                                        'Acesse seu aplicativo para acopanhar a evolução da obra.'
-                                }
-                                transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
-                                    if (err) {
-                                        return //console.log(err)
-                                    } else {
-                                        req.flash(tipo, mensagem)
+                            Obra.findOne({ 'tarefa.idtarefa': req.params.id }).then((obra) => {
+                                Cliente.findOne({ _id: obra.cliente }).then((cliente) => {
+                                    Pessoa.findOne({ _id: equipe.insres }).then((insres) => {
+                                        obra.status = 'Em execução'
+                                        obra.save().then(() => {
+                                            //console.log('insres.nome=>' + insres.nome)
+                                            //console.log('insres.email=>' + insres.email)
+                                            var mailOptions = { // Define informações pertinentes ao E-mail que será enviado
+                                                from: '"Nova equipe" <equipe@vimmus.com.br>',
+                                                to: insres.email,
+                                                subject: 'Atividades da equipe',
+                                                text: 'Olá Instalador,' + '\n' +
+                                                    'Você esta alocado para a obra: ' + obra.seq + '/' + cliente.nome + ', esta instalação está planejada para ser realizada entre os dias: ' + dataMensagem(equipe.dtinicio) + ' e ' + dataMensagem(equipe.dtfim) + '\n' +
+                                                    'O endereço para a instalação é: ' + tarefa.endereco + ' município de: ' + tarefa.cidade + '/' + tarefa.uf + '\n' +
+                                                    //'O técnico responsável pelo serviço será: ' + insres.nome + '\n' +
+                                                    'Acesse seu aplicativo para acopanhar a evolução da obra.'
+                                            }
+                                            transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
+                                                if (err) {
+                                                    return console.log(err)
+                                                } else {
+                                                    req.flash(tipo, mensagem)
+                                                    res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
+                                                }
+                                            })
+                                        }).catch((err) => {
+                                            req.flash('error_msg', 'Houve erro ao salvar a obra.')
+                                            res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
+                                        })
+                                    }).catch((err) => {
+                                        req.flash('error_msg', 'Houve erro ao encontrar o instalador responsável.')
                                         res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
-                                    }
+                                    })
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Houve erro ao encontrar o cliente.')
+                                    res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
                                 })
                             }).catch((err) => {
-                                req.flash('error_msg', 'Houve erro ao encontrar o instalador responsável.')
+                                req.flash('error_msg', 'Houve erro ao encontrar a obra.')
                                 res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
                             })
                         }).catch((err) => {
@@ -6605,6 +6636,143 @@ router.post('/salvarImagem', ehAdmin, upload.array('files', 10), (req, res) => {
 
 })
 
+router.post('/salvarFotos', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+    var img = []
+    var imgblob = []
+    var foto = []
+    var ib
+    var params
+    var q = 0
+
+    dirsave = "./upload/"
+
+    img = req.body.imagem
+    imgblob = req.body.imgblob
+
+    if (img.length < 100) {
+
+        (async () => {
+
+            await img.forEach((i) => {
+                //ib = imgblob[q].replace('blob:https://vimmus.com.br/', '')
+                ib = imgblob[q].replace('blob:http://localhost:3000/', '')
+                ib = ib + '.png'
+                // console.log('ib=>' + ib)
+                // strip off the data: url prefix to get just the base64-encoded bytes
+                data = i.replace(/^data:image\/\w+;base64,/, "")
+                buf = Buffer.from(data, "base64")
+
+                foto.push({ "desc": ib, 'data': dataMensagem(dataHoje()) })
+
+                await fs.writeFile(dirsave + ib, buf)
+
+                q++
+            })
+
+            // console.log('dirsave=>' + dirsave)
+            // console.log('ib=>' + ib)
+            console.log('q=>'+q)
+            for (i = 0; i < q; i++) {
+
+                //ib = imgblob[i].replace('blob:https://vimmus.com.br/', '')
+                ib = imgblob[i].replace('blob:http://localhost:3000/', '')
+                ib = ib + '.png'
+
+                console.log('lendo diretório')
+                await fs.readFile(dirsave + ib).then((rf) => {
+                    // console.log('imagem=>' + String(rf.buffer))
+                    params = {
+                        Bucket: 'vimmusimg',
+                        Key: ib,
+                        Body: rf
+                    }
+                    s3.upload(params, function (err, data) {
+                        if (err) {
+                            throw err
+                        }
+                    })
+                })
+
+                await fs.unlink(dirsave + ib, (err) => {
+                    if (err) {
+                        console.log('Houve algum erro!', err);
+                    } else {
+                        console.log('Tudo certo! Arquivo removido.');
+                    }
+                })
+            }
+    
+            ImgTarefa.findOneAndUpdate({ tarefa: req.body.id }, { $push: {caminhoFoto: foto} }).then(() => {
+                req.flash('success_msg', 'Foto(s) adicionada(s) com sucesso.')
+                res.redirect('/gerenciamento/mostrarGaleria/' + req.body.id + 'galeria-tarefa')
+            }).catch((err) => {
+                req.flash('error_msg', 'Houve erro ao salvar a imagem.')
+                res.redirect('/gerenciamento/mostrarGaleria/' + req.body.id + 'galeria-tarefa')
+            })
+        })()
+
+    } else {
+        // console.log('lendo diretório')
+        (async () => {
+
+            ib = imgblob.replace('blob:http://localhost:3000/', '')
+            ib = ib + '.png'
+            console.log('ib=>' + ib)
+            // strip off the data: url prefix to get just the base64-encoded bytes
+            data = img.replace(/^data:image\/\w+;base64,/, "")
+            buf = Buffer.from(data, "base64")
+
+            foto.push({ "desc": ib, 'data': dataMensagem(dataHoje()) })
+
+            await fs.writeFile(dirsave + ib, buf)
+
+            console.log('dirsave=>' + dirsave)
+            console.log('ib=>' + ib)
+            await fs.readFile(dirsave + ib).then((rf) => {
+                // console.log('imagem=>' + String(rf.buffer))
+                params = {
+                    Bucket: 'vimmusimg',
+                    Key: ib,
+                    Body: rf
+                }
+
+                s3.upload(params, function (err, data) {
+                    if (err) {
+                        throw err
+                    }
+                    console.log(`File uploaded successfully. ${data.Location}`)
+                })
+            })
+            await fs.unlink(dirsave + ib, (err) => {
+                if (err) {
+                    console.log('Houve algum erro!', err);
+                } else {
+                    console.log('Tudo certo! Arquivo removido.');
+                }
+            })
+            console.log('req.body.id =>' + req.body.id)
+    
+            ImgTarefa.findOneAndUpdate({ tarefa: req.body.id }, { $push: {caminhoFoto: foto} }).then(() => {
+                req.flash('success_msg', 'Foto(s) adicionada(s) com sucesso.')
+                res.redirect('/gerenciamento/mostrarGaleria/' + req.body.id + 'galeria-tarefa')
+            }).catch((err) => {
+                req.flash('error_msg', 'Houve erro ao salvar a imagem.')
+                res.redirect('/gerenciamento/mostrarGaleria/' + req.body.id + 'galeria-tarefa')
+            }) 
+        })()
+    }
+
+})
+
 router.get('/mostrarGaleria/:id', ehAdmin, (req, res) => {
     var params
     params = req.params.id
@@ -6665,7 +6833,6 @@ router.get('/mostrarGaleria/:id', ehAdmin, (req, res) => {
                                                     res.redirect('/gerenciamento/aceite/' + params[0])
                                                 })
                                             } else {
-
                                                 if (params[1] == 'sombreamento' || params[1] == 'area' || params[1] == 'insi' || params[1] == 'insa') {
                                                     Vistoria.findOne({ proposta: params[0] }).then((atv) => {
                                                         var tipoatv
@@ -6735,9 +6902,11 @@ router.get('/mostrarGaleria/:id', ehAdmin, (req, res) => {
             var check = 'unchecked'
             //console.log('proposta vazio')
             if (params[1] == 'tarefa') {
+                console.log('params[0] =>' + params[0])
                 Tarefa.findOne({ _id: params[0] }).lean().then((tarefa) => {
                     ImgTarefa.findOne({ tarefa: params[0] }).lean().then((imgtarefa) => {
                         img = imgtarefa.caminhoFoto
+                        console.log('img=>' + JSON.stringify(img))
                         img.forEach((e) => {
                             lista_imagens.push({ imagem: e.desc, id: params[0], atv: 'tarefa', proposta: false })
                         })
@@ -6774,13 +6943,12 @@ router.get('/deletaImagem/:msg', ehAdmin, (req, res) => {
     //console.log('params[4]=>' + params[4])
 
     var sql = []
-    //console.log("params[3]=>" + params[3])
+    console.log("params[3]=>" + params[3])
     if (params[3] == 'true') {
         sql = { proposta: params[1] }
     } else {
         sql = { tarefa: params[1] }
     }
-
     //console.log('params[2]=>' + params[2])
     //console.log('sql=>' + JSON.stringify(sql))
     if (params[2] == 'aterramento') {
@@ -7077,74 +7245,79 @@ router.get('/entrega/:id', ehAdmin, (req, res) => {
     }
 
     Proposta.findOne({ _id: req.params.id }).then((proposta) => {
-        Compra.findOne({ proposta: req.params.id }).then((compra) => {
-            Equipe.findOne({ _id: proposta.equipe }).then((equipe) => {
-                Vistoria.findOne({ proposta: proposta._id }).then((vistoria) => {
-                    //console.log(proposta.cliente)
-                    Cliente.findOne({ _id: proposta.cliente }).then((cliente) => {
-                        //console.log(cliente)
-                        var cadastro = dataHoje()
-                        var datalimp = dataMensagem(setData(dataHoje(), 182))
-                        var buscalimp = dataBusca(setData(dataHoje(), 182))
-                        var datarevi = dataMensagem(setData(dataHoje(), 30))
-                        var buscarevi = dataBusca(setData(dataHoje(), 30))
-                        //console.log(vistoria)
-                        if (naoVazio(vistoria)) {
-                            usina = {
-                                user: id,
-                                nome: cliente.nome,
-                                cliente: proposta.cliente,
-                                area: vistoria.plaArea,
-                                qtdmod: vistoria.plaQtdMod,
-                                cadastro: cadastro,
-                                datalimp: datalimp,
-                                buscalimp: buscalimp,
-                                datarevi: datarevi,
-                                buscarevi: buscarevi,
-                            }
-                        } else {
-                            usina = {
-                                user: id,
-                                nome: cliente.nome,
-                                cliente: proposta.cliente,
-                                endereco: proposta.endereco,
-                                area: 0,
-                                qtdmod: 0,
-                                cadastro: cadastro,
-                                datalimp: datalimp,
-                                buscalimp: buscalimp,
-                                datarevi: datarevi,
-                                buscarevi: buscarevi
-                            }
-                        }
-                        new Usina(usina).save().then(() => {
-                            //console.log('salvou usina')
-                            Usina.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((novausina) => {
-                                var tarefa = {
+        if (naoVazio(proposta)) {
+            Compra.findOne({ proposta: req.params.id }).then((compra) => {
+                Equipe.findOne({ _id: proposta.equipe }).then((equipe) => {
+                    Vistoria.findOne({ proposta: proposta._id }).then((vistoria) => {
+                        //console.log(proposta.cliente)
+                        Cliente.findOne({ _id: proposta.cliente }).then((cliente) => {
+                            //console.log(cliente)
+                            var cadastro = dataHoje()
+                            var datalimp = dataMensagem(setData(dataHoje(), 182))
+                            var buscalimp = dataBusca(setData(dataHoje(), 182))
+                            var datarevi = dataMensagem(setData(dataHoje(), 30))
+                            var buscarevi = dataBusca(setData(dataHoje(), 30))
+                            //console.log(vistoria)
+                            if (naoVazio(vistoria)) {
+                                usina = {
                                     user: id,
-                                    usina: novausina._id,
-                                    dataini: setData(dataHoje(), 182),
-                                    buscadataini: dataBusca(setData(dataHoje(), 182)),
-                                    datafim: setData(dataHoje(), 182),
-                                    buscadatafim: dataBusca(setData(dataHoje(), 182)),
-                                    cadastro: dataHoje(),
-                                    endereco: proposta.endereco,
-                                    concluido: false,
-                                    servico: '61b2565a9db7e22fd4472e40',
-                                    equipe: null
+                                    nome: cliente.nome,
+                                    cliente: proposta.cliente,
+                                    area: vistoria.plaArea,
+                                    qtdmod: vistoria.plaQtdMod,
+                                    cadastro: cadastro,
+                                    datalimp: datalimp,
+                                    buscalimp: buscalimp,
+                                    datarevi: datarevi,
+                                    buscarevi: buscarevi,
                                 }
-                                new Tarefas(tarefa).save().then(() => {
-                                    proposta.encerrado = true
-                                    compra.encerrado = true
-                                    proposta.save().then(() => {
-                                        compra.save().then(() => {
-                                            equipe.prjfeito = true
-                                            equipe.save().then(() => {
-                                                req.flash('success_msg', 'Projeto finalizado e usina gerada com sucesso.')
-                                                //console.log('projeto._id=>' + projeto._id)
-                                                res.redirect('/gerenciamento/proposta/' + req.params.id)
+                            } else {
+                                usina = {
+                                    user: id,
+                                    nome: cliente.nome,
+                                    cliente: proposta.cliente,
+                                    endereco: proposta.endereco,
+                                    area: 0,
+                                    qtdmod: 0,
+                                    cadastro: cadastro,
+                                    datalimp: datalimp,
+                                    buscalimp: buscalimp,
+                                    datarevi: datarevi,
+                                    buscarevi: buscarevi
+                                }
+                            }
+                            new Usina(usina).save().then(() => {
+                                //console.log('salvou usina')
+                                Usina.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((novausina) => {
+                                    var tarefa = {
+                                        user: id,
+                                        usina: novausina._id,
+                                        dataini: setData(dataHoje(), 182),
+                                        buscadataini: dataBusca(setData(dataHoje(), 182)),
+                                        datafim: setData(dataHoje(), 182),
+                                        buscadatafim: dataBusca(setData(dataHoje(), 182)),
+                                        cadastro: dataHoje(),
+                                        endereco: proposta.endereco,
+                                        concluido: false,
+                                        servico: '61b2565a9db7e22fd4472e40',
+                                        equipe: null
+                                    }
+                                    new Tarefas(tarefa).save().then(() => {
+                                        proposta.encerrado = true
+                                        compra.encerrado = true
+                                        proposta.save().then(() => {
+                                            compra.save().then(() => {
+                                                equipe.prjfeito = true
+                                                equipe.save().then(() => {
+                                                    req.flash('success_msg', 'Projeto finalizado e usina gerada com sucesso.')
+                                                    //console.log('projeto._id=>' + projeto._id)
+                                                    res.redirect('/gerenciamento/proposta/' + req.params.id)
+                                                }).catch((err) => {
+                                                    req.flash('error_msg', 'Erro ao salvar a equipe.')
+                                                    res.redirect('/gerenciamento/posvenda/' + req.params.id)
+                                                })
                                             }).catch((err) => {
-                                                req.flash('error_msg', 'Erro ao salvar a equipe.')
+                                                req.flash('error_msg', 'Erro ao salvar a tarefa.')
                                                 res.redirect('/gerenciamento/posvenda/' + req.params.id)
                                             })
                                         }).catch((err) => {
@@ -7156,33 +7329,45 @@ router.get('/entrega/:id', ehAdmin, (req, res) => {
                                         res.redirect('/gerenciamento/posvenda/' + req.params.id)
                                     })
                                 }).catch((err) => {
-                                    req.flash('error_msg', 'Erro ao salvar a tarefa.')
+                                    req.flash('error_msg', 'Erro ao encontrar a usina.')
                                     res.redirect('/gerenciamento/posvenda/' + req.params.id)
                                 })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Erro ao encontrar a usina.')
-                                res.redirect('/gerenciamento/posvenda/' + req.params.id)
                             })
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Cliene não encontrado.')
+                            res.redirect('/gerenciamento/posvenda/' + req.params.id)
                         })
                     }).catch((err) => {
-                        req.flash('error_msg', 'Cliene não encontrado.')
+                        req.flash('error_msg', 'Vistoria não encontrada.')
                         res.redirect('/gerenciamento/posvenda/' + req.params.id)
                     })
                 }).catch((err) => {
-                    req.flash('error_msg', 'Vistoria não encontrada.')
+                    req.flash('error_msg', 'Equipe não encontrada.')
                     res.redirect('/gerenciamento/posvenda/' + req.params.id)
                 })
             }).catch((err) => {
-                req.flash('error_msg', 'Equipe não encontrada.')
+                req.flash('error_msg', 'Falha ao encontrar a compra.')
                 res.redirect('/gerenciamento/posvenda/' + req.params.id)
             })
-        }).catch((err) => {
-            req.flash('error_msg', 'Falha ao encontrar a compra.')
-            res.redirect('/gerenciamento/posvenda/' + req.params.id)
-        })
+        } else {
+            Obra.findOne({ _id: req.params.id }).then((obra) => {
+                obra.status = 'Finalizado'
+                obra.encerrado = true
+                obra.save().then(() => {
+                    req.flash('success_msg', 'Obra entegue.')
+                    res.redirect('/gerenciamento/consultaobra')
+                }).catch((err) => {
+                    req.flash('error_msg', 'Falha ao salvar a obra.')
+                    res.redirect('/gerenciamento/consultaobra')
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Falha ao encontrar a obra.')
+                res.redirect('/gerenciamento/consultaobra')
+            })
+        }
     }).catch((err) => {
         req.flash('error_msg', 'Falha ao encontrar a proposta<entrega>.')
-        res.redirect('/gerenciamento/posvenda/' + req.params.id)
+        res.redirect('/gerenciamento/consultaobra/')
     })
 })
 
@@ -7679,8 +7864,8 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                                     dtfim = e.datafim
                                     anoinicio = dtinicio.substring(0, 4)
                                     anofim = dtfim.substring(0, 4)
-                                    mesinicio = dtinicio.substring(5,7)
-                                    mesfim = dtfim.substring(5,7)
+                                    mesinicio = dtinicio.substring(5, 7)
+                                    mesfim = dtfim.substring(5, 7)
                                     diainicio = dtinicio.substring(8, 11)
                                     diafim = dtfim.substring(8, 11)
                                     //console.log("messel=>" + messel)
@@ -7931,13 +8116,13 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                                 dtfim = e.datafim
                                 anoinicio = dtinicio.substring(0, 4)
                                 anofim = dtfim.substring(0, 4)
-                                mesinicio = dtinicio.substring(5,7)
-                                mesfim = dtfim.substring(5,7)
+                                mesinicio = dtinicio.substring(5, 7)
+                                mesfim = dtfim.substring(5, 7)
                                 diainicio = dtinicio.substring(8, 11)
                                 diafim = dtfim.substring(8, 11)
-                                console.log('e._id=>'+e._id)
-                                console.log("messel=>" + messel)
-                                console.log("mesinicio=>" + mesinicio)
+                                //console.log('e._id=>' + e._id)
+                                //console.log("messel=>" + messel)
+                                //console.log("mesinicio=>" + mesinicio)
 
                                 if (messel == mesinicio) {
                                     mes = mesinicio
@@ -7976,7 +8161,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                                         dif = 1
                                     } else {
                                         difmes = parseFloat(mesfim) - parseFloat(mesinicio)
-                                        console.log('difmes=>' + difmes)
+                                        //console.log('difmes=>' + difmes)
                                         if (difmes != 0) {
                                             if (difmes < 0) {
                                                 difmes = difmes + 12
@@ -7987,7 +8172,7 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
                                                 if (mes > 12) {
                                                     mes = mes - 12
                                                 }
-                                                console.log('mes=>' + mes)
+                                                //console.log('mes=>' + mes)
                                                 //console.log('meshoje=>' + meshoje)
                                                 if (mes == messel) {
                                                     break;
@@ -8014,11 +8199,11 @@ router.post('/aplicaAgenda/', ehAdmin, (req, res) => {
 
                                 const { dataini } = e
                                 //console.log('dataini=>' + dataini)
-                                console.log('mes=>' + mes)
+                                //console.log('mes=>' + mes)
                                 tarefa = ser.descricao
                                 for (i = 0; i < dif; i++) {
                                     //console.log('dia=>' + dia)
-                                    console.log('entrou laço')
+                                    //console.log('entrou laço')
                                     if (messel == mes) {
                                         if (naoVazio(dias)) {
                                             //console.log('d=>' + d)
@@ -8261,29 +8446,30 @@ router.get('/equipetarefa/:id', ehAdmin, (req, res) => {
     //console.log('req.params.id=>' + req.params.id)
     Tarefa.findOne({ _id: req.params.id }).lean().then((tarefa) => {
         //console.log(usina)
-        //console.log('tarefa=>' + tarefa)
+        // //console.log('tarefa=>' + tarefa)
         trf_dataini = dataMensagem(tarefa.dataini)
         trf_datafim = dataMensagem(tarefa.datafim)
         Empresa.findOne({ _id: tarefa.empresa }).then((trfemp) => {
-            //console.log('trfemp=>' + trfemp)
+            // //console.log('trfemp=>' + trfemp)
             trf_empresa = trfemp.nome
             trf_empid = trfemp._id
             Pessoa.findOne({ _id: tarefa.responsavel }).then((trfres) => {
-                //console.log('trfres=>' + trfres)
+                // //console.log('trfres=>' + trfres)
                 trf_gestor = trfres.nome
                 trf_gesid = trfres._id
                 Servico.findOne({ _id: tarefa.servico }).then((trfsrv) => {
-                    //console.log('trfsrv=>' + trfsrv)
+                    // //console.log('trfsrv=>' + trfsrv)
                     trf_servico = trfsrv.descricao
                     trf_srvid = trfsrv._id
                     Equipe.findOne({ _id: tarefa.equipe }).then((equipeins) => {
-                        //console.log('equipeins=>' + equipeins)
-                        Pessoa.findOne({ _id: equipeins.insres }).then((trftec) => {
-                            //console.log('trftec=>' + trftec)
-                            trf_tecnico = trftec.nome
-                            trf_tecid = trftec._id
-                            //console.log('equipeins=>' + equipeins)
-                            if (naoVazio(equipeins)) {
+                        //console.log('equipeins.insres=>' + equipeins.insres)
+                        if (naoVazio(equipeins.insres)) {
+                            //console.log('equipeins.insres=>' + equipeins.insres)
+                            Pessoa.findOne({ _id: equipeins.insres }).then((trftec) => {
+                                //console.log('trftec=>' + trftec)
+                                trf_tecnico = trftec.nome
+                                trf_tecid = trftec._id
+                                //console.log('equipeins=>' + equipeins)
                                 Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((instalacao) => {
                                     //console.log('entrou')
                                     if (typeof equipeins.ins0 != 'undefined') {
@@ -8362,15 +8548,15 @@ router.get('/equipetarefa/:id', ehAdmin, (req, res) => {
                                                             // if (naoVazio(usina)) {
                                                             //     res.render('projeto/gerenciamento/tarefas', { usina, trf_empresa, trf_empid, trf_gestor, trf_gesid, trf_servico, trf_srvid, tarefa, servicos, ins_fora, ins_dentro, instalacao, gestor, empresa, equipe: true })
                                                             // } else {
-                                                                res.render('projeto/gerenciamento/tarefas', { tarefa, trf_empresa, trf_empid, trf_gestor, trf_gesid, trf_servico, trf_srvid, servicos, ins_fora, ins_dentro, instalacao, gestor, empresa, equipe: true })
+                                                            res.render('projeto/gerenciamento/tarefas', { tarefa, trf_empresa, trf_empid, trf_gestor, trf_gesid, trf_servico, trf_srvid, servicos, ins_fora, ins_dentro, instalacao, gestor, empresa, equipe: true })
                                                             // }
                                                         }).catch((err) => {
                                                             req.flash('error_msg', 'Nenhuma usina cadastrada.')
-                                                            res.redirect('/gerenciamento/agenda')
+                                                            res.redirect('/dashboard')
                                                         })
                                                     }).catch((err) => {
                                                         req.flash('error_msg', 'Nehuma tipo de serviço cadastrado.')
-                                                        res.redirect('/gerenciamento/agenda')
+                                                        res.redirect('/dashboard')
                                                     })
                                                 }).catch((err) => {
                                                     req.flash('error_msg', 'Nehum técnico cadastrada.')
@@ -8378,7 +8564,7 @@ router.get('/equipetarefa/:id', ehAdmin, (req, res) => {
                                                 })
                                             }).catch((err) => {
                                                 req.flash('error_msg', 'Falha ao encontrar os gestores.')
-                                                res.redirect('/gerenciamento/agenda')
+                                                res.redirect('/dashboard')
                                             })
                                         }).catch((err) => {
                                             req.flash('error_msg', 'Nehuam empresa cadastrada.')
@@ -8389,11 +8575,15 @@ router.get('/equipetarefa/:id', ehAdmin, (req, res) => {
                                     req.flash('error_msg', 'Falha ao encontrar os técnicos instaladores.')
                                     res.redirect('/gerenciamento/equipe/' + req.params.id)
                                 })
-                            }
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Falha ao encontrar o técnico responsável.')
-                            res.redirect('/gerenciamento/equipe/' + req.params.id)
-                        })
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Falha ao encontrar o técnico responsável.')
+                                res.redirect('/gerenciamento/equipe/' + req.params.id)
+                            })
+                        } else {
+                            req.flash("error_msg", 'Não foi encontrado instalador responsável pela obra.')
+                            res.redirect('/gerenciamento/tarefa/' + req.params.id)
+                        }
+
                     }).catch((err) => {
                         req.flash('error_msg', 'Falha ao encontrar o equipe.')
                         res.redirect('/gerenciamento/equipe/' + req.params.id)
@@ -8410,7 +8600,6 @@ router.get('/equipetarefa/:id', ehAdmin, (req, res) => {
             req.flash('error_msg', 'Nenhuma empresa encontrada.')
             res.redirect('/cliente/consulta')
         })
-
     }).catch((err) => {
         req.flash('error_msg', 'Nenhuma tarefa encontrada.')
         res.redirect('/cliente/consulta')
@@ -8424,7 +8613,7 @@ router.post('/selecionacliente', ehAdmin, (req, res) => {
         res.render('projeto/gerenciamento/tarefas', { cliente, ehSelecao })
     }).catch(() => {
         res.flash('error_msg', 'Não há cliente cadastrado.')
-        req.redirect('/agenda')
+        req.redirect('/dashboard')
     })
 })
 
@@ -8579,6 +8768,10 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
     var adiciona
     var dataini
     var datafim
+    var data1
+    var data2
+    var days
+    var dif
     var dif
     var dias = []
     var cadastro = dataHoje()
@@ -8587,6 +8780,7 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
     var todos_emails = ''
     var q = 0
     var email = ''
+    var seq
 
     if (naoVazio(req.body.idequipe)) {
         //console.log('equipe não vazio')
@@ -8631,6 +8825,7 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                     //console.log('custoins[i]' + custoins[i])
                     todos_emails = todos_emails + email[i] + ';'
                 }
+                equipe.insres = req.body.responsavel
                 equipe.ins0 = req.body.ins0
                 equipe.ins1 = req.body.ins1
                 equipe.ins2 = req.body.ins2
@@ -8641,26 +8836,39 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                 // equipe.custoins = custototal
                 // equipe.feito = true
                 equipe.save().then(() => {
-                    req.flash('success_msg', 'Equipe salva com sucesso.')
-                    if (naoVazio(tarefa.programacao)) {
-                        res.redirect('/cliente/programacao/' + req.body.idusina)
-                    } else {
+                    //console.log('equipe salva')
+                    // tarefa.responsavel = req.body.responsavel
+                    // tarefa.endereco = req.body.endereco
+                    // tarefa.servico = req.body.servico
+                    // tarefa.dataini = req.body.dataini
+                    // tarefa.buscadataini = dataBusca(req.body.dataini)
+                    // tarefa.datafim = req.body.datafim
+                    // tarefa.buscadatafim = dataBusca(req.body.datafim)
+                    tarefa.preco = req.body.preco
+                    tarefa.save().then(() => {
+                        req.flash('success_msg', 'Tarefa salva com sucesso.')
+                        if (naoVazio(tarefa.programacao)) {
+                            res.redirect('/cliente/programacao/' + req.body.idusina)
+                        } else {
+                            res.redirect('/gerenciamento/tarefas/' + tarefa._id)
+                        }
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Houve erro ao salvar a tarefa.')
                         res.redirect('/gerenciamento/tarefas/' + tarefa._id)
-                    }
+                    })
                 }).catch((err) => {
                     req.flash('error_msg', 'Houve erro ao salvar a equipe.')
-                    res.redirect('/cliente/programacao/' + req.body.idusina)
+                    res.redirect('/gerenciamento/tarefas/' + tarefa._id)
                 })
             }).catch((err) => {
                 req.flash('error_msg', 'Houve erro ao encontrar a equipe.')
-                res.redirect('/cliente/programacao/' + req.body.idusina)
+                res.redirect('/gerenciamento/tarefas/' + tarefa._id)
             })
         }).catch((err) => {
             req.flash('error_msg', 'Houve erro ao encontrar a proposta.')
-            res.redirect('/cliente/programacao/' + req.body.idusina)
+            res.redirect('/gerenciamento/tarefas/' + tarefa._id)
         })
     } else {
-        //console.log('equipe true')
         if (req.body.equipe == 'true') {
             dataini = req.body.tarefadtini
             datafim = req.body.tarefadtfim
@@ -8668,11 +8876,13 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
             dataini = req.body.dataini
             datafim = req.body.datafim
         }
+        //console.log('equipe true')
         //console.log('email=>' + email)
         for (i = 0; i < email.length; i++) {
             //console.log('custoins[i]' + custoins[i])
             todos_emails = todos_emails + email[i] + ';'
         }
+
         corpo = {
             user: id,
             ins0: req.body.ins0,
@@ -8686,7 +8896,8 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
             dtfim: req.body.datafim,
             dtinibusca: dataBusca(req.body.dataini),
             dtfimbusca: dataBusca(req.body.datafim),
-            feito: false,
+            feito: true,
+            prjfeito: false,
             liberar: false,
             parado: false,
             email: todos_emails
@@ -8733,77 +8944,106 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
         }
         new Equipe(equipe).save().then(() => {
             Equipe.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((novaequipe) => {
+                data1 = new Date(dataini)
+                data2 = new Date(datafim)
+                dif = Math.abs(data2.getTime() - data1.getTime())
+                days = Math.ceil(dif / (1000 * 60 * 60 * 24))
+                days = days + 1
+
+                for (i = 1; i < days + 1; i++) {
+                    dias.push({ dia: i, feito: false })
+                }
                 if (req.body.tipo == 'obra') {
-                    //console.log('novaequipe=>' + novaequipe._id)
-                    const tarefa = {
-                        user: id,
-                        equipe: novaequipe._id,
-                        cliente: req.body.cliente,
-                        obra: req.body.id,
-                        responsavel: req.body.responsavel,
-                        gestor: req.body.gestor,
-                        empresa: req.body.empresa,
-                        seq: seq,
-                        endereco: req.body.endereco,
-                        cidade: req.body.cidade,
-                        uf: req.body.uf,
-                        gestor: req.body.gestor,
-                        servico: req.body.servico,
-                        dataini: req.body.dataini,
-                        buscadataini: dataBusca(req.body.dataini),
-                        datafim: req.body.datafim,
-                        buscadatafim: dataBusca(req.body.datafim),
-                        cadastro: dataBusca(cadastro),
-                        preco: req.body.preco,
-                        concluido: false,
-                        dias: dias,
-                    }
-                    new Tarefas(tarefa).save().then(() => {
-                        Tarefas.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((tarefa) => {
-                            corpo = {
-                                user: id,
-                                tarefa: tarefa._id,
-                                equipe: novaequipe._id,
-                                data: dataHoje()
-                            }
-                            new ImgTarefa(corpo).save().then(() => {                            
-                            //console.log('salvou tarefa')
-                            //console.log('req.body.id=>' + req.body.id)
-                            Equipe.find({ obra: req.body.id }).then((conta_obras) => {
-                                //console.log('conta_obras=>' + conta_obras)
-                                if (conta_obras.length > 0) {
-                                    Obra.findOneAndUpdate({ _id: req.body.id }, { $push: { tarefa: { "idtarefa": tarefa._id } } }).then(() => {
-                                        Obra.findOneAndUpdate({ _id: req.body.id }, { $set: { 'dtini': tarefa.dataini, 'dtfim': tarefa.dtfim } }).then(() => {
-                                            //console.log('update')
-                                            novaequipe.tarefa = tarefa._id
-                                            novaequipe.obra = req.body.id
-                                            novaequipe.save().then(() => {
-                                                req.flash('success_msg', 'Tarefa da obra gerada com sucesso.')
-                                                res.redirect('/gerenciamento/obra/' + req.body.id + 'abalista')
+                    var tarefas = []
+                    Obra.findOne({ _id: req.body.id }).then((obra) => {
+                        tarefas = obra.tarefa
+                        seq = obra.seq + '-' + (tarefas.length + 1)
+                        console.log('seq=>' + seq)
+                        //console.log('novaequipe=>' + novaequipe._id)
+                        const tarefa = {
+                            user: id,
+                            equipe: novaequipe._id,
+                            cliente: req.body.cliente,
+                            obra: req.body.id,
+                            responsavel: req.body.responsavel,
+                            gestor: req.body.gestor,
+                            empresa: req.body.empresa,
+                            seq: seq,
+                            endereco: req.body.endereco,
+                            cidade: req.body.cidade,
+                            uf: req.body.uf,
+                            gestor: req.body.gestor,
+                            servico: req.body.servico,
+                            dataini: req.body.dataini,
+                            buscadataini: dataBusca(req.body.dataini),
+                            datafim: req.body.datafim,
+                            buscadatafim: dataBusca(req.body.datafim),
+                            cadastro: dataBusca(cadastro),
+                            preco: req.body.preco,
+                            concluido: false,
+                            dias: dias,
+                        }
+                        Cliente.findOne({ _id: req.body.cliente }).then((cliente) => {
+                            novaequipe.nome_projeto = cliente.nome
+                            novaequipe.save().then(() => {
+                                new Tarefas(tarefa).save().then(() => {
+                                    Tarefas.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((tarefa) => {
+                                        corpo = {
+                                            user: id,
+                                            tarefa: tarefa._id,
+                                            equipe: novaequipe._id,
+                                            data: dataHoje()
+                                        }
+                                        new ImgTarefa(corpo).save().then(() => {
+                                            //console.log('salvou tarefa')
+                                            //console.log('req.body.id=>' + req.body.id)
+                                            Equipe.find({ obra: req.body.id }).then((conta_obras) => {
+                                                //console.log('conta_obras=>' + conta_obras)
+                                                if (conta_obras.length > 0) {
+                                                    Obra.findOneAndUpdate({ _id: req.body.id }, { $push: { tarefa: { "idtarefa": tarefa._id } } }).then(() => {
+                                                        Obra.findOneAndUpdate({ _id: req.body.id }, { $set: { 'dtini': tarefa.dataini, 'dtfim': tarefa.dtfim } }).then(() => {
+                                                            //console.log('update')
+                                                            novaequipe.tarefa = tarefa._id
+                                                            novaequipe.obra = req.body.id
+                                                            novaequipe.save().then(() => {
+                                                                req.flash('success_msg', 'Tarefa da obra gerada com sucesso.')
+                                                                res.redirect('/gerenciamento/obra/' + req.body.id + 'abalista')
+                                                            })
+                                                        })
+                                                    })
+                                                } else {
+                                                    Obra.findOneAndUpdate({ _id: req.body.id }, { $push: { tarefa: { "idtarefa": tarefa._id } } }).then(() => {
+                                                        Obra.findOneAndUpdate({ _id: req.body.id }, { $set: { 'dtini': tarefa.dataini, 'dtfim': tarefa.datafim } }).then(() => {
+                                                            novaequipe.tarefa = tarefa._id
+                                                            novaequipe.obra = req.body.id
+                                                            novaequipe.save().then(() => {
+                                                                req.flash('success_msg', 'Tarefa da obra gerada com sucesso.')
+                                                                res.redirect('/gerenciamento/obra/' + req.body.id + 'abalista')
+                                                            })
+                                                        })
+                                                    })
+                                                }
                                             })
                                         })
+                                    }).catch((err) => {
+                                        req.flash('error_msg', 'Falha ao encontrar a tarefa.')
+                                        res.redirect('/gerenciamento/obra/' + req.body.id)
                                     })
-                                } else {
-                                    Obra.findOneAndUpdate({ _id: req.body.id }, { $push: { tarefa: { "idtarefa": tarefa._id } } }).then(() => {
-                                        Obra.findOneAndUpdate({ _id: req.body.id }, { $set: { 'dtini': tarefa.dataini, 'dtfim': tarefa.datafim } }).then(() => {
-                                            novaequipe.tarefa = tarefa._id
-                                            novaequipe.obra = req.body.id
-                                            novaequipe.save().then(() => {
-                                                req.flash('success_msg', 'Tarefa da obra gerada com sucesso.')
-                                                res.redirect('/gerenciamento/obra/' + req.body.id + 'abalista')
-                                            })
-                                        })
-                                    })
-                                }
+                                }).catch((err) => {
+                                    req.flash('error_msg', 'Falha ao salvar a tarefa.')
+                                    res.redirect('/gerenciamento/tarefas/' + tarefa._id)
+                                })
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Falha ao salvar a equipe.')
+                                res.redirect('/gerenciamento/tarefas/' + tarefa._id)
                             })
-                        })
                         }).catch((err) => {
-                            req.flash('error_msg', 'Falha ao salvar a equipe.')
-                            res.redirect('/gerenciamento/obra/' + req.body.id)
+                            req.flash('error_msg', 'Falha ao encontrar o cliente.')
+                            res.redirect('/gerenciamento/tarefas/' + tarefa._id)
                         })
                     }).catch((err) => {
-                        req.flash('error_msg', 'Falha ao salvar a tarefa.')
-                        res.redirect('/gerenciamento/tarefas/' + tarefa._id)
+                        req.flash('error_msg', 'Falha ao encontrar a obra.')
+                        res.redirect('/dashboard')
                     })
                 } else {
                     if (req.body.equipe == 'true') {
@@ -8828,15 +9068,6 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                             } else {
                                 seq = 1
                                 emp_tarefa.seq = 1
-                            }
-                            var data1 = new Date(dataini)
-                            var data2 = new Date(datafim)
-                            dif = Math.abs(data2.getTime() - data1.getTime())
-                            days = Math.ceil(dif / (1000 * 60 * 60 * 24))
-                            days = days + 1
-                            //console.log('days=>' + days)
-                            for (i = 1; i < days + 1; i++) {
-                                dias.push({ dia: i, feito: false })
                             }
                             //console.log("dias=>" + dias)
                             const tarefa = {
@@ -8897,11 +9128,11 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                                                 })
                                             }).catch((err) => {
                                                 req.flash('error_msg', 'Houve erro ao salvar a atividade de instalação do inversor.')
-                                                res.redirect('/menu')
+                                                res.redirect('/dashboard')
                                             })
                                         }).catch((err) => {
                                             req.flash('error_msg', 'Houve erro ao salvar a atividade de instalação do telhado.')
-                                            res.redirect('/menu')
+                                            res.redirect('/dashboard')
                                         })
                                     }).catch((err) => {
                                         req.flash('error_msg', 'Falha ao salvar a empresa.')
@@ -8912,7 +9143,7 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                                     res.redirect('/gerenciamento/tarefas/' + tarefa._id)
                                 })
                             }).catch((err) => {
-                                req.flash('error_msg', 'Falha ao encontrar a tarefa.')
+                                req.flash('error_msg', 'Falha ao encontrar a tarefa<add tarefa>.')
                                 res.redirect('/gerenciamento/tarefas/' + tarefa._id)
                             })
                         }).catch((err) => {
@@ -10301,7 +10532,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                             } else {
                                 dataEntregaReal = req.body.dateEntregaReal
                                 ano = dataEntregaReal.substring(0, 4)
-                                mes = dataEntregaReal.substring(5,7)
+                                mes = dataEntregaReal.substring(5, 7)
                                 dia = dataEntregaReal.substring(8, 11)
                                 dataEntregaReal = dia + '/' + mes + '/' + ano
                                 prj_entrega.datafim = dataEntregaReal
@@ -10331,7 +10562,7 @@ router.post('/salvacronograma/', ehAdmin, (req, res) => {
                         if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && comparaDatas(req.body.dateentrega, req.body.datevisfim) == false) {
                             dataentrega = req.body.dateentrega
                             ano = dataentrega.substring(0, 4)
-                            mes = dataentrega.substring(5,7)
+                            mes = dataentrega.substring(5, 7)
                             dia = dataentrega.substring(8, 11)
                             dataentrega = dia + '/' + mes + '/' + ano
                             prj_entrega.dataprev = dataentrega
@@ -10997,8 +11228,8 @@ router.post('/vermais/', ehAdmin, (req, res) => {
                         //console.log('cliente.nome=>' + cliente.nome)
                         anoinicio = inicio.substring(0, 4)
                         anofim = fim.substring(0, 4)
-                        mesinicio = inicio.substring(5,7)
-                        mesfim = fim.substring(5,7)
+                        mesinicio = inicio.substring(5, 7)
+                        mesfim = fim.substring(5, 7)
                         diainicio = inicio.substring(8, 11)
                         diafim = fim.substring(8, 11)
                         con1 = String(mesinicio) + String(diainicio)
@@ -11464,7 +11695,7 @@ router.post('/baixar/', ehAdmin, (req, res) => {
             res.redirect('/gerenciamento/selecao')
         }).catch((err) => {
             req.flash('error_msg', 'Não foi possível salvar a baixa da proposta.')
-            res.redirect('/menu')
+            res.redirect('/dashboard')
         })
     })
 })
@@ -11491,10 +11722,14 @@ router.post('/baixardia/', ehAdmin, (req, res) => {
     var diaantes = 0
     var dia = 0
     var data2 = new Date(req.body.databaixa)
+    console.log('data2=>' + data2)
+    console.log('id=>' + req.body.id)
     Tarefa.findOne({ _id: req.body.id, $or: [{ dataini: req.body.databaixa }, { datafim: req.body.databaixa }, { 'buscadataini': { $lte: dataBusca(req.body.databaixa) } }, { 'buscadatafim': { $gte: dataBusca(req.body.databaixa) } }], $and: [{ 'buscadataini': { $lte: dataBusca(req.body.databaixa) } }, { 'buscadatafim': { $gte: dataBusca(req.body.databaixa) } }] }).then((t) => {
+        console.log('t=>' + t)
         if (naoVazio(t)) {
-
             var data1 = new Date(t.dataini)
+            console.log('data1=>' + data1)
+            console.log('data2=>' + data2)
             if (data2 > data1) {
                 dif = Math.abs(data2.getTime() - data1.getTime())
                 days = Math.ceil(dif / (1000 * 60 * 60 * 24))
@@ -11502,6 +11737,7 @@ router.post('/baixardia/', ehAdmin, (req, res) => {
                 dia = days + 1
                 //console.log('dia=>' + dia)
                 Tarefa.findOneAndUpdate({ _id: req.body.id, 'dias.dia': dia }, { $set: { 'dias.$.feito': true } }).then(() => {
+                    //console.log('update')
                     dias = t.dias
                     tamdias = dias.length
                     diaantes = dia - 2
@@ -11509,6 +11745,7 @@ router.post('/baixardia/', ehAdmin, (req, res) => {
                     mensagem = 'Dia baixado com sucesso.'
                     //console.log('tamdias=>' + tamdias)
                     //console.log('dia=>' + dia)
+                    //console.log('diaantes=>' + diaantes)
                     if ((tamdias == dia) && (dias[diaantes].feito == true)) {
                         t.concluido = true
                         t.databaixa = dataHoje()
@@ -11521,11 +11758,8 @@ router.post('/baixardia/', ehAdmin, (req, res) => {
                             res.redirect('/gerenciamento/tarefas/' + req.body.id)
                         })
                     } else {
-
                         req.flash('success_msg', mensagem)
                         res.redirect('/gerenciamento/tarefas/' + req.body.id)
-
-
                     }
                     // diaantes = dias[days].feito
                     // diadepois = dias[dia].feito
@@ -11547,8 +11781,24 @@ router.post('/baixardia/', ehAdmin, (req, res) => {
                 //console.log('mesmo dia')
                 Tarefa.findOneAndUpdate({ _id: req.body.id, 'dias.dia': 1 }, { $set: { 'dias.$.feito': true } }).then(() => {
                     //console.log('achou mesmo dia')
-                    req.flash('success_msg', 'Dia baixado com sucesso.')
-                    res.redirect('/gerenciamento/tarefas/' + req.body.id)
+                    dias = t.dias
+                    tamdias = dias.length
+                    diaantes = dia - 2
+                    console.log('tamdias=>' + tamdias)
+                    console.log('dia=>' + dia)
+                    console.log('diaantes=>' + diaantes)
+                    if (tamdias == 1) {
+                        t.concluido = true
+                        t.databaixa = dataHoje()
+                        t.save().then(() => {
+                            mensagem = mensagem + ' Tarefa baixada com sucesso'
+                            req.flash('success_msg', mensagem)
+                            res.redirect('/gerenciamento/tarefas/' + req.body.id)
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Houve um erro ao baixar o dia da tarefa.')
+                            res.redirect('/gerenciamento/tarefas/' + req.body.id)
+                        })
+                    }
                 }).catch((err) => {
                     req.flash('error_msg', 'Houve um erro ao baixar o dia da tarefa.')
                     res.redirect('/gerenciamento/tarefas/' + req.body.id)
@@ -11640,24 +11890,24 @@ router.post('/filtrar', ehAdmin, (req, res) => {
                 datafim = dataBusca(req.body.datafim)
                 //console.log('req.body.tipo=>'+req.body.tipo)
                 if (req.body.tipo != '') {
-                    Equipe.find({ user: id, feito: true, liberar: true, prj_feito: false, nome_projeto: {$exists: true}, 'dtinibusca':{ $lte:datafim,$gte:dataini}}).then((equipe) => {
+                    Equipe.find({ user: id, feito: true, liberar: true, prj_feito: false, nome_projeto: { $exists: true }, 'dtinibusca': { $lte: datafim, $gte: dataini } }).then((equipe) => {
                         //console.log('req.body.tipo=>' + req.body.tipo)
                         equipe.forEach((e) => {
                             if (req.body.tipo == 'emandamento') {
                                 sql = filtrarProposta(2, id, stats, motivo, respons, empresa, cliente, enviado, ganho, assinado, encerrado)
-                                busca = Object.assign(sql,  { equipe: e._id })
+                                busca = Object.assign(sql, { equipe: e._id })
                             } else {
                                 if (req.body.tipo == 'baixado') {
                                     sql = filtrarProposta(3, id, stats, motivo, respons, empresa, cliente, enviado, ganho, assinado, encerrado)
                                     tipo = { baixada: true, motivo: { $exists: true } }
-                                    busca = Object.assign(sql, tipo,  { equipe: e._id })
+                                    busca = Object.assign(sql, tipo, { equipe: e._id })
                                 } else {
                                     sql = filtrarProposta(2, id, stats, motivo, respons, empresa, cliente, enviado, ganho, assinado, encerrado)
-                                    busca = Object.assign(sql,  { equipe: e._id })
+                                    busca = Object.assign(sql, { equipe: e._id })
                                 }
                             }
                             //console.log('busca=>'+JSON.stringify(busca))
-                            Proposta.findOne(busca).sort({'datacad': 1}).then((proposta) => {
+                            Proposta.findOne(busca).sort({ 'datacad': 1 }).then((proposta) => {
                                 //console.log('proposta.cliente=>'+proposta.cliente)
                                 Cliente.findOne({ _id: proposta.cliente }).then((lista_cliente) => {
                                     Pessoa.findOne({ _id: proposta.responsavel }).then((lista_responsavel) => {
@@ -12194,7 +12444,7 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
     var dezembro
 
     var hoje = dataHoje()
-    var meshoje = hoje.substring(5,7)
+    var meshoje = hoje.substring(5, 7)
     var anotitulo = req.body.ano
 
     var mestitulo = req.body.mes
@@ -12277,8 +12527,8 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
                             fim = equipe.dtfim
                             anoinicio = inicio.substring(0, 4)
                             anofim = fim.substring(0, 4)
-                            mesinicio = inicio.substring(5,7)
-                            mesfim = fim.substring(5,7)
+                            mesinicio = inicio.substring(5, 7)
+                            mesfim = fim.substring(5, 7)
                             diainicio = inicio.substring(8, 11)
                             diafim = fim.substring(8, 11)
                             con1 = String(mesinicio) + String(diainicio)
@@ -12303,20 +12553,20 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
                                             dif = 30
                                         }
                                     } else {
-                                        if (mesfim > mesinicio){
-                                            data1 = new Date(anofim + '-'+ mesfim + '-' + '31')
+                                        if (mesfim > mesinicio) {
+                                            data1 = new Date(anofim + '-' + mesfim + '-' + '31')
                                             data2 = new Date(inicio)
                                             dif = Math.abs(data1.getTime() - data2.getTime())
                                             days = Math.ceil(dif / (1000 * 60 * 60 * 24))
                                             if (data1.getTime() < data2.getTime()) {
                                                 days = days * -1
-                                            }    
+                                            }
                                             //console.log('days=>'+days)                                        
                                             dia = diainicio
-                                            dif = days+1
-                                        }else{
-                                        dia = diainicio
-                                        dif = parseFloat(diafim) - parseFloat(diainicio) + 1
+                                            dif = days + 1
+                                        } else {
+                                            dia = diainicio
+                                            dif = parseFloat(diafim) - parseFloat(diainicio) + 1
                                         }
                                     }
                                 } else {
@@ -12521,11 +12771,11 @@ router.post('/emandamento/', ehAdmin, (req, res) => {
             })
         } else {
             req.flash('error_msg', 'Não existem projetos com instalação em andamento.')
-            res.redirect('/menu')
+            res.redirect('/dashboard')
         }
     }).catch((err) => {
         req.flash('error_msg', 'Falha ao encontrar a proposta<ea>.')
-        res.redirect('/menu')
+        res.redirect('/dashboard')
     })
 })
 
@@ -12534,6 +12784,7 @@ router.post('/filtrodash', ehAdmin, (req, res) => {
     const { user } = req.user
     const { pessoa } = req.user
     const { nome } = req.user
+    const { owner } = req.user
     var id
 
     var qtdexec = 0
@@ -12645,13 +12896,13 @@ router.post('/filtrodash', ehAdmin, (req, res) => {
     }
 
     switch (req.body.status) {
-        case 'Em execução': sqlstatus = { user: id, tarefa: { $exists: true }, feito: false, liberar: true, parado: false }
+        case 'Em execução': sqlstatus = { user: id, tarefa: { $exists: true }, prjfeito: false, liberar: true, parado: false }
             break;
-        case 'Aguardando': sqlstatus = { user: id, tarefa: { $exists: true }, feito: false, liberar: false, parado: false }
+        case 'Aguardando': sqlstatus = { user: id, tarefa: { $exists: true }, prjfeito: false, liberar: false, parado: false }
             break;
-        case 'Parado': sqlstatus = { user: id, tarefa: { $exists: true }, feito: false, liberar: true, parado: true }
+        case 'Parado': sqlstatus = { user: id, tarefa: { $exists: true }, prjfeito: false, liberar: true, parado: true }
             break;
-        case 'Realizado': sqlstatus = { user: id, tarefa: { $exists: true }, feito: true, liberar: true, parado: false }
+        case 'Finalizado': sqlstatus = { user: id, tarefa: { $exists: true }, prjfeito: true, liberar: true, parado: false }
             break;
         default: sqlstatus = { user: id, tarefa: { $exists: true } }
     }
@@ -12669,22 +12920,22 @@ router.post('/filtrodash', ehAdmin, (req, res) => {
         asc = 'unchecked'
         desc = 'checked'
     }
-
+    console.log('sqlstatus=>' + JSON.stringify(sqlstatus))
     Empresa.find({ user: id }).lean().then((todas_empresas) => {
         Equipe.find(sqlstatus).sort({ dtinibusca: ordem }).then((equipe) => {
-            //console.log('tarefas=>'+tarefas)
+            console.log('equipe=>' + equipe)
             if (naoVazio(equipe)) {
                 equipe.forEach((e) => {
-                    if (e.feito == false && e.parado == false && e.liberar == false) {
+                    if (e.prjfeito == false && e.parado == false && e.liberar == false) {
                         qtdagua++
                     } else {
-                        if (e.feito == false && e.parado == false && e.liberar == true) {
+                        if (e.prjfeito == false && e.parado == false && e.liberar == true) {
                             qtdexec++
                         } else {
-                            if (e.feito == false && e.parado == true && e.liberar == true) {
+                            if (e.prjfeito == false && e.parado == true && e.liberar == true) {
                                 qtdpara++
                             } else {
-                                if (e.feito == true && e.parado == false && e.liberar == true) {
+                                if (e.prjfeito == true && e.parado == false && e.liberar == true) {
                                     qtdreal++
                                 }
                             }
@@ -12695,9 +12946,9 @@ router.post('/filtrodash', ehAdmin, (req, res) => {
                         sqlemp = { empresa: req.body.empresa }
                         sql = Object.assign(sql, sqlemp)
                     }
-                    //console.log('sql>' + JSON.stringify(sql))
+                    console.log('sql=>' + JSON.stringify(sql))
                     Tarefa.findOne(sql).then((tarefas) => {
-                        //console.log('tarefas=>' + tarefas._id)
+                        console.log('tarefas=>' + tarefas._id)
                         Servico.findOne({ _id: tarefas.servico }).then((servico) => {
                             Cliente.findOne({ _id: tarefas.cliente }).then((cliente) => {
                                 Pessoa.findOne({ _id: tarefas.responsavel }).then((pessoa_res) => {
@@ -12709,17 +12960,19 @@ router.post('/filtrodash', ehAdmin, (req, res) => {
                                             if (typeof pessoa == 'undefined') {
                                                 esta_pessoa = '111111111111111111111111'
                                             }
+                                            console.log('esta_pessoa=>' + esta_pessoa)
                                             Pessoa.findOne({ _id: esta_pessoa }).lean().then((nome_pessoa) => {
                                                 if (naoVazio(nome_pessoa)) {
                                                     nome_lista = nome_pessoa.nome
                                                 } else {
                                                     nome_lista = nome
                                                 }
+                                                console.log('nome_lista=>' + nome_lista)
                                                 Empresa.findOne({ _id: req.body.empresa }).then((emp) => {
                                                     if (naoVazio(emp)) {
                                                         empselect = emp.nome
                                                     }
-                                                    res.render('dashboard', { ano, mes: req.body.mes, numtrf, qtdagua, qtdexec, qtdpara, crm: false, lista_tarefas, nome_lista, saudacao, todos_clientes, todas_empresas, asc, desc, ordem, empselect })
+                                                    res.render('dashboard', { ano, mes: req.body.mes, numtrf, qtdagua, qtdexec, qtdpara, qtdreal, crm: false, lista_tarefas, nome_lista, saudacao, todos_clientes, todas_empresas, asc, desc, ordem, empselect, busca: true })
                                                 }).catch((err) => {
                                                     req.flash("error_msg", "Ocorreu uma falha interna para encontrar a empresa<s>.")
                                                     res.redirect("/")
@@ -12760,15 +13013,16 @@ router.post('/filtrodash', ehAdmin, (req, res) => {
                     } else {
                         nome_lista = nome
                     }
-                    Empresa.findOne({ _id: req.body.empresa }).then((emp) => {
-                        if (naoVazio(emp)) {
-                            empselect = emp.nome
-                        }
-                        res.render('dashboard', { ano, mes: req.body.mes, numtrf, qtdagua, qtdexec, qtdpara, crm: false, id: _id, owner: owner, saudacao, nome_lista, todas_empresas, asc, desc, ordem, empselect })
-                    }).catch((err) => {
-                        req.flash("error_msg", "Ocorreu uma falha interna para encontrar a empresa<s>.")
-                        res.redirect("/")
-                    })
+                    console.log('nome_lista=>' + nome_lista)
+                    // Empresa.findOne({ _id: req.body.empresa }).then((emp) => {
+                    //     if (naoVazio(emp)) {
+                    //         empselect = emp.nome
+                    //     }
+                    res.render('dashboard', { ano, mes: req.body.mes, numtrf, qtdagua, qtdexec, qtdpara, crm: false, id: _id, owner: owner, saudacao, nome_lista, todas_empresas, asc, desc, ordem, busca: true })
+                    // }).catch((err) => {
+                    //     req.flash("error_msg", "Ocorreu uma falha interna para encontrar a empresa<s>.")
+                    //     res.redirect("/")
+                    // })
                 })
             }
         }).catch((err) => {

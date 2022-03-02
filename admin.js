@@ -90,6 +90,7 @@ app.use((req, res, next) => {
 })
 
 //Body-Parser
+app.use(bodyParser({ limit: '50mb' }))
 app.use(express.json())
 app.use(express.urlencoded({
     extended: true
@@ -106,7 +107,8 @@ app.use(express.static('public/'))
 
 //Mongoose DB
 mongoose.Promise = global.Promise
-mongoose.connect('mongodb://vimmus:64l10770@localhost:27017/vimmus?authSource=admin', {
+// mongoose.connect('mongodb://vimmus:64l10770@localhost:27017/vimmus?authSource=admin', {
+mongoose.connect('mongodb://vimmus01:64l10770@mongo71-farm10.kinghost.net/vimmus01', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
@@ -739,74 +741,70 @@ app.get('/dashboard', ehAdmin, (req, res) => {
             var numtrf = 0
             Empresa.find({ user: id }).lean().then((todas_empresas) => {
                 Tarefa.find({ user: id }).sort({ buscadataini: ordem, parado: -1, liberar: -1 }).then((tarefas) => {
+                    // console.log('tarefas=>' + tarefas)
                     if (naoVazio(tarefas)) {
                         tarefas.forEach((e) => {
-                            // console.log('e._id=>' + e._id)
-                            // console.log('e.servico=>' + e.servico)
-                            // console.log('e.cliente=>' + e.cliente)
-                            // console.log('e.responsavel=>' + e.responsavel)
+                            // console.log('e.servico=>'+e._id)
+                            // console.log('e.servico=>'+e.servico)
                             Servico.findOne({ _id: e.servico }).then((servico) => {
                                 Equipe.findOne({ tarefa: e._id }).then((equipe) => {
-                                    if (equipe.feito == false && equipe.parado == false && equipe.liberar == false) {
+                                    if (equipe.prjfeito == false && equipe.parado == false && equipe.liberar == false) {
                                         qtdagua++
                                     } else {
-                                        if (equipe.feito == false && equipe.parado == false && equipe.liberar == true) {
+                                        if (equipe.prjfeito == false && equipe.parado == false && equipe.liberar == true) {
                                             qtdexec++
                                         } else {
-                                            if (equipe.feito == false && equipe.parado == true && equipe.liberar == true) {
+                                            if (equipe.prjfeito == false && equipe.parado == true && equipe.liberar == true) {
                                                 qtdpara++
                                             } else {
-                                                if (equipe.feito == true && equipe.parado == false && equipe.liberar == true) {
+                                                if (equipe.prjfeito == true && equipe.parado == false && equipe.liberar == true) {
                                                     qtdreal++
                                                 }
                                             }
                                         }
                                     }
-                                    // console.log(qtdagua)
-                                    // console.log(qtdexec)
-                                    // console.log(qtdpara)
-                                    // console.log(qtdreal)
                                     Cliente.findOne({ _id: e.cliente }).then((cliente) => {
                                         Pessoa.findOne({ _id: e.responsavel }).then((pessoa_res) => {
-                                            lista_tarefas.push({ id: e._id, liberado: equipe.liberar, feito: equipe.feito, nome_cli: cliente.nome, servico: servico.descricao, nome_res: pessoa_res.nome, id_equipe: equipe._id, dtini: dataMensagem(equipe.dtinicio), dtfim: dataMensagem(equipe.dtfim) })
+                                            lista_tarefas.push({ id: e._id, seq: e.seq, liberado: equipe.liberar, feito: e.concluido, nome_res: pessoa_res.nome, nome_cli: cliente.nome, servico: servico.descricao, id_equipe: equipe._id, dtini: dataMensagem(equipe.dtinicio), dtfim: dataMensagem(equipe.dtfim)})
                                             q++
                                             if (q == tarefas.length) {
+                                                // console.log('lista_tarefas=>'+JSON.stringify(lista_tarefas))
                                                 // console.log('entrou lista tarefas')
-                                                
                                                 numtrf = tarefas.length
                                                 Cliente.find({ user: id }).lean().then((todos_clientes) => {
+                                                    //console.log('todos_clientes=>' + todos_clientes)
                                                     Pessoa.findOne({ _id: esta_pessoa }).lean().then((nome_pessoa) => {
+                                                        // console.log('nome_pessoa=>' + nome_pessoa)
                                                         if (naoVazio(nome_pessoa)) {
                                                             nome_lista = nome_pessoa.nome
                                                         } else {
                                                             nome_lista = nome
                                                         }
-
-                                                        res.render('dashboard', { ano, numtrf, qtdagua, qtdexec, qtdpara, qtdreal, crm: false, lista_tarefas, nome_lista, saudacao, todos_clientes, asc, desc, ordem, todas_empresas })
+                                                        res.render('dashboard', { ano, numtrf, qtdagua, qtdexec, qtdpara, qtdreal, crm: false, lista_tarefas, nome_lista, saudacao, todos_clientes, asc, desc, ordem, todas_empresas, busca: true })
                                                     }).catch((err) => {
                                                         req.flash("error_msg", "Ocorreu uma falha interna para encontrar esta pessoa<s>.")
-                                                        res.redirect("/")
+                                                        res.redirect("/dashboard")
                                                     })
                                                 }).catch((err) => {
                                                     req.flash("error_msg", "Ocorreu uma falha interna para encontrar os clientes<s>.")
-                                                    res.redirect("/")
+                                                    res.redirect("/dashboard")
                                                 })
                                             }
                                         }).catch((err) => {
                                             req.flash("error_msg", "Ocorreu uma falha interna para encontrar a pessoa responsável<s>.")
-                                            res.redirect("/")
+                                            res.redirect("/dashboard")
                                         })
                                     }).catch((err) => {
                                         req.flash("error_msg", "Ocorreu uma falha interna para encontrar o cliente<s>.")
-                                        res.redirect("/")
+                                        res.redirect("/dashboard")
                                     })
                                 }).catch((err) => {
                                     req.flash("error_msg", "Ocorreu uma falha interna para encontrar a equipe<s>.")
-                                    res.redirect("/")
+                                    res.redirect("/dashboard")
                                 })
                             }).catch((err) => {
                                 req.flash("error_msg", "Ocorreu uma falha interna para encontrar o serviço<s>.")
-                                res.redirect("/")
+                                res.redirect("/dashboard")
                             })
                         })
                     } else {
@@ -820,7 +818,7 @@ app.get('/dashboard', ehAdmin, (req, res) => {
                                 } else {
                                     nome_lista = nome
                                 }
-                                res.render('dashboard', { ano, crm: false, id: _id, owner: owner, saudacao, nome_lista, asc, desc, ordem, todas_empresas, todos_clientes })
+                                res.render('dashboard', { ano, crm: false, id: _id, owner: owner, saudacao, nome_lista, asc, desc, ordem, todas_empresas, todos_clientes, busca: true })
                             })
                         }).catch((err) => {
                             req.flash("error_msg", "Ocorreu uma falha interna para encontrar os clientes<s>.")

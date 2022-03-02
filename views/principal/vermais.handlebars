@@ -96,13 +96,13 @@
         {{#if listaAndamento}}
         <ul class="nav nav-tabs mb-2">
             <li class="nav-item">
-                <a class="nav-link" aria-current="page" style="color: black" href="/gerenciamento/emandamento/lista">
+                <a class="nav-link" aria-current="page" style="color: black" href="/gerenciamento/emandamento/{{#if obra}}listatipoobra{{else}}lista{{/if}}">
                     <label class="col-form-label titulo-inicio">Lista de Obras em Operação</label>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link active" aria-current="page" style="color: black"
-                    href="/gerenciamento/emandamento/agenda">
+                    href="/gerenciamento/emandamento/{{#if obra}}agendatipoobra{{else}}agenda{{/if}}">
                     <label class="col-form-label titulo-inicio">Agenda</label>
                 </a>
             </li>

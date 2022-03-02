@@ -37,7 +37,11 @@ const AtvAterramento = new Schema({
         seq: {
             type: String,
             require: false,
-        }        
+        },      
+        data: {
+            type: String,
+            require: false,
+        }           
     }],
     aprova: {
         type: Boolean,

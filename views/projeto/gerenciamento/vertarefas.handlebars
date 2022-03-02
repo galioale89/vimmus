@@ -8,7 +8,7 @@
 <div style="padding: 20px" style='margin-top: 30px;'>
     <label style="font-size: 18px;font-weight: 600;">Lista de Serviços | </label><a href='/gerenciamento/agenda'>
         Agenda</a><br><br>
-    <div style="border: #847AF4 4px solid;border-radius: 20px;padding: 10px;">
+    <div style="border: #847AF4 1px solid;border-radius: 10px;padding: 10px;">
         <label style="font-size: 20px;"> Dia {{dia}}</label><br><br>
         <table>
             <tr>
@@ -51,28 +51,38 @@
             </tr>
         </table>
         <div class="row">
-            <form action='/gerenciamento/baixardia' method="post">
-                <input type='hidden' name='id' value='{{lista_tarefa.id}}'>
-                <div class="row">
-                    <div class="col-md-2 text-center">
-                        <a href='/gerenciamento/mostraEquipe/{{lista_tarefa.id}}'class='btn btn-primary'>Resumo Gerencial</a><br>
-                    </div>
-                    <div class="col-md-2 text-center">
-                        <a class='btn btn-primary' href='/gerenciamento/equipetarefa/{{lista_tarefa.id}}'
-                            style='width: 140px'>Abrir Tarefa</a>
-                    </div>
-                    <div style="width: 200px;" class='mt-2'>
-                        Baixar Tarefas Diárias:
-                    </div>
-                    <div class="col-md-3">
-                        <input type='date' name='databaixa' class='form-control'>
-                    </div>
-                    <div class="col-md-2">
-                        <button type='submit' class='btn btn-primary'><i style='cursor: pointer; color:white'
-                                class="bi bi-arrow-down-circle"></i></button>
-                    </div>
+            <div class="row">
+                <div class="col-md-2 text-center">
+                    <a href='/gerenciamento/mostraEquipe/{{lista_tarefa.id}}' class='btn btn-primary'>Resumo
+                        Gerencial</a><br>
                 </div>
-            </form>
+                <div class="col-md-2 text-center">
+                    <a class='btn btn-primary' href='/gerenciamento/equipetarefa/{{lista_tarefa.id}}'
+                        style='width: 140px'>Abrir Tarefa</a>
+                </div>
+                <div class="col">
+                    {{#if tarefa.concluido}}
+                    {{else}}
+                    {{#if equipe.liberar}}
+                    <form action='/gerenciamento/baixardia' method="post">
+                        <input type='hidden' name='id' value='{{lista_tarefa.id}}'>
+                        <div class="row">
+                            <div class='col-md-2 text-end mt-2'>
+                                Baixar Tarefa:
+                            </div>
+                            <div class="col-md-3">
+                                <input type='date' name='databaixa' class='form-control'>
+                            </div>
+                            <div class="col-md-2">
+                                <button type='submit' class='btn btn-primary'><i style='cursor: pointer; color:white'
+                                        class="bi bi-arrow-down-circle"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                    {{/if}}
+                    {{/if}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="text-center">

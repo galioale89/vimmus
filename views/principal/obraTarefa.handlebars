@@ -1,9 +1,4 @@
 <style>
-    .disabledbutton {
-        pointer-events: none;
-        opacity: 0.4;
-    }
-
     .lists {
         display: flex;
         flex: 1;
@@ -106,113 +101,122 @@
             Obra {{obra.seq}} ({{obra.status}})
         </label>
     </div>
-    <form method="post" action='/gerenciamento/obra'>
-        <input type='hidden' name='id' value='{{obra._id}}'>
-        <div class='row'>
-            <div class='col-md-11'>
-                <div class="row justify-content-center">
-                    <div class='col-md-2 text-end'>
-                        <label class='col-form-label col-form-label-sm fw-bold m-1 mb-3'>Empresa: </label>
+    <div id='bloquear' class='{{obra.encerrado}}'>
+        <form method="post" action='/gerenciamento/obra'>
+            <input type='hidden' name='id' value='{{obra._id}}'>
+            <div class='row'>
+                <div class='col-md-11'>
+                    <div class="row justify-content-center">
+                        <div class='col-md-2 text-end'>
+                            <label class='col-form-label col-form-label-sm fw-bold m-1 mb-3'>Empresa: </label>
+                        </div>
+                        <div class='col-md-4'>
+                            <select class='form-select form-select-sm mt-1' name='empresa'>
+                                {{#if empresa._id}}
+                                <option class='fw-bold' value='{{empresa._id}}'>{{empresa.nome}}</option>
+                                {{/if}}
+                                {{#each todas_empresas}}
+                                <option value='{{_id}}'>{{nome}}</option>
+                                {{else}}
+                                <option>Sem empresas cadastradas</option>
+                                {{/each}}
+                            </select><br>
+                        </div>
                     </div>
-                    <div class='col-md-4'>
-                        <select class='form-select form-select-sm mt-1' name='empresa'>
-                            {{#if empresa._id}}
-                            <option class='fw-bold' value='{{empresa._id}}'>{{empresa.nome}}</option>
-                            {{/if}}
-                            {{#each todas_empresas}}
-                            <option value='{{_id}}'>{{nome}}</option>
-                            {{else}}
-                            <option>Sem empresas cadastradas</option>
-                            {{/each}}
-                        </select><br>
+                    <div class="row">
+                        <div class="col-md-2 text-end">
+                            <label class='col-form-label col-form-label-sm fw-bold mb-1'>Cliente: </label><br>
+                        </div>
+                        <div class="col-md-4 text-start">
+                            <input type='hidden' name="id" value='{{obras._id}}'>
+                            <select class='form-select form-select-sm' name='cliente'>
+                                {{#if cliente._id}}
+                                <option class='fw-bold' value='{{cliente._id}}'>{{cliente.nome}}</option>
+                                {{/if}}
+                                {{#each todos_clientes}}
+                                <option value='{{_id}}'>{{nome}}</option>
+                                {{else}}
+                                <option>Sem clientes cadastrados</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class='col-md-2 text-end'>
+                            <label class='col-form-label col-form-label-sm fw-bold m-1'>Gestor Responsável: </label><br>
+                        </div>
+                        <div class='col-md-4'>
+                            <select class='form-select form-select-sm mt-1' name='responsavel'>
+                                {{#if responsavel._id}}
+                                <option class='fw-bold' value='{{responsavel._id}}'>{{responsavel.nome}}</option>
+                                {{/if}}
+                                {{#each todos_responsaveis}}
+                                <option value='{{_id}}'>{{nome}}</option>
+                                {{else}}
+                                <option>Sem responsáveis cadastrados</option>
+                                {{/each}}
+                            </select><br>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-2 text-end">
-                        <label class='col-form-label col-form-label-sm fw-bold mb-1'>Cliente: </label><br>
-                    </div>
-                    <div class="col-md-4 text-start">
-                        <input type='hidden' name="id" value='{{obras._id}}'>
-                        <select class='form-select form-select-sm' name='cliente'>
-                            {{#if cliente._id}}
-                            <option class='fw-bold' value='{{cliente._id}}'>{{cliente.nome}}</option>
-                            {{/if}}
-                            {{#each todos_clientes}}
-                            <option value='{{_id}}'>{{nome}}</option>
-                            {{else}}
-                            <option>Sem clientes cadastrados</option>
-                            {{/each}}
-                        </select>
-                    </div>
-                    <div class='col-md-2 text-end'>
-                        <label class='col-form-label col-form-label-sm fw-bold m-1'>Gestor Responsável: </label><br>
-                    </div>
-                    <div class='col-md-4'>
-                        <select class='form-select form-select-sm mt-1' name='responsavel'>
-                            {{#if responsavel._id}}
-                            <option class='fw-bold' value='{{responsavel._id}}'>{{responsavel.nome}}</option>
-                            {{/if}}
-                            {{#each todos_responsaveis}}
-                            <option value='{{_id}}'>{{nome}}</option>
-                            {{else}}
-                            <option>Sem responsáveis cadastrados</option>
-                            {{/each}}
-                        </select><br>
-                    </div>
-                </div>
-                {{#if obra._id}}
-                <div class='row'>
-                    <div class='col-md-2 text-end'>
-                        <label class='col-form-label col-form-label-sm fw-bold mt-3'>Local: </label>
-                    </div>
-                    <div class='col-md-10'>
-                        <div class='row'>
-                            <div class='col-md-4'>
-                                <label>Endereço</label>
-                                <input class='form-control form-control-sm' type='text' name='endereco' {{#if
-                                    obra.endereco}} value='{{obra.endereco}}' {{else}} value='{{cliente.endereco}}'
-                                    {{/if}}>
-                            </div>
-                            <div class='col'>
-                                <label>Estado</label>
-                                <div id='br0' style="display: {{mostraLabel}}"></div>
-                                <label style='display: {{mostraLabel}}' id='labelUf'
-                                    class='col-form-label col-form-label-sm mb-1'>
-                                    {{#if obra.uf }}{{obra.uf}}{{else}}{{cliente.uf}}{{/if}}
-                                </label><br>
-                                <select style='display: {{mostraSelect}}' id="estado" name='uf'
-                                    class='form-select form-select-sm mb-1'></select>
-                                <input type='hidden' name='ufh' value='{{cliente.uf}}'>
-                            </div>
-                            <div class='col'>
-                                <label>Cidade</label>
-                                <div id='br1' style="display: {{mostraLabel}}"></div>
-                                <label style='display: {{mostraLabel}}' id='labelCidade'
-                                    class='col-form-label col-form-label-sm mb-1'>
-                                    {{#if obra.cidade}}{{obra.cidade}}{{else}}{{cliente.cidade}}{{/if}}
-                                </label><br>
-                                <select style='display: {{mostraSelect}}' id="cidade" name='cidade'
-                                    class='form-select form-select-sm mb-1'></select>
-                                <input type='hidden' name='cidadeh' value='{{cliente.cidade}}'>
-                            </div>
-                            <div class='col-md-1 mt-1'>
-                                <div class="form-check form-switch mt-3" onchange="editarLocal()">
-                                    <input class="form-check-input" type="checkbox" id='checkLocal'>
-                                    <label class="form-check-label" style="padding-top: 6px;">Editar</label>
+                    {{#if obra._id}}
+                    <div class='row'>
+                        <div class='col-md-2 text-end'>
+                            <label class='col-form-label col-form-label-sm fw-bold mt-3'>Local: </label>
+                        </div>
+                        <div class='col-md-10'>
+                            <div class='row'>
+                                <div class='col-md-4'>
+                                    <label>Endereço</label>
+                                    <input class='form-control form-control-sm' type='text' name='endereco' {{#if
+                                        obra.endereco}} value='{{obra.endereco}}' {{else}} value='{{cliente.endereco}}'
+                                        {{/if}}>
+                                </div>
+                                <div class='col'>
+                                    <label>Estado</label>
+                                    <div id='br0' style="display: {{mostraLabel}}"></div>
+                                    <label style='display: {{mostraLabel}}' id='labelUf'
+                                        class='col-form-label col-form-label-sm mb-1'>
+                                        {{#if obra.uf }}{{obra.uf}}{{else}}{{cliente.uf}}{{/if}}
+                                    </label><br>
+                                    <select style='display: {{mostraSelect}}' id="estado" name='uf'
+                                        class='form-select form-select-sm mb-1'></select>
+                                    <input type='hidden' name='ufh' value='{{cliente.uf}}'>
+                                </div>
+                                <div class='col'>
+                                    <label>Cidade</label>
+                                    <div id='br1' style="display: {{mostraLabel}}"></div>
+                                    <label style='display: {{mostraLabel}}' id='labelCidade'
+                                        class='col-form-label col-form-label-sm mb-1'>
+                                        {{#if obra.cidade}}{{obra.cidade}}{{else}}{{cliente.cidade}}{{/if}}
+                                    </label><br>
+                                    <select style='display: {{mostraSelect}}' id="cidade" name='cidade'
+                                        class='form-select form-select-sm mb-1'></select>
+                                    <input type='hidden' name='cidadeh' value='{{cliente.cidade}}'>
+                                </div>
+                                <div class='col-md-1 mt-1'>
+                                    <div class="form-check form-switch mt-3" onchange="editarLocal()">
+                                        <input class="form-check-input" type="checkbox" id='checkLocal'>
+                                        <label class="form-check-label" style="padding-top: 6px;">Editar</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {{/if}}
+                </div>
+                {{#if obra.encerrado}}
+                {{else}}
+                <div class='col-md-1 text-center'>
+                    <button type='submit' class="setaproximo">
+                        <i style="font-size: 36px" class='bi bi-arrow-right-circle'></i>
+                    </button>
+                    {{#if lista_tarefas}}
+                    <a href='/gerenciamento/entrega/{{obra._id}}' class="setaproximo"><i style="font-size: 50px;"
+                            class='bi bi-check2-circle'></i></a>
+                    {{/if}}
                 </div>
                 {{/if}}
             </div>
-            <div class='col-md-1'>
-                <button type='submit' class="setaproximo">
-                    <i style="font-size: 38px" class='bi bi-arrow-right-circle'></i>
-                </button>
-            </div>
-        </div>
-    </form>
+        </form>
+    </div>
     {{#if obra._id}}
     <br>
     <ul class="nav nav-tabs mb-2">
@@ -227,45 +231,47 @@
                     Tarefas</label></a>
         </li>
     </ul>
-    {{#if lista_tarefas}}
-    <div class="row">
-        <div class="col-md-8">
-            <table>
-                <tr>
-                    <th style="width: 20%;">Descrição</th>
-                    <th style="width: 10%;">Início</th>
-                    <th style="width: 10%;">Fim</th>
-                    <th style="width: 15%;">Responsável</th>
-                    <th style="width: 10%;">Custo(R$)</th>
-                </tr>
-                {{#each lista_tarefas}}
-                <tr>
-                    <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{desc}}</a></th>
-                    <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{dtini}}</a></th>
-                    <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{dtfim}}</a></th>
-                    <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{nome_tec}}</a></th>
-                    <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{custo}}</a></th>
-                </tr>
-                {{/each}}
-            </table>
+    
+        {{#if lista_tarefas}}
+        <div class="row">
+            <div class="col-md-8">
+                <table>
+                    <tr>
+                        <th style="width: 20%;">Descrição</th>
+                        <th style="width: 10%;">Início</th>
+                        <th style="width: 10%;">Fim</th>
+                        <th style="width: 15%;">Responsável</th>
+                        <th style="width: 10%;">Valor(R$)</th>
+                    </tr>
+                    {{#each lista_tarefas}}
+                    <tr>
+                        <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{desc}}</a></th>
+                        <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{dtini}}</a></th>
+                        <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{dtfim}}</a></th>
+                        <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{nome_tec}}</a></th>
+                        <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{custo}}</a></th>
+                    </tr>
+                    {{/each}}
+                </table>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <div class="container text-center">
+                        <label style='font-size: 20px;padding-top: 70px;'>R$ Total da Obra</label><br>
+                        <label style="padding-bottom: 80px;font-size: 30px;font-weight: bold">R$ {{custo_total}}</label>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col">
-            <div class="card">
+        {{else}}
+        <div class="card">
             <div class="container text-center">
-                <label style='font-size: 20px;padding-top: 70px;'>Custo Total da Obra</label><br>
-                <label style="padding-bottom: 80px;font-size: 30px;font-weight: bold">R$ {{custo_total}}</label>
-            </div>
+                <label style='font-size: 30px;padding-top: 100px;font-weight: bold;'>Obra sem tarefas</label><br>
+                <label style="padding-bottom: 80px;font-size: 20px;">Clique na aba "Adicionar Tarefa" e inicie o
+                    planejamento da obra! </label>
             </div>
         </div>
-    </div>
-    {{else}}
-    <div class="card">
-        <div class="container text-center">
-            <label style='font-size: 30px;padding-top: 100px;font-weight: bold;'>Obra sem tarefas</label><br>
-            <label style="padding-bottom: 80px;font-size: 20px;">Clique na aba "Adicionar Tarefa" e inicie o
-                planejamento da obra! </label>
-        </div>
-    </div>
-    {{/if}}
-    {{/if}}
+        {{/if}}
+        {{/if}}
+
 </div>

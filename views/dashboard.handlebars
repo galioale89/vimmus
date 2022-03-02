@@ -37,7 +37,7 @@
             ordem.value = -1
         }
     }
-function manutencao() {
+    function manutencao() {
         var hoje = new Date()
         var ano = hoje.getFullYear()
         var dia = hoje.getDay()
@@ -321,14 +321,16 @@ function manutencao() {
             </a>
             {{/if}}
             {{#if crm}}
-            <a href='/gerenciamento/emandamento/listatipoproposta' class="btn btn-sm btn-primary mb-1"> Serviços em Andamento</a>            
+            <a href='/gerenciamento/emandamento/listatipoproposta' class="btn btn-sm btn-primary mb-1"> Serviços em
+                Andamento</a>
             {{else}}
-            <a href='/gerenciamento/obra' class="btn btn-sm btn-primary mb-1">Nova Obra</a>    
-            <a href='/gerenciamento/consultaobra' class="btn btn-sm btn-primary mb-1">Todas as Obras</a>               
-            <a href='/gerenciamento/emandamento/listatipoobra' class="btn btn-sm btn-primary mb-1">Obras em Andamento</a>    
+            <a href='/gerenciamento/obra' class="btn btn-sm btn-primary mb-1">Nova Obra</a>
+            <a href='/gerenciamento/consultaobra' class="btn btn-sm btn-primary mb-1">Todas as Obras</a>
+            <a href='/gerenciamento/emandamento/listatipoobra' class="btn btn-sm btn-primary mb-1">Obras em
+                Andamento</a>
             <a href='/gerenciamento/agenda' class="btn btn-sm btn-primary mb-1"> Agenda de Serviços</a>
             <button onclick='manutencao()' class="btn btn-sm btn-primary mb-1" style="max-width: 50px;"
-                title='Adicionar Tarefa'><i class='bi bi-calendar-plus d-flex justify-content-center'></i></button>            
+                title='Adicionar Tarefa'><i class='bi bi-calendar-plus d-flex justify-content-center'></i></button>
             {{/if}}
         </div>
     </div>
@@ -401,10 +403,12 @@ function manutencao() {
                                 <td style="padding-top: 3px;">
                                     <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
 
-                                        <a href='/gerenciamento/proposta/{{id}}/' class='botao-tabela d-flex aligns-items-center ativado-tabela'>
+                                        <a href='/gerenciamento/proposta/{{id}}/'
+                                            class='botao-tabela d-flex aligns-items-center ativado-tabela'>
                                             <i class="bi bi-pen icone-tabela"></i>
                                         </a>
-                                        <a href='/gerenciamento/ganho/{{id}}/' class='botao-tabela d-flex aligns-items-center ativado-tabela'>
+                                        <a href='/gerenciamento/ganho/{{id}}/'
+                                            class='botao-tabela d-flex aligns-items-center ativado-tabela'>
                                             <i class="bi bi-file-earmark-check icone-tabela"></i>
                                         </a>
                                         <a href='/gerenciamento/confirmaexclusao/{{id}}/'
@@ -447,7 +451,8 @@ function manutencao() {
                                     <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
                                         {{#if block}}
                                         {{else}}
-                                        <a href='/gerenciamento/proposta/{{id}}/' class='botao-tabela d-flex aligns-items-center ativado-tabela'>
+                                        <a href='/gerenciamento/proposta/{{id}}/'
+                                            class='botao-tabela d-flex aligns-items-center ativado-tabela'>
                                             <i class="bi bi-pen icone-tabela"></i>
                                         </a>
                                         {{/if}}
@@ -514,7 +519,7 @@ function manutencao() {
                         <option>Aguardando</option>
                         <option>Em execução</option>
                         <option>Parado</option>
-                        <option>Realizado</option>
+                        <option>Finalizado</option>
                     </select>
                 </div>
                 <div class="col text-end">
@@ -543,13 +548,14 @@ function manutencao() {
                 </div>
             </div>
         </form>
-        {{#if lista_tarefas}}
+        {{#if busca}}
         <div class='quadro-scroll' id='tarefa' style="margin-left: 20px;width: 98%;">
             <div class="text-center">
+                {{#if lista_tarefas}}
                 <table style="font-size: 15px;">
                     <tr>
                         <th style="font-size: 15px;padding-left: 10px;">
-                            Sequência
+                            Código
                         </th>
                         <th style="width: 25%;font-size: 15px;">
                             Cliente
@@ -573,68 +579,80 @@ function manutencao() {
                             Execução
                         </th>
                     </tr>
+                    {{#each lista_tarefas}}
+                    <tr>
+                        <td>
+                            {{seq}}
+                        </td>
+                        <td>
+                            {{nome_cli}}
+                        </td>
+                        <td>
+                            {{servico}}
+                        </td>
+                        <td>
+                            {{nome_res}}
+                        </td>
+                        <td>
+                            {{dtini}}
+                        </td>
+                        <td>
+                            {{dtfim}}
+                        </td>
+                        <td>
+                            <a href='/gerenciamento/mostraEquipe/{{id}}' class="btn btn-sm btn-primary"><i
+                                    class='bi bi-people-fill d-flex' title="Equipe"></i></a>
+                        </td>
+                        <td>
+                            {{#if feito}}
+                            <div style="padding-left: 20px;display: flex;align-items:center;">
+                                <div><i id='realizado' class='bi bi-check d-flex align-items-center mt-1'
+                                        style="position: relative;transform: translateY(10%);color: rgb(55,49,89);"></i>
+                                </div>
+                            </div>
+                            {{else}}
+                            {{#if liberado}}
+                            <div style="padding-left: 20px;display: flex;align-items:center;">
+                                <div id='execucao' style="position: relative;top: 40%;transform: translateY(30%);">
+                                </div>
+                            </div>
+                            {{else}}
+                            <div style="padding-left: 20px;display: flex;align-items:center;">
+                            <div id='aguardando' style="position: relative;top: 50%;transform: translateY(30%);"></div>
+                            </div>
+                            {{/if}}
+                            {{/if}}
+                        </td>
+                    </tr>
+                    {{/each}}
+                </table>
+                {{else}}
+                    <label class="col-form-label" style="font-size: 50px;margin-top: 30;margin-bottom: 30px">Nenhuma tarefa encontrada</label>
+                {{/if}}
             </div>
-            {{#each lista_tarefas}}
-            <tr>
-                <td>
-                    {{seq}}
-                </td>
-                <td>
-                    {{nome_cli}}
-                </td>
-                <td>
-                    {{servico}}
-                </td>
-                <td>
-                    {{nome_res}}
-                </td>
-                <td>
-                    {{dtini}}
-                </td>
-                <td>
-                    {{dtfim}}
-                </td>
-                <td>
-                    <a href='/gerenciamento/mostraEquipe/{{id}}' class="btn btn-sm btn-primary"><i
-                            class='bi bi-people-fill d-flex' title="Equipe"></i></a>
-                </td>
-                <td>
-                    <div style="padding-left: 20px;display: flex;align-items:center;">
-                        {{#if liberado}}
-                        <div id='execucao' style="position: relative;top: 40%;transform: translateY(30%);"></div>
-                    </div>
-                    {{else}}
-                    {{#if feito}}
-                    <div><i id='realizado' class='bi bi-check d-flex align-items-center mt-1'
-                            style="position: relative;transform: translateY(10%);color: rgb(55,49,89);"></i></div>
-                    {{else}}
-                    <div id='aguardando' style="position: relative;top: 50%;transform: translateY(30%);"></div>
-                    {{/if}}
-                    {{/if}}
         </div>
-        </td>
-        </tr>
-        {{/each}}
-        </table>
+        {{else}}
+        <div class="container text-center" style="padding-left: 20px">
+            <div class="card">
+                <div class="body-card" style="margin:auto">
+                    <label class="col-form-label" style="font-size: 50px;margin-top: 180px;margin-bottom: 180px">Agende
+                        seu
+                        primeiro serviço.</label>
+                </div>
+            </div>
+        </div>
+        {{/if}}
+        {{/if}}
     </div>
-</div>
-<div class="row mt-4">
-    <label style="font-size: 20px;padding-left: 20px;font-weight: 800;">Visão Geral das Tarefas</label>
-    <div id='grafico' style="width: 95%;padding-left: 50px;">
-        <canvas id='chartGeral' class='mt-1 mb-1'></canvas>
-    </div>
-</div>
-{{else}}
-<div class="container text-center" style="padding-left: 20px">
-    <div class="card">
-        <div class="body-card" style="margin:auto">
-            <label class="col-form-label" style="font-size: 50px;margin-top: 180px;margin-bottom: 180px">Agende seu
-                primeiro serviço.</label>
+    {{#if crm}}
+    {{else}}
+    <div class="row mt-4">
+        <label style="font-size: 20px;padding-left: 20px;font-weight: 800;">Visão Geral das Tarefas</label>
+        <div id='grafico' style="width: 95%;padding-left: 50px;">
+            <canvas id='chartGeral' class='mt-1 mb-1'></canvas>
         </div>
     </div>
-</div>
-{{/if}}
-{{/if}}
+    {{/if}}
 </div>
 {{#each todos_clientes}}
 <input type="hidden" name="clinome[]" value="{{nome}}">
@@ -645,8 +663,8 @@ function manutencao() {
 <input type='hidden' id='qtdpara' value='{{qtdpara}}'>
 <input type='hidden' id='qtdreal' value='{{qtdreal}}'>
 </div>
-<script>    
- //popup vencidos    
+<script>
+    //popup vencidos    
     var txt = ''
     var txtins = ''
     var cliav = document.getElementsByName('cliav[]')
@@ -660,7 +678,7 @@ function manutencao() {
     var cadins = document.getElementsByName('cadins[]')
     var dtiass = document.getElementsByName('dtiass[]')
     var dliins = document.getElementsByName('dliins[]')
-    
+
     var crm = document.getElementById('crm')
     if (crm.value == 'true') {
         const wrapperini = document.createElement('div');
@@ -692,8 +710,8 @@ function manutencao() {
                 showConfirmButton: false
             })
         }
-    }    
-        
+    }
+
     //grafico tarefas
     var qtdagua = document.getElementById('qtdagua')
     var qtdexec = document.getElementById('qtdexec')
@@ -704,7 +722,7 @@ function manutencao() {
     var chartGeral = new Chart(ctxGeral, {
         type: 'bar',
         data: {
-            labels: ['Aguardando', 'Em execução', 'Parado', 'Realizado'],
+            labels: ['Aguardando', 'Em execução', 'Parado', 'Finalizado'],
             datasets: [{
                 data: [qtdagua.value, qtdexec.value, qtdpara.value, qtdreal.value],
                 backgroundColor: [

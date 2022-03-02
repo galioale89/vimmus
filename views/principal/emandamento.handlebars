@@ -56,13 +56,13 @@
             <ul class="nav nav-tabs mb-2">
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" style="color: black"
-                        href="/gerenciamento/emandamento/lista">
+                        href="/gerenciamento/emandamento/{{#if obra}}listatipoobra{{else}}lista{{/if}}">
                         <label class="titulo-inicio">Lista de Obras em Operação</label>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page" style="color: black"
-                        href="/gerenciamento/emandamento/agenda">
+                        href="/gerenciamento/emandamento/{{#if obra}}agendatipoobra{{else}}agenda{{/if}}">
                         <label class="titulo-inicio">Agenda</label>
                     </a>
                 </li>
@@ -146,8 +146,8 @@
             <tr style="line-height: 20px;">
                 <td style="text-align: center;"><a href='/gerenciamento/mostraEquipe/{{id}}'>{{seq}}</a></td>
                 <td style="text-align: center;"><a href='/gerenciamento/mostraEquipe/{{id}}'>{{cliente}}</a></td>
-                <td style="text-align: center;"><a href='/gerenciamento/mostraEquipe/{{id}}'>{{responsavel}}</a></td>
-                <td style="text-align: center;"><a href='/gerenciamento/mostraEquipe/{{id}}'>{{nome_insres}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/mostraEquipe/{{id}}'>{{gestor}}</a></td>
+                <td style="text-align: center;"><a href='/gerenciamento/mostraEquipe/{{id}}'>{{tecnico}}</a></td>
                 <td style="text-align: center;"><a href='/gerenciamento/mostraEquipe/{{id}}'>{{cadastro}}</a></td>
                 <td style="text-align: center;"><a href='/gerenciamento/mostraEquipe/{{id}}'>{{dtinicio}}</a></td>
                 <td style="text-align: center;"><a href='/gerenciamento/mostraEquipe/{{id}}'>{{deadline}}</a></td>

@@ -13,7 +13,7 @@ const Tarefas = new Schema({
         require: false,
     },    
     seq: {
-        type: Number,
+        type: String,
         require: false
     },
     usina: {

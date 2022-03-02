@@ -74,6 +74,14 @@
 
     window.onload = function () {
 
+        var bloquear = document.getElementById('bloquear')
+        var bloquear1 = document.getElementById('bloquear1')
+    
+        if (bloquear.className == 'true') {
+            bloquear.className = 'disabledbutton'
+            bloquear1.className = 'disabledbutton'
+        }
+
         var estados = document.getElementById('estado');
         var cidades = document.getElementById('cidade');
 
@@ -91,236 +99,251 @@
             Obra {{obra.seq}} ({{obra.status}})
         </label>
     </div>
-    <form method="post" action='/gerenciamento/obra'>
-        <input type='hidden' name='id' value='{{obra._id}}'>
-        <div class='row'>
-            <div class='col-md-11'>
-                <div class="row justify-content-center">
-                    <div class='col-md-2 text-end'>
-                        <label class='col-form-label col-form-label-sm fw-bold m-1 mb-3'>Empresa: </label>
+    <div id='bloquear' class='{{obra.encerrado}}'>
+        <form method="post" action='/gerenciamento/obra'>
+            <input type='hidden' name='id' value='{{obra._id}}'>
+            <div class='row'>
+                <div class='col-md-11'>
+                    <div class="row justify-content-center">
+                        <div class='col-md-2 text-end'>
+                            <label class='col-form-label col-form-label-sm fw-bold m-1 mb-3'>Empresa: </label>
+                        </div>
+                        <div class='col-md-4'>
+                            <select class='form-select form-select-sm mt-1' name='empresa'>
+                                {{#if empresa._id}}
+                                <option class='fw-bold' value='{{empresa._id}}'>{{empresa.nome}}</option>
+                                {{/if}}
+                                {{#each todas_empresas}}
+                                <option value='{{_id}}'>{{nome}}</option>
+                                {{else}}
+                                <option>Sem empresas cadastradas</option>
+                                {{/each}}
+                            </select><br>
+                        </div>
                     </div>
-                    <div class='col-md-4'>
-                        <select class='form-select form-select-sm mt-1' name='empresa'>
-                            {{#if empresa._id}}
-                            <option class='fw-bold' value='{{empresa._id}}'>{{empresa.nome}}</option>
-                            {{/if}}
-                            {{#each todas_empresas}}
-                            <option value='{{_id}}'>{{nome}}</option>
-                            {{else}}
-                            <option>Sem empresas cadastradas</option>
-                            {{/each}}
-                        </select><br>
+                    <div class="row">
+                        <div class="col-md-2 text-end">
+                            <label class='col-form-label col-form-label-sm fw-bold mb-1'>Cliente: </label><br>
+                        </div>
+                        <div class="col-md-4 text-start">
+                            <input type='hidden' name="id" value='{{obras._id}}'>
+                            <select class='form-select form-select-sm' name='cliente'>
+                                {{#if cliente._id}}
+                                <option class='fw-bold' value='{{cliente._id}}'>{{cliente.nome}}</option>
+                                {{/if}}
+                                {{#each todos_clientes}}
+                                <option value='{{_id}}'>{{nome}}</option>
+                                {{else}}
+                                <option>Sem clientes cadastrados</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class='col-md-2 text-end'>
+                            <label class='col-form-label col-form-label-sm fw-bold m-1'>Gestor Responsável: </label><br>
+                        </div>
+                        <div class='col-md-4'>
+                            <select class='form-select form-select-sm mt-1' name='responsavel'>
+                                {{#if responsavel._id}}
+                                <option class='fw-bold' value='{{responsavel._id}}'>{{responsavel.nome}}</option>
+                                {{/if}}
+                                {{#each todos_responsaveis}}
+                                <option value='{{_id}}'>{{nome}}</option>
+                                {{else}}
+                                <option>Sem responsáveis cadastrados</option>
+                                {{/each}}
+                            </select><br>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-2 text-end">
-                        <label class='col-form-label col-form-label-sm fw-bold mb-1'>Cliente: </label><br>
-                    </div>
-                    <div class="col-md-4 text-start">
-                        <input type='hidden' name="id" value='{{obras._id}}'>
-                        <select class='form-select form-select-sm' name='cliente'>
-                            {{#if cliente._id}}
-                            <option class='fw-bold' value='{{cliente._id}}'>{{cliente.nome}}</option>
-                            {{/if}}
-                            {{#each todos_clientes}}
-                            <option value='{{_id}}'>{{nome}}</option>
-                            {{else}}
-                            <option>Sem clientes cadastrados</option>
-                            {{/each}}
-                        </select>
-                    </div>
-                    <div class='col-md-2 text-end'>
-                        <label class='col-form-label col-form-label-sm fw-bold m-1'>Gestor Responsável: </label><br>
-                    </div>
-                    <div class='col-md-4'>
-                        <select class='form-select form-select-sm mt-1' name='responsavel'>
-                            {{#if responsavel._id}}
-                            <option class='fw-bold' value='{{responsavel._id}}'>{{responsavel.nome}}</option>
-                            {{/if}}
-                            {{#each todos_responsaveis}}
-                            <option value='{{_id}}'>{{nome}}</option>
-                            {{else}}
-                            <option>Sem responsáveis cadastrados</option>
-                            {{/each}}
-                        </select><br>
-                    </div>
-                </div>
-                {{#if obra._id}}
-                <div class='row'>
-                    <div class='col-md-2 text-end'>
-                        <label class='col-form-label col-form-label-sm fw-bold mt-3'>Local: </label>
-                    </div>
-                    <div class='col-md-10'>
-                        <div class='row'>
-                            <div class='col-md-4'>
-                                <label>Endereço</label>
-                                <input class='form-control form-control-sm' type='text' name='endereco' {{#if
-                                    obra.endereco}} value='{{obra.endereco}}' {{else}} value='{{cliente.endereco}}'
-                                    {{/if}}>
-                            </div>
-                            <div class='col'>
-                                <label>Estado</label>
-                                <div id='br0' style="display: {{mostraLabel}}"></div>
-                                <label style='display: {{mostraLabel}}' id='labelUf'
-                                    class='col-form-label col-form-label-sm mb-1'>
-                                    {{#if obra.uf }}{{obra.uf}}{{else}}{{cliente.uf}}{{/if}}
-                                </label><br>
-                                <select style='display: {{mostraSelect}}' id="estado" name='uf'
-                                    class='form-select form-select-sm mb-1'></select>
-                                <input type='hidden' name='ufh' value='{{cliente.uf}}'>
-                            </div>
-                            <div class='col'>
-                                <label>Cidade</label>
-                                <div id='br1' style="display: {{mostraLabel}}"></div>
-                                <label style='display: {{mostraLabel}}' id='labelCidade'
-                                    class='col-form-label col-form-label-sm mb-1'>
-                                    {{#if obra.cidade}}{{obra.cidade}}{{else}}{{cliente.cidade}}{{/if}}
-                                </label><br>
-                                <select style='display: {{mostraSelect}}' id="cidade" name='cidade'
-                                    class='form-select form-select-sm mb-1'></select>
-                                <input type='hidden' name='cidadeh' value='{{cliente.cidade}}'>
-                            </div>
-                            <div class='col-md-1 mt-1'>
-                                <div class="form-check form-switch mt-3" onchange="editarLocal()">
-                                    <input class="form-check-input" type="checkbox" id='checkLocal'>
-                                    <label class="form-check-label" style="padding-top: 6px;">Editar</label>
+                    {{#if obra._id}}
+                    <div class='row'>
+                        <div class='col-md-2 text-end'>
+                            <label class='col-form-label col-form-label-sm fw-bold mt-3'>Local: </label>
+                        </div>
+                        <div class='col-md-10'>
+                            <div class='row'>
+                                <div class='col-md-4'>
+                                    <label>Endereço</label>
+                                    <input class='form-control form-control-sm' type='text' name='endereco' {{#if
+                                        obra.endereco}} value='{{obra.endereco}}' {{else}} value='{{cliente.endereco}}'
+                                        {{/if}}>
+                                </div>
+                                <div class='col'>
+                                    <label>Estado</label>
+                                    <div id='br0' style="display: {{mostraLabel}}"></div>
+                                    <label style='display: {{mostraLabel}}' id='labelUf'
+                                        class='col-form-label col-form-label-sm mb-1'>
+                                        {{#if obra.uf }}{{obra.uf}}{{else}}{{cliente.uf}}{{/if}}
+                                    </label><br>
+                                    <select style='display: {{mostraSelect}}' id="estado" name='uf'
+                                        class='form-select form-select-sm mb-1'></select>
+                                    <input type='hidden' name='ufh' value='{{cliente.uf}}'>
+                                </div>
+                                <div class='col'>
+                                    <label>Cidade</label>
+                                    <div id='br1' style="display: {{mostraLabel}}"></div>
+                                    <label style='display: {{mostraLabel}}' id='labelCidade'
+                                        class='col-form-label col-form-label-sm mb-1'>
+                                        {{#if obra.cidade}}{{obra.cidade}}{{else}}{{cliente.cidade}}{{/if}}
+                                    </label><br>
+                                    <select style='display: {{mostraSelect}}' id="cidade" name='cidade'
+                                        class='form-select form-select-sm mb-1'></select>
+                                    <input type='hidden' name='cidadeh' value='{{cliente.cidade}}'>
+                                </div>
+                                <div class='col-md-1 mt-1'>
+                                    <div class="form-check form-switch mt-3" onchange="editarLocal()">
+                                        <input class="form-check-input" type="checkbox" id='checkLocal'>
+                                        <label class="form-check-label" style="padding-top: 6px;">Editar</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {{/if}}
+                </div>
+                {{#if obra.encerrado}}
+                {{else}}
+                <div class='col-md-1 text-center'>
+                    <button type='submit' class="setaproximo">
+                        <i style="font-size: 36px" class='bi bi-arrow-right-circle'></i>
+                    </button>
+                    {{#if lista_tarefas}}
+                    <a href='/gerenciamento/entrega/{{obra._id}}' class="setaproximo"><i style="font-size: 50px;"
+                            class='bi bi-check2-circle'></i></a>
+                    {{/if}}
                 </div>
                 {{/if}}
             </div>
-            <div class='col-md-1'>
-                <button type='submit' class="setaproximo">
-                    <i style="font-size: 38px" class='bi bi-arrow-right-circle'></i>
-                </button>
-            </div>
-        </div>
-    </form>
+        </form>
+    </div>
     {{#if obra._id}}
     <br>
     <ul class="nav nav-tabs mb-2">
         <li class="nav-item">
             <a class="nav-link titulo-inicio active" aria-current="page" style="color: black;"
-                href='/gerenciamento/obra/{{obra._id}}abaadicionar' ><label class="col-form-label titulo-inicio">Adicionar Tarefa</label></a>
+                href='/gerenciamento/obra/{{obra._id}}abaadicionar'><label
+                    class="col-form-label titulo-inicio">Adicionar Tarefa</label></a>
         </li>
         <li class="nav-item">
             <a class="nav-link titulo-inicio" aria-current="page" style="color: black;"
-                href="/gerenciamento/obra/{{obra._id}}abalista"><label class="col-form-label titulo-inicio">Lista de Tarefas</label></a>
+                href="/gerenciamento/obra/{{obra._id}}abalista"><label class="col-form-label titulo-inicio">Lista de
+                    Tarefas</label></a>
         </li>
     </ul>
-    <form method="post" name='tarefa' action='/gerenciamento/addtarefa' style="text-align: center;margin-bottom: 20px;">
-        <input type='hidden' name='tipo' value='obra'>
-        <input type='hidden' name='id' value='{{obra._id}}'>
-        <input type='hidden' id='endereco' name='endereco' value='{{obra.endereco}}'>
-        <input type='hidden' name='gestor' value='{{obra.responsavel}}'>
-        <input type='hidden' name='cliente' value='{{obra.cliente}}'>
-        <input type='hidden' name='empresa' value='{{obra.empresa}}'>
-        <input type='hidden' name='cidade' value='{{obra.cidade}}'>
-        <input type='hidden' name='uf' value='{{obra.uf}}'>
-        <div class="row">
-            <div class="col-md-1 text-end">
-                <label class="col-form-label col-form-label-sm fw-bold">Custo:</label>
+    <div id='bloquear1' class='{{obra.encerrado}}'>
+        <form method="post" name='tarefa' action='/gerenciamento/addtarefa'
+            style="text-align: center;margin-bottom: 20px;">
+            <input type='hidden' name='tipo' value='obra'>
+            <input type='hidden' name='id' value='{{obra._id}}'>
+            <input type='hidden' id='endereco' name='endereco' value='{{obra.endereco}}'>
+            <input type='hidden' name='gestor' value='{{obra.responsavel}}'>
+            <input type='hidden' name='cliente' value='{{obra.cliente}}'>
+            <input type='hidden' name='empresa' value='{{obra.empresa}}'>
+            <input type='hidden' name='cidade' value='{{obra.cidade}}'>
+            <input type='hidden' name='uf' value='{{obra.uf}}'>
+            <div class="row">
+                <div class="col-md-1 text-end">
+                    <label class="col-form-label col-form-label-sm fw-bold">Valor:</label>
+                </div>
+                <div class="col-md-1 text-end">
+                    <input class="form-control form-control-sm" type="number" step='0.010' name='preco' id='preco'
+                        placeholder="R$" value='{{tarefa.preco}}'>
+                </div>
+                <div class="col-md-1 text-end">
+                    <label class="col-form-label col-form-label-sm fw-bold">Serviço:</label>
+                </div>
+                <div class="col-md-3">
+                    <select class='form-select form-select-sm' name='servico'>
+                        {{#if trf_servico}}
+                        <option value='{{trf_srvid}}'>{{trf_servico}}</option>
+                        {{/if}}
+                        {{#each servicos}}
+                        <option value='{{_id}}'>{{descricao}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="col-md-2 text-end">
+                    <label class="col-form-label col-form-label-sm fw-bold">Período da Atividade:</label>
+                </div>
+                <div style="width: 200px;">
+                    <input class='form-control form-control-sm' type='date' name='dataini' value='{{tarefa.dataini}}'>
+                </div>
+                <div style="width: 10px;">
+                    <label class='col-form-label col-form-label-sm'>a</label>
+                </div>
+                <div style="width: 200px;">
+                    <input class='form-control form-control-sm' type='date' name='datafim' value='{{tarefa.datafim}}'>
+                </div>
             </div>
-            <div class="col-md-1 text-end">
-                <input class="form-control form-control-sm" type="number" step='0.010' name='preco' id='preco'
-                    placeholder="R$" value='{{tarefa.preco}}'>
-            </div>
-            <div class="col-md-1 text-end">
-                <label class="col-form-label col-form-label-sm fw-bold">Serviço:</label>
-            </div>
-            <div class="col-md-3">
-                <select class='form-select form-select-sm' name='servico'>
-                    {{#if trf_servico}}
-                    <option value='{{trf_srvid}}'>{{trf_servico}}</option>
-                    {{/if}}
-                    {{#each servicos}}
-                    <option value='{{_id}}'>{{descricao}}</option>
-                    {{/each}}
-                </select>
-            </div>         
-            <div class="col-md-2 text-end">
-                <label class="col-form-label col-form-label-sm fw-bold">Período da Atividade:</label>
-            </div>
-            <div style="width: 200px;">
-                <input class='form-control form-control-sm' type='date' name='dataini' value='{{tarefa.dataini}}'>
-            </div>
-            <div style="width: 10px;">
-                <label class='col-form-label col-form-label-sm'>a</label>
-            </div>
-            <div style="width: 200px;">
-                <input class='form-control form-control-sm' type='date' name='datafim' value='{{tarefa.datafim}}'>
-            </div>
-        </div>
-        <hr>
-        <label class='col-form-label col-form-label-sm'>Lembre-se de verificar a disponibilidade da pessoa para realizar
-            a manutenção!</label>
-        <div class="row">
-            <div class="col-md-3 text-end">
-                <label class="col-form-label col-form-label-sm fw-bold">Técnico Responsável:</label>
-            </div>
-            <div class="col-md-6">
-                <select class='form-select form-select-sm' name='responsavel'>
-                    {{#if trf_tecnico}}
-                    <option value='{{trf_tecid}}'>{{trf_tecnico}}</option>
-                    {{/if}}
-                    {{#each instalacao}}
-                    <option value='{{_id}}'>{{nome}}</option>
-                    {{else}}
-                    <option>Cadastrar técnicos =></option>
-                    {{/each}}
-                </select>
-            </div>
-            <div class="col-md-1">
-                <a href='/pessoa/novo' class="contorno-menu"><i class='bi bi-person-plus'></i></a>
-            </div>
-        </div><br>
+            <hr>
+            <label class='col-form-label col-form-label-sm'>Lembre-se de verificar a disponibilidade da pessoa para
+                realizar
+                a manutenção!</label>
+            <div class="row">
+                <div class="col-md-3 text-end">
+                    <label class="col-form-label col-form-label-sm fw-bold">Técnico Responsável:</label>
+                </div>
+                <div class="col-md-6">
+                    <select class='form-select form-select-sm' name='responsavel'>
+                        {{#if trf_tecnico}}
+                        <option value='{{trf_tecid}}'>{{trf_tecnico}}</option>
+                        {{/if}}
+                        {{#each instalacao}}
+                        <option value='{{_id}}'>{{nome}}</option>
+                        {{else}}
+                        <option>Cadastrar técnicos =></option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <a href='/pessoa/novo' class="contorno-menu"><i class='bi bi-person-plus'></i></a>
+                </div>
+            </div><br>
 
-        <div class="row">
-            <div class="lists">
-                <div class="list">
-                    <label class="col-form-label col-form-label-sm fw-bold text-center"
-                        style="color: white">Instaladores Disponíveis</label>
-                    <div style="overflow-y: scroll;height: fit-content">
-                        {{#each ins_fora}}
-                        <div class="list-item" style='color: black;' draggable="true" name='{{id}}'>
+            <div class="row">
+                <div class="lists">
+                    <div class="list">
+                        <label class="col-form-label col-form-label-sm fw-bold text-center"
+                            style="color: white">Instaladores Disponíveis</label>
+                        <div style="overflow-y: scroll;height: fit-content">
+                            {{#each ins_fora}}
+                            <div class="list-item" style='color: black;' draggable="true" name='{{id}}'>
+                                {{nome}}<a href='/gerenciamento/vermaistarefas/{{id}}' style="padding-left: 5px;"><i
+                                        class='bi bi-eye'></i></a>
+                            </div>
+                            <input type='hidden' name='email' value='{{email}}'>
+                            {{/each}}
+                        </div>
+                    </div>
+                    <div class="list">
+                        <label class="col-form-label col-form-label-sm fw-bold text-center"
+                            style="color: white">Instaladores Alocados</label>
+                        {{#each ins_dentro}}
+                        <div class="item-instalacao" style='color: black;' draggable="true" name='{{id}}'>
                             {{nome}}<a href='/gerenciamento/vermaistarefas/{{id}}' style="padding-left: 5px;"><i
                                     class='bi bi-eye'></i></a>
+                            <input type='hidden' name='email' value='{{email}}'>
                         </div>
-                        <input type='hidden' name='email' value='{{email}}'>
                         {{/each}}
                     </div>
                 </div>
-                <div class="list">
-                    <label class="col-form-label col-form-label-sm fw-bold text-center"
-                        style="color: white">Instaladores Alocados</label>
-                    {{#each ins_dentro}}
-                    <div class="item-instalacao" style='color: black;' draggable="true" name='{{id}}'>
-                        {{nome}}<a href='/gerenciamento/vermaistarefas/{{id}}' style="padding-left: 5px;"><i
-                                class='bi bi-eye'></i></a>
-                        <input type='hidden' name='email' value='{{email}}'>
-                    </div>
-                    {{/each}}
-                </div>
             </div>
-        </div>
 
-        <input type='hidden' class='ins0' name='ins0' id='ins0' value=''>
-        <input type='hidden' class='ins1' name='ins1' id='ins1' value=''>
-        <input type='hidden' class='ins2' name='ins2' id='ins2' value=''>
-        <input type='hidden' class='ins3' name='ins3' id='ins3' value=''>
-        <input type='hidden' class='ins4' name='ins4' id='ins4' value=''>
-        <input type='hidden' class='ins5' name='ins5' id='ins5' value=''>
-        <input type='hidden' name='idins0' id='idins0' value=''>
-        <input type='hidden' name='idins1' id='idins1' value=''>
-        <input type='hidden' name='idins2' id='idins2' value=''>
-        <input type='hidden' name='idins3' id='idins3' value=''>
-        <input type='hidden' name='idins4' id='idins4' value=''>
-        <input type='hidden' name='idins5' id='idins5' value=''>
-        <div class='btn-group gap-2 col-6 mt-2'>
-        <input type="button" id='salvar' style="width: 30px;" class="btn btn-sm btn-success" value="Salvar">
-    </form>
+            <input type='hidden' class='ins0' name='ins0' id='ins0' value=''>
+            <input type='hidden' class='ins1' name='ins1' id='ins1' value=''>
+            <input type='hidden' class='ins2' name='ins2' id='ins2' value=''>
+            <input type='hidden' class='ins3' name='ins3' id='ins3' value=''>
+            <input type='hidden' class='ins4' name='ins4' id='ins4' value=''>
+            <input type='hidden' class='ins5' name='ins5' id='ins5' value=''>
+            <input type='hidden' name='idins0' id='idins0' value=''>
+            <input type='hidden' name='idins1' id='idins1' value=''>
+            <input type='hidden' name='idins2' id='idins2' value=''>
+            <input type='hidden' name='idins3' id='idins3' value=''>
+            <input type='hidden' name='idins4' id='idins4' value=''>
+            <input type='hidden' name='idins5' id='idins5' value=''>
+            <div class='btn-group gap-2 col-6 mt-2'>
+                <input type="button" id='salvar' style="width: 30px;" class="btn btn-sm btn-success" value="Salvar">
+        </form>
+    </div>
     {{/if}}
 </div>
 <script>
