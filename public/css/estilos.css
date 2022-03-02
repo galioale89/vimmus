@@ -243,13 +243,8 @@ line-height: 25px;
 margin-left: 5px;
 text-decoration: none;
 box-shadow: 0px 0px 0px white;
-font-size: 40px;
+font-size: 30px;
 font-weight: 400;
-}
-
-.botao-filter:hover {
-    font-weight: bold;
-    font-size: 20px;
 }
 
 .botaofiltrar {

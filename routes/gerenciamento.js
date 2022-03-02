@@ -6673,7 +6673,7 @@ router.post('/salvarFotos', ehAdmin, (req, res) => {
 
                 foto.push({ "desc": ib, 'data': dataMensagem(dataHoje()) })
 
-                await fs.writeFile(dirsave + ib, buf)
+                fs.writeFile(dirsave + ib, buf)
 
                 q++
             })
