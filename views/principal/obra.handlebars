@@ -163,7 +163,7 @@
                             <div class='row'>
                                 <div class='col-md-4'>
                                     <label>Endereço</label>
-                                    <input class='form-control form-control-sm' type='text' name='endereco' {{#if
+                                    <input class='form-control form-control-sm' type='text' id='endereco' name='endereco' {{#if
                                         obra.endereco}} value='{{obra.endereco}}' {{else}} value='{{cliente.endereco}}'
                                         {{/if}}>
                                 </div>
@@ -207,7 +207,7 @@
                         <i style="font-size: 36px" class='bi bi-arrow-right-circle'></i>
                     </button>
                     {{#if lista_tarefas}}
-                    <a href='/gerenciamento/entrega/{{obra._id}}' class="setaproximo"><i style="font-size: 50px;"
+                    <a href='/gerenciamento/entrega/{{obra._id}}' class="setaproximo"><i style="font-size: 40px;color: green;"
                             class='bi bi-check2-circle'></i></a>
                     {{/if}}
                 </div>

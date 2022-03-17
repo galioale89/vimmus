@@ -1,6 +1,4 @@
 <style type='text/css'>
-
-
     .botao {
         background-color: rgb(40, 55, 86);
         text-shadow: 1px 1px 10px rgb(238, 237, 245);
@@ -15,7 +13,6 @@
         border-right-color: rgb(205, 223, 245);
         border-bottom-color: rgb(205, 223, 245);
     }
-
 </style>
 <div class="container-sm mt-2">
 
@@ -24,69 +21,28 @@
     </div>
 
     {{#each empresa}}
-    
-    <div class="card mb-1" style="padding: 5px;">
-    <div class="row">
-            <div class="col-md-3">
-                <div class="row">
-                    <div class="col-md-4">
-                        <label for='nome' class='fw-bold col-form-label col-form-label-sm'> Nome: </label><br>
-                        <label for='nome' class='fw-bold col-form-label col-form-label-sm'> CNPJ: </label><br>
-                        <label for='regime' class='fw-bold col-form-label col-form-label-sm'> Regime:</label><br>
-                        <label for='tipo' class='fw-bold col-form-label col-form-label-sm'> Tipo:</label>
-                    </div>
-                    <div class="col-md-8">
-                        <label class='col-form-label col-form-label-sm'> {{nome}} </label><br>
-                        <label class='col-form-label col-form-label-sm'> {{cnpj}} </label><br>
-                        <label for='regime' class='col-form-label col-form-label-sm'> {{regime}} </label><br>
-                        <label name='tipo' class='col-form-label col-form-label-sm'>{{tipo}}</label>
-                    </div>
-                </div>
+
+    <div class="card mb-1" style="padding: 20px;">
+        <div class="row">
+            <div class="col-md-6">
+                <label for='nome' class='fw-bold col-form-label col-form-label-sm'> Nome: </label>
+                <label class='col-form-label col-form-label-sm'> {{nome}} </label>
+                &nbsp&nbsp&nbsp&nbsp
+                <label for='nome' class='fw-bold col-form-label col-form-label-sm'> CNPJ: </label>
+                <label class='col-form-label col-form-label-sm'> {{cnpj}} </label>
             </div>
-            <div class="col-md-7">
-                <label class='fw-bold col-form-label col-form-label-sm text-center'>Alíquotas </label>
-                <div class="row">
-                    <div class="col-md-2">
-                        <label class='fw-bold col-form-label col-form-label-sm'> DAS: </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm'> ISS: </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm'> ICMS: </label>
-                    </div>
-                    <div class="col-md-1">
-                        <label for='alqDAS' class='col-form-label col-form-label-sm'> {{alqDAS}}%</label><br>
-                        <label for='alqDAS' class='col-form-label col-form-label-sm'> {{alqNFS}}%</label><br>
-                        <label for='alqICMS' class='col-form-label col-form-label-sm'> {{alqICMS}}%</label>
-                    </div>
-                    <div class="col-md-3">
-                        <label class='fw-bold col-form-label col-form-label-sm'> IRPJ: </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm'> IRPJ Adicional:</label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm'> CSLL: </label><br>
-                    </div>
-                    <div class="col-md-1">
-                        <label for='alqIRPJ' class='col-form-label col-form-label-sm'> {{alqIRPJ}}%</label><br>
-                        <label for='alqIRPJAdd' class='col-form-label col-form-label-sm'>{{alqIRPJAdd}}%</label><br>
-                        <label for='alqCSLL' class='col-form-label col-form-label-sm'>{{alqCSLL}}%</label><br>
-                    </div>
-                    <div class="col-md-2">
-                        <label class='fw-bold col-form-label col-form-label-sm'> PIS: </label><br>
-                        <label class='fw-bold col-form-label col-form-label-sm'> COFINS: </label>
-                    </div>
-                    <div class="col-md-1">
-                        <label for='alqPIS' class='col-form-label col-form-label-sm'>{{alqPIS}}%</label><br>
-                        <label for='alqCOFINS' class='col-form-label col-form-label-sm'>{{alqCOFINS}}%</label>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class='btn-group btn-group-sm mx-auto mt-4' role='group'>
-                    <a href='/configuracao/editempresa/{{_id}}' class='botao-tabela ativado'> <i class='bi bi-pen icone'></i> </a>
-                    <a href='/configuracao/confirmaexclusao/{{_id}}' class='botao-tabela ativado'> <i class='bi bi-trash icone'></i>
+            <div class="col-md-5">
+                <div class='btn-group btn-group-sm mx-auto' role='group'>
+                    <a href='/configuracao/editempresa/{{_id}}' class='botao-tabela ativado'> <i
+                            class='bi bi-pen icone'></i> </a>
+                    <a href='/configuracao/confirmaexclusao/{{_id}}' class='botao-tabela ativado'> <i
+                            class='bi bi-trash icone'></i>
                     </a>
                 </div>
             </div>
         </div>
+        {{else}}
+        <h6>Nenhum registro encontrado</h6>
+        {{/each}}
     </div>
-
-    {{else}}
-    <h6>Nenhum registro encontrado</h6>
-    {{/each}}
 </div>

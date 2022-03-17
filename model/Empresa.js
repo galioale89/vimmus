@@ -12,6 +12,10 @@ const Empresa = new Schema({
         type: String,
         require: true
     },
+    razao: {
+        type: String,
+        require: true
+    },    
     cnpj: {
        type: String,
        require: true
@@ -20,99 +24,59 @@ const Empresa = new Schema({
         type: String,
         require: false
     },
+    cidade:{
+        type: String,
+        require: false
+    },
+    uf:{
+        type: String,
+        require: false
+    },    
+    website:{
+        type: String,
+        require: false
+    },    
     telefone:{
         type: String,
         require: false
     },    
-    medmdo: {
-        type: Number,
-        require: false
-    },
-    regime: {
-        type: String,
-        require: false
-    },
-    tipo: {
-        type: String,
-        require: false
-    },
-    seq:{
-        type: Number,
-        require: false
-    },
-    vlrred: {
-        type: String,
-        require: false
-    },
-    fatmed:{
-        type: String,
-        require: false
-    },
-    alqDAS: {
-        type: String,
-        require: false
-    },
-    alqICMS: {
-        type: String,
-        require: false
-    },
-    alqPIS: {
-        type: String,
-        require: false
-    },
-    alqCOFINS: {
-        type: String,
-        require: false
-    },
-    alqIRPJ: {
-        type: String,
-        require: false
-    },
-    alqIRPJAdd: {
-        type: String,
-        require: false
-    },
-    alqCSLL: {
-        type: String,
-        require: false
-    },
-    alqNFS:{
-        type: String,
-        require: false
-    },
-    alqINSS:{
-        type: String,
-        require: false
-    },
-    tipodesp: {
-        type: String,
-        require: false
-    },
-    desadm: {
-        type: String,
-        require: false
-    },
-    perdes: {
+    celular:{
         type: String,
         require: false
     },    
-    estkwp:{
+    vlrmdo: {
+        type: Number,
+        require: false
+    },
+    valpro: {
+        type: Number,
+        require: false
+    },
+    seq: {
+        type: Number,
+        require: false
+    },
+    perdaleste : {
         type: String,
         require: false
     },
-    prjLR:{
+    perdaoeste : {
         type: String,
         require: false
     },
-    prjLP:{
+    perdanorte : {
         type: String,
         require: false
     },
-    prjFat:{
+    perdanoroeste : {
         type: String,
         require: false
     },
-    vlrDAS:{
+    perdanordeste : {
+        type: String,
+        require: false
+    },
+    logo : {
         type: String,
         require: false
     },

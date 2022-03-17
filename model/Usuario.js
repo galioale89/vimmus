@@ -78,55 +78,18 @@ const Usuario = new Schema({
         type: String,
         require: false
     },
-    crm:{
+    ultimate:{
         type: Boolean,
         require: false
     },
-    proposta:{
+    obra:{
         type: Boolean,
         require: false
     },
-    visita: {
+    processo:{
         type: Boolean,
         require: false
-    },
-    contrato: {
-        type: Boolean,
-        require: false
-    },
-    compra: {
-        type: Boolean,
-        require: false
-    },
-    trt: {
-        type: Boolean,
-        require: false
-    },
-    planta: {
-        type: Boolean,
-        require: false
-    },
-    execucao: {
-        type: Boolean,
-        require: false
-    },
-    aceite: {
-        type: Boolean,
-        require: false
-    },
-    almox: {
-        type: Boolean,
-        require: false
-    },
-    financeiro: {
-        type: Boolean,
-        require: false
-    },
-    posvenda: {
-        type: Boolean,
-        require: false
-    },
-
+    }    
 })
 
 Mongoose.model("usuario", Usuario)

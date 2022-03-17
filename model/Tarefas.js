@@ -48,10 +48,6 @@ const Tarefas = new Schema({
         ref: 'pessoa',
         require: false,
     },
-    gestor: {
-        type: Schema.Types.ObjectId,
-        require: false,
-    },
     programacao: {
         type: Schema.Types.ObjectId,
         ref: 'programacao',

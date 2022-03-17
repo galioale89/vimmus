@@ -11,7 +11,27 @@ const Cliente = new Schema({
         type: String,
         require: false
     },
+    sobrenome: {
+        type: String,
+        require: false  
+    },
     endereco: {
+        type: String,
+        require: false
+    },
+    numero:{
+        type: String,
+        require: false
+    },
+    bairro: {
+        type: String,
+        require: false
+    },
+    cep: {
+        type: String,
+        require: false
+    },
+    complemento: {
         type: String,
         require: false
     },
@@ -31,21 +51,21 @@ const Cliente = new Schema({
         type: String,
         require: false
     },
+    contato: {
+        type: String,
+        require: false
+    },
     celular: {
         type: String,
         require: false
     },
+    financeiro: {
+        type: String,
+        require: false
+    },    
     email: {
         type: String,
         require: false
-    },
-    sissolar: {
-        type: String,
-        require: false,
-    },
-    posvenda: {
-        type: String,
-        require: false,
     }
 })
 

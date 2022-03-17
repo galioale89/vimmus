@@ -1,7 +1,13 @@
+<style>
+    input {
+        text-transform: none;
+    }
+</style>
 <div style="width: 100%;">
     <form method="post" action='/usuario/enviar'>
         <input type='hidden' name='pgto' value='0'>
         <input type='hidden' name='id' value='{{id}}'>
+        <input type='hidden' name='ehvendedor' value='{{ehVendedor}}'>
         <div class='formulario' style="width: 50%;">
             <div style="margin-top: 20px;margin-left: 35%;">
                 <h6>Cadastre o nome, e-mail e telefone para receber a senha de acesso</h6>
@@ -16,7 +22,7 @@
                         <td><label class="col-form-label col-form-label-sm mb-1">Celular:</label><br>
                         </td>
                         <td><input type="text" class="form-control form-control-sm mb-1" name='celular' id='celular'
-                                placeholder="DDD + Número" maxlength="16" autocomplete="off" onkeyup="valida_celular()"
+                                placeholder="DDD + Número" maxlength="10" autocomplete="off" onkeyup="valida_celular()"
                                 value='{{celular}}'>
                         </td>
                     </tr>
@@ -28,7 +34,7 @@
                 </table>
             </div>
             <div class="input-group gap-2 mt-2 ">
-                <button type="submit" class="btn btn-sm btn-success" style='margin-left: 42%'>Enviar</button>
+                <button type="submit" class="btn btn-sm btn-success salvar" style='margin-left: 42%'>Enviar</button>
                 {{#if owner}}
                 <a href='/administrador/' class='btn btn-sm btn-primary'>Voltar</a>
                 {{else}}
@@ -38,3 +44,29 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.querySelector('.salvar').addEventListener('click', event => {
+        let timerInterval
+        Swal.fire({
+            title: 'Aguarde um momento!',
+            html: '',
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading()
+                const b = Swal.getHtmlContainer().querySelector('b')
+                timerInterval = setInterval(() => {
+                    b.textContent = Swal.getTimerLeft()
+                }, 100)
+            },
+            willClose: () => {
+                clearInterval(timerInterval)
+            }
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer) {
+                console.log('I was closed by the timer')
+            }
+        })
+    })
+</script>

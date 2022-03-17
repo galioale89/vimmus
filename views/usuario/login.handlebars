@@ -81,6 +81,10 @@
         width: 100%;
         padding-bottom: 60px;
       }
+
+      input {
+        text-transform: none;
+      }
     </style>
 </head>
 <body>
@@ -88,12 +92,12 @@
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-lg-4 col-md-8">
-          <h1 class="logo">VIMMUS<span>®</span></h1>
+          <h1 class="logo">VIMMUS<span>®</span></h1>           
           <form action="/usuario/login" method="post">
             <input type="text" name="usuario" placeholder="digite seu usuário">
             <input name="senha" type="password" placeholder="digite sua senha">
             <div style="text-align: right;">
-              <button class="primary-btn">Logar</button>
+              <button type='submit' class="primary-btn">Logar</button>
             </div>
           </form>
         </div>

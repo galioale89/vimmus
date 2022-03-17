@@ -234,7 +234,7 @@
         <div class="row">
             <div class="col-md-7">
                 <div class="row mb-2">
-                    <div class="col-md-3  text-end">
+                    <div class="col-md-4  text-end">
                         <label class='fw-bold col-form-label col-form-label-sm mb-1'>Nome Completo: </label><br>
                         <label class='fw-bold col-form-label col-form-label-sm mb-1'>Endereço: </label><br>
                         <label class='fw-bold col-form-label col-form-label-sm mb-1 mt-1'>Estado: </label><br>
@@ -249,7 +249,7 @@
                         <label class='fw-bold col-form-label col-form-label-sm mb-1'>Celular: </label><br>
                         <label class='fw-bold col-form-label col-form-label-sm mb-1'>E-mail: </label>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-7">
                         <input type='text' name='nome' class='form-control form-control-sm mb-1'
                             value='{{pessoa.nome}}'>
                         <input type='text' name='endereco' class='form-control form-control-sm mb-1'
@@ -299,6 +299,8 @@
                             value='{{pessoa.email}}'>
                     </div>
                 </div>
+                {{#if pessoa.ehVendedor}}
+                {{else}}
                 <div class='row' style="padding-left: 10%;">
                     <div class='col-md-2 text-end'>
                         <label class='col-form-label col-form-label-sm fw-bold'>Função:</label>
@@ -345,6 +347,7 @@
                         </div>
                     </div>
                 </div>
+                {{/if}}
             </div>
             {{#if pessoa.ehVendedor}}
             <div class="col-md-4">

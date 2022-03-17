@@ -4,6 +4,7 @@ const router = express.Router()
 require('../model/Usuario')
 require('../model/Pessoa')
 require('../model/Acesso')
+require('dotenv').config()
 
 const mongoose = require('mongoose')
 const Usuario = mongoose.model('usuario')
@@ -25,23 +26,25 @@ const dataHoje = require('../resources/dataHoje')
 const filtrarProposta = require('../resources/filtrar')
 const naoVazio = require('../resources/naoVazio')
 
-//Configurando envio de e-mail
-const transporter = nodemailer.createTransport({ // Configura os parâmetros de conexão com servidor.
-    host: 'smtppro.zoho.com',
-    port: 587,
-    secure: false,
-    auth: {
-        user: 'alexandre@vimmus.com.br',
-        pass: '3rdn4x3L@'
-    },
-    tls: {
-        rejectUnauthorized: false
-    }
-})
-
+//Configurando envio de whatsapp
 router.use(express.static('imagens'))
 router.use(express.static('imagens/upload'))
 const { ehAdmin } = require('../helpers/ehAdmin')
+
+//Configurando envio de e-mail
+const transporter = nodemailer.createTransport({ // Configura os parâmetros de conexão com servidor.
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+        user: process.env.EMAIL_USER_GOOGLE,
+        pass: process.env.EMAIL_PASSWORD_GOOGLE
+    },
+    tls: {
+        // do not fail on invalid certs
+        rejectUnauthorized: false,
+    },
+})
 
 router.get('/novousuario', ehAdmin, (req, res) => {
     const { owner } = req.user
@@ -88,10 +91,10 @@ router.get('/editar/:id', ehAdmin, (req, res) => {
             Pessoa.findOne({ user: id, _id: acesso.pessoa }).then((pessoa) => {
                 //console.log('usuario._id=>'+usuario._id)
                 //console.log('mostraDetalhes=>'+mostraDetalhes)
-                usuario_acesso = { _id: acesso._id, nome: pessoa.nome, cpf: pessoa.cpf, endereco: pessoa.endereco, uf: pessoa.uf, cidade: pessoa.cidade, celular: pessoa.celular, email: pessoa.email, usuario: acesso.usuario, admin: acesso.ehAdmin }
-                console.log('usuario_acesso._id=>' + usuario_acesso._id)
-                console.log('acesso.ehAdmin=>' + acesso.ehAdmin)
-                console.log('usuario_acesso.admin=>' + usuario_acesso.admin)
+                usuario_acesso = { _id: acesso._id, nome: pessoa.nome, cpf: pessoa.cpf, endereco: pessoa.endereco, uf: pessoa.uf, cidade: pessoa.cidade, celular: pessoa.celular, email: pessoa.email, usuario: acesso.usuario, admin: acesso.ehAdmin, notpro: acesso.notpro, notobs: acesso.notobs, notvis: acesso.notvis, notorc: acesso.notorc }
+                // console.log('usuario_acesso._id=>' + usuario_acesso._id)
+                // console.log('acesso.ehAdmin=>' + acesso.ehAdmin)
+                // console.log('usuario_acesso.admin=>' + usuario_acesso.admin)
                 res.render('usuario/editregistro', { usuario_acesso, ehUserMaster, mostraDetalhes })
             }).catch((err) => {
                 req.flash('error_msg', 'Não foi possível encontrar a pessoa vinculada ao usuário.')
@@ -137,6 +140,8 @@ router.post('/enviar', (req, res) => {
     var nome = ''
     var usuario = ''
     var funges = ''
+    var funins = ''
+    var vendedor = ''
     var texto = ''
     var senha = ''
     var data = ''
@@ -190,6 +195,24 @@ router.post('/enviar', (req, res) => {
                     funges = false
                 }
 
+                if (pessoa.funorc == 'checked') {
+                    funorc = true
+                } else {
+                    funorc = false
+                }
+
+                if (pessoa.funins == 'checked') {
+                    funins = true
+                } else {
+                    funins = false
+                }
+
+                if (pessoa.vendedor == 'checked') {
+                    vendedor = true
+                } else {
+                    vendedor = false
+                }
+
                 Acesso.find({ pessoa: req.body.id }).then((user_acesso) => {
 
                     //console.log('user_acesso=>' + user_acesso.length)
@@ -224,14 +247,15 @@ router.post('/enviar', (req, res) => {
                             'Tel.: (49) 99183-2978' + '\n' +
                             'www.vimmus.com.br'
 
-                        //Parâmetros do E-mail
                         var mailOptions = { // Define informações pertinentes ao E-mail que será enviado
-                            from: '"VIMMUS Soluções" <alexandre@vimmus.com.br>',
-                            to: email_mais,
+                            from: '"VIMMUS Soluções" <vimmus.integracao@gmail.com>',
+                            to: req.body.email,
                             subject: 'Solicitação de Senha',
                             //text: 'Nome: ' + req.body.nome + ';' + 'Celular: ' + req.body.celular + ';' + 'E-mail: '+ req.body.email
                             text: texto
                         }
+
+                        //Parâmetros do whatsapp
                         //console.log('novo usuário')
                         data = new Date()
                         ano = data.getFullYear()
@@ -246,6 +270,9 @@ router.post('/enviar', (req, res) => {
                             usuario: usuario,
                             senha: senha,
                             funges: funges,
+                            instalador: funins,
+                            vendedor: vendedor,
+                            orcamentista: funorc,
                             ehAdmin: 1,
                             data: ano + '-' + mes + '-' + dia
                         })
@@ -259,13 +286,14 @@ router.post('/enviar', (req, res) => {
                                 novoUsuario.senha = hash
 
                                 novoUsuario.save().then(() => {
+
                                     req.flash("success_msg", req.body.nome + ', sua senha será enviada por e-mail para: ' + req.body.email + ', e sua confirmação de acesso será feita em até 24 horas. Não esqueça de verificar suar caixa de spam!')
-                                    //Enviando e-mail
+
                                     transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
                                         if (err) {
-                                            return //console.log(err)
+                                            return console.log(err)
                                         } else {
-                                            res.redirect("/pessoa/edicao/" + req.body.id)
+                                            res.redirect("/dashboard")
                                         }
                                         //console.log(info)
                                     })
@@ -276,8 +304,6 @@ router.post('/enviar', (req, res) => {
                                 })
                             })
                         })
-
-
                     } else {
                         req.flash('error_msg', 'Pessoa já possui um usuário criado.')
                         res.redirect("/pessoa/edicao/" + req.body.id)
@@ -292,7 +318,7 @@ router.post('/enviar', (req, res) => {
             })
 
         } else {
-
+            console.log("não tem id")
             if (req.body.pgto == '0') {
                 nome = req.body.nome
                 nome = nome.toLowerCase()
@@ -317,7 +343,6 @@ router.post('/enviar', (req, res) => {
 
                 Usuario.find({ usuario: usuario }).then((user2) => {
 
-                    senha
                     if (req.body.pgto == '0') {
                         senha = Math.floor(Math.random() * (999999 - 111111)) + 111111
                         if (user2.length != 0) {
@@ -342,10 +367,11 @@ router.post('/enviar', (req, res) => {
                         'Tel.: (49) 99183-2978' + '\n' +
                         'Vimmus'
 
-                    //Parâmetros do E-mail
+                    console.log('email=>' + req.body.email)
+
                     var mailOptions = { // Define informações pertinentes ao E-mail que será enviado
-                        from: '"VIMMUS Soluções" <alexandre@vimmus.com.br>',
-                        to: email_mais,
+                        from: '"VIMMUS Soluções" <vimmus.integracao@gmail.com>',
+                        to: req.body.email,
                         subject: 'Solicitação de Senha',
                         //text: 'Nome: ' + req.body.nome + ';' + 'Celular: ' + req.body.celular + ';' + 'E-mail: '+ req.body.email
                         text: texto
@@ -356,7 +382,7 @@ router.post('/enviar', (req, res) => {
                             req.flash("error_msg", "Já existe uma conta com este e-mail: " + req.body.email + '.')
                             res.redirect("/")
                         } else {
-                            //console.log('novo usuário')
+                            console.log('novo usuário')
                             data = new Date()
                             ano = data.getFullYear()
                             mes = parseFloat(data.getMonth()) + 1
@@ -369,6 +395,7 @@ router.post('/enviar', (req, res) => {
                                 tipoContrato = 3
                             }
 
+                            console.log('req.body.pgto=>' + req.body.pgto)
                             if (req.body.pgto == '0') {
                                 const novoUsuario = new Usuario({
                                     nome: req.body.nome,
@@ -390,14 +417,15 @@ router.post('/enviar', (req, res) => {
 
                                         novoUsuario.save().then(() => {
                                             req.flash("success_msg", req.body.nome + ', sua senha será enviada por e-mail para: ' + req.body.email + ', e sua confirmação de acesso será feita em até 24 horas. Não esqueça de verificar suar caixa de spam!')
-                                            //Enviando e-mail
+                                            //Enviando whatsapp
                                             transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
                                                 if (err) {
-                                                    return //console.log(err)
+                                                    return console.log(err)
+                                                } else {
+                                                    res.redirect("/dashboard")
                                                 }
                                                 //console.log(info)
                                             })
-                                            res.redirect("/menu")
                                         }).catch((err) => {
                                             req.flash("error_msg", "Ocorreu uma falha interna")
                                             res.redirect("/usuario/novousuario")
@@ -427,19 +455,18 @@ router.post('/enviar', (req, res) => {
                                             req.flash("error_msg", "Houve um erro durante o salvamento do usuário")
                                             res.redirect("/")
                                         }
-
                                         novoUsuario.senha = hash
-
                                         novoUsuario.save().then(() => {
                                             req.flash("success_msg", req.body.nome + ', sua senha será enviada por e-mail para: ' + req.body.email + ', e sua confirmação de acesso será feita em até 24 horas. Não esqueça de verificar suar caixa de spam!')
-                                            //Enviando e-mail
+                                            console.log('salvou usuario')
                                             transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
                                                 if (err) {
-                                                    return //console.log(err)
+                                                    return console.log(err)
+                                                } else {
+                                                    res.redirect("/dashboard")
                                                 }
                                                 //console.log(info)
                                             })
-                                            res.render('index', { sucesso: 'Obrigado por escolher a Vimmus. Em breve entraremos em contato.' })
 
                                         }).catch((err) => {
                                             req.flash("error_msg", "Ocorreu uma falha interna")
@@ -492,13 +519,13 @@ router.post('/salvacontato', (req, res) => {
                 var data = new Date()
                 var ano = data.getFullYear()
                 var mes = parseFloat(data.getMonth()) + 1
-                if (parseFloat(mes) < 10){
+                if (parseFloat(mes) < 10) {
                     mes = '0' + mes
-                }            
+                }
                 var dia = data.getDate()
-                if (parseFloat(dia) < 10){
+                if (parseFloat(dia) < 10) {
                     dia = '0' + dia
-                }    
+                }
 
                 //console.log('motivo=>' + req.body.motivo)
 
@@ -512,29 +539,9 @@ router.post('/salvacontato', (req, res) => {
                 })
 
                 novoUsuario.save().then(() => {
-                    console.log('data=>'+novoUsuario.data)
-                    var mailOptions = { // Define informações pertinentes ao E-mail que será enviado
-                        from: '"VIMMUS Soluções" <alexandre@vimmus.com.br>',
-                        to: 'solucoes@vimmus.com.br',
-                        subject: 'Lead',
-                        text: 'Olá ' + '\n' + '\n' +
-                            'Este é o novo lead que demonstrou interesse através do formulário do site e o motivo do contato é: ' + novoUsuario.pricont + '\n' +
-                            'Ele se cadastrou no dia: ' + dataMensagem(novoUsuario.data) + '\n' +
-                            'Nome: ' + novoUsuario.nome + '\n' +
-                            'Celular: ' + novoUsuario.telefone + '\n' +
-                            'E-mail: ' + novoUsuario.email + '\n' + '\n' +
-                            'Entre em contato com ele e agende uma data e horário para entender suas necessidades.'
-
-                    }
-                    transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
-                        if (err) {
-                            return //console.log(err)
-                        } else {
-                            sucesso.push({ texto: novoUsuario.nome + ', em breve entraremos em contato com você. Não esqueça de verificar sua caixa de spam!' })
-                            res.render('index', { sucesso })
-                        }
-                        //console.log(info)
-                    })
+                    console.log('data=>' + novoUsuario.data)
+                    sucesso.push({ texto: novoUsuario.nome + ', em breve entraremos em contato com você. Não esqueça de verificar sua caixa de spam!' })
+                    res.render('index', { sucesso })
                 }).catch((err) => {
                     req.flash("error_msg", "Ocorreu uma falha interna")
                     res.redirect("/usuario/registro")
@@ -552,10 +559,9 @@ router.get("/login", (req, res) => {
 })
 
 router.post("/login", (req, res, next) => {
-    console.log('login admin')
     passport.authenticate("local", {
         successRedirect: "/dashboard",
-        failureRedirect: "/usuario/login",
+        failureRedirect: "/",
         failureFlash: true
     })(req, res, next)
 })

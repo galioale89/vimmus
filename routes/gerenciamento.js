@@ -11,7 +11,7 @@ require('../model/Plano')
 require('../model/Componente')
 require('../model/Documento')
 require('../model/Compra')
-require('../model/Posvenda')
+require('../model/Posvenda')    
 require('../model/Fornecedor')
 require('../model/AtvTelhado')
 require('../model/AtvAterramento')
@@ -162,166 +162,6 @@ router.get('/remover/:id', ehAdmin, (req, res) => {
                 res.redirect('/projeto/consulta')
             })
         }
-    })
-})
-
-router.get('/selecao', ehAdmin, (req, res) => {
-
-    var id
-    const { _id } = req.user
-    const { user } = req.user
-
-    if (typeof user == 'undefined') {
-        id = _id
-    } else {
-        id = user
-    }
-
-    var enviado = []
-    var negociando = []
-    var baixado = []
-    var ganho = []
-    var hoje = dataHoje()
-    var mes = hoje.substring(5, 7)
-    var ano = hoje.substring(0, 4)
-    var dataini = String(ano) + String(mes) + '01'
-    var datafim = String(ano) + String(mes) + '31'
-    var cliente
-    var q = 0
-
-    var trintaeum = false
-    var bisexto = false
-    var mestitulo
-    var ano
-    var janeiro
-    var fevereiro
-    var marco
-    var abril
-    var maio
-    var junho
-    var julho
-    var agosto
-    var setembro
-    var outubro
-    var novembro
-    var dezembro
-
-    switch (String(mes)) {
-        case '01':
-            janeiro = 'active'
-            mestitulo = 'Janeiro'
-            trintaeum = true
-            break;
-        case '02':
-            fevereiro = 'active'
-            mestitulo = 'Fevereiro'
-            bisexto = true
-            break;
-        case '03':
-            marco = 'active'
-            mestitulo = 'Março'
-            trintaeum = true
-            break;
-        case '04':
-            abril = 'active'
-            mestitulo = 'Abril'
-            break;
-        case '05':
-            maio = 'active'
-            mestitulo = 'Maio'
-            trintaeum = true
-            break;
-        case '06':
-            junho = 'active'
-            mestitulo = 'Junho'
-            break;
-        case '07':
-            julho = 'active'
-            mestitulo = 'Julho'
-            trintaeum = true
-            break;
-        case '08':
-            agosto = 'active'
-            mestitulo = 'Agosto'
-            trintaeum = true
-            break;
-        case '09':
-            setembro = 'active'
-            mestitulo = 'Setembro'
-            break;
-        case '10':
-            outubro = 'active'
-            mestitulo = 'Outubro'
-            trintaeum = true
-            break;
-        case '11':
-            novembro = 'active'
-            mestitulo = 'Novembro'
-            break;
-        case '12':
-            dezembro = 'active'
-            mestitulo = 'Dezembro'
-            trintaeum = true
-            break;
-    }
-
-    Proposta.find({ user: id }).then((proposta) => {
-        //
-        if (naoVazio(proposta)) {
-            proposta.forEach((e) => {
-                //console.log('e._id=>' + e._id)
-                //console.log('e.status=>' + e.status)
-                //console.log('e.baixada=>' + e.baixada)
-                //console.log('e.ganho=>' + e.ganho)
-                //console.log('e.ganho=>' + e.ganho)
-                Cliente.findOne({ _id: e.cliente }).then((cli) => {
-                    q++
-                    cliente = cli.nome
-                    if (e.status == 'Enviado' && e.ganho == false && naoVazio(e.motivo) == false) {
-                        enviado.push({ id: e._id, cliente, seq: e.seq, status: e.status })
-                    }
-                    if (e.data < datafim && e.data > dataini) {
-                        if (e.ganho == true) {
-                            ganho.push({ id: e._id, cliente, seq: e.seq, status: e.status })
-                        } else {
-                            if (e.baixada == true) {
-                                baixado.push({ id: e._id, cliente, seq: e.seq, status: e.status, motivo: e.motivo })
-                            } else {
-                                if (e.status == 'Negociando' || e.status == 'Analisando Financiamento' || e.status == 'Comparando Propostas' || e.status == 'Aguardando redução de preço') {
-                                    negociando.push({ id: e._id, cliente, seq: e.seq, status: e.status })
-                                }
-
-                            }
-                        }
-                    }
-
-                    //console.log('enviado=>'+JSON.stringify(enviado))
-                    //console.log('baixado=>'+JSON.stringify(baixado))
-                    //console.log('negociando=>'+JSON.stringify(negociando))
-                    //console.log('ganho=>'+JSON.stringify(ganho))
-
-                    //console.log("q=>"+q)
-                    //console.log("proposta.length=>"+proposta.length)
-                    if (q == proposta.length) {
-                        res.render('principal/selecao', {
-                            enviado, negociando, ganho, baixado, mestitulo, ano,
-                            janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro
-                        })
-                    }
-                }).catch((err) => {
-                    req.flash('error_msg', 'Falha ao encontrar o cliente.')
-                    res.redirect('/')
-                })
-            })
-        } else {
-            res.render('principal/selecao', {
-                enviado, negociando, ganho, baixado, mestitulo, ano,
-                janeiro, fevereiro, marco, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro
-            })
-        }
-    }).catch((err) => {
-        req.flash('error_msg', 'Falha ao encontrar a proposta<gs>.')
-        res.redirect('/')
     })
 })
 
@@ -534,11 +374,9 @@ router.get('/consultaobra', ehAdmin, (req, res) => {
     const { pessoa } = req.user
     if (naoVazio(user)) {
         id = user
-        sql_obra = { user: id, responsavel: pessoa }
         sql_pes = { _id: pessoa }
     } else {
         id = _id
-        sql_obra = { user: id }
         sql_pes = { user: id, funges: 'checked' }
     }
 
@@ -549,21 +387,25 @@ router.get('/consultaobra', ehAdmin, (req, res) => {
     var nome_ges
 
     Cliente.find({ user: id }).lean().then((todos_clientes) => {
-        Pessoa.find(sql_pes).lean().then((todos_responsaveis) => {
+        Pessoa.find({ user: id, funges: 'checked' }).lean().then((todos_responsaveis) => {
+            //console.log('todos_responsaveis=>'+todos_responsaveis)
             Empresa.find({ user: id }).lean().then((todas_empresas) => {
-                Obra.find({ sql_obra }).sort({ 'datacad': 'asc' }).lean().then((obra) => {
+                Obra.find({ user: id }).sort({ 'datacad': 'asc' }).lean().then((obra) => {
                     if (naoVazio(obra)) {
                         obra.forEach((e) => {
-                            Cliente.findOne({ _id: e.cliente }).then((lista_cliente) => {
+                            console.log('e._id=>' + e._id)
+                            Cliente.findOne({ _id: e.cliente }).then((cliente) => {
+                                console.log('e.cliente=>' + e.cliente)
                                 Pessoa.findOne({ _id: e.responsavel }).then((gestor) => {
+                                    console.log('e.responsavel=>' + e.responsavel)
                                     q++
-                                    //console.log('e.dtini=>' + e.dtini)
+                                    console.log('e.dtini=>' + e.dtini)
                                     if (naoVazio(e.dtini)) {
                                         dtini = dataMensagem(e.dtini)
                                     } else {
                                         dtini = 'Aguardando Tarefas'
                                     }
-                                    //console.log('e.dtfim=>' + e.dtfim)
+                                    console.log('e.dtfim=>' + e.dtfim)
                                     if (naoVazio(e.dtfim)) {
                                         dtfim = dataMensagem(e.dtfim)
                                     } else {
@@ -575,12 +417,16 @@ router.get('/consultaobra', ehAdmin, (req, res) => {
                                     } else {
                                         nome_ges = ''
                                     }
+                                    console.log('nome_ges=>' + nome_ges)
 
-                                    //    //console.log('dtini=>'+dtini)
-                                    //    //console.log('dtfim=>'+dtfim)
-                                    //    //console.log('nome_ges=>'+nome_ges)
+                                    //console.log('dtini=>'+dtini)
+                                    console.log('e.status=>' + e.status)
+                                    console.log('e.seq=>' + e.seq)
+                                    console.log('cliente.nome=>' + cliente.nome)
 
-                                    listaObra.push({ s: e.status, id: e._id, seq: e.seq, cliente: lista_cliente.nome, nome_ges, cadastro: dataMsgNum(e.datacad), dtini, dtfim })
+                                    listaObra.push({ s: e.status, id: e._id, dtini, dtfim, cadastro: dataMsgNum(e.datacad), cliente: cliente.nome, nome_ges, seq: e.seq })
+                                    console.log('q=>' + q)
+                                    console.log('obra.length=>' + obra.length)
                                     if (q == obra.length) {
                                         res.render('principal/consulta', { obra, listaObra, todos_clientes, todos_responsaveis, todas_empresas })
                                     }
@@ -1605,8 +1451,9 @@ router.get('/mostraEquipe/:id', ehAdmin, (req, res) => {
                     Cliente.findOne({ _id: tarefa.cliente }).lean().then((cliente) => {
                         Equipe.findOne({ _id: tarefa.equipe }).lean().then((equipe) => {
                             Pessoa.findOne({ _id: tarefa.responsavel }).lean().then((tecnico) => {
-                                Pessoa.findOne({ _id: tarefa.gestor }).lean().then((gestor) => {
-                                    Obra.findOne({ 'tarefa.idtarefa': req.params.id }).then((obra) => {
+
+                                Obra.findOne({ 'tarefa.idtarefa': req.params.id }).then((obra) => {
+                                    Pessoa.findOne({ _id: obra.responsavel }).lean().then((gestor) => {
                                         //console.log(obra)
                                         if (naoVazio(obra)) {
                                             idobra = obra._id
@@ -1615,13 +1462,14 @@ router.get('/mostraEquipe/:id', ehAdmin, (req, res) => {
                                         }
                                         res.render('principal/mostraEquipe', { tarefa, equipe, cliente, tecnico, gestor, idobra, realizada: tarefa.concluido })
                                     }).catch((err) => {
-                                        req.flash('error_msg', 'Falha ao encontrar a obra.')
+                                        req.flash('error_msg', 'Falha ao encontrar o responsável da obra.')
                                         res.redirect('/dashboard')
                                     })
                                 }).catch((err) => {
-                                    req.flash('error_msg', 'Falha ao encontrar o gestor responsável.')
+                                    req.flash('error_msg', 'Falha ao encontrar a obra.')
                                     res.redirect('/dashboard')
                                 })
+
                             }).catch((err) => {
                                 req.flash('error_msg', 'Falha ao encontrar o tecnico responsável.')
                                 res.redirect('/dashboard')
@@ -1951,7 +1799,7 @@ router.get('/obra/:id', ehAdmin, (req, res) => {
                     Cliente.findOne({ _id: obra.cliente }).lean().then((cliente) => {
                         Pessoa.findOne({ _id: obra.responsavel }).lean().then((responsavel) => {
                             Empresa.findOne({ _id: obra.empresa }).lean().then((empresa) => {
-                                Pessoa.find({ user: id, $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }] }).sort({ 'nome': 'asc' }).lean().then((instalacao) => {
+                                Pessoa.find({ user: id, funins: 'checked' }).sort({ 'nome': 'asc' }).lean().then((instalacao) => {
                                     if (naoVazio(instalacao)) {
                                         instalacao.forEach((pesins) => {
                                             q++
@@ -1960,7 +1808,7 @@ router.get('/obra/:id', ehAdmin, (req, res) => {
                                             if (q == instalacao.length) {
                                                 q = 0
                                                 var custo_total = 0
-                                                Pessoa.find({ user: id, 'funges': 'checked' }).sort({ 'nome': 'asc' }).lean().then((todos_responsaveis) => {
+                                                Pessoa.find({ user: id, funges: 'checked' }).sort({ 'nome': 'asc' }).lean().then((todos_responsaveis) => {
                                                     Equipe.find({ obra: params[0] }).lean().then((equipe) => {
                                                         //console.log('equipe=>' + equipe)
                                                         if (naoVazio(equipe)) {
@@ -1978,7 +1826,7 @@ router.get('/obra/:id', ehAdmin, (req, res) => {
                                                                             } else {
                                                                                 custo_total = custo_total + 0
                                                                             }
-                                                                            lista_tarefas.push({ idoferta: e.oferta, idtarefa: tarefa._id, desc: trf_servico.descricao, nome_tec: tecnico.nome, custo: tarefa.preco, dtini: dataMensagem(e.dtinicio), dtfim: dataMensagem(e.dtfim) })
+                                                                            lista_tarefas.push({ liberado: e.liberar, feito: tarefa.concluido, idoferta: e.oferta, idtarefa: tarefa._id, desc: trf_servico.descricao, nome_tec: tecnico.nome, custo: tarefa.preco, dtini: dataMensagem(tarefa.dataini), dtfim: dataMensagem(tarefa.datafim) })
                                                                             //console.log('lista_tarefas=>' + lista_tarefas)
                                                                             if (q == equipe.length) {
                                                                                 //console.log('ins_fora=>' + ins_fora)
@@ -2041,281 +1889,6 @@ router.get('/obra/:id', ehAdmin, (req, res) => {
         })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar a obra cadastrada.')
-        res.redirect('/dashboard')
-    })
-})
-
-router.get('/visita/:id', ehAdmin, (req, res) => {
-    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
-        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
-            Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
-                Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
-                    Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
-                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
-                            Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
-                                var qs = 0
-                                var qe = 0
-                                var qi = 0
-                                var qa = 0
-                                var imgsomb = ''
-                                var imgarea = ''
-                                var imginsi = ''
-                                var imginsa = ''
-                                var somb = vistoria.caminhoSomb
-                                var area = vistoria.caminhoArea
-                                var insi = vistoria.caminhoInsi
-                                var insa = vistoria.caminhoInsa
-                                if (naoVazio(somb)) {
-                                    somb.forEach((e) => {
-                                        imgsomb = imgsomb + e.desc + ' | '
-                                        qs++
-                                    })
-                                }
-                                if (naoVazio(area)) {
-                                    area.forEach((e) => {
-                                        imgarea = imgarea + e.desc + ' | '
-                                        qe++
-                                    })
-                                }
-                                if (naoVazio(insi)) {
-                                    insi.forEach((e) => {
-                                        imginsi = imginsi + e.desc + ' | '
-                                        qi++
-                                    })
-                                }
-                                if (naoVazio(insa)) {
-                                    insa.forEach((e) => {
-                                        imginsa = imginsa + e.desc + ' | '
-                                        qa++
-                                    })
-                                }
-                                var datasomb = '0000-00-00'
-                                var dataarea = '0000-00-00'
-                                var datainsa = '0000-00-00'
-                                var datainsi = '0000-00-00'
-                                if (naoVazio(somb)) {
-                                    datasomb = somb[qs - 1].data
-                                }
-                                if (naoVazio(area)) {
-                                    dataarea = area[qe - 1].data
-                                }
-                                if (naoVazio(insi)) {
-                                    datainsi = insi[qi - 1].data
-                                }
-                                if (naoVazio(insa)) {
-                                    datainsa = insa[qa - 1].data
-                                }
-                                res.render('principal/visita', { imgsomb, imgarea, imginsi, imginsa, datasomb, dataarea, datainsi, datainsa, vistoria, cliente_proposta, proposta, documento, compra, lista_equipe, posvenda })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
-                                res.redirect('/dashboard')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Não foi possível encontrar a equipe.')
-                            res.redirect('/dashboard')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Não foi possível encontrar a compra.')
-                        res.redirect('/dashboard')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possível encontrar o documento.')
-                    res.redirect('/dashboard')
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-                res.redirect('/dashboard')
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível encontrar o cliente da prosposta.')
-            res.redirect('/dashboard')
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar a proposta.')
-        res.redirect('/dashboard')
-    })
-})
-
-router.get('/assinatura/:id', ehAdmin, (req, res) => {
-    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
-        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
-            Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
-                Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
-                    Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
-                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
-                            Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
-                                res.render('principal/assinatura', { cliente_proposta, proposta, documento, vistoria, compra, lista_equipe, posvenda })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
-                                res.redirect('/dashboard')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Não foi possível encontrar a compra.')
-                            res.redirect('/dashboard')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Não foi possível encontrar a compra.')
-                        res.redirect('/dashboard')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possível encontrar o documento.')
-                    res.redirect('/dashboard')
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-                res.redirect('/dashboard')
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível encontrar clientes cadastrados.')
-            res.redirect('/dashboard')
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar a proposta.')
-        res.redirect('/dashboard')
-    })
-})
-
-router.get('/compra/:id', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    const { user } = req.user
-    var id
-    if (typeof user == 'undefined') {
-        id = _id
-    } else {
-        id = user
-    }
-
-    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
-        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
-            Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
-                Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
-                    Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
-                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
-                            Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
-                                Fornecedor.findOne({ _id: compra.fornecedor }).lean().then((for_pro) => {
-                                    Fornecedor.find({ user: id }).lean().then((fornecedores) => {
-                                        res.render('principal/compra', { cliente_proposta, proposta, for_pro, compra, documento, vistoria, lista_equipe, posvenda, fornecedores })
-                                    }).catch((err) => {
-                                        req.flash('error_msg', 'Não foi possível encontrar o fornecedor.')
-                                        res.redirect('/dashboard')
-                                    })
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Não foi possível encontrar o fornecedor.')
-                                    res.redirect('/dashboard')
-                                })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
-                                res.redirect('/dashboard')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Não foi possível encontrar a equipe.')
-                            res.redirect('/dashboard')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Não foi possível encontrar o documento.')
-                        res.redirect('/dashboard')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-                    res.redirect('/dashboard')
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foi possível encontrar os documentos de compra.')
-                res.redirect('/dashboard')
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível encontrar o responsável da proposta.')
-            res.redirect('/dashboard')
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar a proposta.')
-        res.redirect('/dashboard')
-    })
-})
-
-router.get('/trt/:id', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
-        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
-            Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
-                Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
-                    Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
-                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
-                            Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
-                                res.render('principal/trt', { cliente_proposta, proposta, documento, vistoria, compra, lista_equipe, posvenda })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
-                                res.redirect('/dashboard')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Não foi possível encontrar a equipe.')
-                            res.redirect('/dashboard')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-                        res.redirect('/dashboard')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possível encontrar a compra.')
-                    res.redirect('/dashboard')
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foi possível encontrar o documento.')
-                res.redirect('/dashboard')
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível encontrar o cliente da proposta.')
-            res.redirect('/dashboard')
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar a prposta.')
-        res.redirect('/dashboard')
-    })
-})
-
-router.get('/execucao/:id', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    var check = 'unchecked'
-    var salva = 'none'
-    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
-        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
-            Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
-                Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
-                    Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
-                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
-                            Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
-                                //console.log('documento.protocolado=>' + documento.protocolado)
-                                if (documento.protocolado) {
-                                    check = 'checked'
-                                    salva = 'inline'
-                                }
-                                res.render('principal/execucao', { cliente_proposta, documento, proposta, check, salva, compra, vistoria, lista_equipe, posvenda })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
-                                res.redirect('/dashboard')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Não foi possível encontrar a equipe.')
-                            res.redirect('/dashboard')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-                        res.redirect('/dashboard')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possível encontrar a compra.')
-                    res.redirect('/dashboard')
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foi possível encontrar o documento.')
-                res.redirect('/dashboard')
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível encontrar o responsável da proposta.')
-            res.redirect('/dashboard')
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar o responsável.')
         res.redirect('/dashboard')
     })
 })
@@ -2406,7 +1979,7 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                     if (nova_data == dtini && dataini >= dtini && parseFloat(date) <= dataini) {
                                         ins_dif = 1
                                         //console.log('entrou')
-                                        Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((todos_instaladores) => {
+                                        Pessoa.find({ $or: [{ funins: 'checked' }, { 'funele': 'checked' }], user: id }).then((todos_instaladores) => {
                                             todos_instaladores.forEach((ins) => {
                                                 numprj++
                                                 //console.log('Recurso=>' + ins.nome)
@@ -2458,7 +2031,7 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                                             if (typeof edit_equipe.ins5 != 'undefined') {
                                                                 ins5 = edit_equipe.ins5
                                                             }
-                                                            Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).sort({ 'nome': 'asc' }).then((instalacao) => {
+                                                            Pessoa.find({ $or: [{ funins: 'checked' }, { 'funele': 'checked' }], user: id }).sort({ 'nome': 'asc' }).then((instalacao) => {
                                                                 //console.log('equ=>' + equ)
                                                                 // if (equ == null || equ == '' && typeof equ == 'undefined') {
                                                                 //     instaladores = instalacao
@@ -2699,7 +2272,7 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                 //console.log(equipeins)
                                 if (naoVazio(equipeins)) {
                                     //console.log('entrou diferença')
-                                    Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((instalacao) => {
+                                    Pessoa.find({ funins: 'checked', user: id }).then((instalacao) => {
                                         //console.log('equipeins.ins0=>' + equipeins.ins0)
                                         if (naoVazio(equipeins.ins0)) {
                                             ins0 = equipeins.ins0
@@ -2866,7 +2439,7 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
                                     })
                                 } else {
                                     //console.lofg('não encontrou a equipe.')
-                                    Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((instalacao) => {
+                                    Pessoa.find({ funins: 'checked', user: id }).then((instalacao) => {
                                         Equipe.find({ user: id, nome: { $exists: true }, ehpadrao: true }).lean().then((equipes) => {
                                             Pessoa.findOne({ user: id, nome: n, insres: 'checked' }).then((p) => {
                                                 //console.log('p=>' + p)
@@ -2926,456 +2499,6 @@ router.get('/equipe/:id', ehAdmin, (req, res) => {
         })
     }).catch((err) => {
         res.redirect('/gerenciamento/equipe/' + req.params.id)
-    })
-})
-
-router.get('/aceite/:id', ehAdmin, (req, res) => {
-    var checkAte = 'false'
-    var checkInv = 'false'
-    var checkMod = 'false'
-    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
-        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
-            Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
-                Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
-                    Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
-                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
-                            Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
-                                if (lista_equipe.liberar) {
-                                    AtvAterramento.findOne({ proposta: proposta._id }).lean().then((atvate) => {
-                                        AtvInversor.findOne({ proposta: proposta._id }).lean().then((atvinv) => {
-                                            AtvTelhado.findOne({ proposta: proposta._id }).lean().then((atvtel) => {
-                                                if (atvate.aprova == true) {
-                                                    checkAte = 'checked'
-                                                }
-                                                if (atvinv.aprova == true) {
-                                                    checkInv = 'checked'
-                                                }
-                                                if (atvtel.aprova == true) {
-                                                    checkMod = 'checked'
-                                                }
-                                                var imgate = ''
-                                                var imginv = ''
-                                                var imgtel = ''
-                                                var ate = atvate.caminhoFoto
-                                                var inv = atvinv.caminhoFoto
-                                                var tel = atvtel.caminhoFoto
-                                                if (naoVazio(ate)) {
-                                                    ate.forEach((e) => {
-                                                        imgate = imgate + e.desc + ' | '
-                                                    })
-                                                }
-                                                if (naoVazio(inv)) {
-                                                    inv.forEach((e) => {
-                                                        imginv = imginv + e.desc + ' | '
-                                                    })
-                                                }
-                                                if (naoVazio(tel)) {
-                                                    tel.forEach((e) => {
-                                                        imgtel = imgtel + e.desc + ' | '
-                                                    })
-                                                }
-                                                res.render('principal/aceite', { imgate, imginv, imgtel, cliente_proposta, documento, proposta, compra, vistoria, lista_equipe, posvenda, checkAte, checkInv, checkMod, atvate, atvinv, atvtel })
-                                            }).catch((err) => {
-                                                req.flash('error_msg', 'Não foi possível encontrar a atividade do telhado.')
-                                                res.redirect('/dashboard')
-                                            })
-                                        }).catch((err) => {
-                                            req.flash('error_msg', 'Não foi possível encontrar a atividade do inversor.')
-                                            res.redirect('/dashboard')
-                                        })
-                                    }).catch((err) => {
-                                        req.flash('error_msg', 'Não foi possível encontrar a atividade do aterramento.')
-                                        res.redirect('/dashboard')
-                                    })
-                                } else {
-                                    req.flash('aviso_msg', 'Será possível acessar a página de aceite após a liberação da equipe para o serviço.')
-                                    res.redirect('/gerenciamento/proposta/' + proposta._id)
-                                }
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
-                                res.redirect('/dashboard')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Não foi possível encontrar a equipe.')
-                            res.redirect('/dashboard')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-                        res.redirect('/dashboard')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possível encontrar a compra.')
-                    res.redirect('/dashboard')
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foi possível encontrar o documento.')
-                res.redirect('/dashboard')
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível encontrar o responsável da proposta.')
-            res.redirect('/dashboard')
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar o responsável.')
-        res.redirect('/dashboard')
-    })
-})
-
-router.get('/almoxarifado/:id', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    //console.log('req.params.id=>' + req.params.id)
-    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
-        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
-            Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
-                Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
-                    Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
-                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
-                            Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
-                                //console.log('documento.protocolado=>' + documento.protocolado)
-                                res.render('principal/almoxarifado', { cliente_proposta, documento, proposta, compra, vistoria, lista_equipe, posvenda })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
-                                res.redirect('/dashboard')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Não foi possível encontrar a equipe.')
-                            res.redirect('/dashboard')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-                        res.redirect('/dashboard')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possível encontrar a compra.')
-                    res.redirect('/dashboard')
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foi possível encontrar o documento.')
-                res.redirect('/dashboard')
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível encontrar o cliente da proposta.')
-            res.redirect('/dashboard')
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar a proposta.')
-        res.redirect('/dashboard')
-    })
-})
-
-router.get('/financeiro/:id', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    var lista = []
-    var lista_faturados = []
-    var lista_comprovantes = []
-    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
-        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
-            Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
-                Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
-                    Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
-                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
-                            Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
-                                //console.log('documento.protocolado=>' + documento.protocolado)
-
-                                if (naoVazio(documento.faturado)) {
-                                    lista = documento.faturado
-                                    lista.forEach((e) => {
-                                        lista_faturados.push({ doc: e })
-                                    })
-                                    //console.log('lista_faturados=>' + lista_faturados)
-                                }
-
-                                if (naoVazio(documento.comprovante)) {
-                                    lista = documento.comprovante
-                                    //console.log('lista comprovantes=>' + lista)
-                                    lista.forEach((e) => {
-                                        lista_comprovantes.push({ doc: e })
-                                    })
-                                    //console.log('lista_comprovantes=>' + lista_comprovantes)
-                                }
-
-                                res.render('principal/financeiro', { cliente_proposta, documento, lista_comprovantes, lista_faturados, proposta, compra, vistoria, lista_equipe, posvenda })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
-                                res.redirect('/dashboard')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Não foi possível encontrar a equipe.')
-                            res.redirect('/dashboard')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-                        res.redirect('/dashboard')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possível encontrar a compra.')
-                    res.redirect('/dashboard')
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foi possível encontrar o documento.')
-                res.redirect('/dashboard')
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível encontrar o responsável da proposta.')
-            res.redirect('/dashboard')
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar o responsável.')
-        res.redirect('/dashboard')
-    })
-})
-
-router.get('/posvenda/:id', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    Proposta.findOne({ _id: req.params.id }).lean().then((proposta) => {
-        Cliente.findOne({ _id: proposta.cliente }).lean().then((cliente_proposta) => {
-            Documento.findOne({ proposta: req.params.id }).lean().then((documento) => {
-                Compra.findOne({ proposta: req.params.id }).lean().then((compra) => {
-                    Vistoria.findOne({ proposta: req.params.id }).lean().then((vistoria) => {
-                        Equipe.findOne({ _id: proposta.equipe }).lean().then((lista_equipe) => {
-                            Posvenda.findOne({ proposta: proposta._id }).lean().then((posvenda) => {
-                                //console.log('documento.protocolado=>' + documento.protocolado)
-                                res.render('principal/posvenda', { cliente_proposta, documento, proposta, compra, vistoria, lista_equipe, posvenda })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi possível encontrar o pós venda.')
-                                res.redirect('/dashboard')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Não foi possível encontrar a equipe.')
-                            res.redirect('/dashboard')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Não foi possível encontrar a vistoria.')
-                        res.redirect('/dashboard')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possível encontrar a compra.')
-                    res.redirect('/dashboard')
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foi possível encontrar o documento.')
-                res.redirect('/dashboard')
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível encontrar o responsável da proposta.')
-            res.redirect('/dashboard')
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar o responsável.')
-        res.redirect('/dashboard')
-    })
-})
-
-router.get('/dashboard/:id', ehAdmin, (req, res) => {
-    Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
-        res.render('projeto/dashboard', { projeto: projeto })
-    })
-
-})
-
-router.get('/dashboardliquido/:id', ehAdmin, (req, res) => {
-    Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
-        res.render('projeto/gerenciamento/dashboardliquido', { projeto: projeto })
-    })
-})
-
-router.get('/dashboardreal/:id', ehAdmin, (req, res) => {
-
-    Realizado.findOne({ _id: req.params.id }).lean().then((realizado) => {
-
-        Projeto.findOne({ _id: realizado.projeto }).lean().then((projeto) => {
-
-            res.render('projeto/gerenciamento/dashboardreal', { projeto: projeto, realizado: realizado })
-
-        }).catch((err) => {
-            req.flash('error_msg', 'Falha interna.')
-            res.redirect('/projeto/consulta')
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar o projeto realizado.')
-        res.redirect('/projeto/consulta')
-    })
-})
-
-router.get('/dashboardrealliquido/:id', ehAdmin, (req, res) => {
-
-    Realizado.findOne({ _id: req.params.id }).lean().then((realizado) => {
-
-        Projeto.findOne({ _id: realizado.projeto }).lean().then((projeto) => {
-
-            res.render('projeto/gerenciamento/dashboardrealliquido', { projeto: projeto, realizado: realizado })
-
-        }).catch((err) => {
-            req.flash('error_msg', 'Falha interna.')
-            res.redirect('/projeto/consulta')
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar o projeto realizado')
-        res.redirect('/projeto/consulta')
-    })
-})
-
-router.get('/gerenciamento/:id', ehAdmin, (req, res) => {
-    var fatura
-    Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
-        Empresa.findOne({ _id: projeto.empresa }).lean().then((empresa) => {
-            Cliente.findOne({ _id: projeto.cliente }).lean().then((cliente) => {
-                Cronograma.findOne({ projeto: projeto._id }).then((cronograma) => {
-                    if (projeto.fatequ == true) {
-                        fatura = 'checked'
-                    } else {
-                        fatura = 'unchecked'
-                    }
-                    var libRecursos = liberaRecursos(cronograma.dateplaini, cronograma.dateplafim, cronograma.dateprjini, cronograma.dateprjfim,
-                        cronograma.dateateini, cronograma.dateatefim, cronograma.dateinvini, cronograma.dateinvfim,
-                        cronograma.datestbini, cronograma.datestbfim, cronograma.dateestini, cronograma.dateestfim,
-                        cronograma.datemodini, cronograma.datemodfim, cronograma.datevisini, cronograma.datevisfim)
-                    if (projeto.qtdins != '' && typeof projeto.qtdins != 'undefined' && projeto.qtdins != 0) {
-                        libRecursos = true
-                    }
-                    res.render('projeto/gerenciamento/gerenciamento', { projeto, cliente, empresa, fatura, libRecursos })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Nenhum cronograma encontrado.')
-                    res.redirect('/gerenciamento/gerenciamento/' + req.params.id)
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Nenhum cliente encontrado.')
-                res.redirect('/gerenciamento/gerenciamento/' + req.params.id)
-            })
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Houve uma falha ao buscar o projeto.')
-        res.redirect('/gerenciamento/gerenciamento/' + req.params.id)
-    })
-})
-
-router.get('/custo/:id', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    const { user } = req.user
-    var id
-
-    if (typeof user == 'undefined') {
-        id = _id
-    } else {
-        id = user
-    }
-    var ehSimples = false
-    var ehLP = false
-    var ehLR = false
-    Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
-
-        Empresa.findOne({ _id: projeto.empresa }).lean().then((empresa) => {
-            switch (empresa.regime) {
-                case "Simples": ehSimples = true
-                    break;
-                case "Lucro Presumido": ehLP = true
-                    break;
-                case "Lucro Real": ehLR = true
-                    break;
-            }
-            Cliente.findOne({ user: id, _id: projeto.cliente }).lean().then((cliente) => {
-                res.render('projeto/gerenciamento/custo', { projeto, empresa, cliente, ehSimples, ehLP, ehLR })
-            }).catch((err) => {
-                req.flash('error_msg', 'Nenhum cliente encontrado.')
-                res.redirect('/cliente/consulta')
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Houve uma falha ao encontrar o empresa.')
-            res.redirect('/configuracao/consulta')
-        })
-
-    }).catch((err) => {
-        req.flash('error_msg', 'Houve uma falha ao encontrar o projeto.')
-        res.redirect('/projeto/consulta')
-    })
-})
-
-router.get('/cronograma/:id', ehAdmin, (req, res) => {
-    Projeto.findOne({ _id: req.params.id }).lean().then((projeto) => {
-        Cronograma.findOne({ projeto: req.params.id }).lean().then((cronograma) => {
-            Realizado.findOne({ projeto: req.params.id }).lean().then((realizado) => {
-                var evPerGes = (parseFloat(projeto.totges)) * (parseFloat(cronograma.perGes) / 100)
-                if (isNaN(evPerGes)) {
-                    evPerGes = 0
-                }
-                var evPerKit = (parseFloat(projeto.vlrkit)) * (parseFloat(cronograma.perKit) / 100)
-                if (isNaN(evPerKit)) {
-                    evPerKit = 0
-                }
-                var evPerIns = (parseFloat(projeto.totint)) * (parseFloat(cronograma.perIns) / 100)
-                if (isNaN(evPerIns)) {
-                    evPerIns = 0
-                }
-                var evPerPro = (parseFloat(projeto.totpro)) * (parseFloat(cronograma.perPro) / 100)
-                if (isNaN(evPerPro)) {
-                    evPerPro = 0
-                }
-                var evPerArt = (parseFloat(projeto.vlrart)) * (parseFloat(cronograma.perArt) / 100)
-                if (isNaN(evPerArt)) {
-                    evPerArt = 0
-                }
-                var evPerAli = (parseFloat(projeto.totali)) * (parseFloat(cronograma.perAli) / 100)
-                if (isNaN(evPerAli)) {
-                    evPerAli = 0
-                }
-                var evPerDes = (parseFloat(projeto.totdes)) * (parseFloat(cronograma.perDes) / 100)
-                if (isNaN(evPerDes)) {
-                    evPerDes = 0
-                }
-                var evPerHtl = (parseFloat(projeto.tothtl)) * (parseFloat(cronograma.perHtl) / 100)
-                if (isNaN(evPerHtl)) {
-                    evPerHtl = 0
-                }
-                var evPerCmb = (parseFloat(projeto.totcmb)) * (parseFloat(cronograma.perCmb) / 100)
-                if (isNaN(evPerCmb)) {
-                    evPerCmb = 0
-                }
-                var evPerCer = (parseFloat(projeto.totcer)) * (parseFloat(cronograma.perCer) / 100)
-                if (isNaN(evPerCer)) {
-                    evPerCer = 0
-                }
-                var evPerCen = (parseFloat(projeto.totcen)) * (parseFloat(cronograma.perCen) / 100)
-                if (isNaN(evPerCen)) {
-                    evPerCen = 0
-                }
-                var evPerPos = (parseFloat(projeto.totpos)) * (parseFloat(cronograma.perPos) / 100)
-                if (isNaN(evPerPos)) {
-                    evPerPos = 0
-                }
-                var cpi
-                var tcpi
-                if (projeto.cpi < 1) {
-                    cpi = false
-                } else {
-                    cpi = true
-                }
-                if (projeto.tcpi < 1) {
-                    tcpi = true
-                } else {
-                    tcpi = false
-                }
-
-                var libRecursos = liberaRecursos(cronograma.dateplaini, cronograma.dateplafim, cronograma.dateprjini, cronograma.dateprjfim,
-                    cronograma.dateateini, cronograma.dateatefim, cronograma.dateinvini, cronograma.dateinvfim,
-                    cronograma.datestbini, cronograma.datestbfim, cronograma.dateestini, cronograma.dateestfim,
-                    cronograma.datemodini, cronograma.datemodfim, cronograma.datevisini, cronograma.datevisfim)
-
-                //console.log('libRecursos=>'+libRecursos)                                                
-                res.render('projeto/gerenciamento/cronograma', {
-                    projeto, cronograma, realizado, cpi, tcpi, libRecursos,
-                    evPerGes, evPerKit, evPerIns, evPerPro, evPerArt, evPerAli, evPerDes, evPerHtl, evPerCmb, evPerCer, evPerCen, evPerPos
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foi possível encontrar o realizado.')
-                res.redirect('/gerenciamento/gerenciamento/' + req.params.id)
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível encontrar o cronograma.')
-            res.redirect('/gerenciamento/gerenciamento/' + req.params.id)
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar o projeto.')
-        res.redirect('/gerenciamento/gerenciamento/' + req.params.id)
     })
 })
 
@@ -4705,46 +3828,6 @@ router.get('/consultaplano', ehAdmin, (req, res) => {
     })
 })
 
-router.post('/trt', upload.single('trt'), ehAdmin, (req, res) => {
-    const { _id } = req.user
-    var trtfile
-    //console.log('req.file=>' + req.file)
-    if (req.file != null) {
-        trtfile = req.file.originalname
-    } else {
-        trtfile = ''
-    }
-
-    Documento.findOne({ proposta: req.body.id }).then((documento) => {
-        //console.log()
-        if (documento != null) {
-            if (trtfile != '') {
-                documento.trt = trtfile
-            }
-            documento.dttrt = String(req.body.dttrt)
-            documento.data = dataBusca(dataHoje()),
-                documento.feitotrt = true
-            documento.save().then(() => {
-                req.flash('success_msg', 'TRT salvo com sucesso')
-                res.redirect('/gerenciamento/trt/' + req.body.id)
-            })
-        } else {
-            const trt = {
-                user: id,
-                proposta: req.body.id,
-                trt: trtfile,
-                dttrt: String(req.body.dttrt),
-                data: dataBusca(dataHoje()),
-                feitotrt: true
-            }
-            new Documento(trt).save().then(() => {
-                req.flash('success_msg', 'TRT salvo com sucesso')
-                res.redirect('/gerenciamento/trt/' + req.body.id)
-            })
-        }
-    })
-})
-
 router.post('/obra', ehAdmin, (req, res) => {
     const { _id } = req.user
     const { user } = req.user
@@ -4771,7 +3854,7 @@ router.post('/obra', ehAdmin, (req, res) => {
             if (naoVazio(req.body.empresa)) {
                 obra.empresa = req.body.empresa
             }
-            //console.log('req.body.endereco=>' + req.body.endereco)
+            console.log('req.body.endereco=>' + req.body.endereco)
             obra.endereco = req.body.endereco
             if (naoVazio(req.body.cidade)) {
                 obra.cidade = req.body.cidade
@@ -4831,716 +3914,6 @@ router.post('/obra', ehAdmin, (req, res) => {
             })
         })
     }
-})
-
-router.post('/proposta/', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    const { user } = req.user
-    var id
-
-    if (typeof user == 'undefined') {
-        id = _id
-    } else {
-        id = user
-    }
-    //console.log(id)
-
-    //console.log('req.body.id=>' + req.body.id)
-    if (naoVazio(req.body.id)) {
-        Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-            //console.log(proposta)
-            //console.log(req.body.cliente)
-            //console.log(req.body.responsavel)
-            if (naoVazio(req.body.cliente)) {
-                proposta.cliente = req.body.cliente
-            }
-            if (naoVazio(req.body.responsavel)) {
-                proposta.responsavel = req.body.responsavel
-            }
-            if (naoVazio(req.body.empresa)) {
-                proposta.empresa = req.body.empresa
-            }
-
-            proposta.endereco = req.body.endereco
-            //console.log('req.body.cidade=>' + req.body.cidade)
-            //console.log('req.body.cidadeh=>' + req.body.cidadeh)
-            if (naoVazio(req.body.cidade)) {
-                proposta.cidade = req.body.cidade
-            } else {
-                proposta.cidade = req.body.cidadeh
-            }
-            if (naoVazio(req.body.uf)) {
-                proposta.uf = req.body.uf
-            } else {
-                proposta.uf = req.body.ufh
-            }
-            //console.log('datacad=>' + dataBusca(dataHoje()))
-            proposta.data = dataBusca(dataHoje())
-            proposta.datacad = dataBusca(dataHoje())
-            proposta.save().then(() => {
-                req.flash('success_msg', 'Proposta salva com sucesso.')
-                res.redirect('/gerenciamento/proposta/' + req.body.id)
-            }).catch((err) => {
-                req.flash('error_msg', 'Falha ao salvar a proposta.')
-                res.redirect('/gerenciamento/proposta/' + req.body.id)
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Falha ao encontrar a proposta.')
-            res.redirect('/gerenciamento/proposta/' + req.body.id)
-        })
-    } else {
-        //console.log('nova proposta')
-        var seq
-        var numpro
-        //console.log('req.body.tipo=>' + req.body.tipo)
-        if (req.body.tipo == 'false') {
-            Pessoa.findOne({ _id: req.body.responsavel }).then((p) => {
-                if (naoVazio(p.seq)) {
-                    seq = parseFloat(p.seq) + 1
-                    if (naoVazio(p.const)) {
-                        numpro = p.const + (parseFloat(p.seq) + 1)
-                    } else {
-                        numpro = (parseFloat(p.seq) + 1)
-                    }
-
-                    //console.log('numpro=>' + numpro)
-                    p.seq = seq
-                } else {
-                    if (naoVazio(p.const)) {
-                        numpro = p.const + 1
-                    } else {
-                        numpro = 1
-                    }
-                    p.seq = 1
-                }
-                const proposta = {
-                    user: id,
-                    cliente: req.body.cliente,
-                    responsavel: req.body.responsavel,
-                    endereco: req.body.endereco,
-                    empresa: req.body.empresa,
-                    data: dataBusca(dataHoje()),
-                    datacad: dataBusca(dataHoje()),
-                    feito: true,
-                    ganho: false,
-                    assinado: false,
-                    encerrado: false,
-                    baixada: false,
-                    seq: numpro,
-                    status: 'Enviado',
-                    ref: false,
-                }
-                new Proposta(proposta).save().then(() => {
-                    Proposta.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((nova_proposta) => {
-                        Cliente.findOne({ _id: nova_proposta.cliente }).then((cliente) => {
-                            new Equipe({
-                                user: id,
-                                nome_projeto: cliente.nome,
-                                dtinicio: '0000-00-00',
-                                dtfim: '0000-00-00',
-                                feito: false,
-                                liberar: false,
-                                parado: false,
-                                prjfeito: false
-                            }).save().then(() => {
-                                Equipe.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((nova_equipe) => {
-                                    //console.log('nova_proposta._id=>' + nova_proposta._id)
-                                    //console.log('nova_equipe._id=>' + nova_equipe._id)
-                                    nova_proposta.equipe = nova_equipe._id
-                                    nova_proposta.save().then(() => {
-                                        new Vistoria({
-                                            user: id,
-                                            proposta: nova_proposta._id,
-                                            feito: false
-                                        }).save().then(() => {
-                                            new Compra({
-                                                user: id,
-                                                proposta: nova_proposta._id,
-                                                feitopedido: false,
-                                                feitonota: false,
-                                                encerrado: false
-                                            }).save().then(() => {
-                                                new Documento({
-                                                    user: id,
-                                                    proposta: nova_proposta._id,
-                                                    feitotrt: false,
-                                                    protocolado: false,
-                                                    feitoaceite: false,
-                                                    feitoalmox: false,
-                                                    feitofaturado: false,
-                                                    enviaalmox: false
-                                                }).save().then(() => {
-                                                    new Posvenda({
-                                                        user: id,
-                                                        proposta: nova_proposta._id,
-                                                        feito: false
-                                                    }).save().then(() => {
-                                                        p.save().then(() => {
-                                                            Usuario.findOne({ _id: id }).then((usuario) => {
-                                                                texto = 'Olá, ' + usuario.nome + ' tudo bem?' + '\n' + '\n' +
-                                                                    'A proposta ' + nova_proposta.seq + ' para o cliente ' + cliente.nome + ' foi criada dia ' + dataMensagem(dataHoje()) + '. \n ' +
-                                                                    'Por: ' + p.nome + '\n' + '\n' +
-                                                                    'Acesse https://vimmus.com.br/usuario/login e acompanhe a proposta.'
-
-
-                                                                //Parâmetros do E-mail
-                                                                //console.log('email=>' + usuario.email)
-                                                                var mailOptions = { // Define informações pertinentes ao E-mail que será enviado
-                                                                    from: '"Nova Proposta"<proposta@vimmus.com.br>',
-                                                                    to: usuario.email,
-                                                                    subject: 'Criação de proposta',
-                                                                    //text: 'Nome: ' + req.body.nome + ';' + 'Celular: ' + req.body.celular + ';' + 'E-mail: '+ req.body.email
-                                                                    text: texto
-                                                                }
-                                                                transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
-                                                                    if (err) {
-                                                                        return  //console.log(err)
-                                                                    } else {
-                                                                        req.flash('success_msg', 'Proposta criada com sucesso.')
-                                                                        res.redirect('/gerenciamento/proposta/' + nova_proposta._id)
-                                                                    }
-                                                                })
-                                                            }).catch((err) => {
-                                                                req.flash('error_msg', 'Houve um erro ao encontrar o usuário.')
-                                                                res.redirect('/dashboard')
-                                                            })
-                                                        }).catch((err) => {
-                                                            req.flash('error_msg', 'Houve um erro ao salvar a pessoa.')
-                                                            res.redirect('/dashboard')
-                                                        })
-                                                    }).catch((err) => {
-                                                        req.flash('error_msg', 'Houve um erro ao salvar o pós-venda.')
-                                                        res.redirect('/dashboard')
-                                                    })
-                                                }).catch((err) => {
-                                                    req.flash('error_msg', 'Houve um erro ao salvar o documento.')
-                                                    res.redirect('/dashboard')
-                                                })
-                                            }).catch((err) => {
-                                                req.flash('error_msg', 'Houve um erro ao salvar as compras.')
-                                                res.redirect('/dashboard')
-                                            })
-                                        }).catch((err) => {
-                                            req.flash('error_msg', 'Houve um erro ao salvar a vistoria.')
-                                            res.redirect('/dashboard')
-                                        })
-                                    }).catch((err) => {
-                                        req.flash('error_msg', 'Houve um erro ao salvar a proposta.')
-                                        res.redirect('/dashboard')
-                                    })
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Houve um erro ao encontrar a equipe.')
-                                    res.redirect('/dashboard')
-                                })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Houve um erro ao salvar a equipe.')
-                                res.redirect('/dashboard')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Houve um erro ao encontrar o cliente.')
-                            res.redirect('/dashboard')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Houve um erro ao encontrar a proposta.')
-                        res.redirect('/dashboard')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Houve um erro ao salvar a proposta.')
-                    res.redirect('/dashboard')
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Houve um erro ao encontrar a pessoa.')
-                res.redirect('/dashboard')
-            })
-        } else {
-            //console.log('endereco=>' + req.body.endereco)
-            const proposta = {
-                user: id,
-                cliente: '61dc0e4be879aceb49640a34',
-                responsavel: '61dc0d3ce879aceb49640a25',
-                endereco: req.body.endereco,
-                empresa: '610807d3dc2af801ec378569',
-                cidade: req.body.cidade,
-                uf: req.body.uf,
-                data: dataBusca(dataHoje()),
-                datacad: dataBusca(dataHoje()),
-                feito: true,
-                ganho: true,
-                assinado: false,
-                encerrado: false,
-                baixada: false,
-                seq: req.body.ref,
-                status: 'Fechado',
-                ref: true,
-            }
-            new Proposta(proposta).save().then(() => {
-                Proposta.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((nova_proposta) => {
-                    new Equipe({
-                        user: id,
-                        nome_projeto: proposta.seq,
-                        dtinicio: '0000-00-00',
-                        dtfim: '0000-00-00',
-                        feito: false,
-                        liberar: false,
-                        parado: false,
-                        prjfeito: false
-                    }).save().then(() => {
-                        Equipe.findOne({ user: id }).sort({ field: 'asc', _id: -1 }).then((nova_equipe) => {
-                            //console.log('nova_proposta._id=>' + nova_proposta._id)
-                            //console.log('nova_equipe._id=>' + nova_equipe._id)
-                            nova_proposta.equipe = nova_equipe._id
-                            nova_proposta.save().then(() => {
-                                new Vistoria({
-                                    user: id,
-                                    proposta: nova_proposta._id,
-                                    feito: false
-                                }).save().then(() => {
-                                    new Compra({
-                                        user: id,
-                                        proposta: nova_proposta._id,
-                                        feitopedido: false,
-                                        feitonota: false,
-                                        encerrado: false
-                                    }).save().then(() => {
-                                        new Documento({
-                                            user: id,
-                                            proposta: nova_proposta._id,
-                                            feitotrt: false,
-                                            protocolado: false,
-                                            feitoaceite: false,
-                                            feitoalmox: false,
-                                            feitofaturado: false,
-                                            enviaalmox: false
-                                        }).save().then(() => {
-                                            new Posvenda({
-                                                user: id,
-                                                proposta: nova_proposta._id,
-                                                feito: false
-                                            }).save().then(() => {
-                                                Usuario.findOne({ _id: id }).then((usuario) => {
-                                                    texto = 'Olá, ' + usuario.nome + ' tudo bem?' + '\n' + '\n' +
-                                                        'A proposta ' + nova_proposta.seq + ' foi criada dia ' + dataMensagem(dataHoje()) + '. \n ' + '\n' +
-                                                        'Acesse https://vimmus.com.br/usuario/login e acompanhe a proposta.'
-
-
-                                                    //Parâmetros do E-mail
-                                                    //console.log('email=>' + usuario.email)
-                                                    var mailOptions = { // Define informações pertinentes ao E-mail que será enviado
-                                                        from: '"Nova Proposta"<proposta@vimmus.com.br>',
-                                                        to: usuario.email,
-                                                        subject: 'Criação de proposta',
-                                                        //text: 'Nome: ' + req.body.nome + ';' + 'Celular: ' + req.body.celular + ';' + 'E-mail: '+ req.body.email
-                                                        text: texto
-                                                    }
-                                                    transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
-                                                        if (err) {
-                                                            return  //console.log(err)
-                                                        } else {
-                                                            req.flash('success_msg', 'Proposta criada com sucesso.')
-                                                            res.redirect('/gerenciamento/proposta/' + nova_proposta._id)
-                                                        }
-                                                    })
-                                                }).catch((err) => {
-                                                    req.flash('error_msg', 'Houve um erro ao encontrar o usuário.')
-                                                    res.redirect('/dashboard')
-                                                })
-                                            }).catch((err) => {
-                                                req.flash('error_msg', 'Houve um erro ao salvar o pós-venda.')
-                                                res.redirect('/dashboard')
-                                            })
-                                        }).catch((err) => {
-                                            req.flash('error_msg', 'Houve um erro ao salvar o documento.')
-                                            res.redirect('/dashboard')
-                                        })
-                                    }).catch((err) => {
-                                        req.flash('error_msg', 'Houve um erro ao salvar as compras.')
-                                        res.redirect('/dashboard')
-                                    })
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Houve um erro ao salvar a vistoria.')
-                                    res.redirect('/dashboard')
-                                })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Houve um erro ao salvar a proposta.')
-                                res.redirect('/dashboard')
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Houve um erro ao encontrar a equipe.')
-                            res.redirect('/dashboard')
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Houve um erro ao salvar a equipe.')
-                        res.redirect('/dashboard')
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Houve um erro ao encontrar a nova proposta.')
-                    res.redirect('/dashboard')
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Houve um erro ao salvar a proposta.')
-                res.redirect('/dashboard')
-            })
-        }
-    }
-})
-
-router.post('/proposta1', upload.single('proposta1'), ehAdmin, (req, res) => {
-    var file
-    //console.log('req.file=>' + req.file)
-    if (req.file != null) {
-        file = req.file.originalname
-    } else {
-        file = ''
-    }
-    //console.log('file=>' + file)
-    Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-        if (naoVazio(file)) {
-            proposta.proposta1 = file
-        }
-        proposta.dtcadastro1 = req.body.dtcadastro1
-        proposta.dtvalidade1 = req.body.dtvalidade1
-        proposta.datacad = dataBusca(dataHoje())
-        proposta.save().then(() => {
-            req.flash('success_msg', 'Proposta salva com sucesso')
-            res.redirect('/gerenciamento/proposta/' + req.body.id)
-        })
-    })
-})
-
-router.post('/proposta2', upload.single('proposta2'), ehAdmin, (req, res) => {
-    var file
-    if (req.file != null) {
-        file = req.file.originalname
-    } else {
-        file = ''
-    }
-    //console.log("req.body.id=>" + req.body.id)
-    Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-        if (naoVazio(file)) {
-            proposta.proposta2 = file
-        }
-        proposta.dtcadastro2 = String(req.body.dtcadastro2)
-        proposta.dtvalidade2 = String(req.body.dtvalidade2)
-        proposta.datacad = dataBusca(dataHoje())
-        proposta.save().then(() => {
-            req.flash('success_msg', 'Proposta salva com sucesso')
-            res.redirect('/gerenciamento/proposta/' + req.body.id)
-        })
-    })
-})
-
-router.post('/proposta3', upload.single('proposta3'), ehAdmin, (req, res) => {
-    var file
-    if (req.file != null) {
-        file = req.file.originalname
-    } else {
-        file = ''
-    }
-    Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-        if (naoVazio(file)) {
-            proposta.proposta3 = file
-        }
-        proposta.dtcadastro3 = String(req.body.dtcadastro3)
-        proposta.dtvalidade3 = String(req.body.dtvalidade3)
-        proposta.datacad = dataBusca(dataHoje())
-        proposta.save().then(() => {
-            req.flash('success_msg', 'Proposta salva com sucesso')
-            res.redirect('/gerenciamento/proposta/' + req.body.id)
-        })
-    })
-})
-
-router.post('/proposta4', upload.single('proposta4'), ehAdmin, (req, res) => {
-    var file
-    if (req.file != null) {
-        file = req.file.originalname
-    } else {
-        file = ''
-    }
-    Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-        if (naoVazio(file)) {
-            proposta.proposta4 = file
-        }
-        proposta.dtcadastro4 = String(req.body.dtcadastro4)
-        proposta.dtvalidade4 = String(req.body.dtvalidade4)
-        proposta.datacad = dataBusca(dataHoje())
-        proposta.save().then(() => {
-            req.flash('success_msg', 'Proposta salva com sucesso')
-            res.redirect('/gerenciamento/proposta/' + req.body.id)
-        })
-    })
-})
-
-router.post('/proposta5', upload.single('proposta5'), ehAdmin, (req, res) => {
-    var file
-
-    if (req.file != null) {
-        file = req.file.originalname
-    } else {
-        file = ''
-    }
-    Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-        if (naoVazio(file)) {
-            proposta.proposta5 = file
-        }
-        proposta.dtcadastro5 = String(req.body.dtcadastro5)
-        proposta.dtvalidade5 = String(req.body.dtvalidade5)
-        proposta.datacad = dataBusca(dataHoje())
-        proposta.save().then(() => {
-            req.flash('success_msg', 'Proposta salva com sucesso')
-            res.redirect('/gerenciamento/proposta/' + req.body.id)
-        })
-    })
-})
-
-router.post('/proposta6', upload.single('proposta6'), ehAdmin, (req, res) => {
-    var file
-    if (req.file != null) {
-        file = req.file.originalname
-    } else {
-        file = ''
-    }
-    Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-        if (naoVazio(file)) {
-            proposta.proposta6 = file
-        }
-        proposta.dtcadastro6 = String(req.body.dtcadastro6)
-        proposta.dtvalidade6 = String(req.body.dtvalidade6)
-        proposta.datacad = dataBusca(dataHoje())
-        proposta.save().then(() => {
-            req.flash('success_msg', 'Proposta salva com sucesso')
-            res.redirect('/gerenciamento/proposta/' + req.body.id)
-        })
-    })
-})
-
-router.post('/visita', ehAdmin, (req, res) => {
-
-    const { _id } = req.user
-
-    Vistoria.findOne({ proposta: req.body.id }).then((vistoria) => {
-        //console.log('vistoria=>' + vistoria)
-        if (vistoria != '' && typeof vistoria != 'undefined' && vistoria != null) {
-            vistoria.plaQtdMod = req.body.plaQtdMod
-            vistoria.plaWattMod = req.body.plaWattMod
-            vistoria.plaQtdInv = req.body.plaQtdInv
-            vistoria.plaKwpInv = req.body.plaKwpInv
-            vistoria.plaDimArea = req.body.plaDimArea
-            vistoria.plaQtdString = req.body.plaQtdString
-            vistoria.plaModString = req.body.plaModString
-            vistoria.plaQtdEst = req.body.plaQtdEst
-            vistoria.save().then(() => {
-                req.flash('success_msg', 'Vistoria salva com sucesso.')
-                res.redirect('/gerenciamento/proposta/' + req.body.id)
-            })
-        } else {
-            const vistoria = {
-                user: id,
-                proposta: req.body.id,
-                plaQtdMod: req.body.plaQtdMod,
-                plaWattMod: req.body.plaWattMod,
-                plaQtdInv: req.body.plaQtdInv,
-                plaKwpInv: req.body.plaKwpInv,
-                plaDimArea: req.body.plaDimArea,
-                plaQtdString: req.body.plaQtdString,
-                plaModString: req.body.plaModString,
-                plaQtdEst: req.body.plaQtdEst,
-            }
-            new Vistoria(vistoria).save().then(() => {
-
-                req.flash('success_msg', 'Vistoria salva com sucesso.')
-                res.redirect('/gerenciamento/proposta/' + req.body.id)
-
-            }).catch(() => {
-                req.flash('error_msg', 'Falha ao salvar a vistoria.')
-                res.redirect('/gerenciamento/proposta/' + req.body.id)
-            })
-        }
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao encontrar a vistoria.')
-        res.redirect('/gerenciamento/proposta/' + req.body.id)
-    })
-})
-
-router.post('/assinatura', upload.single('assinado'), ehAdmin, (req, res) => {
-    var file
-    if (req.file != null) {
-        file = req.file.originalname
-    } else {
-        file = ''
-    }
-    var previsao
-    var prazo = req.body.prazo
-    if (naoVazio(prazo)) {
-        previsao = setData(req.body.dtassinatura, prazo)
-    } else {
-        prazo = 0
-        previsao = 0
-    }
-
-    Proposta.findOne({ _id: req.body.id }).then((proposta) => {
-        Documento.findOne({ proposta: req.body.id }).then((documento) => {
-            //console.log('proposta.equipe=>'+proposta.equipe)
-            Equipe.findOne({ _id: proposta.equipe }).then((equipe) => {
-                if (file != '') {
-                    documento.assinatura = file
-                }
-                documento.dtassinatura = String(req.body.dtassinatura)
-                documento.prazo = prazo
-                documento.deadline = dataBusca(previsao)
-                proposta.assinado = true
-                proposta.save().then(() => {
-                    //console.log('proposta salva')
-                    documento.save().then(() => {
-                        equipe.dtfim = previsao
-                        equipe.dtfimbusca = dataBusca(previsao)
-                        equipe.save().then(() => {
-                            req.flash('success_msg', 'Documento salvo com sucesso.')
-                            res.redirect('/gerenciamento/assinatura/' + req.body.id)
-                        })
-                    }).catch(() => {
-                        req.flash('error_msg', 'Falha ao salvar o documento.')
-                        res.redirect('/gerenciamento/proposta/' + req.body.id)
-                    })
-                }).catch(() => {
-                    req.flash('error_msg', 'Falha ao salvar a proposta.')
-                    res.redirect('/gerenciamento/proposta/' + req.body.id)
-                })
-            }).catch(() => {
-                req.flash('error_msg', 'Falha ao encontrar a equipe.')
-                res.redirect('/gerenciamento/proposta/' + req.body.id)
-            })
-        }).catch(() => {
-            req.flash('error_msg', 'Falha ao encontrar o documento.')
-            res.redirect('/gerenciamento/proposta/' + req.body.id)
-        })
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao encontrar a proposta<ass>.')
-        res.redirect('/gerenciamento/proposta/' + req.body.id)
-    })
-})
-
-router.post('/contrato', upload.single('contrato'), ehAdmin, (req, res) => {
-    var contratofile
-    if (req.file != null) {
-        contratofile = req.file.originalname
-    } else {
-        contratofile = ''
-    }
-    Documento.findOne({ proposta: req.body.id }).then((documento) => {
-        if (contratofile != '') {
-            documento.contrato = contratofile
-        }
-        documento.dtcontrato = String(req.body.dtcontrato)
-        documento.save().then(() => {
-            req.flash('success_msg', 'Documento salvo com sucesso.')
-            res.redirect('/gerenciamento/assinatura/' + req.body.id)
-        })
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao encontrar o documento.')
-        res.redirect('/gerenciamento/proposta/' + req.body.id)
-    })
-})
-
-router.post('/pedido', upload.single('pedido'), ehAdmin, (req, res) => {
-    const { _id } = req.user
-    const { user } = req.user
-    var id
-
-    if (typeof user == 'undefined') {
-        id = _id
-    } else {
-        id = user
-    }
-    var file
-    if (req.file != null) {
-        file = req.file.originalname
-    } else {
-        file = ''
-    }
-
-    var prazo = req.body.prazo
-    var previsao
-    //console.log('prazo=>' + prazo)
-    //console.log('req.body.dtcadastro=>' + req.body.dtcadastro)
-    if (naoVazio(prazo)) {
-        previsao = setData(req.body.dtcadastro, prazo)
-    } else {
-        prazo = 0
-        previsao = 0
-    }
-    //console.log('previsao=>' + previsao)
-
-    Compra.findOne({ proposta: req.body.id }).then((compra) => {
-        //console.log('compra=>' + compra)
-        if (compra == null) {
-            const pedido = {
-                user: id,
-                fornecedor: req.body.fornecedor,
-                proposta: req.body.id,
-                pedido: file,
-                dtcadastro: String(req.body.dtcadastro),
-                feitopedido: true,
-                data: dataBusca(dataHoje()),
-                prazo: prazo,
-                dtprevisao: dataBusca(previsao)
-            }
-            new Compra(pedido).save().then(() => {
-                req.flash('success_msg', 'Pedido salvo com sucesso.')
-                res.redirect('/gerenciamento/compra/' + req.body.id)
-            }).catch(() => {
-                req.flash('error_msg', 'Falha ao salvar o pedido.')
-                res.redirect('/gerenciamento/compra/' + req.body.id)
-            })
-        } else {
-            if (file != '') {
-                compra.pedido = file
-            }
-            compra.fornecedor = req.body.fornecedor
-            compra.feitopedido = true
-            compra.data = dataBusca(dataHoje())
-            compra.dtcadastro = String(req.body.dtcadastro)
-            compra.feitopedido = true
-            compra.prazo = prazo
-            compra.dtprevisao = dataBusca(previsao)
-            compra.save().then(() => {
-                req.flash('success_msg', 'Documento salvo com sucesso.')
-                res.redirect('/gerenciamento/compra/' + req.body.id)
-            }).catch(() => {
-                req.flash('error_msg', 'Falha ao salvar o pedido.')
-                res.redirect('/gerenciamento/compra/' + req.body.id)
-            })
-        }
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao encontrar a compra')
-        res.redirect('/gerenciamento/compra/' + req.body.id)
-    })
-})
-
-router.post('/nota', upload.single('nota'), ehAdmin, (req, res) => {
-    var file
-    if (req.file != null) {
-        file = req.file.originalname
-    } else {
-        file = ''
-    }
-    Compra.findOne({ proposta: req.body.id }).then((compra) => {
-        if (file != '') {
-            compra.nota = file
-        }
-        compra.dtrecebimento = String(req.body.dtrecebimento)
-        compra.feitonota = true
-        compra.save().then(() => {
-            req.flash('success_msg', 'Nota salva com sucesso.')
-            res.redirect('/gerenciamento/compra/' + req.body.id)
-        }).catch(() => {
-            req.flash('error_msg', 'Falha ao salvar a nota.')
-            res.redirect('/gerenciamento/compra/' + req.body.id)
-        })
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao encontrar a compra.')
-        res.redirect('/gerenciamento/compra/' + req.body.id)
-    })
 })
 
 router.post('/salvarpadrao', ehAdmin, (req, res) => {
@@ -5680,7 +4053,7 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                                                         if (nova_data == dtini && dataini >= dtini && parseFloat(date) >= dataini) {
                                                                             ins_dif = 1
                                                                             //console.log('entrou')
-                                                                            Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((todos_instaladores) => {
+                                                                            Pessoa.find({ funins: 'checked', user: id }).then((todos_instaladores) => {
                                                                                 //console.log('todos_instaladores=>'+todos_instaladores)                                
                                                                                 //console.log('req.body.equipe=>' + req.body.equipe)
                                                                                 //console.log('instaladores=>'+instaladores)
@@ -5735,7 +4108,7 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                                                                                 ins5 = padrao.ins5
                                                                                             }
 
-                                                                                            Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).sort({ 'nome': 'asc' }).then((instalacao) => {
+                                                                                            Pessoa.find({ funins: 'checked', user: id }).sort({ 'nome': 'asc' }).then((instalacao) => {
                                                                                                 //console.log('equ=>' + equ)
                                                                                                 //console.log('instaladores=>' + instaladores)
                                                                                                 instalacao.forEach((pesins) => {
@@ -5875,7 +4248,7 @@ router.post('/salvarpadrao', ehAdmin, (req, res) => {
                                                                 if (validaLivre == 0 && ins_dif == 0 && q == equipe.length) {
                                                                     validaLivre = 1
                                                                     Equipe.findOne({ _id: proposta.equipe }).lean().then((equipeins) => {
-                                                                        Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((instalacao) => {
+                                                                        Pessoa.find({ funins: 'checked', user: id }).then((instalacao) => {
                                                                             //console.log('entrou diferença')
                                                                             //console.log('equipeins.ins0=>' + equipeins.ins0)
                                                                             if (typeof equipeins.ins0 != 'undefined') {
@@ -6396,67 +4769,6 @@ router.post('/removeplaca', ehAdmin, (req, res) => {
     })
 })
 
-router.post('/aceite', upload.single('aceite'), ehAdmin, (req, res) => {
-    var file
-    if (req.file != null) {
-        file = req.file.originalname
-    } else {
-        file = ''
-    }
-    Documento.findOne({ proposta: req.body.id }).then((documento) => {
-        if (file != '') {
-            documento.aceite = file
-        }
-        AtvAterramento.findOne({ proposta: req.body.id }).then((atva) => {
-            AtvTelhado.findOne({ proposta: req.body.id }).then((atvt) => {
-                AtvInversor.findOne({ proposta: req.body.id }).then((atvi) => {
-                    if (atva.aprova == true && atvt.aprova == true && atvi.aprova == true) {
-                        documento.feitoaceite = true
-                    } else {
-                        documento.feitoaceite = false
-                    }
-                    documento.dtaceite = String(req.body.dtaceite)
-                    documento.save().then(() => {
-                        req.flash('success_msg', 'Documento salvo com sucesso.')
-                        res.redirect('/gerenciamento/aceite/' + req.body.id)
-                    }).catch(() => {
-                        req.flash('error_msg', 'Falha ao encontrar o documento.')
-                        res.redirect('/gerenciamento/aceite/' + req.body.id)
-                    })
-                })
-            })
-        })
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao encontrar o documento.')
-        res.redirect('/gerenciamento/aceite/' + req.body.id)
-    })
-})
-
-router.post('/checklist', upload.single('clins'), ehAdmin, (req, res) => {
-    var file
-    if (req.file != null) {
-        file = req.file.originalname
-    } else {
-        file = ''
-    }
-    Documento.findOne({ proposta: req.body.id }).then((documento) => {
-        if (file != '') {
-            documento.clins = file
-        }
-        documento.dtclins = String(req.body.dtclins)
-        documento.save().then(() => {
-            req.flash('success_msg', 'Documento salvo com sucesso.')
-            res.redirect('/gerenciamento/aceite/' + req.body.id)
-        }).catch(() => {
-            req.flash('error_msg', 'Falha ao encontrar o documento.')
-            res.redirect('/gerenciamento/aceite/' + req.body.id)
-        })
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao encontrar o documento.')
-        res.redirect('/gerenciamento/aceite/' + req.body.id)
-    })
-})
-
 router.post('/salvarImagem', ehAdmin, upload.array('files', 10), (req, res) => {
 
     var arquivos = req.files
@@ -6680,7 +4992,7 @@ router.post('/salvarFotos', ehAdmin, (req, res) => {
 
             // console.log('dirsave=>' + dirsave)
             // console.log('ib=>' + ib)
-            console.log('q=>'+q)
+            console.log('q=>' + q)
             for (i = 0; i < q; i++) {
 
                 //ib = imgblob[i].replace('blob:https://vimmus.com.br/', '')
@@ -6710,8 +5022,8 @@ router.post('/salvarFotos', ehAdmin, (req, res) => {
                     }
                 })
             }
-    
-            ImgTarefa.findOneAndUpdate({ tarefa: req.body.id }, { $push: {caminhoFoto: foto} }).then(() => {
+
+            ImgTarefa.findOneAndUpdate({ tarefa: req.body.id }, { $push: { caminhoFoto: foto } }).then(() => {
                 req.flash('success_msg', 'Foto(s) adicionada(s) com sucesso.')
                 res.redirect('/gerenciamento/mostrarGaleria/' + req.body.id + 'galeria-tarefa')
             }).catch((err) => {
@@ -6760,14 +5072,14 @@ router.post('/salvarFotos', ehAdmin, (req, res) => {
                 }
             })
             console.log('req.body.id =>' + req.body.id)
-    
-            ImgTarefa.findOneAndUpdate({ tarefa: req.body.id }, { $push: {caminhoFoto: foto} }).then(() => {
+
+            ImgTarefa.findOneAndUpdate({ tarefa: req.body.id }, { $push: { caminhoFoto: foto } }).then(() => {
                 req.flash('success_msg', 'Foto(s) adicionada(s) com sucesso.')
                 res.redirect('/gerenciamento/mostrarGaleria/' + req.body.id + 'galeria-tarefa')
             }).catch((err) => {
                 req.flash('error_msg', 'Houve erro ao salvar a imagem.')
                 res.redirect('/gerenciamento/mostrarGaleria/' + req.body.id + 'galeria-tarefa')
-            }) 
+            })
         })()
     }
 
@@ -7062,177 +5374,6 @@ router.get('/mostrarBucket/:docimg', ehAdmin, (req, res) => {
     )
 })
 
-router.post('/almoxarifado', upload.single('almoxarifado'), ehAdmin, (req, res) => {
-    var file
-    if (req.file != null) {
-        file = req.file.originalname
-    } else {
-        file = ''
-    }
-    Documento.findOne({ proposta: req.body.id }).then((documento) => {
-        if (file != '') {
-            documento.almoxarifado = file
-        }
-        documento.dtalmoxarifado = String(req.body.dtalmoxarifado)
-        documento.feitoalmox = true
-        documento.save().then(() => {
-            req.flash('success_msg', 'Documento salvo com sucesso.')
-            res.redirect('/gerenciamento/almoxarifado/' + req.body.id)
-        }).catch(() => {
-            req.flash('error_msg', 'Falha ao salvar o documento.')
-            res.redirect('/gerenciamento/almoxarifado/' + req.body.id)
-        })
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao encontrar o documento.')
-        res.redirect('/gerenciamento/almoxarifado/' + req.body.id)
-    })
-})
-
-router.get('/enviaalmox/:id', ehAdmin, (req, res) => {
-    Documento.findOne({ proposta: req.params.id }).then((documento) => {
-        documento.enviaalmox = true
-        documento.save().then(() => {
-            req.flash('success_msg', 'Documento enviado para o almoxarifado.')
-            res.redirect('/gerenciamento/almoxarifado/' + req.params.id)
-        })
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao encontrar o documento')
-        res.redirect('/gerenciamento/almoxarifado/' + req.params.id)
-    })
-})
-
-router.get('/cancelaalmox/:id', ehAdmin, (req, res) => {
-    Documento.findOne({ proposta: req.params.id }).then((documento) => {
-        documento.enviaalmox = false
-        documento.save().then(() => {
-            req.flash('success_msg', 'Cancelado envio do documento para o almoxarifado.')
-            res.redirect('/gerenciamento/almoxarifado/' + req.params.id)
-        }).catch(() => {
-            req.flash('error_msg', 'Falha ao cancelar o envio.')
-            res.redirect('/gerenciamento/almoxarifado/' + req.params.id)
-        })
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao encontrar o documento')
-        res.redirect('/gerenciamento/almoxarifado/' + req.params.id)
-    })
-})
-
-router.post('/financeiro', upload.single('financeiro'), ehAdmin, (req, res) => {
-    var financeirofile
-    var q = 0
-    if (req.file != null) {
-        financeirofile = req.file.originalname
-    } else {
-        financeirofile = ''
-    }
-    var financeirofile = req.files
-    if (naoVazio(financeirofile)) {
-        unset = { proposta: req.body.id, $unset: { faturado: 1 } }
-    } else {
-        unset = { proposta: req.body.id }
-    }
-    Documento.findOneAndUpdate(unset).then(() => {
-        Documento.findOne({ proposta: req.body.id }).then((documento) => {
-            // if (financeirofile != '') {
-            //     documento.faturado = financeirofile
-            // }
-            if (naoVazio(financeirofile)) {
-                financeirofile.forEach((e) => {
-                    //console.log(e.originalname)
-                    documento.faturado[q] = e.originalname
-                    q++
-                })
-            }
-            documento.dtfaturado = String(req.body.dtfaturado)
-            documento.feitofaturado = true
-            documento.save().then(() => {
-                req.flash('success_msg', 'Documento salvo com sucesso.')
-                res.redirect('/gerenciamento/financeiro/' + req.body.id)
-            }).catch(() => {
-                req.flash('error_msg', 'Falha ao salvar o documento.')
-                res.redirect('/gerenciamento/financeiro/' + req.body.id)
-            })
-        }).catch(() => {
-            req.flash('error_msg', 'Falha ao encontrar o documento.')
-            res.redirect('/gerenciamento/financeiro/' + req.body.id)
-        })
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao excluir a nota fiscal.')
-        res.redirect('/gerenciamento/financeiro/' + req.body.id)
-    })
-})
-
-router.post('/comprovante', upload.single('comprovante'), ehAdmin, (req, res) => {
-    var comprovantefile
-    var q = 0
-    if (req.file != null) {
-        comprovantefile = req.file.originalname
-    } else {
-        comprovantefile = ''
-    }
-    var comprovantefile = req.files
-    if (naoVazio(comprovantefile)) {
-        unset = { proposta: req.body.id, $unset: { comprovante: 1 } }
-    } else {
-        unset = { proposta: req.body.id }
-    }
-    Documento.findOneAndUpdate(unset).then(() => {
-        Documento.findOne({ proposta: req.body.id }).then((documento) => {
-            // if (comprovantefile != '') {
-            //     documento.comprovante = comprovantefile
-            // }
-            if (naoVazio(comprovantefile)) {
-                comprovantefile.forEach((e) => {
-                    documento.comprovante[q] = e.originalname
-                    q++
-                })
-            }
-            documento.dtcomprovante = String(req.body.dtcomprovante)
-            documento.feitocomprovante = true
-            documento.save().then(() => {
-                req.flash('success_msg', 'Documento salvo com sucesso.')
-                res.redirect('/gerenciamento/financeiro/' + req.body.id)
-            }).catch(() => {
-                req.flash('error_msg', 'Falha ao salvar o documento.')
-                res.redirect('/gerenciamento/financeiro/' + req.body.id)
-            })
-        }).catch(() => {
-            req.flash('error_msg', 'Falha ao encontrar o documento.')
-            res.redirect('/gerenciamento/financeiro/' + req.body.id)
-        })
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao excluir o comprovante.')
-        res.redirect('/gerenciamento/financeiro/' + req.body.id)
-    })
-})
-
-router.post('/posvenda', upload.single('posvenda'), ehAdmin, (req, res) => {
-    var file
-
-    if (req.file != null) {
-        file = req.file.originalname
-    } else {
-        file = ''
-    }
-    Posvenda.findOne({ proposta: req.body.id }).then((posvenda) => {
-        if (file != '') {
-            posvenda.laudo = file
-        }
-        posvenda.data = String(req.body.data)
-        posvenda.feito = true
-        posvenda.save().then(() => {
-            req.flash('success_msg', 'Documento salvo com sucesso.')
-            res.redirect('/gerenciamento/posvenda/' + req.body.id)
-        }).catch(() => {
-            req.flash('error_msg', 'Falha ao encontrar o pós venda.')
-            res.redirect('/gerenciamento/posvenda/' + req.body.id)
-        })
-    }).catch(() => {
-        req.flash('error_msg', 'Falha ao encontrar o pós venda.')
-        res.redirect('/gerenciamento/posvenda/' + req.body.id)
-    })
-})
-
 router.get('/entrega/:id', ehAdmin, (req, res) => {
     var id
     var usina
@@ -7351,15 +5492,27 @@ router.get('/entrega/:id', ehAdmin, (req, res) => {
             })
         } else {
             Obra.findOne({ _id: req.params.id }).then((obra) => {
-                obra.status = 'Finalizado'
-                obra.encerrado = true
-                obra.save().then(() => {
-                    req.flash('success_msg', 'Obra entegue.')
-                    res.redirect('/gerenciamento/consultaobra')
-                }).catch((err) => {
-                    req.flash('error_msg', 'Falha ao salvar a obra.')
-                    res.redirect('/gerenciamento/consultaobra')
+                var trfok = 0
+                var tarefas = obra.tarefa
+                tarefas.forEach((e) => {
+                    if (e.concluido) {
+                        trfok++
+                    }
                 })
+                if (trfok == tarefas.length) {
+                    obra.status = 'Finalizado'
+                    obra.encerrado = true
+                    obra.save().then(() => {
+                        req.flash('success_msg', 'Obra entegue.')
+                        res.redirect('/gerenciamento/obra/' + obra._id)
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Falha ao salvar a obra.')
+                        res.redirect('/gerenciamento/consultaobra')
+                    })
+                } else {
+                    req.flash('error_msg', 'Todas as terefas precisam estar concluidas para fechar a obra.')
+                    res.redirect('/gerenciamento/obra/' + obra._id)
+                }
             }).catch((err) => {
                 req.flash('error_msg', 'Falha ao encontrar a obra.')
                 res.redirect('/gerenciamento/consultaobra')
@@ -8470,7 +6623,7 @@ router.get('/equipetarefa/:id', ehAdmin, (req, res) => {
                                 trf_tecnico = trftec.nome
                                 trf_tecid = trftec._id
                                 //console.log('equipeins=>' + equipeins)
-                                Pessoa.find({ $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }], user: id }).then((instalacao) => {
+                                Pessoa.find({ funins: 'checked', user: id }).then((instalacao) => {
                                     //console.log('entrou')
                                     if (typeof equipeins.ins0 != 'undefined') {
                                         ins0 = equipeins.ins0
@@ -8530,26 +6683,35 @@ router.get('/equipetarefa/:id', ehAdmin, (req, res) => {
                                     })
                                     //console.log('q=>' + q)
                                     if (q == instalacao.length) {
+                                        var block = false
                                         Empresa.find({ user: id }).lean().then((empresa) => {
-                                            Pessoa.find({ user: id, $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }] }).sort({ 'nome': 'asc' }).lean().then((instalacao) => {
-                                                Pessoa.find({ user: id, 'funges': 'checked' }).sort({ 'nome': 'asc' }).lean().then((gestor) => {
+                                            Pessoa.find({ user: id, funins: 'checked' }).sort({ 'nome': 'asc' }).lean().then((instalacao) => {
+                                                Pessoa.find({ user: id, funins: 'checked' }).sort({ 'nome': 'asc' }).lean().then((gestor) => {
                                                     //console.log('req.body.cliente=>' + req.body.cliente)
                                                     Servico.find({ user: id }).lean().then((servicos) => {
                                                         //console.log('tarefa.cliente=>' + tarefa.cliente)
                                                         Usina.find({ cliente: tarefa.cliente }).lean().then((usina) => {
-                                                            //console.log('ins_dentro=>' + ins_dentro)
-                                                            //console.log('ins_fora=>>' + ins_fora)
-                                                            //console.log('usina=>' + usina)
-                                                            //console.log('instalacao=>' + instalacao)
-                                                            //console.log('gestor=>' + gestor)
-                                                            //console.log('tarefa=>' + tarefa)
-                                                            //console.log('empresa=>' + empresa)
-                                                            //console.log('servicos=>' + servicos)
-                                                            // if (naoVazio(usina)) {
-                                                            //     res.render('projeto/gerenciamento/tarefas', { usina, trf_empresa, trf_empid, trf_gestor, trf_gesid, trf_servico, trf_srvid, tarefa, servicos, ins_fora, ins_dentro, instalacao, gestor, empresa, equipe: true })
-                                                            // } else {
-                                                            res.render('projeto/gerenciamento/tarefas', { tarefa, trf_empresa, trf_empid, trf_gestor, trf_gesid, trf_servico, trf_srvid, servicos, ins_fora, ins_dentro, instalacao, gestor, empresa, equipe: true })
-                                                            // }
+                                                            Obra.findOne({ 'tarefa.idtarefa': tarefa._id }).lean().then((obra) => {
+                                                                //console.log('ins_dentro=>' + ins_dentro)
+                                                                //console.log('ins_fora=>>' + ins_fora)
+                                                                //console.log('usina=>' + usina)
+                                                                //console.log('instalacao=>' + instalacao)
+                                                                //console.log('gestor=>' + gestor)  
+                                                                //console.log('tarefa=>' + tarefa)
+                                                                //console.log('empresa=>' + empresa)
+                                                                //console.log('servicos=>' + servicos)
+                                                                // if (naoVazio(usina)) {
+                                                                //     res.render('projeto/gerenciamento/tarefas', { usina, trf_empresa, trf_empid, trf_gestor, trf_gesid, trf_servico, trf_srvid, tarefa, servicos, ins_fora, ins_dentro, instalacao, gestor, empresa, equipe: true })
+                                                                // } else {
+                                                                if (naoVazio(obra)) {
+                                                                    block = true
+                                                                }
+                                                                res.render('projeto/gerenciamento/tarefas', { obra, block, tarefa, trf_empresa, trf_empid, trf_gestor, trf_gesid, trf_servico, trf_srvid, servicos, ins_fora, ins_dentro, instalacao, gestor, empresa, equipe: true })
+                                                                // }
+                                                            }).catch((err) => {
+                                                                req.flash('error_msg', 'Nenhuma obra cadastrada.')
+                                                                res.redirect('/dashboard')
+                                                            })
                                                         }).catch((err) => {
                                                             req.flash('error_msg', 'Nenhuma usina cadastrada.')
                                                             res.redirect('/dashboard')
@@ -8681,14 +6843,14 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
                         //console.log('usina=>' + usina)
                         if (naoVazio(usina)) {
                             //console.log(usina)
-                            Pessoa.find({ user: id, $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }] }).sort({ 'nome': 'asc' }).lean().then((instalacao) => {
+                            Pessoa.find({ user: id, funins: 'checked' }).sort({ 'nome': 'asc' }).lean().then((instalacao) => {
                                 if (naoVazio(instalacao)) {
                                     instalacao.forEach((pesins) => {
                                         q++
                                         nome = pesins.nome
                                         ins_fora.push({ id: pesins._id, nome })
                                         if (q == instalacao.length) {
-                                            Pessoa.find({ user: id, 'funges': 'checked' }).sort({ 'nome': 'asc' }).lean().then((gestor) => {
+                                            Pessoa.find({ user: id, funges: 'checked' }).sort({ 'nome': 'asc' }).lean().then((gestor) => {
                                                 //console.log('gestor=>' + gestor)
                                                 res.render('projeto/gerenciamento/tarefas', { data, usina, ins_fora, servicos, cliente: idcliente, instalacao, gestor, empresa })
                                             }).catch((err) => {
@@ -8707,7 +6869,7 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
                             })
                         } else {
                             //console.log('sem usina')
-                            Pessoa.find({ user: id, $or: [{ 'funins': 'checked' }, { 'funele': 'checked' }] }).sort({ 'nome': 'asc' }).lean().then((instalacao) => {
+                            Pessoa.find({ user: id, funins: 'checked' }).sort({ 'nome': 'asc' }).lean().then((instalacao) => {
                                 if (naoVazio(instalacao)) {
                                     instalacao.forEach((pesins) => {
                                         q++
@@ -8715,7 +6877,7 @@ router.post('/addmanutencao', ehAdmin, (req, res) => {
                                         ins_fora.push({ id: pesins._id, nome })
                                         if (q == instalacao.length) {
                                             //console.log('id=>' + id)
-                                            Pessoa.find({ user: id, 'funges': 'checked' }).sort({ 'nome': 'asc' }).lean().then((gestor) => {
+                                            Pessoa.find({ user: id, funges: 'checked' }).sort({ 'nome': 'asc' }).lean().then((gestor) => {
                                                 //console.log('gestor=>' + gestor)
                                                 res.render('projeto/gerenciamento/tarefas', { data, ins_fora, servicos, cliente: req.body.cliente, instalacao, gestor, empresa })
                                             }).catch((err) => {
@@ -8781,11 +6943,12 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
     var q = 0
     var email = ''
     var seq
-
+    console.log('entrou')
     if (naoVazio(req.body.idequipe)) {
         //console.log('equipe não vazio')
         Tarefa.findOne({ _id: req.body.id }).then((tarefa) => {
             Equipe.findOne({ _id: tarefa.equipe }).then((equipe) => {
+                console.log('req.body.idins0=>' + req.body.idins0)
                 if (naoVazio(req.body.idins0)) {
                     equipe.idins0 = req.body.idins0
                     equipe.insres = req.body.insres
@@ -8826,6 +6989,7 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                     todos_emails = todos_emails + email[i] + ';'
                 }
                 equipe.insres = req.body.responsavel
+                console.log('req.body.ins0=>' + req.body.ins0)
                 equipe.ins0 = req.body.ins0
                 equipe.ins1 = req.body.ins1
                 equipe.ins2 = req.body.ins2
@@ -8833,24 +6997,53 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                 equipe.ins4 = req.body.ins4
                 equipe.ins5 = req.body.ins5
                 equipe.email = todos_emails
+                equipe.dtinicio = req.body.dataini
+                equipe.dtinibusca = dataBusca(req.body.dataini)
+                equipe.dtfim = req.body.datafim
+                equipe.dtfim = dataBusca(req.body.datafim)
                 // equipe.custoins = custototal
                 // equipe.feito = true
                 equipe.save().then(() => {
-                    //console.log('equipe salva')
-                    // tarefa.responsavel = req.body.responsavel
-                    // tarefa.endereco = req.body.endereco
-                    // tarefa.servico = req.body.servico
-                    // tarefa.dataini = req.body.dataini
-                    // tarefa.buscadataini = dataBusca(req.body.dataini)
-                    // tarefa.datafim = req.body.datafim
-                    // tarefa.buscadatafim = dataBusca(req.body.datafim)
+                    console.log('equipe salva')
+                    tarefa.responsavel = req.body.responsavel
+                    tarefa.endereco = req.body.endereco
+                    tarefa.servico = req.body.manutencao
+                    tarefa.dataini = req.body.dataini
+                    tarefa.buscadataini = dataBusca(req.body.dataini)
+                    tarefa.datafim = req.body.datafim
+                    tarefa.buscadatafim = dataBusca(req.body.datafim)
                     tarefa.preco = req.body.preco
                     tarefa.save().then(() => {
                         req.flash('success_msg', 'Tarefa salva com sucesso.')
                         if (naoVazio(tarefa.programacao)) {
                             res.redirect('/cliente/programacao/' + req.body.idusina)
                         } else {
-                            res.redirect('/gerenciamento/tarefas/' + tarefa._id)
+                            Obra.findOne({ 'tarefa.idtarefa': tarefa._id }).then((obra) => {
+                                if (naoVazio(obra)) {
+                                    var ultimatarefa = obra.tarefa
+                                    console.log('ultimatarefa=>' + ultimatarefa.length)
+                                    if (ultimatarefa.length > 0) {
+                                        if (ultimatarefa[ultimatarefa.length - 1].buscadatafim < dataBusca(req.body.datafim)) {
+                                            obra.dtfim = req.body.datafim
+                                        }
+                                    } else {
+                                        obra.dtini = req.body.dataini
+                                        obra.dtfim = req.body.datafim
+                                    }
+                                    obra.save().then(() => {
+                                        res.redirect('/gerenciamento/tarefas/' + tarefa._id)
+
+                                    }).catch((err) => {
+                                        req.flash('error_msg', 'Houve erro ao salvar a obra.')
+                                        res.redirect('/gerenciamento/tarefas/' + tarefa._id)
+                                    })
+                                } else {
+                                    res.redirect('/gerenciamento/tarefas/' + tarefa._id)
+                                }
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Houve erro ao encontrar a obra.')
+                                res.redirect('/gerenciamento/tarefas/' + tarefa._id)
+                            })
                         }
                     }).catch((err) => {
                         req.flash('error_msg', 'Houve erro ao salvar a tarefa.')
@@ -8876,13 +7069,13 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
             dataini = req.body.dataini
             datafim = req.body.datafim
         }
-        //console.log('equipe true')
+        //console.log       ('equipe true')
         //console.log('email=>' + email)
         for (i = 0; i < email.length; i++) {
             //console.log('custoins[i]' + custoins[i])
             todos_emails = todos_emails + email[i] + ';'
         }
-
+        console.log('req.body.dataini=>' + req.body.dataini)
         corpo = {
             user: id,
             ins0: req.body.ins0,
@@ -8938,7 +7131,7 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
         }
         //console.log('idins=>' + JSON.stringify(idins))
         if (naoVazio(idins)) {
-            equipe = Object.assign(idins, corpo)
+            Object.assign(equipe, idins, corpo)
         } else {
             equipe = corpo
         }
@@ -8957,7 +7150,14 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                     var tarefas = []
                     Obra.findOne({ _id: req.body.id }).then((obra) => {
                         tarefas = obra.tarefa
-                        seq = obra.seq + '-' + (tarefas.length + 1)
+                        if (naoVazio(tarefas)) {
+                            seq = obra.seq + '-' + (tarefas.length + 1)
+                            obra.dtfim = req.body.datafim
+                        } else {
+                            seq = obra.seq + '-1'
+                            obra.dtini = req.body.dataini
+                            obra.dtfim = req.body.datafim
+                        }
                         console.log('seq=>' + seq)
                         //console.log('novaequipe=>' + novaequipe._id)
                         const tarefa = {
@@ -8966,13 +7166,11 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                             cliente: req.body.cliente,
                             obra: req.body.id,
                             responsavel: req.body.responsavel,
-                            gestor: req.body.gestor,
                             empresa: req.body.empresa,
                             seq: seq,
                             endereco: req.body.endereco,
                             cidade: req.body.cidade,
                             uf: req.body.uf,
-                            gestor: req.body.gestor,
                             servico: req.body.servico,
                             dataini: req.body.dataini,
                             buscadataini: dataBusca(req.body.dataini),
@@ -9080,7 +7278,6 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                                 endereco: req.body.endereco,
                                 cidade: req.body.cidade,
                                 uf: req.body.uf,
-                                gestor: req.body.gestor,
                                 servico: req.body.manutencao,
                                 dataini: dataini,
                                 buscadataini: dataBusca(dataini),
@@ -9212,1862 +7409,6 @@ router.post('/aplicarcenario/', ehAdmin, (req, res) => {
         modkwp3: req.body.modkwp3, modqtd3: req.body.modqtd3, modtmc3: req.body.modtmc3, modtml3: req.body.modtml3,
         kwpmax1, kwpmax2, kwpmax3, qtdmax1, qtdmax2, qtdmax3, kwpmax1, kwpmax2, kwpmax3, kwpsis: req.body.kwpsis,
         area, texto1, texto2, texto3
-    })
-})
-
-router.post('/gerenciamento/', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    var erros = ''
-    var sucesso = ''
-    var medkmh
-
-    //Valida total dos custos já salvos para aplicar as informações de gerenciamento
-    Projeto.findOne({ _id: req.body.id }).then((projeto_valida) => {
-        if (parseFloat(projeto_valida.trbint) == 0 || projeto_valida.trbint == null) {
-            erros = erros + 'Realizar ao menos um custo de instalação.'
-        }
-        if (parseFloat(projeto_valida.trbpro) == 0 || projeto_valida.trbpro == null) {
-            erros = erros + 'Realizar ao menos um custo de projetista.'
-        }
-        if (parseFloat(projeto_valida.trbges) == 0 || projeto_valida.trbges == null) {
-            erros = erros + 'Realizar ao menos um custos de gestão.'
-        }
-    })
-
-    if (erros != '') {
-
-        req.flash('error_msg', erros)
-        res.redirect('/gerenciamento/gereciamento/' + req.body.id)
-
-    } else {
-
-        Projeto.findOne({ _id: req.body.id }).then((projeto) => {
-            Cronograma.findOne({ projeto: req.body.id }).then((cronograma) => {
-                Detalhado.findOne({ projeto: req.body.id }).then((detalhe) => {
-                    Empresa.findOne({ _id: projeto.empresa }).then((empresa) => {
-                        Configuracao.findOne({ _id: projeto.configuracao }).then((config) => {
-                            if (parseFloat(config.medkmh) > 0) {
-                                medkmh = config.medkmh
-                            } else {
-                                medkmh = 10
-                            }
-                            /*
-                            var qtdins = projeto.qtdins
-                            if (qtdins == '' || typeof qtdins == 'undefined'){
-                                qtdins = 0
-                            }
-                            var qtdate = projeto.qtdate
-                            if (qtdate == '' || typeof qtdate == 'undefined'){
-                                qtdate = 0
-                            }
-                            var qtdinv = projeto.qtdinv
-                            if (qtdinv == '' || typeof qtdinv == 'undefined'){
-                                qtdinv = 0
-                            }
-                            var qtdeae = projeto.qtdate
-                            if (qtdeae == '' || typeof qtdeae == 'undefined'){
-                                qtdeae = 0
-                            }
-                            var qtdpnl = projeto.qtdpnl
-                            if (qtdpnl == '' || typeof qtdpnl == 'undefined'){
-                                qtdpnl = 0
-                            }
-                            */
-
-                            //Definindo o número de dias de obras
-                            var conhrs = config.hrstrb
-                            var equipe = projeto.qtdins
-                            var plafim
-                            var prjfim
-                            var atefim
-                            var invfim
-                            var stbfim
-                            var estfim
-                            var modfim
-                            var invfim
-                            var eaefim
-                            var pnlfim
-                            var valplafim
-                            var valprjfim
-                            var valateini
-                            var valinvini
-                            var valstbini
-                            var valpnlini
-                            var valeaeini
-                            var valestini
-                            var valmodini
-                            var aux
-                            var soma
-
-
-                            if (projeto.tipoCustoGes == 'hora') {
-                                plafim = Math.trunc((parseFloat(projeto.trbges) + parseFloat(projeto.desGes)) / conhrs)
-                            } else {
-                                //console.log('projeto.diasGes=>'+projeto.diasGes)
-                                if ((parseFloat(projeto.diasGes) + parseFloat(projeto.desGes)) > 1) {
-                                    //console.log('projeto.desGes=>'+projeto.desGes)
-                                    plafim = (parseFloat(projeto.diasGes) + parseFloat(projeto.desGes) + parseFloat(projeto.desGes)) - 1
-                                } else {
-                                    plafim = 0
-                                }
-                            }
-                            //console.log('plafim=>'+plafim)
-                            if (projeto.tipoCustoPro == 'hora') {
-                                if ((parseFloat(projeto.trbges) + parseFloat(projeto.desPro) + parseFloat(projeto.trbpro)) > 8) {
-                                    prjfim = Math.round(((projeto.trbpro + parseFloat(projeto.desPro)) / conhrs), -1)
-                                } else {
-                                    prjfim = Math.trunc(projeto.trbpro / conhrs)
-                                }
-                            } else {
-                                soma = (parseFloat(projeto.diasGes) + parseFloat(projeto.desPro) + parseFloat(projeto.diasPro)).toFixed(2)
-                                if (soma > parseFloat(1)) {
-                                    aux = Math.trunc(soma)
-                                    if (soma >= aux) {
-                                        prjfim = aux - 1
-                                        if ((parseFloat(prjfim) < parseFloat(projeto.diasGes)) || (parseFloat(prjfim) < parseFloat(projeto.diasPro))) {
-                                            prjfim = aux
-                                        }
-                                    } else {
-                                        prjfim = aux
-                                    }
-                                } else {
-                                    prjfim = 0
-                                }
-                            }
-                            //console.log("projeto.tipoCustoIns=>" + projeto.tipoCustoIns)
-                            if (projeto.tipoCustoIns == 'hora') {
-                                if ((parseFloat(projeto.trbpro) + parseFloat(projeto.desIns) + parseFloat(projeto.trbate)) > 8) {
-                                    atefim = Math.round(((projeto.trbate + parseFloat(projeto.desIns)) / conhrs), -1)
-                                } else {
-                                    atefim = Math.trunc((projeto.trbate + parseFloat(projeto.desIns)) / conhrs)
-                                }
-                                if ((parseFloat(projeto.trbpro) + parseFloat(projeto.trbinv)) > 8) {
-                                    invfim = Math.round((projeto.trbinv / conhrs), -1)
-                                } else {
-                                    invfim = Math.trunc(projeto.trbinv / conhrs)
-                                }
-                                if ((parseFloat(projeto.trbpro) + parseFloat(projeto.trbstb)) > 8) {
-                                    stbfim = Math.round((projeto.trbstb / conhrs), -1)
-                                } else {
-                                    stbfim = Math.trunc(projeto.trbstb / conhrs)
-                                }
-                                if ((parseFloat(projeto.trbpro) + parseFloat(projeto.trbest)) > 8) {
-                                    estfim = Math.round((projeto.trbest / conhrs), -1) + 1
-                                } else {
-                                    estfim = Math.trunc(projeto.trbest / conhrs) + 1
-                                }
-                                if ((parseFloat(projeto.trbest) + parseFloat(projeto.trbmod)) > 8) {
-                                    modfim = Math.round((projeto.trbmod / conhrs), -1)
-                                } else {
-                                    modfim = Math.trunc(projeto.trbmod / conhrs)
-                                }
-                                if (projeto.temArmazenamento == 'checked') {
-                                    if ((parseFloat(projeto.trbpro) + parseFloat(projeto.trbeae)) > 8) {
-                                        eaefim = Math.round((projeto.trbeae / conhrs), -1)
-                                    } else {
-                                        eaefim = Math.trunc(projeto.trbeae / conhrs)
-                                    }
-                                }
-                                if (projeto.temPainel == 'checked') {
-                                    if ((parseFloat(projeto.trbpro) + parseFloat(projeto.trbpnl)) > 8) {
-                                        pnlfim = Math.round((projeto.trbpnl / conhrs), -1)
-                                    } else {
-                                        pnlfim = Math.trunc(projeto.trbpnl / conhrs)
-                                    }
-                                }
-                            } else {
-                                soma = (parseFloat(projeto.diasPro) + parseFloat(projeto.desIns) + parseFloat(projeto.diasAte)).toFixed(2)
-                                if (soma > 1) {
-                                    aux = Math.trunc(soma)
-                                    if (soma >= aux) {
-                                        atefim = parseFloat(projeto.diasAte) + parseFloat(projeto.desIns) - 1
-                                        if ((parseFloat(atefim) < parseFloat(projeto.diasPro)) || (parseFloat(atefim) < parseFloat(projeto.diasAte))) {
-                                            atefim = projeto.diasAte
-                                        }
-                                    } else {
-                                        atefim = aux
-                                    }
-                                } else {
-                                    atefim = 0
-                                }
-                                soma = (parseFloat(projeto.diasPro) + parseFloat(projeto.diasInv)).toFixed(2)
-                                if (soma > 1) {
-                                    aux = Math.trunc(soma)
-                                    if (soma >= aux) {
-                                        invfim = projeto.diasInv - 1
-                                        if ((parseFloat(invfim) < parseFloat(projeto.diasPro)) || (parseFloat(invfim) < parseFloat(projeto.diasInv))) {
-                                            invfim = projeto.diasInv
-                                        }
-                                    } else {
-                                        invfim = aux
-                                    }
-                                } else {
-                                    invfim = 0
-                                }
-                                soma = (parseFloat(projeto.diasPro) + parseFloat(projeto.diasStb)).toFixed(2)
-                                if (soma > 1) {
-                                    aux = Math.trunc(soma)
-                                    if (soma >= aux) {
-                                        stbfim = projeto.diasStb - 1
-                                        if ((parseFloat(stbfim) < parseFloat(projeto.diasPro)) || (parseFloat(stbfim) < parseFloat(projeto.diasStb))) {
-                                            stbfim = projeto.diasStb
-                                        }
-                                    } else {
-                                        stbfim = aux
-                                    }
-                                } else {
-                                    stbfim = 0
-                                }
-                                if (projeto.temArmazenamento == 'checked') {
-                                    soma = (parseFloat(projeto.diasPro) + parseFloat(projeto.diasEae)).toFixed(2)
-                                    if (soma > 1) {
-                                        aux = Math.trunc(soma)
-                                        if (soma >= aux) {
-                                            eaefim = projeto.diasEae - 1
-                                            if ((parseFloat(eaefim) < parseFloat(projeto.diasPro)) || (parseFloat(eaefim) < parseFloat(projeto.diasEae))) {
-                                                eaefim = projeto.diasEae
-                                            }
-                                        } else {
-                                            eaefim = aux
-                                        }
-                                    } else {
-                                        eaefim = 0
-                                    }
-                                }
-                                if (projeto.temPainel == 'checked') {
-                                    soma = (parseFloat(projeto.diasPro) + parseFloat(projeto.diasPnl)).toFixed(2)
-                                    if (soma > 1) {
-                                        aux = Math.trunc(soma)
-                                        if (soma >= aux) {
-                                            pnlfim = projeto.diasPnl - 1
-                                            if ((parseFloat(pnlfim) < parseFloat(projeto.diasPro)) || (parseFloat(pnlfim) < parseFloat(projeto.diasPnl))) {
-                                                pnlfim = projeto.diasPnl
-                                            }
-                                        } else {
-                                            pnlfim = aux
-                                        }
-                                    } else {
-                                        pnlfim = 0
-                                    }
-                                }
-                                soma = (parseFloat(projeto.diasPro) + parseFloat(projeto.diasEst)).toFixed(2)
-                                if (soma > 1) {
-                                    aux = Math.trunc(soma)
-                                    if (soma >= aux) {
-                                        estfim = projeto.diasEst - 1
-                                        if ((parseFloat(estfim) < parseFloat(projeto.diasPro)) || (parseFloat(estfim) < parseFloat(projeto.diasEst))) {
-                                            estfim = projeto.diasEst
-                                        }
-                                    } else {
-                                        estfim = aux
-                                    }
-                                } else {
-                                    estfim = 0
-                                }
-                                soma = (parseFloat(projeto.diasEst) + parseFloat(projeto.diasMod)).toFixed(2)
-                                if (soma > 1) {
-                                    aux = Math.trunc(soma)
-                                    if (soma >= aux) {
-                                        modfim = projeto.diasMod - 1
-                                        if ((parseFloat(modfim) < parseFloat(projeto.diasEst)) || (parseFloat(modfim) < parseFloat(projeto.diasMod))) {
-                                            modfim = projeto.diasMod
-                                        }
-                                    } else {
-                                        modfim = aux
-                                    }
-                                } else {
-                                    modfim = 0
-                                }
-                            }
-
-                            //console.log('atefim=>' + atefim)
-                            //console.log('stbfim=>' + stbfim)
-                            //console.log('invfim=>' + invfim)
-                            //console.log('pnlfim=>' + pnlfim)
-                            //console.log('eaefim=>' + eaefim)
-                            //console.log('estfim=>' + estfim)
-                            //console.log('modfim=>' + modfim)
-                            //console.log('plafim=>' + plafim)
-                            //console.log('prjfim=>' + prjfim)
-                            valplafim = setData(projeto.valDataIni, plafim)
-                            valprjfim = setData(valplafim, prjfim)
-
-                            if (cronograma.dateplafim == '' || typeof cronograma.dateplafim == 'undefined' || isNaN(cronograma.dateplaini)) {
-                                cronograma.dateplafim = setData(projeto.valDataIni, plafim)
-                            }
-
-                            if (cronograma.dateprjini == '' || typeof cronograma.dateprjini == 'undefined' || isNaN(cronograma.dateprjini)) {
-                                cronograma.dateprjini = valplafim
-                                if (cronograma.dateprjfim == '' || typeof cronograma.dateprjfim == 'undefined' || isNaN(cronograma.dateprjfim)) {
-                                    cronograma.dateprjfim = setData(valplafim, prjfim)
-                                }
-                            }
-
-                            if (cronograma.dateateini == '' || typeof cronograma.dateateini == 'undefined' || isNaN(cronograma.dateateini)) {
-                                valateini = setData(valprjfim, 1)
-                                cronograma.dateateini = valateini
-                                if (cronograma.dateatefim == '' || typeof cronograma.dateatefim == 'undefined' || isNaN(cronograma.dateatefim)) {
-                                    cronograma.dateatefim = setData(valateini, atefim)
-                                }
-                            }
-                            if (cronograma.dateinvini == '' || typeof cronograma.dateinvini == 'undefined' || isNaN(cronograma.dateinvini)) {
-                                valinvini = setData(valprjfim, 1)
-                                cronograma.dateinvini = valinvini
-                                if (cronograma.dateinvfim == '' || typeof cronograma.dateinvfim == 'undefined' || isNaN(cronograma.dateinvfim)) {
-                                    cronograma.dateinvfim = setData(valinvini, invfim)
-                                }
-                            }
-
-                            if (cronograma.datestbini == '' || typeof cronograma.datestbini == 'undefined' || isNaN(cronograma.datestbini)) {
-                                valstbini = setData(valprjfim, 1)
-                                cronograma.datestbini = valstbini
-                                if (cronograma.datestbfim == '' || typeof cronograma.datestbfim == 'undefined' || isNaN(cronograma.datestbfim)) {
-                                    cronograma.datestbfim = setData(valstbini, stbfim)
-                                }
-                            }
-
-                            if ((cronograma.datepnlini == '' || typeof cronograma.datepnlini == 'undefined' || isNaN(cronograma.datepnlini)) && projeto.temPainel == 'checked') {
-                                //console.log('tem painel')
-                                valpnlini = setData(valprjfim, 1)
-                                cronograma.datepnlini = valpnlini
-                                if (cronograma.datepnlfim == '' || typeof cronograma.datepnlfim == 'undefined' || isNaN(cronograma.datepnlfim)) {
-                                    cronograma.datepnlfim = setData(valpnlini, pnlfim)
-                                }
-                            }
-
-                            if ((cronograma.dateeaeini == '' || typeof cronograma.dateeaeini == 'undefined' || isNaN(cronograma.dateeaeini)) && projeto.temArmazenamento == 'checked') {
-                                //console.log('tem armazenamento')
-                                valeaeini = setData(valprjfim, 1)
-                                cronograma.dateeaeini = valeaeini
-                                if (cronograma.dateeaefim == '' || typeof cronograma.dateeaefim == 'undefined' || isNaN(cronograma.dateeaefim)) {
-                                    cronograma.dateeaefim = setData(valeaeini, eaefim)
-                                }
-                            }
-
-                            if (cronograma.dateestini == '' || typeof cronograma.dateestini == 'undefined' || isNaN(cronograma.dateestini)) {
-                                valestini = setData(valprjfim, 1)
-                                cronograma.dateestini = valestini
-                                if (cronograma.dateestfim == '' || typeof cronograma.dateestfim == 'undefined' || isNaN(cronograma.dateestfim)) {
-                                    valestfim = setData(valestini, estfim)
-                                    cronograma.dateestfim = valestfim
-
-                                }
-                            }
-                            //console.log("modfim=>" + modfim)
-                            if (cronograma.datemodini == '' || typeof cronograma.datemodini == 'undefined' || isNaN(cronograma.datemodini)) {
-                                cronograma.datemodini = valestfim
-                                valmodini = valestfim
-                                if (cronograma.datemodfim == '' || typeof cronograma.datemodfim == 'undefined' || isNaN(cronograma.datemodfim)) {
-                                    //console.log('valmodini=>' + valmodini)
-                                    //console.log('valmodini=>' + valmodini)
-                                    cronograma.datemodfim = setData(valmodini, modfim)
-                                    //console.log('modfim=>' + modfim)
-                                    //console.log('setData(valmodini, modfim)=>' + setData(valmodini, modfim))
-                                }
-                            }
-                            var diasObra
-                            var diastr
-                            if (projeto.tipoCustoIns == 'hora') {
-                                diasObra = Math.round(parseFloat((projeto.trbmod) + parseFloat(projeto.trbest)) / parseFloat(config.hrstrb))
-                                diastr = Math.round(parseFloat(projeto.tothrs) / parseFloat(config.hrstrb))
-                            } else {
-                                diasObra = projeto.diasIns
-                                //console.log('projeto.diasIns=>' + projeto.diasGes)
-                                //console.log('projeto.diasPro=>' + projeto.diasPro)
-                                //console.log('projeto.diasPro=>' + projeto.diasPro)
-                                //console.log('projeto.desPro=>' + projeto.desPro)
-                                //console.log('projeto.desIns=>' + projeto.desIns)
-                                diastr = parseFloat(projeto.diasGes) + parseFloat(projeto.diasPro) + parseFloat(projeto.diasIns) + parseFloat(projeto.desPro) + parseFloat(projeto.desIns)
-                            }
-                            projeto.diasObra = diasObra
-                            //console.log('diasObra=>' + diasObra)
-                            projeto.diastr = diastr
-                            //console.log('diastr=>' + diastr)
-
-                            //console.log('equipe=>' + equipe)
-                            var vlrali
-                            var discmb
-                            var ltocmb
-                            var vlrdia
-                            if (req.body.vlrali == '') {
-                                vlrali = 0
-                            } else {
-                                vlrali = req.body.vlrali
-                            }
-                            if (req.body.discmb == '') {
-                                discmb = 0
-                            } else {
-                                discmb = req.body.discmb
-                            }
-                            if (req.body.ltocmb == '') {
-                                ltocmb = 0
-                            } else {
-                                ltocmb = req.body.ltocmb
-                            }
-                            if (req.body.vlrdia == '') {
-                                vlrdia = 0
-                            } else {
-                                vlrdia = req.body.vlrdia
-                            }
-                            projeto.vlrali = vlrali
-                            projeto.discmb = discmb
-                            projeto.ltocmb = ltocmb
-                            projeto.vlrdia = vlrdia
-                            //console.log('vlrali=>' + vlrali)
-                            //console.log('discmb=>' + discmb)
-                            //console.log('ltocmb=>' + ltocmb)
-                            //console.log('vlrdia=>' + vlrdia)
-
-                            var tothtl
-                            var totcmb
-                            var totali
-                            //Definindo custo hotel
-                            if (parseFloat(vlrdia) > 0) {
-                                tothtl = parseFloat(vlrdia) * parseFloat(diasObra) * parseFloat(equipe)
-                            } else {
-                                tothtl = 0
-                            }
-
-                            //Definindo custo deslocamento
-                            if (parseFloat(discmb) > 0 && parseFloat(ltocmb)) {
-                                autmed = parseFloat(req.body.discmb) / parseFloat(medkmh)
-                                totcmb = parseFloat(autmed) * parseFloat(req.body.ltocmb)
-                            } else {
-                                totcmb = 0
-                            }
-
-                            //Definindo custo deslocamento
-                            if (parseFloat(vlrali) > 0) {
-                                totali = parseFloat(req.body.vlrali) * parseFloat(equipe)
-                            } else {
-                                totali = 0
-                            }
-                            projeto.tothtl = tothtl.toFixed(2)
-                            projeto.totcmb = totcmb.toFixed(2)
-                            projeto.totali = totali.toFixed(2)
-
-                            var totdes = parseFloat(totali) + parseFloat(totcmb) + parseFloat(tothtl)
-                            projeto.totdes = totdes.toFixed(2)
-                            //--------------------------------------------                               
-
-                            //console.log('totcmb=>' + totcmb)
-                            //console.log('tothtl=>' + tothtl)
-                            //console.log('totali=>' + totali)
-                            //console.log('totdes=>' + totdes)
-
-
-                            //Custo de Reserva
-                            var resger
-                            var conadd
-                            var impele
-                            var seguro
-                            var outcer
-                            var outpos
-                            if (req.body.resger == '') {
-                                resger = 0
-                            } else {
-                                resger = req.body.resger
-                            }
-                            if (req.body.conadd == '') {
-                                conadd = 0
-                            } else {
-                                conadd = req.body.conadd
-                            }
-                            if (req.body.impele == '') {
-                                impele = 0
-                            } else {
-                                impele = req.body.impele
-                            }
-                            if (req.body.seguro == '') {
-                                seguro = 0
-                            } else {
-                                seguro = req.body.seguro
-                            }
-                            if (req.body.outcer == '') {
-                                outcer = 0
-                            } else {
-                                outcer = req.body.outcer
-                            }
-                            if (req.body.outpos == '') {
-                                outpos = 0
-                            } else {
-                                outpos = req.body.outpos
-                            }
-                            projeto.resger = resger
-                            projeto.conadd = conadd
-                            projeto.impele = impele
-                            projeto.seguro = seguro
-                            projeto.outcer = outcer
-                            projeto.outpos = outpos
-
-                            //console.log('resger=>' + resger)
-                            //console.log('conadd=>' + conadd)
-                            //console.log('impele=>' + impele)
-                            //console.log('seguro=>' + seguro)
-                            //console.log('outcer=>' + outcer)
-                            //console.log('outpos=>' + outpos)
-
-                            var rescon = parseFloat(impele) + parseFloat(seguro) + parseFloat(outcer) + parseFloat(outpos)
-                            rescon = parseFloat(rescon) + parseFloat(conadd)
-                            projeto.rescon = rescon.toFixed(2)
-                            var reserva = parseFloat(resger) + parseFloat(rescon)
-                            projeto.reserva = reserva.toFixed(2)
-
-                            //console.log('rescon=>' + rescon)
-                            //console.log('reserva=>' + reserva)
-                            //console.log('projeto.totint=>' + projeto.totint)
-                            //console.log('projeto.totpro=>' + projeto.totpro)
-                            //console.log('projeto.totges=>' + projeto.totges)
-                            //console.log('projeto.valorCer=>' + projeto.valorCer)
-                            //console.log('projeto.valorPos=>' + projeto.valorPos)
-                            //console.log('projeto.valorOcp=>' + projeto.valorOcp)
-
-                            var valorCer
-                            var valorPos
-                            var valorCen
-                            if (typeof projeto.valorCer == "undefined") {
-                                valorCer = 0
-                            }
-                            if (typeof projeto.valorPos == "undefined") {
-                                valorPos = 0
-                            }
-                            if (typeof projeto.valorCen == "undefined") {
-                                valorCen = 0
-                            }
-                            //console.log('valorCer=>' + valorCer)
-                            //console.log('valorPos=>' + valorPos)
-                            //console.log('valorCen=>' + valorCen)
-
-                            var custoFix = parseFloat(projeto.totint) + parseFloat(projeto.totpro) + parseFloat(projeto.vlrart) + parseFloat(projeto.totges)
-                            //console.log('custoFix=>' + custoFix)
-                            var custovar = parseFloat(totdes)
-                            //console.log('custoVar=>' + custoVar)
-                            var custoEst = parseFloat(valorCer) + parseFloat(valorPos) + parseFloat(valorCen)
-                            //console.log('custoEst=>' + custoEst)
-                            var totcop = parseFloat(custoFix) + parseFloat(custoVar) + parseFloat(custoEst)
-
-                            projeto.custofix = custoFix.toFixed(2)
-                            projeto.custovar = custoVar.toFixed(2)
-                            projeto.custoest = custoEst.toFixed(2)
-                            projeto.totcop = totcop.toFixed(2)
-                            //console.log('totcop=>' + totcop)
-                            var custoPlano = parseFloat(totcop) + parseFloat(reserva)
-                            projeto.custoPlano = custoPlano.toFixed(2)
-                            //console.log('custoPlano=>' + custoPlano)
-                            var custoTotal = parseFloat(custoPlano) + parseFloat(projeto.vlrkit)
-                            projeto.custoTotal = custoTotal.toFixed(2)
-                            //console.log('custoTotal=>' + custoTotal)
-
-                            var desAdm = 0
-                            if (parseFloat(empresa.desadm) > 0) {
-                                if (empresa.tipodesp == 'quantidade') {
-                                    desAdm = (parseFloat(empresa.desadm) * (parseFloat(empresa.perdes) / 100)).toFixed(2)
-                                } else {
-                                    desAdm = ((parseFloat(empresa.desadm) / parseFloat(empresa.estkwp)) * parseFloat(projeto.potencia)).toFixed(2)
-                                }
-                            }
-
-                            //console.log('desAdm=>' + desAdm)
-
-                            //Definindo o imposto ISS
-                            //console.log('regime_prj.alqiFS=>' + regime_prj.alqNFS)
-                            var fatequ
-                            var vlrNFS = 0
-                            var impNFS = 0
-                            var vlrMarkup = 0
-                            var prjValor = 0
-                            if (req.body.markup == '' || req.body.markup == 0) {
-                                //console.log('markup igual a zero')
-                                //console.log('projeto.vlrnormal=>'+projeto.vlrnormal)
-                                if (req.body.checkFatura != null) {
-                                    fatequ = true
-                                    vlrNFS = parseFloat(projeto.vlrnormal).toFixed(2)
-                                    impNFS = 0
-                                } else {
-                                    fatequ = false
-                                    vlrNFS = (parseFloat(projeto.vlrnormal) - parseFloat(projeto.vlrkit)).toFixed(2)
-                                    impNFS = (parseFloat(vlrNFS) * (parseFloat(empresa.alqNFS) / 100)).toFixed(2)
-                                }
-                                vlrMarkup = (((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva) - parseFloat(projeto.vlrkit)) / (1 - (parseFloat(empresa.markup)) / 100)) + parseFloat(projeto.vlrkit)).toFixed(2)
-                                projeto.valor = parseFloat(vlrMarkup).toFixed(2)
-                                projeto.markup = empresa.markup
-                                prjValor = vlrMarkup
-                            } else {
-                                //console.log('markup diferente de zero')
-                                //console.log('custoTotal=>' + custoTotal)
-                                //console.log('req.body.markup=>' + req.body.markup)
-                                vlrMarkup = (((parseFloat(custoTotal) + parseFloat(desAdm) - parseFloat(reserva) - parseFloat(projeto.vlrkit)) / (1 - (parseFloat(req.body.markup)) / 100)) + parseFloat(projeto.vlrkit)).toFixed(2)
-                                //console.log('vlrMarkup=>' + vlrMarkup)
-                                if (req.body.checkFatura != null) {
-                                    fatequ = true
-                                    vlrNFS = parseFloat(vlrMarkup).toFixed(2)
-                                    impNFS = 0
-                                } else {
-                                    fatequ = false
-                                    vlrNFS = (parseFloat(vlrMarkup) - parseFloat(projeto.vlrkit)).toFixed(2)
-                                    impNFS = (parseFloat(vlrNFS) * (parseFloat(empresa.alqNFS) / 100)).toFixed(2)
-                                }
-                                projeto.markup = req.body.markup
-                                projeto.valor = vlrMarkup
-                                prjValor = parseFloat(vlrMarkup).toFixed(2)
-                            }
-                            //console.log('vlrNFS=>' + vlrNFS)
-                            //console.log('impNFS=>' + impNFS)
-                            //console.log('prjValor=>' + prjValor)
-                            //kWp médio
-                            projeto.vrskwp = (parseFloat(prjValor) / parseFloat(projeto.potencia)).toFixed(2)
-                            projeto.fatequ = fatequ
-
-                            var vlrcom = 0
-                            //Validando a comissão
-                            if (projeto.percom != null) {
-                                vlrcom = parseFloat(vlrNFS) * (parseFloat(projeto.percom) / 100)
-                                projeto.vlrcom = parseFloat(vlrcom).toFixed(2)
-                            }
-                            //console.log('vlrcom=>' + vlrcom)
-
-                            //Definindo o Lucro Bruto
-                            var recLiquida = parseFloat(prjValor) - parseFloat(impNFS)
-                            projeto.recLiquida = parseFloat(recLiquida).toFixed(2)
-
-                            //console.log('recLiquida=>' + recLiquida)
-                            var lucroBruto = parseFloat(recLiquida) - parseFloat(projeto.vlrkit)
-                            projeto.lucroBruto = parseFloat(lucroBruto).toFixed(2)
-
-                            //console.log('lucroBruto=>' + lucroBruto)
-
-                            var lbaimp = 0
-                            if (parseFloat(empresa.desadm) > 0) {
-                                //console.log('desAdm=>' + desAdm)
-                                lbaimp = (parseFloat(lucroBruto) - parseFloat(custoPlano) - parseFloat(desAdm)).toFixed(2)
-                                projeto.desAdm = parseFloat(desAdm).toFixed(2)
-                            } else {
-                                lbaimp = (parseFloat(lbaimp) - parseFloat(custoPlano))
-                                projeto.desAdm = 0
-                            }
-
-                            //Deduzindo as comissões do Lucro Antes dos Impostos
-                            if (vlrcom == 0 || vlrcom == '') {
-                                lbaimp = parseFloat(lbaimp)
-                            } else {
-                                lbaimp = parseFloat(lbaimp) - parseFloat(vlrcom)
-                            }
-                            projeto.lbaimp = lbaimp.toFixed(2)
-                            //console.log('lbaimp=>' + lbaimp)
-
-                            //Dashboard              
-                            //Participação dos componentes
-                            //Kit
-                            var parKitEqu = parseFloat(detalhe.valorEqu) / parseFloat(detalhe.vlrTotal) * 100
-                            projeto.parKitEqu = parseFloat(parKitEqu).toFixed(2)
-                            //Módulos
-                            var parModEqu = parseFloat(detalhe.valorMod) / parseFloat(detalhe.vlrTotal) * 100
-                            projeto.parModEqu = parseFloat(parModEqu).toFixed(2)
-                            //Inversor
-                            var parInvEqu = parseFloat(detalhe.valorInv) / parseFloat(detalhe.vlrTotal) * 100
-                            projeto.parInvEqu = parseFloat(parInvEqu).toFixed(2)
-                            //Estrutura
-                            var parEstEqu = (parseFloat(detalhe.valorEst) + parseFloat(detalhe.valorCim)) / parseFloat(detalhe.vlrTotal) * 100
-                            projeto.parEstEqu = parseFloat(parEstEqu).toFixed(2)
-                            //Cabos
-                            var parCabEqu = parseFloat(detalhe.valorCab) / parseFloat(detalhe.vlrTotal) * 100
-                            projeto.parCabEqu = parseFloat(parCabEqu).toFixed(2)
-                            //Armazenagem
-                            var parEbtEqu = parseFloat(detalhe.valorEbt) / parseFloat(detalhe.vlrTotal) * 100
-                            projeto.parEbtEqu = parseFloat(parEbtEqu).toFixed(2)
-                            //DPS CC + CA
-                            var parDpsEqu = (parseFloat(detalhe.valorDPSCC) + parseFloat(detalhe.valorDPSCA)) / parseFloat(detalhe.vlrTotal) * 100
-                            projeto.parDpsEqu = parseFloat(parDpsEqu).toFixed(2)
-                            //Disjuntores CC + CA
-                            var parDisEqu = (parseFloat(detalhe.valorDisCC) + parseFloat(detalhe.valorDisCA)) / parseFloat(detalhe.vlrTotal) * 100
-                            projeto.parDisEqu = parseFloat(parDisEqu).toFixed(2)
-                            //StringBox
-                            var parSbxEqu = parseFloat(detalhe.valorSB) / parseFloat(detalhe.vlrTotal) * 100
-                            projeto.parSbxEqu = parseFloat(parSbxEqu).toFixed(2)
-                            //Inserir Proteção CA
-                            //Cercamento
-                            var parCerEqu = parseFloat(detalhe.valorCer) / parseFloat(detalhe.vlrTotal) * 100
-                            projeto.parCerEqu = parseFloat(parCerEqu).toFixed(2)
-                            //Central
-                            var parCenEqu = parseFloat(detalhe.valorCen) / parseFloat(detalhe.vlrTotal) * 100
-                            projeto.parCenEqu = parseFloat(parCenEqu).toFixed(2)
-                            //Postes de Condução
-                            var parPosEqu = parseFloat(detalhe.valorPos) / parseFloat(detalhe.vlrTotal) * 100
-                            projeto.parPosEqu = parseFloat(parPosEqu).toFixed(2)
-
-                            projeto.vlrNFS = parseFloat(vlrNFS).toFixed(2)
-                            projeto.impNFS = parseFloat(impNFS).toFixed(2)
-
-                            projeto.dataIns = dataMensagem(valateini)
-                            projeto.valDataIns = valateini
-
-                            cronograma.save().then(() => {
-                                //console.log('salvou cronograma')
-                                projeto.save().then(() => {
-                                    //console.log('salvou projeto')
-                                    sucesso = 'Custo de gerenciamento aplicado com sucesso.'
-                                    req.flash('success_msg', sucesso)
-                                    res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Falha ao aplicar o projeto.')
-                                    res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
-                                })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Falha ao aplicar o cronograma.')
-                                res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
-                            })
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Houve um erro ao encontrar a empresa.')
-                            res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
-                        })
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Houve um erro ao encontrar as configurações.')
-                        res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
-                    })
-                }).catch((err) => {
-                    req.flash('error_msg', 'Falha ao encontrar os detalhes.')
-                    res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Falha ao encontrar o cronograma.')
-                res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Falha ao encontrar o projeto.')
-            res.redirect('/gerenciamento/gerenciamento/' + req.body.id)
-        })
-    }
-})
-
-router.post('/custo/', ehAdmin, (req, res) => {
-    const { _id } = req.user
-    Projeto.findOne({ _id: req.body.id }).then((projeto) => {
-
-        //Inserir calculo dos impostos
-        Empresa.findOne({ _id: projeto.empresa }).then((empresa) => {
-
-            var prjFat = empresa.prjFat
-            var prjLR = empresa.prjLR
-            var prjLP = empresa.prjLP
-            //var vlrDAS = empresa.vlrDAS
-            //console.log('prjFat=>' + prjFat)
-            //console.log('prjLR=>' + prjLR)
-            //console.log('prjLP=>' + prjLP)
-
-            var impostoIRPJ = 0
-            var impostoIRPJAdd = 0
-            var impostoCSLL = 0
-            var impostoPIS = 0
-            var impostoCOFINS = 0
-            var impostoICMS = 0
-            var totalImposto = 0
-            var totalTributos = 0
-
-            var fatadd
-            var fataju
-            var aux
-
-            //console.log('projeto.vlrNFS=>' + projeto.vlrNFS)
-
-            if (empresa.regime == 'Simples') {
-                //console.log('Empresa=>Simples')
-                var alqEfe = ((parseFloat(prjFat) * (parseFloat(empresa.alqDAS) / 100)) - (parseFloat(empresa.vlrred))) / parseFloat(prjFat)
-                //console.log('alqEfe=>' + alqEfe)
-                var totalSimples = parseFloat(projeto.vlrNFS) * (parseFloat(alqEfe))
-                //console.log('totalSimples=>' + totalSimples)
-                totalImposto = parseFloat(totalSimples).toFixed(2)
-                //console.log('totalImposto=>' + totalImposto)
-                projeto.impostoSimples = parseFloat(totalImposto).toFixed(2)
-                impostoIRPJAdd = 0
-                projeto.impostoAdd = 0
-                impostoIRPJ = 0
-                projeto.impostoIRPJ = 0
-                impostoCSLL = 0
-                projeto.impostoCSLL = 0
-                impostoCOFINS = 0
-                projeto.impostoCOFINS = 0
-                impostoPIS = 0
-                projeto.impostoPIS = 0
-            } else {
-                if (empresa.regime == 'Lucro Real') {
-                    if ((parseFloat(prjLR) / 12) > 20000) {
-                        fatadd = (parseFloat(prjLR) / 12) - 20000
-                        //console.log('fatadd=>' + fatadd)
-                        fataju = parseFloat(fatadd) * (parseFloat(empresa.alqIRPJAdd) / 100)
-                        //console.log('fataju=>' + fataju)
-                        aux = parseFloat(fatadd) / parseFloat(projeto.lbaimp)
-                        //console.log('aux=>' + aux)
-                        impostoIRPJAdd = parseFloat(fataju) / parseFloat(aux)
-                        projeto.impostoAdd = impostoIRPJAdd.toFixed(2)
-                    } else {
-                        impostoIRPJAdd = 0
-                        projeto.impostoAdd = 0
-                    }
-
-                    impostoIRPJ = parseFloat(projeto.lbaimp) * (parseFloat(empresa.alqIRPJ) / 100)
-                    projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
-                    impostoCSLL = parseFloat(projeto.lbaimp) * (parseFloat(empresa.alqCSLL) / 100)
-                    projeto.impostoCSLL = impostoCSLL.toFixed(2)
-                    impostoPIS = parseFloat(projeto.vlrNFS) * 0.5 * (parseFloat(empresa.alqPIS) / 100)
-                    projeto.impostoPIS = impostoPIS.toFixed(2)
-                    impostoCOFINS = parseFloat(projeto.vlrNFS) * 0.5 * (parseFloat(empresa.alqCOFINS) / 100)
-                    projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
-                    totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
-                } else {
-                    //console.log('Empresa=>Lucro Presumido')
-                    if (((parseFloat(prjLP) * 0.32) / 3) > 20000) {
-                        fatadd = ((parseFloat(prjLP) * 0.32) / 3) - 20000
-                        fataju = parseFloat(fatadd) / 20000
-                        impostoIRPJAdd = (parseFloat(projeto.vlrNFS) * 0.32) * (parseFloat(fataju) / 100) * (parseFloat(empresa.alqIRPJAdd) / 100)
-                        projeto.impostoAdd = impostoIRPJAdd.toFixed(2)
-                    } else {
-                        impostoIRPJAdd = 0
-                        projeto.impostoAdd = 0
-                    }
-                    //console.log('impostoIRPJAdd=>' + impostoIRPJAdd)
-                    impostoIRPJ = parseFloat(projeto.vlrNFS) * 0.32 * (parseFloat(empresa.alqIRPJ) / 100)
-                    projeto.impostoIRPJ = impostoIRPJ.toFixed(2)
-                    //console.log('impostoIRPJ=>' + impostoIRPJ)
-                    impostoCSLL = parseFloat(projeto.vlrNFS) * 0.32 * (parseFloat(empresa.alqCSLL) / 100)
-                    projeto.impostoCSLL = impostoCSLL.toFixed(2)
-                    //console.log('impostoCSLL=>' + impostoCSLL)
-                    impostoCOFINS = parseFloat(projeto.vlrNFS) * (parseFloat(empresa.alqCOFINS) / 100)
-                    projeto.impostoCOFINS = impostoCOFINS.toFixed(2)
-                    //console.log('impostoCOFINS=>' + impostoCOFINS)
-                    impostoPIS = parseFloat(projeto.vlrNFS) * (parseFloat(empresa.alqPIS) / 100)
-                    projeto.impostoPIS = impostoPIS.toFixed(2)
-                    //console.log('impostoPIS=>' + impostoPIS)
-                    totalImposto = parseFloat(impostoIRPJ) + parseFloat(impostoIRPJAdd) + parseFloat(impostoCSLL) + parseFloat(impostoPIS) + parseFloat(impostoCOFINS)
-                    //console.log('totalImposto=>' + totalImposto)
-                }
-            }
-            //Validar ICMS
-            //console.log('projeto.fatequ=>' + projeto.fatequ)
-            //console.log('empresa.alqICMS=>' + empresa.alqICMS)
-            if (projeto.fatequ == true) {
-                if (empresa.alqICMS != null) {
-                    impostoICMS = (parseFloat(projeto.vlrNFS)) * (parseFloat(empresa.alqICMS) / 100)
-                    totalTributos = parseFloat(totalImposto) + parseFloat(projeto.impNFS) + parseFloat(impostoICMS)
-                    totalImposto = parseFloat(totalImposto) + parseFloat(impostoICMS)
-                }
-            } else {
-                impostoICMS = 0
-                totalTributos = parseFloat(totalImposto) + parseFloat(projeto.impNFS)
-            }
-            projeto.impostoICMS = impostoICMS.toFixed(2)
-            //console.log('totalImposto=>' + totalImposto)
-            projeto.totalImposto = parseFloat(totalImposto).toFixed(2)
-            //console.log('totalTributos=>' + totalTributos)
-            projeto.totalTributos = parseFloat(totalTributos).toFixed(2)
-
-            //Lucro Líquido descontados os impostos
-            var lucroLiquido = 0
-            //console.log('projeto.lbaimp=>'+projeto.lbaimp)
-            //console.log('totalImposto=>'+totalImposto)
-            lucroLiquido = parseFloat(projeto.lbaimp) - parseFloat(totalImposto)
-            projeto.lucroLiquido = parseFloat(lucroLiquido).toFixed(2)
-            //console.log('lucroLiquido=>'+lucroLiquido)
-
-            //Dashboard
-            //Participação sobre o lucro total
-            var parLiqVlr = parseFloat(lucroLiquido) / parseFloat(projeto.valor) * 100
-            projeto.parLiqVlr = parLiqVlr.toFixed(2)
-            var parKitVlr = parseFloat(projeto.vlrkit) / parseFloat(projeto.valor) * 100
-            projeto.parKitVlr = parKitVlr.toFixed(2)
-            var parIntVlr = parseFloat(projeto.totint) / parseFloat(projeto.valor) * 100
-            projeto.parIntVlr = parIntVlr.toFixed(2)
-            var parGesVlr = parseFloat(projeto.totges) / parseFloat(projeto.valor) * 100
-            projeto.parGesVlr = parGesVlr.toFixed(2)
-            var parProVlr = parseFloat(projeto.totpro) / parseFloat(projeto.valor) * 100
-            projeto.parProVlr = parProVlr.toFixed(2)
-            var parArtVlr = parseFloat(projeto.vlrart) / parseFloat(projeto.valor) * 100
-            projeto.parArtVlr = parArtVlr.toFixed(2)
-            if (parseFloat(projeto.totcmb) > 0) {
-                var parCmbVlr = parseFloat(projeto.totcmb) / parseFloat(projeto.valor) * 100
-                projeto.parCmbVlr = parseFloat(parCmbVlr).toFixed(2)
-            }
-            if (parseFloat(projeto.totali) > 0) {
-                var parAliVlr = parseFloat(projeto.totali) / parseFloat(projeto.valor) * 100
-                projeto.parAliVlr = parseFloat(parAliVlr).toFixed(2)
-            }
-            if (parseFloat(projeto.tothtl) > 0) {
-                var parEstVlr = parseFloat(projeto.tothtl) / parseFloat(projeto.valor) * 100
-                projeto.parEstVlr = parEstVlr.toFixed(2)
-            }
-            if (parseFloat(projeto.reserva) > 0) {
-                var parResVlr = parseFloat(projeto.reserva) / parseFloat(projeto.valor) * 100
-                projeto.parResVlr = parseFloat(parResVlr).toFixed(2)
-            }
-            var parDedVlr = parseFloat(projeto.custoPlano) / parseFloat(projeto.valor) * 100
-            projeto.parDedVlr = parDedVlr.toFixed(2)
-            var parISSVlr
-            if (projeto.impNFS > 0) {
-                parISSVlr = parseFloat(projeto.impNFS) / parseFloat(projeto.valor) * 100
-            } else {
-                parISSVlr = 0
-            }
-
-            projeto.parISSVlr = parISSVlr.toFixed(2)
-            var parImpVlr = (parseFloat(totalImposto) / parseFloat(projeto.valor)) * 100
-            projeto.parImpVlr = parImpVlr.toFixed(2)
-            if (projeto.vlrcom > 0) {
-                var parComVlr = parseFloat(projeto.vlrcom) / parseFloat(projeto.valor) * 100
-                projeto.parComVlr = parComVlr.toFixed(2)
-            }
-
-            //Participação sobre o Faturamento      
-            var parLiqNfs = parseFloat(lucroLiquido) / parseFloat(projeto.vlrNFS) * 100
-            projeto.parLiqNfs = parseFloat(parLiqNfs).toFixed(2)
-            if (projeto.fatequ == true) {
-                var parKitNfs = parseFloat(projeto.vlrkit) / parseFloat(projeto.vlrNFS) * 100
-                projeto.parKitNfs = parseFloat(parKitNfs).toFixed(2)
-            }
-            var parIntNfs = parseFloat(projeto.totint) / parseFloat(projeto.vlrNFS) * 100
-            projeto.parIntNfs = parseFloat(parIntNfs).toFixed(2)
-            var parGesNfs = parseFloat(projeto.totges) / parseFloat(projeto.vlrNFS) * 100
-            projeto.parGesNfs = parseFloat(parGesNfs).toFixed(2)
-            var parProNfs = parseFloat(projeto.totpro) / parseFloat(projeto.vlrNFS) * 100
-            projeto.parProNfs = parseFloat(parProNfs).toFixed(2)
-            var parArtNfs = parseFloat(projeto.vlrart) / parseFloat(projeto.vlrNFS) * 100
-            projeto.parArtNfs = parseFloat(parArtNfs).toFixed(2)
-            if (parseFloat(projeto.totcmb) > 0) {
-                var parCmbNfs = parseFloat(projeto.totcmb) / parseFloat(projeto.vlrNFS) * 100
-                projeto.parCmbNfs = parseFloat(parCmbNfs).toFixed(2)
-            }
-            if (parseFloat(projeto.totali) > 0) {
-                var parAliNfs = parseFloat(projeto.totali) / parseFloat(projeto.vlrNFS) * 100
-                projeto.parAliNfs = parseFloat(parAliNfs).toFixed(2)
-            }
-            if (parseFloat(projeto.tothtl) > 0) {
-                var parEstNfs = parseFloat(projeto.tothtl) / parseFloat(projeto.vlrNFS) * 100
-                projeto.parEstNfs = parEstNfs.toFixed(2)
-            }
-            if (parseFloat(projeto.reserva) > 0) {
-                var parResNfs = parseFloat(projeto.reserva) / parseFloat(projeto.vlrNFS) * 100
-                projeto.parResNfs = parseFloat(parResNfs).toFixed(2)
-            }
-            var parDedNfs = parseFloat(projeto.custoPlano) / parseFloat(projeto.vlrNFS) * 100
-            projeto.parDedNfs = parseFloat(parDedNfs).toFixed(2)
-            var parISSNfs = parseFloat(projeto.impNFS) / parseFloat(projeto.vlrNFS) * 100
-            projeto.parISSNfs = parseFloat(parISSNfs).toFixed(2)
-            var parImpNfs = (parseFloat(totalImposto) / parseFloat(projeto.vlrNFS)) * 100
-            projeto.parImpNfs = parseFloat(parImpNfs).toFixed(2)
-            if (projeto.vlrcom > 0) {
-                var parComNfs = parseFloat(projeto.vlrcom) / parseFloat(projeto.vlrNFS) * 100
-                projeto.parComNfs = parseFloat(parComNfs).toFixed(2)
-            }
-
-            projeto.save().then(() => {
-                var sucesso = []
-                sucesso = 'Projeto salvo com sucesso.'
-                req.flash('success_msg', sucesso)
-                res.redirect('/gerenciamento/custo/' + req.body.id)
-            }).catch(() => {
-                req.flash('error_msg', 'Houve um erro ao salvar o projeto.')
-                res.redirect('/gerenciamento/custo/' + req.body.id)
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível encontrar o empresa.')
-            res.redirect('/gerenciamento/custo/' + req.body.id)
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar o projeto.')
-        res.redirect('/gerenciamento/custo/' + req.body.id)
-    })
-})
-
-router.post('/salvacronograma/', ehAdmin, (req, res) => {
-
-    var erros = ''
-    var sucesso = ''
-    var id
-    const { _id } = req.user
-    const { user } = req.user
-    if (typeof user == 'undefined') {
-        id = _id
-    } else {
-        id = user
-    }
-
-    var dataentrega
-    var ano
-    var mes
-    var dia
-    var dataEntregaReal
-    var atrasou = false
-
-    var checkPla = 'unchecked'
-    var checkAte = 'unchecked'
-    var checkPrj = 'unchecked'
-    var checkEst = 'unchecked'
-    var checkMod = 'unchecked'
-    var checkInv = 'unchecked'
-    var checkEae = 'unchecked'
-    var checkStb = 'unchecked'
-    var checkPnl = 'unchecked'
-    var checkVis = 'unchecked'
-
-    if ((typeof req.body.datepla != 'undefined') && (req.body.datepla != '')) {
-        checkPla = 'checked'
-    }
-    if ((typeof req.body.dateate != 'undefined') && (req.body.dateate != '')) {
-        checkAte = 'checked'
-    }
-    if ((typeof req.body.dateprj != 'undefined') && (req.body.dateprj != '')) {
-        checkPrj = 'checked'
-    }
-    if ((typeof req.body.dateest != 'undefined') && (req.body.dateest != '')) {
-        checkEst = 'checked'
-    }
-    if ((typeof req.body.datemod != 'undefined') && (req.body.datemod != '')) {
-        checkMod = 'checked'
-    }
-    if ((typeof req.body.dateinv != 'undefined') && (req.body.dateinv != '')) {
-        checkInv = 'checked'
-    }
-    if ((typeof req.body.dateeae != 'undefined') && (req.body.dateeae != '')) {
-        checkEae = 'checked'
-    }
-    if ((typeof req.body.datestb != 'undefined') && (req.body.datestb != '')) {
-        checkStb = 'checked'
-    }
-    if ((typeof req.body.datepnl != 'undefined') && (req.body.datepnl != '')) {
-        checkPnl = 'checked'
-    }
-    if ((typeof req.body.datevis != 'undefined') && (req.body.datevis != '')) {
-        checkVis = 'checked'
-    }
-
-    Projeto.findOne({ _id: req.body.idprojeto }).then((prj_entrega) => {
-        Cronograma.findOne({ projeto: req.body.idprojeto }).then((cronograma) => {
-            Realizado.findOne({ projeto: req.body.idprojeto }).then((realizado) => {
-                //console.log('req.body.perges=>' + req.body.perges)
-                if (req.body.perges != '' && typeof req.body.perges != 'undefined' && req.body.perges != 0) {
-                    var AC = 0
-                    var ev = 0
-                    var evPerGes = 0
-                    var evPerKit = 0
-                    var evPerIns = 0
-                    var evPerPro = 0
-                    var evPerAli = 0
-                    var evPerDes = 0
-                    var evPerHtl = 0
-                    var evPerCmb = 0
-                    var evPerCer = 0
-                    var evPerCen = 0
-                    var evPerPos = 0
-                    var cpi = 0
-                    var tcpi = 0
-                    var spi = 0
-                    var eac = 0
-                    var etc = 0
-                    var texto
-
-                    var custoPlanoPrj = prj_entrega.custoPlano
-                    var vlrKitPrj = prj_entrega.vlrkit
-                    var desAdm = prj_entrega.desAdm
-                    var vlrcom = prj_entrega.vlrcom
-                    var totalTributos = prj_entrega.totalTributos
-                    var margemLL = prj_entrega.valor * (parseFloat(prj_entrega.parLiqVlr) / 100)
-                    var valorComReserva = parseFloat(custoPlanoPrj) + parseFloat(vlrKitPrj) + parseFloat(desAdm) + parseFloat(vlrcom) + parseFloat(totalTributos) + parseFloat(margemLL)
-
-                    //Definição do erning value
-                    evPerGes = (parseFloat(prj_entrega.totges)) * (parseFloat(req.body.perges) / 100)
-                    if (isNaN(evPerGes)) {
-                        evPerGes = 0
-                    }
-                    evPerKit = (parseFloat(prj_entrega.vlrkit)) * (parseFloat(req.body.perkit) / 100)
-                    if (isNaN(evPerKit)) {
-                        evPerKit = 0
-                    }
-                    evPerIns = (parseFloat(prj_entrega.totint)) * (parseFloat(req.body.perins) / 100)
-                    if (isNaN(evPerIns)) {
-                        evPerIns = 0
-                    }
-                    evPerPro = (parseFloat(prj_entrega.totpro)) * (parseFloat(req.body.perpro) / 100)
-                    if (isNaN(evPerPro)) {
-                        evPerPro = 0
-                    }
-                    evPerAli = (parseFloat(prj_entrega.totali)) * (parseFloat(req.body.perali) / 100)
-                    if (isNaN(evPerAli)) {
-                        evPerAli = 0
-                    }
-                    evPerDes = (parseFloat(prj_entrega.totdes)) * (parseFloat(req.body.perdes) / 100)
-                    if (isNaN(evPerDes)) {
-                        evPerDes = 0
-                    }
-                    evPerHtl = (parseFloat(prj_entrega.tothtl)) * (parseFloat(req.body.perhtl) / 100)
-                    if (isNaN(evPerHtl)) {
-                        evPerHtl = 0
-                    }
-                    evPerCmb = (parseFloat(prj_entrega.totcmb)) * (parseFloat(req.body.percmb) / 100)
-                    if (isNaN(evPerCmb)) {
-                        evPerCmb = 0
-                    }
-                    evPerCer = (parseFloat(prj_entrega.totcer)) * (parseFloat(req.body.percer) / 100)
-                    if (isNaN(evPerCer)) {
-                        evPerCer = 0
-                    }
-                    evPerCen = (parseFloat(prj_entrega.totcen)) * (parseFloat(req.body.percen) / 100)
-                    if (isNaN(evPerCen)) {
-                        evPerCen = 0
-                    }
-                    evPerPos = (parseFloat(prj_entrega.totpos)) * (parseFloat(req.body.perpos) / 100)
-                    if (isNaN(evPerPos)) {
-                        evPerPos = 0
-                    }
-
-                    if (prj_entrega.ehDireto == false) {
-                        evPerDes = 0
-                    } else {
-                        evPerCmb = 0
-                        evPerHtl = 0
-                    }
-
-                    //console.log('evPerGes=>' + evPerGes)
-                    //console.log('evPerKit=>' + evPerKit)
-                    //console.log('evPerIns=>' + evPerIns)
-                    //console.log('evPerPro=>' + evPerPro)
-                    //console.log('evPerDes=>' + evPerDes)
-                    //console.log('evPerAli=>' + evPerAli)
-                    //console.log('evPerHtl=>' + evPerHtl)
-                    //console.log('evPerCmb=>' + evPerCmb)
-                    //console.log('evPerCer=>' + evPerCer)
-                    //console.log('evPerCen=>' + evPerCen)
-                    //console.log('evPerPos=>' + evPerPos)
-
-                    ev = (parseFloat(evPerGes) + parseFloat(evPerKit) + parseFloat(evPerIns) + parseFloat(evPerPro) + parseFloat(evPerAli) + parseFloat(evPerDes) + parseFloat(evPerHtl) + parseFloat(evPerCmb) + parseFloat(evPerCer) + parseFloat(evPerCen) + parseFloat(evPerPos)).toFixed(2)
-                    //console.log('ev=>' + ev)
-
-                    //console.log('vlrKitPrj=>' + vlrKitPrj)
-                    //console.log('custoPlanoPrj=>' + custoPlanoPrj)
-                    var perConclusao = parseFloat(ev) / (parseFloat(vlrKitPrj) + parseFloat(custoPlanoPrj))
-                    if (perConclusao == 100) {
-                        texto = 'Projeto Concluído'
-                    }
-                    //console.log('perConclusao=>' + perConclusao)
-                    var custoPlanoRlz
-                    var totges = req.body.totges
-                    if (isNaN(totges) || totges == '' || totges == null) {
-                        totges = 0
-                    }
-
-                    //console.log('totges=>' + totges)
-                    var vlrKitRlz = req.body.vlrkit
-                    if (isNaN(vlrKitRlz) || vlrKitRlz == '' || vlrKitRlz == null) {
-                        vlrKitRlz = 0
-                    }
-                    //console.log('vlrKitRlz=>' + vlrKitRlz)
-                    var totint = req.body.totint
-                    if (isNaN(totint) || totint == '' || totint == null) {
-                        totint = 0
-                    }
-                    var toteng = 0
-                    var matate = 0
-                    var vlremp = 0
-                    var compon = 0
-                    //console.log('totint=>' + totint)
-                    var totpro = req.body.totpro
-                    if (isNaN(totpro) || totpro == '' || totpro == null) {
-                        totpro = 0
-                    }
-                    //console.log('totpro=>' + totpro)
-                    var totali = req.body.totali
-                    if (isNaN(totali) || totali == '' || totali == null) {
-                        totali = 0
-                    }
-                    //console.log('totali=>' + totali)
-                    var tothtl = req.body.tothtl
-                    if (isNaN(tothtl) || tothtl == '' || tothtl == null) {
-                        tothtl = 0
-                    }
-                    //console.log('tothtl=>' + tothtl)
-                    var totcmb = req.body.totcmb
-                    if (isNaN(totcmb) || totcmb == '' || totcmb == null) {
-                        totcmb = 0
-                    }
-                    //console.log('totcmb=>' + totcmb)
-                    var totdes = req.body.totdes
-                    if (isNaN(totdes) || totdes == '' || totdes == null) {
-                        totdes = 0
-                    }
-                    //console.log('totdes=>' + totdes)
-                    var cercamento = req.body.cercamento
-                    if (isNaN(cercamento) || cercamento == '' || cercamento == null) {
-                        cercamento = 0
-                    }
-                    //console.log('cercamento=>' + cercamento)
-                    var central = req.body.central
-                    if (isNaN(central) || central == '' || central == null) {
-                        central = 0
-                    }
-                    //console.log('central=>' + central)
-                    var postecond = req.body.postecond
-                    if (isNaN(postecond) || postecond == '' || postecond == null) {
-                        postecond = 0
-                    }
-                    //console.log('postecond=>' + postecond)
-                    if (prj_entrega.ehDireto == false && prj_entrega.ehVinculo == false) {
-                        custoPlanoRlz = parseFloat(totges) + parseFloat(vlrKitRlz) + parseFloat(totint) + parseFloat(toteng) + parseFloat(matate) + parseFloat(vlremp) + parseFloat(compon) + parseFloat(totpro) + parseFloat(totali) + parseFloat(tothtl) + parseFloat(totcmb) + parseFloat(cercamento) + parseFloat(central) + parseFloat(postecond)
-                    } else {
-                        custoPlanoRlz = parseFloat(totges) + parseFloat(vlrKitRlz) + parseFloat(totint) + parseFloat(toteng) + parseFloat(matate) + parseFloat(vlremp) + parseFloat(compon) + parseFloat(totpro) + parseFloat(totdes) + parseFloat(totali) + parseFloat(cercamento) + parseFloat(central) + parseFloat(postecond)
-                    }
-                    //Definição do actual cost
-
-                    //console.log('custoPlanoRlz=>' + custoPlanoRlz)
-                    /*
-                     //console.log('vlrKitRlz=>' + vlrKitRlz)
-                     //console.log('desAdm=>' + desAdm)
-                     //console.log('vlrcom=>' + vlrcom)
-                     //console.log('totalTributos=>' + totalTributos)
-                     //console.log('margemLL=>' + margemLL)
-                    */
-
-                    //Cálculo dos indicadores de conclusão do projeto
-                    AC = parseFloat(custoPlanoRlz).toFixed(2)
-                    if (isNaN(AC)) {
-                        AC = 0
-                    }
-                    //console.log('AC=>' + AC)
-                    if (AC != '') {
-                        ac = AC
-                    } else {
-                        ac = ev
-                    }
-                    cpi = parseFloat(ev) / parseFloat(AC)
-                    //console.log('cpi=>' + cpi)
-                    if (cpi == 'Infinity' || isNaN(cpi)) {
-                        cpi = 1
-                    }
-                    tcpi = (parseFloat(prj_entrega.valor) - parseFloat(ev)) / (parseFloat(prj_entrega.valor) - parseFloat(ac))
-                    if (isNaN(tcpi)) {
-                        tcpi = 1
-                    }
-                    eac = parseFloat(prj_entrega.custoTotal) / parseFloat(cpi)
-                    if (isNaN(eac)) {
-                        eac = 0
-                    }
-                    if (cronograma.perPro == 100) {
-                        etc = parseFloat(eac) - parseFloat(AC) - parseFloat(prj_entrega.vlrart)
-                    } else {
-                        etc = parseFloat(eac) - parseFloat(AC)
-                    }
-                    if (isNaN(etc)) {
-                        etc = 0
-                    }
-                    spi = parseFloat(prj_entrega.hrsprj) * (1 - (parseFloat(perConclusao)))
-                    if (isNaN(spi)) {
-                        spi = 0
-                    }
-                    //console.log('Math.round(perConclusao * 100)=>' + Math.round(perConclusao * 100))
-                    prj_entrega.perConclusao = Math.round(perConclusao * 100)
-                    //console.log('AC=>' + AC)
-                    prj_entrega.actualCost = parseFloat(AC).toFixed(2)
-                    //console.log('cpi=>' + cpi)
-                    prj_entrega.cpi = parseFloat(cpi).toFixed(4)
-                    //console.log('tcpi=>' + tcpi)
-                    prj_entrega.tcpi = parseFloat(tcpi).toFixed(4)
-                    //console.log('etc=>' + etc)
-                    prj_entrega.etc = parseFloat(etc).toFixed(2)
-                    //console.log('eac=>' + eac)
-                    prj_entrega.eac = parseFloat(eac).toFixed(2)
-                    //console.log('spi=>' + spi)
-                    prj_entrega.spi = parseFloat(spi).toFixed(2)
-                    prj_entrega.tspi = 1
-                } else {
-                    prj_entrega.perConclusao = 0
-                    prj_entrega.etc = prj_entrega.valor
-                    prj_entrega.actualCost = 0
-                    prj_entrega.cpi = 1
-                    prj_entrega.tcpi = 1
-                    prj_entrega.spi = 1
-                    prj_entrega.tspi = 1
-                }
-
-                //console.log('req.body.executando=>' + req.body.executando)
-                if (req.body.executando == 'true') {
-                    if (req.body.datepla != '' && typeof req.body.datepla != 'undefined') {
-                        atrasou = comparaDatas(cronograma.dateplafim, req.body.datepla)
-                    }
-                    if (req.body.dateprj != '' && typeof req.body.dateprj != 'undefined') {
-                        atrasou = comparaDatas(cronograma.dateprjfim, req.body.dateprj)
-                    }
-
-                    if (req.body.dateate != '' && typeof req.body.dateate != 'undefined') {
-                        atrasou = comparaDatas(cronograma.dateatefim, req.body.dateate)
-                    }
-
-                    if (req.body.dateest != '' && typeof req.body.dateest != 'undefined') {
-                        atrasou = comparaDatas(cronograma.dateestfim, req.body.dateest)
-                    }
-
-                    if (req.body.datemod != '' && typeof req.body.datemod != 'undefined') {
-                        atrasou = comparaDatas(cronograma.datemodfim, req.body.datemod)
-                    }
-
-                    if (req.body.dateinv != '' && typeof req.body.dateinv != 'undefined') {
-                        atrasou = comparaDatas(cronograma.dateinvfim, req.body.dateinv)
-                    }
-
-                    if (req.body.dateeae != '' && typeof req.body.dateeae != 'undefined') {
-                        atrasou = comparaDatas(cronograma.dateeaefim, req.body.dateeae)
-                    }
-
-                    if (req.body.datestb != '' && typeof req.body.datestb != 'undefined') {
-                        atrasou = comparaDatas(cronograma.datestbfim, req.body.datestb)
-                    }
-
-                    if (req.body.datepnl != '' && typeof req.body.datepnl != 'undefined') {
-                        atrasou = comparaDatas(cronograma.datepnlfim, req.body.datepnl)
-                    }
-
-                    if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
-                        atrasou = comparaDatas(cronograma.datevisfim, req.body.datevis)
-                    }
-                    //console.log('req.body.datevis=>' + req.body.datevis)
-                    if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
-                        if (req.body.dateEntregaReal != '' && typeof req.body.dateEntregaReal != 'undifined') {
-                            if (comparaDatas(req.body.dateEntregaReal, req.body.datevis)) {
-                                erros = erros + 'Não foi possível salvar a nova data de entrega de finalização. '
-                            } else {
-                                dataEntregaReal = req.body.dateEntregaReal
-                                ano = dataEntregaReal.substring(0, 4)
-                                mes = dataEntregaReal.substring(5, 7)
-                                dia = dataEntregaReal.substring(8, 11)
-                                dataEntregaReal = dia + '/' + mes + '/' + ano
-                                prj_entrega.datafim = dataEntregaReal
-                                prj_entrega.valDataFim = req.body.dateEntregaReal
-                                atrasou = comparaDatas(req.body.dateEntregaHidden, req.body.dateEntregaReal)
-                            }
-                        }
-                    }
-                    //console.log('req.body.dateEntregaReal=>' + req.body.dateEntregaReal)
-                }
-
-                //console.log('req.body.dateentrega=>' + req.body.dateentrega)
-                //console.log('req.body.datevisfim=>' + req.body.datevisfim)
-                //console.log('req.body.orcado=>' + req.body.orcado)
-
-                if (req.body.orcado == 'true') {
-                    //console.log('entrou orçado')
-                    if (req.body.datevisfim == '' || typeof req.body.datevisfim == 'undefined') {
-                        //console.log('prj_entrega.valDataPrev=>' + prj_entrega.valDataPrev)
-                        //console.log('req.body.dateentrega=>' + req.body.dateentrega)
-                        if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && (req.body.dateentrega != prj_entrega.valDataPrev)) {
-                            erros = erros + 'A data de entrega poderá ser alterada quando data final da vistoria estiver preenchida.'
-                            req.flash('error_msg', erros)
-                            res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
-                        }
-                    } else {
-                        if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && comparaDatas(req.body.dateentrega, req.body.datevisfim) == false) {
-                            dataentrega = req.body.dateentrega
-                            ano = dataentrega.substring(0, 4)
-                            mes = dataentrega.substring(5, 7)
-                            dia = dataentrega.substring(8, 11)
-                            dataentrega = dia + '/' + mes + '/' + ano
-                            prj_entrega.dataprev = dataentrega
-                            prj_entrega.dataord = ano + mes + dia
-                            prj_entrega.valDataPrev = req.body.dateentrega
-                        }
-                    }
-                }
-
-                prj_entrega.atrasado = atrasou
-                //console.log('atrasou=>' + atrasou)
-                //console.log('req.body.dateateini=>' + req.body.dateateini)
-                prj_entrega.dataIns = dataMensagem(req.body.dateateini)
-                //console.log('dataMensagem(req.body.dateateini)=>' + req.body.dateateini)
-                prj_entrega.valDataIns = req.body.dateateini
-                prj_entrega.checkAte = checkAte
-                prj_entrega.checkInv = checkInv
-                prj_entrega.checkMod = checkMod
-                prj_entrega.save().then(() => {
-                    //console.log('salvou o projeto')
-                    if (req.body.executando == 'true') {
-                        //---Validar as datas de realização com data estimada do fim da entrega--//
-                        if (req.body.datepla != '' && typeof req.body.datepla != 'undefined') {
-                            cronograma.atrasouPla = comparaDatas(cronograma.dateplafim, req.body.datepla)
-                        } else {
-                            cronograma.atrasouPla = false
-                        }
-                        if (req.body.dateprj != '' && typeof req.body.dateprj != 'undefined') {
-                            cronograma.atrasouPrj = comparaDatas(cronograma.dateprjfim, req.body.dateprj)
-                        } else {
-                            cronograma.atrasouPrj = false
-                        }
-                        if (req.body.dateate != '' && typeof req.body.dateate != 'undefined') {
-                            cronograma.atrasouAte = comparaDatas(cronograma.dateatefim, req.body.dateate)
-                        } else {
-                            cronograma.atrasouAte = false
-                        }
-                        if (req.body.dateest != '' && typeof req.body.dateest != 'undefined') {
-                            cronograma.atrasouEst = comparaDatas(cronograma.dateestfim, req.body.dateest)
-                        } else {
-                            cronograma.atrasouEst = false
-                        }
-                        if (req.body.datemod != '' && typeof req.body.datemod != 'undefined') {
-                            cronograma.atrasouMod = comparaDatas(cronograma.datemodfim, req.body.datemod)
-                        } else {
-                            cronograma.atrasouMod = false
-                        }
-                        if (req.body.dateinv != '' && typeof req.body.dateinv != 'undefined') {
-                            cronograma.atrasouInv = comparaDatas(cronograma.dateinvfim, req.body.dateinv)
-                        } else {
-                            cronograma.atrasouInv = false
-                        }
-                        if (req.body.dateeae != '' && typeof req.body.dateeae != 'undefined') {
-                            cronograma.atrasouEae = comparaDatas(cronograma.dateeaefim, req.body.dateeae)
-                        } else {
-                            cronograma.atrasouEae = false
-                        }
-                        if (req.body.datestb != '' && typeof req.body.datestb != 'undefined') {
-                            cronograma.atrasouStb = comparaDatas(cronograma.datestbfim, req.body.datestb)
-                        } else {
-                            cronograma.atrasouStb = false
-                        }
-                        if (req.body.datepnl != '' && typeof req.body.datepnl != 'undefined') {
-                            cronograma.atrasouPnl = comparaDatas(cronograma.datepnlfim, req.body.datepnl)
-                        } else {
-                            cronograma.atrasouPnl = false
-                        }
-                        if (req.body.datevis != '' && typeof req.body.datevis != 'undefined') {
-                            cronograma.atrasouVis = comparaDatas(cronograma.datevisfim, req.body.datevis)
-                        } else {
-                            cronograma.atrasouVis = false
-                        }
-                    }
-                    if (req.body.orcado == 'true') {
-                        //console.log('entrou orçado')
-                        cronograma.dateplaini = req.body.dateplaini
-                        if (req.body.dateplaini != '' && typeof req.body.dateplaini != 'undefined') {
-                            cronograma.agendaPlaIni = dataBusca(req.body.dateplaini)
-                        }
-                        cronograma.dateateini = req.body.dateateini
-                        if (req.body.dateateini != '' && typeof req.body.dateateini != 'undefined') {
-                            cronograma.agendaAteIni = dataBusca(req.body.dateateini)
-                        }
-                        cronograma.dateprjini = req.body.dateprjini
-                        if (req.body.dateprjini != '' && typeof req.body.dateprjini != 'undefined') {
-                            cronograma.agendaPrjIni = dataBusca(req.body.dateprjini)
-                        }
-                        cronograma.dateestini = req.body.dateestini
-                        if (req.body.dateestini != '' && typeof req.body.dateestini != 'undefined') {
-                            cronograma.agendaEstIni = dataBusca(req.body.dateestini)
-                        }
-                        cronograma.datemodini = req.body.datemodini
-                        if (req.body.datemodini != '' && typeof req.body.datemodini != 'undefined') {
-                            cronograma.agendaModIni = dataBusca(req.body.datemodini)
-                        }
-                        cronograma.dateinvini = req.body.dateinvini
-                        if (req.body.dateinvini != '' && typeof req.body.dateinvini != 'undefined') {
-                            cronograma.agendaInvIni = dataBusca(req.body.dateinvini)
-                        }
-                        cronograma.dateeaeini = req.body.dateeaeini
-                        if (req.body.dateeaeini != '' && typeof req.body.dateeaeini != 'undefined') {
-                            cronograma.agendaEaeIni = dataBusca(req.body.dateeaeini)
-                        }
-                        cronograma.datestbini = req.body.datestbini
-                        if (req.body.datestbini != '' && typeof req.body.datestbini != 'undefined') {
-                            cronograma.agendaStbIni = dataBusca(req.body.datestbini)
-                        }
-                        cronograma.datepnlini = req.body.datepnlini
-                        if (req.body.datepnlini != '' && typeof req.body.datepnlini != 'undefined') {
-                            cronograma.agendaPnlIni = dataBusca(req.body.datepnlini)
-                        }
-                        cronograma.datevisini = req.body.datevisini
-                        if (req.body.datevisini != '' && typeof req.body.datevisini != 'undefined') {
-                            cronograma.agendaVisIni = dataBusca(req.body.datevisini)
-                        }
-
-                        cronograma.dateplafim = req.body.dateplafim
-                        if (req.body.dateplafim != '' && typeof req.body.dateplafim != 'undefined') {
-                            cronograma.agendaPlaFim = dataBusca(req.body.dateplafim)
-                        }
-                        cronograma.dateatefim = req.body.dateatefim
-                        if (req.body.dateatefim != '' && typeof req.body.dateatefim != 'undefined') {
-                            cronograma.agendaAteFim = dataBusca(req.body.dateatefim)
-                        }
-                        cronograma.dateprjfim = req.body.dateprjfim
-                        if (req.body.dateprjfim != '' && typeof req.body.dateprjfim != 'undefined') {
-                            cronograma.agendaPrjFim = dataBusca(req.body.dateprjfim)
-                        }
-                        cronograma.dateestfim = req.body.dateestfim
-                        if (req.body.dateestfim != '' && typeof req.body.dateestfim != 'undefined') {
-                            cronograma.agendaEstFim = dataBusca(req.body.dateestfim)
-                        }
-                        cronograma.datemodfim = req.body.datemodfim
-                        if (req.body.datemodfim != '' && typeof req.body.datemodfim != 'undefined') {
-                            cronograma.agendaModFim = dataBusca(req.body.datemodfim)
-                        }
-                        cronograma.dateinvfim = req.body.dateinvfim
-                        if (req.body.dateinvfim != '' && typeof req.body.dateinvfim != 'undefined') {
-                            cronograma.agendaInvFim = dataBusca(req.body.dateinvfim)
-                        }
-                        cronograma.dateeaefim = req.body.dateeaefim
-                        if (req.body.dateeaefim != '' && typeof req.body.dateeaefim != 'undefined') {
-                            cronograma.agendaEaeFim = dataBusca(req.body.dateeaefim)
-                        }
-                        cronograma.datestbfim = req.body.datestbfim
-                        if (req.body.datestbfim != '' && typeof req.body.datestbfim != 'undefined') {
-                            cronograma.agendaStbFim = dataBusca(req.body.datestbfim)
-                        }
-                        cronograma.datepnlfim = req.body.datepnlfim
-                        if (req.body.datepnlfim != '' && typeof req.body.datepnlfim != 'undefined') {
-                            cronograma.agendaPnlFim = dataBusca(req.body.datepnlfim)
-                        }
-                        cronograma.datevisfim = req.body.datevisfim
-                        if (req.body.datevisfim != '' && typeof req.body.datevisfim != 'undefined') {
-                            cronograma.agendaVisFim = dataBusca(req.body.datevisfim)
-                        }
-
-                        if (req.body.datevisfim != '' && typeof req.body.datevisfim != 'undefined') {
-                            if (req.body.dateentrega != '' && typeof req.body.dateentrega != 'undefined' && comparaDatas(req.body.dateentrega, req.body.datevisfim)) {
-                                erros = 'A data de entrega deve ser maior ou igual a data final da vistoria.'
-                                req.flash('error_msg', erros)
-                                res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
-                            } else {
-                                cronograma.dateentrega = req.body.dateentrega
-                            }
-                        }
-                        cronograma.save().then(() => {
-                            //console.log('cronograma salvo.')
-                            sucesso = sucesso + 'Cronograma salvo com sucesso. '
-                            req.flash('error_msg', erros)
-                            req.flash('success_msg', sucesso)
-                            res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Não foi possível salvar o cronograma.')
-                            res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
-                        })
-
-                    }
-                    if (req.body.executando == 'true') {
-                        //console.log('perges=>' + req.body.perges)
-                        var perges = req.body.perges
-                        var perkit = req.body.perkit
-                        var perins = req.body.perins
-                        var perpro = req.body.perpro
-                        var perali = req.body.perali
-                        var perdes = req.body.perdes
-                        var perhtl = req.body.perhtl
-                        var percmb = req.body.percmb
-                        var percer = req.body.percer
-                        var percen = req.body.percen
-                        var perpos = req.body.perpos
-                        if (perges == '') {
-                            perges = 0
-                        }
-                        if (perkit == '') {
-                            perkit = 0
-                        }
-                        if (perins == '') {
-                            perins = 0
-                        }
-                        if (perpro == '') {
-                            perpro = 0
-                        }
-                        if (perali == '') {
-                            perali = 0
-                        }
-                        if (perdes == '') {
-                            perdes = 0
-                        }
-                        if (perhtl == '') {
-                            perhtl = 0
-                        }
-                        if (percmb == '') {
-                            percmb = 0
-                        }
-                        if (percer == '') {
-                            percer = 0
-                        }
-                        if (percen == '') {
-                            percen = 0
-                        }
-                        if (perpos == '') {
-                            perpos = 0
-                        }
-                        cronograma.perGes = perges
-                        cronograma.perKit = perkit
-                        cronograma.perIns = perins
-                        cronograma.perPro = perpro
-                        cronograma.perAli = perali
-                        cronograma.perDes = perdes
-                        cronograma.perHtl = perhtl
-                        cronograma.perCmb = percmb
-                        cronograma.perCer = percer
-                        cronograma.perCen = percen
-                        cronograma.perPos = perpos
-                        cronograma.checkPla = checkPla
-                        cronograma.checkAte = checkAte
-                        cronograma.checkPrj = checkPrj
-                        cronograma.checkEst = checkEst
-                        cronograma.checkMod = checkMod
-                        cronograma.checkInv = checkInv
-                        cronograma.checkEae = checkEae
-                        cronograma.checkStb = checkStb
-                        cronograma.checkPnl = checkPnl
-                        cronograma.checkVis = checkVis
-                        cronograma.datepla = req.body.datepla
-                        cronograma.dateate = req.body.dateate
-                        cronograma.dateprj = req.body.dateprj
-                        cronograma.dateest = req.body.dateest
-                        cronograma.datemod = req.body.datemod
-                        cronograma.dateinv = req.body.dateinv
-                        cronograma.dateeae = req.body.dateeae
-                        cronograma.datestb = req.body.datestb
-                        cronograma.datepnl = req.body.datepnl
-                        cronograma.datevis = req.body.datevis
-
-                        if ((req.body.datevis != '' && typeof req.body.datevis != 'undefined') && (req.body.dateEntregaReal != '' && typeof req.body.dateEntregaReal != 'undifined')) {
-                            if (comparaDatas(req.body.dateEntregaReal, req.body.datevis)) {
-                                erros = erros + 'A data de entrega de finalização do projeto deve ser maior ou igual a data de finalização da vistoria.'
-                            } else {
-                                cronograma.dateEntregaReal = req.body.dateEntregaReal
-                            }
-                        } else {
-                            if ((req.body.datevis == '' || typeof req.body.datevis == 'undefined') && (req.body.dateEntregaReal != '' && typeof req.body.dateEntregaReal != 'undifined')) {
-                                erros = erros + 'A data de entrega de finalização somente será aceita após definir a data de finalização da vistoria.'
-                            }
-                        }
-
-                        //console.log("realizado=>" + realizado)
-                        if (realizado != null) {
-                            //console.log('entrou realizado')
-                            //console.log('totint=>' + totint)
-                            //console.log('totges=>' + totges)
-                            //console.log('totpro=>' + totpro)
-                            //console.log('totali=>' + totali)
-                            //console.log('totdes=>' + totdes)
-                            //console.log('tothtl=>' + tothtl)
-                            //console.log('totcmb=>' + totcmb)
-                            //console.log('cercamento=>' + cercamento)
-                            //console.log('central=>' + central)
-                            //console.log('postecond=>' + postecond)
-
-                            realizado.vlrkit = vlrKitRlz
-                            realizado.totint = totint
-                            realizado.toteng = toteng
-                            realizado.matate = matate
-                            realizado.vlremp = vlremp
-                            realizado.compon = compon
-                            realizado.totges = totges
-                            realizado.totpro = totpro
-                            realizado.totali = totali
-                            realizado.totdes = totdes
-                            realizado.tothtl = tothtl
-                            realizado.totcmb = totcmb
-                            realizado.valorCer = cercamento
-                            realizado.valorCen = central
-                            realizado.valorPos = postecond
-                            realizado.vlrart = 0
-                            realizado.desAdm = 0
-                            realizado.vlrcom = 0
-                            realizado.valor = 0
-                            realizado.vlrNFS = 0
-                            realizado.custoPlano = 0
-                            realizado.lucroLiquido = 0
-                            realizado.custofix = 0
-                            realizado.cutovar = 0
-                            realizado.valorMod = 0
-                            realizado.valorInv = 0
-                            realizado.valorEst = 0
-                            realizado.valorCab = 0
-                            realizado.valorDis = 0
-                            realizado.valorDPS = 0
-                            realizado.valorSB = 0
-                            realizado.valorOcp = 0
-                            realizado.totalTributos = 0
-                            realizado.custoPlano = 0
-
-                            cronograma.save().then(() => {
-                                //console.log('cronograma salvo.')
-                                realizado.save().then(() => {
-                                    sucesso = sucesso + 'Cronograma salvo com sucesso. '
-                                    req.flash('error_msg', erros)
-                                    req.flash('success_msg', sucesso)
-                                    res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Não foi possível salvar o projeto.')
-                                    res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
-                                })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi possível salvar o cronograma.')
-                                res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
-                            })
-
-                        } else {
-                            //console.log('novo realizado')
-                            //console.log('req.boy.totint=>' + req.body.totint)
-                            const realizado = {
-                                user: id,
-                                projeto: req.body.idprojeto,
-                                vlrkit: req.body.vlrKitRlz,
-                                totint: req.body.totint,
-                                toteng: 0,
-                                matate: 0,
-                                vlrwmp: 0,
-                                compon: 0,
-                                totges: req.body.totges,
-                                totpro: req.body.totpro,
-                                totali: req.body.totali,
-                                totdes: req.body.totdes,
-                                tothtl: req.body.tothtl,
-                                totcmb: req.body.totcmb,
-                                valorCer: req.body.cercamento,
-                                valorCen: req.body.central,
-                                valorPos: req.body.postecond,
-                                vlrart: 0,
-                                desAdm: 0,
-                                vlrcom: 0,
-                                valor: 0,
-                                vlrNFS: 0,
-                                custoPlano: 0,
-                                lucroLiquido: 0,
-                                custofix: 0,
-                                cutovar: 0,
-                                valorMod: 0,
-                                valorInv: 0,
-                                valorEst: 0,
-                                valorCab: 0,
-                                valorDis: 0,
-                                valorDPS: 0,
-                                valorSB: 0,
-                                valorOcp: 0,
-                                totalTributos: 0,
-                                custoPlano: 0
-                            }
-
-                            new Realizado(realizado).save().then(() => {
-                                cronograma.save().then(() => {
-                                    sucesso = sucesso + 'Cronograma salvo com sucesso. '
-                                    req.flash('error_msg', erros)
-                                    req.flash('success_msg', sucesso)
-                                    res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
-                                }).catch((err) => {
-                                    req.flash('error_msg', 'Não foi possível salvar o cronograma.')
-                                    res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
-                                })
-                            }).catch((err) => {
-                                req.flash('error_msg', 'Não foi posível realizar o projeto.')
-                                res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
-                            })
-                        }
-                    }
-                }).catch((err) => {
-                    req.flash('error_msg', 'Não foi possível salvar o projeto.')
-                    res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
-                })
-            }).catch((err) => {
-                req.flash('error_msg', 'Não foi possível encontrar o projeto realizado.')
-                res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
-            })
-        }).catch((err) => {
-            req.flash('error_msg', 'Não foi possível encontrar o cronograma.')
-            res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
-        })
-    }).catch((err) => {
-        req.flash('error_msg', 'Não foi possível encontrar o projeto.')
-        res.redirect('/gerenciamento/cronograma/' + req.body.idprojeto)
-    })
-})
-
-router.post('/planejamento', ehAdmin, (req, res) => {
-    var id
-    const { _id } = req.user
-    const { user } = req.user
-    if (typeof user == 'undefined') {
-        id = _id
-    } else {
-        id = user
-    }
-    //console.log('req.body.id=>' + req.body.id)
-    Projeto.findOne({ _id: req.body.id }).then((projeto) => {
-        Vistoria.findOne({ projeto: req.body.id }).then((vistoria) => {
-            //console.log('vistoria=>' + vistoria)
-            if (vistoria != '' && typeof vistoria != 'undefined' && vistoria != null) {
-                vistoria.plaQtdMod = req.body.plaQtdMod
-                vistoria.plaWattMod = req.body.plaWattMod
-                vistoria.plaQtdInv = req.body.plaQtdInv
-                vistoria.plaKwpInv = req.body.plaKwpInv
-                vistoria.plaDimArea = req.body.plaDimArea
-                vistoria.plaQtdString = req.body.plaQtdString
-                vistoria.plaModString = req.body.plaModString
-                vistoria.plaQtdEst = req.body.plaQtdEst
-                vistoria.save().then(() => {
-                    projeto.qtdmod = req.body.plaQtdMod
-                    projeto.totint = parseFloat(req.body.plaQtdMod) * parseFloat(projeto.rspmod)
-                    projeto.save().then(() => {
-                        Detalhado.findOne({ projeto: req.body.id }).then((detalhe) => {
-                            if (detalhe != '' && typeof detalhe != 'undefined' && detalhe != null) {
-                                detalhe.projeto = req.body.id
-                                detalhe.unidadeMod = req.body.plaQtdMod
-                                detalhe.save().then(() => {
-                                    req.flash('success_msg', 'Vistoria salva com sucesso.')
-                                    res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
-                                })
-                            } else {
-                                const detalhe = {
-                                    projeto: req.body.id,
-                                    unidadeMod: req.body.plaQtdMod
-                                }
-                                new Detalhado(detalhe).save().then(() => {
-                                    projeto.qtdmod = req.body.plaQtdMod
-                                    projeto.totint = parseFloat(req.body.plaQtdMod) * parseFloat(projeto.rspmod)
-                                    projeto.save().then(() => {
-                                        req.flash('success_msg', 'Vistoria salva com sucesso.')
-                                        res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
-                                    })
-
-                                })
-                            }
-                        })
-                    })
-                })
-            } else {
-                const vistoria = {
-                    user: id,
-                    projeto: req.body.id,
-                    plaQtdMod: req.body.plaQtdMod,
-                    plaWattMod: req.body.plaWattMod,
-                    plaQtdInv: req.body.plaQtdInv,
-                    plaKwpInv: req.body.plaKwpInv,
-                    plaDimArea: req.body.plaDimArea,
-                    plaQtdString: req.body.plaQtdString,
-                    plaModString: req.body.plaModString,
-                    plaQtdEst: req.body.plaQtdEst
-                }
-                new Vistoria(vistoria).save().then(() => {
-                    Detalhado.findOne({ projeto: req.body.id }).then((detalhe) => {
-                        if (detalhe._id != '' && typeof detalhe._id != 'undefined' && detalhe != null) {
-                            detalhe.projeto = req.body.id
-                            detalhe.unidadeMod = req.body.plaQtdMod
-                            detalhe.save().then(() => {
-                                projeto.qtdmod = req.body.plaQtdMod
-                                projeto.totint = parseFloat(req.body.plaQtdMod) * parseFloat(projeto.rspmod)
-                                projeto.save().then(() => {
-                                    req.flash('success_msg', 'Vistoria salva com sucesso.')
-                                    res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
-                                })
-                            })
-                        } else {
-                            const detalhe = {
-                                projeto: req.body.id,
-                                unidadeMod: req.body.plaQtdMod
-                            }
-                            new Detalhado(detalhe).save().then(() => {
-                                projeto.qtdmod = req.body.plaQtdMod
-                                projeto.totint = parseFloat(req.body.plaQtdMod) * parseFloat(projeto.rspmod)
-                                projeto.save().then(() => {
-                                    req.flash('success_msg', 'Vistoria salva com sucesso.')
-                                    res.redirect('/gerenciamento/vistoriaPla/' + req.body.id)
-                                })
-                            })
-                        }
-                    })
-                })
-            }
-        })
     })
 })
 

@@ -1,6 +1,5 @@
-var filtrarProposta = function (f, id, stats, motivo, responsavel, empresa, cliente, enviado, ganho, assinado, encerrado, baixado) {
+var filtrarProposta = function (f, id, stats, vendedor, motivo, responsavel, empresa, cliente, enviado, ganho, assinado, encerrado, baixado) {
     var sql = []
-
     // console.log('id=>' + id)
     // console.log('responsavel=>' + responsavel)
     // console.log('cliente=>' + cliente)
@@ -108,51 +107,49 @@ var filtrarProposta = function (f, id, stats, motivo, responsavel, empresa, clie
                 }
             }
         } else {
-            console.log('motivo=>'+motivo)
-            console.log('cliente=>'+cliente)
-            console.log('empresa=>'+empresa)
-            console.log('responsavel=>'+responsavel)
-            if (motivo == 'Todos' && cliente == 'Todos' && empresa == 'Todos' && responsavel == 'Todos') {
-                sql = { user: id}
-            } else {
-                if (motivo != 'Todos' && cliente != 'Todos' && empresa != 'Todos' && responsavel == 'Todos') {
-                    sql = { user: id, cliente: cliente, motivo: motivo, empresa: empresa}
+            if (f == 3) {
+                if (motivo == 'Todos' && cliente == 'Todos' && empresa == 'Todos' && responsavel == 'Todos') {
+                    sql = { user: id }
                 } else {
-                    if (motivo != 'Todos' && cliente != 'Todos' && empresa == 'Todos' && responsavel == 'Todos') {
-                        sql = { user: id, cliente: cliente, motivo: motivo}
+                    if (motivo != 'Todos' && cliente != 'Todos' && empresa != 'Todos' && responsavel == 'Todos') {
+                        sql = { user: id, cliente: cliente, motivo: motivo, empresa: empresa }
                     } else {
-                        if (motivo != 'Todos' && cliente == 'Todos' && empresa == 'Todos' && responsavel == 'Todos') {
-                            sql = { user: id, motivo: motivo}
+                        if (motivo != 'Todos' && cliente != 'Todos' && empresa == 'Todos' && responsavel == 'Todos') {
+                            sql = { user: id, cliente: cliente, motivo: motivo }
                         } else {
-                            if (motivo == 'Todos' && cliente != 'Todos' && empresa == 'Todos' && responsavel == 'Todos') {
-                                sql = { user: id, cliente: cliente}
+                            if (motivo != 'Todos' && cliente == 'Todos' && empresa == 'Todos' && responsavel == 'Todos') {
+                                sql = { user: id, motivo: motivo }
                             } else {
-                                if (motivo != 'Todos' && cliente == 'Todos' && empresa != 'Todos' && responsavel == 'Todos') {
-                                    sql = { user: id, motivo: motivo}
+                                if (motivo == 'Todos' && cliente != 'Todos' && empresa == 'Todos' && responsavel == 'Todos') {
+                                    sql = { user: id, cliente: cliente }
                                 } else {
-                                    if (motivo == 'Todos' && cliente != 'Todos' && empresa != 'Todos' && responsavel == 'Todos') {
-                                        sql = { user: id, empresa: empresa, responsavel: responsavel, cliente: cliente}
-                                    }else{
-                                        if (motivo == 'Todos' && cliente == 'Todos' && empresa == 'Todos' && responsavel != 'Todos') {
-                                            sql = { user: id, responsavel: responsavel}
+                                    if (motivo != 'Todos' && cliente == 'Todos' && empresa != 'Todos' && responsavel == 'Todos') {
+                                        sql = { user: id, motivo: motivo }
+                                    } else {
+                                        if (motivo == 'Todos' && cliente != 'Todos' && empresa != 'Todos' && responsavel == 'Todos') {
+                                            sql = { user: id, empresa: empresa, responsavel: responsavel, cliente: cliente }
                                         } else {
-                                            if (motivo != 'Todos' && cliente != 'Todos' && empresa != 'Todos' && responsavel != 'Todos') {
-                                                sql = { user: id, cliente: cliente, motivo: motivo, empresa: empresa, responsavel: responsavel}
+                                            if (motivo == 'Todos' && cliente == 'Todos' && empresa == 'Todos' && responsavel != 'Todos') {
+                                                sql = { user: id, responsavel: responsavel }
                                             } else {
-                                                if (motivo != 'Todos' && cliente != 'Todos' && empresa == 'Todos' && responsavel != 'Todos') {
-                                                    sql = { user: id, cliente: cliente, motivo: motivo, responsavel: responsavel}
+                                                if (motivo != 'Todos' && cliente != 'Todos' && empresa != 'Todos' && responsavel != 'Todos') {
+                                                    sql = { user: id, cliente: cliente, motivo: motivo, empresa: empresa, responsavel: responsavel }
                                                 } else {
-                                                    if (motivo != 'Todos' && cliente == 'Todos' && empresa == 'Todos' && responsavel != 'Todos') {
-                                                        sql = { user: id, motivo: motivo, responsavel: responsavel}
+                                                    if (motivo != 'Todos' && cliente != 'Todos' && empresa == 'Todos' && responsavel != 'Todos') {
+                                                        sql = { user: id, cliente: cliente, motivo: motivo, responsavel: responsavel }
                                                     } else {
-                                                        if (motivo == 'Todos' && cliente != 'Todos' && empresa == 'Todos' && responsavel != 'Todos') {
-                                                            sql = { user: id, cliente: cliente, responsavel: responsavel}
+                                                        if (motivo != 'Todos' && cliente == 'Todos' && empresa == 'Todos' && responsavel != 'Todos') {
+                                                            sql = { user: id, motivo: motivo, responsavel: responsavel }
                                                         } else {
-                                                            if (motivo != 'Todos' && cliente == 'Todos' && empresa != 'Todos' && responsavel != 'Todos') {
-                                                                sql = { user: id, motivo: motivo, responsavel: responsavel}
+                                                            if (motivo == 'Todos' && cliente != 'Todos' && empresa == 'Todos' && responsavel != 'Todos') {
+                                                                sql = { user: id, cliente: cliente, responsavel: responsavel }
                                                             } else {
-                                                                if (motivo == 'Todos' && cliente != 'Todos' && empresa != 'Todos' && responsavel != 'Todos') {
-                                                                    sql = { user: id, cliente: cliente, empresa: empresa, responsavel: responsavel}
+                                                                if (motivo != 'Todos' && cliente == 'Todos' && empresa != 'Todos' && responsavel != 'Todos') {
+                                                                    sql = { user: id, motivo: motivo, responsavel: responsavel }
+                                                                } else {
+                                                                    if (motivo == 'Todos' && cliente != 'Todos' && empresa != 'Todos' && responsavel != 'Todos') {
+                                                                        sql = { user: id, cliente: cliente, empresa: empresa, responsavel: responsavel }
+                                                                    }
                                                                 }
                                                             }
                                                         }
@@ -166,10 +163,38 @@ var filtrarProposta = function (f, id, stats, motivo, responsavel, empresa, clie
                         }
                     }
                 }
+            } else {
+                // if (vendedor == 'Todos' && cliente == 'Todos' && stats == 'Todos') {
+                //     sql = { user: id }
+                // } else {
+                    if (vendedor != 'Todos' && cliente != 'Todos' && stats != 'Todos') {
+                        sql = {cliente: cliente, vendedor: vendedor, status: stats }
+                    } else {
+                        if (vendedor != 'Todos' && cliente != 'Todos' && stats == 'Todos') {
+                            sql = {cliente: cliente, vendedor: vendedor }
+                        } else {
+                            if (vendedor != 'Todos' && cliente == 'Todos' && stats == 'Todos') {
+                                sql = {vendedor: vendedor }
+                            } else {
+                                if (vendedor == 'Todos' && cliente != 'Todos' && stats == 'Todos') {
+                                    sql = {cliente: cliente }
+                                } else {
+                                    if (vendedor != 'Todos' && cliente == 'Todos' && stats != 'Todos') {
+                                        sql = {vendedor: vendedor }
+                                    } else {
+                                        if (vendedor == 'Todos' && cliente != 'Todos' && stats != 'Todos') {
+                                            sql = {cliente: cliente }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                //}
             }
         }
     }
-
+    console.log('sql filtro=>'+JSON.stringify(sql))
     return sql
 }
 

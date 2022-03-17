@@ -1,0 +1,125 @@
+<style>
+    button {
+        line-height: 0px;
+    }
+
+    #header {
+        width: 100%;
+        border-bottom: rgb(40, 55, 86) 0, 1px solid;
+        color: rgb(40, 55, 86);
+    }
+
+    .filtro-selecao {
+        width: fit-content;
+        height: fit-content;
+        background: white;
+        border: solid 1px;
+        border-radius: 10px;
+        margin-left: 5px;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    th {
+        text-align: center;
+    }
+
+    tr {
+        font-size: 12px;
+        border-bottom: rgba(120, 120, 120, 0.4) solid 1px;
+    }
+</style>
+<script>
+    //Slecionar estados e cidades
+    window.onload = function () {
+        var estados = document.getElementById('estado');
+        var cidades = document.getElementById('cidade');
+        new dgCidadesEstados({
+            estado: estados,
+            cidade: cidades,
+            estadoVal: '<%=Request("estado") %>',
+            cidadeVal: '<%=Request("cidade") %>'
+        });
+    };
+</script>
+<div class="row" style="width: 100%;padding-left: 2%;">
+    <div id='header'>
+        <div class="row mt-4">
+            <form action='/cliente/filtrar' method='post'>
+                <div class="row d-flex align-items-center">
+                    <div class="col-md-1">
+                        <h5 class='titulo-inicio mt-2'>Clientes</h5>
+                    </div>
+                    <div class="col">
+                        <a href="/cliente/novo" style="font-size: 20px;" title="Adicionar Cliente"><i class='bi bi-person-plus'></i></a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3 mb-2 text-start" style="padding-left: 3%;">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Nome</label>
+                        <div class="col">
+                            <input name='nome' type='text' class="form-control form-control-sm">
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-start">
+                        <label class='col-form-label col-form-label-sm fw-bold'>UF</label>
+                        <div class="col">
+                            <select id="estado" name='uf' class='form-select form-select-sm mb-1'>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-start">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Cidade</label>
+                        <div class="col">
+                            <select id="cidade" name='cidade' class='form-select form-select-sm mb-1'>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-1 text-start mt-4">
+                        <button style="margin-top: 0px;" type='submit' class='botaofiltrar'><i
+                                class='bi bi-search iconefiltrar'></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class='filtro-selecao' style="margin-left: 3%;">Nome: {{nome}}</div>
+            <div class='filtro-selecao'>UF: {{uf}}</div>
+            <div class='filtro-selecao'>Cidade: {{cidade}}</div>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 4%;margin-top: 1%;">
+        <table>
+            <tr style="line-height: 20px;">
+                <th>Nome</th>
+                <th>Cidade</th>
+                <th>Estado</th>
+                <th>E-mail</th>
+                <th>Celular</th>
+                <th style="width: 2%;"></th>
+            </tr>
+            {{#each clientes}}
+            <tr>
+                <td style="text-align: center;"><a href='/cliente/edicao/{{_id}}'>{{nome}}</a></td>
+                <td style="text-align: center;"><a href='/cliente/edicao/{{_id}}'>{{cidade}}</a></td>
+                <td style="text-align: center;"><a href='/cliente/edicao/{{_id}}'>{{uf}}</a></td>
+                <td style="text-align: center;"><a href='/cliente/edicao/{{_id}}'>{{email}}</a></td>
+                <td style="text-align: center;"><a href='/cliente/edicao/{{_id}}'>{{celular}}</a></td>
+                <td>
+                    <div class='btn-group col-12 gap-2' role='group'>
+                        <a href='/cliente/confirmaexclusao/{{_id}}' class='botao-tabela ativado'> <i
+                                class='bi bi-trash icone'></i> </a>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {{else}}
+            <h6>Nenhuma pessoa cadastrada</h6>
+            {{/each}}
+        </table>
+    </div>
+</div>

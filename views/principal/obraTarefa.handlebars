@@ -209,7 +209,7 @@
                         <i style="font-size: 36px" class='bi bi-arrow-right-circle'></i>
                     </button>
                     {{#if lista_tarefas}}
-                    <a href='/gerenciamento/entrega/{{obra._id}}' class="setaproximo"><i style="font-size: 50px;"
+                    <a href='/gerenciamento/entrega/{{obra._id}}' class="setaproximo"><i style="font-size: 40px;color: green;"
                             class='bi bi-check2-circle'></i></a>
                     {{/if}}
                 </div>
@@ -238,18 +238,45 @@
                 <table>
                     <tr>
                         <th style="width: 20%;">Descrição</th>
-                        <th style="width: 10%;">Início</th>
-                        <th style="width: 10%;">Fim</th>
-                        <th style="width: 15%;">Responsável</th>
+                        <th style="width: 15%;">Início</th>
+                        <th style="width: 15%;">Fim</th>
+                        <th style="width: 25%;">Responsável</th>
                         <th style="width: 10%;">Valor(R$)</th>
+                        <th style="width: 5%;">Status</th>
+                        <th style="width: 2%;"></th>
                     </tr>
                     {{#each lista_tarefas}}
                     <tr>
-                        <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{desc}}</a></th>
-                        <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{dtini}}</a></th>
-                        <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{dtfim}}</a></th>
-                        <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{nome_tec}}</a></th>
-                        <th><a href='/gerenciamento/tarefas/{{idtarefa}}'>{{custo}}</a></th>
+                        <td><a href='/gerenciamento/equipetarefa/{{idtarefa}}'>{{desc}}</a></td>
+                        <td><a href='/gerenciamento/equipetarefa/{{idtarefa}}'>{{dtini}}</a></td>
+                        <td><a href='/gerenciamento/equipetarefa/{{idtarefa}}'>{{dtfim}}</a></td>
+                        <td><a href='/gerenciamento/equipetarefa/{{idtarefa}}'>{{nome_tec}}</a></td>
+                        <td><a href='/gerenciamento/equipetarefa/{{idtarefa}}'>{{custo}}</a></td>
+                         <td style="font-size: 12px">  
+                            {{#if feito}}
+                            <div style="padding-left: 20px;display: flex;align-items:center;">
+                                <div><i id='realizado' class='bi bi-check d-flex align-items-center mt-1'
+                                        style="position: relative;transform: translateY(10%);color: rgb(55,49,89);"></i>
+                                </div>
+                            </div>
+                            {{else}}
+                            {{#if liberado}}
+                            <div style="padding-left: 20px;display: flex;align-items:center;">
+                                <div id='execucao' style="position: relative;top: 40%;transform: translateY(30%);">
+                                </div>
+                            </div>
+                            {{else}}
+                            <div style="padding-left: 20px;display: flex;align-items:center;">
+                                <div id='aguardando' style="position: relative;top: 50%;transform: translateY(30%);">
+                                </div>
+                            </div>
+                            {{/if}}
+                            {{/if}}
+                        </td>
+                        <td>
+                            <a href='/gerenciamento/mostraEquipe/{{idtarefa}}'><i
+                                    class='bi bi-folder2-open d-flex align-items-center' title="Equipe"></i></a>
+                        </td>
                     </tr>
                     {{/each}}
                 </table>
@@ -264,7 +291,7 @@
             </div>
         </div>
         {{else}}
-        <div class="card">
+        <di      class="card">
             <div class="container text-center">
                 <label style='font-size: 30px;padding-top: 100px;font-weight: bold;'>Obra sem tarefas</label><br>
                 <label style="padding-bottom: 80px;font-size: 20px;">Clique na aba "Adicionar Tarefa" e inicie o

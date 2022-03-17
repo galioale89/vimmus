@@ -1,0 +1,22 @@
+<div class='container'>
+    <div class="card mt-4">
+        <div class="card-body">
+            <div class="row" style="margin-top: 30px;">
+                <label class="text-center mb-4" style="font-size: 30px;"><strong>Encontrou Cliente</strong></label>
+                <label class="text-center mb-4" style="font-size: 20px;">{{ocliente}}</label><br>
+                <div class="row">
+                    <div class="col-md-2">
+                        <label class="col-form-label">Propostas: </label>
+                    </div>
+                    {{#each propostas}}
+                    <div class="col-md-3 text-start">
+                        <label class="col-form-label fw-bold">{{seq}}</label>
+                        <label class="col-form-label">[Vendedor:&nbsp{{nome_ven}} ]</label>
+                    </div>
+                    {{/each}}
+                </div>
+                <a class='btn btn-primary' href='/gerenciamento/orcamento/'>Voltar</a>
+            </div>
+        </div>
+    </div>
+</div>

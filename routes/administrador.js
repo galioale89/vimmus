@@ -6,22 +6,14 @@ const bcrypt = require("bcryptjs")
 const mongoose = require('mongoose');
 
 const Usuarios = mongoose.model('usuario')
-const Projeto = mongoose.model('projeto')
 const Acesso = mongoose.model('acesso')
 const Pessoa = mongoose.model('pessoa')
+const Projeto = mongoose.model('projeto')
+const Equipe = mongoose.model('equipe')
 
 const { ehMaster } = require('../helpers/ehMaster')
 const { ehAdmin } = require('../helpers/ehAdmin')
 
-const comparaDatas = require('../resources/comparaDatas')
-const dataBusca = require('../resources/dataBusca')
-const liberaRecursos = require('../resources/liberaRecursos')
-const setData = require('../resources/setData')
-const dataMensagem = require('../resources/dataMensagem')
-const dataMsgNum = require('../resources/dataMsgNum')
-const validaCronograma = require('../resources/validaCronograma')
-const dataHoje = require('../resources/dataHoje')
-const filtrarProposta = require('../resources/filtrar')
 const naoVazio = require('../resources/naoVazio')
 
 router.get('/', ehMaster, (req, res) => {
@@ -43,10 +35,14 @@ router.get('/acesso', ehMaster, (req, res) => {
                     if (pessoa.funges == true) {
                         funcao = 'Gestão'
                     } else {
-                        if (pessoa.ehVendedor == true) {
+                        if (pessoa.vendedor == true) {
                             funcao = 'Vendedor'
                         } else {
-                            funcao = 'Técnico'
+                            if (pessoa.funorc == true) {
+                                funcao = 'Orçamentista'
+                            } else {
+                                funcao = 'Instalador'
+                            }
                         }
                     }
                     lista.push({ id: element._id, usuario: element.usuario, nome: pessoa.nome, email: pessoa.email, celular: pessoa.celular, endereco: pessoa.endereco, cidade: pessoa.cidade, uf: pessoa.uf, ehAdmin: element.ehAdmin, funcao })
@@ -70,7 +66,16 @@ router.get('/acesso', ehMaster, (req, res) => {
 
 router.get('/confirmaexclusao/:id', ehMaster, (req, res) => {
     Usuarios.findOne({ _id: req.params.id }).lean().then((usuario) => {
-        res.render('usuario/confirmaexclusao', { usuario })
+        if (naoVazio(usuario)) {
+            res.render('usuario/confirmaexclusao', { usuario })
+        } else {
+            Acesso.findOne({ _id: req.params.id }).lean().then((acesso) => {
+                res.render('usuario/confirmaexclusao', { acesso })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar o usuário de acesso')
+                res.redirect('/projeto/consulta')
+            })
+        }
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar o projeto')
         res.redirect('/projeto/consulta')
@@ -79,26 +84,60 @@ router.get('/confirmaexclusao/:id', ehMaster, (req, res) => {
 
 router.get('/remover/:id', ehMaster, (req, res) => {
     var erros = []
-    Projeto.findOne({ user: req.params.id }).lean().then((projeto_user) => {
-        if (projeto_user != null) {
-            erros.push({ texto: 'Não é possível excluir este usuário pois está vinculado a projetos.' })
-        }
-        if (erros.length > 0) {
-            Usuarios.find().lean().then((usuarios) => {
-                res.render('usuario/administrador', { erros, usuarios: usuarios })
+    Acesso.findOne({ _id: req.params.id }).then((acesso) => {
+        Pessoa.findOne({ _id: acesso.pessoa }).then((pessoa) => {
+            Projeto.findOne({ vendedor: pessoa._id }).then((prj_ven) => {
+                console.log('prj_ven=>' + prj_ven)
+                if (naoVazio(prj_ven)) {
+                    req.flash('error_msg', 'Não é possível excluir este vendedor pois está vinculado a propostas.')
+                    res.redirect('/administrador/acesso')
+                } else {
+                    Projeto.findOne({ responsavel: pessoa._id }).then((prj_res) => {
+                        console.log('prj_res=>' + prj_res)
+                        if (naoVazio(prj_res)) {
+                            req.flash('error_msg', 'Não é possível excluir este orcamentista pois está vinculado a propostas.')
+                            res.redirect('/administrador/acesso')
+                        } else {
+                            Equipe.findOne({ insres: pessoa._id }).then((equipe) => {
+                                console.log('equipe=>' + equipe)
+                                if (naoVazio(equipe)) {
+                                    req.flash('error_msg', 'Não é possível excluir este instalador pois está vinculada a obras.')
+                                    res.redirect('/administrador/acesso')
+                                } else {
+                                    Pessoa.findOneAndDelete({ _id: pessoa._id }).then(() => {
+                                        Acesso.findOneAndDelete({ pessoa: pessoa._id }).then(() => {
+                                            req.flash('success_msg', 'Pessoa excluida com sucesso')
+                                            res.redirect('/administrador/acesso')
+                                        }).catch((err) => {
+                                            req.flash('error_msg', 'Houve um erro ao excluir o acesso.')
+                                            res.redirect('/pessoa//consulta')
+                                        })
+                                    }).catch((err) => {
+                                        req.flash('error_msg', 'Houve um erro ao excluir a pessoa.')
+                                        res.redirect('/pessoa//consulta')
+                                    })
+                                }
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Houve um erro ao encontrar a equipe.')
+                                res.redirect('/administrador/acesso')
+                            })
+                        }
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Houve um erro ao encontrar o projeto.')
+                        res.redirect('/administrador/acesso')
+                    })
+                }
             }).catch((err) => {
-                req.flash('error_msg', 'Não há nenhum usuário cadastrada')
-                res.redirect('/menu')
+                req.flash('error_msg', 'Houve um erro ao encontrar o projeto.')
+                res.redirect('/administrador/acesso')
             })
-        } else {
-            Usuarios.findOneAndDelete({ _id: req.params.id }).then(() => {
-                req.flash('success_msg', 'Usuário excluido com sucesso')
-                res.redirect('/administrador')
-            }).catch((err) => {
-                req.flash('error_msg', 'Houve um erro ao excluir o usuário.')
-                res.redirect('/administrador')
-            })
-        }
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha ao encontrar o projeto cadastrado.')
+            res.redirect('/administrador/acesso')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Falha ao encontrar o usuário de acesso cadastrado.')
+        res.redirect('/administrador/acesso')
     })
 
 })
@@ -331,7 +370,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                             }
 
                             // //console.log('senha=>' + req.body.senha)
-                            if (req.body.senha != '') {
+                            if (naoVazio(req.body.senha)) {
                                 senha = req.body.senha
                                 bcrypt.genSalt(10, (erro, salt) => {
                                     bcrypt.hash(senha, salt, (erro, hash) => {
@@ -383,7 +422,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
             })
         } else {
             Acesso.findOne({ _id: req.body.id }).then((acesso_existe) => {
-                //console.log('acesso_existe=>' + acesso_existe)
+                console.log('acesso_existe=>' + acesso_existe)
                 if (acesso_existe == null) {
                     if ((req.body.senha != '' && req.body.senharep == '') || (req.body.senha == '' && req.body.senharep != '')) {
                         if (!req.body.senha || typeof req.body.senha == undefined || req.body.senha == true) {
@@ -487,8 +526,8 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                 usuario.dataexp = anoexp + '' + mesexp + '' + diaexp
                             }
 
-                            //console.log('senha=>' + req.body.senha)
-                            if (req.body.senha != '') {
+                            console.log('senha=>' + req.body.senha)
+                            if (naoVazio(req.body.senha)) {
                                 senha = req.body.senha
                                 bcrypt.genSalt(10, (erro, salt) => {
                                     bcrypt.hash(senha, salt, (erro, hash) => {
@@ -550,6 +589,11 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                             } else {
                                 pessoa.cpf = 0
                             }
+                            if (naoVazio(req.body.cnpj)) {
+                                pessoa.cnpj = req.body.cnpj
+                            } else {
+                                pessoa.cnpj = 0
+                            }
                             if (naoVazio(req.body.endereco)) {
                                 pessoa.endereco = req.body.endereco
                             } else {
@@ -587,6 +631,51 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                     }
                                     res.render("usuario/editregistro", { erros, usuario: usuario_atual, ehUserMaster, owner })
                                 } else {
+
+                                    var notpro
+                                    var notvis
+                                    var notobs
+                                    var notorc
+                                    var notins
+                                    var notgan
+                                    var notped
+
+                                    if (naoVazio(req.body.notpro)) {
+                                        notpro = 'checked'
+                                    } else {
+                                        notpro = 'unchecked'
+                                    }
+                                    if (naoVazio(req.body.notorc)) {
+                                        notorc = 'checked'
+                                    } else {
+                                        notorc = 'unchecked'
+                                    }
+                                    if (naoVazio(req.body.notobs)) {
+                                        notobs = 'checked'
+                                    } else {
+                                        notobs = 'unchecked'
+                                    }
+                                    if (naoVazio(req.body.notvis)) {
+                                        notvis = 'checked'
+                                    } else {
+                                        notvis = 'unchecked'
+                                    }
+                                    if (naoVazio(req.body.notins)) {
+                                        notins = 'checked'
+                                    } else {
+                                        notins = 'unchecked'
+                                    }
+                                    if (naoVazio(req.body.notgan)) {
+                                        notgan = 'checked'
+                                    } else {
+                                        notgan = 'unchecked'
+                                    }
+                                    if (naoVazio(req.body.notped)) {
+                                        notped = 'checked'
+                                    } else {
+                                        notped = 'unchecked'
+                                    }
+
                                     if ((req.body.senha != '' && req.body.senharep == '') || (req.body.senha == '' && req.body.senharep != '')) {
                                         if (!req.body.senha || typeof req.body.senha == undefined || req.body.senha == true) {
                                             erros = erros + "Senha Inválida."
@@ -618,6 +707,14 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                                 acesso.ehAdmin = req.body.tipo
                                             }
 
+                                            acesso.notpro = notpro
+                                            acesso.notorc = notorc
+                                            acesso.notvis = notvis
+                                            acesso.notobs = notobs
+                                            acesso.notgan = notgan
+                                            acesso.notins = notins
+                                            acesso.notped = notped
+
                                             if (acesso.datalib == '' || acesso.datalib == null) {
                                                 data = new Date()
                                                 ano = data.getFullYear()
@@ -633,9 +730,9 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                                 acesso.dataexp = anoexp + '' + mesexp + '' + diaexp
                                             }
 
-                                            //console.log('senha=>' + req.body.senha)
-                                            //console.log('acesso.senha=>' + acesso.senha)
-                                            if (req.body.senha != '') {
+                                            console.log('senha=>' + req.body.senha)
+                                            console.log('acesso.senha=>' + acesso.senha)
+                                            if (naoVazio(req.body.senha)) {
                                                 senha = req.body.senha
                                                 bcrypt.genSalt(10, (erro, salt) => {
                                                     bcrypt.hash(senha, salt, (erro, hash) => {
@@ -658,7 +755,7 @@ router.post("/editregistro", ehAdmin, (req, res) => {
                                                 })
                                             } else {
                                                 acesso.save().then(() => {
-                                                    //console.log('atualizou')
+                                                    console.log('atualizou')
                                                     req.flash('success_msg', 'Alteração(ões) realizadas com sucesso.')
                                                     res.redirect('/usuario/editar/' + req.body.id)
                                                 }).catch((err) => {

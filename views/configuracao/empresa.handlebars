@@ -2,14 +2,34 @@
     .tamanhodiv {
         width: 700px;
     }
+
+    label {
+        text-transform: none;
+    }
 </style>
 <script>
-    function info_despesas() {
-        alert('As despesas administrativas consideram também as despesas comerciais e financieras. Neste campos deverá preencher com os gasto mensais, por exemplo, refernete a aluguel, luz, água, telefone, combustível para visitas, pró-labore, folha fixa das secretárias e vendedores, empréstimos, juros, tarifas, reservas, entre outros. Aqui pode ou não considerar as remunerações dos recursos de custo operacionais.')
+
+    function preview_foto() {
+        var imagem = document.querySelector('input[name=logo]').files[0]
+        var preview = document.querySelector('img[name=foto]')
+        var salva = document.getElementById('fotosalva')
+        var fotoprev = document.getElementById('fotopreview')
+
+        salva.style.display = 'none'
+        fotoprev.style.display = ''
+
+        var reader = new FileReader()
+        reader.onloadend = function () {
+            preview.src = reader.result
+        }
+
+        if (imagem) {
+            reader.readAsDataURL(imagem)
+        } else {
+            preview.src = ''
+        }
     }
-    function info_simples() {
-        alert('O valor do campo <Projeção de Faturamento Simples> deverá ser preenchido com o valor de faturamento estimado para o ano corrente. Assim, os campos <Fator de Redução> e <DAS> deverão acompanhar  a faixa de faturamento que a projeção da sua empresa está inserida nos Anexos do Simples Nacional.')
-    }
+
     function valida_cnpj() {
         var cnpj = document.getElementById('cnpj')
 
@@ -77,214 +97,26 @@
             }
         }
     }
-    function selecionar() {
-        var selectQtd = document.getElementById('selectQtd')
-        var selectKwp = document.getElementById('selectKwp')
-        var selecionado = document.getElementById('selecionado')
-        var perdes = document.getElementById('perdes')
-        var estkwp = document.getElementById('estkwp')
-        var perlabel = document.getElementById('perlabel')
-        var kwplabel = document.getElementById('kwplabel')
-        if (selectQtd.checked) {
-            selecionado.value = 'quantidade'
-            perdes.type = 'text'
-            estkwp.type = 'hidden'
-            perlabel.style.display = ''
-            kwplabel.style.display = 'none'
-        } else {
-            selecionado.value = 'potencia'
-            estkwp.type = 'text'
-            perdes.type = 'hidden'
-            perlabel.style.display = 'none'
-            kwplabel.style.display = ''
-        }
-    }
-    function selecionaRegime() {
-        var regime = document.getElementById('regime')
-        var tipo = document.getElementById('tipo')
-        var simples = document.getElementById('simples')
-        var real = document.getElementById('real')
-        var presumido = document.getElementById('presumido')
-        var dasMEI = document.getElementById('dasMEI')
-        var labelMEI = document.getElementById('labelMEI')
-        var alqDAS = document.getElementById('alqDAS')
-        var labelDAS = document.getElementById('labelDAS')
-        var alqISS = document.getElementById('alqISS')
-        var labelISS = document.getElementById('labelISS')
-        var alqICMS = document.getElementById('alqICMS')
-        var labelICMS = document.getElementById('labelICMS')
-        var alqIRPJ = document.getElementById('alqIRPJ')
-        var labelIRPJ = document.getElementById('labelIRPJ')
-        var alqIRPJAdd = document.getElementById('alqIRPJAdd')
-        var labelIRPJAdd = document.getElementById('labelIRPJAdd')
-        var alqPIS = document.getElementById('alqPIS')
-        var labelPIS = document.getElementById('labelPIS')
-        var alqCOFINS = document.getElementById('alqCOFINS')
-        var labelCOFINS = document.getElementById('labelCOFINS')
-        var alqCSLL = document.getElementById('alqCSLL')
-        var labelCSLL = document.getElementById('labelCSLL')
 
-        alqISS.style.display = 'inline'
-        labelISS.style.display = 'inline'
-        alqICMS.style.display = 'inline'
-        labelICMS.style.display = 'inline'
-        alqIRPJ.type = 'hidden'
-        labelIRPJ.style.display = 'none'
-        alqIRPJAdd.type = 'hidden'
-        labelIRPJAdd.style.display = 'none'
-        alqPIS.type = 'hidden'
-        labelPIS.style.display = 'none'
-        alqCOFINS.type = 'hidden'
-        labelCOFINS.style.display = 'none'
-        alqCSLL.type = 'hidden'
-        labelCSLL.style.display = 'none'
-        alqDAS.style.display = 'none'
-        labelDAS.style.display = 'none'
-        dasMEI.style.display = 'none'
-        labelMEI.style.display = 'none'
-
-        if (regime.value == 'Simples') {
-            if (tipo.value == 'Anexo III') {
-                alqDAS.style.display = 'inline'
-                labelDAS.style.display = 'inline'
-                dasMEI.style.display = 'none'
-                labelMEI.style.display = 'none'
-                real.value = 0
-                presumido.value = 0
-            } else {
-                if (tipo.value == 'Anexo V') {
-                    alqDAS.style.display = 'inline'
-                    labelDAS.style.display = 'inline'
-                    dasMEI.style.display = 'none'
-                    labelMEI.style.display = 'none'
-                    real.value = 0
-                    presumido.value = 0
-                    presumido.value = 0
-                }
-            }
-        } else {
-            if (regime.value == 'MEI') {
-                tipo.value = 'Nenhum'
-                alqDAS.type = 'hideen'
-                labelDAS.style.display = 'none'
-                dasMEI.style.display = 'inline'
-                labelMEI.style.display = 'inline'
-                real.value = 0
-                presumido.value = 0
-                simples.value = 0
-            } else {
-                if (regime.value == 'Lucro Real') {
-                    tipo.value = 'Não Cumulativo'
-                    alqDAS.style.display = 'none'
-                    labelDAS.style.display = 'none'
-                    dasMEI.style.display = 'none'
-                    labelMEI.style.display = 'none'
-                    alqIRPJ.type = 'text'
-                    alqIRPJ.value = '15'
-                    labelIRPJ.style.display = 'inline'
-                    alqIRPJAdd.type = 'text'
-                    labelIRPJAdd.style.display = 'inline'
-                    alqPIS.type = 'text'
-                    alqPIS.value = '1.65'
-                    labelPIS.style.display = 'inline'
-                    alqCOFINS.type = 'text'
-                    alqCOFINS.value = '7.6'
-                    labelCOFINS.style.display = 'inline'
-                    alqCSLL.type = 'text'
-                    alqCSLL.value = '9'
-                    labelCSLL.style.display = 'inline'
-                    simples.value = 0
-                    presumido.value = 0
-                } else {
-                    if (regime.value == 'Lucro Presumido') {
-                        tipo.value = 'Cumulativo'
-                        alqDAS.style.display = 'none'
-                        labelDAS.style.display = 'none'
-                        dasMEI.style.display = 'none'
-                        labelMEI.style.display = 'none'
-                        alqIRPJ.type = 'text'
-                        alqIRPJ.value = '15'
-                        labelIRPJ.style.display = 'inline'
-                        alqIRPJAdd.type = 'text'
-                        labelIRPJAdd.style.display = 'inline'
-                        alqPIS.type = 'text'
-                        alqPIS.value = '0.65'
-                        labelPIS.style.display = 'inline'
-                        alqCOFINS.type = 'text'
-                        alqCOFINS.value = '3'
-                        labelCOFINS.style.display = 'inline'
-                        alqCSLL.type = 'text'
-                        alqCSLL.value = '9'
-                        labelCSLL.style.display = 'inline'
-                        real.value = 0
-                        simples.value = 0
-                    }
-                }
-            }
-        }
-        document.getElementById('focoISS').focus()
-    }
-
-    function aplicar() {
-        //Matriz de niveis do regime Simples Nacional
-        var faturamento = document.getElementById('prjFat')
-        var vlrDeducao = document.getElementById('vlrred')
-        var tipo = document.getElementById('tipo')
-        var alqDasVlr = document.getElementById('alqDasVlr')
-
-        var simplesiii = [
-            { faixa: 1, aliquota: 6, deducao: 0, recini: 0, recfim: 180000 },
-            { faixa: 2, aliquota: 11.20, deducao: 9360, recini: 180001, recfim: 360000 },
-            { faixa: 3, aliquota: 13.5, deducao: 17640, recini: 360001, recfim: 720000 },
-            { faixa: 4, aliquota: 16, deducao: 35640, recini: 720001, recfim: 1800000 },
-            { faixa: 5, aliquota: 21, deducao: 125640, recini: 1800001, recfim: 3600000 },
-            { faixa: 6, aliquota: 33, deducao: 64800, recini: 3600001, recfim: 4800000 }
-        ]
-        var simplesv = [
-            { faixa: 1, aliquota: 15.5, deducao: 0, recini: 0, recfim: 180000 },
-            { faixa: 2, aliquota: 18, deducao: 4500, recini: 180001, recfim: 360000 },
-            { faixa: 3, aliquota: 19.5, deducao: 9900, recini: 360001, recfim: 720000 },
-            { faixa: 4, aliquota: 20.5, deducao: 17100, recini: 720001, recfim: 1800000 },
-            { faixa: 5, aliquota: 23, deducao: 62100, recini: 1800001, recfim: 3600000 },
-            { faixa: 6, aliquota: 30.5, deducao: 540000, recini: 3600001, recfim: 4800000 }
-        ]
-
-        if (regime.value == 'Simples') {
-            if (tipo.value == 'Anexo III') {
-
-                simplesiii.forEach((element) => {
-                    const { recini } = element
-                    const { recfim } = element
-                    const { aliquota } = element
-                    const { deducao } = element
-                    if (faturamento.value > recini && faturamento.value <= recfim) {
-                        alqDasVlr.value = aliquota
-                        vlrDeducao.value = deducao
-                    }
-                })
-            }
-            if (tipo.value == 'Anexo V') {
-
-                simplesv.forEach((element) => {
-                    const { recini } = element
-                    const { recfim } = element
-                    const { aliquota } = element
-                    const { deducao } = element
-                    if (faturamento.value > recini && faturamento.value <= recfim) {
-
-                        alqDasVlr.value = aliquota
-                        vlrDeducao.value = deducao
-                    }
-                })
-            }
-        }
-    }
 </script>
 <div class="container mt-2 card">
-    <label class="mt-2" style='font-weight: bold;font-size:20px'>Empresa</label>
-    <br>
     <form {{#if empresa._id}}action='/configuracao/editempresa' {{else}}action='/configuracao/addempresa' {{/if}}
-        method='post'>
+        method='post' enctype="multipart/form-data">
+        <div class="row mt-4">
+            <div class="col">
+                <label class="mt-2" style='font-weight: bold;font-size:20px'>Empresa</label>
+            </div>
+            <div class="col text-end">
+                <div>
+                    <a href='/configuracao/addempresa' class='btn btn-sm btn-primary'>Novo</a>
+                    <a href='/configuracao/consultaempresa' class='btn btn-sm btn-primary'><i class='bi bi-search'></i>
+                    </a>
+                    <button type='submit' class='btn btn-sm btn-success'>Salvar</button>
+                    <a href='/dashboard'><i class='bi bi-house btn btn-sm btn-primary' title="Dashboard"></i></a>
+                </div>
+            </div>
+        </div>
+        <br>
         <div class="row" style="margin-bottom: 4px;">
             <input type='hidden' name='id' value='{{empresa._id}}'>
             <div class="col-md-6">
@@ -292,244 +124,119 @@
                     <div class="row mt-1 mb-1">
                         <div class="col-md-3 text-end">
                             <label class='fw-bold col-form-label col-form-label-sm'> Nome: </label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm mt-1'> Razão: </label><br>
                             <label class='fw-bold col-form-label col-form-label-sm mt-1'> CNPJ: </label><br>
                             <label class='fw-bold col-form-label col-form-label-sm mt-1'> Endereço: </label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm mt-1'> Cidade: </label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm mt-1'> Estado: </label><br>
                             <label class='fw-bold col-form-label col-form-label-sm mt-1'> Telefone: </label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm mt-1'> Celular: </label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm mt-1'> Site: </label><br>
                         </div>
                         <div class="col-md-8">
                             <input id='nome' name='nome' value='{{empresa.nome}}'
                                 class='form-control form-control-sm mt-1'>
+                            <input id='razao' name='razao' value='{{empresa.razao}}'
+                                class='form-control form-control-sm mt-1'>
                             <input id='cnpj' name='cnpj' value='{{empresa.cnpj}}'
                                 class='form-control form-control-sm mt-1' onkeyup="valida_cnpj()">
-                            <input id='cnpj' name='endereco' value='{{empresa.endereco}}'
+                            <input id='endereco' name='endereco' value='{{empresa.endereco}}'
                                 class='form-control form-control-sm mt-1'>
-                            <input id='cnpj' name='telefone' value='{{empresa.telefone}}'
+                            <input id='cidade' name='cidade' value='{{empresa.cidade}}'
                                 class='form-control form-control-sm mt-1'>
-                        </div>
-                    </div>
-                    <div class="row" style="padding: 8px;">
-                        <div class="col-md-6">
-                            <div class="row">
-                                <div class="col-md-3 text-end">
-                                    <label class='fw-bold col-form-label col-form-label-sm'>
-                                        Regime:
-                                    </label>
-                                </div>
-                                <div class="col-md-9">
-                                    <select name='regime' class='form-select form-select-sm' id='regime'
-                                        onchange="selecionaRegime()">
-                                        <option style="font-weight: bold;">{{empresa.regime}}</option>
-                                        <option>MEI</option>
-                                        <option>Simples</option>
-                                        <option>Lucro Real</option>
-                                        <option>Lucro Presumido</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="row">
-                                <div class="col-md-3 text-end">
-                                    <label for='tipo' class='fw-bold col-form-label col-form-label-sm mb-2'>
-                                        Tipo:
-                                    </label>
-                                </div>
-                                <div class="col-md-9">
-                                    <select name='tipo' class='form-select form-select-sm' id='tipo'
-                                        onchange="selecionaRegime()">
-                                        <option style="font-weight: bold;">{{empresa.tipo}}</option>
-                                        <option>Nenhum</option>
-                                        <option id='anexoiii'>Anexo III</option>
-                                        <option id='anexov'>Anexo V</option>
-                                        <option>Não Cumulativo</option>
-                                        <option>Cumulativo</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card mt-1 mb-2">
-                    <label class='fw-bold col-form-label col-form-label-sm text-center'>Alíquotas </label>
-                    <input type="hidden" name='selregime' id='selregime' value=''>
-                    <div class="row">
-                        <div class="row mb-2">
-                            <div class="col-md-1" id='labelISS' style="padding-left: 3%;display: {{labelISS}}">
-                                <label class='col-form-label col-form-label-sm mb-1'> ISS: </label><br>
-                            </div>
-                            <div class="col-md-2" id='alqISS' style="display: {{alqISS}};">
-                                <input type='text' name='alqNFS' id='focoISS' value='{{empresa.alqNFS}}'
-                                    class='form-control form-control-sm mb-1 ' placeholder="%">
-                            </div>
-                            <div class="col-md-1" id='labelICMS' style="display: {{labelICMS}};">
-                                <label class='col-form-label col-form-label-sm mb-1'> ICMS: </label>
-                            </div>
-                            <div class="col-md-2" id='alqICMS' style="display: {{alqICMS}};">
-                                <input type='text' name='alqICMS' value='{{empresa.alqICMS}}'
-                                    class='form-control form-control-sm mb-1 ' placeholder="%">
-                            </div>
-                            <div class="col-md-1" id='labelDAS' style="display: {{labelDAS}};">
-                                <label class='col-form-label col-form-label-sm mb-1'> DAS: </label><br>
-                            </div>
-                            <div class="col-md-2" id='alqDAS' style="display: {{alqDAS}};">
-                                <input type='text' name='alqDAS' id='alqDasVlr' value='{{empresa.alqDAS}}'
-                                    class='form-control form-control-sm mb-1' placeholder="%">
-                            </div>
-                            <div class="col-md-1" id='labelMEI' style="display: {{labelMEI}};">
-                                <label class='col-form-label col-form-label-sm mb-1'> MEI: </label>
-                            </div>
-                            <div class="col-md-2" id='dasMEI' style="display: {{dasMEI}};">
-                                <input type='text' name='vlrDAS' value='{{empresa.vlrDAS}}'
-                                    class='form-control form-control-sm mb-1' placeholder="R$">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3 text-end">
-                                <label class='col-form-label col-form-label-sm mb-1' id='labelIRPJ'
-                                    style="display: {{labelIRPJ}};"> IRPJ: </label><br>
-                            </div>
-                            <div class="col-md-2" style="display: false;">
-                                <input type='{{alqIRPJ}}' id='alqIRPJ' name='alqIRPJ' value='{{empresa.alqIRPJ}}'
-                                    class='form-control form-control-sm mb-1' placeholder="%">
-                            </div>
-                            <div class="col-md-3 text-end">
-                                <label class='col-form-label col-form-label-sm mb-1' id='labelIRPJAdd'
-                                    style="display: {{labelIRPJAdd}};"> IRPJ Adicional: </label><br>
-                            </div>
-                            <div class="col-md-2 text-end">
-                                <input type='{{alqIRPJAdd}}' id='alqIRPJAdd' name='alqIRPJAdd'
-                                    value='{{empresa.alqIRPJAdd}}' class='form-control form-control-sm mb-1'
-                                    placeholder="%">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3 text-end">
-                                <label class='col-form-label col-form-label-sm mb-1' id='labelCOFINS'
-                                    style="display: {{labelCOFINS}};"> COFINS: </label><br>
-                            </div>
-                            <div class="col-md-2" style="display: false;">
-                                <input type='{{alqCOFINS}}' id='alqCOFINS' name='alqCOFINS'
-                                    value='{{empresa.alqCOFINS}}' class='form-control form-control-sm mb-1'
-                                    placeholder="%">
-                            </div>
-                            <div class="col-md-3 text-end">
-                                <label class='col-form-label col-form-label-sm mb-1' id='labelPIS'
-                                    style="display: {{labelPIS}}"> PIS: </label><br>
-                            </div>
-                            <div class="col-md-2 text-end">
-                                <input type='{{alqPIS}}' id='alqPIS' name='alqPIS' value='{{empresa.alqPIS}}'
-                                    class='form-control form-control-sm mb-1 ' placeholder="%">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3 text-end">
-                                <label class='col-form-label col-form-label-sm mb-1' id='labelCSLL'
-                                    style="display: {{labelCSLL}};"> CSLL: </label>
-                            </div>
-                            <div class="col-md-2" style="display: false;">
-                                <input type='{{alqCSLL}}' id='alqCSLL' name='alqCSLL' value='{{empresa.alqCSLL}}'
-                                    class='form-control form-control-sm mb-1 ' placeholder="%">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class='row'>
-                    <div class="row">
-                        <div class="col-md-5 text-end">
-                            <label class="col-form-label col-form-label-sm fw-bold">Rateio de Despesas</label>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-check" onchange="selecionar()">
-                                <input class="form-check-input" type="radio" name="select" id="selectQtd" {{checkQtd}}>
-                                <label class="form-check-label mt-2" style="font-size: 12px;">
-                                    Quantidade Projetos
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-check" onchange="selecionar()">
-                                <input class="form-check-input" type="radio" name="select" id="selectKwp" {{checkKwp}}>
-                                <label class="form-check-label mt-2" style="font-size: 12px;">
-                                    Potência Mês
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row" style="margin-bottom: 2%">
-                        <input type="hidden" id='selecionado' name='selecionado'>
-                        <div class="col-md-5 text-end">
-                            <label class='col-form-label col-form-label-sm'>Despesas Administrativas <i
-                                    class='bi bi-info-circle' onmousemove="info_despesas()"></i>:</label><br>
-                            <label class='col-form-label col-form-label-sm mt-1' id='perlabel'
-                                style="display:{{displayQtd}}">Percentual Despesas:</label>
-                            <label class='col-form-label col-form-label-sm mt-1' id='kwplabel'
-                                style="display:{{displayKwp}}">Média kWp:</label>
-                        </div>
-                        <div class="col-md-5">
-                            <input class="form-control form-control-sm" name='desadm'
-                                placeholder="Valor mensal das despesas." value={{empresa.desadm}}>
-                            <input type='{{typeQtd}}' class="form-control form-control-sm mt-1" name='perdes'
-                                id='perdes' placeholder="Percentual (%) por projeto." value={{empresa.perdes}}>
-                            <input type='{{typeKwp}}' class="form-control form-control-sm mt-1" name='estkwp'
-                                id='estkwp' placeholder="Estimativa dos kWp mensais." value={{empresa.estkwp}}>
+                            <input id='uf' name='estado' value='{{empresa.uf}}'
+                                class='form-control form-control-sm mt-1'>
+                            <input id='telefone' name='telefone' value='{{empresa.telefone}}'
+                                class='form-control form-control-sm mt-1'>
+                            <input id='celular' name='celular' value='{{empresa.celular}}'
+                                class='form-control form-control-sm mt-1'>
+                            <input id='website' name='website' style="text-transform: lowercase;" value='{{empresa.website}}'
+                                class='form-control form-control-sm mt-1'>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="container">
-                    <label class='fw-bold col-form-label col-form-label-sm'>Parâmetros </label>
-                    <div class="row">
-                        <div class="col-md-7 text-end">
-                            <label class='col-form-label col-form-label-sm fw-bold'>Simples <i class="bi bi-info-circle"
-                                    onmousemove='info_simples()'></i> </label><br>
-                            <label class='col-form-label col-form-label-sm mb-1'> Fator de Dedução: </label><br>
-                            <label class='col-form-label col-form-label-sm'> Projeção de Faturamento:</label><br>
-                            <hr>
-                            <label class='col-form-label col-form-label-sm mb-1'> Projeção de Lucro Real: </label><br>
-                            <hr>
-                            <label class='col-form-label col-form-label-sm mb-1'> Projeção de Faturamento Lucro
-                                Presumido:
-                            </label>
-                            <hr>
-                            <label class='col-form-label col-form-label-sm mb-1 mt-2'> MarkUp(%):</label>
+                    <div class="row mt-4">
+                        <div class="input-group input-group-sm">
+                            <label class="input-group-text">Logo</label>
+                            <input type="file" name='logo' id="logo" class='form-control' onchange="preview_foto()">
                         </div>
-                        <div class="col-md-5">
-                            <div style="margin-top: 10px;"></div><br>
-                            <input type='number' id='vlrred' name='vlrred' value='{{empresa.vlrred}}'
-                                class='form-control form-control-sm mb-1' placeholder="R$" />
-                            <input type='text' id='prjFat' name='prjFat' id='simples' value='{{empresa.prjFat}}'
-                                onkeydown='aplicar()' class='form-control form-control-sm mb-1' placeholder="R$">
-                            <hr>
-                            <input type='text' id='prjLR' name='prjLR' id='real' value='{{empresa.prjLR}}'
-                                class='form-control form-control-sm' style="margin-bottom: 20px;" placeholder="R$">
-                            <hr>
-                            <input type='text' id='prjLP' name='prjLP' id='presumido' value='{{empresa.prjLP}}'
-                                class='form-control form-control-sm' style="margin-bottom: 20px;" placeholder="R$">
-                            <hr>
-                            <input type='number' id='markup' name='markup' value='{{empresa.markup}}'
-                                class='form-control form-control-sm mt-4'>
-                        </div>
-                        <hr>
-                        <div class='container'>
-                            <div class='row'>
-                                <div class='col-md-5 text-end'>
-                                    <label class='col-form-label col-form-label-sm fw-bold'>Sequência das Tarefas:</label>
-                                </div>
-                                <div class='col text-start'>
-                                    <input type="text" name='seq' class='form-control form-control-sm'
-                                        value='{{empresa.seq}}'>
-                                </div>
+                    </div>
+                    <div class="mt-2" style="margin-left: 160px;" id="fotosalva">
+                        <img src='/gerenciamento/mostrarBucket/{{empresa.logo}}' style="width: 160px; height: 160px;"
+                            alt='Minha Figura'></a>
+                    </div>
+                    <div class="mt-2" style="display: {{#if empresa.logo}}none{{else}}''{{/if}}; margin-left: 160px;"
+                        id="fotopreview">
+                        <img id='foto' name='foto' style="width: 160px; height: 160px;" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label class='fw-bold col-form-label col-form-label-sm'>Parâmetros</label>
+                <div class="row">
+                    <div class="col-md-7 text-end">
+                        <label class='col-form-label col-form-label-sm '>Sequênica das propostas:
+                        </label><br>
+                        <label class='col-form-label col-form-label-sm '>Custo de instalação por Módulo:
+                        </label><br>
+                        <label class='col-form-label col-form-label-sm mb-1'> Dias de validade das proposta:
+                        </label><br>
+                    </div>
+                    <div class="col-md-5">
+                        <input type='number' id='seq' name='seq' value='{{empresa.seq}}'
+                            class='form-control form-control-sm mb-1' />
+                        <input type='number' id='vlrmdo' name='vlrmdo' value='{{empresa.vlrmdo}}'
+                            class='form-control form-control-sm mb-1' placeholder="R$" />
+                        <input type='number' id='valpro' name='valpro' value='{{empresa.valpro}}'
+                            class='form-control form-control-sm mb-1'>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <label class='col-form-label col-form-label-sm'>Perdas </label>
+                <div class="row">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col-md-6 text-end">
+                                <label class='col-form-label col-form-label-sm mb-1'> Norte:
+                                </label><br>
+                                <label class='col-form-label col-form-label-sm mb-1'> Oeste:
+                                </label><br>
+                                <label class='col-form-label col-form-label-sm mb-1'> Leste:
+                                </label><br>
+                            </div>
+                            <div class="col-md-4">
+                                <input type='text' id='norte' name='norte' value='{{empresa.perdanorte}}'
+                                    class='form-control form-control-sm mb-1' />
+                                <input type='text' id='oeste' name='oeste' value='{{empresa.e}}'
+                                    class='form-control form-control-sm mb-1' />
+                                <input type='text' id='leste' name='leste' value='{{empresa.perdaleste}}'
+                                    class='form-control form-control-sm mb-1' />
                             </div>
                         </div>
-                        <div class="row mt-4">
-                            <button type='submit' class='btn btn-sm btn-success mx-auto mb-3' onclick="aplicar()">
-                                Aplicar </button>
+                    </div>
+                    <div class="col">
+                        <div class="row">
+                            <div class="col-md-4 text-end">
+                                <br>
+                                <label class='col-form-label col-form-label-sm mb-1'> Noroeste:
+                                </label><br>
+                                <label class='col-form-label col-form-label-sm mb-1'> Nordeste:
+                                </label><br>
+                            </div>
+                            <div class="col-md-4">
+                                <br>
+                                <input type='text' id='nordeste' name='nordeste' value='{{empresa.perdanordeste}}'
+                                    class='form-control form-control-sm mb-1' />
+                                <input type='text' id='noroeste' name='noroeste' value='{{empresa.perdanoroeste}}'
+                                    class='form-control form-control-sm mb-1' />
+                            </div>
                         </div>
-                        <label style="color: red;">Para o sistema calcular os tributos do projeto é necessário inserir
-                            <br>
-                            as alíquotas de acordo com seu Regime Tributário.</label>
                     </div>
                 </div>
             </div>

@@ -28,6 +28,18 @@ const Acesso = new Schema({
         type: Boolean,
         require: false
     },
+    orcamentista:{
+        type: Boolean,
+        require: false
+    },
+    vendedor:{
+        type: Boolean,
+        require: false
+    },
+    instalador:{
+        type: Boolean,
+        require: false
+    },    
     data: {
         type: String,
         require: false
@@ -39,7 +51,35 @@ const Acesso = new Schema({
     dataexp: {
         type: String,
         require: false
-    }
+    },
+    notpro: {
+        type: String,
+        require: false
+    },
+    notobs: {
+        type: String,
+        require: false
+    },
+    notvis: {
+        type: String,
+        require: false
+    },     
+    notorc: {
+        type: String,
+        require: false
+    },  
+    notins: {
+        type: String,
+        require: false
+    },  
+    notgan: {
+        type: String,
+        require: false
+    },   
+    notped: {
+        type: String,
+        require: false
+    },   
 })
 
 Mongoose.model("acesso", Acesso)

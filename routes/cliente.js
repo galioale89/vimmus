@@ -1,26 +1,24 @@
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
+const xl = require('excel4node')
 
 require('../model/Cliente')
-require('../model/Projeto')
+require('../model/Usina')
 require('../model/Tarefas')
 require('../model/Plano')
-require('../model/Proposta')
+require('../model/Projeto')
 require('../model/Servico')
 require('../model/Programacao')
-require('../model/Pessoa')
-require('../model/Usuario')
-require('../model/Acesso')
+
 const Cliente = mongoose.model('cliente')
 const Usina = mongoose.model('usina')
 const Tarefa = mongoose.model('tarefas')
 const Plano = mongoose.model('plano')
-const Proposta = mongoose.model('proposta')
+const Projeto = mongoose.model('projeto')
 const Servico = mongoose.model('servico')
 const Programacao = mongoose.model('programacao')
-const Usuario = mongoose.model('usuario')
-const Acesso = mongoose.model('acesso')
+const Pessoa = mongoose.model('pessoa')
 
 const naoVazio = require('../resources/naoVazio')
 const dataBusca = require('../resources/dataBusca')
@@ -43,7 +41,7 @@ router.get('/consulta', ehAdmin, (req, res) => {
         id = user
     }
     Cliente.find({ user: id }).lean().then((clientes) => {
-        res.render('cliente/findclientes', { clientes: clientes })
+        res.render('cliente/consulta', { clientes: clientes })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível encontrar os clientes.')
         res.redirect('/cliente/novo')
@@ -56,7 +54,7 @@ router.get('/programacao/:id', ehAdmin, (req, res) => {
     const { nome } = req.user
     var id
 
-    console.log('entrou programação')
+    //console.log('entrou programação')
 
     if (typeof user == 'undefined') {
         id = _id
@@ -71,7 +69,7 @@ router.get('/programacao/:id', ehAdmin, (req, res) => {
             Cliente.findOne({ _id: usina.cliente }).lean().then((cliente) => {
                 if (naoVazio(servico)) {
                     Tarefa.find({ usina: req.params.id, concluido: false, responsavel: id, programacao: { $exists: true } }).then((t) => {
-                        console.log('t=>' + t)
+                        //console.log('t=>' + t)
                         if (naoVazio(t)) {
                             t.forEach((e) => {
                                 Servico.findOne({ _id: e.servico }).then((atv) => {
@@ -87,9 +85,9 @@ router.get('/programacao/:id', ehAdmin, (req, res) => {
                                 })
                             })
                         } else {
-                            console.log('usina=>' + usina)
-                            console.log('servico=>' + servico)
-                            console.log('cliente=>' + cliente)
+                            //console.log('usina=>' + usina)
+                            //console.log('servico=>' + servico)
+                            //console.log('cliente=>' + cliente)
                             res.render('cliente/programacao', { usina, servico, cliente, tipo: 'auto' })
                         }
                     }).catch((err) => {
@@ -147,11 +145,15 @@ router.post('/novo', ehAdmin, (req, res) => {
     } else {
         var cnpj
         var cpf
-        if (req.body.cnpj != '') {
-            cnpj = req.body.cnpj
-        }
-        if (req.body.cpf != '') {
+        if (naoVazio(req.body.cpf)) {
             cpf = req.body.cpf
+        } else {
+            cpf = 0
+        }
+        if (naoVazio(req.body.cnpj)) {
+            cnpj = req.body.cidade
+        } else {
+            cnpj = 0
         }
 
         var sissolar
@@ -170,15 +172,18 @@ router.post('/novo', ehAdmin, (req, res) => {
         const cliente = {
             user: id,
             nome: req.body.nome,
+            // sobrenome: req.body.sobrenome,
             endereco: req.body.endereco,
+            numero: req.body.numero,
+            bairro: req.body.bairro,
+            complemento: req.body.complemento,
             cidade: req.body.cidade,
             uf: req.body.uf,
             cnpj: cnpj,
             cpf: cpf,
+            contato: req.body.contato,
             celular: req.body.celular,
             email: req.body.email,
-            sissolar: sissolar,
-            posvenda: posvenda
         }
 
         new Cliente(cliente).save().then(() => {
@@ -202,13 +207,32 @@ router.get('/edicao/:id', ehAdmin, (req, res) => {
     const { user } = req.user
     var id
 
+    var checkCPF = 'unchecked'
+    var checkCNPJ = 'unchecked'
+    var ehcpf = ''
+    var ehcnpj = ''
+
     if (typeof user == 'undefined') {
         id = _id
     } else {
         id = user
     }
     Cliente.findOne({ user: id, _id: req.params.id }).lean().then((cliente) => {
-        res.render('cliente/cliente', { cliente })
+        if (naoVazio(cliente.cpf)){
+            checkCPF = 'checked'
+        }
+        if (naoVazio(cliente.cnpj)){
+            checkCNPJ = 'checked'
+        }
+        if (naoVazio(cliente.cpf)){
+            ehcpf = ''
+            ehcnpj = 'none'
+        }
+        if (naoVazio(cliente.cnpj)){
+            ehcpf = 'none'
+            ehcnpj = ''
+        }
+        res.render('cliente/cliente', { cliente, checkCPF, checkCNPJ, ehcpf, ehcnpj })
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível cadastrar o cliente.')
         res.redirect('/cliente/novo')
@@ -297,9 +321,9 @@ router.get('/confirmaexclusao/:id', ehAdmin, (req, res) => {
     } else {
         id = user
     }
-    Proposta.find({ user: id, cliente: req.params.id }).then((proposta) => {
-        if (naoVazio(proposta)) {
-            req.flash('aviso_msg', 'Cliente vinculado a proposta(s). Impossível excluir.')
+    Projeto.find({ user: id, cliente: req.params.id }).then((projeto) => {
+        if (naoVazio(projeto)) {
+            req.flash('aviso_msg', 'Cliente vinculado a projeto(s). Impossível excluir.')
             res.redirect('/cliente/consulta')
         } else {
             Cliente.findOne({ user: id, _id: req.params.id }).lean().then((cliente) => {
@@ -310,7 +334,7 @@ router.get('/confirmaexclusao/:id', ehAdmin, (req, res) => {
             })
         }
     }).catch((err) => {
-        req.flash('error_msg', 'Houve um erro ao encontrar a Proposta.')
+        req.flash('error_msg', 'Houve um erro ao encontrar a Projeto.')
         res.redirect('/menu')
     })
 })
@@ -330,8 +354,8 @@ router.get('/usinas/:id', ehAdmin, (req, res) => {
     var nome_plano
     var mensalidade
 
-    console.log('req.params.id=>'+req.params.id)
-    Cliente.findOne({_id: req.params.id }).lean().then((cliente) => {
+    //console.log('req.params.id=>' + req.params.id)
+    Cliente.findOne({ _id: req.params.id }).lean().then((cliente) => {
         Plano.find({ user: id }).lean().then((plano) => {
             Usina.find({ cliente: req.params.id }).then((usina) => {
                 //console.log('usina=>' + usina)
@@ -390,6 +414,94 @@ router.get('/excluirusina/:id', (req, res) => {
 
 })
 
+router.get('/dados/:dados', ehAdmin, (req, res) => {
+    var params = req.params.dados
+    params = params.split('@')
+    const wb = new xl.Workbook()
+    const ws = wb.addWorksheet('Relatório')
+    const headingColumnNames = [
+        "Cliente",
+        "Endereço",
+        "Proposta",
+        "Data",
+        "Vendedor"
+    ]
+    const headingLineNames = [
+        params[0],
+        params[1],
+        params[2],
+        params[3],
+        params[4]
+    ]
+    var headingColumnIndex = 1; //diz que começará na primeira linha
+    headingColumnNames.forEach(heading => { //passa por todos itens do array
+        //cria uma célula do tipo string para cada título
+        ws.cell(1, headingColumnIndex++).string(heading)
+    })
+    headingColumnIndex =1 
+    headingLineNames.forEach(heading => { //passa por todos itens do array
+        //cria uma célula do tipo string para cada título
+        ws.cell(2, headingColumnIndex++).string(heading)
+    })
+    var time = new Date()
+    var arquivo = 'cabecalho_propostas_' + dataHoje() + time.getTime() + '.xlsx'
+    //console.log('arquivi=>'+arquivo)
+    // var sucesso = []
+    // sucesso.push({texto: 'Relatório exportado com sucesso.'})
+    wb.writeToBuffer().then(function (buffer) {
+        //console.log('buffer excel')
+        res
+            .set('content-disposition', `attachment; filename="${arquivo}";  filename*=UTF-8''${encodeURI(arquivo)}`) // filename header
+            .type('.xlsx') // setting content-type to xlsx. based on file extention
+            .send(buffer)
+        //.render('principal/consulta', { qtd: q, lista, todos_clientes, todos_vendedores, total: mascaraDecimal(total), stats, vendedor, cliente, inicio: dtinicio, fim: dtfim, mostrar: '', sucesso })
+    })
+})
+
+router.post('/buscaCPF', ehAdmin, (req, res) => {
+    const { _id } = req.user
+    const { user } = req.user
+    var id
+
+    if (typeof user == 'undefined') {
+        id = _id
+    } else {
+        id = user
+    }
+
+    var q = 0
+    var propostas = []
+    //console.log('req.body.buscacpf=>' + req.body.buscacpf)
+    //console.log('req.body.id=>' + req.body.id)
+    Cliente.findOne({ user: id, cpf: req.body.buscacpf }).then((cliente) => {
+        if (naoVazio(cliente)) {
+            Projeto.find({ cliente: cliente._id }).then((projeto) => {
+                projeto.forEach((e)=>{
+                    Pessoa.findOne({ _id: e.vendedor }).then((vendedor) => {
+                        q++    
+                        propostas.push({seq: e.seq, nome_ven: vendedor.nome})
+                        if (q == projeto.length){
+                        res.render('cliente/buscaCPF', { id: req.body.id, ocliente: cliente.nome, propostas })
+                        }
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Não foi possível encontrar o vendedor.')
+                        res.redirect('/gerenciamento/orcamento/'+req.body.id)
+                    })
+                })
+            }).catch((err) => {
+                req.flash('error_msg', 'Não foi possível encontrar o projeto.')
+                res.redirect('/gerenciamento/orcamento/'+req.body.id)
+            })
+        } else {
+            req.flash('success_msg', 'Não a proposta para este cliente.')
+            res.redirect('/gerenciamento/orcamento/' + req.body.id)
+        }
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível encontrar o cliente.')
+        res.redirect('/gerenciamento/orcamento/'+req.body.id)
+    })
+})
+
 router.post('/edicao/', ehAdmin, (req, res) => {
     const { _id } = req.user
     const { user } = req.user
@@ -403,10 +515,15 @@ router.post('/edicao/', ehAdmin, (req, res) => {
     var erros = []
     var documento
 
-    if (req.body.cnpj != '') {
-        documento = req.body.cnpj
+    if (naoVazio(req.body.cpf)) {
+        cpf = req.body.cpf
     } else {
-        documento = req.body.cpf
+        cpf = 0
+    }
+    if (naoVazio(req.body.cnpj)) {
+        cnpj = req.body.cidade
+    } else {
+        cnpj = 0
     }
 
     if (req.body.nome == '' || req.body.endereco == '' || documento == '' ||
@@ -436,19 +553,20 @@ router.post('/edicao/', ehAdmin, (req, res) => {
 
         Cliente.findOne({ user: id, _id: req.body.id }).then((cliente) => {
 
-            if (req.body.uf != '' && req.body.uf != cliente.uf) {
-                cliente.uf = req.body.uf
-            }
-            if (req.body.cidade != '' && req.body.uf != cliente.cidade) {
-                cliente.cidade = req.body.cidade
-            }
-
+            cliente.cnpj = cnpj
+            cliente.cpf = cpf
+            cliente.uf = req.body.uf
+            cliente.cidade = req.body.cidade
             cliente.nome = req.body.nome
+            // cliente.nome = req.body.sobrenome
             cliente.endereco = req.body.endereco
             cliente.celular = req.body.celular
             cliente.email = req.body.email
-            cliente.sissolar = sissolar
-            cliente.posvenda = posvenda
+            cliente.contato = req.body.contato
+            cliente.numero = req.body.numero
+            cliente.bairro = req.body.bairro
+            cliente.complemento = req.body.complemento
+
             if (cliente.cnpj != '') {
                 cliente.cnpj = req.body.cnpj
             } else {
@@ -738,41 +856,41 @@ router.post('/filtrar', ehAdmin, (req, res) => {
 
     if (nome != '' && uf != '' && cidade != '') {
         Cliente.find({ nome: new RegExp(nome), uf: new RegExp(uf), cidade: new RegExp(cidade), user: id }).lean().then((clientes) => {
-            res.render('cliente/findclientes', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
+            res.render('cliente/consulta', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
         })
     } else {
         if (nome == '' && cidade == '' && uf == '') {
             Cliente.find({ user: id }).lean().then((clientes) => {
-                res.render('cliente/findclientes', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
+                res.render('cliente/consulta', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
             })
         } else {
             if (nome == '' && cidade == '') {
                 Cliente.find({ uf: new RegExp(uf), user: id }).lean().then((clientes) => {
-                    res.render('cliente/findclientes', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
+                    res.render('cliente/consulta', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
                 })
             } else {
                 if (nome == '' && uf == '') {
                     Cliente.find({ cidade: new RegExp(cidade), user: id }).lean().then((clientes) => {
-                        res.render('cliente/findclientes', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
+                        res.render('cliente/consulta', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
                     })
                 } else {
                     if (cidade == '' && uf == '') {
                         Cliente.find({ nome: new RegExp(nome), user: id }).lean().then((clientes) => {
-                            res.render('cliente/findclientes', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
+                            res.render('cliente/consulta', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
                         })
                     } else {
                         if (cidade == '') {
                             Cliente.find({ nome: new RegExp(nome), uf: new RegExp(uf), user: id }).lean().then((clientes) => {
-                                res.render('cliente/findclientes', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
+                                res.render('cliente/consulta', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
                             })
                         } else {
                             if (uf == '') {
                                 Cliente.find({ nome: new RegExp(nome), cidade: new RegExp(cidade), user: id }).lean().then((Clientes) => {
-                                    res.render('cliente/findclientes', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
+                                    res.render('cliente/consulta', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
                                 })
                             } else {
                                 Cliente.find({ cidade: new RegExp(cidade), uf: new RegExp(uf), user: id }).lean().then((clientes) => {
-                                    res.render('cliente/findClientes', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
+                                    res.render('cliente/consulta', { clientes: clientes, cidade: cidade, uf: uf, nome: nome })
                                 })
                             }
                         }

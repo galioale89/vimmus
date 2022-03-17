@@ -53,7 +53,7 @@
         <div class='col-md-7'>
             <div class="row">
                 <div class="col">
-                    <label class="col-form-label">Responsáveis</label><br>
+                    <label class="col-form-label fw-bold">Responsáveis</label><br>
                     <label class="col-form-label col-form-label-sm">Gestor: {{gestor.nome}}
                         {{responsavel.nome}}</label><br>
                     <label class="col-form-label col-form-label-sm">Técnico: {{tecnico.nome}} {{insres.nome}} </label>
@@ -61,7 +61,7 @@
                 {{#if tarefa}}
                 <div class="col-md-7 text-end">
                     <div class="col">
-                        <a href='/gerenciamento/tarefas/{{tarefa._id}}' class='btn btn-sm btn-primary'><i
+                        <a href='/gerenciamento/equipetarefa/{{tarefa._id}}' class='btn btn-sm btn-primary'><i
                                 class='bi bi-arrow'></i>Tarefa</a>
                         {{#if idobra}}
                         <a href='/gerenciamento/obra/{{idobra}}' class='btn btn-sm btn-primary'><i
@@ -140,8 +140,8 @@
             <hr>
             <div class='row mt-1'>
                 <label class='col-form-label fw-bold'>Equipe</label>
+                {{#if equipe.ins0}}
                 <div class='row'>
-                    {{#if equipe.ins0}}
                     <div class='col-form-label'>{{equipe.ins0}}</div>
                 </div>
                 {{/if}}
@@ -176,11 +176,11 @@
             <div class="row mt-2 text-center">
                 <div class="col">
                     <label style="font-size: 20px;">Previsão Inicio </label><br><br>
-                    <label style="font-size: 20px;font-weight: 600" id='dtinicio'>{{equipe.dtinicio}}</label>
+                    <label style="font-size: 20px;font-weight: 600" id='dtinicio'>{{tarefa.dataini}}</label>
                 </div>
                 <div class="col">
                     <label style="font-size: 20px;">Previsão Fim</label><br><br>
-                    <label style="font-size: 20px;font-weight: 600;" id='dtfim'>{{equipe.dtfim}}</label>
+                    <label style="font-size: 20px;font-weight: 600;" id='dtfim'>{{tarefa.datafim}}</label>
                 </div>
             </div>
             <div class='aling-center mt-4'

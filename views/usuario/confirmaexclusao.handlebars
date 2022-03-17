@@ -1,12 +1,11 @@
-<div
-    style="margin-left: 300px;margin-top: 100px;width: 800px; height: 300px; border: solid 1px; border-color: rgb(201, 193, 193); border-radius: 60px;">
+<div class='caixa-confirma'>
     <div class="card-body">
         <div class="row" style="margin-top: 30px;">
             <h4 class="text-center mb-4">Você tem certeza que deseja excluir este Usuário</h4>
-                <h2 class="text-center mb-4">{{usuario.nome}}</h2>
+                <h2 class="text-center mb-4">{{usuario.nome}}{{acesso.usuario}}</h2>
                 <div class="row">
                     <div class='btn-group btn-group-lg gap-2' role='group'>
-                        <a class='btn btn-danger' href='/administrador/remover/{{usuario._id}}'>Sim</a>
+                        <a class='btn btn-danger' href='/administrador/remover/{{usuario._id}}{{acesso._id}}'>Sim</a>
                         <a class='btn btn-secondary' href='/administrador/consulta'>Não</a>
                         <a class='btn btn-primary' href='/administrador/consulta'>Voltar</a>
                     </div>

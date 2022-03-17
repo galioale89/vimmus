@@ -1,0 +1,369 @@
+<style>
+    .icone {
+        font-size: 30px;
+        color: rgb(2, 38, 78);
+    }
+</style>
+<script>
+
+    function preview_foto() {
+        var imagem = document.querySelector('input[name=files]').files[0]
+        var preview = document.querySelector('img[name=foto]')
+        var salva = document.getElementById('fotosalva')
+        var fotoprev = document.getElementById('fotopreview')
+
+        salva.style.display = 'none'
+        fotoprev.style.display = ''
+
+        var reader = new FileReader()
+        reader.onloadend = function () {
+            preview.src = reader.result
+        }
+
+        if (imagem) {
+            reader.readAsDataURL(imagem)
+        } else {
+            preview.src = ''
+        }
+    }
+    function mascara_data() {
+        var data = document.getElementById('data')
+        var currenTime = new Date()
+        var year = currenTime.getFullYear()
+        var ano = data.value
+        ano1 = ano.substring(3, 7)
+        mes1 = ano.substring(0, 2)
+
+        if (data.value.length == 2) {
+            data.value += "/"
+        }
+        if (data.value.length == 7) {
+            if (parseFloat(ano1) > parseFloat(year) || parseFloat(ano1) < 1846 || parseFloat(mes1) > 12) {
+                data.value = ''
+            }
+        }
+    }
+
+    function documento() {
+        var mostraCPF = document.getElementById('mostraCPF')
+        var mostraCNPJ = document.getElementById('mostraCNPJ')
+        var radioCPF = document.getElementById('radioCPF')
+        var radioCNPJ = document.getElementById('radioCNPJ')
+        if (radioCPF.checked) {
+            mostraCPF.style.display = ''
+            mostraCNPJ.style.display = 'none'
+        } else {
+            mostraCPF.style.display = 'none'
+            mostraCNPJ.style.display = ''
+        }
+    }
+
+    function valida_cnpj() {
+        var cnpj = document.getElementById('cnpj')
+
+        if (cnpj.value.length == 2 || cnpj.value.length == 6) {
+            cnpj.value += '.'
+        }
+        if (cnpj.value.length == 10) {
+            cnpj.value += '/'
+        }
+        if (cnpj.value.length == 15) {
+            cnpj.value += '-'
+        }
+
+        if (cnpj.value.length == 18) {
+
+            var d1 = cnpj.value
+            var p1 = d1.substring(0, 2)
+            var p2 = d1.substring(3, 6)
+            var p3 = d1.substring(7, 10)
+            var p4 = d1.substring(11, 15)
+            var p5 = d1.substring(16, 18)
+            var numdoc = p1 + p2 + p3 + p4 + p5
+
+            if (numdoc == "00000000000000" ||
+                numdoc == "11111111111111" ||
+                numdoc == "22222222222222" ||
+                numdoc == "33333333333333" ||
+                numdoc == "44444444444444" ||
+                numdoc == "55555555555555" ||
+                numdoc == "66666666666666" ||
+                numdoc == "77777777777777" ||
+                numdoc == "88888888888888" ||
+                numdoc == "99999999999999") {
+                cnpj.value = ''
+            }
+
+            // Valida DVs
+            var tamanho = numdoc.length - 2
+            var numeros = numdoc.substring(0, tamanho)
+            var digitos = numdoc.substring(tamanho)
+            var soma = 0
+            var pos = tamanho - 7;
+            for (i = tamanho; i >= 1; i--) {
+                soma += numeros.charAt(tamanho - i) * pos--;
+                if (pos < 2)
+                    pos = 9;
+            }
+            var resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+            if (resultado != digitos.charAt(0)) {
+                cnpj.value = ''
+            }
+
+            tamanho = tamanho + 1;
+            numeros = numdoc.substring(0, tamanho);
+            soma = 0;
+            pos = tamanho - 7;
+            for (i = tamanho; i >= 1; i--) {
+                soma += numeros.charAt(tamanho - i) * pos--;
+                if (pos < 2)
+                    pos = 9;
+            }
+            resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+            if (resultado != digitos.charAt(1)) {
+                cnpj.value = ''
+            }
+        }
+    };
+
+    function valida_cpf() {
+        var doc = document.getElementById('cpf')
+        var soma
+        var resto
+
+        soma = 0
+
+        if (doc.value.length == 3 || doc.value.length == 7) {
+            doc.value += '.'
+        }
+        if (doc.value.length == 11) {
+            doc.value += '-'
+        }
+        if (doc.value.length == 14) {
+
+            var d1 = doc.value
+            var p1 = d1.substring(0, 3)
+            var p2 = d1.substring(4, 7)
+            var p3 = d1.substring(8, 11)
+            var p4 = d1.substring(12, 14)
+            var numdoc = p1 + p2 + p3 + p4
+
+            if (numdoc == "00000000000") {
+                doc.value = '';
+            }
+
+            for (i = 1; i <= 9; i++) {
+                soma = soma + parseInt(numdoc.substring(i - 1, i)) * (11 - i);
+            }
+            resto = (soma * 10) % 11;
+
+            if ((resto == 10) || (resto == 11)) {
+                resto = 0;
+            }
+            if (resto != parseInt(numdoc.substring(9, 10))) {
+                doc.value = ''
+            }
+
+            soma = 0;
+            for (i = 1; i <= 10; i++) {
+                soma = soma + parseInt(numdoc.substring(i - 1, i)) * (12 - i)
+            }
+
+            resto = (soma * 10) % 11
+            if ((resto == 10) || (resto == 11)) {
+                resto = 0
+            }
+
+            if (resto != parseInt(numdoc.substring(10, 11))) {
+                doc.value = ''
+            }
+
+        }
+    }
+
+
+    function responsavel() {
+        var res = document.getElementById('responsavel')
+        var funins = document.getElementById('funins')
+        if (funins.checked) {
+            res.style.display = ''
+        } else {
+            res.style.display = 'none'
+        }
+    }
+
+    window.onload = function () {
+
+        var estados = document.getElementById('estado');
+        var cidades = document.getElementById('cidade');
+
+        new dgCidadesEstados({
+            estado: estados,
+            cidade: cidades,
+            estadoVal: '<%=Request("estado") %>',
+            cidadeVal: '<%=Request("cidade") %>'
+        });
+    };
+
+</script>
+
+<form action='/pessoa/salvar' method='post' enctype="multipart/form-data">
+    <input type="hidden" name="id" value="{{pessoa._id}}">
+    <div class="mt-2" style="padding: 20px;">
+        <div class="card">
+            <div class="card-body">
+                <div class="row mt-4">
+                    <div class="col-md-8">
+                        <label style='font-weight: bold;font-size:20px'> Cadastro de Pessoas</label>
+                    </div>
+                    <div class="col-md-4 mt-2" style="text-align: right;">
+                        <a href='/pessoa/novo' class='btn btn-sm btn-primary'>Novo</a>
+                        <a href='/pessoa/consulta' class='btn btn-sm btn-primary'><i class='bi bi-search'></i> </a>
+                        <a href='/usuario/novousuario/{{pessoa._id}}' class='btn btn-sm btn-primary'>Criar Usuário</a>
+                        <button type='submit' class='btn btn-sm btn-success'>Salvar</button>
+                        <a href='/dashboard'><i class='bi bi-house btn btn-sm btn-primary' title="Dashboard"></i></a>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-6">
+                        <div class="row mb-2 mt-3 text-end">
+                            <div class="col-md-4">
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'>Nome Completo: </label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'>Endereço: </label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'>Estado: </label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'>Cidade: </label><br>
+                            </div>
+                            <div class="col-md-7">
+                                <input type='text' name='nome' class='form-control form-control-sm mb-1'
+                                    value="{{pessoa.nome}}">
+                                <input type='text' name='endereco' class='form-control form-control-sm mb-1'
+                                    value="{{pessoa.endereco}}">
+                                <input name="uf" id="uf" class="form-control form-control-sm mt-1"
+                                    value='{{pessoa.uf}}'>
+                                <input name="cidade" id="cidade" class="form-control form-control-sm mt-1"
+                                    value='{{pessoa.cidade}}'>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 text-end">
+                                <label class="col-form-label col-form-label-sm fw-bold">Documento: </label>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-check" onchange="documento()">
+                                    <input class="form-check-input" type="radio" name="check" id="radioCPF"
+                                        {{checkCPF}}>
+                                    <label class="col-form-label col-form-label-sm">
+                                        CPF
+                                    </label>
+                                </div>
+                                <div class="form-check" onchange="documento()">
+                                    <input class="form-check-input" type="radio" name="check" id="radioCNPJ"
+                                        {{checkCNPJ}}>
+                                    <label class="col-form-label col-form-label-sm">
+                                        CNPJ
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="" id="mostraCNPJ" style="{{#if pessoa.cnpj}}display:{{ehcnpj}}{{else}}{{/if}};">
+                                    <input type='text' class='form-control form-control-sm mb-1' maxlength="18"
+                                        autocomplete="off" id='cnpj' name='cnpj' onkeyup="valida_cnpj()"
+                                        value='{{pessoa.cnpj}}'>
+                                </div>
+                                <div class="" id="mostraCPF" style="{{#if pessoa.cpf}}display:{{ehcpf}}{{else}}display: none{{/if}};">
+                                    <input type='text' class='form-control form-control-sm mb-1' maxlength="14"
+                                        autocomplete="off" id='cpf' name='cpf' onkeyup="valida_cpf('cpf')"
+                                        value='{{pessoa.cpf}}'>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 text-end">
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'>Inicio Atividades:
+                                </label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'>Celular: </label><br>
+                                <label class='fw-bold col-form-label col-form-label-sm mb-1'>E-mail: </label>
+                            </div>
+                            <div class="col-md-7">
+                                <input type='text' class='form-control form-control-sm mb-1' autocomplete="off"
+                                    maxlength="7" placeholder='__/____' id='data' name='iniati' maxlength="8"
+                                    onkeyup="mascara_data()" value="{{pessoa.iniati}}">
+                                <input type='text ' name='celular' id='celular' placeholder='DDD + Número'
+                                    class='form-control form-control-sm mb-1' maxlength="10" autocomplete="off"
+                                    value="{{pessoa.celular}}">
+                                <input type='text' name='email' style="text-transform: lowercase;"
+                                    class='form-control form-control-sm mb-1' value="{{pessoa.email}}">
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="col-md-6">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Função:</label>
+                        <div class='row mt-2'>
+                            <div class="col">
+                                <div class="form-check form-switch">
+                                    <input name='funges' class="form-check-input" type="checkbox" {{pessoa.funges}}>
+                                    <label class="form-check-label mt-1" style="font-size: 14px;">Gestor</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-check form-switch">
+                                    <input name='funorc' class="form-check-input" type="checkbox" {{pessoa.funorc}}>
+                                    <label class="form-check-label mt-1" style="font-size: 14px;">Orcamentista</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-check form-switch">
+                                    <input name='funins' id='funins' class="form-check-input" type="checkbox"
+                                        {{pessoa.funins}}>
+                                    <label class="form-check-label mt-1" style="font-size: 14px;">Instalador</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-check form-switch">
+                                    <input name='vendedor' id='vendedor' class="form-check-input" type="checkbox"
+                                        {{pessoa.vendedor}}>
+                                    <label class="form-check-label mt-1" style="font-size: 14px;">Vendedor</label>
+                                </div>
+                            </div>
+                        </div>
+                        {{#if vendedor}}
+                        <div class="row mb-1">
+                            <label class="col-form-label col-form-label-sm fw-bold">Parâmetros de Orçamento</label>
+                            <div class="col-md-3 text-end">
+                                <label class="col-form-label col-form-label-sm">Constante:</label>
+                            </div>
+                            <div class="col text-start">
+                                <input type='text' name='const' class="form-control form-control-sm"
+                                    value="{{pessoa.const}}">
+                            </div>
+                            <div class="col-md-3 text-end">
+                                <label class="col-form-label col-form-label-sm">Sequência:</label>
+                            </div>
+                            <div class="col text-start">
+                                <input type='number' name='seq' step='0.010' class="form-control form-control-sm"
+                                    value="{{pessoa.seq}}">
+                            </div>
+                        </div>
+                        {{/if}}
+                        <div class="row mt-4">
+                            <div class="input-group input-group-sm">
+                                <label class="input-group-text">Foto</label>
+                                <input type="file" name='files' id="files" class='form-control'
+                                    onchange="preview_foto()">
+                            </div>
+                        </div>
+                        <div class="mt-2" style="margin-left: 160px;" id="fotosalva">
+                            <img src='/gerenciamento/mostrarBucket/{{pessoa.foto}}' style="width: 160px; height: 160px;"
+                                alt='Minha Figura'>
+                        </div>
+                        <div class="mt-2" style="display: {{#if pessoa.foto}}none{{else}}''{{/if}}; margin-left: 160px;"
+                            id="fotopreview">
+                            <img id='foto' name='foto' style="width: 160px; height: 160px;" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

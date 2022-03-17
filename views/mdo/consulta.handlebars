@@ -1,0 +1,132 @@
+<style>
+    button {
+        line-height: 0px;
+    }
+    #header {
+        width: 100%;
+        border-bottom: rgb(40, 55, 86) 0, 1px solid;
+        color: rgb(40, 55, 86);
+    }
+
+    .filtro-selecao {
+        width: fit-content;
+        height: fit-content;
+        background: white;
+        border: solid 1px;
+        border-radius: 10px;
+        margin-left: 5px;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    th {
+        text-align: center;
+    }  
+
+    tr {
+        font-size: 12px;
+        border-bottom: rgba(120, 120, 120, 0.4) solid 1px;
+    }
+</style>
+<script>
+    //Slecionar estados e cidades
+    window.onload = function () {
+        var estados = document.getElementById('estado');
+        var cidades = document.getElementById('cidade');
+        new dgCidadesEstados({
+            estado: estados,
+            cidade: cidades,
+            estadoVal: '<%=Request("estado") %>',
+            cidadeVal: '<%=Request("cidade") %>'
+        });
+    };
+</script>    
+<div class="row" style="width: 100%;padding-left: 2%;">
+    <div id='header'>
+        <div class="row mt-4">
+            <form action='/pessoa/filtrar' method='post'>
+                <div class="row d-flex align-items-center">
+                    <div class="col-md-1">
+                        <h5 class='titulo-inicio mt-2'>Pessoas</h5>
+                    </div>
+                    <div class="col">
+                        <a href="/pessoa/novo" style="font-size: 20px;" title="Adicionar pessoa"><i class='bi bi-person-plus'></i></a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 mb-2 text-start" style="padding-left: 3%;">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Nome</label>
+                            <input name='nome' type='text' class="form-control form-control-sm">
+                    </div>
+                    <div class="col-md-2">
+                        <label class='col-form-label col-form-label-sm fw-bold'>UF</label>
+                        <div class="col">
+                            <select id="estado" name='uf' class='form-select form-select-sm mb-1'>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Cidade</label>
+                        <div class="col">
+                            <select id="cidade" name='cidade' class='form-select form-select-sm mb-1'>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class='col-form-label col-form-label-sm fw-bold'>Função</label>
+                        <select class="form-select form-select-sm" name='funcao'>
+                            <option>Todos</option>
+                            <option>Instalador</option>
+                            <option>Orçamentista</option>
+                            <option>Gestor</option>
+                            <option>Vendedor</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1 mt-1">
+                        <button type='submit' class='mt-3 botaofiltrar'><i class='bi bi-search iconefiltrar'></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="row mt-4" style="margin-left: 2%;">
+            <div class='filtro-selecao'>Nome: {{nome}}</div>
+            <div class='filtro-selecao'>UF: {{uf}}</div>
+            <div class='filtro-selecao'>Cidade: {{cidade}}</div>
+            <div class='filtro-selecao'>Função: {{funcao}}</div>
+        </div>
+    </div>
+
+
+    <div style="margin-bottom: 30px; width: 100%;margin-top: 1%;padding-left: 4%;">
+        <table>
+            <tr>
+                <th style="text-align: left;">Nome</th>
+                <th> Cidade</th>
+                <th> Estado</th>
+                <th style="text-align: center;">E-mail</th>
+                <th>Celular</th>
+            </tr>
+            {{#each pessoas}}
+            <tr>
+                <td><a href='/pessoa/edicao/{{_id}}'>{{nome}}</a></td>
+                <td style="text-align: center;"><a href='/pessoa/edicao/{{_id}}'>{{cidade}}</a></td>
+                <td style="text-align: center;"><a href='/pessoa/edicao/{{_id}}'>{{uf}}</a></td>
+                <td style="text-align: center;"><a href='/pessoa/edicao/{{_id}}'>{{email}}</a></td>
+                <td style="text-align: center;"><a href='/pessoa/edicao/{{_id}}'>{{celular}}</a></td>
+                <td>
+                    <div class='btn-group btn-group-sm col-12 gap-2 mx-auto' role='group'>
+                        {{!-- <a href='/pessoa/vermais/{{_id}}' class='botao-tabela ativado'><i class="bi bi-eye icone"></i></a> --}}
+                        {{!-- <a href='/pessoa/edicao/{{_id}}' class='botao-tabela ativado'> <i class='bi bi-pen icone'></i> </a> --}}
+                        <a href='/pessoa/confirmaexclusao/{{_id}}' class="botao-tabela ativado"> <i class='bi bi-trash icone'></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {{else}}
+            <h6>Nenhuma pessoa cadastrada</h6>
+            {{/each}}
+        </table>
+    </div>
+</div>

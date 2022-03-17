@@ -138,8 +138,8 @@ background-color: rgb(40,55, 89);
 }
 
 #execucao{
-height: 25px;
-width: 25px;
+height: 20  px;
+width: 20px;
 border-radius: 25px;
 background-color: rgba(46, 255, 102, 0.6);
 border: rgb(47, 253, 102) 4px solid;
@@ -147,8 +147,8 @@ box-shadow: 3px 1px 5px rgba(200,200,200,0.8)
 }
 
 #aguardando{
-height: 25px;
-width: 25px;
+height: 20px;
+width: 20px;
 border-radius: 25px;
 background-color: rgba(255, 255, 67, 0.6);
 border: rgb(240, 240, 75) 4px solid;
@@ -156,8 +156,8 @@ box-shadow: 3px 1px 5px rgba(200,200,200,0.8);
 }
 
 #parado{
-    height: 30px;
-    width: 30px;
+    height: 20px;
+    width: 20px;
     border-radius: 25px;
 background-color: rgba(255, 43, 43, 0.6);
 border: rgb(255, 60, 60) 4px solid;
@@ -165,8 +165,8 @@ box-shadow: 3px 1px 5px rgba(200,200,200,0.8);
 }
 
 #homologado{
-height: 10px;
-width: 30px;
+height: 20px;
+width: 20px;
 border-radius: 25px;
 background-color: rgba(255, 168, 70, 0.6);
 border: rgb(255, 169, 72) 4px solid;
@@ -174,16 +174,16 @@ box-shadow: 3px 1px 5px rgba(200,200,200,0.8);
 }
 
 #realizado{
-height: 25px;
-width: 25px;
+height: 20px;
+width: 20px;
 border-radius: 25px;
 background-color: rgb(73, 53, 255, 0.6);
 border: rgb(0, 76, 255) 3px solid;
 }
 
 #atrasado{
-height: 10px;
-width: 30px;
+height: 20px;
+width: 20px;
 border-radius: 25px;
 background-color: rgba(199, 199, 199, 0.6);
 border: rgb(153, 152, 152) 1px solid;

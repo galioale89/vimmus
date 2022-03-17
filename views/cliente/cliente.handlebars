@@ -24,6 +24,20 @@
         }
     };
 
+    function documento() {
+        var mostraCPF = document.getElementById('mostraCPF')
+        var mostraCNPJ = document.getElementById('mostraCNPJ')
+        var radioCPF = document.getElementById('radioCPF')
+        var radioCNPJ = document.getElementById('radioCNPJ')
+        if (radioCPF.checked) {
+            mostraCPF.style.display = ''
+            mostraCNPJ.style.display = 'none'
+        } else {
+            mostraCPF.style.display = 'none'
+            mostraCNPJ.style.display = ''
+        }
+    }
+
     function preview_foto() {
         var imagem = document.querySelector('input[name=foto]').files[0]
         var preview = document.querySelector('img[name=foto]')
@@ -239,103 +253,232 @@
 <form {{#if cliente._id}}action='/cliente/edicao' {{else}}action='/cliente/novo' {{/if}} method='post'>
     <input type='hidden' name='id' value='{{cliente._id}}'>
     <input type='hidden' name='voltar' value='{{voltar}}'>
-    <div class="cotainer mt-4" style="width: 50%;margin-left: 25%;">
-        <ul class="nav nav-tabs mb-2">
-            {{#if cliente._id}}
-            <li class="nav-item">
-                <a class="nav-link active" aria-current="page" style="color: black"
-                    href="/cliente/edicao/{{cliente._id}}"><label class="col-form-label titulo-inicio">Cadastro
-                        de Cliente</label></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" aria-current="page" style="color: black"
-                    href="/cliente/usinas/{{cliente._id}}"><label
-                        class="col-form-label titulo-inicio">Usinas</label></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" aria-current="page" style="color: black"
-                    href="/cliente/historico/{{cliente._id}}"><label
-                        class="col-form-label titulo-inicio">Histórico</label></a>
-            </li>
-            {{else}}
-            <label class='col-form-label titulo-inicio fw-bold'>Cadastro de Clientes</label>
-            {{/if}}
-        </ul>
-        <div class="container row mb-2">
-            <div class="col-md-3 text-end">
-                <label class='fw-bold col-form-label col-form-label-sm mb-1'>Nome Completo: </label><br>
-                <label class='fw-bold col-form-label col-form-label-sm mb-1'>Endereço: </label><br>
-                <label class='fw-bold col-form-label col-form-label-sm mb-1'>Estado: </label><br>
-                <label class='fw-bold col-form-label col-form-label-sm mb-1'>Cidade: </label><br>
-                <label class='fw-bold col-form-label col-form-label-sm mb-1'>CNPJ: </label><br>
-                <label class='fw-bold col-form-label col-form-label-sm mb-1'>CPF: </label><br>
-                <label class='fw-bold col-form-label col-form-label-sm mb-1'>Celular: </label><br>
-                <label class='fw-bold col-form-label col-form-label-sm mb-1'>E-mail: </label>
-            </div>
-            <div class="col-md-8">
-                <input type='text' name='nome' class='form-control form-control-sm mb-1' value='{{cliente.nome}}'>
-                <input type='text' name='endereco' class='form-control form-control-sm mb-1'
-                    value='{{cliente.endereco}}'>
-                {{#if cliente._id}}
-                <div class="row" style="margin-top: 3px">
-                    <div class="col-md-5">
-                        <label class='col-form-label col-form-label-sm'>{{cliente.uf}}</label>
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-body">
+                <ul class="nav nav-tabs mb-2">
+                    {{#if cliente._id}}
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" style="color: black"
+                            href="/cliente/edicao/{{cliente._id}}"><label class="col-form-label titulo-inicio">Cadastro
+                                de Cliente</label></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" style="color: black"
+                            href="/cliente/usinas/{{cliente._id}}"><label
+                                class="col-form-label titulo-inicio">Usinas</label></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" style="color: black"
+                            href="/cliente/historico/{{cliente._id}}"><label
+                                class="col-form-label titulo-inicio">Histórico</label></a>
+                    </li>
+                    {{else}}
+                    <label class='col-form-label titulo-inicio fw-bold'>Cadastro de Clientes</label>
+                    {{/if}}
+                </ul>
+                <div class="mb-2">
+                    {{#if vendedor}}
+                    <div style="margin-bottom: 40px;">
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Nome Completo: </label>
+                        <input type='text' name='nome' class='form-control form-control-sm mb-1'
+                            value='{{cliente.nome}}'>
+                        <label class="col-form-label col-form-label-sm fw-bold">Documento</label>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-check" onchange="documento()">
+                                    <input class="form-check-input" type="radio" name="check" id="radioCPF"
+                                        {{checkCPF}}>
+                                    <label class="col-form-label col-form-label-sm">
+                                        CPF
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-check" onchange="documento()">
+                                    <input class="form-check-input" type="radio" name="check" id="radioCNPJ"
+                                        {{checkCNPJ}}>
+                                    <label class="col-form-label col-form-label-sm">
+                                        CNPJ
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Endereço: </label><br>
+                        <input type='text' name='endereco' class='form-control form-control-sm mb-1'
+                            value='{{cliente.endereco}}'>
+                        <div class="col-md-2 text-end">
+                            <label class='fw-bold col-form-label col-form-label-sm mb-1'>Número: </label><br>
+                        </div>
+                        <div class="col-md-1">
+                            <input type='text' name='numero' class='form-control form-control-sm mb-1'
+                                value='{{cliente.numero}}'>
+                        </div>
+                        <div class="col-md-1 text-end">
+                            <label class='fw-bold col-form-label col-form-label-sm mb-1'>Bairro: </label><br>
+                        </div>
+                        <div class="col-md-3">
+                            <input type='text' name='bairro' class='form-control form-control-sm mb-1'
+                                value='{{cliente.bairro}}'>
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <label class='fw-bold col-form-label col-form-label-sm mb-1'>Complemento: </label><br>
+                        </div>
+                        <div class="col-md-3">
+                            <input type='text' name='complemento' class='form-control form-control-sm mb-1'
+                                value='{{cliente.complemento}}'>
+                        </div>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Estado: </label><br>
+                        <div class="row" style="margin-top: 3px">
+                            <div class="col-md-5">
+                                <input class='col-form-label col-form-label-sm' name='uf' value="{{cliente.uf}}">
+                            </div>
+                        </div>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Cidade: </label><br>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <input class='col-form-label col-form-label-sm' name='cidade'
+                                    value="{{cliente.cidade}}">
+                            </div>
+                        </div>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Contato: </label>
+                        <input type='text' name='contato' class='form-control form-control-sm mb-1'
+                            value='{{cliente.contato}}'>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>Celular: </label>
+                        <input type='text ' name='celular' id='celular' class='form-control form-control-sm mb-1'
+                            maxlength="11" autocomplete="off" value='{{cliente.celular}}'>
+                        <label class='fw-bold col-form-label col-form-label-sm mb-1'>E-mail: </label>
+                        <input type='text' name='email' style="text-transform: lowercase;" class='form-control form-control-sm mb-1'
+                            value='{{cliente.email}}'>
                     </div>
-                    <div class="col-md-7">
-                        <select id="estado" name='uf' class='form-select form-select-sm mb-1'>
-                        </select>
+                    {{else}}
+                    <div class="row">
+                        <div class="col-md-2 text-end">
+                            <label class='fw-bold col-form-label col-form-label-sm mb-1'>Nome Completo: </label>
+                        </div>
+                        <div class="col">
+                            <input type='text' name='nome' class='form-control form-control-sm mb-1'
+                                value='{{cliente.nome}}'>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-5">
-                        <label class='col-form-label col-form-label-sm'>{{cliente.cidade}}</label>
+                    <div class="row">
+                        <div class="col-md-2 text-end">
+                            <label class='fw-bold col-form-label col-form-label-sm mb-1'>Endereço: </label>
+                        </div>
+                        <div class="col">
+                            <input type='text' name='endereco' class='form-control form-control-sm mb-1'
+                                value='{{cliente.endereco}}'>
+                        </div>
                     </div>
-                    <div class="col-md-7">
-                        <select id="cidade" name='cidade' class='form-select form-select-sm mb-1'>
-                        </select>
+                    <div class="row">
+                        <div class="col-md-2 text-end">
+                            <label class='fw-bold col-form-label col-form-label-sm mb-1'>Número: </label>
+                        </div>
+                        <div class="col-md-1">
+                            <input type='text' name='numero' class='form-control form-control-sm mb-1'
+                                value='{{cliente.numero}}'>
+                        </div>
+                        <div class="col-md-1 text-end">
+                            <label class='fw-bold col-form-label col-form-label-sm mb-1'>Bairro: </label>
+                        </div>
+                        <div class="col-md-3">
+                            <input type='text' name='bairro' class='form-control form-control-sm mb-1'
+                                value='{{cliente.bairro}}'>
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <label class='fw-bold col-form-label col-form-label-sm mb-1'>Complemento: </label>
+                        </div>
+                        <div class="col-md-3">
+                            <input type='text' name='complemento' class='form-control form-control-sm mb-1'
+                                value='{{cliente.complemento}}'>
+                        </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-2 text-end">
+                            <label class='fw-bold col-form-label col-form-label-sm mb-1'>Cidade: </label>
+                        </div>
+                        <div class="col">
+                            <input class='form-control form-control-sm mb-1' name='cidade' value='{{cliente.cidade}}'>
+                        </div>
+                        <div class="col-md-1">
+                            <label class='fw-bold col-form-label col-form-label-sm mb-1'>Estado: </label>
+                        </div>
+                        <div class="col-md-4">
+                            <input class='form-control form-control-sm mb-1' name='uf' value='{{cliente.uf}}'>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2 text-end">
+                            <label class="col-form-label col-form-label-sm fw-bold">Documento</label>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-check" onchange="documento()">
+                                <input class="form-check-input" type="radio" name="check" id="radioCPF" {{checkCPF}}>
+                                <label class="col-form-label col-form-label-sm">
+                                    CPF
+                                </label>
+                            </div>
+                            <div class="form-check" onchange="documento()">
+                                <input class="form-check-input" type="radio" name="check" id="radioCNPJ" {{checkCNPJ}}>
+                                <label class="col-form-label col-form-label-sm">
+                                    CNPJ
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="" id="mostraCNPJ" style="display: {{#if cliente.cnpj}}{{ehcnpj}}{{else}}none{{/if}};">
+                                <input type='text' class='form-control form-control-sm mb-1' maxlength="18"
+                                    autocomplete="off" id='cnpj' name='cnpj' onkeyup="valida_cnpj()"
+                                    value='{{#if cnpj}}{{cnpj}}{{else}}{{cliente.cnpj}}{{/if}}'>
+                            </div>
+                            <div class="" id="mostraCPF" style="display: {{#if cliente.cpf}}{{ehcpf}}{{else}}''{{/if}};">
+                                <input type='text' class='form-control form-control-sm mb-1' maxlength="14"
+                                    autocomplete="off" id='cpf' name='cpf' onkeyup="valida_cpf('cpf')"
+                                    value='{{#if cpf}}{{cpf}}{{else}}{{cliente.cpf}}{{/if}}'>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2 text-end">
+                            <label class='fw-bold col-form-label col-form-label-sm mb-1'>Contato: </label>
+                        </div>
+                        <div class="col">
+                            <input type='text' name='contato' class='form-control form-control-sm mb-1'
+                                value='{{cliente.contato}}'>
+                        </div>
+                        <div class="col-md-1 text-end">
+                            <label class='fw-bold col-form-label col-form-label-sm mb-1'>Celular: </label>
+                        </div>
+                        <div class="col">
+                            <input type='text ' name='celular' id='celular' class='form-control form-control-sm mb-1'
+                                maxlength="10" autocomplete="off" value='{{cliente.celular}}'>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2 text-end">
+                            <label class='fw-bold col-form-label col-form-label-sm mb-1'>E-mail: </label>
+                        </div>
+                        <div class="col">
+                            <input type='text' name='email' class='form-control form-control-sm mb-1'
+                                value='{{cliente.email}}'>
+                        </div>
+                    </div>
+                    {{/if}}
                 </div>
-                {{else}}
-                <select id="estado" name='uf' class='form-select form-select-sm mb-1'>
-                    <option selected disabled>Selecione um estado...</option>
-                </select>
-                <select id="cidade" name='cidade' class='form-select form-select-sm mb-1'>
-                    <option selected disabled>Selecione um cidade...</option>
-                </select>
-                {{/if}}
-                <!--<input type='text ' name='cidade' class='form-control form-control-sm mb-1'>
-                <input type='text ' name='uf' class='form-control form-control-sm mb-1'>-->
-                <input type='text' class='form-control form-control-sm mb-1' maxlength="18" autocomplete="off" id='cnpj'
-                    name='cnpj' onkeyup="valida_cnpj()" value='{{cliente.cnpj}}'>
-                <input type='text' class='form-control form-control-sm mb-1' maxlength="14" autocomplete="off" id='cpf'
-                    name='cpf' onkeyup="valida_cpf()" value='{{cliente.cpf}}'>
-                <input type='text ' name='celular' id='celular' class='form-control form-control-sm mb-1' maxlength="11"
-                    autocomplete="off" value='{{cliente.celular}}'>
-                <input type='text' name='email' class='form-control form-control-sm mb-1' value='{{cliente.email}}'>
-            </div>
-        </div>
-        <div class="row" style="margin-left: 30%;">
-            <div class="col">
-                <div class="form-check form-switch">
-                    <input name='checkSolar' class="form-check-input" type="checkbox" id="">
-                    <label class="form-check-label mt-1" style="font-size: 12px;">Sistema Solar</label>
+                <div class="col mt-2" style="text-align: center;">
+                    <a href='/cliente/novo' class='btn btn-sm btn-primary'>Novo</a>
+                    <a href="/cliente/consulta" class="btn btn-sm btn-primary text-start"> <i
+                            class='bi bi-search'></i></a>
+                    <button type='submit' class='btn btn-sm btn-success'>Salvar</button>
+                    <a href='/dashboard'><i class='bi bi-house btn btn-sm btn-primary' title="Dashboard"></i></a>
+                    {{#if cliente._id}}
+                    {{#if voltar}}
+                    <a href='/gerenciamento/agenda' class='btn btn-sm btn-primary'><i
+                            class='bi bi-arrow-return-left'></i></a>
+                    {{/if}}
+                    {{/if}}
                 </div>
             </div>
-            <div class="col">
-                <div class="form-check form-switch" onclick="posvenda()">
-                    <input name='checkPos' class="form-check-input" type="checkbox" id="posvenda">
-                    <label class="form-check-label mt-1" style="font-size: 12px;"> Pós-venda</label>
-                </div>
-            </div>
-        </div>
-        <div class="btn-group gap-2 mt-2" style="width: 50%;margin-left: 30%;">
-            <a href='/cliente/novo' class='btn btn-sm btn-primary'>Novo</a>
-            <button type='submit' class='btn btn-sm btn-success'>Aplicar</button>
-            {{#if cliente._id}}
-            {{#if voltar}}
-            <a href='/gerenciamento/agenda' class='btn btn-sm btn-primary'><i class='bi bi-arrow-return-left'></i></a>
-            {{/if}}
-            {{/if}}
         </div>
     </div>
 </form>
