@@ -70,10 +70,27 @@
             descben6.style.display = ''
         }
     }
+
+    var ehmobile = document.getElementById('ehmobile')
+    if (screen.width < 640 || screen.height < 480) {
+        ehmobile.style.display = 'none'
+    }
+    window.onload = function () {
+        var img = document.getElementById('img')
+        var tam = screen.width
+        img.style.width = String(tam) + 'px'
+    }
+
 </script>
+
 <style>
     button {
         text-transform: uppercase;
+    }
+
+    small {
+        font-size: 12px;
+        line-height: 20px;
     }
 </style>
 
@@ -81,13 +98,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vimmus - Gestão efetiva de processos para a energia solar</title>
-    <meta property="og:title" content="Vimmus - Gestão efetiva de processos para a energia solar">
-    <meta property="og:description"
-        content="Controle as atividades dos instaladores nas obras de projetos de usinas solares">
+    <title>Vimmus</title>
+    <meta property="og:title" content="Vimmus - Gestão de obras para Integradores de Energia Solar">
+    <meta property="og:description" content="Gestão de obras">
 
-    <meta name="title" content="Vimmus - Gestão efetiva de processos para a energia solar">
-    <meta name="description" content="Controle o custo dos seus projetos para aumentar o seu lucro.">
+    <meta name="title" content="Vimmus - Gestão de obras para energia solar.">
+    <meta name="description" content="Melhore a comunicação em suas obras.">
 
     <!-- FAV ICON -->
     <link rel="apple-touch-icon" sizes="32x32" href="favicon/apple-icon-32x32.png">
@@ -104,7 +120,7 @@
     <meta property="og:url" content="/">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image" content="favicon/share.png">
-    <meta property="og:site_name" content="Vimmus - Gestão efetiva de processos para a energia solar">
+    <meta property="og:site_name" content="Vimmus - Gestão de obras para Integradores de Energia Solar">
 
     <meta property="og:image:width" content="512">
     <meta property="og:image:height" content="512">
@@ -115,7 +131,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;700&display=swap" rel="stylesheet">
 </head>
 
-<body style="line-height: 1.6875rem;">
+<body style="line-height: 1.6875rem;width: 100%;">
     <header>
         <div class="container">
             <div class="row align-items-center">
@@ -130,7 +146,7 @@
                                 <a href="#about">Sobre</a>
                             </li>
                             <li>
-                                <a href="#benefits">Benefícios</a>
+                                <a href="#resource">Benefícios</a>
                             </li>
                             <li>
                                 <a href="#contact">Contato</a>
@@ -138,10 +154,6 @@
                             <li>
                                 <button class="secondary-btn" type="button" title="Login" onclick="login()">
                                     Login</button>
-                            </li>
-                            <li>
-                                <button class="primary-btn" type="button" title="Registrar-se"
-                                    onclick="registrar()">Registrar-se</button>
                             </li>
                         </ul>
                     </nav>
@@ -151,34 +163,16 @@
     </header>
 
     <section id="initial-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4">
-                    <h2 class="title-banner stripe-animation">
-                        Melhore a comunicação <br>
-                        <span class="stripe"></span>
-                        entre a equipe de campo e o <br>
-                        escritório <br>
-
-                    </h2>
-
-                    <p class="text">Gestão efetiva de processos e equipes <br>para empresas de energias renováveis</p>
-                    <a href='#step-by-step'>
-                        <button class="arrow btn-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="13.896" height="24.304"
-                                viewBox="0 0 13.896 24.304">
-                                <path id="arrow_left" data-name="arrow left"
-                                    d="M12.157,4.189l9.19,9.2a1.729,1.729,0,0,0,2.453,0,1.751,1.751,0,0,0,0-2.46L13.387.506a1.734,1.734,0,0,0-2.4-.051L.507,10.919a1.737,1.737,0,0,0,2.453,2.46Z"
-                                    transform="translate(13.896) rotate(90)" />
-                            </svg>
-                        </button>
-                    </a>
-                </div>
-
-                <div class="col-lg-8">
-                    <img src="img/banner.svg" width="800" alt="Dashboard de projetos" title="Dashboard de projetos">
-                </div>
-            </div>
+        <div class="container text-center">
+            <h2 class="title-banner stripe-animation">
+                Melhore a comunicação <br>
+                <span class="stripe"></span>
+                entre a equipe de campo e o <br>
+                escritório <br>
+            </h2>
+            <p class="text">Transforme a gestão de sua obra e <br>melhore a forma como sua <br> equipe se comunica.</p>
+            <a href='#step-by-step'>
+            </a>
         </div>
     </section>
 
@@ -187,124 +181,99 @@
             <div class="row">
                 <div class="col-12">
                     <h2 class="title-section">
-                        Principais atividades
+                        Processos
                         <span class="stripe"></span>
                     </h2>
-                    <div class="wrapper-cards">
+                    <div class="">
+                        <div class="row wrapper-cards text-center">
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <img src='img/plan.svg' width="70"
+                                        style="margin: auto;margin-top: 5px;margin-bottom: 32px;">
+                                    <p class="text-card">Vendas</p>
+                                    <small>Propostas solicitadas pelos vendedores são encaminhadas para o
+                                        orçamentista</small>
 
-                        {{!-- <button id="prev-step" class="arrow btn-primary disabled">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="13.896" height="24.304"
-                                viewBox="0 0 13.896 24.304">
-                                <path id="arrow_left" data-name="arrow left"
-                                    d="M12.157,4.189l9.19,9.2a1.729,1.729,0,0,0,2.453,0,1.751,1.751,0,0,0,0-2.46L13.387.506a1.734,1.734,0,0,0-2.4-.051L.507,10.919a1.737,1.737,0,0,0,2.453,2.46Z"
-                                    transform="translate(13.896) rotate(90)" />
-                            </svg>
-                        </button>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
 
-                        <button id="next-step" class="arrow btn-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="13.896" height="24.304"
-                                viewBox="0 0 13.896 24.304">
-                                <path id="arrow_left" data-name="arrow left"
-                                    d="M12.157,4.189l9.19,9.2a1.729,1.729,0,0,0,2.453,0,1.751,1.751,0,0,0,0-2.46L13.387.506a1.734,1.734,0,0,0-2.4-.051L.507,10.919a1.737,1.737,0,0,0,2.453,2.46Z"
-                                    transform="translate(13.896) rotate(90)" />
-                            </svg>
-                        </button> --}}
+                                    <svg class="picture-card" xmlns="http://www.w3.org/2000/svg" width="70.347"
+                                        height="70.333" viewBox="0 0 70.347 70.333">
 
-                        <div class="card">
-                            <img src='img/plan.svg' width="70"
-                                style="margin: auto;margin-top: 5px;margin-bottom: 32px;">
-                            <p class="text-card">1. Planejamento e acompanhamento de status dos projetos</p>
+                                        <g id="local-na-rede-internet" transform="translate(0.05 512)">
+                                            <path id="Caminho_120" data-name="Caminho 120"
+                                                d="M6.8-504.074l-.041,7.94-1.236.082a10.98,10.98,0,0,0-1.69.234,5.906,5.906,0,0,0-3.736,4.286c-.192,1-.192,37.475,0,38.477a5.834,5.834,0,0,0,3.16,4.025l.893.426,8.1.069,8.1.069.041,2.239L20.425-444H15.892v2.335H54.355V-444H49.822l.027-2.225.041-2.239,8.1-.069,8.1-.069.893-.426a5.834,5.834,0,0,0,3.16-4.025c.192-1,.192-37.475,0-38.477a5.906,5.906,0,0,0-3.736-4.286,10.719,10.719,0,0,0-1.69-.234l-1.236-.082-.041-7.94L63.422-512H6.825ZM61.224-506.3v3.366H9.023v-6.731h52.2Zm0,23.834v18.133H9.023V-500.6h52.2ZM6.8-477.973l.027,15.839h56.6l.027-15.839.041-15.825.659-.041a3.648,3.648,0,0,1,3.517,1.951c.288.577.288.714.288,16.333V-459.8H2.292v-15.756c0-15.44,0-15.756.275-16.32A3.584,3.584,0,0,1,6-493.826l.756.027Zm61.157,22.5c0,2.377-.11,2.83-.865,3.613a4.725,4.725,0,0,1-.989.756l-.549.3H4.7l-.549-.3a4.725,4.725,0,0,1-.989-.756c-.756-.783-.865-1.236-.865-3.613V-457.6H67.955ZM47.6-446.241,47.624-444h-25v-2.17a14.161,14.161,0,0,1,.1-2.267c.041-.055,5.66-.082,12.459-.069l12.377.041Z"
+                                                transform="translate(0)" fill="#07072d" />
+                                            <path id="Caminho_121" data-name="Caminho 121"
+                                                d="M83-477.832v1.168h2.2V-479H83Z"
+                                                transform="translate(-71.641 -28.467)" fill="#07072d" />
+                                            <path id="Caminho_122" data-name="Caminho 122"
+                                                d="M116-477.832v1.168h2.2V-479H116Z"
+                                                transform="translate(-100.108 -28.467)" fill="#07072d" />
+                                            <path id="Caminho_123" data-name="Caminho 123"
+                                                d="M149-477.832v1.168h2.2V-479H149Z"
+                                                transform="translate(-128.575 -28.467)" fill="#07072d" />
+                                            <path id="Caminho_124" data-name="Caminho 124"
+                                                d="M92.959-412.689a5.445,5.445,0,0,0-2.486,1.36c-1.36,1.223-1.841,2.638-1.841,5.385,0,2.569.33,3.558,1.621,4.9.33.343.591.7.549.8a8.924,8.924,0,0,1-2.129.756c-2.418.7-2.995.962-3.9,1.813-1.415,1.319-1.772,2.4-1.772,5.357v2.1h22.666v-1.69c0-2.967-.412-4.3-1.758-5.66-.934-.962-1.374-1.154-5.206-2.267a2.576,2.576,0,0,1-1-.412A3.33,3.33,0,0,1,98.33-401a6.433,6.433,0,0,0,1.058-1.552c.426-.893.44-.975.481-3.1a11.732,11.732,0,0,0-.124-2.816,5.787,5.787,0,0,0-4.176-4.2A4.813,4.813,0,0,0,92.959-412.689Zm2.926,2.569a3.727,3.727,0,0,1,1.69,2.253,10.22,10.22,0,0,1,.1,2.2c-.082,2.157-.371,2.734-1.868,3.764l-.453.316L95.391-400l.041,1.594,2.885.838a31.113,31.113,0,0,1,3.311,1.071,3.8,3.8,0,0,1,1.539,1.868,5.444,5.444,0,0,1,.165,1.374v.838H85.2v-.8a6.638,6.638,0,0,1,.137-1.291,4.06,4.06,0,0,1,1.5-1.951c.247-.137,1.758-.632,3.352-1.1l2.912-.838.041-1.69a5.069,5.069,0,0,0-.1-1.676c-.343,0-1.511-1.126-1.786-1.731a8.807,8.807,0,0,1-.3-4.19,3.273,3.273,0,0,1,3.379-2.871A2.513,2.513,0,0,1,95.885-410.12Z"
+                                                transform="translate(-71.641 -85.519)" fill="#07072d" />
+                                            <path id="Caminho_125" data-name="Caminho 125"
+                                                d="M263.941-411.874l.041,1.14,11.306.041,11.292.028V-413H263.9Z"
+                                                transform="translate(-227.691 -85.4)" fill="#07072d" />
+                                            <path id="Caminho_126" data-name="Caminho 126"
+                                                d="M263.941-378.874l.041,1.14,11.306.041,11.292.027V-380H263.9Z"
+                                                transform="translate(-227.691 -113.867)" fill="#07072d" />
+                                            <path id="Caminho_127" data-name="Caminho 127"
+                                                d="M264-345.832v1.168h15.935V-347H264Z"
+                                                transform="translate(-227.777 -142.334)" fill="#07072d" />
+                                            <path id="Caminho_128" data-name="Caminho 128"
+                                                d="M264-304.934v9.066h22.666V-314H264Zm20.468.069v6.8H266.335v-13.6h18.133Z"
+                                                transform="translate(-227.777 -170.801)" fill="#07072d" />
+                                            <path id="Caminho_129" data-name="Caminho 129"
+                                                d="M83-229.9v1.1h22.666V-231H83Z"
+                                                transform="translate(-71.641 -242.399)" fill="#07072d" />
+                                            <path id="Caminho_130" data-name="Caminho 130"
+                                                d="M83-196.9v1.1h22.666V-198H83Z"
+                                                transform="translate(-71.641 -270.866)" fill="#07072d" />
+                                            <path id="Caminho_131" data-name="Caminho 131" d="M50-97.9v1.1h2.2V-99H50Z"
+                                                transform="translate(-43.175 -356.266)" fill="#07072d" />
+                                            <path id="Caminho_132" data-name="Cami  nho 132"
+                                                d="M83-97.9v1.1h2.2V-99H83Z" transform="translate(-71.641 -356.266)"
+                                                fill="#07072d" />
+                                            <path id="Caminho_133" data-name="Caminho 133"
+                                                d="M116-97.9v1.1h2.2V-99H116Z" transform="translate(-100.108 -356.266)"
+                                                fill="#07072d" />
+                                        </g>
+                                    </svg>
+                                    <p class="text-card">Projetos</p>
+                                    <small>Acompanhamento do status da obra pelo gestor</small>
 
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+
+                                    <img src='img/time.svg' width="110"
+                                        style="margin: auto;margin-top: 2px;margin-bottom: 5px;">
+                                    <p class="text-card">Instalação</p>
+                                    <small>Salvamento de imagens tiradas pelos instaladores</small>
+
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="card">
-
-                            <svg class="picture-card" xmlns="http://www.w3.org/2000/svg" width="70.347" height="70.333"
-                                viewBox="0 0 70.347 70.333">
-
-                                <g id="local-na-rede-internet" transform="translate(0.05 512)">
-                                    <path id="Caminho_120" data-name="Caminho 120"
-                                        d="M6.8-504.074l-.041,7.94-1.236.082a10.98,10.98,0,0,0-1.69.234,5.906,5.906,0,0,0-3.736,4.286c-.192,1-.192,37.475,0,38.477a5.834,5.834,0,0,0,3.16,4.025l.893.426,8.1.069,8.1.069.041,2.239L20.425-444H15.892v2.335H54.355V-444H49.822l.027-2.225.041-2.239,8.1-.069,8.1-.069.893-.426a5.834,5.834,0,0,0,3.16-4.025c.192-1,.192-37.475,0-38.477a5.906,5.906,0,0,0-3.736-4.286,10.719,10.719,0,0,0-1.69-.234l-1.236-.082-.041-7.94L63.422-512H6.825ZM61.224-506.3v3.366H9.023v-6.731h52.2Zm0,23.834v18.133H9.023V-500.6h52.2ZM6.8-477.973l.027,15.839h56.6l.027-15.839.041-15.825.659-.041a3.648,3.648,0,0,1,3.517,1.951c.288.577.288.714.288,16.333V-459.8H2.292v-15.756c0-15.44,0-15.756.275-16.32A3.584,3.584,0,0,1,6-493.826l.756.027Zm61.157,22.5c0,2.377-.11,2.83-.865,3.613a4.725,4.725,0,0,1-.989.756l-.549.3H4.7l-.549-.3a4.725,4.725,0,0,1-.989-.756c-.756-.783-.865-1.236-.865-3.613V-457.6H67.955ZM47.6-446.241,47.624-444h-25v-2.17a14.161,14.161,0,0,1,.1-2.267c.041-.055,5.66-.082,12.459-.069l12.377.041Z"
-                                        transform="translate(0)" fill="#07072d" />
-                                    <path id="Caminho_121" data-name="Caminho 121" d="M83-477.832v1.168h2.2V-479H83Z"
-                                        transform="translate(-71.641 -28.467)" fill="#07072d" />
-                                    <path id="Caminho_122" data-name="Caminho 122" d="M116-477.832v1.168h2.2V-479H116Z"
-                                        transform="translate(-100.108 -28.467)" fill="#07072d" />
-                                    <path id="Caminho_123" data-name="Caminho 123" d="M149-477.832v1.168h2.2V-479H149Z"
-                                        transform="translate(-128.575 -28.467)" fill="#07072d" />
-                                    <path id="Caminho_124" data-name="Caminho 124"
-                                        d="M92.959-412.689a5.445,5.445,0,0,0-2.486,1.36c-1.36,1.223-1.841,2.638-1.841,5.385,0,2.569.33,3.558,1.621,4.9.33.343.591.7.549.8a8.924,8.924,0,0,1-2.129.756c-2.418.7-2.995.962-3.9,1.813-1.415,1.319-1.772,2.4-1.772,5.357v2.1h22.666v-1.69c0-2.967-.412-4.3-1.758-5.66-.934-.962-1.374-1.154-5.206-2.267a2.576,2.576,0,0,1-1-.412A3.33,3.33,0,0,1,98.33-401a6.433,6.433,0,0,0,1.058-1.552c.426-.893.44-.975.481-3.1a11.732,11.732,0,0,0-.124-2.816,5.787,5.787,0,0,0-4.176-4.2A4.813,4.813,0,0,0,92.959-412.689Zm2.926,2.569a3.727,3.727,0,0,1,1.69,2.253,10.22,10.22,0,0,1,.1,2.2c-.082,2.157-.371,2.734-1.868,3.764l-.453.316L95.391-400l.041,1.594,2.885.838a31.113,31.113,0,0,1,3.311,1.071,3.8,3.8,0,0,1,1.539,1.868,5.444,5.444,0,0,1,.165,1.374v.838H85.2v-.8a6.638,6.638,0,0,1,.137-1.291,4.06,4.06,0,0,1,1.5-1.951c.247-.137,1.758-.632,3.352-1.1l2.912-.838.041-1.69a5.069,5.069,0,0,0-.1-1.676c-.343,0-1.511-1.126-1.786-1.731a8.807,8.807,0,0,1-.3-4.19,3.273,3.273,0,0,1,3.379-2.871A2.513,2.513,0,0,1,95.885-410.12Z"
-                                        transform="translate(-71.641 -85.519)" fill="#07072d" />
-                                    <path id="Caminho_125" data-name="Caminho 125"
-                                        d="M263.941-411.874l.041,1.14,11.306.041,11.292.028V-413H263.9Z"
-                                        transform="translate(-227.691 -85.4)" fill="#07072d" />
-                                    <path id="Caminho_126" data-name="Caminho 126"
-                                        d="M263.941-378.874l.041,1.14,11.306.041,11.292.027V-380H263.9Z"
-                                        transform="translate(-227.691 -113.867)" fill="#07072d" />
-                                    <path id="Caminho_127" data-name="Caminho 127"
-                                        d="M264-345.832v1.168h15.935V-347H264Z" transform="translate(-227.777 -142.334)"
-                                        fill="#07072d" />
-                                    <path id="Caminho_128" data-name="Caminho 128"
-                                        d="M264-304.934v9.066h22.666V-314H264Zm20.468.069v6.8H266.335v-13.6h18.133Z"
-                                        transform="translate(-227.777 -170.801)" fill="#07072d" />
-                                    <path id="Caminho_129" data-name="Caminho 129" d="M83-229.9v1.1h22.666V-231H83Z"
-                                        transform="translate(-71.641 -242.399)" fill="#07072d" />
-                                    <path id="Caminho_130" data-name="Caminho 130" d="M83-196.9v1.1h22.666V-198H83Z"
-                                        transform="translate(-71.641 -270.866)" fill="#07072d" />
-                                    <path id="Caminho_131" data-name="Caminho 131" d="M50-97.9v1.1h2.2V-99H50Z"
-                                        transform="translate(-43.175 -356.266)" fill="#07072d" />
-                                    <path id="Caminho_132" data-name="Cami  nho 132" d="M83-97.9v1.1h2.2V-99H83Z"
-                                        transform="translate(-71.641 -356.266)" fill="#07072d" />
-                                    <path id="Caminho_133" data-name="Caminho 133" d="M116-97.9v1.1h2.2V-99H116Z"
-                                        transform="translate(-100.108 -356.266)" fill="#07072d" />
-                                </g>
-                            </svg>
-                            <p class="text-card">2. Gestão de equipes</p>
-
-                        </div>
-
-                        <div class="card">
-
-                            {{!-- <svg class="picture-card" xmlns="http://www.w3.org/2000/svg" width="69.554"
-                                height="69.553" viewBox="0 0 69.554 69.553">
-                                <g transform="translate(0 -0.003)">
-                                    <g transform="translate(0 0.003)">
-                                        <path
-                                            d="M67.379,38.259a6.11,6.11,0,0,0-8.413.5l-5.989,6.429a6.127,6.127,0,0,0-5.308-4.276A23.01,23.01,0,0,0,50.681,38.4a22.177,22.177,0,0,0,6.646-15.849,22.483,22.483,0,1,0-44.965,0,22.312,22.312,0,0,0,5.761,14.988,14.178,14.178,0,0,0-2.8,1.872,6.108,6.108,0,0,0-4.995-2.6H2.038A2.038,2.038,0,0,0,0,38.855V67.518a2.038,2.038,0,0,0,2.038,2.038h8.287A6.122,6.122,0,0,0,16.1,65.45a2.049,2.049,0,0,0,.34.031h30.7a14.337,14.337,0,0,0,11.417-5.713L68.332,46.6A6.107,6.107,0,0,0,67.379,38.259ZM12.362,63.443a2.04,2.04,0,0,1-2.038,2.038H4.075V40.893h6.249a2.04,2.04,0,0,1,2.038,2.038Zm4.075-40.89a18.407,18.407,0,1,1,19.494,18.3,2.035,2.035,0,0,1-.963-.471l-.957-.842A14.267,14.267,0,0,0,22.49,36.154,18.273,18.273,0,0,1,16.437,22.553ZM65.066,44.159,55.289,57.33a10.237,10.237,0,0,1-8.151,4.075h-30.7V43.852l1.42-1.25a10.21,10.21,0,0,1,13.461,0c.693.61,2.572,2.366,3.458,2.366H47.139a2.038,2.038,0,1,1,0,4.075H32.521a2.038,2.038,0,0,0,0,4.075H48.5a6.133,6.133,0,0,0,4.473-1.946l8.971-9.63a2.038,2.038,0,0,1,3.118,2.617Z"
-                                            transform="translate(0 -0.003)" fill="#07072d" />
-                                    </g>
-                                    <g transform="translate(28.663 8.29)">
-                                        <path
-                                            d="M217.11,73.228a2.038,2.038,0,0,1-.7-3.954c1.047-.381,2.265.136,3.343,1.419a2.038,2.038,0,0,0,3.121-2.621,8.473,8.473,0,0,0-3.728-2.666V63.04a2.038,2.038,0,1,0-4.075,0v2.387l-.054.019A6.114,6.114,0,0,0,217.11,77.3a2.038,2.038,0,0,1,.793,3.916,2.789,2.789,0,0,1-3-.9,2.038,2.038,0,1,0-2.836,2.927,8,8,0,0,0,3,1.876v2.374a2.038,2.038,0,0,0,4.075,0V85.1c.116-.041.231-.085.345-.133a6.114,6.114,0,0,0-2.383-11.744Z"
-                                            transform="translate(-210.997 -61.002)" fill="#07072d" />
-                                    </g>
-                                </g>
-                            </svg> --}}
-                            <img src='img/time.svg' width="110"
-                                style="margin: auto;margin-top: 2px;margin-bottom: 5px;">
-                            <p class="text-card">3. Controle de manutenções</p>
-
-                        </div>
-
-                        <!-- <div class="card">
-                           
-                            <svg class="picture-card" xmlns="http://www.w3.org/2000/svg" width="73.604" height="72.742" viewBox="0 0 73.604 72.742"><g transform="translate(0 -3)"><g transform="translate(43.121 39.4)"><path d="M305.992,266.574a2.766,2.766,0,1,1,3.163-2.737,1.438,1.438,0,0,0,2.875,0,5.72,5.72,0,0,0-4.6-5.451v-.748a1.438,1.438,0,1,0-2.875,0v.748a5.72,5.72,0,0,0-4.6,5.451,5.843,5.843,0,0,0,6.038,5.612,2.766,2.766,0,1,1-3.163,2.737,1.438,1.438,0,1,0-2.875,0,5.72,5.72,0,0,0,4.6,5.451v.621a1.438,1.438,0,0,0,2.875,0v-.621a5.72,5.72,0,0,0,4.6-5.451A5.843,5.843,0,0,0,305.992,266.574Z" transform="translate(-299.954 -256.201)" fill="#07072d"/></g><g transform="translate(55.192 34.308)"><path d="M393.636,227.7a18.731,18.731,0,0,0-7.651-6.771,1.438,1.438,0,1,0-1.246,2.591,15.827,15.827,0,0,1,7.128,21.678,1.438,1.438,0,1,0,2.538,1.35,18.71,18.71,0,0,0-.77-18.848Z" transform="translate(-383.924 -220.785)" fill="#07072d"/></g><g transform="translate(49.884 32.614)"><g transform="translate(0 0)"><path d="M348.534,209h-.1a1.438,1.438,0,1,0,0,2.875h.09a1.438,1.438,0,0,0,.007-2.875Z" transform="translate(-347 -209.001)" fill="#07072d"/></g></g><g transform="translate(30.477 41.773)"><path d="M223.848,296.5a15.827,15.827,0,0,1-7.128-21.678,1.438,1.438,0,1,0-2.538-1.35,18.7,18.7,0,0,0,8.421,25.62,1.438,1.438,0,1,0,1.246-2.591Z" transform="translate(-212.002 -272.711)" fill="#07072d"/></g><g transform="translate(45.482 67.116)"><path d="M317.905,449h-.083a1.438,1.438,0,0,0-.013,2.875h.1a1.438,1.438,0,1,0,0-2.875Z" transform="translate(-316.378 -448.999)" fill="#07072d"/></g><g transform="translate(0 3)"><g transform="translate(0 0)"><path d="M55.693,27.751a6.6,6.6,0,0,0-.639-1.174H58.8a6.613,6.613,0,0,0,0-13.226H47.285A6.609,6.609,0,0,0,41.834,3H6.613a6.613,6.613,0,0,0,0,13.226H18.125a6.594,6.594,0,0,0,0,7.475H14.376a6.609,6.609,0,0,0-4.109,11.788,6.6,6.6,0,0,0,0,10.351,6.6,6.6,0,0,0,0,10.351,6.609,6.609,0,0,0,4.109,11.788H31.318A24.434,24.434,0,1,0,55.693,27.751Zm3.1-11.525a3.738,3.738,0,1,1,0,7.475H23.576a3.738,3.738,0,1,1,0-7.475ZM6.613,13.351a3.738,3.738,0,0,1,0-7.475H41.834a3.738,3.738,0,0,1,0,7.475Zm7.763,13.226H49.6a3.736,3.736,0,0,1,1.631.375c-.68-.057-1.367-.088-2.062-.088a24.363,24.363,0,0,0-17.294,7.188h-17.5a3.738,3.738,0,1,1,0-7.475Zm0,10.351H29.415a24.369,24.369,0,0,0-3.7,7.475H14.376a3.738,3.738,0,1,1,0-7.475Zm0,10.351H25.06a24.459,24.459,0,0,0-.089,7.475h-10.6a3.738,3.738,0,1,1,0-7.475Zm0,17.826a3.738,3.738,0,1,1,0-7.475H25.558A24.343,24.343,0,0,0,29.007,65.1Zm34.79,7.763A21.564,21.564,0,1,1,70.729,51.3,21.588,21.588,0,0,1,49.166,72.867Z" transform="translate(0 -3)" fill="#07072d"/></g></g></g></svg>
-                            
-                            <p class="text-card">Insira os custos por atividade, custos adicionais e reserva gerencial</p>
-                           
-                        </div>
-
-                        <div class="card not-visible">
-                           
-                            <svg class="picture-card" xmlns="http://www.w3.org/2000/svg" width="60" height="60.003" viewBox="0 0 60 60.003"><g transform="translate(0 -0.001)"><path d="M27,34.5a1,1,0,0,0,2,0c0-3.308-3.06-6.042-7-6.444V27a1,1,0,0,0-2,0v1.056c-3.94.4-7,3.136-7,6.444s3.06,6.042,7,6.444v8.988c-2.833-.358-5-2.207-5-4.432a1,1,0,0,0-2,0c0,3.308,3.06,6.042,7,6.444V53a1,1,0,0,0,2,0V51.944c3.94-.4,7-3.136,7-6.444s-3.06-6.042-7-6.444V30.068C24.833,30.426,27,32.275,27,34.5Zm-12,0c0-2.225,2.167-4.074,5-4.432v8.864C17.167,38.574,15,36.725,15,34.5Zm12,11c0,2.225-2.167,4.074-5,4.432V41.068C24.833,41.426,27,43.275,27,45.5Z" fill="#07072d"/><path d="M3.6,30.173a1,1,0,0,0-1.328.486A24.4,24.4,0,0,0,0,41C0,53.607,7.065,60,21,60a32.337,32.337,0,0,0,8.357-.963,1,1,0,1,0-.514-1.933A30.832,30.832,0,0,1,21,58C8.215,58,2,52.439,2,41a22.114,22.114,0,0,1,2.087-9.5A1,1,0,0,0,3.6,30.173Z" fill="#07072d"/><path d="M57,25H35a3,3,0,0,0-3,3V57a3,3,0,0,0,3,3H57a3,3,0,0,0,3-3V28A3,3,0,0,0,57,25Zm1,32a1,1,0,0,1-1,1H35a1,1,0,0,1-1-1V28a1,1,0,0,1,1-1H57a1,1,0,0,1,1,1Z" fill="#07072d"/><path d="M39,38H53a2,2,0,0,0,2-2V32a2,2,0,0,0-2-2H39a2,2,0,0,0-2,2v4A2,2,0,0,0,39,38Zm0-6H53v4H39Z" fill="#07072d"/><path d="M41,41H38a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M41,45H38a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M41,49H38a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M41,53H38a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M48,41H45a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M48,45H45a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M48,49H45a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M48,53H45a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M55,41H52a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M55,45H52a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M55,49H52a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M55,53H52a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M6.325,1.263C3.692,3.675,8.318,11.115,11.044,15H10.5a3.482,3.482,0,0,0-2.477,1.022A3.525,3.525,0,0,0,7,18.5a3.489,3.489,0,0,0,1.754,3.015A47.1,47.1,0,0,0,5.46,25.4a1,1,0,1,0,1.6,1.2,48.326,48.326,0,0,1,4-4.6H31.5a3.5,3.5,0,1,0,0-7h-.544c2.725-3.885,7.351-11.324,4.72-13.737-1.21-1.108-2.62-.3-3.863.407A7.713,7.713,0,0,1,28,3a3.874,3.874,0,0,1-2.851-1.26,5.821,5.821,0,0,0-8.3,0A3.874,3.874,0,0,1,13.993,3a7.681,7.681,0,0,1-3.81-1.33C8.941.961,7.532.156,6.325,1.263ZM32.563,17.438A1.5,1.5,0,0,1,31.5,20h-21a1.5,1.5,0,1,1,0-3h21a1.51,1.51,0,0,1,1.063.438ZM13.993,5a5.821,5.821,0,0,0,4.151-1.741,3.854,3.854,0,0,1,5.7,0A5.825,5.825,0,0,0,28,5a9.581,9.581,0,0,0,4.809-1.594,4.182,4.182,0,0,1,1.519-.669C35.354,3.677,32.642,9.346,28.5,15H26V10a1,1,0,0,0-2,0v5H18V10a1,1,0,0,0-2,0v5H13.508C9.362,9.346,6.65,3.677,7.69,2.722a4.964,4.964,0,0,1,1.5.684A9.561,9.561,0,0,0,13.993,5Z" fill="#07072d"/></g></svg>
-                            
-                            <p class="text-card">Após a execução da obra, realize os custos do projeto frente ao orçado</p>
-                           
-                        </div> -->
                     </div>
-
                 </div>
             </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="row" style="width: 100%;">
+            <img src="img/banner.svg" id='img' style="padding-left: 30px;padding-top: 40px;" width=""
+                alt="Dashboard de projetos" title="Dashboard de projetos">
+<a href="#contact" style="text-align: center;padding-left: 30px;"><button class="btn primary-btn"
+                        href="#contact" style="width: 100%;height: 100px;font-size: 40px;">QUERO CONHECER</button></a>                
         </div>
     </section>
 
@@ -317,21 +286,9 @@
                         <span class="stripe"></span>
                     </h2>
 
-                    <div class="wrapper-cards">
+                    <div class="row wrapper-cards">
 
-                        <!-- <button id="prev-step" class="arrow btn-primary disabled">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="13.896" height="24.304" viewBox="0 0 13.896 24.304">
-                                <path id="arrow_left" data-name="arrow left" d="M12.157,4.189l9.19,9.2a1.729,1.729,0,0,0,2.453,0,1.751,1.751,0,0,0,0-2.46L13.387.506a1.734,1.734,0,0,0-2.4-.051L.507,10.919a1.737,1.737,0,0,0,2.453,2.46Z" transform="translate(13.896) rotate(90)"/>
-                            </svg>                          
-                        </button>
-
-                        <button id="next-step" class="arrow btn-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="13.896" height="24.304" viewBox="0 0 13.896 24.304">
-                                <path id="arrow_left" data-name="arrow left" d="M12.157,4.189l9.19,9.2a1.729,1.729,0,0,0,2.453,0,1.751,1.751,0,0,0,0-2.46L13.387.506a1.734,1.734,0,0,0-2.4-.051L.507,10.919a1.737,1.737,0,0,0,2.453,2.46Z" transform="translate(13.896) rotate(90)"/>
-                            </svg>                          
-                        </button> -->
-
-                        <div class="card">
+                        <div class="card mb-4">
 
                             <img src="img/indicador.svg" width="100"
                                 style="color: white;margin: auto;margin-top: 5px;margin-bottom: 10px;">
@@ -341,7 +298,7 @@
                                 de fechamento de propostas</p>
                         </div>
 
-                        <div class="card">
+                        <div class="card mb-4">
                             <img src="img/comu.svg" width="100"
                                 style="color: white;margin: auto;margin-top: 12px;margin-bottom: 10px;">
                             <p class="text-card"
@@ -350,7 +307,7 @@
 
                         </div>
 
-                        <div class="card">
+                        <div class="card mb-4">
                             <img src="img/integ.svg" width="90"
                                 style="color: white;margin: auto;margin-top: 20px;margin-bottom: 10px;">
                             <p class="text-card"
@@ -365,209 +322,6 @@
                                 style="font-size: 12px;line-height: 12px;margin: auto;padding-bottom: 90px;">Agenda de
                                 planejamento</p>
                         </div>
-
-                        {{!-- <div class="card">
-
-                            <svg class="picture-card" xmlns="http://www.w3.org/2000/svg" width="49.54" height="69.288"
-                                viewBox="0 0 49.54 69.288">
-                                <g transform="translate(-326.558 507.9)">
-                                    <g transform="translate(326.558 -507.9)">
-                                        <g transform="translate(0 0)">
-                                            <path
-                                                d="M130.44,80.388H80.9V11.1h49.526V80.388ZM83.857,77.432h43.783V14.057H83.857Z"
-                                                transform="translate(-80.9 -11.1)" fill="#07072d" />
-                                            <g transform="translate(6.79 7.809)">
-                                                <path
-                                                    d="M164.86,82.964H128.9V66.3h35.974V82.964Zm-33.017-2.942h30.216V69.257H131.842Z"
-                                                    transform="translate(-128.9 -66.3)" fill="#07072d" />
-                                            </g>
-                                            <g transform="translate(8.261 32.282)">
-                                                <rect width="6.479" height="2.942" fill="#07072d" />
-                                                <g transform="translate(13.269)">
-                                                    <rect width="6.479" height="2.942" fill="#07072d" />
-                                                </g>
-                                                <g transform="translate(26.538)">
-                                                    <rect width="6.479" height="2.942" fill="#07072d" />
-                                                </g>
-                                                <g transform="translate(0 8.558)">
-                                                    <rect width="6.479" height="2.942" fill="#07072d" />
-                                                </g>
-                                                <g transform="translate(13.269 8.558)">
-                                                    <rect width="6.479" height="2.942" fill="#07072d" />
-                                                </g>
-                                                <g transform="translate(26.538 8.558)">
-                                                    <rect width="6.479" height="2.942" fill="#07072d" />
-                                                </g>
-                                                <g transform="translate(0 17.244)">
-                                                    <rect width="6.479" height="2.942" fill="#07072d" />
-                                                </g>
-                                                <g transform="translate(13.269 17.244)">
-                                                    <rect width="6.479" height="2.942" fill="#07072d" />
-                                                </g>
-                                                <g transform="translate(0 25.944)">
-                                                    <rect width="6.479" height="2.942" fill="#07072d" />
-                                                </g>
-                                                <g transform="translate(13.269 25.944)">
-                                                    <rect width="6.479" height="2.942" fill="#07072d" />
-                                                </g>
-                                                <g transform="translate(28.448 16.664)">
-                                                    <rect width="2.942" height="12.237" fill="#07072d" />
-                                                </g>
-                                            </g>
-                                        </g>
-                                    </g>
-                                </g>
-                            </svg>
-
-                        </div> --}}
-                        {{!--
-                        <div class="card">
-
-                            <svg class="picture-card" xmlns="http://www.w3.org/2000/svg" width="69.554" height="69.553"
-                                viewBox="0 0 69.554 69.553">
-                                <g transform="translate(0 -0.003)">
-                                    <g transform="translate(0 0.003)">
-                                        <path
-                                            d="M67.379,38.259a6.11,6.11,0,0,0-8.413.5l-5.989,6.429a6.127,6.127,0,0,0-5.308-4.276A23.01,23.01,0,0,0,50.681,38.4a22.177,22.177,0,0,0,6.646-15.849,22.483,22.483,0,1,0-44.965,0,22.312,22.312,0,0,0,5.761,14.988,14.178,14.178,0,0,0-2.8,1.872,6.108,6.108,0,0,0-4.995-2.6H2.038A2.038,2.038,0,0,0,0,38.855V67.518a2.038,2.038,0,0,0,2.038,2.038h8.287A6.122,6.122,0,0,0,16.1,65.45a2.049,2.049,0,0,0,.34.031h30.7a14.337,14.337,0,0,0,11.417-5.713L68.332,46.6A6.107,6.107,0,0,0,67.379,38.259ZM12.362,63.443a2.04,2.04,0,0,1-2.038,2.038H4.075V40.893h6.249a2.04,2.04,0,0,1,2.038,2.038Zm4.075-40.89a18.407,18.407,0,1,1,19.494,18.3,2.035,2.035,0,0,1-.963-.471l-.957-.842A14.267,14.267,0,0,0,22.49,36.154,18.273,18.273,0,0,1,16.437,22.553ZM65.066,44.159,55.289,57.33a10.237,10.237,0,0,1-8.151,4.075h-30.7V43.852l1.42-1.25a10.21,10.21,0,0,1,13.461,0c.693.61,2.572,2.366,3.458,2.366H47.139a2.038,2.038,0,1,1,0,4.075H32.521a2.038,2.038,0,0,0,0,4.075H48.5a6.133,6.133,0,0,0,4.473-1.946l8.971-9.63a2.038,2.038,0,0,1,3.118,2.617Z"
-                                            transform="translate(0 -0.003)" fill="#07072d" />
-                                    </g>
-                                    <g transform="translate(28.663 8.29)">
-                                        <path
-                                            d="M217.11,73.228a2.038,2.038,0,0,1-.7-3.954c1.047-.381,2.265.136,3.343,1.419a2.038,2.038,0,0,0,3.121-2.621,8.473,8.473,0,0,0-3.728-2.666V63.04a2.038,2.038,0,1,0-4.075,0v2.387l-.054.019A6.114,6.114,0,0,0,217.11,77.3a2.038,2.038,0,0,1,.793,3.916,2.789,2.789,0,0,1-3-.9,2.038,2.038,0,1,0-2.836,2.927,8,8,0,0,0,3,1.876v2.374a2.038,2.038,0,0,0,4.075,0V85.1c.116-.041.231-.085.345-.133a6.114,6.114,0,0,0-2.383-11.744Z"
-                                            transform="translate(-210.997 -61.002)" fill="#07072d" />
-                                    </g>
-                                </g>
-                            </svg>
-
-                        </div> --}}
-
-                        {{!-- <div class="card">
-
-                            <svg class="picture-card" xmlns="http://www.w3.org/2000/svg" width="73.604" height="72.742"
-                                viewBox="0 0 73.604 72.742">
-                                <g transform="translate(0 -3)">
-                                    <g transform="translate(43.121 39.4)">
-                                        <path
-                                            d="M305.992,266.574a2.766,2.766,0,1,1,3.163-2.737,1.438,1.438,0,0,0,2.875,0,5.72,5.72,0,0,0-4.6-5.451v-.748a1.438,1.438,0,1,0-2.875,0v.748a5.72,5.72,0,0,0-4.6,5.451,5.843,5.843,0,0,0,6.038,5.612,2.766,2.766,0,1,1-3.163,2.737,1.438,1.438,0,1,0-2.875,0,5.72,5.72,0,0,0,4.6,5.451v.621a1.438,1.438,0,0,0,2.875,0v-.621a5.72,5.72,0,0,0,4.6-5.451A5.843,5.843,0,0,0,305.992,266.574Z"
-                                            transform="translate(-299.954 -256.201)" fill="#07072d" />
-                                    </g>
-                                    <g transform="translate(55.192 34.308)">
-                                        <path
-                                            d="M393.636,227.7a18.731,18.731,0,0,0-7.651-6.771,1.438,1.438,0,1,0-1.246,2.591,15.827,15.827,0,0,1,7.128,21.678,1.438,1.438,0,1,0,2.538,1.35,18.71,18.71,0,0,0-.77-18.848Z"
-                                            transform="translate(-383.924 -220.785)" fill="#07072d" />
-                                    </g>
-                                    <g transform="translate(49.884 32.614)">
-                                        <g transform="translate(0 0)">
-                                            <path
-                                                d="M348.534,209h-.1a1.438,1.438,0,1,0,0,2.875h.09a1.438,1.438,0,0,0,.007-2.875Z"
-                                                transform="translate(-347 -209.001)" fill="#07072d" />
-                                        </g>
-                                    </g>
-                                    <g transform="translate(30.477 41.773)">
-                                        <path
-                                            d="M223.848,296.5a15.827,15.827,0,0,1-7.128-21.678,1.438,1.438,0,1,0-2.538-1.35,18.7,18.7,0,0,0,8.421,25.62,1.438,1.438,0,1,0,1.246-2.591Z"
-                                            transform="translate(-212.002 -272.711)" fill="#07072d" />
-                                    </g>
-                                    <g transform="translate(45.482 67.116)">
-                                        <path
-                                            d="M317.905,449h-.083a1.438,1.438,0,0,0-.013,2.875h.1a1.438,1.438,0,1,0,0-2.875Z"
-                                            transform="translate(-316.378 -448.999)" fill="#07072d" />
-                                    </g>
-                                    <g transform="translate(0 3)">
-                                        <g transform="translate(0 0)">
-                                            <path
-                                                d="M55.693,27.751a6.6,6.6,0,0,0-.639-1.174H58.8a6.613,6.613,0,0,0,0-13.226H47.285A6.609,6.609,0,0,0,41.834,3H6.613a6.613,6.613,0,0,0,0,13.226H18.125a6.594,6.594,0,0,0,0,7.475H14.376a6.609,6.609,0,0,0-4.109,11.788,6.6,6.6,0,0,0,0,10.351,6.6,6.6,0,0,0,0,10.351,6.609,6.609,0,0,0,4.109,11.788H31.318A24.434,24.434,0,1,0,55.693,27.751Zm3.1-11.525a3.738,3.738,0,1,1,0,7.475H23.576a3.738,3.738,0,1,1,0-7.475ZM6.613,13.351a3.738,3.738,0,0,1,0-7.475H41.834a3.738,3.738,0,0,1,0,7.475Zm7.763,13.226H49.6a3.736,3.736,0,0,1,1.631.375c-.68-.057-1.367-.088-2.062-.088a24.363,24.363,0,0,0-17.294,7.188h-17.5a3.738,3.738,0,1,1,0-7.475Zm0,10.351H29.415a24.369,24.369,0,0,0-3.7,7.475H14.376a3.738,3.738,0,1,1,0-7.475Zm0,10.351H25.06a24.459,24.459,0,0,0-.089,7.475h-10.6a3.738,3.738,0,1,1,0-7.475Zm0,17.826a3.738,3.738,0,1,1,0-7.475H25.558A24.343,24.343,0,0,0,29.007,65.1Zm34.79,7.763A21.564,21.564,0,1,1,70.729,51.3,21.588,21.588,0,0,1,49.166,72.867Z"
-                                                transform="translate(0 -3)" fill="#07072d" />
-                                        </g>
-                                    </g>
-                                </g>
-                            </svg>
-                            <img src="img/portfolio.svg" width="70"
-                                style="color: white;margin: auto;margin-top: 20px;margin-bottom: 10px;">
-                            <p class="text-card"
-                                style="font-size: 12px;line-height: 12px;margin: auto;padding-bottom: 65px;"></p>
-
-
-                        </div> --}}
-
-                        <!--<div class="card not-visible">
-                           
-                            <svg class="picture-card" xmlns="http://www.w3.org/2000/svg" width="60" height="60.003" viewBox="0 0 60 60.003"><g transform="translate(0 -0.001)"><path d="M27,34.5a1,1,0,0,0,2,0c0-3.308-3.06-6.042-7-6.444V27a1,1,0,0,0-2,0v1.056c-3.94.4-7,3.136-7,6.444s3.06,6.042,7,6.444v8.988c-2.833-.358-5-2.207-5-4.432a1,1,0,0,0-2,0c0,3.308,3.06,6.042,7,6.444V53a1,1,0,0,0,2,0V51.944c3.94-.4,7-3.136,7-6.444s-3.06-6.042-7-6.444V30.068C24.833,30.426,27,32.275,27,34.5Zm-12,0c0-2.225,2.167-4.074,5-4.432v8.864C17.167,38.574,15,36.725,15,34.5Zm12,11c0,2.225-2.167,4.074-5,4.432V41.068C24.833,41.426,27,43.275,27,45.5Z" fill="#07072d"/><path d="M3.6,30.173a1,1,0,0,0-1.328.486A24.4,24.4,0,0,0,0,41C0,53.607,7.065,60,21,60a32.337,32.337,0,0,0,8.357-.963,1,1,0,1,0-.514-1.933A30.832,30.832,0,0,1,21,58C8.215,58,2,52.439,2,41a22.114,22.114,0,0,1,2.087-9.5A1,1,0,0,0,3.6,30.173Z" fill="#07072d"/><path d="M57,25H35a3,3,0,0,0-3,3V57a3,3,0,0,0,3,3H57a3,3,0,0,0,3-3V28A3,3,0,0,0,57,25Zm1,32a1,1,0,0,1-1,1H35a1,1,0,0,1-1-1V28a1,1,0,0,1,1-1H57a1,1,0,0,1,1,1Z" fill="#07072d"/><path d="M39,38H53a2,2,0,0,0,2-2V32a2,2,0,0,0-2-2H39a2,2,0,0,0-2,2v4A2,2,0,0,0,39,38Zm0-6H53v4H39Z" fill="#07072d"/><path d="M41,41H38a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M41,45H38a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M41,49H38a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M41,53H38a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M48,41H45a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M48,45H45a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M48,49H45a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M48,53H45a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M55,41H52a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M55,45H52a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M55,49H52a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M55,53H52a1,1,0,0,0,0,2h3a1,1,0,0,0,0-2Z" fill="#07072d"/><path d="M6.325,1.263C3.692,3.675,8.318,11.115,11.044,15H10.5a3.482,3.482,0,0,0-2.477,1.022A3.525,3.525,0,0,0,7,18.5a3.489,3.489,0,0,0,1.754,3.015A47.1,47.1,0,0,0,5.46,25.4a1,1,0,1,0,1.6,1.2,48.326,48.326,0,0,1,4-4.6H31.5a3.5,3.5,0,1,0,0-7h-.544c2.725-3.885,7.351-11.324,4.72-13.737-1.21-1.108-2.62-.3-3.863.407A7.713,7.713,0,0,1,28,3a3.874,3.874,0,0,1-2.851-1.26,5.821,5.821,0,0,0-8.3,0A3.874,3.874,0,0,1,13.993,3a7.681,7.681,0,0,1-3.81-1.33C8.941.961,7.532.156,6.325,1.263ZM32.563,17.438A1.5,1.5,0,0,1,31.5,20h-21a1.5,1.5,0,1,1,0-3h21a1.51,1.51,0,0,1,1.063.438ZM13.993,5a5.821,5.821,0,0,0,4.151-1.741,3.854,3.854,0,0,1,5.7,0A5.825,5.825,0,0,0,28,5a9.581,9.581,0,0,0,4.809-1.594,4.182,4.182,0,0,1,1.519-.669C35.354,3.677,32.642,9.346,28.5,15H26V10a1,1,0,0,0-2,0v5H18V10a1,1,0,0,0-2,0v5H13.508C9.362,9.346,6.65,3.677,7.69,2.722a4.964,4.964,0,0,1,1.5.684A9.561,9.561,0,0,0,13.993,5Z" fill="#07072d"/></g></svg>
-                            
-                            <p class="text-card">Após a execução da obra, realize os custos do projeto frente ao orçado</p>
-                           px
-                        </div> -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="membership">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <h2 class="title-section">
-                        Planos
-                        <span class="stripe"></span>
-                    </h2>
-                </div>
-            </div>
-            <div class="row">
-
-                <div class="col-lg-4">
-                    <div class="card-plan">
-                        <br>
-                        <p class="price">7 dias grátis</p>
-                        <br>
-                        <p class="description-plan text-end">Crie uma conta e tenha acesso gratuito por 7 dias a nossa
-                            aplicação
-                        </p>
-                        <br>
-                        <div class="text-center">
-                            <a href="/usuario/registrar/free/">
-                                <button class="primary-btn">Adquirir</button>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                {{!-- <div class="col-lg-4">
-                    <div class="card-plan">
-                        <p class="price" style="margin-top: 19%">R$ 3.600,00 <span>Ano</span></p>
-                        <p class="description-plan">Acesso integral do sistema completo e todas as funcionalidades
-                            disponíveis.</p>
-                        <div class="text-center">
-                            <a href="#">
-                                <button class="primary-btn">Adquirir</button>
-                            </a>
-                        </div>
-                    </div>
-                </div> --}}
-
-                <div class="col-lg-8">
-                    <div class="card-plan">
-                        <div class='text-center'>
-                            <label class="title-plan mt-4" style="font-size: 45px;font-weight: 600;">Plano Único</label>
-                        </div>
-                        <div class="row" style="margin-top: 20px;">
-                            <div class="col text-center">
-                                <p class="description-plan-unico">Acesso integral do sistema <br>
-                                    e todas as funcionalidades disponíveis. <br>
-                                    Sem limite de usuários.</p>
-                                <div class="text-center" style="margin-top: 40px;">
-                                    <a href="#contact">
-                                        <button class="primary-btn">Solicitar Cotação</button>
-                                    </a>
-                                </div>
-                            </div>
-                            <!--
-                            <div class="col">
-                                <p class="price">R$ 300,00 <span>Mês</span></p>
-                                <p style="font-size: 14px;margin-top: 0;" class="price">R$ 3.600,00 Ano</p>
-                            </div>
-                            -->
-                        </div>
                     </div>
                 </div>
             </div>
@@ -575,8 +329,6 @@
     </section>
 
     <section id="about">
-
-        <img src="img/sun-up.png" alt="Sun" class="element-section top">
 
         <div class="container">
             <div class="row">
@@ -597,73 +349,13 @@
 
                         O Software de Gestão de Processos da VIMMUS possibilita que as empresas de energias renováveis
                         tenham o efetivo controle do acompanhamento dos seus projetos,
-                        deadlines e gestão de atividades. Além de, também, facilitar a análise e a tomada de decisão sobre da
+                        deadlines e gestão de atividades. Além de, também, facilitar a análise e a tomada de decisão
+                        sobre da
                         gestão da comunicação das equipes.
                     </p>
                 </div>
             </div>
-
-            <div class="two-sides-row row align-items-center">
-                <div class="col-lg-7">
-                    <div class="side-img" style="background-image: url('img/missao.jpg');"></div>
-                </div>
-
-                <div class="col-lg-5">
-                    <h3 class="title-section">Missão</h3>
-
-                    <p class="text"><b>SIMPLIFICAR</b> e <b> PADRONIZAR </b> os <b> PROCESSOS</b><br>
-                        gerenciais e operacionais das empresas de energia solar.
-                    </p>
-                </div>
-            </div>
-
-            <div class="two-sides-row row align-items-center wrap-reverse" style="margin-bottom: 55px;">
-                <div class="col-lg-6">
-                    <h3 class="title-section">Visão</h3>
-
-                    <p class="text">
-                        Ser a <b>MAIOR PLATAFORMA</b> de soluções para a <b>GESTÃO DE PROCESSOS</b> das empresas de
-                        <b> ENERGIA SOLAR </b>.
-                    </p>
-                </div>
-
-                <div class="col-lg-6">
-                    <div class="side-img ml-auto" style="background-image: url('img/visao.jpg');"></div>
-                </div>
-            </div>
-
-            <div class="two-sides-row row align-items-center">
-                <div class="col-lg-7">
-                    <div class="side-img" style="background-image: url('img/valores.jpg');"></div>
-                </div>
-
-                <div class="col-lg-5">
-                    <h3 class="title-section">Valores</h3>
-
-
-                    <ul style="list-style-type: square">
-                        <li>
-                            União das Pessoas
-                        </li>
-                        <li>
-                            Liberdade
-                        </li>
-                        <li>
-                            Ética
-                        </li>
-                        <li>
-                            Responsabilidade
-                        </li>
-                        <li>
-                            Energia Positiva
-                        </li>
-                    </ul>
-
-                </div>
-            </div>
         </div>
-
-        <img src="img/sun-up.png" alt="Sun" class="element-section bottom">
 
     </section>
 
@@ -687,46 +379,26 @@
                 <div class="col-lg-6">
                     <div class="topics">
                         <ol>
-                            {{!-- <li class="topic active" style="cursor: pointer;" id="benefit-1"
-                                onmousedown="changeBenefit(1)">Rentabilidade do projeto</li>
-                            <li class="topic" style="cursor: pointer;" id="benefit-2" onmousedown="changeBenefit(2)">
-                                Sustentabilidade financeira para o negócio</li> --}}
+
                             <li class="topic active" style="cursor: pointer;" id="benefit-3"
                                 onmousedown="changeBenefit(3)">
-                                Acompanhe as demandas de cada projeto</li>
-                            {{!-- <li class="topic" style="cursor: pointer;" id="benefit-5"
-                                onmousedown="changeBenefit(5)">
-                                Auxílio na prestação de contas</li> --}}
+                                Notificações por Whatsapp</li>
                             <li class="topic" style="cursor: pointer;" id="benefit-6" onmousedown="changeBenefit(6)">
-                                Gestão de status das obras</li>
-<li class="topic" style="cursor: pointer;" id="benefit-4" onmousedown="changeBenefit(4)">
-                                Auxílio na tomada de decisões</li>                                
+                                Follow up do projeto</li>
+                            <li class="topic" style="cursor: pointer;" id="benefit-4" onmousedown="changeBenefit(4)">
+                                Auxílio na tomada de decisões</li>
                         </ol>
                     </div>
                 </div>
 
                 <div class="col-lg-6">
-                    {{!-- <div class="descriptions" id="desc-benefit-1">
-                        <p class="text">A partir do lançamento e do cálculo dos custos, levando em consideração as
-                            atividades de cada recurso (gestor, instalador, eletricistas e projetistas) do projeto e
-                            também considerando as estimativas dos tributos a
-                            serem recolhidos, é possível calcular o lucro líquido de cada projeto, obtendo o resultado
-                            preliminar do negócio a partir da gestão individual por projeto.</p>
-                    </div>
-
-                    <div class="descriptions" id="desc-benefit-2" style="display: none;">
-                        <p class="text">O controle dos custos por projeto proporciona uma gestão mais eficaz devido a
-                            capacidade de observar os custos por recurso. Deste modo conhecendo os custos de cada
-                            projeto será possível observar as variações por tamanho de projeto e assim ter uma média de
-                            custos para identificar melhores oportunidades de negócio.</p>
-                    </div> --}}
 
                     <div class="descriptions" id="desc-benefit-3">
-                        <p class="text">Tenha um repositório de todos os documentos do projeto por status, acompanhe
-                            prazos, verifique deadlines, datas de cadastros
-                            de pedidos, notas fiscais, documentos técnicos, projetos executivos e formulários e
-                            checklist
-                            de pós-venda, organizando o fluxo dos processos.</p>
+                        <p class="text">Informe a equipe quando um vendedor solicitou uma proposta, adicionou uma fatura
+                            e fez uma observação sobre a proposta
+                            , avise a equipe quando uma proposta foi ganha e avise o instalador que a obra já pode ser
+                            iniciadia, tudo de forma automatizada.
+                        </p>
                     </div>
 
                     <div class="descriptions" id="desc-benefit-4" style="display: none;">
@@ -736,18 +408,6 @@
                             clientes.
                         </p>
                     </div>
-
-                    {{!-- <div class="descriptions" id="desc-benefit-4" style="display: none;">
-                        <p class="text">Conhecendo os indicadores de custos e rentabilidade de cada projeto,
-                            será possível identificar oportunidades de melhorias, e assim tomar decisões mais eficazes
-                            em relação a efetividade dos processos e o tempo de execução de cada atividade.</p>
-                    </div> --}}
-
-                    {{!-- <div class="descriptions" id="desc-benefit-5" style="display: none;">
-                        <p class="text">Através dos relatórios será possível obter as informações do total dos custos
-                            operacionais, das atividades realizadas por cada pessoa, bem como dos tributos estimados de
-                            todos os projetos, e assim monitorar a sustentabilidade do negócio.</p>
-                    </div> --}}
 
                     <div class="descriptions" id="desc-benefit-6" style="display: none;">
                         <p class="text">Mantenha os gestores informados sobre o andamento das obras em tempo real a
@@ -764,7 +424,7 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-5">
-                    <div class="side-img" style="background-image: url('img/form.jpg');"></div>
+                    {{!-- <div class="side-img" style="background-image: url('img/form.jpg');"></div> --}}
                 </div>
                 <div class="col-lg-5 offset-lg-1">
                     <h2 class="title-section">Entre em contato</h2>
@@ -798,15 +458,9 @@
     </section>
 
     <section id='partners'>
-        
+
     </section>
-    <!--
-    <footer>
-        <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous" ></script>
-        <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
-        <script src="js/app.js"></script>
-    </footer>
-    -->
+
 </body>
 
 </html>

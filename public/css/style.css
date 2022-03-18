@@ -4379,7 +4379,7 @@ body {
 }
 
 section#initial-section {
-  padding: 60px 0 181px;
+  padding: 60px 0 100px;
 }
 
 section#initial-section .title-banner {
@@ -4394,7 +4394,7 @@ section#initial-section .title-banner {
 section#initial-section .title-banner .stripe {
   position: absolute;
   bottom: 200px;
-  left: 8px;
+  left: 55px;
   height: 25px;
   width: 300px;
   max-width: 100%;
@@ -4404,11 +4404,11 @@ section#initial-section .title-banner .stripe {
 }
 
 section#initial-section .text {
-  padding-bottom: 55px;
+  padding-bottom: 10px;
 }
 
 section#step-by-step {
-  padding: 103px 0 57px;
+  padding: 50px 0 57px;
   background-color: #07072D;
   overflow-x: hidden;
 }
@@ -4436,7 +4436,7 @@ section#step-by-step .title-section .stripe {
   bottom: 0;
   left: -7px;
   height: 25px;
-  width: 355px;
+  width: 180px;
   background-color: #847AF4;
   opacity: 0.6;
   z-index: -1;
@@ -4444,6 +4444,7 @@ section#step-by-step .title-section .stripe {
 
 section#step-by-step .wrapper-cards {
   margin: 53px 0 64px;
+  padding-left: 90px;
   display: flex;
   justify-content: space-between;
 }
@@ -4509,7 +4510,7 @@ section#step-by-step.diferenciais .card .text-card {
 }
 
 section#resource {
-  padding: 103px 0 57px;
+  padding: 103px 0 0px;
   background-color: #07072D;
   overflow-x: hidden;
 }
@@ -4545,6 +4546,7 @@ section#resource .title-section .stripe {
 
 section#resource .wrapper-cards {
   margin: 53px 0 64px;
+  padding-left: 90px;
   display: flex;
   justify-content: space-between;
 }
@@ -4671,7 +4673,7 @@ section#membership .card-plan .description-plan-unico {
 
 section#about {
   overflow: hidden;
-  padding: 203px 0 218px;
+  padding: 80px 0 0px;
   position: relative;
 }
 section#about .element-section {
