@@ -4,7 +4,7 @@ const router = express.Router()
 require('../model/Usuario')
 require('../model/Pessoa')
 require('../model/Acesso')
-require('dotenv').config()
+// require('dotenv').config()
 
 const mongoose = require('mongoose')
 const Usuario = mongoose.model('usuario')
