@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
-const xl = require('excel4node')
+// const xl = require('excel4node')
 
 require('../model/Cliente')
 require('../model/Usina')
@@ -414,49 +414,49 @@ router.get('/excluirusina/:id', (req, res) => {
 
 })
 
-router.get('/dados/:dados', ehAdmin, (req, res) => {
-    var params = req.params.dados
-    params = params.split('@')
-    const wb = new xl.Workbook()
-    const ws = wb.addWorksheet('Relatório')
-    const headingColumnNames = [
-        "Cliente",
-        "Endereço",
-        "Proposta",
-        "Data",
-        "Vendedor"
-    ]
-    const headingLineNames = [
-        params[0],
-        params[1],
-        params[2],
-        params[3],
-        params[4]
-    ]
-    var headingColumnIndex = 1; //diz que começará na primeira linha
-    headingColumnNames.forEach(heading => { //passa por todos itens do array
-        //cria uma célula do tipo string para cada título
-        ws.cell(1, headingColumnIndex++).string(heading)
-    })
-    headingColumnIndex =1 
-    headingLineNames.forEach(heading => { //passa por todos itens do array
-        //cria uma célula do tipo string para cada título
-        ws.cell(2, headingColumnIndex++).string(heading)
-    })
-    var time = new Date()
-    var arquivo = 'cabecalho_propostas_' + dataHoje() + time.getTime() + '.xlsx'
-    //console.log('arquivi=>'+arquivo)
-    // var sucesso = []
-    // sucesso.push({texto: 'Relatório exportado com sucesso.'})
-    wb.writeToBuffer().then(function (buffer) {
-        //console.log('buffer excel')
-        res
-            .set('content-disposition', `attachment; filename="${arquivo}";  filename*=UTF-8''${encodeURI(arquivo)}`) // filename header
-            .type('.xlsx') // setting content-type to xlsx. based on file extention
-            .send(buffer)
-        //.render('principal/consulta', { qtd: q, lista, todos_clientes, todos_vendedores, total: mascaraDecimal(total), stats, vendedor, cliente, inicio: dtinicio, fim: dtfim, mostrar: '', sucesso })
-    })
-})
+// router.get('/dados/:dados', ehAdmin, (req, res) => {
+//     var params = req.params.dados
+//     params = params.split('@')
+//     const wb = new xl.Workbook()
+//     const ws = wb.addWorksheet('Relatório')
+//     const headingColumnNames = [
+//         "Cliente",
+//         "Endereço",
+//         "Proposta",
+//         "Data",
+//         "Vendedor"
+//     ]
+//     const headingLineNames = [
+//         params[0],
+//         params[1],
+//         params[2],
+//         params[3],
+//         params[4]
+//     ]
+//     var headingColumnIndex = 1; //diz que começará na primeira linha
+//     headingColumnNames.forEach(heading => { //passa por todos itens do array
+//         //cria uma célula do tipo string para cada título
+//         ws.cell(1, headingColumnIndex++).string(heading)
+//     })
+//     headingColumnIndex =1 
+//     headingLineNames.forEach(heading => { //passa por todos itens do array
+//         //cria uma célula do tipo string para cada título
+//         ws.cell(2, headingColumnIndex++).string(heading)
+//     })
+//     var time = new Date()
+//     var arquivo = 'cabecalho_propostas_' + dataHoje() + time.getTime() + '.xlsx'
+//     //console.log('arquivi=>'+arquivo)
+//     // var sucesso = []
+//     // sucesso.push({texto: 'Relatório exportado com sucesso.'})
+//     wb.writeToBuffer().then(function (buffer) {
+//         //console.log('buffer excel')
+//         res
+//             .set('content-disposition', `attachment; filename="${arquivo}";  filename*=UTF-8''${encodeURI(arquivo)}`) // filename header
+//             .type('.xlsx') // setting content-type to xlsx. based on file extention
+//             .send(buffer)
+//         //.render('principal/consulta', { qtd: q, lista, todos_clientes, todos_vendedores, total: mascaraDecimal(total), stats, vendedor, cliente, inicio: dtinicio, fim: dtfim, mostrar: '', sucesso })
+//     })
+// })
 
 router.post('/buscaCPF', ehAdmin, (req, res) => {
     const { _id } = req.user
