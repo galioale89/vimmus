@@ -4296,7 +4296,7 @@ button {
   cursor: pointer;
 }
 button.primary-btn {
-  background-color: #847AF4;
+  background-color: rgb(40,55,89);
   color: #fff;
 }
 button.primary-btn:hover {
@@ -4394,7 +4394,7 @@ section#initial-section .title-banner {
 section#initial-section .title-banner .stripe {
   position: absolute;
   bottom: 200px;
-  left: 55px;
+  left: 5px;
   height: 25px;
   width: 300px;
   max-width: 100%;
@@ -4538,7 +4538,7 @@ section#resource .title-section .stripe {
   bottom: 0;
   left: -7px;
   height: 25px;
-  width: 180px;
+  width: 290px;
   background-color: #847AF4;
   opacity: 0.6;
   z-index: -1;
@@ -4768,7 +4768,7 @@ section#banner button {
 }
 
 section#benefits {
-  padding-top: 138px;
+  padding-top: 0px;
 }
 section#benefits .title-section {
   position: relative;
@@ -4833,6 +4833,7 @@ section#benefits .descriptions .text {
 
 section#contact {
   padding: 70px 0 80px;
+  margin-top: 50px;
 }
 section#contact .side-img {
   width: 444px;

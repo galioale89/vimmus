@@ -77,8 +77,14 @@
     }
     window.onload = function () {
         var img = document.getElementById('img')
-        var tam = screen.width
+        var banner = document.getElementById('banner')
+        var titulo = document.getElementById('titulo')
+        var subtitulo = document.getElementById('subtitulo')
+        var tam = screen.width - (screen.width * 0.5)
         img.style.width = String(tam) + 'px'
+        banner.style.width = String(tam) + 'px'
+        titulo.style.left = '127px'
+        subtitulo.style.marginLeft = '127px'
     }
 
 </script>
@@ -91,6 +97,12 @@
     small {
         font-size: 12px;
         line-height: 20px;
+    }
+
+    .texto-banner {
+
+        font-size: 30px;
+        line-height: 40px;
     }
 </style>
 
@@ -146,7 +158,7 @@
                                 <a href="#about">Sobre</a>
                             </li>
                             <li>
-                                <a href="#resource">Benefícios</a>
+                                <a href="#resource">Solução</a>
                             </li>
                             <li>
                                 <a href="#contact">Contato</a>
@@ -163,17 +175,29 @@
     </header>
 
     <section id="initial-section">
-        <div class="container text-center">
-            <h2 class="title-banner stripe-animation">
-                Melhore a comunicação <br>
-                <span class="stripe"></span>
-                entre a equipe de campo e o <br>
-                escritório <br>
-            </h2>
-            <p class="text">Transforme a gestão de sua obra e <br>melhore a forma como sua <br> equipe se comunica.</p>
-            <a href='#step-by-step'>
-            </a>
+
+        <div class='row' style="width: 100%;display: flex;">
+            <div class="col-md-4">
+                <div class="container">
+                    <h2 class="title-banner stripe-animation" id="titulo">
+                        Melhore a comunicação <br>
+                        <span class="stripe"></span>
+                        entre a equipe de campo e o <br>
+                        escritório <br>
+                    </h2>
+                    <p class="text" id="subtitulo">Transforme a gestão de sua obra <br> e melhore a forma como sua <br>
+                        equipe se
+                        comunica.</p>
+
+                </div>
+            </div>
+            <div class="col text-end">
+                <img src="img/banner-texto.svg" id='banner' width="400px" alt="Dashboard de projetos"
+                    title="Dashboard de projetos">
+            </div>
         </div>
+
+
     </section>
 
     <section id="step-by-step">
@@ -269,11 +293,48 @@
     </section>
 
     <section>
-        <div class="row" style="width: 100%;">
-            <img src="img/banner.svg" id='img' style="padding-left: 30px;padding-top: 40px;" width=""
-                alt="Dashboard de projetos" title="Dashboard de projetos">
-            <a href="#contact" style="text-align: center;padding-left: 30px;"><button class="btn primary-btn"
-                    href="#contact" style="width: 100%;height: 110px;font-size: 35px;">QUERO CONHECER</button></a>
+        <div class='row' style="width: 100%;padding-top: 40px;display: flex;">
+            <div class="col">
+                <img src="img/banner.jpg" id='img' style="padding-left: 30px;" width="400px" alt="Dashboard de projetos"
+                    title="Dashboard de projetos">
+            </div>
+            <div class="col" style="margin-left: 20px; margin-top: 5px; padding-left: 30px;padding-right: 30px">
+                <div style='border: 1px solid rgba(140,140,140,0.4);border-radius: 10px;background-color: #847AF4;'>
+
+                    <div style="padding: 55px">
+
+                        <label class='texto-banner'>
+                            O software de gestão de obras para a Energia Solar
+                        </label>
+                        <label class='texto-banner'>
+                            proporciona
+                        </label>
+                        <label class='texto-banner' style="font-weight: 700;">
+                            agilidade
+                        </label>
+                        <label class='texto-banner'>
+                            nos processos, maior
+                        </label>
+                        <label class='texto-banner' style="font-weight: 700;">
+                            integração
+                        </label>
+                        <label class='texto-banner'>
+                            entre as equipes
+                        </label>
+                        <label class='texto-banner'>
+                            e transforma a
+                        </label>
+                        <label class='texto-banner' style="font-weight: 700;">
+                            comunicação.
+                        </label>
+                        <br>
+                        <a href="#contact" style="text-align: center;">
+                            <button class="btn primary-btn mt-4" href="#contact" style="font-size: 20px;">Quero
+                                Conhecer</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -282,7 +343,7 @@
             <div class="row">
                 <div class="col-12">
                     <h2 class="title-section">
-                        Benefícios
+                        Funcionalidades
                         <span class="stripe"></span>
                     </h2>
 
@@ -339,34 +400,22 @@
                     </h2>
 
                     <p class="text big-text">
-                        Somos uma startup que em janeiro de 2020 iniciou uma jornada de conhecimento,
+                        A Vimmus é uma startup que em janeiro de 2020 iniciou uma jornada de conhecimento,
                         planejamento e desenvolvimento de um modelo de negócio voltado para gerar valor para
-                        as empresas e oportunidades para o mercado de energias renováveis.<br><br>
+                        as empresas de energia solar e oportunidades para o mercado de energias renováveis.<br><br>
 
                         Acreditamos que o acesso livre a energia é de fundamental
                         importância para a liberdade econômica, para a sustentabilidade
                         do meio ambiente e para a independência energética das famílias e das empresas.<br><br>
 
-                        O Software de Gestão de Processos da VIMMUS possibilita que as empresas de energias renováveis
-                        tenham o efetivo controle do acompanhamento dos seus projetos,
-                        deadlines e gestão de atividades. Além de, também, facilitar a análise e a tomada de decisão
-                        sobre da
-                        gestão da comunicação das equipes.
+                        O Software de Gestão de Obras da Vimmus possibilita que as empresas de energia solar
+                        tenham o controle do andamento das suas obras, da venda à instalação, tendo como prioridade
+                        a comunicação e o compartilhamento de informações entre os membros da equipe.
                     </p>
                 </div>
             </div>
         </div>
 
-    </section>
-
-    <section id="banner">
-        <div class="container">
-            <div class="row justify-content-center">
-                <h2 class="title-banner">Agilidade na integração dos processos</h2>
-                <a href="#contact" style="text-align: center; margin: auto;"><button class="btn primary-btn"
-                        href="#contact" style="width: 600px;">QUERO CONHECER</button></a>
-            </div>
-        </div>
     </section>
 
     <section id="benefits">
@@ -420,41 +469,37 @@
         </div>
     </section>
 
-    <section id="contact">
+    <section id="contact" style="background-color: #07072D;color: white">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-lg-5">
-                    {{!-- <div class="side-img" style="background-image: url('img/form.jpg');"></div> --}}
+                <div class="col-md-5 text-end">
+                    <h2 class="title-section" style="color: white;">Entre em contato</h2>
+                    <p class="">Deseja receber mais informações?  <br> Nos chame aqui e retornaremos em breve.</p>
                 </div>
-                <div class="col-lg-5 offset-lg-1">
-                    <h2 class="title-section">Entre em contato</h2>
+                <div class="col-md-5">
+                   
+                        <form action="/usuario/salvacontato" method="post">
 
-                    <p class="text">Preencha o formulário com seus dados<br> e retornaremos em breve!</p>
+                            <input name="nome" type="text" style="margin-top: 100px;" placeholder="Nome"><br>
+                            <input name="email" type="text" placeholder="E-mail"><br>
+                            <input name="celular" type="text" placeholder="Telefone">
 
-                    <form action="/usuario/salvacontato" method="post">
+                            <br>
+                            
+                            <label class='col-form-label text-start'> Motivo:</label>
 
-                        <input name="nome" type="text" placeholder="Nome">
-                        <input name="email" type="text" placeholder="E-mail">
-                        <input name="celular" type="text" placeholder="Telefone">
-                        <div class="row">
-                            <div class="col-md-2">
-                                <label class='col-form-label'> Motivo:</label>
-                            </div>
-                            <div class="col-md-7">
-                                <select class="form-select" name="motivo" type="text">
-                                    <option>Gostei! Quero contratar</option>
-                                    <option>Me chama pelo Whats!</option>
-                                    <option>Agendar apresentação</option>
-                                </select>
-                            </div>
-                            <div class="col">
-                                <button type="submit" class="btn primary-btn">ENVIAR</button>
-                            </div>
-                        </div>
-                    </form>
+                            <select class="form-select" name="motivo" type="text">
+                                <option>Gostei! Quero contratar</option>
+                                <option>Me chama pelo Whats!</option>
+                                <option>Agendar apresentação</option>
+                            </select>
+                            <br>
+                            <button type="submit" class="btn primary-btn">ENVIAR</button>
+
+                        </form>
+                    
                 </div>
             </div>
-        </div>
     </section>
 
     <section id='partners'>
