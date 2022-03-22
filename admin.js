@@ -131,8 +131,15 @@ app.get('/dashboard', ehAdmin, (req, res) => {
     const { nome } = req.user
     const { owner } = req.user
     const { pessoa } = req.user
+    const { vendedor } = req.user
+    const { funges } = req.user
+    const { instalador } = req.user
+    const { orcamentista } = req.user
     var id
     var sql = []
+    var listaEncerrado = []
+    var listaAberto = []
+    var clientes = []
 
     //console.log('ehAdmin=>'+ehAdmin)
     //console.log('user=>'+user)
@@ -180,6 +187,36 @@ app.get('/dashboard', ehAdmin, (req, res) => {
         var esta_pessoa = pessoa
         console.log('user_ativo.obra=>'+user_ativo.obra)
         if (user_ativo.obra == true) { 
+            if (instalador == true){
+                console.log('pessoa=>'+pessoa)
+                Equipe.find({ user: id, insres: pessoa, feito: true, liberar: true, tarefa: { $exists: true }, $and: [{ 'dtinicio': { $ne: '' } }, { 'dtinicio': { $ne: '0000-00-00' } }] }).then((equipe) => {
+                    if (naoVazio(equipe)){
+                    Pessoa.findOne({ _id: pessoa }).then((pes_ins) => {
+                        //console.log('pessoa.nome=>'+pessoa.nome)
+                        equipe.forEach((e) => {
+                            console.log('e._id=>'+e._id)
+                            Tarefa.findOne({ equipe: e._id }).then((tarefa) => {
+                                console.log('tarefa.cliente=>'+tarefa.cliente)
+                                Cliente.findOne({ _id: tarefa.cliente }).then((cliente) => {
+                                    clientes.push({id: cliente.id, nome: cliente.nome})
+                                    if (e.prjFeito == 'true') {
+                                        listaEncerrado.push({ id: tarefa._id, seq: tarefa.seq, cliente: cliente.nome, endereco: tarefa.endereco, cidade: tarefa.cidade, uf: tarefa.uf, dtini: dataMensagem(e.dtinicio), dtfim: dataMensagem(e.dtfim) })
+                                    } else {
+                                        listaAberto.push({ id: tarefa._id, seq: tarefa.seq, cliente: cliente.nome, endereco: tarefa.endereco, cidade: tarefa.cidade, uf: tarefa.uf, dtini: dataMensagem(e.dtinicio), dtfim: dataMensagem(e.dtfim) })
+                                    }
+                                    q++
+                                    if (q == equipe.length) {
+                                        res.render('dashboard', { id: _id, instalador: true, vendedor: false, orcamentista: false, ehMaster, owner: owner, ano, block: true, nome: pes_ins.nome, clientes, listaAberto, listaEncerrado })
+                                    }
+                                })
+                            })
+                        })
+                    })
+                }else{
+                    res.render('dashboard', { id: _id, instalador: true, vendedor: false, orcamentista: false, ehMaster, owner: owner, ano, block: true })
+                }
+                })
+            }else{
             var lista_tarefas = []
             var qtdexec = 0
             var qtdagua = 0
@@ -285,6 +322,7 @@ app.get('/dashboard', ehAdmin, (req, res) => {
                 req.flash('error_msg', 'Não foi possível encontrar as empresa.')
                 res.redirect('/')
             })
+        }
         }else{
             req.flash('aviso_msg','Sua conta não esta habilitada para o acesso')
             res.redirect('/')

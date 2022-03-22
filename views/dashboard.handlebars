@@ -95,7 +95,7 @@
                     {{#each notpro}}
                     <tr style="font-size: 15px;">
                         <input type='hidden' name='cliav[]' value='{{cliente}}'>
-                        <input type='hidden' name='proav[]' value='{{proposta}}'>
+                        <input type='hidden' name='proav[]' value='{{seq}}'>
                         <input type='hidden' name='statav[]' value='{{status}}'>
                         <input type='hidden' name='clitel[]' value='{{telefone}}'>
                         <input type='hidden' name='valav[]' value='{{validade}}'>
@@ -171,266 +171,360 @@
 </div>
 <!-- fim modal -->
 
-<div style="width: 99%;">
+<div style="width: 99%;padding-left: 15px;">
     <label class='col-form-label fw-bold'
         style="line-height: 30px;padding-left: 15px">{{saudacao}}{{nome_lista}}</label>
+
     {{#each deadlineIns}}
     <input type='hidden' name='idins[]' value='{{id}}'>
-    <input type='hidden' name='proins[]' value='{{proposta}}'>
+    <input type='hidden' name='proins[]' value='{{seq}}'>
     <input type='hidden' name='cliins[]' value='{{cliente}}'>
     <input type='hidden' name='cadins[]' value='{{cadastro}}'>
     <input type='hidden' name='dtiass[]' value='{{inicio}}'>
     <input type='hidden' name='dliins[]' value='{{dliins}}'>
     {{/each}}
-    <div class="row">
-        <div class="col-md-1 text-end">
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle fw-bold" data-bs-toggle="dropdown"
-                    aria-expanded="false" style='font-size: 13px;height: 30px;'>
-                    Menu
-                </button>
-                <ul class="dropdown-menu">
-                    <div style='padding-left: 20px;width: 200px;'>
-                        <a href='/pessoa/consulta/' class='btn btn-sm btn-primary mb-1 mt-1'>Pessoas</a><br>
-                        <a href='/cliente/consulta/' class='btn btn-sm btn-primary mb-1'>Clientes</a><br>
-                        <a href="/gerenciamento/consulta/" class="btn btn-sm btn-primary mb-1">Relatórios</a><br>
-                        <a href='/configuracao/consultaempresa' class='btn btn-sm btn-primary mb-1'>Empresa
-                        </a><br>
-                        {{#if ehMaster}}
-                        <a href='/administrador/acesso' class="btn btn-sm btn-primary mb-1">Usuários</a><br>
-                        {{/if}}
-                        {{#if owner}}
-                        <a href='/administrador' class="btn btn-sm btn-primary mb-1"> Novos</a><br>
-                        {{/if}}                        
-                        <a href='/usuario/editar/{{id}}' class="btn btn-sm btn-primary mb-1">Minha
-                            Conta</a><br>
-                        <div style="margin-top: 10px;">
-                            <a href='/gerenciamento/servicos' class="relatorio titulo-relatorio">
-                            <i class='bi bi-file-arrow-up'></i>Tipo de Serviço
-                            </a>
+
+    {{#if instalador}}
+    <div class="text-center mt-2">
+        <label style="font-size: 25px;font-weight: bold;">Instalador {{nome}}</label><br><br>
+        <div class="row" style="margin-bottom: 20px;width: 98%;">
+            <div class='quadro-scroll' id='dim' style="padding-left: 5px;margin-left: 10px;margin-bottom: 30px;">
+                <div class="text-center mt-1 mb-3">
+                    <label style="font-size: 15px;font-weight: 600;">Obras em Aberto</label>
+                </div>
+                <div class="row" style="width: 100%;">
+                    <form action="/relatorios/filtraInstalador" method="post">
+                        <label class="col-form-label col-form-label-sm fw-bold text-start">Clientes: </label>
+                        <div class="row mb-2">
+                            <div style="width: 250px;">
+                                <select name='cliente' class="form-select form-select-sm">
+                                    {{#each clientes}}
+                                    <option value="{{id}}">{{nome}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                            <div style="width: 25px;">
+                                <button type='submit' class='btn'><i
+                                        class='bi bi-search d-flex align-items-center'></i></button>
+                            </div>
                         </div>
-                        <div style="margin-top: 10px;">
-                            <a href='/pessoa/consultaequipepadrao/' class="relatorio titulo-relatorio">
-                                <i class="bi bi-people"></i> Equipe Padrão
-                            </a>
-                        </div>
-                        <div style="margin-top: 10px;">
-                            <a href='/gerenciamento/agenda' class="relatorio titulo-relatorio">
-                                <i class='bi bi-columns'></i> Agenda de Serviços
-                            </a>
+                    </form>
+                    {{#each listaAberto}}
+                    <div class="col-md-3 mb-2" style="padding-left: 30px;">
+                        <div class="card" style="background-color: rgba(132,122,244,0.5">
+                            <div class="card-body">
+                                <label class="col-form-label fw-bold">Código:</label>
+                                <label class="col-form-label">{{seq}}</label><br>
+                                <label class="col-form-label fw-bold">Cliente:</label>
+                                <label class="col-form-label">{{cliente}}</label><br>
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="col-form-label fw-bold">Inicio:</label><br>
+                                        <label class="col-form-label">{{dtini}}</label><br>
+                                    </div>
+                                    <div class="col">
+                                        <label class="col-form-label fw-bold">Fim:</label><br>
+                                        <label class="col-form-label">{{dtfim}}</label><br>
+                                    </div>
+                                </div>
+                                <label class="col-form-label fw-bold">Endereco:</label><br>
+                                <label class="col-form-label">{{endereco}}</label>
+                                <label class="col-form-label">{{cidade}}/</label>
+                                <label class="col-form-label">{{uf}}</label>
+                                <br>
+                                <a href='/gerenciamento/mostrarGaleria/{{id}}galeria-tarefa' class='btn btn-primary mb-1'
+                                    style="cursor: pointer">Selecionar</a>
+
+                            </div>
                         </div>
                     </div>
-                </ul>
-            </div>
-
-        </div>
-        <div class="col">
-
-            <a href='/cliente/novo/' class='btn btn-sm btn-primary mb-1' style='width: 235px;'>Novo Ciente</a>
-
-            <a href='/gerenciamento/obra' class="btn btn-sm btn-primary mb-1" style='width: 235px;'>Nova Obra</a>
-            <a href='/gerenciamento/consultaobra' class="btn btn-sm btn-primary mb-1" style='width: 235px;'>Todas as
-                Obras</a>
-            <a href='/gerenciamento/emandamento/listatipoobra' class="btn btn-sm btn-primary mb-1"
-                style='width: 235px;'>Obras em
-                Andamento</a>
-            <a href='/gerenciamento/agenda' class="btn btn-sm btn-primary mb-1" style='width: 235px;'> Agenda de
-                Serviços</a>
-            <button onclick='manutencao()' class="btn btn-sm btn-primary mb-1" style="max-width: 50px;height: 30px;"
-                title='Adicionar Tarefa'><i class='bi bi-calendar-plus d-flex justify-content-center'></i></button>
-        </div>
-
-    </div>
-
-    <div class="row">
-        <form action="/gerenciamento/filtrodash" method="post" class='mb-3'>
-            <div class="row mt-2">
-                <div class="col text-end">
-                    <label class='col-form-label col-form-label-sm'>Data:</label>
-                </div>
-                <div class="text-start" style="max-width: 150px;">
-                    <select name='mes' class='form-select form-select-sm'>
-                        {{#if mes}}
-                        <option>{{mes}}</option>
-                        {{/if}}
-                        <option>Todas</option>
-                        <option>Janeiro</option>
-                        <option>Fevereiro</option>
-                        <option>Março</option>
-                        <option>Abril</option>
-                        <option>Maio</option>
-                        <option>Junho</option>
-                        <option>Julho</option>
-                        <option>Agosto</option>
-                        <option>Setembro</option>
-                        <option>Outubro</option>
-                        <option>Novembro</option>
-                        <option>Dezembro</option>
-                    </select>
-                </div>
-                <div class="col text-start">
-                    <input type="number" name='ano' class='form-control form-control-sm' value='{{ano}}'>
-                </div>
-                <div class="col text-end">
-                    <label class='col-form-label col-form-label-sm'>Empresa:</label>
-                </div>
-                <div class="col-md-2 text-start">
-                    <select name='empresa' class='form-select form-select-sm'>
-                        <option value='111111111111111111111111'>Todas</option>
-                        {{#each todas_empresas}}
-                        <option value='{{_id}}'>{{nome}}</option>
-                        {{else}}
-                        <option>Cadastre uma empresa</option>
-                        {{/each}}
-                    </select>
-                </div>
-                <div class="col text-end">
-                    <label class='col-form-label col-form-label-sm'>Status:</label>
-                </div>
-                <div class="col-md-2">
-                    <select name='status' class='form-select form-select-sm'>
-                        {{#if empselect}}
-                        <option>{{empselect}}</option>
-                        {{/if}}
-                        <option>Todos</option>
-                        <option>Aguardando</option>
-                        <option>Em execução</option>
-                        <option>Parado</option>
-                        <option>Finalizado</option>
-                    </select>
-                </div>
-                <div class="col text-end">
-                    <label class='col-form-label col-form-label-sm'>Ordem:</label>
-                </div>
-                <div class="col-md-1">
-                    <div class="form-check d-flex align-items-center" onchange="selecao()">
-                        <input class="form-check-input" type="radio" name="check" id="asc" {{asc}}>
-                        <label class="form-check-label mt-1">
-                            Crescente
-                        </label>
-                    </div>
-                </div>
-                <div class="col-md-1">
-                    <div class="form-check d-flex align-items-center" onchange="selecao()">
-                        <input class="form-check-input" type="radio" name="check" id="desc" {{desc}}>
-                        <label class="form-check-label mt-1">
-                            Decrescente
-                        </label>
-                    </div>
-                </div>
-                <input type='hidden' id='ordem' name='ordem' value="{{ordem}}">
-                <div class="col">
-                    <button type="submit" class="btn"><i
-                            class='bi bi-search botao-filtrar d-flex align-items-center'></i></button>
-                </div>
-            </div>
-        </form>
-        {{#if busca}}
-        <div class='quadro-scroll' id='tarefa' style="margin-left: 20px;width: 98%;">
-            <input type="hidden" id="obra" value="true">
-            <div class="text-center">
-                {{#if lista_tarefas}}
-                <table style="font-size: 15px;">
-                    <tr>
-                        <th style="width: 5%;font-size: 12px;">
-                            Execução
-                        </th>
-                        <th style="font-size: 12px;padding-left: 10px;">
-                            Código
-                        </th>
-                        <th style="width: 25%;font-size: 12px;">
-                            Cliente
-                        </th>
-                        <th style="width: 15%;font-size: 12px;">
-                            Serviço
-                        </th>
-                        <th style="width: 25%;font-size: 12px;">
-                            Responsável
-                        </th>
-                        <th style="width: 15%;font-size: 12px;">
-                            Inicio
-                        </th>
-                        <th style="width: 15%;font-size: 12px;">
-                            Fim
-                        </th>
-                        <th style="width: 2%;font-size: 12px;">
-
-                        </th>
-                    </tr>
-                    {{#each lista_tarefas}}
-                    <tr>
-                        <td style="font-size: 12px">  
-                            {{#if feito}}
-                            <div style="padding-left: 20px;display: flex;align-items:center;">
-                                <div><i id='realizado' class='bi bi-check d-flex align-items-center mt-1'
-                                        style="position: relative;transform: translateY(10%);color: rgb(55,49,89);"></i>
-                                </div>
-                            </div>
-                            {{else}}
-                            {{#if liberado}}
-                            <div style="padding-left: 20px;display: flex;align-items:center;">
-                                <div id='execucao' style="position: relative;top: 40%;transform: translateY(30%);">
-                                </div>
-                            </div>
-                            {{else}}
-                            <div style="padding-left: 20px;display: flex;align-items:center;">
-                                <div id='aguardando' style="position: relative;top: 50%;transform: translateY(30%);">
-                                </div>
-                            </div>
-                            {{/if}}
-                            {{/if}}
-                        </td>
-                        <td style="font-size: 12px">
-                            {{seq}}
-                        </td>
-                        <td style="font-size: 12px">
-                            {{nome_cli}}
-                        </td>
-                        <td style="font-size: 12px">
-                            {{servico}}
-                        </td>
-                        <td style="font-size: 12px">
-                            {{nome_res}}
-                        </td>
-                        <td style="font-size: 12px">
-                            {{dtini}}
-                        </td>
-                        <td style="font-size: 12px">
-                            {{dtfim}}
-                        </td>
-                        <td>
-                            <a href='/gerenciamento/mostraEquipe/{{id}}'><i
-                                    class='bi bi-folder2-open d-flex' title="Equipe"></i></a>
-                        </td>
-                    </tr>
+                    {{else}}
+                    <label class='col-form-label col-form-label-sm'>Nenhuma obra lançada.</label>
                     {{/each}}
-                </table>
-                {{else}}
-                <label class="col-form-label" style="font-size: 50px;margin-top: 30;margin-bottom: 30px">Nenhuma tarefa
-                    encontrada</label>
-                {{/if}}
+                </div>
+            </div>
+
+
+            <div class='quadro-scroll' id='dim1' style="padding-left: 5px;margin-left: 10px;margin-bottom: 30px;">
+                <div class="row" style="width: 100%;">
+                    <div class="text-center mt-1 mb-3">
+                        <label style="font-size: 15px;font-weight: 600;">Obras Finalizadas</label>
+                    </div>
+                    <table>
+                        <tr>
+                            <th style="width: 10%;text-align: center">Código</th>
+                            <th style="width: 20%;text-align: center">Cliente</th>
+                        </tr>
+                        {{#each listaEncerrado}}
+                        <tr>
+                            <a href='/gerenciamento/atividades'>
+                                <td style="text-align: center"><a href='/gerenciamento/atividades/{{id}}'>{{seq}}</a>
+                                </td>
+                                <td style="text-align: center">{{cliente}}</td>
+                            </a>
+                        </tr>
+                        {{else}}
+                        <label class='col-form-label col-form-label-sm'>Nenhuma obra lançada.</label>
+                        {{/each}}
+                    </table>
+                </div>
             </div>
         </div>
         {{else}}
-        <div class="container text-center" style="padding-left: 20px">
-            <div class="card">
-                <div class="body-card" style="margin:auto">
-                    <label class="col-form-label" style="font-size: 50px;margin-top: 180px;margin-bottom: 180px">Agende
-                        seu
-                        primeiro serviço.</label>
+        <div class="row">
+            <div class="col-md-1 text-end">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle fw-bold" data-bs-toggle="dropdown"
+                        aria-expanded="false" style='font-size: 13px;height: 30px;'>
+                        Menu
+                    </button>
+                    <ul class="dropdown-menu">
+                        <div style='padding-left: 20px;width: 200px;'>
+                            <a href='/pessoa/consulta/' class='btn btn-sm btn-primary mb-1 mt-1'>Pessoas</a><br>
+                            <a href='/cliente/consulta/' class='btn btn-sm btn-primary mb-1'>Clientes</a><br>
+                            <a href="/gerenciamento/consulta/" class="btn btn-sm btn-primary mb-1">Relatórios</a><br>
+                            <a href='/configuracao/consultaempresa' class='btn btn-sm btn-primary mb-1'>Empresa
+                            </a><br>
+                            {{#if ehMaster}}
+                            <a href='/administrador/acesso' class="btn btn-sm btn-primary mb-1">Usuários</a><br>
+                            {{/if}}
+                            {{#if owner}}
+                            <a href='/administrador' class="btn btn-sm btn-primary mb-1"> Novos</a><br>
+                            {{/if}}
+                            <a href='/usuario/editar/{{id}}' class="btn btn-sm btn-primary mb-1">Minha
+                                Conta</a><br>
+                            <div style="margin-top: 10px;">
+                                <a href='/gerenciamento/servicos' class="relatorio titulo-relatorio">
+                                    <i class='bi bi-file-arrow-up'></i>Tipo de Serviço
+                                </a>
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <a href='/pessoa/consultaequipepadrao/' class="relatorio titulo-relatorio">
+                                    <i class="bi bi-people"></i> Equipe Padrão
+                                </a>
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <a href='/gerenciamento/agenda' class="relatorio titulo-relatorio">
+                                    <i class='bi bi-columns'></i> Agenda de Serviços
+                                </a>
+                            </div>
+                        </div>
+                    </ul>
+                </div>
+
+            </div>
+            <div class="col">
+
+                <a href='/cliente/novo/' class='btn btn-sm btn-primary mb-1' style='width: 235px;'>Novo Ciente</a>
+
+                <a href='/gerenciamento/obra' class="btn btn-sm btn-primary mb-1" style='width: 235px;'>Nova Obra</a>
+                <a href='/gerenciamento/consultaobra' class="btn btn-sm btn-primary mb-1" style='width: 235px;'>Todas as
+                    Obras</a>
+                <a href='/gerenciamento/emandamento/listatipoobra' class="btn btn-sm btn-primary mb-1"
+                    style='width: 235px;'>Obras em
+                    Andamento</a>
+                <a href='/gerenciamento/agenda' class="btn btn-sm btn-primary mb-1" style='width: 235px;'> Agenda de
+                    Serviços</a>
+                <button onclick='manutencao()' class="btn btn-sm btn-primary mb-1" style="max-width: 50px;height: 30px;"
+                    title='Adicionar Tarefa'><i class='bi bi-calendar-plus d-flex justify-content-center'></i></button>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <form action="/gerenciamento/filtrodash" method="post" class='mb-3'>
+                <div class="row mt-2">
+                    <div class="col text-end">
+                        <label class='col-form-label col-form-label-sm'>Data:</label>
+                    </div>
+                    <div class="text-start" style="max-width: 150px;">
+                        <select name='mes' class='form-select form-select-sm'>
+                            {{#if mes}}
+                            <option>{{mes}}</option>
+                            {{/if}}
+                            <option>Todas</option>
+                            <option>Janeiro</option>
+                            <option>Fevereiro</option>
+                            <option>Março</option>
+                            <option>Abril</option>
+                            <option>Maio</option>
+                            <option>Junho</option>
+                            <option>Julho</option>
+                            <option>Agosto</option>
+                            <option>Setembro</option>
+                            <option>Outubro</option>
+                            <option>Novembro</option>
+                            <option>Dezembro</option>
+                        </select>
+                    </div>
+                    <div class="col text-start">
+                        <input type="number" name='ano' class='form-control form-control-sm' value='{{ano}}'>
+                    </div>
+                    <div class="col text-end">
+                        <label class='col-form-label col-form-label-sm'>Empresa:</label>
+                    </div>
+                    <div class="col-md-2 text-start">
+                        <select name='empresa' class='form-select form-select-sm'>
+                            <option value='111111111111111111111111'>Todas</option>
+                            {{#each todas_empresas}}
+                            <option value='{{_id}}'>{{nome}}</option>
+                            {{else}}
+                            <option>Cadastre uma empresa</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="col text-end">
+                        <label class='col-form-label col-form-label-sm'>Status:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <select name='status' class='form-select form-select-sm'>
+                            {{#if empselect}}
+                            <option>{{empselect}}</option>
+                            {{/if}}
+                            <option>Todos</option>
+                            <option>Aguardando</option>
+                            <option>Em execução</option>
+                            <option>Parado</option>
+                            <option>Finalizado</option>
+                        </select>
+                    </div>
+                    <div class="col text-end">
+                        <label class='col-form-label col-form-label-sm'>Ordem:</label>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-check d-flex align-items-center" onchange="selecao()">
+                            <input class="form-check-input" type="radio" name="check" id="asc" {{asc}}>
+                            <label class="form-check-label mt-1">
+                                Crescente
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-check d-flex align-items-center" onchange="selecao()">
+                            <input class="form-check-input" type="radio" name="check" id="desc" {{desc}}>
+                            <label class="form-check-label mt-1">
+                                Decrescente
+                            </label>
+                        </div>
+                    </div>
+                    <input type='hidden' id='ordem' name='ordem' value="{{ordem}}">
+                    <div class="col">
+                        <button type="submit" class="btn"><i
+                                class='bi bi-search botao-filtrar d-flex align-items-center'></i></button>
+                    </div>
+                </div>
+            </form>
+            {{#if busca}}
+            <div class='quadro-scroll' id='tarefa' style="margin-left: 20px;width: 98%;">
+                <input type="hidden" id="obra" value="true">
+                <div class="text-center">
+                    {{#if lista_tarefas}}
+                    <table style="font-size: 15px;">
+                        <tr>
+                            <th style="width: 5%;font-size: 12px;">
+                                Execução
+                            </th>
+                            <th style="font-size: 12px;padding-left: 10px;">
+                                Código
+                            </th>
+                            <th style="width: 25%;font-size: 12px;">
+                                Cliente
+                            </th>
+                            <th style="width: 15%;font-size: 12px;">
+                                Serviço
+                            </th>
+                            <th style="width: 25%;font-size: 12px;">
+                                Responsável
+                            </th>
+                            <th style="width: 15%;font-size: 12px;">
+                                Inicio
+                            </th>
+                            <th style="width: 15%;font-size: 12px;">
+                                Fim
+                            </th>
+                            <th style="width: 2%;font-size: 12px;">
+
+                            </th>
+                        </tr>
+                        {{#each lista_tarefas}}
+                        <tr>
+                            <td style="font-size: 12px">
+                                {{#if feito}}
+                                <div style="padding-left: 20px;display: flex;align-items:center;">
+                                    <div><i id='realizado' class='bi bi-check d-flex align-items-center mt-1'
+                                            style="position: relative;transform: translateY(10%);color: rgb(55,49,89);"></i>
+                                    </div>
+                                </div>
+                                {{else}}
+                                {{#if liberado}}
+                                <div style="padding-left: 20px;display: flex;align-items:center;">
+                                    <div id='execucao' style="position: relative;top: 40%;transform: translateY(30%);">
+                                    </div>
+                                </div>
+                                {{else}}
+                                <div style="padding-left: 20px;display: flex;align-items:center;">
+                                    <div id='aguardando'
+                                        style="position: relative;top: 50%;transform: translateY(30%);">
+                                    </div>
+                                </div>
+                                {{/if}}
+                                {{/if}}
+                            </td>
+                            <td style="font-size: 12px">
+                                {{seq}}
+                            </td>
+                            <td style="font-size: 12px">
+                                {{nome_cli}}
+                            </td>
+                            <td style="font-size: 12px">
+                                {{servico}}
+                            </td>
+                            <td style="font-size: 12px">
+                                {{nome_res}}
+                            </td>
+                            <td style="font-size: 12px">
+                                {{dtini}}
+                            </td>
+                            <td style="font-size: 12px">
+                                {{dtfim}}
+                            </td>
+                            <td>
+                                <a href='/gerenciamento/mostraEquipe/{{id}}'><i class='bi bi-folder2-open d-flex'
+                                        title="Equipe"></i></a>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </table>
+                    {{else}}
+                    <label class="col-form-label" style="font-size: 50px;margin-top: 30;margin-bottom: 30px">Nenhuma
+                        tarefa
+                        encontrada</label>
+                    {{/if}}
                 </div>
             </div>
-        </div>
-        {{/if}}
-
-        <div class="row mt-4">
-            <label style="font-size: 20px;padding-left: 20px;font-weight: 800;">Visão Geral das Tarefas</label>
-            <div id='grafico' style="width: 95%;padding-left: 50px;">
-                <canvas id='chartGeral' class='mt-1 mb-1'></canvas>
+            {{else}}
+            <div class="container text-center" style="padding-left: 20px">
+                <div class="card">
+                    <div class="body-card" style="margin:auto">
+                        <label class="col-form-label"
+                            style="font-size: 50px;margin-top: 180px;margin-bottom: 180px">Agende
+                            seu
+                            primeiro serviço.</label>
+                    </div>
+                </div>
             </div>
-        </div>
+            {{/if}}
 
+            <div class="row mt-4">
+                <label style="font-size: 20px;padding-left: 20px;font-weight: 800;">Visão Geral das Tarefas</label>
+                <div id='grafico' style="width: 95%;padding-left: 50px;">
+                    <canvas id='chartGeral' class='mt-1 mb-1'></canvas>
+                </div>
+            </div>
+
+        </div>
     </div>
+    {{/if}}
     {{#each todos_clientes}}
     <input type="hidden" name="clinome[]" value="{{nome}}">
     <input type="hidden" name="cliid[]" value="{{_id}}">
@@ -486,48 +580,4 @@
             showConfirmButton: false
         })
     }
-
-
-    //grafico tarefas
-    var qtdagua = document.getElementById('qtdagua')
-    var qtdexec = document.getElementById('qtdexec')
-    var qtdpara = document.getElementById('qtdpara')
-    var qtdreal = document.getElementById('qtdreal')
-
-    var ctxGeral = document.getElementById('chartGeral').getContext('2d')
-    var chartGeral = new Chart(ctxGeral, {
-        type: 'bar',
-        data: {
-            labels: ['Aguardando', 'Em execução', 'Parado', 'Finalizado'],
-            datasets: [{
-                data: [qtdagua.value, qtdexec.value, qtdpara.value, qtdreal.value],
-                backgroundColor: [
-                    'rgba(37, 139, 33, 0.2)',
-                    'rgba(50, 140, 230, 0.2)',
-                    'rgba(140, 50, 230, 0.2)',
-                    'rgba(240, 37, 33, 0.2)',
-                ],
-                borderColor: [
-                    'rgba(37, 139, 33, 1)',
-                    'rgba(50, 140, 230, 1)',
-                    'rgba(140, 50, 230, 1)',
-                    'rgba(240, 37, 33, 1)',
-                ],
-                borderWidth: 1,
-            }],
-        },
-        options: {
-            maintainAspectRatio: false,
-            responsive: true,
-            legend: {
-                display: false,
-                position: 'top',
-                reverse: true,
-                align: 'center',
-                labels: {
-                    usePointStyle: true,
-                }
-            }
-        }
-    })    
 </script>

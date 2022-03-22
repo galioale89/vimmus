@@ -1,0 +1,309 @@
+<div style="width: 98%;padding-left: 2%;padding-top: 0.5%;" class="text-center">
+
+    <div class='mt-4'>
+        {{#if atva}}
+        <label style="font-size: 35px;font-weight: bold;">Aterramento</label>
+        {{/if}}
+        {{#if atvi}}
+        <label style="font-size: 35px;font-weight: bold;">Inversor e String Box</label>
+        {{/if}}
+        {{#if atvt}}
+        <label style="font-size: 35px;font-weight: bold;">Estruturas e Módulos</label>
+        {{/if}}
+    </div>
+
+    {{#if esconde}}
+    {{#if imgtarefa}}
+    <label class='mt-4' style="font-size: 35px;font-weight: bold;">{{titulo}}</label>
+    {{/if}}
+
+
+    <div class="card mt-4">
+        <div class="body-card">
+            <form action="/gerenciamento/salvarFotos" method="post">
+                <input type="hidden" name="tipo" value="tarefa">
+                <input type='hidden' name='id' value="{{tarefa._id}}">
+                <div>
+                    <div class="btn-group gap-2">
+                        <div class="btn start-video" title='Ativar Câmera'><i style="font-size: 40px;"
+                                class='bi bi-camera-video-fill'></i></div>
+                        <div class="btn picture" title='Tirar uma foto'><i style="font-size: 40px;"
+                                class='bi bi-camera'></i></div>
+                        <button type="submit" class="btn save-picture" title='Salvar Fotos' style="display: none;"
+                            id='upload'><i style="font-size: 35px;" class='btn bi bi-save'></i> </button>
+                        <label style="display: none;font-size: 30px;padding-top: 30px;margin-left: 200px;"
+                            id='lblscreen'>Fotos Tiradas</label>
+                    </div>
+                </div>
+                <div class="progress mb-3" style="width: 100px;margin-left: 46%;">
+                    <div class="progress-bar" id="progress"></div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col is-four-fifths">
+                            <video src="" width="500px" id="video" muted autoplay></video>
+                        </div>
+                        <div class="col">
+                            <label
+                                            style="display: none;font-size: 30px;padding-top: 30px;margin-left: 80px;"
+                                            id='lblscreen'>Fotos Tiradas</label>
+                            <div class="row" id="screen">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <canvas style="display: none;" id="canvas"></canvas>
+                {{#if projeto.documento}}
+                <div class="row mt-3">
+                    <label style="font-size: 20px;font-weight: 600;">Fotos Salvas</label>
+                    {{#if lista_doc}}
+                    {{#each lista_doc}}
+                    <div class="col-md-4">
+                        <div style="width: 5px;">
+                            <a href='/gerenciamento/deletaImagem/{{desc}}delimg{{_id}}delimgfotosdelimg{{../projeto._id}}delimgdocumento'
+                                class='botao-filter'><i class='bi bi-x-circle'
+                                    style="font-size: 20px;color: orangered"></i></a>
+                        </div>
+                        <a href='/gerenciamento/mostrarBucket/{{desc}}' target="_blank" style="font-size: 25px;">
+                            <img src='/gerenciamento/mostrarBucket/{{desc}}' style="width: 80%;" alt='Minha Figura'></a>
+                    </div>
+                    {{/each}}
+                    {{/if}}
+                </div>
+                {{/if}}
+            </form>
+        </div>
+    </div>
+
+    <form action="/gerenciamento/salvarImagem" class='mt-2' method="post" enctype="multipart/form-data">
+        <input type="hidden" name="id" value='{{proposta._id}}{{tarefa._id}}'>
+        <input type='hidden' name='tipo' value='{{#if proposta}}proposta{{else}}tarefa{{/if}}'>
+        {{#if atva}}
+        <input type='hidden' name='caminho' value='aterramento'>
+        <input type="hidden" name="ida" value='{{atva._id}}'>
+        {{/if}}
+        {{#if atvi}}
+        <input type='hidden' name='caminho' value='inversor'>
+        <input type="hidden" name="idi" value='{{atvi._id}}'>
+        {{/if}}
+        {{#if atvt}}
+        <input type='hidden' name='caminho' value='telhado'>
+        <input type="hidden" name="idt" value='{{atvt._id}}'>
+        {{/if}}
+        {{#if imgtarefa}}
+        <input type='hidden' name='caminho' value='tarefa'>
+        {{/if}}
+
+        <div class="row">
+            <div class="col-md-9">
+                <input type='file' multiple name='files' class='form-control'>
+            </div>
+            <div class="col-md-1">
+                <div class="form-check mt-1">
+                    <input class="form-check-input" name='check' type="checkbox" {{check}}>
+                    <label class="form-check-label mt-1" style="font-size: 15px;">
+                        Aprovado
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <button type='submit' class='btn  btn-success'><i class='bi bi-save'></i></button>
+            </div>
+            <div class="col-md-1">
+                <a href='/gerenciamento/mostraEquipe/{{proposta._id}}{{tarefa._id}}' class='btn btn-primary'><i
+                        class='bi bi-arrow-left'></i></a>
+            </div>
+        </div>
+    </form>
+    {{else}}
+    <div style="width: 100%;">
+        <h5 class="header">{{cliente_proposta.nome}} </h5>
+    </div>
+    <div class='btn-group col-12'>
+        <div class='numero'>1</div>
+        <a href='/gerenciamento/proposta/{{proposta._id}}/'
+            class='btn btn-sm{{#if proposta.feito}} check-menu {{else}} botao-menu {{/if}}'
+            style="border-bottom-left-radius: 30px;"> <i class="bi bi-house"></i> Proposta</a>
+        <div class='numero {{visita}}'>2</div>
+        <a href="/gerenciamento/visita/{{proposta._id}}"
+            class="btn btn-sm {{#if vistoria.feito}} check-menu {{else}} botao-menu {{visita}}{{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-gear"></i>
+            Visita Técnica</a>
+        <div class='numero '>3</div>
+        <a href="/gerenciamento/assinatura/{{proposta._id}}"
+            class="btn btn-sm {{#if proposta.assinado}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-pencil"></i>
+            Contrato</a>
+        <div class='numero'>4</div>
+        <a href="/gerenciamento/compra/{{proposta._id}}"
+            class="btn btn-sm {{#if compra.feitonota}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-cart-check"></i>
+            Compra Sistema</a>
+        <div class='numero'>5</div>
+        <a href="/gerenciamento/trt/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitotrt}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-tools"></i>
+            TRT</a>
+        <div class='numero'>6</div>
+        <a href="/gerenciamento/execucao/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.protocolado}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-clock-history"></i>
+            Execução</a>
+        <div class='numero'>7</div>
+        <a href="/gerenciamento/equipe/{{proposta._id}}"
+            class="btn btn-sm {{#if lista_equipe.feito}} check-menu {{else}} botao-menu {{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-people"></i>
+            Equipes</a>
+        <div class='numero {{aceite}}'>8</div>
+        <a href="/gerenciamento/aceite/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitoaceite}} check-menu {{else}} botao-menu {{aceite}}{{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-check2-square"></i>
+            Aceite Obra</a>
+        <div class='numero'>9</div>
+        <a href="/gerenciamento/almoxarifado/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitoalmox}} check-menu {{else}} botao-menu{{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-layers"></i>
+            Almoxarifado</a>
+        <div class='numero'>10</div>
+        <a href="/gerenciamento/financeiro/{{proposta._id}}"
+            class="btn btn-sm {{#if documento.feitofaturado}} check-menu {{else}} botao-menu{{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-calculator"></i>
+            Financeiro</a>
+        <div class='numero'>11</div>
+        <a href="/gerenciamento/posvenda/{{proposta._id}}"
+            class="btn btn-sm {{#if posvenda.feito}} check-menu {{else}} botao-menu{{/if}}"
+            style="border-bottom-left-radius: 30px;"><i class="bi bi-door-open"></i>
+            Pós Venda</a>
+    </div>
+    <div class='text-center'>
+        <label class='mt-4' style="font-size: 35px;font-weight: bold;">{{titulo}}</label>
+    </div>
+    {{/if}}
+
+    <input type='hidden' name='caminho' value='{{atv}}'>
+
+    <div class="row text-center text-center justify-content-center" style="margin-bottom: 50px;margin-top: 10px">
+        <div class="row text-center justify-content-center" style="margin-bottom: 50px;margin-top: 10px">
+            {{#each lista_imagens}}
+            <div class="col-md-4">
+                <div style="width: 5px;">
+                    <a href='/gerenciamento/deletaImagem/{{imagem}}delimg{{id}}delimg{{atv}}delimg{{proposta}}delimg{{ehatv}}'
+                        class='botao-filter'><i class='bi bi-x-circle' style="font-size: 20px;color: orangered"></i></a>
+                </div>
+                <a href='/gerenciamento/mostrarBucket/{{imagem}}' target="_blank" style="font-size: 25px;">
+                    <img src='/gerenciamento/mostrarBucket/{{imagem}}' style="width: 80%;" alt='Minha Figura'></a>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
+
+<script>
+    function move(salvarId, progressId) {
+        const btnsalvar = document.getElementById(salvarId)
+        var elem = document.getElementById(progressId)
+        var width = 1
+        var id = setInterval(frame, 75)
+        function frame() {
+            if (width >= 100) {
+                clearInterval(id)
+                btnsalvar.style.display = ''
+            } else {
+                width++
+                elem.style.width = width + '%'
+            }
+        }
+    }
+
+    function startCamera(videoId, screenId) {
+        navigator.mediaDevices.getUserMedia({
+            video: {
+                facingMode: 'user',
+                width: {
+                    min: 1280,
+                    ideal: 1920,
+                    max: 2560,
+                },
+                height: {
+                    min: 720,
+                    ideal: 1080,
+                    max: 1440,
+                },
+            }
+        }).then((stream) => {
+            const lblscreen = document.getElementById(screenId)
+            //const btnsalvar = document.getElementById(salvarId)
+            lblscreen.style.display = ''
+            //btnsalvar.style.display = ''
+            document.getElementById(videoId).srcObject = stream
+        })
+    }
+
+
+    function takePicture(screenId, canvasId, videoId, salvarId, progressId) {
+        const screen = document.getElementById(screenId)
+        const canvas = document.getElementById(canvasId)
+        const context = canvas.getContext('2d')
+        const video = document.getElementById(videoId)
+        const div0 = document.createElement("div")
+        const div1 = document.createElement("div")
+        const div2 = document.createElement("div")
+        const div3 = document.createElement("div")
+        const img = document.createElement("img")
+        const fileimg = document.createElement("input")
+        const imgblob = document.createElement('input')
+        //const inputFiles = document.getElementById('files')
+
+        canvas.width = video.videoWidth
+        canvas.height = video.videoHeight
+        context.drawImage(video, 0, 0)
+
+        //var imagem = document.getElementById('id_do_input');
+        //imagem.src = imagem;
+        var image = canvas.toDataURL('image/png')
+
+        fileimg.name = 'imagem'
+        fileimg.value = image
+        fileimg.type = 'hidden'
+
+        canvas.toBlob(function (blob) {
+            var url
+            url = URL.createObjectURL(blob)
+            img.style.width = '200px'
+            img.src = url
+            imgblob.name = 'imgblob'
+            imgblob.type = 'hidden'
+            imgblob.value = url
+
+            //var idiv = url.replace('blob:https://vimmus.com.br/', '')
+            var idiv = url.replace('blob:http://localhost:3000/', '')
+
+            div0.className = 'row'
+            div1.className = 'col-md-4'
+            div2.style.width = '5px'
+            div2.style.cursor = 'pointer'
+            div3.innerHTML = '<i class="bi bi-x-circle"></i>'
+            div3.addEventListener('click', (e) => {
+                node = document.getElementById(idiv)
+                node.parentNode.removeChild(node)
+            })
+
+            move(salvarId, progressId)
+            div0.id = idiv
+            div2.append(div3)
+            div1.prepend(img)
+            div1.prepend(imgblob)
+            div1.append(fileimg)
+            div0.append(div2)
+            div0.append(div1)
+            screen.prepend(div0)       
+
+        }, 'image/png')
+
+    }
+
+    document.querySelector('.start-video').addEventListener('click', event => { startCamera('video', 'lblscreen') })
+
+    document.querySelector('.picture').addEventListener('click', event => { takePicture('screen', 'canvas', 'video', 'upload', 'progress') })
+
+</script>

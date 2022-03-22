@@ -72,6 +72,7 @@ const validaCronograma = require('../resources/validaCronograma')
 const dataHoje = require('../resources/dataHoje')
 const filtrarProposta = require('../resources/filtrar')
 const naoVazio = require('../resources/naoVazio')
+const { PutBucketTaggingRequest } = require('@aws-sdk/client-s3')
 
 // const TextMessageService = require('comtele-sdk').TextMessageService
 // const e = require('connect-flash')
@@ -817,16 +818,17 @@ router.get('/emandamento/:tipo', ehAdmin, (req, res) => {
             Empresa.find({ user: id }).lean().then((todas_empresas) => {
                 // //console.log('todos_responsaveis=>' + todas_empresas)
                 Equipe.find(sql).then((conta_equipe) => {
-                    // //console.log('conta_equipe=>'+conta_equipe)
+                    console.log('conta_equipe=>'+conta_equipe)
                     if (naoVazio(conta_equipe)) {
                         conta_equipe.forEach((e) => {
-                            //console.log('params[1]=>' + params[1])
+                            console.log('params[1]=>' + params[1])
                             if (params[1] == 'obra') {
                                 var tecnico
                                 var gestor
                                 //console.log('entrou obra')
-                                Tarefa.findOne({ user: id, e: e._id }).then((tarefa) => {
-                                    //console.log('tarefa._id=>' + tarefa._id)
+                                console.log('e.tarefa=>' + e.tarefa)
+                                Tarefa.findOne({ user: id, _id: e.tarefa }).then((tarefa) => {
+                                    
                                     Obra.findOne({ _id: e.obra, "tarefa._idtarefa": tarefa._id }).then((obra) => {
                                         //console.log('obra._id=>' + obra._id)
                                         Cliente.findOne({ _id: obra.cliente }).then((cliente) => {
@@ -1440,16 +1442,17 @@ router.get('/mostraEquipe/:id', ehAdmin, (req, res) => {
                 res.redirect('/dashboard')
             })
         } else {
-            //console.log('mostrar tarefa')
+            console.log('mostrar tarefa')
             Tarefa.findOne({ _id: req.params.id }).lean().then((tarefa) => {
                 if (naoVazio(tarefa)) {
                     Cliente.findOne({ _id: tarefa.cliente }).lean().then((cliente) => {
                         Equipe.findOne({ _id: tarefa.equipe }).lean().then((equipe) => {
                             Pessoa.findOne({ _id: tarefa.responsavel }).lean().then((tecnico) => {
-
+                                console.log("req.params.id=>"+req.params.id)
                                 Obra.findOne({ 'tarefa.idtarefa': req.params.id }).then((obra) => {
+                                    console.log('obra.responsavel=>'+obra.responsavel)
                                     Pessoa.findOne({ _id: obra.responsavel }).lean().then((gestor) => {
-                                        //console.log(obra)
+                                        console.log(obra)
                                         if (naoVazio(obra)) {
                                             idobra = obra._id
                                         } else {
@@ -1461,7 +1464,7 @@ router.get('/mostraEquipe/:id', ehAdmin, (req, res) => {
                                         res.redirect('/dashboard')
                                     })
                                 }).catch((err) => {
-                                    req.flash('error_msg', 'Falha ao encontrar a obra.')
+                                    req.flash('error_msg', 'Falha ao encontrar a obra<mostra_equipe.')
                                     res.redirect('/dashboard')
                                 })
 
@@ -4586,15 +4589,14 @@ router.get('/enviarequipe/:id', ehAdmin, (req, res) => {
                                                 'A intalação do projeto: ' + proposta.seq + '/' + equipe.nome_projeto + ', foi cancelada.' + '\n' +
                                                 'Aguarde por mais informações do técnico responsável pela instalação.'
                                         }
-                                        transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
-                                            if (err) {
-                                                return //console.log(err)
-                                            } else {
-                                                req.flash(tipo, mensagem)
-                                                res.redirect('/gerenciamento/equipe/' + req.params.id)
-                                            }
-
-                                        })
+                                        // transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
+                                        //     if (err) {
+                                        //         return //console.log(err)
+                                        //     } else {
+                                        //         req.flash(tipo, mensagem)
+                                        //         res.redirect('/gerenciamento/equipe/' + req.params.id)
+                                        //     }
+                                        // })
                                     }).catch((err) => {
                                         req.flash('error_msg', 'Houve erro ao salvar a equipe.')
                                         res.redirect('/gerenciamento/equipe/' + req.params.id)
@@ -4633,15 +4635,15 @@ router.get('/enviarequipe/:id', ehAdmin, (req, res) => {
                                                     'O técnico responsável pela a obra será: ' + insres.nome + '\n' +
                                                     'Acesse seu aplicativo para acopanhar a evolução da obra.'
                                             }
-                                            transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
-                                                if (err) {
-                                                    return //console.log(err)
-                                                } else {
-                                                    req.flash(tipo, mensagem)
-                                                    res.redirect('/gerenciamento/equipe/' + req.params.id)
-                                                }
+                                            // transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
+                                            //     if (err) {
+                                            //         return //console.log(err)
+                                            //     } else {
+                                            //         req.flash(tipo, mensagem)
+                                            //         res.redirect('/gerenciamento/equipe/' + req.params.id)
+                                            //     }
 
-                                            })
+                                            // })
                                         }).catch((err) => {
                                             req.flash('error_msg', 'Houve erro ao encontrar o instalador responsável.')
                                             res.redirect('/gerenciamento/equipe/' + req.params.id)
@@ -4696,14 +4698,14 @@ router.get('/enviarequipe/:id', ehAdmin, (req, res) => {
                                                     //'O técnico responsável pelo serviço será: ' + insres.nome + '\n' +
                                                     'Acesse seu aplicativo para acopanhar a evolução da obra.'
                                             }
-                                            transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
-                                                if (err) {
-                                                    return console.log(err)
-                                                } else {
-                                                    req.flash(tipo, mensagem)
-                                                    res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
-                                                }
-                                            })
+                                            // transporter.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
+                                            //     if (err) {
+                                            //         return console.log(err)
+                                            //     } else {
+                                            //         req.flash(tipo, mensagem)
+                                            //         res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
+                                            //     }
+                                            // })
                                         }).catch((err) => {
                                             req.flash('error_msg', 'Houve erro ao salvar a obra.')
                                             res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
@@ -5081,12 +5083,15 @@ router.post('/salvarFotos', ehAdmin, (req, res) => {
 })
 
 router.get('/mostrarGaleria/:id', ehAdmin, (req, res) => {
+    const {instalador} = req.user
+
     var params
     params = req.params.id
     params = params.split('galeria-')
     var lista_imagens = []
     var img
     var q = 1
+    var funcaoIns = false
     //console.log('id=>' + params[0])
     //console.log('caminho=>' + params[1])
     Proposta.findOne({ _id: params[0] }).lean().then((proposta) => {
@@ -5220,12 +5225,20 @@ router.get('/mostrarGaleria/:id', ehAdmin, (req, res) => {
                         if (imgtarefa.aprova == true) {
                             check = 'checked'
                         }
+                        if (instalador == true){
+                            funcaoIns = true
+                        }
                         //console.log('lista_imagens=>' + lista_imagens)
-                        res.render('principal/mostrarFotos', { imgtarefa, check, lista_imagens, tarefa, titulo: "Imagens do serviço", esconde: true, ehatv: false })
+                        Servico.findOne({_id: tarefa.servico}).then((servico)=>{
+                        res.render('principal/mostrarFotos', { imgtarefa, check, lista_imagens, tarefa, titulo: servico.descricao, esconde: true, ehatv: false, instalador: funcaoIns })
                     }).catch((err) => {
-                        req.flash('error_msg', 'Não foi possível encontrar a atividade de instalação das estrurturas e módulos no telhado.')
+                        req.flash('error_msg', 'Não foi possível encontrar o seviço.')
                         res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
                     })
+                }).catch((err) => {
+                    req.flash('error_msg', 'Não foi possível encontrar a atividade de instalação das estrurturas e módulos no telhado.')
+                    res.redirect('/gerenciamento/mostraEquipe/' + req.params.id)
+                })
                 }).catch((err) => {
                     req.flash('error_msg', 'Não foi possível encontrar a tarefa.')
                     res.redirect('/gerenciamento/mostraEquipe/' + req.body.id)
@@ -5509,7 +5522,7 @@ router.get('/entrega/:id', ehAdmin, (req, res) => {
                     res.redirect('/gerenciamento/obra/' + obra._id)
                 }
             }).catch((err) => {
-                req.flash('error_msg', 'Falha ao encontrar a obra.')
+                req.flash('error_msg', 'Falha ao encontrar a obra<entrega>.')
                 res.redirect('/gerenciamento/consultaobra')
             })
         }
@@ -7192,7 +7205,7 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                                             //console.log('req.body.id=>' + req.body.id)
                                             Equipe.find({ obra: req.body.id }).then((conta_obras) => {
                                                 //console.log('conta_obras=>' + conta_obras)
-                                                if (conta_obras.length > 0) {
+                                                //if (conta_obras.length > 0) {
                                                     Obra.findOneAndUpdate({ _id: req.body.id }, { $push: { tarefa: { "idtarefa": tarefa._id } } }).then(() => {
                                                         Obra.findOneAndUpdate({ _id: req.body.id }, { $set: { 'dtini': tarefa.dataini, 'dtfim': tarefa.dtfim } }).then(() => {
                                                             //console.log('update')
@@ -7204,18 +7217,18 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                                                             })
                                                         })
                                                     })
-                                                } else {
-                                                    Obra.findOneAndUpdate({ _id: req.body.id }, { $push: { tarefa: { "idtarefa": tarefa._id } } }).then(() => {
-                                                        Obra.findOneAndUpdate({ _id: req.body.id }, { $set: { 'dtini': tarefa.dataini, 'dtfim': tarefa.datafim } }).then(() => {
-                                                            novaequipe.tarefa = tarefa._id
-                                                            novaequipe.obra = req.body.id
-                                                            novaequipe.save().then(() => {
-                                                                req.flash('success_msg', 'Tarefa da obra gerada com sucesso.')
-                                                                res.redirect('/gerenciamento/obra/' + req.body.id + 'abalista')
-                                                            })
-                                                        })
-                                                    })
-                                                }
+                                                // } else {
+                                                //     Obra.findOneAndUpdate({ _id: req.body.id }, { $push: { tarefa: { "idtarefa": tarefa._id } } }).then(() => {
+                                                //         Obra.findOneAndUpdate({ _id: req.body.id }, { $set: { 'dtini': tarefa.dataini, 'dtfim': tarefa.datafim } }).then(() => {
+                                                //             novaequipe.tarefa = tarefa._id
+                                                //             novaequipe.obra = req.body.id
+                                                //             novaequipe.save().then(() => {
+                                                //                 req.flash('success_msg', 'Tarefa da obra gerada com sucesso.')
+                                                //                 res.redirect('/gerenciamento/obra/' + req.body.id + 'abalista')
+                                                //             })
+                                                //         })
+                                                //     })
+                                                // }
                                             })
                                         })
                                     }).catch((err) => {
@@ -7235,7 +7248,7 @@ router.post('/addtarefa', ehAdmin, (req, res) => {
                             res.redirect('/gerenciamento/tarefas/' + tarefa._id)
                         })
                     }).catch((err) => {
-                        req.flash('error_msg', 'Falha ao encontrar a obra.')
+                        req.flash('error_msg', 'Falha ao encontrar a obra<add_tarefa>.')
                         res.redirect('/dashboard')
                     })
                 } else {

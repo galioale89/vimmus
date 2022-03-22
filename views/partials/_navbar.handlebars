@@ -1,3 +1,8 @@
+<style>
+  input {
+    text-transform: capitalize ;
+  }
+</style>
 <script>
   window.onload = function () {
     var saudacao = document.getElementById('saudacao')
@@ -26,7 +31,6 @@
     if (semana == 0) {
       semana = 'Domingo'
     }
-
 
     var dia = data.getDate()
     var mes = data.getMonth()
@@ -58,77 +62,75 @@
         break;
     }
 
+    var ehmobile = document.getElementById('ehmobile')
+    if (screen.width < 640 || screen.height < 480) {
+      ehmobile.style.display = 'none'
+    }
+
     var ano = data.getFullYear()
 
-    saudacao.innerHTML = 'Hoje é ' + semana + ', dia ' + dia + ' de ' + mes + ' de ' + ano
+    saudacao.innerHTML = 'Hoje é ' + semana + ', dia ' + dia + ' de ' + mes + 'de ' + ano
+    saudacao.style.width = '320px'
 
     var obra = document.getElementById('obra')
     var dim = document.getElementById('dim')
     var dim1 = document.getElementById('dim1')
+    var dim2 = document.getElementById('dim2')
     var tarefa = document.getElementById('tarefa')
     var grafico = document.getElementById('grafico')
+
     var altura = parseFloat(window.screen.height)
     var alttarefa
 
-    altura = Math.trunc(altura - (altura * 0.4))
+    altura = Math.trunc(altura - (altura * 0.5))
     alttarefa = (Math.trunc(altura - (altura * 0.2))) / 2
     altura = altura + 'px'
     alttarefa = alttarefa + 'px'
 
-    if (obra.value == 'true') {
-      tarefa.style.height = alttarefa
-      grafico.style.height = alttarefa
-    } else {
-      dim.style.height = altura
+    if (obra.value == 'false') {
+       dim.style.height = altura
       dim1.style.height = altura
+      dim2.style.height = altura
+    } else {
+           tarefa.style.height = alttarefa
+      grafico.style.height = alttarefa
     }
-
-    /*
-    var largura = parseFloat(window.screen.width)
-    largura = largura - (largura * 0.03)
-    largura = largura + 'px'
-    dim.style.width = String(largura)
-    */
   }
 </script>
 <!-- Default dropstart button -->
 {{#if user}}
-<nav id='menu-fixo-user' class='navbar navbar-expand-lg'
-  style="position: relative;z-index: 999;text-decoration: none;width: 100%;">
-  <div class="justify-content-start">
-    <label class='col-form-label col-form-label-sm' id='saudacao'></label>
-  </div>
-  <div class="collapse navbar-collapse d-flex justify-content-end">
-    <div class='btn-group col-12 gap-2 justify-content-end'>
-      {{#if crm}}
-      <div class="dropdown">
-        <button class="botao-filter dropdown-toggle fw-bold" type="button" style='background-color: rgb(44,55,89);'
-          data-bs-toggle="dropdown" aria-expanded="false">
-          Relatórios
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-          <a href='/relatorios/analiseproposta' class="contorno-menu d-flex align-items-center'">
-            <i class='bi bi-file-earmark-spreadsheet d-flex align-items-center'></i>
-            Analisa Propostas
-          </a>
-          <div class='mt-2'>
-            <a href='/relatorios/priorizacao' class="contorno-menu d-flex align-items-center">
-              <i class='bi bi-file-earmark-arrow-up d-flex align-items-center'></i>
-              Compras
-            </a>
-          </div>
-        </ul>
-      </div>
-      {{/if}}
-      <a href='/dashboard' class="d-flex align-items-center"><i class='bi bi-house botao-filter d-flex align-items-center'
-          title="Dashboard"></i></a><br>
-      {{#if crm}}
-      <a href='/gerenciamento/consulta' class="d-flex align-items-center"><i
-          class="bi bi-search botao-filter d-flex align-items-center" title="Busca Propostas"></i></a><br>
-      {{/if}}
-      <a href='/logout' class="d-flex align-items-center"><i
-          class='bi bi-door-open botao-filter d-flex align-items-center' title="Sair"></i></a>
+<nav id='menu-fixo-user' class='navbar navbar-expand-lg no-print' style="position: relative;">
+  <div class='btn-group col-12 gap-2 justify-content-end'>
+    <div class="justify-content-start">
+      <label class='col-form-label col-form-label-sm mt-2' style="padding-left: 20px;" id='saudacao'></label>
     </div>
+    {{#if crm}}
+    <div class="dropdown">
+      <button class="botao-filter dropdown-toggle fw-bold" type="button" style='background-color: rgb(44,55,89);'
+        data-bs-toggle="dropdown" aria-expanded="false">
+        Relatórios
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        <a href='/relatorios/analiseproposta' class="contorno-menu d-flex align-items-center'">
+          <i class='bi bi-file-earmark-spreadsheet d-flex align-items-center'></i>
+          Analisa Propostas
+        </a>
+        <div class=''>
+          <a href='/relatorios/priorizacao' class="contorno-menu d-flex align-items-center">
+            <i class='bi bi-file-earmark-arrow-up d-flex align-items-center'></i>
+            Compras
+          </a>
+        </div>
+      </ul>
+    </div>
+    {{/if}}
+    <a href='/dashboard'><i class='bi bi-house botao-filter' style="font-size: 30px;" title="Dashboard"></i></a><br>
+    {{#if crm}}
+    <a href='/gerenciamento/consulta' class="d-flex align-items-center"><i
+        class="bi bi-search botao-filter d-flex align-items-center" title="Busca Propostas"></i></a><br>
+    {{/if}}
+    <a href='/logout'><i class='bi bi-door-open botao-filter' style="padding-right: 10px;font-size: 30px;"
+        title="Sair"></i></a>
   </div>
 </nav>
 {{/if}}
