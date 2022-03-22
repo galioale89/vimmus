@@ -32,13 +32,14 @@ router.get('/acesso', ehMaster, (req, res) => {
         if (acesso.length > 0) {
             acesso.forEach((element) => {
                 Pessoa.findOne({ _id: element.pessoa }).then((pessoa) => {
-                    if (pessoa.funges == true) {
+                    //console.log('funorc=>'+pessoa.funorc)
+                    if (pessoa.funges == 'checked') {
                         funcao = 'Gestão'
                     } else {
-                        if (pessoa.vendedor == true) {
+                        if (pessoa.vendedor == 'checked') {
                             funcao = 'Vendedor'
                         } else {
-                            if (pessoa.funorc == true) {
+                            if (pessoa.funorc == 'checked') {
                                 funcao = 'Orçamentista'
                             } else {
                                 funcao = 'Instalador'
