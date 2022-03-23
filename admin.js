@@ -12,15 +12,12 @@ const flash = require('connect-flash')
 
 const customdo = require("./routes/customdo")
 const configuracao = require("./routes/configuracao")
-const projeto = require('./routes/projeto')
 const gerenciamento = require('./routes/gerenciamento')
 const pessoa = require('./routes/pessoa')
 const cliente = require('./routes/cliente')
 const usuario = require('./routes/usuario')
 const administrador = require('./routes/administrador')
 const relatorios = require('./routes/relatorios')
-const componente = require('./routes/componente')
-const fornecedor = require('./routes/fornecedor')
 
 const naoVazio = require('./resources/naoVazio')
 const dataBusca = require('./resources/dataBusca')
@@ -31,19 +28,13 @@ const setData = require('./resources/setData')
 const dataMensagem = require('./resources/dataMensagem')
 const dataHoje = require('./resources/dataHoje')
 const { ehAdmin } = require('./helpers/ehAdmin')
-require('./model/Posvenda')
 
 const Usuario = mongoose.model('usuario')
 const Tarefa = mongoose.model('tarefas')
 const Servico = mongoose.model('servico')
-const Proposta = mongoose.model('proposta')
 const Cliente = mongoose.model('cliente')
 const Pessoa = mongoose.model('pessoa')
-const Documento = mongoose.model('documento')
-const Compra = mongoose.model('compra')
-const Vistoria = mongoose.model('vistoria')
 const Equipe = mongoose.model('equipe')
-const Posvenda = mongoose.model('posvenda')
 const Empresa = mongoose.model('empresa')
 
 //Chamando função de validação de autenticação do usuário pela função passport
@@ -333,15 +324,12 @@ app.get('/dashboard', ehAdmin, (req, res) => {
 //Rotas
 app.use('/customdo', customdo)
 app.use('/configuracao', configuracao)
-app.use('/projeto', projeto)
 app.use('/gerenciamento', gerenciamento)
 app.use('/pessoa', pessoa)
 app.use('/cliente', cliente)
 app.use('/usuario', usuario)
 app.use('/administrador', administrador)
 app.use('/relatorios/', relatorios)
-app.use('/componente/', componente)
-app.use('/fornecedor/', fornecedor)
 
 //Outros
 

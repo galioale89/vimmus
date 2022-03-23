@@ -25,16 +25,12 @@ const upload = multer({
 
 require('../model/Pessoa')
 require('../model/Equipe')
-require('../model/Vistoria')
-require('../model/Projeto')
 require('../model/Cliente')
 require('../model/Acesso')
 const mongoose = require('mongoose')
 
-const Pessoa = mongoose.model('pessoa')
 const Equipe = mongoose.model('equipe')
 const Cliente = mongoose.model('cliente')
-const Projeto = mongoose.model('projeto')
 const Acesso = mongoose.model('acesso')
 
 const { ehAdmin } = require('../helpers/ehAdmin')

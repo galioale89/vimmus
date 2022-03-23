@@ -13,15 +13,11 @@ const storage = multer.diskStorage({
      }
 })
 
-require('../model/Projeto')
-require('../model/Configuracao')
 require('../model/Pessoa')
 require('../model/Cliente')
 
 const mongoose = require('mongoose')
 
-const Projeto = mongoose.model('projeto')
-const Configuracao = mongoose.model('configuracao')
 const Pessoa = mongoose.model('pessoa')
 const Cliente = mongoose.model('cliente')
 

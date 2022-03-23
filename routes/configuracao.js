@@ -6,13 +6,9 @@ const aws = require("aws-sdk")
 
 const mongoose = require('mongoose')
 
-require('../model/Configuracao')
 require('../model/Empresa')
-require('../model/Projeto')
 
-const Configuracao = mongoose.model('configuracao')
 const Empresa = mongoose.model('empresa')
-const Projeto = mongoose.model('projeto')
 const naoVazio = require('../resources/naoVazio')
 
 const { ehAdmin } = require('../helpers/ehAdmin')

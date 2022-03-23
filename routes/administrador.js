@@ -8,7 +8,6 @@ const mongoose = require('mongoose');
 const Usuarios = mongoose.model('usuario')
 const Acesso = mongoose.model('acesso')
 const Pessoa = mongoose.model('pessoa')
-const Projeto = mongoose.model('projeto')
 const Equipe = mongoose.model('equipe')
 
 const { ehMaster } = require('../helpers/ehMaster')
