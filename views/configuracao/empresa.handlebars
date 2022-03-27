@@ -1,0 +1,245 @@
+<style type='text/css'>
+    .tamanhodiv {
+        width: 700px;
+    }
+
+    label {
+        text-transform: none;
+    }
+</style>
+<script>
+
+    function preview_foto() {
+        var imagem = document.querySelector('input[name=logo]').files[0]
+        var preview = document.querySelector('img[name=foto]')
+        var salva = document.getElementById('fotosalva')
+        var fotoprev = document.getElementById('fotopreview')
+
+        salva.style.display = 'none'
+        fotoprev.style.display = ''
+
+        var reader = new FileReader()
+        reader.onloadend = function () {
+            preview.src = reader.result
+        }
+
+        if (imagem) {
+            reader.readAsDataURL(imagem)
+        } else {
+            preview.src = ''
+        }
+    }
+
+    function valida_cnpj() {
+        var cnpj = document.getElementById('cnpj')
+
+        if (cnpj.value.length == 2 || cnpj.value.length == 6) {
+            cnpj.value += '.'
+        }
+        if (cnpj.value.length == 10) {
+            cnpj.value += '/'
+        }
+        if (cnpj.value.length == 15) {
+            cnpj.value += '-'
+        }
+
+        if (cnpj.value.length == 18) {
+
+            var d1 = cnpj.value
+            var p1 = d1.substring(0, 2)
+            var p2 = d1.substring(3, 6)
+            var p3 = d1.substring(7, 10)
+            var p4 = d1.substring(11, 15)
+            var p5 = d1.substring(16, 18)
+            var numdoc = p1 + p2 + p3 + p4 + p5
+
+            if (numdoc == "00000000000000" ||
+                numdoc == "11111111111111" ||
+                numdoc == "22222222222222" ||
+                numdoc == "33333333333333" ||
+                numdoc == "44444444444444" ||
+                numdoc == "55555555555555" ||
+                numdoc == "66666666666666" ||
+                numdoc == "77777777777777" ||
+                numdoc == "88888888888888" ||
+                numdoc == "99999999999999") {
+                cnpj.value = ''
+            }
+
+            // Valida DVs
+            var tamanho = numdoc.length - 2
+            var numeros = numdoc.substring(0, tamanho)
+            var digitos = numdoc.substring(tamanho)
+            var soma = 0
+            var pos = tamanho - 7;
+            for (i = tamanho; i >= 1; i--) {
+                soma += numeros.charAt(tamanho - i) * pos--;
+                if (pos < 2)
+                    pos = 9;
+            }
+            var resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+            if (resultado != digitos.charAt(0)) {
+                cnpj.value = ''
+            }
+
+            tamanho = tamanho + 1;
+            numeros = numdoc.substring(0, tamanho);
+            soma = 0;
+            pos = tamanho - 7;
+            for (i = tamanho; i >= 1; i--) {
+                soma += numeros.charAt(tamanho - i) * pos--;
+                if (pos < 2)
+                    pos = 9;
+            }
+            resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+            if (resultado != digitos.charAt(1)) {
+                cnpj.value = ''
+            }
+        }
+    }
+
+</script>
+<div class="container mt-2 card">
+    <form {{#if empresa._id}}action='/configuracao/editempresa' {{else}}action='/configuracao/addempresa' {{/if}}
+        method='post' enctype="multipart/form-data">
+        <div class="row mt-4">
+            <div class="col">
+                <label class="mt-2" style='font-weight: bold;font-size:20px'>Empresa</label>
+            </div>
+            <div class="col text-end">
+                <div>
+                    <a href='/configuracao/addempresa' class='btn btn-sm btn-primary'>Novo</a>
+                    <a href='/configuracao/consultaempresa' class='btn btn-sm btn-primary'><i class='bi bi-search'></i>
+                    </a>
+                    <button type='submit' class='btn btn-sm btn-success'>Salvar</button>
+                    <a href='/dashboard'><i class='bi bi-house btn btn-sm btn-primary' title="Dashboard"></i></a>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row" style="margin-bottom: 4px;">
+            <input type='hidden' name='id' value='{{empresa._id}}'>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="row mt-1 mb-1">
+                        <div class="col-md-3 text-end">
+                            <label class='fw-bold col-form-label col-form-label-sm'> Nome: </label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm mt-1'> Razão: </label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm mt-1'> CNPJ: </label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm mt-1'> Endereço: </label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm mt-1'> Cidade: </label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm mt-1'> Estado: </label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm mt-1'> Telefone: </label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm mt-1'> Celular: </label><br>
+                            <label class='fw-bold col-form-label col-form-label-sm mt-1'> Site: </label><br>
+                        </div>
+                        <div class="col-md-8">
+                            <input id='nome' name='nome' value='{{empresa.nome}}'
+                                class='form-control form-control-sm mt-1'>
+                            <input id='razao' name='razao' value='{{empresa.razao}}'
+                                class='form-control form-control-sm mt-1'>
+                            <input id='cnpj' name='cnpj' value='{{empresa.cnpj}}'
+                                class='form-control form-control-sm mt-1' onkeyup="valida_cnpj()">
+                            <input id='endereco' name='endereco' value='{{empresa.endereco}}'
+                                class='form-control form-control-sm mt-1'>
+                            <input id='cidade' name='cidade' value='{{empresa.cidade}}'
+                                class='form-control form-control-sm mt-1'>
+                            <input id='uf' name='estado' value='{{empresa.uf}}'
+                                class='form-control form-control-sm mt-1'>
+                            <input id='telefone' name='telefone' value='{{empresa.telefone}}'
+                                class='form-control form-control-sm mt-1'>
+                            <input id='celular' name='celular' value='{{empresa.celular}}'
+                                class='form-control form-control-sm mt-1'>
+                            <input id='website' name='website' style="text-transform: lowercase;" value='{{empresa.website}}'
+                                class='form-control form-control-sm mt-1'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="container">
+                    <div class="row mt-4">
+                        <div class="input-group input-group-sm">
+                            <label class="input-group-text">Logo</label>
+                            <input type="file" name='logo' id="logo" class='form-control' onchange="preview_foto()">
+                        </div>
+                    </div>
+                    <div class="mt-2" style="margin-left: 160px;" id="fotosalva">
+                        <img src='/gerenciamento/mostrarBucket/{{empresa.logo}}' style="width: 160px; height: 160px;"
+                            alt='Minha Figura'></a>
+                    </div>
+                    <div class="mt-2" style="display: {{#if empresa.logo}}none{{else}}''{{/if}}; margin-left: 160px;"
+                        id="fotopreview">
+                        <img id='foto' name='foto' style="width: 160px; height: 160px;" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label class='fw-bold col-form-label col-form-label-sm'>Parâmetros</label>
+                <div class="row">
+                    <div class="col-md-7 text-end">
+                        <label class='col-form-label col-form-label-sm '>Sequênica das propostas:
+                        </label><br>
+                        <label class='col-form-label col-form-label-sm '>Custo de instalação por Módulo:
+                        </label><br>
+                        <label class='col-form-label col-form-label-sm mb-1'> Dias de validade das proposta:
+                        </label><br>
+                    </div>
+                    <div class="col-md-5">
+                        <input type='number' id='seq' name='seq' value='{{empresa.seq}}'
+                            class='form-control form-control-sm mb-1' />
+                        <input type='number' id='vlrmdo' name='vlrmdo' value='{{empresa.vlrmdo}}'
+                            class='form-control form-control-sm mb-1' placeholder="R$" />
+                        <input type='number' id='valpro' name='valpro' value='{{empresa.valpro}}'
+                            class='form-control form-control-sm mb-1'>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <label class='col-form-label col-form-label-sm'>Perdas </label>
+                <div class="row">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col-md-6 text-end">
+                                <label class='col-form-label col-form-label-sm mb-1'> Norte:
+                                </label><br>
+                                <label class='col-form-label col-form-label-sm mb-1'> Oeste:
+                                </label><br>
+                                <label class='col-form-label col-form-label-sm mb-1'> Leste:
+                                </label><br>
+                            </div>
+                            <div class="col-md-4">
+                                <input type='text' id='norte' name='norte' value='{{empresa.perdanorte}}'
+                                    class='form-control form-control-sm mb-1' />
+                                <input type='text' id='oeste' name='oeste' value='{{empresa.e}}'
+                                    class='form-control form-control-sm mb-1' />
+                                <input type='text' id='leste' name='leste' value='{{empresa.perdaleste}}'
+                                    class='form-control form-control-sm mb-1' />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="row">
+                            <div class="col-md-4 text-end">
+                                <br>
+                                <label class='col-form-label col-form-label-sm mb-1'> Noroeste:
+                                </label><br>
+                                <label class='col-form-label col-form-label-sm mb-1'> Nordeste:
+                                </label><br>
+                            </div>
+                            <div class="col-md-4">
+                                <br>
+                                <input type='text' id='nordeste' name='nordeste' value='{{empresa.perdanordeste}}'
+                                    class='form-control form-control-sm mb-1' />
+                                <input type='text' id='noroeste' name='noroeste' value='{{empresa.perdanoroeste}}'
+                                    class='form-control form-control-sm mb-1' />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

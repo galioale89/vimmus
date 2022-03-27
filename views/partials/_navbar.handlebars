@@ -63,8 +63,10 @@
     }
 
     var ehmobile = document.getElementById('ehmobile')
+    var mostra = document.getElementById('mostraMenu')
     if (screen.width < 640 || screen.height < 480) {
       ehmobile.style.display = 'none'
+      mostra.style.display = ''
     }
 
     var ano = data.getFullYear()

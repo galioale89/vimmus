@@ -4319,6 +4319,7 @@ button.arrow {
   background-color: #847AF4;
   box-shadow: 0px 10px 30px 5px rgba(0, 0, 0, 0.3);
 }
+
 button.arrow svg {
   fill: #fff;
   position: absolute;
@@ -4339,9 +4340,14 @@ button.arrow:hover svg {
 /*Sections ready to re-use*/
 header {
   height: 110px;
-  display: flex;
-  align-items: flex-end;
+  position: fixed;
+  justify-content: space-between;
+  width: 100%;
+  background-color: white;
+  height: 100px;
+  z-index: 999;  
 }
+
 .logo {
   line-height: 1.875rem;
   font-size: 1.875rem;
@@ -4349,12 +4355,21 @@ header {
   font-weight: 800;
   color: rgb(40,55,89);
 }
+
+
 header nav.header-menu ul {
   display: flex;
   justify-content: space-between;
   width: 100%;
   align-items: center;
+  padding: 20px 10px;
 }
+
+header nav.header-menu ul li a {
+  color: #847AF4;
+  font-size: 1.125rem;
+}
+
 header nav.header-menu ul li a {
   color: #847AF4;
   font-size: 1.125rem;
