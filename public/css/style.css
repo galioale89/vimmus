@@ -4356,22 +4356,18 @@ header {
   color: rgb(40,55,89);
 }
 
-
 header nav.header-menu ul {
   display: flex;
   justify-content: space-between;
   width: 100%;
   align-items: center;
-  padding: 20px 10px;
 }
 
 header nav.header-menu ul li a {
-  color: #847AF4;
   font-size: 1.125rem;
 }
 
 header nav.header-menu ul li a {
-  color: #847AF4;
   font-size: 1.125rem;
 }
 

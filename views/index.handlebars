@@ -86,6 +86,34 @@
         titulo.style.left = '127px'
         subtitulo.style.marginLeft = '127px'
 
+        var altura = document.getElementById('altura')
+        var offset = document.getElementsByTagName('header')[0].offsetTop;
+        var menu = document.getElementsByTagName('header')[0];
+        var sobre = menu.getElementsByTagName('a')[0]
+        var solucao = menu.getElementsByTagName('a')[1]
+        var contato = menu.getElementsByTagName('a')[2]
+
+        document.addEventListener('scroll', function () {
+            if (document.body.scrollTop > offset || document.documentElement.scrollTop > offset) {
+                menu.style.backgroundColor = '#847AF4'
+                menu.style.boxShadow = '0px 3px 5px rgba(100,100,100,0.8)'
+                menu.style.height = '60px'
+                menu.style.padding = '5px 10px'
+                sobre.style.color = 'white'
+                solucao.style.color = 'white'
+                contato.style.color = 'white'
+                altura.className = 'row align-items-center'
+            } else {
+                menu.style.backgroundColor = 'white'
+                menu.style.padding = '20px 10px'
+                sobre.style.color = '#847AF4'
+                menu.style.boxShadow = ''
+                solucao.style.color = '#847AF4'
+                contato.style.color = '#847AF4'
+                altura.className = 'row align-items-center mt-4'
+            }
+        });
+
     }
 
 </script>
@@ -150,13 +178,12 @@
 </head>
 
 <body style="line-height: 1.6875rem;width: 100%;">
-    <header>
-
-        <div class="row align-items-center mt-4">
+    <header style="padding: 20px 10px;height: 120px;">
+        <div class="row align-items-center mt-4" id="altura">
             <div class="col-md-3 text-center">
                 <h1 class="logo">VIMMUS<span>®</span></h1>
             </div>
-            <div class="col-md-9 text-end" >
+            <div class="col-md-9 text-end">
                 <div id="ehmobile" style="padding-left: 400px;">
                     <nav class="header-menu">
                         <ul>
@@ -178,10 +205,11 @@
                 </div>
                 <div id="mostraMenu" style="display: none;padding-right: 30px;">
                     <div class="dropdown">
-                        <button class="btn fw-bold" data-bs-toggle="dropdown" aria-expanded="false" style='font-size: 30px;'>
+                        <button class="btn fw-bold" data-bs-toggle="dropdown" aria-expanded="false"
+                            style='font-size: 30px;'>
                             <i class='bi bi-list d-flex align-items-center'></i>
                         </button>
-                        
+
                         <ul class="dropdown-menu text-center">
                             <li>
                                 <a href="#about">Sobre</a>
